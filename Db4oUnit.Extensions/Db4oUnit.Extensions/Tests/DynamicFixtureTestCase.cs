@@ -37,17 +37,13 @@ namespace Db4oUnit.Extensions.Tests
 
 		/// <summary>The test suite which binds together fixture providers and test units.</summary>
 		/// <remarks>The test suite which binds together fixture providers and test units.</remarks>
-		public class FooTestSuite : FixtureBasedTestSuite
+		public class FooTestSuite : FixtureTestSuiteDescription
 		{
-			public override IFixtureProvider[] FixtureProviders()
+			internal FooTestSuite()
 			{
-				return new IFixtureProvider[] { new MultiValueFixtureProvider(new object[][] { new 
-					object[] { "foo", "bar" }, new object[] { 1, 42 } }) };
-			}
-
-			public override Type[] TestUnits()
-			{
-				return new Type[] { typeof(DynamicFixtureTestCase.FooTestUnit) };
+				FixtureProviders(new IFixtureProvider[] { new MultiValueFixtureProvider(new object
+					[][] { new object[] { "foo", "bar" }, new object[] { 1, 42 } }) });
+				TestUnits(new Type[] { typeof(DynamicFixtureTestCase.FooTestUnit) });
 			}
 		}
 	}

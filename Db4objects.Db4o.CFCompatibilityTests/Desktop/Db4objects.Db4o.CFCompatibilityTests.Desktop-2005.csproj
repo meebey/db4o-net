@@ -28,7 +28,7 @@
     <DefineConstants>TRACE;DEBUG;NET_2_0;POLL_SOCKET</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug${projectName}.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\CFCompatibilityTests.Desktop.xml</DocumentationFile>
     <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +38,7 @@
     <DefineConstants>TRACE;NET_2_0;POLL_SOCKET</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release${projectName}.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\CFCompatibilityTests.Desktop.xml</DocumentationFile>
     <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <ItemGroup>

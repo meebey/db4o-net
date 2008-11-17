@@ -305,8 +305,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		protected Db4objects.Db4o.Internal.Transaction CheckParentTransaction(Db4objects.Db4o.Internal.Transaction
 			 a_trans, ByteArrayBuffer reader)
 		{
-			if (reader.ReadByte() == Const4.SystemTrans && a_trans.ParentTransaction() != null
-				)
+			if (reader.ReadByte() == Const4.SystemTrans && a_trans.ParentTransaction() != null)
 			{
 				return a_trans.ParentTransaction();
 			}

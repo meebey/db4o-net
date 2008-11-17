@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Internal
 		// do nothing
 		public virtual void TraverseReferences(IVisitor4 visitor)
 		{
-			IEnumerator i = _hashCodeTable.Values();
+			IEnumerator i = _hashCodeTable.ValuesIterator();
 			while (i.MoveNext())
 			{
 				visitor.Visit(i.Current);

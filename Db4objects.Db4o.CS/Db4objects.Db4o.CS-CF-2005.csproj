@@ -33,7 +33,7 @@
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <DocumentationFile>bin\Debug${projectName}.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\Db4objects.Db4o.CS.xml</DocumentationFile>
     <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
-    <DocumentationFile>bin\Release${projectName}.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Db4objects.Db4o.CS.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib"/>

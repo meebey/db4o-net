@@ -191,8 +191,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return Child(reader, s.Cursor()).SearchLeaf(trans, preparedComparison, target);
 			}
-			if (!s.FoundMatch() || target == SearchTarget.Any || target == SearchTarget.Highest
-				)
+			if (!s.FoundMatch() || target == SearchTarget.Any || target == SearchTarget.Highest)
 			{
 				return new BTreeNodeSearchResult(trans, reader, Btree(), s, this);
 			}

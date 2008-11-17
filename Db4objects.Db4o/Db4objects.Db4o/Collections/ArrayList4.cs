@@ -214,8 +214,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			int size = Count;
 			int toIndex = fromIndex + count;
-			if ((fromIndex < 0 || fromIndex >= size || toIndex > size || toIndex < fromIndex)
-				)
+			if ((fromIndex < 0 || fromIndex >= size || toIndex > size || toIndex < fromIndex))
 			{
 				throw new IndexOutOfRangeException();
 			}

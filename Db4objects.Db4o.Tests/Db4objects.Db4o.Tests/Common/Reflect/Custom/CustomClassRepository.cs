@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		public virtual IEnumerator Iterator()
 		{
-			return _classes.Values();
+			return _classes.ValuesIterator();
 		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("")]
-[assembly: AssemblyDescription("Db4oTutorial 7.7.69.12103 (.NET)")]
+[assembly: AssemblyDescription("Db4oTutorial 7.7.69.12123 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("7.7.69.12103")]
+[assembly: AssemblyVersion("7.7.69.12123")]
 
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]

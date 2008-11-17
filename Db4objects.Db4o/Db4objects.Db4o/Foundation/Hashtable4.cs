@@ -136,17 +136,37 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
+		public virtual IEnumerable Values()
+		{
+			return new _IEnumerable_110(this);
+		}
+
+		private sealed class _IEnumerable_110 : IEnumerable
+		{
+			public _IEnumerable_110(Hashtable4 _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public IEnumerator GetEnumerator()
+			{
+				return this._enclosing.ValuesIterator();
+			}
+
+			private readonly Hashtable4 _enclosing;
+		}
+
 		/// <summary>Iterates through all the values.</summary>
 		/// <remarks>Iterates through all the values.</remarks>
 		/// <returns>value iterator</returns>
-		public virtual IEnumerator Values()
+		public virtual IEnumerator ValuesIterator()
 		{
-			return Iterators.Map(Iterator(), new _IFunction4_115());
+			return Iterators.Map(Iterator(), new _IFunction4_123());
 		}
 
-		private sealed class _IFunction4_115 : IFunction4
+		private sealed class _IFunction4_123 : IFunction4
 		{
-			public _IFunction4_115()
+			public _IFunction4_123()
 			{
 			}
 
@@ -223,10 +243,10 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		public virtual void Remove(object objectKey)
+		public virtual object Remove(object objectKey)
 		{
 			int intKey = objectKey.GetHashCode();
-			RemoveObjectEntry(intKey, objectKey);
+			return RemoveObjectEntry(intKey, objectKey);
 		}
 
 		public override string ToString()

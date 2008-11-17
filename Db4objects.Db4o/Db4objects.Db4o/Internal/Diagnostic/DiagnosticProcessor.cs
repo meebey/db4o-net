@@ -34,8 +34,7 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 
 		public virtual void CheckClassHasFields(ClassMetadata classMetadata)
 		{
-			if ((!classMetadata.AspectsAreNull()) && classMetadata.DeclaredAspectCount() == 0
-				)
+			if ((!classMetadata.AspectsAreNull()) && classMetadata.DeclaredAspectCount() == 0)
 			{
 				string name = classMetadata.GetName();
 				string[] ignoredPackages = new string[] { "java.util." };
