@@ -757,7 +757,7 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
-				ByReference foundField = new ByReference();
+				ByRef foundField = new ByRef();
 				classMetadata.ForEachField(new _IProcedure4_616(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
@@ -782,7 +782,7 @@ namespace Db4objects.Db4o.Internal
 
 		private sealed class _IProcedure4_616 : IProcedure4
 		{
-			public _IProcedure4_616(string fieldName, ByReference foundField)
+			public _IProcedure4_616(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -799,7 +799,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly string fieldName;
 
-			private readonly ByReference foundField;
+			private readonly ByRef foundField;
 		}
 
 		private UnmarshallingContext DescendMarshallingContext(Transaction trans, ObjectReference

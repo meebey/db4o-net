@@ -1,11 +1,9 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
-using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Internal.CS.Config
 {
@@ -14,16 +12,6 @@ namespace Db4objects.Db4o.Internal.CS.Config
 	{
 		public ServerConfigurationImpl(Config4Impl config) : base(config)
 		{
-		}
-
-		public virtual IMessageRecipient MessageRecipient
-		{
-			set
-			{
-				IMessageRecipient messageRecipient = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
-			}
 		}
 
 		public virtual IFileConfiguration File

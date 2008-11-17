@@ -10,7 +10,7 @@ namespace Db4oUnit.Fixtures
 	{
 		public static object Value()
 		{
-			return _variable.Value;
+			return (object)_variable.Value;
 		}
 
 		private static readonly FixtureVariable _variable = new FixtureVariable("subject"

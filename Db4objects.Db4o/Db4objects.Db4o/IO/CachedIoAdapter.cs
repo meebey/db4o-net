@@ -159,14 +159,12 @@ namespace Db4objects.Db4o.IO
 		public override int Read(byte[] buffer, int length)
 		{
 			long startAddress = _position;
-			CachedIoAdapter.Page page;
-			int readBytes;
 			int bytesToRead = length;
 			int totalRead = 0;
 			while (bytesToRead > 0)
 			{
-				page = GetPage(startAddress, true);
-				readBytes = page.Read(buffer, totalRead, startAddress, bytesToRead);
+				CachedIoAdapter.Page page = GetPage(startAddress, true);
+				int readBytes = page.Read(buffer, totalRead, startAddress, bytesToRead);
 				MovePageToHead(page);
 				if (readBytes <= 0)
 				{
@@ -188,21 +186,16 @@ namespace Db4objects.Db4o.IO
 		{
 			ValidateReadOnly();
 			long startAddress = _position;
-			CachedIoAdapter.Page page = null;
-			int writtenBytes;
 			int bytesToWrite = length;
 			int bufferOffset = 0;
 			while (bytesToWrite > 0)
 			{
 				// page doesn't need to loadFromDisk if the whole page is dirty
 				bool loadFromDisk = (bytesToWrite < _pageSize) || (startAddress % _pageSize != 0);
-				page = GetPage(startAddress, loadFromDisk);
+				CachedIoAdapter.Page page = GetPage(startAddress, loadFromDisk);
 				page.EnsureEndAddress(GetLength());
-				writtenBytes = page.Write(buffer, bufferOffset, startAddress, bytesToWrite);
-				if (ContainsHeaderBlock(page))
-				{
-					FlushPage(page);
-				}
+				int writtenBytes = page.Write(buffer, bufferOffset, startAddress, bytesToWrite);
+				FlushIfHeaderBlockPage(page);
 				MovePageToHead(page);
 				bytesToWrite -= writtenBytes;
 				startAddress += writtenBytes;
@@ -211,6 +204,14 @@ namespace Db4objects.Db4o.IO
 			long endAddress = startAddress;
 			_position = endAddress;
 			_fileLength = Math.Max(endAddress, _fileLength);
+		}
+
+		private void FlushIfHeaderBlockPage(CachedIoAdapter.Page page)
+		{
+			if (ContainsHeaderBlock(page))
+			{
+				FlushPage(page);
+			}
 		}
 
 		private void ValidateReadOnly()

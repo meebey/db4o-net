@@ -22,10 +22,9 @@ namespace Db4oUnit.Tests
 			ITestListener listener = new _ITestListener_23(recorder);
 			new TestRunner(tests).Run(listener);
 			recorder.Verify(new MethodCall[] { new MethodCall("runStarted", new object[] {  }
-				), new MethodCall("testStarted", new RunsGreen[] { greenTest }), new MethodCall(
-				"testStarted", new RunsRed[] { redTest }), new MethodCall("testFailed", new object
-				[] { redTest, FailureException }), new MethodCall("runFinished", new object[] { 
-				 }) });
+				), new MethodCall("testStarted", new object[] { greenTest }), new MethodCall("testStarted"
+				, new object[] { redTest }), new MethodCall("testFailed", new object[] { redTest
+				, FailureException }), new MethodCall("runFinished", new object[] {  }) });
 		}
 
 		private sealed class _ITestListener_23 : ITestListener
@@ -37,7 +36,7 @@ namespace Db4oUnit.Tests
 
 			public void TestStarted(ITest test)
 			{
-				recorder.Record(new MethodCall("testStarted", new ITest[] { test }));
+				recorder.Record(new MethodCall("testStarted", new object[] { test }));
 			}
 
 			public void TestFailed(ITest test, Exception failure)

@@ -47,12 +47,12 @@ namespace Db4oUnit.Tests.Fixtures
 			MethodCallRecorder recorder = new MethodCallRecorder();
 			Run(new _FixtureBasedTestSuite_41(recorder));
 			//		System.out.println(CodeGenerator.generateMethodCallArray(recorder));
-			recorder.Verify(new MethodCall[] { new MethodCall("testFoo", new string[] { "f11"
-				, "f21" }), new MethodCall("testFoo", new string[] { "f11", "f22" }), new MethodCall
-				("testFoo", new string[] { "f12", "f21" }), new MethodCall("testFoo", new string
-				[] { "f12", "f22" }), new MethodCall("testBar", new string[] { "f11", "f21" }), 
-				new MethodCall("testBar", new string[] { "f11", "f22" }), new MethodCall("testBar"
-				, new string[] { "f12", "f21" }), new MethodCall("testBar", new string[] { "f12"
+			recorder.Verify(new MethodCall[] { new MethodCall("testFoo", new object[] { "f11"
+				, "f21" }), new MethodCall("testFoo", new object[] { "f11", "f22" }), new MethodCall
+				("testFoo", new object[] { "f12", "f21" }), new MethodCall("testFoo", new object
+				[] { "f12", "f22" }), new MethodCall("testBar", new object[] { "f11", "f21" }), 
+				new MethodCall("testBar", new object[] { "f11", "f22" }), new MethodCall("testBar"
+				, new object[] { "f12", "f21" }), new MethodCall("testBar", new object[] { "f12"
 				, "f22" }) });
 		}
 
@@ -84,8 +84,8 @@ namespace Db4oUnit.Tests.Fixtures
 			MethodCallRecorder recorder = new MethodCallRecorder();
 			Run(new _FixtureBasedTestSuite_74(recorder));
 			//		System.out.println(CodeGenerator.generateMethodCallArray(recorder));
-			recorder.Verify(new MethodCall[] { new MethodCall("testFoo", new string[] { "f11"
-				, "f22" }), new MethodCall("testBar", new string[] { "f11", "f22" }) });
+			recorder.Verify(new MethodCall[] { new MethodCall("testFoo", new object[] { "f11"
+				, "f22" }), new MethodCall("testBar", new object[] { "f11", "f22" }) });
 		}
 
 		private sealed class _FixtureBasedTestSuite_74 : FixtureBasedTestSuite

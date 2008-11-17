@@ -1,84 +1,99 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.IO;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class IoAdapterTest : ITestLifeCycle
+	public class IoAdapterTest : IoAdapterTestUnitBase
 	{
 		public static void Main(string[] args)
 		{
 			new ConsoleTestRunner(typeof(IoAdapterTest)).Run();
 		}
 
-		private string _cachedIoAdapterFile = Path.GetTempFileName();
-
-		private string _randomAccessFileAdapterFile = Path.GetTempFileName();
-
-		private IoAdapter[] _adapters;
-
-		/// <exception cref="Exception"></exception>
-		public virtual void SetUp()
-		{
-			DeleteAllTestFiles();
-			InitAdapters(false);
-		}
-
-		/// <exception cref="Exception"></exception>
-		private void InitAdapters(bool readOnly)
-		{
-			_adapters = new IoAdapter[] { InitRandomAccessAdapter(readOnly), InitCachedRandomAccessAdapter
-				(readOnly) };
-		}
-
-		/// <exception cref="Exception"></exception>
-		public virtual void TearDown()
-		{
-			CloseAdapters();
-			DeleteAllTestFiles();
-		}
-
 		/// <exception cref="Exception"></exception>
 		public virtual void TestReadWrite()
 		{
-			for (int i = 0; i < _adapters.Length; ++i)
-			{
-				AssertReadWrite(_adapters[i]);
-			}
-		}
-
-		/// <exception cref="IOException"></exception>
-		private void AssertReadWrite(IoAdapter adapter)
-		{
-			adapter.Seek(0);
+			_adapter.Seek(0);
 			int count = 1024 * 8 + 10;
 			byte[] data = new byte[count];
 			for (int i = 0; i < count; ++i)
 			{
 				data[i] = (byte)(i % 256);
 			}
-			adapter.Write(data);
-			adapter.Seek(0);
+			_adapter.Write(data);
+			_adapter.Seek(0);
 			byte[] readBytes = new byte[count];
-			adapter.Read(readBytes);
+			_adapter.Read(readBytes);
 			for (int i = 0; i < count; i++)
 			{
 				Assert.AreEqual(data[i], readBytes[i]);
 			}
 		}
 
+		public virtual void TestHugeFile()
+		{
+			int dataSize = 1024 * 2;
+			byte[] data = NewDataArray(dataSize);
+			for (int i = 0; i < 64; ++i)
+			{
+				_adapter.Write(data);
+			}
+			byte[] readBuffer = new byte[dataSize];
+			for (int i = 0; i < 64; ++i)
+			{
+				_adapter.Seek(dataSize * (63 - i));
+				_adapter.Read(readBuffer);
+				ArrayAssert.AreEqual(data, readBuffer);
+			}
+		}
+
 		/// <exception cref="Exception"></exception>
 		public virtual void TestSeek()
 		{
-			for (int i = 0; i < _adapters.Length; ++i)
+			int count = 1024 * 2 + 10;
+			byte[] data = NewDataArray(count);
+			_adapter.Write(data);
+			byte[] readBytes = new byte[count];
+			_adapter.Seek(0);
+			_adapter.Read(readBytes);
+			for (int i = 0; i < count; i++)
 			{
-				AssertSeek(_adapters[i]);
+				Assert.AreEqual(data[i], readBytes[i]);
 			}
+			_adapter.Seek(20);
+			_adapter.Read(readBytes);
+			for (int i = 0; i < count - 20; i++)
+			{
+				Assert.AreEqual(data[i + 20], readBytes[i]);
+			}
+			byte[] writtenData = new byte[10];
+			for (int i = 0; i < writtenData.Length; ++i)
+			{
+				writtenData[i] = (byte)i;
+			}
+			_adapter.Seek(1000);
+			_adapter.Write(writtenData);
+			_adapter.Seek(1000);
+			int readCount = _adapter.Read(readBytes, 10);
+			Assert.AreEqual(10, readCount);
+			for (int i = 0; i < readCount; ++i)
+			{
+				Assert.AreEqual(i, readBytes[i]);
+			}
+		}
+
+		private byte[] NewDataArray(int count)
+		{
+			byte[] data = new byte[count];
+			for (int i = 0; i < data.Length; ++i)
+			{
+				data[i] = (byte)(i % 256);
+			}
+			return data;
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -86,12 +101,9 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		{
 			string[] strs = new string[] { "short string", "this is a really long string, just to make sure that all IoAdapters work correctly. "
 				 };
-			for (int i = 0; i < _adapters.Length; i++)
+			for (int j = 0; j < strs.Length; j++)
 			{
-				for (int j = 0; j < strs.Length; j++)
-				{
-					AssertReadWriteString(_adapters[i], strs[j]);
-				}
+				AssertReadWriteString(_adapter, strs[j]);
 			}
 		}
 
@@ -108,45 +120,10 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		}
 
 		/// <exception cref="Exception"></exception>
-		public virtual void TestReadOnly()
-		{
-			CloseAdapters();
-			InitAdapters(true);
-			for (int i = 0; i < _adapters.Length; i++)
-			{
-				AssertReadOnly(_adapters[i]);
-			}
-		}
-
-		private void AssertReadOnly(IoAdapter adapter)
-		{
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_98(adapter));
-		}
-
-		private sealed class _ICodeBlock_98 : ICodeBlock
-		{
-			public _ICodeBlock_98(IoAdapter adapter)
-			{
-				this.adapter = adapter;
-			}
-
-			/// <exception cref="Exception"></exception>
-			public void Run()
-			{
-				adapter.Write(new byte[] { 0 });
-			}
-
-			private readonly IoAdapter adapter;
-		}
-
-		/// <exception cref="Exception"></exception>
 		public virtual void _testReadWriteAheadFileEnd()
 		{
 			string str = "this is a really long string, just to make sure that all IoAdapters work correctly. ";
-			for (int i = 0; i < _adapters.Length; i++)
-			{
-				AssertReadWriteAheadFileEnd(_adapters[i], str);
-			}
+			AssertReadWriteAheadFileEnd(_adapter, str);
 		}
 
 		/// <exception cref="Exception"></exception>
@@ -180,91 +157,5 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			readBytes = adapter.Read(read);
 			Assert.AreEqual(1200 + data.Length, readBytes);
 		}
-
-		/// <exception cref="Exception"></exception>
-		public virtual void TestReopen()
-		{
-			TestReadWrite();
-			CloseAdapters();
-			InitAdapters(false);
-			TestReadWrite();
-		}
-
-		/// <exception cref="Exception"></exception>
-		private void AssertSeek(IoAdapter adapter)
-		{
-			int count = 1024 * 2 + 10;
-			byte[] data = new byte[count];
-			for (int i = 0; i < data.Length; ++i)
-			{
-				data[i] = (byte)(i % 256);
-			}
-			adapter.Write(data);
-			byte[] readBytes = new byte[count];
-			adapter.Seek(0);
-			adapter.Read(readBytes);
-			for (int i = 0; i < count; i++)
-			{
-				Assert.AreEqual(data[i], readBytes[i]);
-			}
-			adapter.Seek(20);
-			adapter.Read(readBytes);
-			for (int i = 0; i < count - 20; i++)
-			{
-				Assert.AreEqual(data[i + 20], readBytes[i]);
-			}
-			byte[] writtenData = new byte[10];
-			for (int i = 0; i < writtenData.Length; ++i)
-			{
-				writtenData[i] = (byte)i;
-			}
-			adapter.Seek(1000);
-			adapter.Write(writtenData);
-			adapter.Seek(1000);
-			int readCount = adapter.Read(readBytes, 10);
-			Assert.AreEqual(10, readCount);
-			for (int i = 0; i < readCount; ++i)
-			{
-				Assert.AreEqual(i, readBytes[i]);
-			}
-		}
-
-		/// <exception cref="Exception"></exception>
-		private IoAdapter InitCachedRandomAccessAdapter(bool readOnly)
-		{
-			IoAdapter adapter = new CachedIoAdapter(new RandomAccessFileAdapter());
-			adapter = adapter.Open(_cachedIoAdapterFile, false, 0, readOnly);
-			return adapter;
-		}
-
-		/// <exception cref="Exception"></exception>
-		private IoAdapter InitRandomAccessAdapter(bool readOnly)
-		{
-			IoAdapter adapter = new RandomAccessFileAdapter();
-			adapter = adapter.Open(_randomAccessFileAdapterFile, false, 0, readOnly);
-			return adapter;
-		}
-
-		/// <exception cref="Exception"></exception>
-		private void DeleteAllTestFiles()
-		{
-			new Sharpen.IO.File(_cachedIoAdapterFile).Delete();
-			new Sharpen.IO.File(_randomAccessFileAdapterFile).Delete();
-		}
-
-		private void CloseAdapters()
-		{
-			for (int i = 0; i < _adapters.Length; ++i)
-			{
-				try
-				{
-					_adapters[i].Close();
-				}
-				catch (Db4oIOException)
-				{
-				}
-			}
-		}
-		// ignore
 	}
 }

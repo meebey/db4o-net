@@ -17,9 +17,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				CompositeIterator4TestCase), typeof(CoolTestCase), typeof(DynamicVariableTestCase
 				), typeof(Hashtable4TestCase), typeof(IntArrayListTestCase), typeof(IntMatcherTestCase
 				), typeof(Iterable4AdaptorTestCase), typeof(IteratorsTestCase), typeof(NoDuplicatesQueueTestCase
-				), typeof(NonblockingQueueTestCase), typeof(Path4TestCase), typeof(SortedCollection4TestCase
-				), typeof(Stack4TestCase), typeof(TreeKeyIteratorTestCase), typeof(TreeNodeIteratorTestCase
-				) }).GetEnumerator();
+				), typeof(NonblockingQueueTestCase), typeof(ObjectPoolTestCase), typeof(Path4TestCase
+				), typeof(SortedCollection4TestCase), typeof(Stack4TestCase), typeof(TreeKeyIteratorTestCase
+				), typeof(TreeNodeIteratorTestCase) }).GetEnumerator();
 		}
 
 		public static void Main(string[] args)

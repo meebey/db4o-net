@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Foundation
 {
 	/// <summary>Useful as "out" or "by reference" function parameter.</summary>
 	/// <remarks>Useful as "out" or "by reference" function parameter.</remarks>
-	public class ByReference
+	public class ByRef
 	{
 		public object value;
 	}

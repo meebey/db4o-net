@@ -182,6 +182,12 @@ namespace Db4objects.Db4o.Internal
 
 		// for playing with different strategies of prefetching
 		// object
+		//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new IoAdapterWithCache(new RandomAccessFileAdapter()) {
+		//		@Override
+		//		protected Cache4 newCache() {
+		//			return CacheFactory.new2QCache(64);
+		//		}
+		//	});
 		//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new RandomAccessFileAdapter());
 		// NOTE: activate this config to trigger the defragment failure
 		//= new NIOFileAdapter(512,3);

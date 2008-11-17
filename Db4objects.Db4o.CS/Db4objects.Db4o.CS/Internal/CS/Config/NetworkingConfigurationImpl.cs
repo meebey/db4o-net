@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Internal.CS.Config
 {
@@ -25,8 +25,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			set
 			{
 				bool flag = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				_config.BatchMessages(flag);
 			}
 		}
 
@@ -35,8 +34,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			set
 			{
 				int maxSize = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				_config.MaxBatchQueueSize(maxSize);
 			}
 		}
 
@@ -45,8 +43,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			set
 			{
 				bool flag = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				_config.SingleThreadedClient(flag);
 			}
 		}
 
@@ -55,8 +52,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			set
 			{
 				int milliseconds = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				_config.TimeoutClientSocket(milliseconds);
 			}
 		}
 
@@ -65,8 +61,16 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			set
 			{
 				int milliseconds = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				_config.TimeoutServerSocket(milliseconds);
+			}
+		}
+
+		public virtual IMessageRecipient MessageRecipient
+		{
+			set
+			{
+				IMessageRecipient messageRecipient = value;
+				_config.SetMessageRecipient(messageRecipient);
 			}
 		}
 	}

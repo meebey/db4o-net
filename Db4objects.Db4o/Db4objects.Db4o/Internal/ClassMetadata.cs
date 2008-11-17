@@ -17,6 +17,7 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
@@ -67,6 +68,8 @@ namespace Db4objects.Db4o.Internal
 
 		private IModificationAware _modificationChecker = ClassMetadata.AlwaysModified.Instance;
 
+		private IFieldAccessor _fieldAccessor;
+
 		public ObjectContainerBase Stream()
 		{
 			return _container;
@@ -92,13 +95,13 @@ namespace Db4objects.Db4o.Internal
 				return false;
 			}
 			BooleanByRef hasIndex = new BooleanByRef(false);
-			ForEachDeclaredField(new _IProcedure4_87(hasIndex));
+			ForEachDeclaredField(new _IProcedure4_92(hasIndex));
 			return !hasIndex.value;
 		}
 
-		private sealed class _IProcedure4_87 : IProcedure4
+		private sealed class _IProcedure4_92 : IProcedure4
 		{
-			public _IProcedure4_87(BooleanByRef hasIndex)
+			public _IProcedure4_92(BooleanByRef hasIndex)
 			{
 				this.hasIndex = hasIndex;
 			}
@@ -131,6 +134,19 @@ namespace Db4objects.Db4o.Internal
 			_classReflector = claxx;
 			_index = CreateIndexStrategy();
 			_classIndexed = true;
+			if (_container == null || _container.Config().ExceptionsOnNotStorable())
+			{
+				_fieldAccessor = new StrictFieldAccessor();
+			}
+			else
+			{
+				_fieldAccessor = new LenientFieldAccessor();
+			}
+		}
+
+		internal virtual IFieldAccessor FieldAccessor()
+		{
+			return _fieldAccessor;
 		}
 
 		private IFieldAwareTypeHandler CreateDefaultTypeHandler()
@@ -143,13 +159,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (ObjectCanActivate(trans, obj))
 			{
-				ForEachAspect(new _IProcedure4_119(trans, obj, depth));
+				ForEachAspect(new _IProcedure4_135(trans, obj, depth));
 			}
 		}
 
-		private sealed class _IProcedure4_119 : IProcedure4
+		private sealed class _IProcedure4_135 : IProcedure4
 		{
-			public _IProcedure4_119(Transaction trans, object obj, IActivationDepth depth)
+			public _IProcedure4_135(Transaction trans, object obj, IActivationDepth depth)
 			{
 				this.trans = trans;
 				this.obj = obj;
@@ -560,12 +576,12 @@ namespace Db4objects.Db4o.Internal
 		public virtual void CollectConstraints(Transaction trans, QConObject parentConstraint
 			, object obj, IVisitor4 visitor)
 		{
-			ForEachField(new _IProcedure4_449(trans, parentConstraint, obj, visitor));
+			ForEachField(new _IProcedure4_465(trans, parentConstraint, obj, visitor));
 		}
 
-		private sealed class _IProcedure4_449 : IProcedure4
+		private sealed class _IProcedure4_465 : IProcedure4
 		{
-			public _IProcedure4_449(Transaction trans, QConObject parentConstraint, object obj
+			public _IProcedure4_465(Transaction trans, QConObject parentConstraint, object obj
 				, IVisitor4 visitor)
 			{
 				this.trans = trans;
@@ -731,12 +747,12 @@ namespace Db4objects.Db4o.Internal
 		internal void DeactivateFields(Transaction trans, object obj, IActivationDepth depth
 			)
 		{
-			ForEachAspect(new _IProcedure4_580(trans, obj, depth));
+			ForEachAspect(new _IProcedure4_596(trans, obj, depth));
 		}
 
-		private sealed class _IProcedure4_580 : IProcedure4
+		private sealed class _IProcedure4_596 : IProcedure4
 		{
-			public _IProcedure4_580(Transaction trans, object obj, IActivationDepth depth)
+			public _IProcedure4_596(Transaction trans, object obj, IActivationDepth depth)
 			{
 				this.trans = trans;
 				this.obj = obj;
@@ -1148,16 +1164,16 @@ namespace Db4objects.Db4o.Internal
 					return new IStoredField[0];
 				}
 				Collection4 storedFields = new Collection4();
-				ForEachDeclaredField(new _IProcedure4_903(storedFields));
+				ForEachDeclaredField(new _IProcedure4_919(storedFields));
 				IStoredField[] fields = new IStoredField[storedFields.Size()];
 				storedFields.ToArray(fields);
 				return fields;
 			}
 		}
 
-		private sealed class _IProcedure4_903 : IProcedure4
+		private sealed class _IProcedure4_919 : IProcedure4
 		{
-			public _IProcedure4_903(Collection4 storedFields)
+			public _IProcedure4_919(Collection4 storedFields)
 			{
 				this.storedFields = storedFields;
 			}
@@ -1177,14 +1193,14 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
-			ByReference byReference = new ByReference();
-			ForEachField(new _IProcedure4_920(name, byReference));
+			ByRef byReference = new ByRef();
+			ForEachField(new _IProcedure4_936(name, byReference));
 			return (FieldMetadata)byReference.value;
 		}
 
-		private sealed class _IProcedure4_920 : IProcedure4
+		private sealed class _IProcedure4_936 : IProcedure4
 		{
-			public _IProcedure4_920(string name, ByReference byReference)
+			public _IProcedure4_936(string name, ByRef byReference)
 			{
 				this.name = name;
 				this.byReference = byReference;
@@ -1200,7 +1216,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly string name;
 
-			private readonly ByReference byReference;
+			private readonly ByRef byReference;
 		}
 
 		/// <param name="container"></param>
@@ -1859,13 +1875,13 @@ namespace Db4objects.Db4o.Internal
 				CreateConstructor(_container, i_name);
 				BitFalse(Const4.CheckedChanges);
 				CheckChanges();
-				ForEachDeclaredField(new _IProcedure4_1486());
+				ForEachDeclaredField(new _IProcedure4_1502());
 			}
 		}
 
-		private sealed class _IProcedure4_1486 : IProcedure4
+		private sealed class _IProcedure4_1502 : IProcedure4
 		{
-			public _IProcedure4_1486()
+			public _IProcedure4_1502()
 			{
 			}
 
@@ -1898,13 +1914,13 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 			}
-			ForEachDeclaredField(new _IProcedure4_1511(oldName, newName, renamed));
+			ForEachDeclaredField(new _IProcedure4_1527(oldName, newName, renamed));
 			return renamed.value;
 		}
 
-		private sealed class _IProcedure4_1511 : IProcedure4
+		private sealed class _IProcedure4_1527 : IProcedure4
 		{
-			public _IProcedure4_1511(string oldName, string newName, BooleanByRef renamed)
+			public _IProcedure4_1527(string oldName, string newName, BooleanByRef renamed)
 			{
 				this.oldName = oldName;
 				this.newName = newName;
@@ -2024,18 +2040,18 @@ namespace Db4objects.Db4o.Internal
 			{
 				Db4objects.Db4o.Internal.ClassMetadata classMetadata = _container.ClassMetadataForReflectClass
 					(ReflectorUtils.ReflectClassFor(Reflector(), clazz));
-				ByReference foundField = new ByReference();
-				ForEachField(new _IProcedure4_1607(this, foundField, name, classMetadata));
+				ByRef foundField = new ByRef();
+				ForEachField(new _IProcedure4_1623(this, foundField, name, classMetadata));
 				// FIXME: The == comparison in the following line could be wrong. 
 				//TODO: implement field creation
 				return (IStoredField)foundField.value;
 			}
 		}
 
-		private sealed class _IProcedure4_1607 : IProcedure4
+		private sealed class _IProcedure4_1623 : IProcedure4
 		{
-			public _IProcedure4_1607(ClassMetadata _enclosing, ByReference foundField, string
-				 name, Db4objects.Db4o.Internal.ClassMetadata classMetadata)
+			public _IProcedure4_1623(ClassMetadata _enclosing, ByRef foundField, string name, 
+				Db4objects.Db4o.Internal.ClassMetadata classMetadata)
 			{
 				this._enclosing = _enclosing;
 				this.foundField = foundField;
@@ -2062,7 +2078,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly ClassMetadata _enclosing;
 
-			private readonly ByReference foundField;
+			private readonly ByRef foundField;
 
 			private readonly string name;
 
@@ -2116,7 +2132,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1670
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1686
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2125,9 +2141,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1670 : IFunction4
+		private sealed class _IFunction4_1686 : IFunction4
 		{
-			public _IFunction4_1670(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1686(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2168,12 +2184,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1698(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1714(this));
 		}
 
-		private sealed class _IFunction4_1698 : IFunction4
+		private sealed class _IFunction4_1714 : IFunction4
 		{
-			public _IFunction4_1698(ClassMetadata _enclosing)
+			public _IFunction4_1714(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2194,7 +2210,7 @@ namespace Db4objects.Db4o.Internal
 
 		private object StaticReflectFieldValue(IReflectField reflectField)
 		{
-			return reflectField.Get(null);
+			return _fieldAccessor.Get(reflectField, null);
 		}
 
 		private void SetStaticClass(Transaction trans, StaticClass sc)
@@ -2215,12 +2231,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1727());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1743());
 		}
 
-		private sealed class _IPredicate4_1727 : IPredicate4
+		private sealed class _IPredicate4_1743 : IPredicate4
 		{
-			public _IPredicate4_1727()
+			public _IPredicate4_1743()
 			{
 			}
 
@@ -2264,7 +2280,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				try
 				{
-					reflectField.Set(null, existingField.value);
+					_fieldAccessor.Set(reflectField, null, existingField.value);
 				}
 				catch (Exception)
 				{

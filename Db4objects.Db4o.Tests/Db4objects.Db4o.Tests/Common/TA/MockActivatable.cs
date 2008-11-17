@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		public virtual void Bind(IActivator activator)
 		{
-			Record(new MethodCall("bind", new IActivator[] { activator }));
+			Record(new MethodCall("bind", new object[] { activator }));
 		}
 
 		public virtual void Activate(ActivationPurpose purpose)

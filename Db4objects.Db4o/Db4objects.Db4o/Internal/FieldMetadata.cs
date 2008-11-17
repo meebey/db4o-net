@@ -15,6 +15,7 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -372,7 +373,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					return null;
 				}
-				return _reflectField.Get(onObject);
+				return FieldAccessor().Get(_reflectField, onObject);
 			}
 			return GetOrCreate(trans, onObject);
 		}
@@ -463,13 +464,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_401
+			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_402
 				(handler, queryingReadContext));
 		}
 
-		private sealed class _IClosure4_401 : IClosure4
+		private sealed class _IClosure4_402 : IClosure4
 		{
-			public _IClosure4_401(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_402(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;
@@ -526,8 +527,8 @@ namespace Db4objects.Db4o.Internal
 			return _isPrimitive;
 		}
 
-		public override void Deactivate(Transaction a_trans, object a_onObject, IActivationDepth
-			 a_depth)
+		public override void Deactivate(Transaction trans, object onObject, IActivationDepth
+			 depth)
 		{
 			if (!Alive())
 			{
@@ -539,18 +540,23 @@ namespace Db4objects.Db4o.Internal
 				if (!isEnumClass)
 				{
 					object nullValue = _reflectField.GetFieldType().NullValue();
-					_reflectField.Set(a_onObject, nullValue);
+					FieldAccessor().Set(_reflectField, onObject, nullValue);
 				}
 				return;
 			}
-			if (a_depth.RequiresActivation())
+			if (depth.RequiresActivation())
 			{
-				CascadeActivation(a_trans, a_onObject, a_depth);
+				CascadeActivation(trans, onObject, depth);
 			}
 			if (!isEnumClass)
 			{
-				_reflectField.Set(a_onObject, null);
+				FieldAccessor().Set(_reflectField, onObject, null);
 			}
+		}
+
+		private IFieldAccessor FieldAccessor()
+		{
+			return _containingClass.FieldAccessor();
 		}
 
 		/// <param name="isUpdate"></param>
@@ -567,7 +573,7 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_470(this
+				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_475(this
 					, childContext));
 			}
 			catch (CorruptionException exc)
@@ -576,9 +582,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_470 : IClosure4
+		private sealed class _IClosure4_475 : IClosure4
 		{
-			public _IClosure4_470(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_475(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -714,7 +720,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (Alive())
 			{
-				return _reflectField.Get(onObject);
+				return FieldAccessor().Get(_reflectField, onObject);
 			}
 			return null;
 		}
@@ -729,11 +735,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			object obj = _reflectField.Get(onObject);
+			object obj = FieldAccessor().Get(_reflectField, onObject);
 			if (_db4oType != null && obj == null)
 			{
 				obj = _db4oType.CreateDefault(trans);
-				_reflectField.Set(onObject, obj);
+				FieldAccessor().Set(_reflectField, onObject, obj);
 			}
 			return obj;
 		}
@@ -1131,7 +1137,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			_reflectField.Set(onObject, obj);
+			FieldAccessor().Set(_reflectField, onObject, obj);
 		}
 
 		internal virtual void SetName(string a_name)
@@ -1170,13 +1176,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_951(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_956(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_951 : IVisitor4
+		private sealed class _IVisitor4_956 : IVisitor4
 		{
-			public _IVisitor4_951(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_956(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1393,13 +1399,13 @@ namespace Db4objects.Db4o.Internal
 		public override void DefragAspect(IDefragmentContext context)
 		{
 			ITypeHandler4 typeHandler = Handlers4.CorrectHandlerVersion(context, _handler);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1112
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1117
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1112 : IClosure4
+		private sealed class _IClosure4_1117 : IClosure4
 		{
-			public _IClosure4_1112(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1117(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

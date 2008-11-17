@@ -50,8 +50,8 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			AssertBindUnbindCalls(mock2);
 			// mock1 has only be bound by store so far
 			// client.close should have no effect on it
-			mock1.Recorder().Verify(new MethodCall[] { new MethodCall("bind", new MethodCall.IArgumentCondition
-				[] { new _IArgumentCondition_51() }) });
+			mock1.Recorder().Verify(new MethodCall[] { new MethodCall("bind", new object[] { 
+				new _IArgumentCondition_51() }) });
 		}
 
 		private sealed class _IArgumentCondition_51 : MethodCall.IArgumentCondition
