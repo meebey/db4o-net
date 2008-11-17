@@ -1,6 +1,8 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
+using System;
 using System.Collections;
 using System.Reflection;
+using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
@@ -58,9 +60,9 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 				return _field.GetValue(onObject);
 			}
-			catch
+			catch(Exception e)
 			{
-				return null;
+				throw new Db4oException(e);
 			}
 		}
 
@@ -70,8 +72,9 @@ namespace Db4objects.Db4o.Reflect.Net
 			{
 				_field.SetValue(onObject, attribute);
 			}
-			catch
+			catch(Exception e)
 			{
+				throw new Db4oException(e);
 			}
 		}
 		
