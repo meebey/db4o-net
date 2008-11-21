@@ -8,6 +8,24 @@ namespace Db4objects.Db4o.Tests.SharpenLang
     using Sharpen.Lang;
     using System.Collections.Generic;
 
+
+	class Generic<T>
+	{
+		public class Inner
+		{
+			public class Inner2<S>
+			{
+			}
+		}
+
+		public class InnerGeneric<S>
+		{
+			public class Inner2
+			{
+			}
+		}
+	}
+
     class SimpleGenericType<T>
     {
         public T Value;
@@ -24,13 +42,22 @@ namespace Db4objects.Db4o.Tests.SharpenLang
 
         public GenericType(T1 first, T2 second)
         {
-            this.First = first;
-            this.Second = second;
+            First = first;
+            Second = second;
         }
     }
 
     class TypeReferenceTestCase : ITestCase
     {
+    	private static Type[] _innerGenericTypes = new Type[]
+    	                                           	{
+    	                                           		typeof (Generic<int>.Inner),
+    	                                           		typeof (Generic<int>.Inner.Inner2<string[]>),
+    	                                           		typeof (Generic<int>.Inner.Inner2<Generic<int>.Inner>),
+    	                                           		typeof (Generic<int>.InnerGeneric<NestedType>),
+														typeof (Generic<int[]>.InnerGeneric<NestedType>),
+														typeof (Generic<int>.InnerGeneric<NestedType>.Inner2),
+    	                                           	};
 		class __Funny123Name_
 		{
 		}
@@ -38,7 +65,24 @@ namespace Db4objects.Db4o.Tests.SharpenLang
         class NestedType
         {
         }
-    	
+
+		public void TestRoundTripOnInnerGenericType()
+		{
+			foreach (Type genericType in _innerGenericTypes)
+			{
+				EnsureRoundtrip(genericType);
+			}
+		}
+
+		public void TestInnerGenericType()
+		{
+			foreach (Type genericType in _innerGenericTypes)
+			{
+				TypeReference typeReference = TypeReference.FromType(genericType);
+				Assert.AreEqual(0, string.Compare(typeReference.SimpleName, 0, genericType.FullName, 0, typeReference.SimpleName.Length));
+			}
+		}
+
     	public void TestFunnyName()
     	{
     		EnsureRoundtrip(typeof(__Funny123Name_));

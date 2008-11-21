@@ -102,9 +102,14 @@ namespace Sharpen.Lang
 
 		private SimpleTypeReference ParseGenericTypeReference(Token id)
 		{
+			return InternalParseGenericTypeReference(id, 0);
+		}
+
+		private SimpleTypeReference InternalParseGenericTypeReference(Token id, int count)
+		{
 			Token argcToken = Expect(TokenKind.Number);
 			id.Value += "`" + argcToken.Value;
-			
+
 			int argc = int.Parse(argcToken.Value);
 
 			Token t = NextToken();
@@ -116,9 +121,14 @@ namespace Sharpen.Lang
 				t = NextToken();
 			}
 
-			TypeReference[] args = new TypeReference[argc];
+			if (IsInnerGenericTypeReference(t))
+			{
+				return InternalParseGenericTypeReference(id, argc);
+			}
+
+			TypeReference[] args = new TypeReference[argc + count];
 			AssertTokenKind(TokenKind.LBrack, t);
-			for (int i = 0; i < argc; ++i)
+			for (int i = 0; i < args.Length; ++i)
 			{
 				if (i > 0) Expect(TokenKind.Comma);
 				Expect(TokenKind.LBrack);
@@ -127,9 +137,12 @@ namespace Sharpen.Lang
 			}
 			Expect(TokenKind.RBrack);
 
-			return new GenericTypeReference(
-					id.Value,
-					args);
+			return new GenericTypeReference(id.Value, args);
+		}
+
+		private static bool IsInnerGenericTypeReference(Token t)
+		{
+			return TokenKind.GenericQualifier == t.Kind;
 		}
 
 		public System.Reflection.AssemblyName ParseAssemblyName()
