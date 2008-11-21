@@ -23,6 +23,10 @@ namespace Db4objects.Db4o.Tests.SharpenLang
 			public class Inner2
 			{
 			}
+
+			public class Generic<G>
+			{
+			}
 		}
 	}
 
@@ -51,12 +55,13 @@ namespace Db4objects.Db4o.Tests.SharpenLang
     {
     	private static Type[] _innerGenericTypes = new Type[]
     	                                           	{
-    	                                           		typeof (Generic<int>.Inner),
-    	                                           		typeof (Generic<int>.Inner.Inner2<string[]>),
-    	                                           		typeof (Generic<int>.Inner.Inner2<Generic<int>.Inner>),
-    	                                           		typeof (Generic<int>.InnerGeneric<NestedType>),
+														typeof (Generic<int>.Inner),
+														typeof (Generic<int>.Inner.Inner2<string[]>),
+														typeof (Generic<int>.Inner.Inner2<Generic<int>.Inner>),
+														typeof (Generic<int>.InnerGeneric<NestedType>),
 														typeof (Generic<int[]>.InnerGeneric<NestedType>),
 														typeof (Generic<int>.InnerGeneric<NestedType>.Inner2),
+														typeof (Generic<int>.InnerGeneric<NestedType>.Generic<int>),
     	                                           	};
 		class __Funny123Name_
 		{

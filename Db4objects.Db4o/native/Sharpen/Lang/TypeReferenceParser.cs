@@ -123,7 +123,7 @@ namespace Sharpen.Lang
 
 			if (IsInnerGenericTypeReference(t))
 			{
-				return InternalParseGenericTypeReference(id, argc);
+				return InternalParseGenericTypeReference(id, argc + count);
 			}
 
 			TypeReference[] args = new TypeReference[argc + count];
