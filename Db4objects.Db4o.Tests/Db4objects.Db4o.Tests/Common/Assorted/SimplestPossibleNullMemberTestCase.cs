@@ -23,7 +23,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			SimplestPossibleNullMemberTestCase.Item item = (SimplestPossibleNullMemberTestCase.Item
-				)RetrieveOnlyInstance(typeof(SimplestPossibleNullMemberTestCase.Item));
+				)((SimplestPossibleNullMemberTestCase.Item)RetrieveOnlyInstance(typeof(SimplestPossibleNullMemberTestCase.Item
+				)));
 			Assert.IsNull(item._item);
 		}
 	}

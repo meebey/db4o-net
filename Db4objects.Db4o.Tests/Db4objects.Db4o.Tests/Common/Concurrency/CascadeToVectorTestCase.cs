@@ -40,8 +40,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			CascadeToVectorTestCase ctv = (CascadeToVectorTestCase)RetrieveOnlyInstance(oc, typeof(
-				CascadeToVectorTestCase));
+			CascadeToVectorTestCase ctv = (CascadeToVectorTestCase)((CascadeToVectorTestCase)
+				RetrieveOnlyInstance(oc, typeof(CascadeToVectorTestCase)));
 			IEnumerator i = ctv.vec.GetEnumerator();
 			while (i.MoveNext())
 			{
@@ -58,8 +58,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Check(IExtObjectContainer oc)
 		{
-			CascadeToVectorTestCase ctv = (CascadeToVectorTestCase)RetrieveOnlyInstance(oc, typeof(
-				CascadeToVectorTestCase));
+			CascadeToVectorTestCase ctv = (CascadeToVectorTestCase)((CascadeToVectorTestCase)
+				RetrieveOnlyInstance(oc, typeof(CascadeToVectorTestCase)));
 			IEnumerator i = ctv.vec.GetEnumerator();
 			while (i.MoveNext())
 			{

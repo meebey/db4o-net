@@ -1608,15 +1608,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int PrefetchActivationDepth()
 		{
-			// We only allow prefetching, if there is no special configuration for the class. 
-			// This was a fix for a problem instantiating Hashtables. There may be a better 
-			// workaround that also works for configured objects.
-			//
-			// An instantiation depth of 1 makes use of possibly prefetched strings and 
-			// arrays that are carried around in the buffer anyway
-			//
-			// TODO: optimize
-			return ConfigOrAncestorConfig() == null ? 1 : 0;
+			return 1;
 		}
 
 		internal virtual void Purge()
@@ -1875,13 +1867,13 @@ namespace Db4objects.Db4o.Internal
 				CreateConstructor(_container, i_name);
 				BitFalse(Const4.CheckedChanges);
 				CheckChanges();
-				ForEachDeclaredField(new _IProcedure4_1502());
+				ForEachDeclaredField(new _IProcedure4_1494());
 			}
 		}
 
-		private sealed class _IProcedure4_1502 : IProcedure4
+		private sealed class _IProcedure4_1494 : IProcedure4
 		{
-			public _IProcedure4_1502()
+			public _IProcedure4_1494()
 			{
 			}
 
@@ -1914,13 +1906,13 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 			}
-			ForEachDeclaredField(new _IProcedure4_1527(oldName, newName, renamed));
+			ForEachDeclaredField(new _IProcedure4_1519(oldName, newName, renamed));
 			return renamed.value;
 		}
 
-		private sealed class _IProcedure4_1527 : IProcedure4
+		private sealed class _IProcedure4_1519 : IProcedure4
 		{
-			public _IProcedure4_1527(string oldName, string newName, BooleanByRef renamed)
+			public _IProcedure4_1519(string oldName, string newName, BooleanByRef renamed)
 			{
 				this.oldName = oldName;
 				this.newName = newName;
@@ -2041,16 +2033,16 @@ namespace Db4objects.Db4o.Internal
 				Db4objects.Db4o.Internal.ClassMetadata classMetadata = _container.ClassMetadataForReflectClass
 					(ReflectorUtils.ReflectClassFor(Reflector(), clazz));
 				ByRef foundField = new ByRef();
-				ForEachField(new _IProcedure4_1623(this, foundField, name, classMetadata));
+				ForEachField(new _IProcedure4_1615(this, foundField, name, classMetadata));
 				// FIXME: The == comparison in the following line could be wrong. 
 				//TODO: implement field creation
 				return (IStoredField)foundField.value;
 			}
 		}
 
-		private sealed class _IProcedure4_1623 : IProcedure4
+		private sealed class _IProcedure4_1615 : IProcedure4
 		{
-			public _IProcedure4_1623(ClassMetadata _enclosing, ByRef foundField, string name, 
+			public _IProcedure4_1615(ClassMetadata _enclosing, ByRef foundField, string name, 
 				Db4objects.Db4o.Internal.ClassMetadata classMetadata)
 			{
 				this._enclosing = _enclosing;
@@ -2132,7 +2124,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1686
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1678
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2141,9 +2133,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1686 : IFunction4
+		private sealed class _IFunction4_1678 : IFunction4
 		{
-			public _IFunction4_1686(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1678(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2184,12 +2176,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1714(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1706(this));
 		}
 
-		private sealed class _IFunction4_1714 : IFunction4
+		private sealed class _IFunction4_1706 : IFunction4
 		{
-			public _IFunction4_1714(ClassMetadata _enclosing)
+			public _IFunction4_1706(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2231,12 +2223,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1743());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1735());
 		}
 
-		private sealed class _IPredicate4_1743 : IPredicate4
+		private sealed class _IPredicate4_1735 : IPredicate4
 		{
-			public _IPredicate4_1743()
+			public _IPredicate4_1735()
 			{
 			}
 

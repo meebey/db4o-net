@@ -37,7 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		public virtual void Test()
 		{
 			CheckHelperCount(3);
-			CascadeDeleteFalse cdf = (CascadeDeleteFalse)RetrieveOnlyInstance(GetType());
+			CascadeDeleteFalse cdf = (CascadeDeleteFalse)((CascadeDeleteFalse)RetrieveOnlyInstance
+				(GetType()));
 			Db().Delete(cdf);
 			CheckHelperCount(1);
 		}

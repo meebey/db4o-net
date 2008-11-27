@@ -25,7 +25,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		{
 			ServerEventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
 				(new _IEventListener4_22().OnEvent);
-			object item = RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
+			object item = ((EventsTestCaseBase.Item)RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item
+				)));
 			if (IsMTOC())
 			{
 				Assert.Expect(typeof(EventException), new _ICodeBlock_29(this, item));

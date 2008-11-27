@@ -35,7 +35,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			SimplestPossibleParentChildTestCase.ParentItem parentItem = (SimplestPossibleParentChildTestCase.ParentItem
-				)RetrieveOnlyInstance(typeof(SimplestPossibleParentChildTestCase.ParentItem));
+				)((SimplestPossibleParentChildTestCase.ParentItem)RetrieveOnlyInstance(typeof(SimplestPossibleParentChildTestCase.ParentItem
+				)));
 			Assert.IsInstanceOf(typeof(SimplestPossibleParentChildTestCase.ChildItem), parentItem
 				.child);
 		}

@@ -14,6 +14,14 @@ namespace Db4objects.Db4o.Internal.CS.Config
 		{
 		}
 
+		public virtual ICacheConfiguration Cache
+		{
+			get
+			{
+				return new CacheConfigurationImpl(Legacy());
+			}
+		}
+
 		public virtual IFileConfiguration File
 		{
 			get

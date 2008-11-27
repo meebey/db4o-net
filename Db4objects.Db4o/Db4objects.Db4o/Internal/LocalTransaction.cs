@@ -6,11 +6,13 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -20,8 +22,6 @@ namespace Db4objects.Db4o.Internal
 		private readonly byte[] _pointerBuffer = new byte[Const4.PointerLength];
 
 		protected readonly StatefulBuffer i_pointerIo;
-
-		private int i_address;
 
 		private readonly Collection4 _participants = new Collection4();
 
@@ -33,19 +33,36 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ICommittedCallbackDispatcher _committedCallbackDispatcher;
 
+		private ICache4 _slotCache;
+
+		private TransactionLogHandler _transactionLogHandler = new EmbeddedTransactionLogHandler
+			();
+
 		public LocalTransaction(ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
 			 parentTransaction, TransactionalReferenceSystem referenceSystem) : base(container
 			, parentTransaction, referenceSystem)
 		{
-			// only used to pass address to Thread
 			_file = (LocalObjectContainer)container;
 			i_pointerIo = new StatefulBuffer(this, Const4.PointerLength);
-			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_40(this);
+			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_44(this);
+			if (IsSystemTransaction())
+			{
+				int slotCacheSize = Config().SlotCacheSize();
+				if (slotCacheSize > 0)
+				{
+					_slotCache = CacheFactory.New2QCache(slotCacheSize);
+				}
+			}
+			if (_slotCache == null)
+			{
+				_slotCache = new NullCache4();
+			}
+			InitializeTransactionLogHandler();
 		}
 
-		private sealed class _ICommittedCallbackDispatcher_40 : ICommittedCallbackDispatcher
+		private sealed class _ICommittedCallbackDispatcher_44 : ICommittedCallbackDispatcher
 		{
-			public _ICommittedCallbackDispatcher_40(LocalTransaction _enclosing)
+			public _ICommittedCallbackDispatcher_44(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -61,6 +78,28 @@ namespace Db4objects.Db4o.Internal
 			}
 
 			private readonly LocalTransaction _enclosing;
+		}
+
+		private void InitializeTransactionLogHandler()
+		{
+			if (!IsSystemTransaction())
+			{
+				_transactionLogHandler = ((LocalTransaction)SystemTransaction())._transactionLogHandler;
+				return;
+			}
+			bool fileBased = Config().FileBasedTransactionLog() && Container() is IoAdaptedObjectContainer;
+			if (!fileBased)
+			{
+				_transactionLogHandler = new EmbeddedTransactionLogHandler();
+				return;
+			}
+			string fileName = ((IoAdaptedObjectContainer)Container()).FileName();
+			_transactionLogHandler = new FileBasedTransactionLogHandler(this, fileName);
+		}
+
+		public virtual Config4Impl Config()
+		{
+			return Container().Config();
 		}
 
 		public virtual LocalObjectContainer File()
@@ -148,18 +187,18 @@ namespace Db4objects.Db4o.Internal
 			Commit3Stream();
 			CommitParticipants();
 			Container().WriteDirty();
-			Slot reservedSlot = AllocateTransactionLogSlot(false);
+			Slot reservedSlot = _transactionLogHandler.AllocateSlot(this, false);
 			FreeSlotChanges(false);
 			FreespaceBeginCommit();
 			CommitFreespace();
 			FreeSlotChanges(true);
-			Commit6WriteChanges(reservedSlot);
+			_transactionLogHandler.ApplySlotChanges(this, reservedSlot);
 			FreespaceEndCommit();
 		}
 
-		private void FreeSlotChanges(bool forFreespace)
+		public void FreeSlotChanges(bool forFreespace)
 		{
-			IVisitor4 visitor = new _IVisitor4_142(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_174(this, forFreespace);
 			if (IsSystemTransaction())
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -172,9 +211,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_142 : IVisitor4
+		private sealed class _IVisitor4_174 : IVisitor4
 		{
-			public _IVisitor4_142(LocalTransaction _enclosing, bool forFreespace)
+			public _IVisitor4_174(LocalTransaction _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -276,12 +315,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void RollbackSlotChanges()
 		{
-			_slotChanges.TraverseLocked(new _IVisitor4_231(this));
+			_slotChanges.TraverseLocked(new _IVisitor4_263(this));
 		}
 
-		private sealed class _IVisitor4_231 : IVisitor4
+		private sealed class _IVisitor4_263 : IVisitor4
 		{
-			public _IVisitor4_231(LocalTransaction _enclosing)
+			public _IVisitor4_263(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -297,81 +336,6 @@ namespace Db4objects.Db4o.Internal
 		public override bool IsDeleted(int id)
 		{
 			return SlotChangeIsFlaggedDeleted(id);
-		}
-
-		private Slot AllocateTransactionLogSlot(bool appendToFile)
-		{
-			int transactionLogByteCount = TransactionLogSlotLength();
-			if (!appendToFile && FreespaceManager() != null)
-			{
-				int blockedLength = _file.BytesToBlocks(transactionLogByteCount);
-				Slot slot = FreespaceManager().AllocateTransactionLogSlot(blockedLength);
-				if (slot != null)
-				{
-					return _file.ToNonBlockedLength(slot);
-				}
-			}
-			return _file.AppendBytes(transactionLogByteCount);
-		}
-
-		private int TransactionLogSlotLength()
-		{
-			// slotchanges * 3 for ID, address, length
-			// 2 ints for slotlength and count
-			return ((CountSlotChanges() * 3) + 2) * Const4.IntLength;
-		}
-
-		private bool SlotLongEnoughForLog(Slot slot)
-		{
-			return slot != null && slot.Length() >= TransactionLogSlotLength();
-		}
-
-		protected void Commit6WriteChanges(Slot reservedSlot)
-		{
-			CheckSynchronization();
-			int slotChangeCount = CountSlotChanges();
-			if (slotChangeCount > 0)
-			{
-				WriteSlotChanges(reservedSlot, slotChangeCount);
-			}
-			FreeTransactionLogSlot(reservedSlot);
-		}
-
-		private void WriteSlotChanges(Slot reservedSlot, int slotChangeCount)
-		{
-			Slot transactionLogSlot = SlotLongEnoughForLog(reservedSlot) ? reservedSlot : AllocateTransactionLogSlot
-				(true);
-			StatefulBuffer buffer = new StatefulBuffer(this, transactionLogSlot);
-			buffer.WriteInt(transactionLogSlot.Length());
-			buffer.WriteInt(slotChangeCount);
-			AppendSlotChanges(buffer);
-			buffer.Write();
-			FlushFile();
-			Container().WriteTransactionPointer(transactionLogSlot.Address());
-			FlushFile();
-			if (WriteSlots())
-			{
-				FlushFile();
-			}
-			Container().WriteTransactionPointer(0);
-			FlushFile();
-			if (transactionLogSlot != reservedSlot)
-			{
-				FreeTransactionLogSlot(transactionLogSlot);
-			}
-		}
-
-		private void FreeTransactionLogSlot(Slot slot)
-		{
-			if (slot == null)
-			{
-				return;
-			}
-			if (FreespaceManager() == null)
-			{
-				return;
-			}
-			FreespaceManager().FreeTransactionLogSlot(_file.ToBlockedLength(slot));
 		}
 
 		public virtual void WriteZeroPointer(int id)
@@ -402,16 +366,16 @@ namespace Db4objects.Db4o.Internal
 			i_pointerIo.Write();
 		}
 
-		private bool WriteSlots()
+		public virtual bool WriteSlots()
 		{
 			BooleanByRef ret = new BooleanByRef();
-			TraverseSlotChanges(new _IVisitor4_345(this, ret));
+			TraverseSlotChanges(new _IVisitor4_305(this, ret));
 			return ret.value;
 		}
 
-		private sealed class _IVisitor4_345 : IVisitor4
+		private sealed class _IVisitor4_305 : IVisitor4
 		{
-			public _IVisitor4_345(LocalTransaction _enclosing, BooleanByRef ret)
+			public _IVisitor4_305(LocalTransaction _enclosing, BooleanByRef ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -569,82 +533,15 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		private int CountSlotChanges()
-		{
-			IntByRef count = new IntByRef();
-			TraverseSlotChanges(new _IVisitor4_491(count));
-			return count.value;
-		}
-
-		private sealed class _IVisitor4_491 : IVisitor4
-		{
-			public _IVisitor4_491(IntByRef count)
-			{
-				this.count = count;
-			}
-
-			public void Visit(object obj)
-			{
-				SlotChange slot = (SlotChange)obj;
-				if (slot.IsSetPointer())
-				{
-					count.value++;
-				}
-			}
-
-			private readonly IntByRef count;
-		}
-
-		internal void WriteOld()
+		internal void CompleteInterruptedTransaction()
 		{
 			lock (Container()._lock)
 			{
-				i_pointerIo.UseSlot(i_address);
-				i_pointerIo.Read();
-				int length = i_pointerIo.ReadInt();
-				if (length > 0)
-				{
-					StatefulBuffer bytes = new StatefulBuffer(this, i_address, length);
-					bytes.Read();
-					bytes.IncrementOffset(Const4.IntLength);
-					_slotChanges.Read(bytes, new SlotChange(0));
-					if (WriteSlots())
-					{
-						FlushFile();
-					}
-					Container().WriteTransactionPointer(0);
-					FlushFile();
-					FreeSlotChanges(false);
-				}
-				else
-				{
-					Container().WriteTransactionPointer(0);
-					FlushFile();
-				}
+				_transactionLogHandler.CompleteInterruptedTransaction(this);
 			}
 		}
 
-		private void AppendSlotChanges(ByteArrayBuffer writer)
-		{
-			TraverseSlotChanges(new _IVisitor4_526(writer));
-		}
-
-		private sealed class _IVisitor4_526 : IVisitor4
-		{
-			public _IVisitor4_526(ByteArrayBuffer writer)
-			{
-				this.writer = writer;
-			}
-
-			public void Visit(object obj)
-			{
-				((SlotChange)obj).Write(writer);
-			}
-
-			private readonly ByteArrayBuffer writer;
-		}
-
-		private void TraverseSlotChanges(IVisitor4 visitor)
+		public virtual void TraverseSlotChanges(IVisitor4 visitor)
 		{
 			if (_systemTransaction != null)
 			{
@@ -771,7 +668,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_650(this));
+				delete.Traverse(new _IVisitor4_572(this));
 			}
 			// if the object has been deleted
 			// We need to hold a hard reference here, otherwise we can get 
@@ -782,9 +679,9 @@ namespace Db4objects.Db4o.Internal
 			_writtenUpdateDeletedMembers = null;
 		}
 
-		private sealed class _IVisitor4_650 : IVisitor4
+		private sealed class _IVisitor4_572 : IVisitor4
 		{
-			public _IVisitor4_650(LocalTransaction _enclosing)
+			public _IVisitor4_572(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -877,13 +774,13 @@ namespace Db4objects.Db4o.Internal
 		private Collection4 CollectCommittedCallbackDeletedInfo()
 		{
 			Collection4 deleted = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_742(this, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_664(this, deleted));
 			return deleted;
 		}
 
-		private sealed class _ISlotChangeCollector_742 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_664 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_742(LocalTransaction _enclosing, Collection4 deleted
+			public _ISlotChangeCollector_664(LocalTransaction _enclosing, Collection4 deleted
 				)
 			{
 				this._enclosing = _enclosing;
@@ -917,13 +814,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			Collection4 added = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_763(this, added, updated));
+			CollectSlotChanges(new _ISlotChangeCollector_685(this, added, updated));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_763 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_685 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_763(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_685(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -961,13 +858,13 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_786(this, added, updated, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_708(this, added, updated, deleted));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_786 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_708 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_786(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_708(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated, Collection4 deleted)
 			{
 				this._enclosing = _enclosing;
@@ -1013,12 +910,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			_slotChanges.TraverseLocked(new _IVisitor4_816(collector));
+			_slotChanges.TraverseLocked(new _IVisitor4_738(collector));
 		}
 
-		private sealed class _IVisitor4_816 : IVisitor4
+		private sealed class _IVisitor4_738 : IVisitor4
 		{
-			public _IVisitor4_816(ISlotChangeCollector collector)
+			public _IVisitor4_738(ISlotChangeCollector collector)
 			{
 				this.collector = collector;
 			}
@@ -1052,26 +949,23 @@ namespace Db4objects.Db4o.Internal
 			return new FrozenObjectInfo(this, ReferenceForId(id));
 		}
 
-		private void SetAddress(int a_address)
-		{
-			i_address = a_address;
-		}
-
 		public static Db4objects.Db4o.Internal.Transaction ReadInterruptedTransaction(LocalObjectContainer
 			 file, ByteArrayBuffer reader)
 		{
-			int transactionID1 = reader.ReadInt();
-			int transactionID2 = reader.ReadInt();
-			if ((transactionID1 > 0) && (transactionID1 == transactionID2))
+			LocalTransaction transaction = (LocalTransaction)file.NewTransaction(null, null);
+			if (transaction.WasInterrupted(reader))
 			{
-				LocalTransaction transaction = (LocalTransaction)file.NewTransaction(null, null);
-				transaction.SetAddress(transactionID1);
 				return transaction;
 			}
 			return null;
 		}
 
-		private IFreespaceManager FreespaceManager()
+		public virtual bool WasInterrupted(ByteArrayBuffer reader)
+		{
+			return _transactionLogHandler.CheckForInterruptedTransaction(this, reader);
+		}
+
+		public virtual IFreespaceManager FreespaceManager()
 		{
 			return _file.FreespaceManager();
 		}
@@ -1106,6 +1000,21 @@ namespace Db4objects.Db4o.Internal
 		private LazyObjectReference LazyReferenceFor(int id)
 		{
 			return new LazyObjectReference(this, id);
+		}
+
+		public virtual ICache4 SlotCache()
+		{
+			return _slotCache;
+		}
+
+		public virtual void ReadSlotChanges(ByteArrayBuffer buffer)
+		{
+			_slotChanges.Read(buffer, new SlotChange(0));
+		}
+
+		public virtual void Close()
+		{
+			_transactionLogHandler.Close();
 		}
 	}
 }

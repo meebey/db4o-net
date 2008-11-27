@@ -13,6 +13,6 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>Called to overwrite freed space in the database file.</remarks>
 		/// <param name="io">Handle for the freed slot</param>
 		/// <exception cref="IOException"></exception>
-		void Fill(IoAdapterWindow io);
+		void Fill(BlockAwareBinWindow io);
 	}
 }

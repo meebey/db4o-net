@@ -51,7 +51,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		public virtual void Test()
 		{
 			CascadeOnDeleteHierarchyTestCase.SubItem item = (CascadeOnDeleteHierarchyTestCase.SubItem
-				)RetrieveOnlyInstance(typeof(CascadeOnDeleteHierarchyTestCase.SubItem));
+				)((CascadeOnDeleteHierarchyTestCase.SubItem)RetrieveOnlyInstance(typeof(CascadeOnDeleteHierarchyTestCase.SubItem
+				)));
 			Db().Delete(item);
 			AssertOccurrences(typeof(CascadeOnDeleteHierarchyTestCase.Data), 0);
 			Db().Commit();

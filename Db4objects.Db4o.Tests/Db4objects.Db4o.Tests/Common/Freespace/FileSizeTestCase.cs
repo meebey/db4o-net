@@ -140,8 +140,8 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 			public void Run()
 			{
-				this._enclosing.Store(this._enclosing.RetrieveOnlyInstance(typeof(FreespaceManagerTestCaseBase.Item
-					)));
+				this._enclosing.Store(((FreespaceManagerTestCaseBase.Item)this._enclosing.RetrieveOnlyInstance
+					(typeof(FreespaceManagerTestCaseBase.Item))));
 				this._enclosing.Db().Commit();
 				try
 				{

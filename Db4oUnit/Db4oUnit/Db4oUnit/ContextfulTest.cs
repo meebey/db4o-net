@@ -1,17 +1,15 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Foundation;
+using Sharpen.Lang;
 
 namespace Db4oUnit
 {
-	public class ContextfulTest : Contextful, ITestDecoration
+	public class ContextfulTest : Contextful, ITest
 	{
 		private readonly ITestFactory _factory;
-
-		private ITest _test;
 
 		public ContextfulTest(ITestFactory factory)
 		{
@@ -20,12 +18,12 @@ namespace Db4oUnit
 
 		public virtual string Label()
 		{
-			return (string)Run(new _IClosure4_19(this));
+			return (string)Run(new _IClosure4_18(this));
 		}
 
-		private sealed class _IClosure4_19 : IClosure4
+		private sealed class _IClosure4_18 : IClosure4
 		{
-			public _IClosure4_19(ContextfulTest _enclosing)
+			public _IClosure4_18(ContextfulTest _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -40,25 +38,27 @@ namespace Db4oUnit
 
 		public virtual void Run()
 		{
-			Run(TestInstance());
+			Run(new _IRunnable_26(this));
 		}
 
-		public virtual ITest Test()
+		private sealed class _IRunnable_26 : IRunnable
 		{
-			if (null == _test)
+			public _IRunnable_26(ContextfulTest _enclosing)
 			{
-				throw new InvalidOperationException();
+				this._enclosing = _enclosing;
 			}
-			return _test;
+
+			public void Run()
+			{
+				this._enclosing.TestInstance().Run();
+			}
+
+			private readonly ContextfulTest _enclosing;
 		}
 
 		private ITest TestInstance()
 		{
-			if (_test == null)
-			{
-				_test = _factory.NewInstance();
-			}
-			return _test;
+			return _factory.NewInstance();
 		}
 	}
 }

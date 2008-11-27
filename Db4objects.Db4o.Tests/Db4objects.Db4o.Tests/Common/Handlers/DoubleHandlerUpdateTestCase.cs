@@ -10,9 +10,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class DoubleHandlerUpdateTestCase : HandlerUpdateTestCaseBase
 	{
-		private static readonly double[] data = new double[] { double.MinValue, double.MinValue
-			 + 1, -3.1415926535789, -1, 0, double.NaN, double.NegativeInfinity, double.PositiveInfinity
-			, 1, 3.1415926535789, double.MaxValue - 1, double.MaxValue };
+		private readonly double[] data;
+
+		public DoubleHandlerUpdateTestCase()
+		{
+			data = new double[] { double.MinValue, double.MinValue + 1, -3.1415926535789, -1, 
+				0, UsesNullMarkerValue() ? 0 : double.NaN, double.NegativeInfinity, double.PositiveInfinity
+				, 1, 3.1415926535789, double.MaxValue - 1, double.MaxValue };
+		}
 
 		public class Item
 		{
@@ -186,7 +191,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(double expected, double actual)
 		{
-			if (double.IsNaN(expected) && Db4oHandlerVersion() == 0)
+			if (double.IsNaN(expected) && UsesNullMarkerValue())
 			{
 				expected = 0;
 			}
@@ -199,7 +204,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void AssertAreEqual(object expected, object actual)
 		{
-			if (double.IsNaN(((double)expected)) && Db4oHandlerVersion() == 0)
+			if (double.IsNaN(((double)expected)) && UsesNullMarkerValue())
 			{
 				expected = null;
 			}

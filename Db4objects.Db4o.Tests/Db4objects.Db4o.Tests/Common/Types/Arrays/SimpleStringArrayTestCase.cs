@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		public virtual void TestRetrieve()
 		{
-			SimpleStringArrayTestCase.Data data = (SimpleStringArrayTestCase.Data)RetrieveOnlyInstance
-				(typeof(SimpleStringArrayTestCase.Data));
+			SimpleStringArrayTestCase.Data data = (SimpleStringArrayTestCase.Data)((SimpleStringArrayTestCase.Data
+				)RetrieveOnlyInstance(typeof(SimpleStringArrayTestCase.Data)));
 			ArrayAssert.AreEqual(Array, data._arr);
 		}
 	}

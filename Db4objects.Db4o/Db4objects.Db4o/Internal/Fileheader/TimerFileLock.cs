@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			if (file.NeedsLockFileThread())
 			{
+				// return file.synchronizedIoAdapter();
 				return new TimerFileLockEnabled((IoAdaptedObjectContainer)file);
 			}
 			return new TimerFileLockDisabled();

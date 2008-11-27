@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Btree
 	/// as needed with prepareRead() and prepareWrite().
 	/// </remarks>
 	/// <exclude></exclude>
-	public sealed class BTreeNode : PersistentBase
+	public sealed class BTreeNode : CacheablePersistentBase
 	{
 		private const int CountLeafAnd3LinkLength = (Const4.IntLength * 4) + 1;
 
@@ -755,14 +755,14 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return null;
 			}
+			Transaction systemTransaction = trans.SystemTransaction();
 			if (_cached)
 			{
-				Read(trans.SystemTransaction());
+				Read(systemTransaction);
 				_btree.AddToProcessing(this);
 				return null;
 			}
-			ByteArrayBuffer reader = ((LocalTransaction)trans).File().ReadReaderByID(trans.SystemTransaction
-				(), GetID());
+			ByteArrayBuffer reader = ProduceReadBuffer(systemTransaction);
 			ReadNodeHeader(reader);
 			return reader;
 		}

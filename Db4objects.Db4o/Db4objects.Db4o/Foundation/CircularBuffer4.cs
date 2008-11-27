@@ -64,9 +64,14 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		private bool IsEmpty()
+		public virtual bool IsEmpty()
 		{
 			return Index(_head) == Index(_tail);
+		}
+
+		public virtual bool IsFull()
+		{
+			return CircularIndex(_head - 1) == _tail;
 		}
 
 		public virtual object RemoveFirst()
@@ -87,18 +92,33 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool Remove(object value)
 		{
+			int idx = IndexOf(value);
+			if (idx >= 0)
+			{
+				RemoveAt(idx);
+				return true;
+			}
+			return false;
+		}
+
+		public virtual bool Contains(object value)
+		{
+			return IndexOf(value) >= 0;
+		}
+
+		private int IndexOf(object value)
+		{
 			int current = Index(_head);
 			int tail = Index(_tail);
 			while (current != tail)
 			{
 				if (((object)value).Equals(_buffer[current]))
 				{
-					RemoveAt(current);
-					return true;
+					break;
 				}
 				current = CircularIndex(current + 1);
 			}
-			return false;
+			return (current == tail ? -1 : current);
 		}
 
 		private void RemoveAt(int index)
@@ -129,12 +149,12 @@ namespace Db4objects.Db4o.Foundation
 			int tail = Index(_tail);
 			int head = Index(_head);
 			// TODO: detect concurrent modification and throw IllegalStateException
-			return new _IEnumerator_105(this, head, tail);
+			return new _IEnumerator_121(this, head, tail);
 		}
 
-		private sealed class _IEnumerator_105 : IEnumerator
+		private sealed class _IEnumerator_121 : IEnumerator
 		{
-			public _IEnumerator_105(CircularBuffer4 _enclosing, int head, int tail)
+			public _IEnumerator_121(CircularBuffer4 _enclosing, int head, int tail)
 			{
 				this._enclosing = _enclosing;
 				this.head = head;

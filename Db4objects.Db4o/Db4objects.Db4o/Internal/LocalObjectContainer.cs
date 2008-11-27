@@ -367,7 +367,7 @@ namespace Db4objects.Db4o.Internal
 			return slot;
 		}
 
-		internal Slot AppendBytes(long bytes)
+		public Slot AppendBytes(long bytes)
 		{
 			Slot slot = AppendBlocks(BytesToBlocks(bytes));
 			return ToNonBlockedLength(slot);
@@ -611,7 +611,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (!ConfigImpl().CommitRecoveryDisabled())
 				{
-					trans.WriteOld();
+					trans.CompleteInterruptedTransaction();
 				}
 			}
 			if (Converter.Convert(new ConversionStage.SystemUpStage(this)))

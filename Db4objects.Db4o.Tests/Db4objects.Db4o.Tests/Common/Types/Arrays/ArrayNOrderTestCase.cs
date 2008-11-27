@@ -47,8 +47,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		public virtual void Test()
 		{
-			ArrayNOrderTestCase.Data data = (ArrayNOrderTestCase.Data)RetrieveOnlyInstance(typeof(
-				ArrayNOrderTestCase.Data));
+			ArrayNOrderTestCase.Data data = (ArrayNOrderTestCase.Data)((ArrayNOrderTestCase.Data
+				)RetrieveOnlyInstance(typeof(ArrayNOrderTestCase.Data)));
 			Check(data);
 		}
 

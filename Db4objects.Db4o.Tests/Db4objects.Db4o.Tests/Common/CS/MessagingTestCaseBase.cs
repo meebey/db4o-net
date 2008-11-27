@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		protected virtual IConfiguration MemoryIoConfiguration()
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.Io(new MemoryIoAdapter());
+			config.Storage = new MemoryStorage();
 			return config;
 		}
 

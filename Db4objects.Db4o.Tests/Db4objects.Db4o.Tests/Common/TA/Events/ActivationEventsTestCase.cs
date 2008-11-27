@@ -136,14 +136,14 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 
 		private ActivationEventsTestCase.NonActivatableItem QueryNonActivatableItem()
 		{
-			return (ActivationEventsTestCase.NonActivatableItem)RetrieveOnlyInstance(typeof(ActivationEventsTestCase.NonActivatableItem
-				));
+			return (ActivationEventsTestCase.NonActivatableItem)((ActivationEventsTestCase.NonActivatableItem
+				)RetrieveOnlyInstance(typeof(ActivationEventsTestCase.NonActivatableItem)));
 		}
 
 		private ActivationEventsTestCase.ActivatableItem QueryActivatableItem()
 		{
-			return (ActivationEventsTestCase.ActivatableItem)RetrieveOnlyInstance(typeof(ActivationEventsTestCase.ActivatableItem
-				));
+			return (ActivationEventsTestCase.ActivatableItem)((ActivationEventsTestCase.ActivatableItem
+				)RetrieveOnlyInstance(typeof(ActivationEventsTestCase.ActivatableItem)));
 		}
 	}
 }

@@ -3,14 +3,15 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Tests;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Tests
 {
 	public class RunsLifeCycle : ITestCase, ITestLifeCycle
 	{
-		private bool _setupCalled = false;
+		public static DynamicVariable _tearDownCalled = DynamicVariable.NewInstance();
 
-		private bool _tearDownCalled = false;
+		private bool _setupCalled = false;
 
 		public virtual void SetUp()
 		{
@@ -19,7 +20,7 @@ namespace Db4oUnit.Tests
 
 		public virtual void TearDown()
 		{
-			_tearDownCalled = true;
+			TearDownCalled().value = true;
 		}
 
 		public virtual bool SetupCalled()
@@ -27,17 +28,17 @@ namespace Db4oUnit.Tests
 			return _setupCalled;
 		}
 
-		public virtual bool TearDownCalled()
-		{
-			return _tearDownCalled;
-		}
-
 		/// <exception cref="Exception"></exception>
 		public virtual void TestMethod()
 		{
 			Assert.IsTrue(_setupCalled);
-			Assert.IsTrue(!_tearDownCalled);
+			Assert.IsTrue(!(((bool)TearDownCalled().value)));
 			throw FrameworkTestCase.Exception;
+		}
+
+		private ByRef TearDownCalled()
+		{
+			return ((ByRef)_tearDownCalled.Value);
 		}
 	}
 }

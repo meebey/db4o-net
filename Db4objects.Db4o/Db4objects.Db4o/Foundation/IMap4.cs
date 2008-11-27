@@ -13,6 +13,8 @@ namespace Db4objects.Db4o.Foundation
 
 		void Put(object key, object value);
 
+		bool ContainsKey(object key);
+
 		object Remove(object key);
 
 		IEnumerable Values();

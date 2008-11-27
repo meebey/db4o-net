@@ -37,7 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="Exception"></exception>
 		public virtual void TestDeleteStore()
 		{
-			object item = RetrieveOnlyInstance(typeof(DeleteSetTestCase.Item));
+			object item = ((DeleteSetTestCase.Item)RetrieveOnlyInstance(typeof(DeleteSetTestCase.Item
+				)));
 			Db().Delete(item);
 			Db().Store(item);
 			Db().Commit();
@@ -47,8 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="Exception"></exception>
 		public virtual void TestDeleteStoreStore()
 		{
-			DeleteSetTestCase.Item item = (DeleteSetTestCase.Item)RetrieveOnlyInstance(typeof(
-				DeleteSetTestCase.Item));
+			DeleteSetTestCase.Item item = (DeleteSetTestCase.Item)((DeleteSetTestCase.Item)RetrieveOnlyInstance
+				(typeof(DeleteSetTestCase.Item)));
 			Db().Delete(item);
 			item.value = 2;
 			Db().Store(item);
@@ -56,8 +57,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Db().Store(item);
 			Db().Commit();
 			AssertOccurrences(typeof(DeleteSetTestCase.Item), 1);
-			item = (DeleteSetTestCase.Item)RetrieveOnlyInstance(typeof(DeleteSetTestCase.Item
-				));
+			item = (DeleteSetTestCase.Item)((DeleteSetTestCase.Item)RetrieveOnlyInstance(typeof(
+				DeleteSetTestCase.Item)));
 			Assert.AreEqual(3, item.value);
 		}
 	}

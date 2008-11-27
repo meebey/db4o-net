@@ -115,8 +115,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		//$NON-NLS-1$
 		private StringBufferHandlerTestCase.Item RetrieveItem()
 		{
-			return (StringBufferHandlerTestCase.Item)RetrieveOnlyInstance(typeof(StringBufferHandlerTestCase.Item
-				));
+			return (StringBufferHandlerTestCase.Item)((StringBufferHandlerTestCase.Item)RetrieveOnlyInstance
+				(typeof(StringBufferHandlerTestCase.Item)));
 		}
 	}
 }

@@ -26,16 +26,20 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IExtObjectContainer oc3 = OpenNewClient();
 			try
 			{
-				SimpleObject o1 = (SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject));
+				SimpleObject o1 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject
+					)));
 				oc1.Delete(o1);
-				SimpleObject o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
+				SimpleObject o2 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject
+					)));
 				Assert.AreEqual("hello", o2.GetS());
 				oc1.Rollback();
-				o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
+				o2 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject))
+					);
 				oc2.Refresh(o2, int.MaxValue);
 				Assert.AreEqual("hello", o2.GetS());
 				oc1.Commit();
-				o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
+				o2 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject))
+					);
 				oc2.Refresh(o2, int.MaxValue);
 				Assert.AreEqual("hello", o2.GetS());
 				oc1.Delete(o1);
@@ -58,16 +62,20 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IExtObjectContainer oc3 = OpenNewClient();
 			try
 			{
-				SimpleObject o1 = (SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject));
+				SimpleObject o1 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject
+					)));
 				oc1.Store(o1);
-				SimpleObject o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
+				SimpleObject o2 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject
+					)));
 				Assert.AreEqual("hello", o2.GetS());
 				oc1.Rollback();
-				o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
+				o2 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject))
+					);
 				oc2.Refresh(o2, int.MaxValue);
 				Assert.AreEqual("hello", o2.GetS());
 				oc1.Commit();
-				o2 = (SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject));
+				o2 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc2, typeof(SimpleObject))
+					);
 				oc2.Refresh(o2, int.MaxValue);
 				Assert.AreEqual("hello", o2.GetS());
 				oc1.Delete(o1);

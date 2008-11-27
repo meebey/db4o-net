@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Backup(BackupDb4oIOExceptionTestCase.BackupFile);
 			}
 

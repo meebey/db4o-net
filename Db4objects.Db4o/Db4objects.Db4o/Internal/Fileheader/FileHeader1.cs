@@ -24,6 +24,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private static readonly int TransactionPointerOffset = AccessTimeOffset + Const4.
 			LongLength;
 
+		private static readonly int BlocksizeOffset = TransactionPointerOffset + (Const4.
+			IntLength * 2);
+
 		public static readonly int HeaderLength = TransactionPointerOffset + (Const4.IntLength
 			 * 6);
 
@@ -96,6 +99,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			reader.Seek(TransactionPointerOffset);
 			_interruptedTransaction = LocalTransaction.ReadInterruptedTransaction(file, reader
 				);
+			reader.Seek(BlocksizeOffset);
 			file.BlockSizeReadFromFile(reader.ReadInt());
 			ReadClassCollectionAndFreeSpace(file, reader);
 			_variablePart = new FileHeaderVariablePart1(reader.ReadInt(), file.SystemData());

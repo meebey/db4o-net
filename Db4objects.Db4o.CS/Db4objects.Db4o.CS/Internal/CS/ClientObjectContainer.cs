@@ -138,6 +138,11 @@ namespace Db4objects.Db4o.Internal.CS
 			throw new NotSupportedException();
 		}
 
+		protected override void CloseSystemTransaction()
+		{
+		}
+
+		// do nothing for clients
 		public override void Reserve(int byteCount)
 		{
 			throw new NotSupportedException();

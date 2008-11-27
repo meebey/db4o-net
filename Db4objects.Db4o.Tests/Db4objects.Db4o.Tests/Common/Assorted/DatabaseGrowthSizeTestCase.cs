@@ -36,8 +36,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Store(item);
 			Assert.IsGreater(Size * 2, FileSession().FileLength());
 			Assert.IsSmaller(Size * 2 + ApproximateHeaderSize, FileSession().FileLength());
-			object retrievedItem = RetrieveOnlyInstance(typeof(DatabaseGrowthSizeTestCase.Item
-				));
+			object retrievedItem = ((DatabaseGrowthSizeTestCase.Item)RetrieveOnlyInstance(typeof(
+				DatabaseGrowthSizeTestCase.Item)));
 			Assert.AreSame(item, retrievedItem);
 		}
 

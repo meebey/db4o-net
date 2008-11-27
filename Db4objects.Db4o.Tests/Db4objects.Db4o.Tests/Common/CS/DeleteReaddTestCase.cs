@@ -33,10 +33,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			IExtObjectContainer client1 = Db();
 			IExtObjectContainer client2 = OpenNewClient();
-			DeleteReaddTestCase.Item item1 = (DeleteReaddTestCase.Item)RetrieveOnlyInstance(client1
-				, typeof(DeleteReaddTestCase.Item));
-			DeleteReaddTestCase.Item item2 = (DeleteReaddTestCase.Item)RetrieveOnlyInstance(client2
-				, typeof(DeleteReaddTestCase.Item));
+			DeleteReaddTestCase.Item item1 = (DeleteReaddTestCase.Item)((DeleteReaddTestCase.Item
+				)RetrieveOnlyInstance(client1, typeof(DeleteReaddTestCase.Item)));
+			DeleteReaddTestCase.Item item2 = (DeleteReaddTestCase.Item)((DeleteReaddTestCase.Item
+				)RetrieveOnlyInstance(client2, typeof(DeleteReaddTestCase.Item)));
 			client1.Delete(item1);
 			client1.Commit();
 			client2.Store(item2);

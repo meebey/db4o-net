@@ -68,16 +68,16 @@ namespace Db4objects.Db4o.Internal.Config
 		}
 
 		/// <exception cref="GlobalOnlyConfigException"></exception>
-		public virtual IoAdapter Io
+		public virtual IStorage Storage
 		{
 			get
 			{
-				return _config.Io();
+				return _config.Storage;
 			}
 			set
 			{
-				IoAdapter adapter = value;
-				_config.Io(adapter);
+				IStorage factory = value;
+				_config.Storage = factory;
 			}
 		}
 

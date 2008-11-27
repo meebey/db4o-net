@@ -28,7 +28,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				(new _IEventListener4_25(this, deletionLog).OnEvent);
 			ServerEventRegistry().Deleted += new Db4objects.Db4o.Events.ObjectEventHandler(new 
 				_IEventListener4_31(this, deletionLog).OnEvent);
-			Db().Delete(RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item)));
+			Db().Delete(((EventsTestCaseBase.Item)RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item
+				))));
 			Db().Commit();
 			Assert.IsTrue(deletionLog.xing);
 			Assert.IsTrue(deletionLog.xed);

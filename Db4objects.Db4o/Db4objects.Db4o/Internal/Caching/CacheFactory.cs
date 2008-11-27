@@ -12,6 +12,11 @@ namespace Db4objects.Db4o.Internal.Caching
 			return new LRU2QCache(size);
 		}
 
+		public static ICache4 New2QXCache(int size)
+		{
+			return new LRU2QXCache(size);
+		}
+
 		public static ICache4 NewLRUCache(int size)
 		{
 			return new LRUCache(size);

@@ -36,8 +36,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void Test()
 		{
-			CanUpdateFalseRefreshTestCase.Item item = (CanUpdateFalseRefreshTestCase.Item)RetrieveOnlyInstance
-				(typeof(CanUpdateFalseRefreshTestCase.Item));
+			CanUpdateFalseRefreshTestCase.Item item = (CanUpdateFalseRefreshTestCase.Item)((CanUpdateFalseRefreshTestCase.Item
+				)RetrieveOnlyInstance(typeof(CanUpdateFalseRefreshTestCase.Item)));
 			item._name = "two";
 			Db().Store(item);
 			Assert.AreEqual("two", item._name);

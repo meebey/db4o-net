@@ -271,5 +271,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			Seek(ReadInt());
 		}
+
+		public virtual void EnsureSize(int size)
+		{
+			if (size == _buffer.Length)
+			{
+				return;
+			}
+			_buffer = new byte[size];
+		}
 	}
 }

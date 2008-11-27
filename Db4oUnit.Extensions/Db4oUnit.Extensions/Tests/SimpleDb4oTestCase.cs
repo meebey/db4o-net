@@ -3,6 +3,7 @@
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Tests;
+using Db4oUnit.Mocking;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 
@@ -10,64 +11,40 @@ namespace Db4oUnit.Extensions.Tests
 {
 	public class SimpleDb4oTestCase : AbstractDb4oTestCase
 	{
-		public static readonly DynamicVariable ExpectedFixtureVariable = new DynamicVariable
+		public static readonly DynamicVariable RecorderVariable = DynamicVariable.NewInstance
 			();
 
 		public class Data
 		{
 		}
 
-		private bool[] _everythingCalled = new bool[3];
-
 		protected override void Configure(IConfiguration config)
 		{
-			Assert.AreSame(ExpectedFixture(), Fixture());
-			Assert.IsTrue(EverythingCalledBefore(0));
-			_everythingCalled[0] = true;
+			Record(new MethodCall("fixture", new object[] { Fixture() }));
+			Record(new MethodCall("configure", new object[] { config }));
 		}
 
-		private IDb4oFixture ExpectedFixture()
+		private void Record(MethodCall call)
 		{
-			return (IDb4oFixture)ExpectedFixtureVariable.Value;
+			Recorder().Record(call);
+		}
+
+		private MethodCallRecorder Recorder()
+		{
+			return ((MethodCallRecorder)RecorderVariable.Value);
 		}
 
 		protected override void Store()
 		{
-			Assert.IsTrue(EverythingCalledBefore(1));
-			_everythingCalled[1] = true;
+			Record(new MethodCall("store", new object[] {  }));
 			Fixture().Db().Store(new SimpleDb4oTestCase.Data());
 		}
 
 		public virtual void TestResultSize()
 		{
-			Assert.IsTrue(EverythingCalledBefore(2));
-			_everythingCalled[2] = true;
+			Record(new MethodCall("testResultSize", new object[] {  }));
 			Assert.AreEqual(1, Fixture().Db().QueryByExample(typeof(SimpleDb4oTestCase.Data))
 				.Count);
-		}
-
-		public virtual bool EverythingCalled()
-		{
-			return EverythingCalledBefore(_everythingCalled.Length);
-		}
-
-		public virtual bool EverythingCalledBefore(int idx)
-		{
-			for (int i = 0; i < idx; i++)
-			{
-				if (!_everythingCalled[i])
-				{
-					return false;
-				}
-			}
-			for (int i = idx; i < _everythingCalled.Length; i++)
-			{
-				if (_everythingCalled[i])
-				{
-					return false;
-				}
-			}
-			return true;
 		}
 	}
 }

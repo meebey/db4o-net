@@ -126,55 +126,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly Collection4 failures;
 		}
 
-		public virtual void TestTypeChecking()
+		private void CheckVariableBehavior(DynamicVariable variable)
 		{
-			IRunnable emptyBlock = new _IRunnable_75();
-			DynamicVariable stringVar = new DynamicVariable(typeof(string));
-			stringVar.With("foo", emptyBlock);
-			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_83(stringVar, emptyBlock
-				));
+			Assert.IsNull(variable.Value);
+			variable.With("foo", new _IRunnable_75(variable));
+			Assert.IsNull(variable.Value);
 		}
 
 		private sealed class _IRunnable_75 : IRunnable
 		{
-			public _IRunnable_75()
-			{
-			}
-
-			public void Run()
-			{
-			}
-		}
-
-		private sealed class _ICodeBlock_83 : ICodeBlock
-		{
-			public _ICodeBlock_83(DynamicVariable stringVar, IRunnable emptyBlock)
-			{
-				this.stringVar = stringVar;
-				this.emptyBlock = emptyBlock;
-			}
-
-			/// <exception cref="Exception"></exception>
-			public void Run()
-			{
-				stringVar.With(true, emptyBlock);
-			}
-
-			private readonly DynamicVariable stringVar;
-
-			private readonly IRunnable emptyBlock;
-		}
-
-		private void CheckVariableBehavior(DynamicVariable variable)
-		{
-			Assert.IsNull(variable.Value);
-			variable.With("foo", new _IRunnable_93(variable));
-			Assert.IsNull(variable.Value);
-		}
-
-		private sealed class _IRunnable_93 : IRunnable
-		{
-			public _IRunnable_93(DynamicVariable variable)
+			public _IRunnable_75(DynamicVariable variable)
 			{
 				this.variable = variable;
 			}
@@ -182,13 +143,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			public void Run()
 			{
 				Assert.AreEqual("foo", variable.Value);
-				variable.With("bar", new _IRunnable_96(variable));
+				variable.With("bar", new _IRunnable_78(variable));
 				Assert.AreEqual("foo", variable.Value);
 			}
 
-			private sealed class _IRunnable_96 : IRunnable
+			private sealed class _IRunnable_78 : IRunnable
 			{
-				public _IRunnable_96(DynamicVariable variable)
+				public _IRunnable_78(DynamicVariable variable)
 				{
 					this.variable = variable;
 				}

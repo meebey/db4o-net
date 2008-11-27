@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	/// <exclude></exclude>
 	public class TimerFileLockEnabled : TimerFileLock
 	{
-		private readonly IoAdapter _timerFile;
+		private readonly BlockAwareBin _timerFile;
 
 		private readonly object _timerLock;
 
@@ -187,9 +187,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				{
 					return false;
 				}
-				_timerFile.BlockSeek(address, offset);
 				PrimitiveCodec.WriteLong(_longBytes, time);
-				_timerFile.Write(_longBytes);
+				_timerFile.BlockWrite(address, offset, _longBytes);
 				return true;
 			}
 		}
@@ -203,8 +202,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				{
 					return 0;
 				}
-				_timerFile.BlockSeek(address, offset);
-				_timerFile.Read(_longBytes);
+				_timerFile.BlockRead(address, offset, _longBytes);
 				return PrimitiveCodec.ReadLong(_longBytes, 0);
 			}
 		}
@@ -217,9 +215,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				{
 					return false;
 				}
-				_timerFile.BlockSeek(address, offset);
 				PrimitiveCodec.WriteInt(_intBytes, 0, time);
-				_timerFile.Write(_intBytes);
+				_timerFile.BlockWrite(address, offset, _intBytes);
 				return true;
 			}
 		}
@@ -232,8 +229,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				{
 					return 0;
 				}
-				_timerFile.BlockSeek(address, offset);
-				_timerFile.Read(_longBytes);
+				_timerFile.BlockRead(address, offset, _longBytes);
 				return PrimitiveCodec.ReadInt(_longBytes, 0);
 			}
 		}

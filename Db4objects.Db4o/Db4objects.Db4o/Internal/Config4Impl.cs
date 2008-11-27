@@ -12,6 +12,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Handlers;
@@ -59,9 +60,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private sealed class _IDeferred_66 : KeySpec.IDeferred
+		private sealed class _IDeferred_67 : KeySpec.IDeferred
 		{
-			public _IDeferred_66()
+			public _IDeferred_67()
 			{
 			}
 
@@ -72,7 +73,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_66
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_67
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
@@ -100,6 +101,8 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
 
 		private static readonly KeySpec ExceptionsOnNotStorableKey = new KeySpec(true);
+
+		private static readonly KeySpec FileBasedTransactionLogKey = new KeySpec(false);
 
 		private static readonly KeySpec FreespaceFillerKey = new KeySpec(null);
 
@@ -161,14 +164,16 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec WeakReferencesKey = new KeySpec(true);
 
-		private static readonly KeySpec IoadapterKey = new KeySpec(new CachedIoAdapter(new 
-			RandomAccessFileAdapter()));
+		private static readonly KeySpec StorageFactoryKey = new KeySpec(new FileStorage()
+			);
 
 		private static readonly KeySpec AliasesKey = new KeySpec(null);
 
 		private static readonly KeySpec BatchMessagesKey = new KeySpec(true);
 
 		private static readonly KeySpec MaxBatchQueueSizeKey = new KeySpec(int.MaxValue);
+
+		private static readonly KeySpec SlotCacheSizeKey = new KeySpec(30);
 
 		private ObjectContainerBase i_stream;
 
@@ -182,15 +187,6 @@ namespace Db4objects.Db4o.Internal
 
 		// for playing with different strategies of prefetching
 		// object
-		//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new IoAdapterWithCache(new RandomAccessFileAdapter()) {
-		//		@Override
-		//		protected Cache4 newCache() {
-		//			return CacheFactory.new2QCache(64);
-		//		}
-		//	});
-		//	private final static KeySpec IOADAPTER_KEY=new KeySpec(new RandomAccessFileAdapter());
-		// NOTE: activate this config to trigger the defragment failure
-		//= new NIOFileAdapter(512,3);
 		//  is null in the global configuration until deepClone is called
 		// The following are very frequently being asked for, so they show up in the profiler. 
 		// Let's keep them out of the Hashtable.
@@ -490,7 +486,7 @@ namespace Db4objects.Db4o.Internal
 		public void Io(IoAdapter adapter)
 		{
 			GlobalSettingOnly();
-			_config.Put(IoadapterKey, adapter);
+			Storage = new IoAdapterStorage(adapter);
 		}
 
 		public void LockDatabaseFile(bool flag)
@@ -1069,7 +1065,20 @@ namespace Db4objects.Db4o.Internal
 
 		public IoAdapter Io()
 		{
-			return (IoAdapter)_config.Get(IoadapterKey);
+			throw new NotImplementedException();
+		}
+
+		public IStorage Storage
+		{
+			get
+			{
+				return (IStorage)_config.Get(StorageFactoryKey);
+			}
+			set
+			{
+				IStorage factory = value;
+				_config.Put(StorageFactoryKey, factory);
+			}
 		}
 
 		public IQueryConfiguration Queries()
@@ -1184,6 +1193,31 @@ namespace Db4objects.Db4o.Internal
 		public IClientServerFactory ClientServerFactory()
 		{
 			return (IClientServerFactory)_config.Get(ClientServerFactoryKey);
+		}
+
+		public ICacheConfiguration Cache()
+		{
+			return new CacheConfigurationImpl(this);
+		}
+
+		public void SlotCacheSize(int size)
+		{
+			_config.Put(SlotCacheSizeKey, size);
+		}
+
+		public int SlotCacheSize()
+		{
+			return _config.GetAsInt(SlotCacheSizeKey);
+		}
+
+		public bool FileBasedTransactionLog()
+		{
+			return _config.GetAsBoolean(FileBasedTransactionLogKey);
+		}
+
+		public void FileBasedTransactionLog(bool flag)
+		{
+			_config.Put(FileBasedTransactionLogKey, flag);
 		}
 	}
 }

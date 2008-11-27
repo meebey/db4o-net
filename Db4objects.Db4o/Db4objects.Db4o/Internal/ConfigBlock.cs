@@ -189,8 +189,10 @@ namespace Db4objects.Db4o.Internal
 			SystemData().StringEncoding(reader.ReadByte());
 			if (oldLength > TransactionOffset)
 			{
+				int savedOffset = reader.Offset();
 				_transactionToCommit = LocalTransaction.ReadInterruptedTransaction(_container, reader
 					);
+				reader.Seek(savedOffset + Const4.IntLength * 2);
 			}
 			if (oldLength > BootrecordOffset)
 			{

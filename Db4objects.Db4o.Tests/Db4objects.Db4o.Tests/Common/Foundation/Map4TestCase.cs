@@ -20,6 +20,19 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
+		public virtual void TestContainsKey()
+		{
+			string key1 = "foo";
+			string key2 = "bar";
+			subject.Put(key1, "v");
+			subject.Put(key2, "v");
+			Assert.IsTrue(subject.ContainsKey(key1));
+			Assert.IsTrue(subject.ContainsKey(key2));
+			Assert.IsFalse(subject.ContainsKey(null));
+			Assert.IsFalse(subject.ContainsKey(key1.ToUpper()));
+			Assert.IsFalse(subject.ContainsKey(key2.ToUpper()));
+		}
+
 		public virtual void TestValuesIterator()
 		{
 			object[] values = new object[5];

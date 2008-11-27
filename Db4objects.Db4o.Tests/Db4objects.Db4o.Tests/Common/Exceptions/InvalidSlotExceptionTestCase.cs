@@ -26,19 +26,19 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.Io(new InvalidSlotExceptionTestCase.MockIoAdapter());
+			config.Storage = new InvalidSlotExceptionTestCase.MockStorage();
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
-			Assert.Expect(typeof(InvalidIDException), typeof(InvalidSlotException), new _ICodeBlock_30
+			Assert.Expect(typeof(InvalidIDException), typeof(InvalidSlotException), new _ICodeBlock_29
 				(this));
 		}
 
-		private sealed class _ICodeBlock_30 : ICodeBlock
+		private sealed class _ICodeBlock_29 : ICodeBlock
 		{
-			public _ICodeBlock_30(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_29(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -56,13 +56,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		{
 			Type expectedException = IsClientServer() && !IsEmbeddedClientServer() ? typeof(InvalidIDException
 				) : typeof(OutOfMemoryException);
-			Assert.Expect(expectedException, new _ICodeBlock_40(this));
+			Assert.Expect(expectedException, new _ICodeBlock_39(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_40 : ICodeBlock
+		private sealed class _ICodeBlock_39 : ICodeBlock
 		{
-			public _ICodeBlock_40(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_39(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -86,57 +86,54 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		public class MockIoAdapter : VanillaIoAdapter
+		public class MockStorage : StorageDecorator
 		{
-			private bool _deliverInvalidSlot;
-
-			public MockIoAdapter() : base(new RandomAccessFileAdapter())
+			public MockStorage() : base(new FileStorage())
 			{
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
-			protected MockIoAdapter(string path, bool lockFile, long initialLength, bool readOnly
-				) : base(new RandomAccessFileAdapter(), path, lockFile, initialLength, readOnly)
+			protected override IBin Decorate(IBin bin)
 			{
+				return new InvalidSlotExceptionTestCase.MockStorage.MockBin(bin);
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
-			public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
-				 readOnly)
+			private class MockBin : Db4objects.Db4o.IO.BinDecorator
 			{
-				// TODO Auto-generated method stub
-				return new InvalidSlotExceptionTestCase.MockIoAdapter(path, lockFile, initialLength
-					, readOnly);
-			}
+				private bool _deliverInvalidSlot;
 
-			/// <exception cref="Db4oIOException"></exception>
-			public override void Seek(long pos)
-			{
-				if (pos == OutOfMemoryId)
+				public MockBin(IBin bin) : base(bin)
 				{
-					throw new OutOfMemoryException();
 				}
-				if (pos == InvalidId)
-				{
-					_deliverInvalidSlot = true;
-					return;
-				}
-				_deliverInvalidSlot = false;
-				base.Seek(pos);
-			}
 
-			/// <exception cref="Db4oIOException"></exception>
-			public override int Read(byte[] bytes, int length)
-			{
-				if (_deliverInvalidSlot)
+				/// <exception cref="Db4oIOException"></exception>
+				public override int Read(long pos, byte[] bytes, int length)
 				{
-					ByteArrayBuffer buffer = new ByteArrayBuffer(Const4.PointerLength);
-					buffer.WriteInt(1);
-					buffer.WriteInt(int.MaxValue);
-					System.Array.Copy(buffer._buffer, 0, bytes, 0, Const4.PointerLength);
-					return length;
+					Seek(pos);
+					if (_deliverInvalidSlot)
+					{
+						ByteArrayBuffer buffer = new ByteArrayBuffer(Const4.PointerLength);
+						buffer.WriteInt(1);
+						buffer.WriteInt(int.MaxValue);
+						System.Array.Copy(buffer._buffer, 0, bytes, 0, Const4.PointerLength);
+						return length;
+					}
+					return base.Read(pos, bytes, length);
 				}
-				return base.Read(bytes, length);
+
+				/// <exception cref="Db4oIOException"></exception>
+				private void Seek(long pos)
+				{
+					if (pos == OutOfMemoryId)
+					{
+						throw new OutOfMemoryException();
+					}
+					if (pos == InvalidId)
+					{
+						_deliverInvalidSlot = true;
+						return;
+					}
+					_deliverInvalidSlot = false;
+				}
 			}
 		}
 	}

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Foundation
 			_bits = new byte[ByteCount(numBits)];
 		}
 
-		/// <summary>"readFrom  buffer" constructor *</summary>
+		/// <summary>"readFrom  buffer" constructor</summary>
 		public BitMap4(byte[] buffer, int pos, int numBits) : this(numBits)
 		{
 			System.Array.Copy(buffer, pos, _bits, 0, _bits.Length);

@@ -28,7 +28,7 @@ namespace Db4oUnit.Fixtures
 			{
 				label += ":" + ((ILabeled)_fixture).Label();
 			}
-			return new FixtureDecoration(test, label, _provider, _fixture);
+			return new TestWithFixture(test, label, _provider, _fixture);
 		}
 	}
 }

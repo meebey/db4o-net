@@ -26,8 +26,8 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			string name = "one";
 			Store(new StringEncodingTestCaseBase.Item(name));
 			Reopen();
-			StringEncodingTestCaseBase.Item item = (StringEncodingTestCaseBase.Item)RetrieveOnlyInstance
-				(typeof(StringEncodingTestCaseBase.Item));
+			StringEncodingTestCaseBase.Item item = (StringEncodingTestCaseBase.Item)((StringEncodingTestCaseBase.Item
+				)RetrieveOnlyInstance(typeof(StringEncodingTestCaseBase.Item)));
 			Assert.AreEqual(name, item._name);
 		}
 

@@ -7,7 +7,7 @@ using Sharpen.Lang;
 
 namespace Db4oUnit.Fixtures
 {
-	public sealed class FixtureDecoration : ITestDecoration
+	public sealed class TestWithFixture : ITest
 	{
 		private readonly ITest _test;
 
@@ -17,12 +17,12 @@ namespace Db4oUnit.Fixtures
 
 		private readonly string _fixtureLabel;
 
-		public FixtureDecoration(ITest test, FixtureVariable fixtureVariable, object fixtureValue
+		public TestWithFixture(ITest test, FixtureVariable fixtureVariable, object fixtureValue
 			) : this(test, null, fixtureVariable, fixtureValue)
 		{
 		}
 
-		public FixtureDecoration(ITest test, string fixtureLabel, FixtureVariable fixtureVariable
+		public TestWithFixture(ITest test, string fixtureLabel, FixtureVariable fixtureVariable
 			, object fixtureValue)
 		{
 			_test = test;
@@ -40,7 +40,7 @@ namespace Db4oUnit.Fixtures
 
 		private sealed class _IRunnable_26 : IRunnable
 		{
-			public _IRunnable_26(FixtureDecoration _enclosing, ObjectByRef label)
+			public _IRunnable_26(TestWithFixture _enclosing, ObjectByRef label)
 			{
 				this._enclosing = _enclosing;
 				this.label = label;
@@ -52,7 +52,7 @@ namespace Db4oUnit.Fixtures
 					.Label();
 			}
 
-			private readonly FixtureDecoration _enclosing;
+			private readonly TestWithFixture _enclosing;
 
 			private readonly ObjectByRef label;
 		}

@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Internal.Transactionlog;
 using Db4objects.Db4o.Tests.Common.Acid;
 using Sharpen.IO;
 
@@ -15,9 +16,36 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		internal Collection4 currentWrite = new Collection4();
 
-		public virtual void Add(byte[] bytes, long offset, int length)
+		public virtual void Add(string path, byte[] bytes, long offset, int length)
 		{
-			currentWrite.Add(new CrashSimulatingWrite(bytes, offset, length));
+			byte[] lockFileBuffer = null;
+			byte[] logFileBuffer = null;
+			if (System.IO.File.Exists(FileBasedTransactionLogHandler.LockFileName(path)))
+			{
+				try
+				{
+					lockFileBuffer = ReadAllBytes(FileBasedTransactionLogHandler.LockFileName(path));
+					logFileBuffer = ReadAllBytes(FileBasedTransactionLogHandler.LogFileName(path));
+				}
+				catch (IOException e)
+				{
+					Sharpen.Runtime.PrintStackTrace(e);
+				}
+			}
+			CrashSimulatingWrite crashSimulatingWrite = new CrashSimulatingWrite(bytes, offset
+				, length, lockFileBuffer, logFileBuffer);
+			currentWrite.Add(crashSimulatingWrite);
+		}
+
+		/// <exception cref="IOException"></exception>
+		private byte[] ReadAllBytes(string fileName)
+		{
+			int length = (int)new Sharpen.IO.File(fileName).Length();
+			RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+			byte[] buffer = new byte[length];
+			raf.Read(buffer);
+			raf.Close();
+			return buffer;
 		}
 
 		public virtual void Sync()
@@ -49,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				while (singleForwardIter.MoveNext())
 				{
 					CrashSimulatingWrite csw = (CrashSimulatingWrite)singleForwardIter.Current;
-					csw.Write(rightRaf);
+					csw.Write(rightFileName, rightRaf);
 				}
 				rightRaf.Close();
 				IEnumerator singleBackwardIter = writesBetweenSync.GetEnumerator();
@@ -60,7 +88,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 					string currentFileName = file + "W" + count;
 					File4.Copy(lastFileName, currentFileName);
 					RandomAccessFile raf = new RandomAccessFile(currentFileName, "rw");
-					csw.Write(raf);
+					csw.Write(currentFileName, raf);
 					raf.Close();
 					lastFileName = currentFileName;
 				}

@@ -73,7 +73,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Db().Store(expectedItem);
 			Db().Purge(expectedItem);
 			ArrayHandlerTestCase.IntArrayHolder readItem = (ArrayHandlerTestCase.IntArrayHolder
-				)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.IntArrayHolder));
+				)((ArrayHandlerTestCase.IntArrayHolder)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.IntArrayHolder
+				)));
 			Assert.AreNotSame(expectedItem, readItem);
 			ArrayAssert.AreEqual(expectedItem._ints, readItem._ints);
 		}
@@ -96,7 +97,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Db().Store(expectedItem);
 			Db().Purge(expectedItem);
 			ArrayHandlerTestCase.StringArrayHolder readItem = (ArrayHandlerTestCase.StringArrayHolder
-				)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.StringArrayHolder));
+				)((ArrayHandlerTestCase.StringArrayHolder)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.StringArrayHolder
+				)));
 			Assert.AreNotSame(expectedItem, readItem);
 			ArrayAssert.AreEqual(expectedItem._strings, readItem._strings);
 		}

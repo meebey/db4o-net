@@ -41,8 +41,8 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		/// <exception cref="Exception"></exception>
 		public virtual void Test()
 		{
-			ActivateDepthTestCase.Data data = (ActivateDepthTestCase.Data)RetrieveOnlyInstance
-				(typeof(ActivateDepthTestCase.Data));
+			ActivateDepthTestCase.Data data = (ActivateDepthTestCase.Data)((ActivateDepthTestCase.Data
+				)RetrieveOnlyInstance(typeof(ActivateDepthTestCase.Data)));
 			Assert.AreEqual(0, data.value);
 		}
 	}

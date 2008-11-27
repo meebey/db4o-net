@@ -60,8 +60,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void Test()
 		{
-			ObjectConstructorTestCase.Item item = (ObjectConstructorTestCase.Item)RetrieveOnlyInstance
-				(typeof(ObjectConstructorTestCase.Item));
+			ObjectConstructorTestCase.Item item = (ObjectConstructorTestCase.Item)((ObjectConstructorTestCase.Item
+				)RetrieveOnlyInstance(typeof(ObjectConstructorTestCase.Item)));
 			Assert.AreEqual("one", item._name);
 		}
 	}

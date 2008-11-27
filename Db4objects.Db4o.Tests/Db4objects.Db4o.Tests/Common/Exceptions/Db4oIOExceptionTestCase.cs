@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			Store(new Db4oIOExceptionTestCase.Item(3));
 			Fixture().Config().ActivationDepth(1);
 			Fixture().Reopen(GetType());
-			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)RetrieveOnlyInstance
-				(typeof(Db4oIOExceptionTestCase.Item));
+			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)((Db4oIOExceptionTestCase.Item
+				)RetrieveOnlyInstance(typeof(Db4oIOExceptionTestCase.Item)));
 			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_25(this, item));
 		}
 
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Activate(item, 3);
 			}
 
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Close();
 			}
 
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Commit();
 			}
 
@@ -102,8 +102,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDelete()
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
-			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)RetrieveOnlyInstance
-				(typeof(Db4oIOExceptionTestCase.Item));
+			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)((Db4oIOExceptionTestCase.Item
+				)RetrieveOnlyInstance(typeof(Db4oIOExceptionTestCase.Item)));
 			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_55(this, item));
 		}
 
@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Delete(item);
 			}
 
@@ -145,7 +145,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().QueryByExample(typeof(Db4oIOExceptionTestCase.Item));
 			}
 
@@ -169,7 +169,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				IObjectSet os = this._enclosing.Db().QueryByExample(null);
 				while (os.HasNext())
 				{
@@ -197,7 +197,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Query(typeof(Db4oIOExceptionTestCase.Item));
 			}
 
@@ -221,7 +221,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Rollback();
 			}
 
@@ -244,7 +244,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().Store(new Db4oIOExceptionTestCase.Item(3));
 			}
 
@@ -274,7 +274,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Exception"></exception>
 			public void Run()
 			{
-				ExceptionIOAdapter.exception = true;
+				ExceptionSimulatingStorage.exception = true;
 				this._enclosing.Db().GetByUUID(uuid);
 			}
 

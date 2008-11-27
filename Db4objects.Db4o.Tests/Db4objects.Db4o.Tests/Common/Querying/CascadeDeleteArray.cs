@@ -37,7 +37,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 
 		public virtual void Test()
 		{
-			CascadeDeleteArray cda = (CascadeDeleteArray)RetrieveOnlyInstance(GetType());
+			CascadeDeleteArray cda = (CascadeDeleteArray)((CascadeDeleteArray)RetrieveOnlyInstance
+				(GetType()));
 			Assert.AreEqual(3, CountOccurences(typeof(CascadeDeleteArray.ArrayElem)));
 			Db().Delete(cda);
 			Assert.AreEqual(0, CountOccurences(typeof(CascadeDeleteArray.ArrayElem)));

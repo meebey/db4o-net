@@ -72,7 +72,8 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 				Reopen();
 			}
 			ClassRenameByStoredClassTestCase.Changed changedObject = (ClassRenameByStoredClassTestCase.Changed
-				)RetrieveOnlyInstance(typeof(ClassRenameByStoredClassTestCase.Changed));
+				)((ClassRenameByStoredClassTestCase.Changed)RetrieveOnlyInstance(typeof(ClassRenameByStoredClassTestCase.Changed
+				)));
 			Assert.AreEqual(Name, changedObject._name);
 			Assert.IsNull(changedObject._otherName);
 		}

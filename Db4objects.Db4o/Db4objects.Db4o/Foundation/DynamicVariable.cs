@@ -17,6 +17,11 @@ namespace Db4objects.Db4o.Foundation
 	/// </remarks>
 	public class DynamicVariable
 	{
+		public static Db4objects.Db4o.Foundation.DynamicVariable NewInstance()
+		{
+			return new Db4objects.Db4o.Foundation.DynamicVariable();
+		}
+
 		private class ThreadSlot
 		{
 			public readonly Thread thread;
@@ -58,7 +63,7 @@ namespace Db4objects.Db4o.Foundation
 					{
 						if (slot.thread == current)
 						{
-							return slot.value;
+							return (object)slot.value;
 						}
 						slot = slot.next;
 					}
@@ -88,12 +93,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void With(object value, IRunnable block)
 		{
-			With(value, new _IClosure4_69(block));
+			With(value, new _IClosure4_73(block));
 		}
 
-		private sealed class _IClosure4_69 : IClosure4
+		private sealed class _IClosure4_73 : IClosure4
 		{
-			public _IClosure4_69(IRunnable block)
+			public _IClosure4_73(IRunnable block)
 			{
 				this.block = block;
 			}

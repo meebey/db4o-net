@@ -10,6 +10,15 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class FloatHandlerUpdateTestCase : HandlerUpdateTestCaseBase
 	{
+		private readonly float[] data;
+
+		public FloatHandlerUpdateTestCase()
+		{
+			data = new float[] { float.NegativeInfinity, float.MinValue, float.MinValue + 1, 
+				-5, -1, 0, 1, 5, float.MaxValue - 1, float.MaxValue, float.PositiveInfinity, UsesNullMarkerValue
+				() ? 0 : float.NaN };
+		}
+
 		public class Item
 		{
 			public float _typedPrimitive;
@@ -31,10 +40,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public object _wrapperArrayInObject;
 		}
-
-		private static readonly float[] data = new float[] { float.NegativeInfinity, float.MinValue
-			, float.MinValue + 1, -5, -1, 0, 1, 5, float.MaxValue - 1, float.MaxValue, float.PositiveInfinity
-			, float.NaN };
 
 		public static void Main(string[] args)
 		{

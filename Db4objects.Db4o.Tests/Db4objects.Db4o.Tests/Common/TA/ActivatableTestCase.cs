@@ -103,7 +103,8 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		private MockActivatable RetrieveMock(IExtObjectContainer container)
 		{
-			return (MockActivatable)RetrieveOnlyInstance(container, typeof(MockActivatable));
+			return (MockActivatable)((MockActivatable)RetrieveOnlyInstance(container, typeof(
+				MockActivatable)));
 		}
 
 		private MockActivatable StoreNewMock()

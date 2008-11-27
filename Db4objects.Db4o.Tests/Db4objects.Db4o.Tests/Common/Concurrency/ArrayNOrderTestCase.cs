@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			ArrayNOrderTestCase.Item item = (ArrayNOrderTestCase.Item)RetrieveOnlyInstance(oc
-				, typeof(ArrayNOrderTestCase.Item));
+			ArrayNOrderTestCase.Item item = (ArrayNOrderTestCase.Item)((ArrayNOrderTestCase.Item
+				)RetrieveOnlyInstance(oc, typeof(ArrayNOrderTestCase.Item)));
 			AssertItem(item);
 		}
 

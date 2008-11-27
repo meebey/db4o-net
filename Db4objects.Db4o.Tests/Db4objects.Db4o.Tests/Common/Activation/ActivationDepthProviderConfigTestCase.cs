@@ -126,8 +126,9 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		private ActivationDepthProviderConfigTestCase.Item QueryItem()
 		{
-			return ((ActivationDepthProviderConfigTestCase.ItemRoot)RetrieveOnlyInstance(typeof(
-				ActivationDepthProviderConfigTestCase.ItemRoot))).root;
+			return ((ActivationDepthProviderConfigTestCase.ItemRoot)((ActivationDepthProviderConfigTestCase.ItemRoot
+				)RetrieveOnlyInstance(typeof(ActivationDepthProviderConfigTestCase.ItemRoot)))).
+				root;
 		}
 	}
 }

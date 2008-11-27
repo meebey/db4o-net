@@ -4,6 +4,7 @@ using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
@@ -13,19 +14,19 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		protected override void Configure(IConfiguration config)
 		{
 			config.LockDatabaseFile(false);
-			config.Io(new ExceptionIOAdapter());
+			config.Storage = new ExceptionSimulatingStorage(new FileStorage());
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oSetupBeforeStore()
 		{
-			ExceptionIOAdapter.exception = false;
+			ExceptionSimulatingStorage.exception = false;
 		}
 
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
-			ExceptionIOAdapter.exception = false;
+			ExceptionSimulatingStorage.exception = false;
 		}
 	}
 }

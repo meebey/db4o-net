@@ -203,7 +203,7 @@ namespace Db4objects.Db4o.Tools
 
 		private static readonly string Remove = "XXxxREMOVExxXX";
 
-		private class TreeStringObject : TreeString
+		private class TreeStringObject : Statistics.TreeString
 		{
 			public readonly object _object;
 

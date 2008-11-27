@@ -78,28 +78,28 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		public virtual void TestCommit()
 		{
-			TAWithGCBeforeCommitTestCase.Item item = (TAWithGCBeforeCommitTestCase.Item)RetrieveOnlyInstance
-				(typeof(TAWithGCBeforeCommitTestCase.Item));
+			TAWithGCBeforeCommitTestCase.Item item = (TAWithGCBeforeCommitTestCase.Item)((TAWithGCBeforeCommitTestCase.Item
+				)RetrieveOnlyInstance(typeof(TAWithGCBeforeCommitTestCase.Item)));
 			item.Id(UpdatedId);
 			item = null;
 			Runtime.Gc();
 			Db().Commit();
-			item = (TAWithGCBeforeCommitTestCase.Item)RetrieveOnlyInstance(typeof(TAWithGCBeforeCommitTestCase.Item
-				));
+			item = (TAWithGCBeforeCommitTestCase.Item)((TAWithGCBeforeCommitTestCase.Item)RetrieveOnlyInstance
+				(typeof(TAWithGCBeforeCommitTestCase.Item)));
 			Db().Refresh(item, int.MaxValue);
 			Assert.AreEqual(UpdatedId, item.Id());
 		}
 
 		public virtual void TestRollback()
 		{
-			TAWithGCBeforeCommitTestCase.Item item = (TAWithGCBeforeCommitTestCase.Item)RetrieveOnlyInstance
-				(typeof(TAWithGCBeforeCommitTestCase.Item));
+			TAWithGCBeforeCommitTestCase.Item item = (TAWithGCBeforeCommitTestCase.Item)((TAWithGCBeforeCommitTestCase.Item
+				)RetrieveOnlyInstance(typeof(TAWithGCBeforeCommitTestCase.Item)));
 			item.Id(UpdatedId);
 			item = null;
 			Runtime.Gc();
 			Db().Rollback();
-			item = (TAWithGCBeforeCommitTestCase.Item)RetrieveOnlyInstance(typeof(TAWithGCBeforeCommitTestCase.Item
-				));
+			item = (TAWithGCBeforeCommitTestCase.Item)((TAWithGCBeforeCommitTestCase.Item)RetrieveOnlyInstance
+				(typeof(TAWithGCBeforeCommitTestCase.Item)));
 			Db().Refresh(item, int.MaxValue);
 			Assert.AreEqual(OrigId, item.Id());
 		}

@@ -125,6 +125,35 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
+		public virtual void TestContains()
+		{
+			buffer.AddFirst(1);
+			buffer.AddFirst(3);
+			buffer.AddFirst(5);
+			Assert.IsTrue(buffer.Contains(1));
+			Assert.IsFalse(buffer.Contains(2));
+			Assert.IsTrue(buffer.Contains(3));
+			Assert.IsFalse(buffer.Contains(4));
+			Assert.IsTrue(buffer.Contains(5));
+		}
+
+		public virtual void TestFullEmpty()
+		{
+			Assert.IsTrue(buffer.IsEmpty());
+			Assert.IsFalse(buffer.IsFull());
+			buffer.AddFirst(1);
+			Assert.IsFalse(buffer.IsEmpty());
+			Assert.IsFalse(buffer.IsFull());
+			buffer.AddFirst(2);
+			buffer.AddFirst(3);
+			buffer.AddFirst(4);
+			Assert.IsFalse(buffer.IsEmpty());
+			Assert.IsTrue(buffer.IsFull());
+			buffer.RemoveLast();
+			Assert.IsFalse(buffer.IsEmpty());
+			Assert.IsFalse(buffer.IsFull());
+		}
+
 		public virtual void TestSize()
 		{
 			for (int i = 0; i < 3; ++i)

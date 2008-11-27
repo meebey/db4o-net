@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				ByteArrayBuffer reader = trans.Container().ReadReaderByID(trans, GetID());
+				ByteArrayBuffer reader = ProduceReadBuffer(trans);
 				ReadThis(trans, reader);
 				SetStateOnRead(reader);
 			}
@@ -112,6 +112,16 @@ namespace Db4objects.Db4o.Internal
 			{
 				EndProcessing();
 			}
+		}
+
+		protected virtual ByteArrayBuffer ProduceReadBuffer(Transaction trans)
+		{
+			return ReadBufferById(trans);
+		}
+
+		protected virtual ByteArrayBuffer ReadBufferById(Transaction trans)
+		{
+			return trans.Container().ReadReaderByID(trans, GetID());
 		}
 
 		public virtual void SetID(int a_id)
@@ -167,7 +177,6 @@ namespace Db4objects.Db4o.Internal
 				}
 				int length = OwnLength();
 				length = stream.BlockAlignedBytes(length);
-				ByteArrayBuffer writer = new ByteArrayBuffer(length);
 				Slot slot;
 				if (IsNew())
 				{
@@ -182,12 +191,24 @@ namespace Db4objects.Db4o.Internal
 					slot = stream.GetSlot(length);
 					trans.SlotFreeOnRollbackCommitSetPointer(_id, slot, IsFreespaceComponent());
 				}
+				ByteArrayBuffer writer = ProduceWriteBuffer(trans, length);
 				WriteToFile(trans, writer, slot);
 			}
 			finally
 			{
 				EndProcessing();
 			}
+		}
+
+		protected virtual ByteArrayBuffer ProduceWriteBuffer(Transaction trans, int length
+			)
+		{
+			return NewWriteBuffer(length);
+		}
+
+		protected virtual ByteArrayBuffer NewWriteBuffer(int length)
+		{
+			return new ByteArrayBuffer(length);
 		}
 
 		public virtual bool IsFreespaceComponent()

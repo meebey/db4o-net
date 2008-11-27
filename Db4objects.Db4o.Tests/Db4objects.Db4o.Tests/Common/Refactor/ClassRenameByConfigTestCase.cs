@@ -56,7 +56,8 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			Assert.AreEqual(0, CountOccurences(typeof(ClassRenameByConfigTestCase.Original)));
 			Assert.AreEqual(1, CountOccurences(typeof(ClassRenameByConfigTestCase.Changed)));
 			ClassRenameByConfigTestCase.Changed changed = (ClassRenameByConfigTestCase.Changed
-				)RetrieveOnlyInstance(typeof(ClassRenameByConfigTestCase.Changed));
+				)((ClassRenameByConfigTestCase.Changed)RetrieveOnlyInstance(typeof(ClassRenameByConfigTestCase.Changed
+				)));
 			Assert.AreEqual("original", changed.changedName);
 		}
 	}

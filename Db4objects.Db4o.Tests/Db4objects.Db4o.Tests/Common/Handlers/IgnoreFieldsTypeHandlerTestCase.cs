@@ -61,7 +61,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual void Test()
 		{
 			IgnoreFieldsTypeHandlerTestCase.Item5 item = (IgnoreFieldsTypeHandlerTestCase.Item5
-				)RetrieveOnlyInstance(typeof(IgnoreFieldsTypeHandlerTestCase.Item5));
+				)((IgnoreFieldsTypeHandlerTestCase.Item5)RetrieveOnlyInstance(typeof(IgnoreFieldsTypeHandlerTestCase.Item5
+				)));
 			Assert.AreEqual(1, item.id1);
 			Assert.AreEqual(0, item.id2);
 			Assert.AreEqual(3, item.id3);

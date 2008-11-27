@@ -79,8 +79,8 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 
 		private void AssertData()
 		{
-			ClassIndexOffTestCase.Holder holder = (ClassIndexOffTestCase.Holder)RetrieveOnlyInstance
-				(typeof(ClassIndexOffTestCase.Holder));
+			ClassIndexOffTestCase.Holder holder = (ClassIndexOffTestCase.Holder)((ClassIndexOffTestCase.Holder
+				)RetrieveOnlyInstance(typeof(ClassIndexOffTestCase.Holder)));
 			Assert.IsNotNull(holder._item);
 			Assert.AreEqual(Name, holder._item._name);
 		}

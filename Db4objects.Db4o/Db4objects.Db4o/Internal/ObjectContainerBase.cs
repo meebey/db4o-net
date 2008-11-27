@@ -423,10 +423,13 @@ namespace Db4objects.Db4o.Internal
 			LogMsg(3, ToString());
 			lock (_lock)
 			{
+				CloseSystemTransaction();
 				StopSession();
 				ShutdownDataStorage();
 			}
 		}
+
+		protected abstract void CloseSystemTransaction();
 
 		protected abstract void ShutdownDataStorage();
 
@@ -758,7 +761,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_616(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_619(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -780,9 +783,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_616 : IProcedure4
+		private sealed class _IProcedure4_619 : IProcedure4
 		{
-			public _IProcedure4_616(string fieldName, ByRef foundField)
+			public _IProcedure4_619(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;

@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void TestHandles()
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.Io(new MemoryIoAdapter());
+			config.Storage = new MemoryStorage();
 			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, SwitchingFilesFromClientUtil
 				.MainfileName);
 			ClientTransactionPool pool = new ClientTransactionPool(db);

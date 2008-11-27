@@ -101,9 +101,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				db4oConfig = Db4oFactory.NewConfiguration();
 				db4oConfig.ActivationDepth(int.MaxValue);
 				db4oConfig.CallConstructors(true);
-				IoAdapter ioAdapter = new COR775TestCase.MockIOAdapter(new RandomAccessFileAdapter
-					(), "db4o");
-				db4oConfig.Io(ioAdapter);
+				IStorage storage = new COR775TestCase.MockStorage(new FileStorage(), "db4o");
+				db4oConfig.Storage = storage;
 			}
 			return db4oConfig;
 		}
@@ -121,84 +120,49 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		public class MockIOAdapter : IoAdapter
+		public class MockStorage : StorageDecorator
 		{
-			private IoAdapter ioAdapter;
-
 			private string password;
 
-			private long pos;
-
-			public MockIOAdapter(IoAdapter ioAdapter, string password)
+			public MockStorage(IStorage storage, string password) : base(storage)
 			{
-				this.ioAdapter = ioAdapter;
 				this.password = password;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
-			public override void Close()
+			protected override IBin Decorate(IBin bin)
 			{
-				ioAdapter.Close();
+				return new COR775TestCase.MockStorage.MockBin(bin, password);
 			}
 
-			public override void Delete(string path)
+			internal class MockBin : BinDecorator
 			{
-				ioAdapter.Delete(path);
-			}
+				private string _password;
 
-			public override bool Exists(string path)
-			{
-				return ioAdapter.Exists(path);
-			}
-
-			/// <exception cref="Db4oIOException"></exception>
-			public override long GetLength()
-			{
-				return ioAdapter.GetLength();
-			}
-
-			/// <exception cref="Db4oIOException"></exception>
-			public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
-				 readOnly)
-			{
-				return new COR775TestCase.MockIOAdapter(ioAdapter.Open(path, lockFile, initialLength
-					, readOnly), password);
-			}
-
-			/// <exception cref="Db4oIOException"></exception>
-			public override int Read(byte[] bytes, int length)
-			{
-				ioAdapter.Read(bytes);
-				for (int i = 0; i < length; i++)
+				public MockBin(IBin bin, string password) : base(bin)
 				{
-					bytes[i] = (byte)(bytes[i] - password.GetHashCode());
+					_password = password;
 				}
-				ioAdapter.Seek(pos + length);
-				return length;
-			}
 
-			/// <exception cref="Db4oIOException"></exception>
-			public override void Seek(long pos)
-			{
-				this.pos = pos;
-				ioAdapter.Seek(pos);
-			}
-
-			/// <exception cref="Db4oIOException"></exception>
-			public override void Sync()
-			{
-				ioAdapter.Sync();
-			}
-
-			/// <exception cref="Db4oIOException"></exception>
-			public override void Write(byte[] buffer, int length)
-			{
-				for (int i = 0; i < length; i++)
+				/// <exception cref="Db4oIOException"></exception>
+				public override int Read(long pos, byte[] bytes, int length)
 				{
-					buffer[i] = (byte)(buffer[i] + password.GetHashCode());
+					_bin.Read(pos, bytes, length);
+					for (int i = 0; i < length; i++)
+					{
+						bytes[i] = (byte)(bytes[i] - _password.GetHashCode());
+					}
+					return length;
 				}
-				ioAdapter.Write(buffer, length);
-				Seek(pos + length);
+
+				/// <exception cref="Db4oIOException"></exception>
+				public override void Write(long pos, byte[] buffer, int length)
+				{
+					for (int i = 0; i < length; i++)
+					{
+						buffer[i] = (byte)(buffer[i] + _password.GetHashCode());
+					}
+					_bin.Write(pos, buffer, length);
+				}
 			}
 		}
 	}

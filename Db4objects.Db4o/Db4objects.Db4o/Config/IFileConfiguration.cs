@@ -115,29 +115,25 @@ namespace Db4objects.Db4o.Config
 			set;
 		}
 
-		/// <summary>allows to configure db4o to use a customized byte IO adapter.</summary>
+		/// <summary>allows to configure db4o to use a customized byte IO storage mechanism.</summary>
 		/// <remarks>
-		/// allows to configure db4o to use a customized byte IO adapter.
-		/// <br /><br />Derive from the abstract class
-		/// <see cref="IoAdapter">IoAdapter</see>
+		/// allows to configure db4o to use a customized byte IO storage mechanism.
+		/// <br /><br />Implement the interface
+		/// <see cref="IStorage">IStorage</see>
 		/// to
 		/// write your own. Possible usecases could be improved performance
 		/// with a native library, mirrored write to two files, encryption or
-		/// read-on-write fail-safety control.<br /><br />An example of a custom
-		/// io adapter can be found in xtea_db4o community project:<br />
-		/// http://developer.db4o.com/ProjectSpaces/view.aspx/XTEA<br /><br />
-		/// In client-server environment this setting should be used on the server
-		/// (adapter class must be available)<br /><br />
+		/// read-on-write fail-safety control.<br /><br />
 		/// </remarks>
-		/// <param name="adapter">- the IoAdapter</param>
+		/// <param name="storage">- the storage</param>
 		/// <exception cref="GlobalOnlyConfigException"></exception>
 		/// <summary>
 		/// returns the configured
-		/// <see cref="IoAdapter">IoAdapter</see>
+		/// <see cref="IStorage">IStorage</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		IoAdapter Io
+		IStorage Storage
 		{
 			get;
 			set;

@@ -52,8 +52,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		public virtual void TestOne()
 		{
-			NestedArraysTestCase.Data data = (NestedArraysTestCase.Data)RetrieveOnlyInstance(
-				typeof(NestedArraysTestCase.Data));
+			NestedArraysTestCase.Data data = (NestedArraysTestCase.Data)((NestedArraysTestCase.Data
+				)RetrieveOnlyInstance(typeof(NestedArraysTestCase.Data)));
 			Db().Activate(data, int.MaxValue);
 			Check((object[])data._obj, Depth);
 			Check(data._arr, Depth);

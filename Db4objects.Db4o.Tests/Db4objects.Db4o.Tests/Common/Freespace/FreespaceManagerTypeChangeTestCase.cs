@@ -75,14 +75,15 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void DeleteItem()
 		{
-			Db().Delete(RetrieveOnlyInstance(typeof(FreespaceManagerTypeChangeTestCase.Item))
-				);
+			Db().Delete(((FreespaceManagerTypeChangeTestCase.Item)RetrieveOnlyInstance(typeof(
+				FreespaceManagerTypeChangeTestCase.Item))));
 		}
 
 		private void AssertItemAvailable()
 		{
 			FreespaceManagerTypeChangeTestCase.Item item = (FreespaceManagerTypeChangeTestCase.Item
-				)RetrieveOnlyInstance(typeof(FreespaceManagerTypeChangeTestCase.Item));
+				)((FreespaceManagerTypeChangeTestCase.Item)RetrieveOnlyInstance(typeof(FreespaceManagerTypeChangeTestCase.Item
+				)));
 			Assert.AreEqual(ItemName, item._name);
 		}
 

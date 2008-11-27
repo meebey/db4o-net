@@ -52,7 +52,8 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
-			_id = Db().GetID(RetrieveOnlyInstance(typeof(StoredClassTestCase.Item)));
+			_id = Db().GetID(((StoredClassTestCase.Item)RetrieveOnlyInstance(typeof(StoredClassTestCase.Item
+				))));
 		}
 
 		public virtual void TestUnknownStoredClass()

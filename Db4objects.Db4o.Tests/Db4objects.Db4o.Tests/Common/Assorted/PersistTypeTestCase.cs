@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void Test()
 		{
-			Assert.AreEqual(typeof(string), ((PersistTypeTestCase.Item)RetrieveOnlyInstance(typeof(
-				PersistTypeTestCase.Item))).type);
+			Assert.AreEqual(typeof(string), ((PersistTypeTestCase.Item)((PersistTypeTestCase.Item
+				)RetrieveOnlyInstance(typeof(PersistTypeTestCase.Item)))).type);
 		}
 	}
 }

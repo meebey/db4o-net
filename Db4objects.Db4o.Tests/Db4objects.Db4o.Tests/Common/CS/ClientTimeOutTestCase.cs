@@ -47,7 +47,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			ClientTimeOutTestCase.Item item = new ClientTimeOutTestCase.Item("one");
 			Store(item);
 			Cool.SleepIgnoringInterruption(Timeout * 2);
-			Assert.AreSame(item, RetrieveOnlyInstance(typeof(ClientTimeOutTestCase.Item)));
+			Assert.AreSame(item, ((ClientTimeOutTestCase.Item)RetrieveOnlyInstance(typeof(ClientTimeOutTestCase.Item
+				))));
 		}
 
 		public virtual void TestTimedoutAndClosedClient()

@@ -184,10 +184,10 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(ConfigScope.Globally, legacyConfig.GenerateUUIDs());
 				fileConfig.GenerateVersionNumbers = ConfigScope.Globally;
 				Assert.AreEqual(ConfigScope.Globally, legacyConfig.GenerateVersionNumbers());
-				MemoryIoAdapter ioAdapter = new MemoryIoAdapter();
-				fileConfig.Io = ioAdapter;
-				Assert.AreEqual(ioAdapter, legacyConfig.Io());
-				Assert.AreEqual(ioAdapter, fileConfig.Io);
+				IStorage storageFactory = new FileStorage();
+				fileConfig.Storage = storageFactory;
+				Assert.AreSame(storageFactory, legacyConfig.Storage);
+				Assert.AreSame(storageFactory, fileConfig.Storage);
 				fileConfig.LockDatabaseFile = true;
 				Assert.IsTrue(legacyConfig.LockFile());
 				fileConfig.ReserveStorageSpace = 1024;
@@ -196,6 +196,11 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(Path.GetTempPath(), legacyConfig.BlobPath());
 				fileConfig.ReadOnly = true;
 				Assert.IsTrue(legacyConfig.IsReadOnly());
+				ICacheConfigurationProvider cacheProvider = ((ICacheConfigurationProvider)Subject
+					());
+				ICacheConfiguration cache = cacheProvider.Cache;
+				cache.SlotCacheSize = 30;
+				Assert.AreEqual(30, legacyConfig.SlotCacheSize());
 			}
 		}
 

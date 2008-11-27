@@ -47,8 +47,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			PersistStaticFieldValuesTestCase psfv = (PersistStaticFieldValuesTestCase)RetrieveOnlyInstance
-				(oc, typeof(PersistStaticFieldValuesTestCase));
+			PersistStaticFieldValuesTestCase psfv = (PersistStaticFieldValuesTestCase)((PersistStaticFieldValuesTestCase
+				)RetrieveOnlyInstance(oc, typeof(PersistStaticFieldValuesTestCase)));
 			Assert.AreSame(One, psfv.one);
 			Assert.AreSame(Two, psfv.two);
 			Assert.AreSame(Three, psfv.three);

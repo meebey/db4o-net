@@ -42,8 +42,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc, int seq)
 		{
-			CascadeOnUpdate2TestCase.Item item = (CascadeOnUpdate2TestCase.Item)RetrieveOnlyInstance
-				(oc, typeof(CascadeOnUpdate2TestCase.Item));
+			CascadeOnUpdate2TestCase.Item item = (CascadeOnUpdate2TestCase.Item)((CascadeOnUpdate2TestCase.Item
+				)RetrieveOnlyInstance(oc, typeof(CascadeOnUpdate2TestCase.Item)));
 			for (int i = 0; i < AtomCount; i++)
 			{
 				item.child[i].name = "updated" + seq;
@@ -54,8 +54,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Check(IExtObjectContainer oc)
 		{
-			CascadeOnUpdate2TestCase.Item item = (CascadeOnUpdate2TestCase.Item)RetrieveOnlyInstance
-				(oc, typeof(CascadeOnUpdate2TestCase.Item));
+			CascadeOnUpdate2TestCase.Item item = (CascadeOnUpdate2TestCase.Item)((CascadeOnUpdate2TestCase.Item
+				)RetrieveOnlyInstance(oc, typeof(CascadeOnUpdate2TestCase.Item)));
 			string name = item.child[0].name;
 			Assert.IsTrue(name.StartsWith("updated"));
 			for (int i = 0; i < AtomCount; i++)

@@ -66,8 +66,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestAccessByChildClass()
 		{
 			AddABAlias();
-			AliasesTestCase.BBar bar = (AliasesTestCase.BBar)RetrieveOnlyInstance(typeof(AliasesTestCase.BBar
-				));
+			AliasesTestCase.BBar bar = (AliasesTestCase.BBar)((AliasesTestCase.BBar)RetrieveOnlyInstance
+				(typeof(AliasesTestCase.BBar)));
 			AssertInstanceOK(bar);
 		}
 
@@ -75,8 +75,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestAccessByParentClass()
 		{
 			AddABAlias();
-			AliasesTestCase.BBar bar = (AliasesTestCase.BBar)RetrieveOnlyInstance(typeof(AliasesTestCase.BFoo
-				));
+			AliasesTestCase.BBar bar = (AliasesTestCase.BBar)((AliasesTestCase.BFoo)RetrieveOnlyInstance
+				(typeof(AliasesTestCase.BFoo)));
 			AssertInstanceOK(bar);
 		}
 
@@ -93,8 +93,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestAccessWithoutAlias()
 		{
 			RemoveAlias();
-			AliasesTestCase.ABar bar = (AliasesTestCase.ABar)RetrieveOnlyInstance(typeof(AliasesTestCase.ABar
-				));
+			AliasesTestCase.ABar bar = (AliasesTestCase.ABar)((AliasesTestCase.ABar)RetrieveOnlyInstance
+				(typeof(AliasesTestCase.ABar)));
 			AssertInstanceOK(bar);
 		}
 

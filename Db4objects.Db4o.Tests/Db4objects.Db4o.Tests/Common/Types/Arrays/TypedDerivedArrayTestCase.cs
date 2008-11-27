@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		public virtual void Test()
 		{
-			TypedDerivedArrayTestCase.Data data = (TypedDerivedArrayTestCase.Data)RetrieveOnlyInstance
-				(typeof(TypedDerivedArrayTestCase.Data));
+			TypedDerivedArrayTestCase.Data data = (TypedDerivedArrayTestCase.Data)((TypedDerivedArrayTestCase.Data
+				)RetrieveOnlyInstance(typeof(TypedDerivedArrayTestCase.Data)));
 			Assert.IsTrue(data._array is MoleculeData[], "Expected instance of " + typeof(MoleculeData
 				[]) + ", but got " + data._array);
 			ArrayAssert.AreEqual(Array, data._array);

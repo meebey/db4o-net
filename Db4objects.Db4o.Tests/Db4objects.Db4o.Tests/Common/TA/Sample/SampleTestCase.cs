@@ -57,8 +57,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 		/// <exception cref="Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
-			object customer = RetrieveOnlyInstance(typeof(Customer));
-			object country = RetrieveOnlyInstance(typeof(Country));
+			object customer = ((Customer)RetrieveOnlyInstance(typeof(Customer)));
+			object country = ((Country)RetrieveOnlyInstance(typeof(Country)));
 			customerID = Db().GetID(customer);
 			countryID = Db().GetID(country);
 			customerUUID = Db().GetObjectInfo(customer).GetUUID();
@@ -69,13 +69,14 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 		/// <exception cref="Exception"></exception>
 		public virtual void TestRetrieveNonActivatable()
 		{
-			CheckGraphActivation((Customer)RetrieveOnlyInstance(typeof(Customer)));
+			CheckGraphActivation((Customer)((Customer)RetrieveOnlyInstance(typeof(Customer)))
+				);
 		}
 
 		/// <exception cref="Exception"></exception>
 		public virtual void TestRetrieveActivatable()
 		{
-			CheckGraphActivation((Country)RetrieveOnlyInstance(typeof(Country)));
+			CheckGraphActivation((Country)((Country)RetrieveOnlyInstance(typeof(Country))));
 		}
 
 		public virtual void TestPeekPersisted()

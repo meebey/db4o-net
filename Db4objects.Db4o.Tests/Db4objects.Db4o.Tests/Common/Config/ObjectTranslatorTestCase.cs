@@ -88,8 +88,8 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public virtual void _testTranslationCount()
 		{
-			ObjectTranslatorTestCase.Thing t = (ObjectTranslatorTestCase.Thing)RetrieveOnlyInstance
-				(typeof(ObjectTranslatorTestCase.Thing));
+			ObjectTranslatorTestCase.Thing t = (ObjectTranslatorTestCase.Thing)((ObjectTranslatorTestCase.Thing
+				)RetrieveOnlyInstance(typeof(ObjectTranslatorTestCase.Thing)));
 			Assert.IsNotNull(t);
 			Assert.AreEqual("jbe", t.name);
 			Assert.AreEqual(1, _trans.GetCount(t));

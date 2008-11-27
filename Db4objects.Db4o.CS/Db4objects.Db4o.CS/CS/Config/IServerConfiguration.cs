@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.CS.Config
 	/// <remarks>Configuration interface for db4o servers.</remarks>
 	/// <since>7.5</since>
 	public interface IServerConfiguration : IFileConfigurationProvider, INetworkingConfigurationProvider
-		, ICommonConfigurationProvider
+		, ICommonConfigurationProvider, ICacheConfigurationProvider
 	{
 	}
 }

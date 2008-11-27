@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.CS;
+using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
@@ -17,7 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			//assert
 		}
 
-		private static readonly string File = "csmig.db4o";
+		private static readonly string File = Runtime.GetProperty("java.io.tmpdir", ".") 
+			+ Sharpen.IO.File.separator + "csmig.db4o";
 
 		private const int Port = 4447;
 

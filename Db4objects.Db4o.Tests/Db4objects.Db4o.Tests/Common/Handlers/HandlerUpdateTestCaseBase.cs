@@ -125,6 +125,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected virtual void AssertUpdatedArrays(object obj)
 		{
 		}
+
 		// Override to check updates also
+		protected virtual bool UsesNullMarkerValue()
+		{
+			return Db4oHandlerVersion() == 0;
+		}
 	}
 }

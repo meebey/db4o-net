@@ -36,8 +36,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 
 		public virtual void Test()
 		{
-			PrioritizedProject project = (PrioritizedProject)RetrieveOnlyInstance(typeof(Project
-				));
+			PrioritizedProject project = (PrioritizedProject)((Project)RetrieveOnlyInstance(typeof(
+				Project)));
 			Assert.AreEqual(Priority, project.GetPriority());
 			// Project.totalTimeSpent needs the UnitOfWork objects to be activated
 			Assert.AreEqual(1000, project.TotalTimeSpent());

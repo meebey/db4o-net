@@ -47,8 +47,8 @@ namespace Db4objects.Db4o.Tests.Common.Uuid
 
 		private Db4oUUID SingleItemUUID()
 		{
-			UUIDDefragmentTestCase.Item item = (UUIDDefragmentTestCase.Item)RetrieveOnlyInstance
-				(typeof(UUIDDefragmentTestCase.Item));
+			UUIDDefragmentTestCase.Item item = (UUIDDefragmentTestCase.Item)((UUIDDefragmentTestCase.Item
+				)RetrieveOnlyInstance(typeof(UUIDDefragmentTestCase.Item)));
 			IObjectInfo objectInfo = Db().GetObjectInfo(item);
 			Db4oUUID uuid = objectInfo.GetUUID();
 			return uuid;

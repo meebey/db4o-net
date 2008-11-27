@@ -4,18 +4,13 @@ using Db4oUnit;
 
 namespace Db4oUnit
 {
-	public class TestDecorationAdapter : ITestDecoration
+	public class TestDecorationAdapter : ITest
 	{
 		private readonly ITest _test;
 
 		public TestDecorationAdapter(ITest test)
 		{
 			_test = test;
-		}
-
-		public virtual ITest Test()
-		{
-			return _test;
 		}
 
 		public virtual string Label()

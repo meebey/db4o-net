@@ -11,7 +11,9 @@ namespace Db4objects.Db4o.Tests.Common.IO
 	{
 		protected override Type[] TestCases()
 		{
-			Type[] commonCases = new Type[] { typeof(IoAdapterTestSuite) };
+			Type[] commonCases = new Type[] { typeof(BlockAwareBinTestSuite), typeof(IoAdapterTestSuite
+				), typeof(RandomAccessFileStorageFactoryTestCase), typeof(StorageTestSuite), typeof(
+				NonFlushingStorageTestCase) };
 			return Db4oUnitTestUtil.MergeClasses(commonCases, StackTraceBasedCases());
 		}
 

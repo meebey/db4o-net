@@ -67,8 +67,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private IObjectInfo GetItemInfo()
 		{
-			return Db().Ext().GetObjectInfo(RetrieveOnlyInstance(typeof(GetUUIDTestCase.Item)
-				));
+			return Db().Ext().GetObjectInfo(((GetUUIDTestCase.Item)RetrieveOnlyInstance(typeof(
+				GetUUIDTestCase.Item))));
 		}
 
 		public virtual void TestGetUUIDInCommittingCallbacks()

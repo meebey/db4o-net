@@ -343,7 +343,7 @@ namespace Db4oUnit.Extensions
 		{
 			IObjectSet result = NewQuery(oc, clazz).Execute();
 			Assert.AreEqual(1, result.Count);
-			return result.Next();
+			return (object)result.Next();
 		}
 
 		protected virtual int CountOccurences(Type clazz)

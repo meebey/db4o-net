@@ -26,6 +26,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class ObjectReference : PersistentBase, IObjectInfo, IActivator
 	{
+		public static readonly DynamicVariable _inCallback = new DynamicVariable();
+
 		private Db4objects.Db4o.Internal.ClassMetadata _class;
 
 		private object _object;
@@ -114,14 +116,14 @@ namespace Db4objects.Db4o.Internal
 				_updateListener = NullTransactionListener.Instance;
 				return;
 			}
-			_updateListener = new _ITransactionListener_91(this, transparentPersistence, transaction
+			_updateListener = new _ITransactionListener_93(this, transparentPersistence, transaction
 				);
 			transaction.AddTransactionListener(_updateListener);
 		}
 
-		private sealed class _ITransactionListener_91 : ITransactionListener
+		private sealed class _ITransactionListener_93 : ITransactionListener
 		{
-			public _ITransactionListener_91(ObjectReference _enclosing, TransparentPersistenceSupport
+			public _ITransactionListener_93(ObjectReference _enclosing, TransparentPersistenceSupport
 				 transparentPersistence, Db4objects.Db4o.Internal.Transaction transaction)
 			{
 				this._enclosing = _enclosing;
@@ -224,7 +226,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <summary>return false if class not completely initialized, otherwise true *</summary>
+		/// <summary>return false if class not completely initialized, otherwise true</summary>
 		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
 			 updateDepth)
 		{
@@ -536,6 +538,10 @@ namespace Db4objects.Db4o.Internal
 			// preventing recursive
 			if (!BeginProcessing())
 			{
+				if ((((bool)_inCallback.Value)))
+				{
+					throw new InvalidOperationException("Objects must not be updated in callback");
+				}
 				return;
 			}
 			object obj = GetObject();
@@ -579,7 +585,7 @@ namespace Db4objects.Db4o.Internal
 			Id_init();
 		}
 
-		/// <summary>HCTREE ****</summary>
+		/// <summary>HCTREE</summary>
 		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{
@@ -856,7 +862,7 @@ namespace Db4objects.Db4o.Internal
 			return _hcPreceding;
 		}
 
-		/// <summary>IDTREE ****</summary>
+		/// <summary>IDTREE</summary>
 		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{

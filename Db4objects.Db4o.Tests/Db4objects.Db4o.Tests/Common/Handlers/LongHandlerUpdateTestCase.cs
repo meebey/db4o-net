@@ -10,6 +10,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class LongHandlerUpdateTestCase : HandlerUpdateTestCaseBase
 	{
+		private readonly long[] data;
+
+		public LongHandlerUpdateTestCase()
+		{
+			data = new long[] { long.MinValue, long.MinValue + 1, -5, -1, 0, 1, 5, long.MaxValue
+				 - 1, UsesNullMarkerValue() ? 0 : long.MaxValue };
+		}
+
 		public class Item
 		{
 			public long _typedPrimitive;
@@ -31,9 +39,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public object _wrapperArrayInObject;
 		}
-
-		private static readonly long[] data = new long[] { long.MinValue, long.MinValue +
-			 1, -5, -1, 0, 1, 5, long.MaxValue - 1, long.MaxValue };
 
 		public static void Main(string[] args)
 		{

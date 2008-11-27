@@ -8,11 +8,11 @@ using Db4objects.Db4o.Tests.Common.Events;
 
 namespace Db4objects.Db4o.Tests.Common.Events
 {
-	public class DeleteEventOnClient : EventsTestCaseBase, IOptOutSolo
+	public class DeleteEventOnClientTestCase : EventsTestCaseBase, IOptOutSolo
 	{
 		public static void Main(string[] args)
 		{
-			new DeleteEventOnClient().RunAll();
+			new DeleteEventOnClientTestCase().RunAll();
 		}
 
 		public virtual void TestAttachingToDeletingEventThrows()
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private sealed class _ICodeBlock_17 : ICodeBlock
 		{
-			public _ICodeBlock_17(DeleteEventOnClient _enclosing)
+			public _ICodeBlock_17(DeleteEventOnClientTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				}
 			}
 
-			private readonly DeleteEventOnClient _enclosing;
+			private readonly DeleteEventOnClientTestCase _enclosing;
 		}
 
 		public virtual void TestAttachingToDeleteEventThrows()
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _ICodeBlock_30(DeleteEventOnClient _enclosing)
+			public _ICodeBlock_30(DeleteEventOnClientTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				}
 			}
 
-			private readonly DeleteEventOnClient _enclosing;
+			private readonly DeleteEventOnClientTestCase _enclosing;
 		}
 	}
 }

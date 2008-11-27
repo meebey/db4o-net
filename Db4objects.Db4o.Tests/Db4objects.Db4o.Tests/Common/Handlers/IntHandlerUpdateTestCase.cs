@@ -9,8 +9,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class IntHandlerUpdateTestCase : HandlerUpdateTestCaseBase
 	{
-		private static readonly int[] data = new int[] { int.MinValue, int.MinValue + 1, 
-			-5, -1, 0, 1, 5, int.MaxValue - 1, int.MaxValue };
+		private readonly int[] data;
+
+		public IntHandlerUpdateTestCase()
+		{
+			data = new int[] { int.MinValue, int.MinValue + 1, -5, -1, 0, 1, 5, int.MaxValue 
+				- 1, UsesNullMarkerValue() ? 0 : int.MaxValue };
+		}
 
 		public static void Main(string[] args)
 		{

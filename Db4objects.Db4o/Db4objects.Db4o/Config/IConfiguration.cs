@@ -396,6 +396,10 @@ namespace Db4objects.Db4o.Config
 		/// <param name="height">the height of the cache from the root</param>
 		void BTreeCacheHeight(int height);
 
+		/// <summary>returns the Cache configuration interface.</summary>
+		/// <remarks>returns the Cache configuration interface.</remarks>
+		ICacheConfiguration Cache();
+
 		/// <summary>turns callback methods on and off.</summary>
 		/// <remarks>
 		/// turns callback methods on and off.
@@ -601,7 +605,7 @@ namespace Db4objects.Db4o.Config
 		/// To tune db4o performance at the cost of a higher risc of database
 		/// file corruption in case of abnormal session terminations, please
 		/// use a
-		/// <see cref="NonFlushingIoAdapter">NonFlushingIoAdapter</see>
+		/// <see cref="NonFlushingStorage">NonFlushingStorage</see>
 		/// .
 		/// </remarks>
 		[System.ObsoleteAttribute(@"Please use a")]
@@ -682,7 +686,26 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="adapter">- the IoAdapter</param>
 		/// <exception cref="GlobalOnlyConfigException"></exception>
+		[System.ObsoleteAttribute(@"Use")]
 		void Io(IoAdapter adapter);
+
+		/// <summary>allows to configure db4o to use a customized byte IO storage mechanism.</summary>
+		/// <remarks>
+		/// allows to configure db4o to use a customized byte IO storage mechanism.
+		/// <br /><br />Implement the interface
+		/// <see cref="IStorage">IStorage</see>
+		/// to
+		/// write your own. Possible usecases could be improved performance
+		/// with a native library, mirrored write to two files, encryption or
+		/// read-on-write fail-safety control.<br /><br />
+		/// </remarks>
+		/// <param name="factory">- the factory</param>
+		/// <exception cref="GlobalOnlyConfigException"></exception>
+		IStorage Storage
+		{
+			get;
+			set;
+		}
 
 		/// <summary>
 		/// returns the configured
@@ -690,6 +713,7 @@ namespace Db4objects.Db4o.Config
 		/// .
 		/// </summary>
 		/// <returns></returns>
+		[System.ObsoleteAttribute(@"Use")]
 		IoAdapter Io();
 
 		/// <summary>allows to mark fields as transient with custom attributes.</summary>

@@ -32,8 +32,8 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public virtual void Test()
 		{
-			VersionNumbersTestCase.Item item = (VersionNumbersTestCase.Item)RetrieveOnlyInstance
-				(typeof(VersionNumbersTestCase.Item));
+			VersionNumbersTestCase.Item item = (VersionNumbersTestCase.Item)((VersionNumbersTestCase.Item
+				)RetrieveOnlyInstance(typeof(VersionNumbersTestCase.Item)));
 			IObjectInfo objectInfo = Db().GetObjectInfo(item);
 			long version1 = objectInfo.GetVersion();
 			item._name = "modified";

@@ -24,6 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			}
 			File4.Copy(originalFilePath, dbFilePath);
 			Db4oFactory.Configure().AllowVersionUpdates(true);
+			Db4oFactory.Configure().ExceptionsOnNotStorable(false);
 			IObjectContainer oc = Db4oFactory.OpenFile(dbFilePath);
 			try
 			{
@@ -32,6 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			finally
 			{
 				oc.Close();
+				Db4oFactory.Configure().ExceptionsOnNotStorable(true);
 				Db4oFactory.Configure().AllowVersionUpdates(false);
 			}
 		}

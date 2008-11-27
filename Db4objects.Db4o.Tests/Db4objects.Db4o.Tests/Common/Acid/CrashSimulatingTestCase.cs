@@ -48,19 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		}
 
 		/// <exception cref="IOException"></exception>
-		public virtual void TestWithCache()
-		{
-			DoTest(true);
-		}
-
-		/// <exception cref="IOException"></exception>
-		public virtual void TestWithoutCache()
-		{
-			DoTest(false);
-		}
-
-		/// <exception cref="IOException"></exception>
-		private void DoTest(bool cached)
+		private void DoTest(bool cached, bool useLogFile)
 		{
 			if (HasLockFileThread())
 			{
@@ -72,13 +60,13 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			string fileName = Path.Combine(path, "cs");
 			File4.Delete(fileName);
 			System.IO.Directory.CreateDirectory(path);
-			CreateFile(BaseConfig(), fileName);
-			CrashSimulatingIoAdapter crashSimulatingAdapter = new CrashSimulatingIoAdapter(new 
-				RandomAccessFileAdapter());
-			IoAdapter adapterFactory = cached ? (IoAdapter)new CachedIoAdapter(crashSimulatingAdapter
-				) : crashSimulatingAdapter;
-			IConfiguration recordConfig = BaseConfig();
-			recordConfig.Io(adapterFactory);
+			CreateFile(BaseConfig(useLogFile), fileName);
+			CrashSimulatingStorage crashSimulatingStorage = new CrashSimulatingStorage(new FileStorage
+				(), fileName);
+			IStorage storage = cached ? (IStorage)new CachingStorage(crashSimulatingStorage) : 
+				crashSimulatingStorage;
+			IConfiguration recordConfig = BaseConfig(useLogFile);
+			recordConfig.Storage = storage;
 			IObjectContainer oc = Db4oFactory.OpenFile(recordConfig, fileName);
 			IObjectSet objectSet = oc.QueryByExample(new CrashSimulatingTestCase.CrashData(null
 				, "three"));
@@ -109,27 +97,31 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 			oc.Commit();
 			oc.Close();
-			int count = crashSimulatingAdapter.batch.WriteVersions(fileName);
-			CheckFiles(fileName, "R", crashSimulatingAdapter.batch.NumSyncs());
-			CheckFiles(fileName, "W", count);
+			int count = crashSimulatingStorage._batch.WriteVersions(fileName);
+			CheckFiles(useLogFile, fileName, "R", crashSimulatingStorage._batch.NumSyncs());
+			CheckFiles(useLogFile, fileName, "W", count);
 		}
 
-		private IConfiguration BaseConfig()
+		private IConfiguration BaseConfig(bool useLogFile)
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			Config4Impl config = (Config4Impl)Db4oFactory.NewConfiguration();
 			config.ObjectClass(typeof(CrashSimulatingTestCase.CrashData)).ObjectField("_name"
 				).Indexed(true);
 			config.ReflectWith(Platform4.ReflectorForType(typeof(CrashSimulatingTestCase)));
 			config.BTreeNodeSize(4);
+			config.LockDatabaseFile(false);
+			config.FileBasedTransactionLog(useLogFile);
 			return config;
 		}
 
-		private void CheckFiles(string fileName, string infix, int count)
+		private void CheckFiles(bool useLogFile, string fileName, string infix, int count
+			)
 		{
 			for (int i = 1; i <= count; i++)
 			{
 				string versionedFileName = fileName + infix + i;
-				IObjectContainer oc = Db4oFactory.OpenFile(BaseConfig(), versionedFileName);
+				IObjectContainer oc = Db4oFactory.OpenFile(BaseConfig(useLogFile), versionedFileName
+					);
 				try
 				{
 					if (!StateBeforeCommit(oc))

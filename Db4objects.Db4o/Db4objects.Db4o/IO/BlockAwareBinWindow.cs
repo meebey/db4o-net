@@ -7,9 +7,9 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>Bounded handle into an IoAdapter: Can only access a restricted area.</summary>
 	/// <remarks>Bounded handle into an IoAdapter: Can only access a restricted area.</remarks>
-	public class IoAdapterWindow
+	public class BlockAwareBinWindow
 	{
-		private IoAdapter _io;
+		private BlockAwareBin _bin;
 
 		private int _blockOff;
 
@@ -21,9 +21,9 @@ namespace Db4objects.Db4o.IO
 		/// <param name="blockOff">The block offset address into the I/O adapter that maps to the start index (0) of this window
 		/// 	</param>
 		/// <param name="len">The size of this window in bytes</param>
-		public IoAdapterWindow(IoAdapter io, int blockOff, int len)
+		public BlockAwareBinWindow(BlockAwareBin io, int blockOff, int len)
 		{
-			_io = io;
+			_bin = io;
 			_blockOff = blockOff;
 			_len = len;
 			_disabled = false;
@@ -42,8 +42,7 @@ namespace Db4objects.Db4o.IO
 		public virtual void Write(int off, byte[] data)
 		{
 			CheckBounds(off, data);
-			_io.BlockSeek(_blockOff + off);
-			_io.Write(data);
+			_bin.BlockWrite(_blockOff + off, data);
 		}
 
 		/// <param name="off">Offset in bytes relative to the window start</param>
@@ -54,8 +53,7 @@ namespace Db4objects.Db4o.IO
 		public virtual int Read(int off, byte[] data)
 		{
 			CheckBounds(off, data);
-			_io.BlockSeek(_blockOff + off);
-			return _io.Read(data);
+			return _bin.BlockRead(_blockOff + off, data);
 		}
 
 		/// <summary>Disable IO Adapter Window</summary>
@@ -69,7 +67,7 @@ namespace Db4objects.Db4o.IO
 		{
 			if (!_disabled)
 			{
-				_io.Sync();
+				_bin.Sync();
 			}
 		}
 

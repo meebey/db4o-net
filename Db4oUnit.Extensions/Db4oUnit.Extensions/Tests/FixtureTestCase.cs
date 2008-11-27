@@ -7,6 +7,7 @@ using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Tests;
 using Db4oUnit.Extensions.Util;
+using Db4oUnit.Mocking;
 using Db4oUnit.Tests;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
@@ -63,15 +64,17 @@ namespace Db4oUnit.Extensions.Tests
 			IEnumerator tests = new Db4oTestSuiteBuilder(fixture, typeof(SimpleDb4oTestCase))
 				.GetEnumerator();
 			ITest test = NextTest(tests);
-			SimpleDb4oTestCase.ExpectedFixtureVariable.With(fixture, new _IRunnable_49(test));
-			SimpleDb4oTestCase subject = (SimpleDb4oTestCase)Db4oTestSuiteBuilder.GetTestSubject
-				(test);
-			Assert.IsTrue(subject.EverythingCalled());
+			MethodCallRecorder recorder = new MethodCallRecorder();
+			SimpleDb4oTestCase.RecorderVariable.With(recorder, new _IRunnable_51(test));
+			recorder.Verify(new MethodCall[] { new MethodCall("fixture", new object[] { fixture
+				 }), new MethodCall("configure", new object[] { MethodCall.IgnoredArgument }), new 
+				MethodCall("store", new object[] {  }), new MethodCall("testResultSize", new object
+				[] {  }) });
 		}
 
-		private sealed class _IRunnable_49 : IRunnable
+		private sealed class _IRunnable_51 : IRunnable
 		{
-			public _IRunnable_49(ITest test)
+			public _IRunnable_51(ITest test)
 			{
 				this.test = test;
 			}

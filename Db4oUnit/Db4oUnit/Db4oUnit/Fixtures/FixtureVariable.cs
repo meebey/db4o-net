@@ -9,6 +9,11 @@ namespace Db4oUnit.Fixtures
 {
 	public class FixtureVariable
 	{
+		public static Db4oUnit.Fixtures.FixtureVariable NewInstance(string label)
+		{
+			return new Db4oUnit.Fixtures.FixtureVariable(label);
+		}
+
 		private readonly string _label;
 
 		public FixtureVariable() : this(string.Empty)
@@ -57,7 +62,7 @@ namespace Db4oUnit.Fixtures
 				{
 					throw new InvalidOperationException();
 				}
-				return found.value;
+				return (object)found.value;
 			}
 		}
 

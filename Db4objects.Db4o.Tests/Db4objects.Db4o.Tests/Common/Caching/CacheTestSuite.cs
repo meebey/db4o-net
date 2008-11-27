@@ -9,6 +9,15 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 {
 	public class CacheTestSuite : FixtureTestSuiteDescription
 	{
+		public CacheTestSuite()
+		{
+			{
+				FixtureProviders(new IFixtureProvider[] { new SubjectFixtureProvider(new IDeferred4
+					[] { new _IDeferred4_10(), new _IDeferred4_14(), new _IDeferred4_18() }) });
+				TestUnits(new Type[] { typeof(CacheTestUnit) });
+			}
+		}
+
 		private sealed class _IDeferred4_10 : IDeferred4
 		{
 			public _IDeferred4_10()
@@ -33,11 +42,16 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 			}
 		}
 
-		internal CacheTestSuite()
+		private sealed class _IDeferred4_18 : IDeferred4
 		{
-			FixtureProviders(new IFixtureProvider[] { new SubjectFixtureProvider(new IDeferred4
-				[] { new _IDeferred4_10(), new _IDeferred4_14() }) });
-			TestUnits(new Type[] { typeof(CacheTestUnit) });
+			public _IDeferred4_18()
+			{
+			}
+
+			public object Value()
+			{
+				return CacheFactory.New2QXCache(10);
+			}
 		}
 	}
 }

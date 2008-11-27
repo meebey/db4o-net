@@ -10,6 +10,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class ShortHandlerUpdateTestCase : HandlerUpdateTestCaseBase
 	{
+		private readonly short[] data;
+
+		public ShortHandlerUpdateTestCase()
+		{
+			data = new short[] { short.MinValue, short.MinValue + 1, -5, -1, 0, 1, 5, short.MaxValue
+				 - 1, UsesNullMarkerValue() ? (short)0 : short.MaxValue };
+		}
+
 		public class Item
 		{
 			public short _typedPrimitive;
@@ -31,9 +39,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public object _wrapperArrayInObject;
 		}
-
-		private static readonly short[] data = new short[] { short.MinValue, short.MinValue
-			 + 1, -5, -1, 0, 1, 5, short.MaxValue - 1, short.MaxValue };
 
 		public static void Main(string[] args)
 		{

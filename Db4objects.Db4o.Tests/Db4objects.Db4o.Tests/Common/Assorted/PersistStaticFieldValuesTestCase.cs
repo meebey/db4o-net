@@ -46,7 +46,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			PersistStaticFieldValuesTestCase.Data psfv = (PersistStaticFieldValuesTestCase.Data
-				)RetrieveOnlyInstance(typeof(PersistStaticFieldValuesTestCase.Data));
+				)((PersistStaticFieldValuesTestCase.Data)RetrieveOnlyInstance(typeof(PersistStaticFieldValuesTestCase.Data
+				)));
 			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.One, psfv.one);
 			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.Two, psfv.two);
 			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.Three, psfv.three);

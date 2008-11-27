@@ -28,7 +28,8 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		public virtual void TestRetrieval()
 		{
 			SimpleTypeArrayInUntypedVariableTestCase.Data data = (SimpleTypeArrayInUntypedVariableTestCase.Data
-				)RetrieveOnlyInstance(typeof(SimpleTypeArrayInUntypedVariableTestCase.Data));
+				)((SimpleTypeArrayInUntypedVariableTestCase.Data)RetrieveOnlyInstance(typeof(SimpleTypeArrayInUntypedVariableTestCase.Data
+				)));
 			Assert.IsTrue(data._arr is int[]);
 			int[] arri = (int[])data._arr;
 			ArrayAssert.AreEqual(Array, arri);
