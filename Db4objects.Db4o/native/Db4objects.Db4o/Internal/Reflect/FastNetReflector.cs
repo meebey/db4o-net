@@ -2,6 +2,7 @@
 
 using System;
 using System.Reflection;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal.Reflect.Emitters;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
@@ -55,9 +56,9 @@ namespace Db4objects.Db4o.Internal.Reflect
 				_getter = _field.GetValue;
 				return _getter(onObject);
 			}
-			catch
+			catch (Exception e)
 			{
-				return null;
+				throw new Db4oException(e);
 			}
 		}
 
@@ -73,8 +74,9 @@ namespace Db4objects.Db4o.Internal.Reflect
 				_setter = _field.SetValue;
 				_setter(onObject, attribute);
 			}
-			catch
+			catch (Exception e)
 			{
+				throw new Db4oException(e);
 			}
 		}
 	}

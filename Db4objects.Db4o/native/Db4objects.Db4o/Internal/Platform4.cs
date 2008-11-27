@@ -1,5 +1,4 @@
 /* Copyright (C) 2004 - 2007 db4objects Inc.   http://www.db4o.com */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -108,7 +107,7 @@ namespace Db4objects.Db4o.Internal
         internal static IReflector CreateReflector(Object config)
         {
 #if USE_FAST_REFLECTOR && !CF
-			return new FastNetReflector();
+			return new Db4objects.Db4o.Internal.Reflect.FastNetReflector();
 #else
 			return new NetReflector();
 #endif
@@ -117,7 +116,7 @@ namespace Db4objects.Db4o.Internal
         public static IReflector ReflectorForType(Type typeInstance)
 		{
 #if USE_FAST_REFLECTOR && !CF
-			return new FastNetReflector();
+			return new Db4objects.Db4o.Internal.Reflect.FastNetReflector();
 #else
 			return new NetReflector();
 #endif
@@ -683,7 +682,7 @@ namespace Db4objects.Db4o.Internal
         private static void InitNullValues()
         {
     	    _nullValues = new Hashtable4();
-            _nullValues.Put(typeof(int), (int)0);
+            _nullValues.Put(typeof(int), 0);
             _nullValues.Put(typeof(uint), (uint)0);
             _nullValues.Put(typeof(byte), (byte)0);
     	    _nullValues.Put(typeof(short), (short)0);
@@ -733,6 +732,5 @@ namespace Db4objects.Db4o.Internal
         }
 
         private static Hashtable4 _primitive2Wrapper;
-
 	}
 }
