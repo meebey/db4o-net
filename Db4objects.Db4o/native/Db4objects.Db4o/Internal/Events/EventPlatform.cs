@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Internal.Events
 		{
             try
             {
-                ObjectReference._inCallback.With(true, new DelegateRunnable(runnable));
+                InCallbackState._inCallback.With(true, new DelegateRunnable(runnable));
             }
             catch (Db4oException)
             {
