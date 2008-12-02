@@ -53,16 +53,6 @@ namespace Db4objects.Db4o.Tests.SharpenLang
 
     class TypeReferenceTestCase : ITestCase
     {
-    	private static Type[] _innerGenericTypes = new Type[]
-    	                                           	{
-														typeof (Generic<int>.Inner),
-														typeof (Generic<int>.Inner.Inner2<string[]>),
-														typeof (Generic<int>.Inner.Inner2<Generic<int>.Inner>),
-														typeof (Generic<int>.InnerGeneric<NestedType>),
-														typeof (Generic<int[]>.InnerGeneric<NestedType>),
-														typeof (Generic<int>.InnerGeneric<NestedType>.Inner2),
-														typeof (Generic<int>.InnerGeneric<NestedType>.Generic<int>),
-    	                                           	};
 		class __Funny123Name_
 		{
 		}
@@ -71,22 +61,27 @@ namespace Db4objects.Db4o.Tests.SharpenLang
         {
         }
 
+#if !CF_2_0
 		public void TestRoundTripOnInnerGenericType()
 		{
-			foreach (Type genericType in _innerGenericTypes)
-			{
-				EnsureRoundtrip(genericType);
-			}
+			AssertGenericType(
+				typeof (Generic<int>.Inner),
+				typeof (Generic<int>.Inner.Inner2<string[]>),
+				typeof (Generic<int>.Inner.Inner2<Generic<int>.Inner>),
+				typeof (Generic<int>.InnerGeneric<NestedType>),
+				typeof (Generic<int[]>.InnerGeneric<NestedType>),
+				typeof (Generic<int>.InnerGeneric<NestedType>.Inner2),
+				typeof (Generic<int>.InnerGeneric<NestedType>.Generic<int>));
 		}
+#endif
 
-		public void TestInnerGenericType()
-		{
-			foreach (Type genericType in _innerGenericTypes)
-			{
-				TypeReference typeReference = TypeReference.FromType(genericType);
-				Assert.AreEqual(0, string.Compare(typeReference.SimpleName, 0, genericType.FullName, 0, typeReference.SimpleName.Length));
-			}
-		}
+    	private static void AssertGenericType(params Type[] types)
+    	{
+    		foreach (Type genericType in types)
+    		{
+    			EnsureRoundtrip(genericType);
+    		}
+    	}
 
     	public void TestFunnyName()
     	{
