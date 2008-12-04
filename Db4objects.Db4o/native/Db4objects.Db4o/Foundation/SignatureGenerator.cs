@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Foundation
 	
 	    public static string GenerateSignature() {
             string signature = ToHexString(Environment.TickCount);
-            signature += ToHexString(_random.Next());
+            signature += Pad(ToHexString(_random.Next()));
             signature += Guid.NewGuid();
             signature += ToHexString(_counter++);
             return signature;
@@ -27,5 +27,11 @@ namespace Db4objects.Db4o.Foundation
         {
             return l.ToString("X");
         }
+
+        private static string Pad(String str)
+        {
+            return (str + "XXXXXXXX").Substring(0, 8);
+        }
+
     }
 }
