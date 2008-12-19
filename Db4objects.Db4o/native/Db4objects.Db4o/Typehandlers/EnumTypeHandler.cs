@@ -53,12 +53,14 @@ namespace Db4objects.Db4o.Typehandlers
 
         public void Delete(IDeleteContext context)
         {
-            throw new System.NotImplementedException();
+            int offset = context.Offset() + Const4.IdLength + Const4.LongLength;
+            context.Seek(offset);
         }
 
         public void Defragment(IDefragmentContext context)
         {
-            throw new System.NotImplementedException();
+            context.CopyID();
+            context.IncrementOffset(Const4.LongLength);
         }
 
         public object Read(IReadContext context)

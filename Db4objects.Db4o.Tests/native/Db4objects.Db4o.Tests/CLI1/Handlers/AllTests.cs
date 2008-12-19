@@ -17,6 +17,8 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 		    {
                 typeof(DateTimeHandlerTestCase),
                 typeof(DecimalHandlerTestCase),
+                typeof(EnumInUntypedVariableTestCase),
+                typeof(EnumTypeHandlerTestCase),
                 typeof(SByteHandlerTestCase),
                 typeof(UIntHandlerTestCase),
                 typeof(ULongHandlerTestCase),

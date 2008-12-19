@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             }
         }
 
-        public void _TestNativeQuery()
+        public void TestNativeQuery()
         {
             AssertItem(EnumAsByte.Second, AsByteFinder(), AsByteSelectorFor);
             AssertItem(EnumAsByte.Third, AsByteFinder(), AsByteSelectorFor);
@@ -123,18 +123,42 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             AssertAsLong();
         }
 
-        public void _TestInvalidEnumValue()
+        public void TestInvalidEnumValue()
         {
             AssertItem((EnumAsByte)99, AsByteFinder());
         }
 
         public void TestRetrieveAll()
         {
+            AssertCanRetrieveAll();
+        }
+
+        private void AssertCanRetrieveAll()
+        {
             IQuery query = NewQuery(typeof(Item));
             IObjectSet result = query.Execute();
             Assert.AreEqual(_items.Length, result.Count);
 
             Iterator4Assert.SameContent(result.GetEnumerator(), _items.GetEnumerator());
+        }
+
+        public void TestDefragment()
+        {
+            Defragment();
+            AssertCanRetrieveAll();
+        }
+
+        public void TestDelete()
+        {
+            IQuery query = NewQuery(typeof(Item));
+            IObjectSet result = query.Execute();
+            while(result.HasNext())
+            {
+                Item item = (Item)result.Next();
+                Db().Delete(item);
+                Db().Delete(item._asInteger);
+            }
+            
         }
 
         private void AssertAsLong()
