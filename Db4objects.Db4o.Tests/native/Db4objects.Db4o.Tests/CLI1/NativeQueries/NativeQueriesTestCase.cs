@@ -42,8 +42,9 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		{	
 			AssertNQResult(new WithPriority(Priority.Low), _c1, _c2);
 			AssertNQResult(new WithPriority(Priority.Normal));
-			AssertNQResult(new WithPriority(Priority.High), _a, _b);
-		}
+            AssertNQResult(new WithPriority(Priority.High), _a, _b);
+            AssertNQResult(new WithPriority(Priority.None));
+        }
 
 		public void TestDateRange()
 		{

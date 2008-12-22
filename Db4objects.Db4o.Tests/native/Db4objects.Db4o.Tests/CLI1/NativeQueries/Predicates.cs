@@ -5,7 +5,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 
 	public enum Priority
 	{	
-		Any,
+		None,
 		Low,
 		Normal,
 		High
