@@ -12,10 +12,10 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 
         protected override void Db4oSetupAfterStore()
         {
-			_a = new Data(1, "Aa", null, DateTime.Today.AddDays(5), Priority.High);
-			_b = new Data(2, "Bb", _a, DateTime.Today.AddDays(10), Priority.High);
-			_c1 = new Data(3 ,"Cc",_b, DateTime.Today.AddDays(15), Priority.Low);
-			_c2 = new Data(3, "Cc", null, DateTime.Today.AddDays(20), Priority.Low);
+            _a = new Data(1, "Aa", null, DateTime.Today.AddDays(5), Priority.High);
+            _b = new Data(2, "Bb", _a, DateTime.Today.AddDays(10), Priority.High);
+            _c1 = new Data(3 ,"Cc",_b, DateTime.Today.AddDays(15), Priority.Low);
+            _c2 = new Data(3, "Cc", null, DateTime.Today.AddDays(20), Priority.Low);
 
 			Store(_a);
 			Store(_b);
@@ -43,7 +43,6 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			AssertNQResult(new WithPriority(Priority.Low), _c1, _c2);
 			AssertNQResult(new WithPriority(Priority.Normal));
 			AssertNQResult(new WithPriority(Priority.High), _a, _b);
-			AssertNQResult(new WithPriority(Priority.Any), _a, _b, _c1, _c2);
 		}
 
 		public void TestDateRange()

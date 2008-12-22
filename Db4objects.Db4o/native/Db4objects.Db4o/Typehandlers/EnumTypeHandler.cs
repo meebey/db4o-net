@@ -123,6 +123,10 @@ namespace Db4objects.Db4o.Typehandlers
         public bool Match(IReflectClass classReflector)
         {
             Type type = NetReflector.ToNative(classReflector);
+            if(type == null)
+            {
+                return false;
+            }
             return type.IsEnum;
         }
     }

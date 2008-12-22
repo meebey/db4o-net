@@ -17,6 +17,7 @@ using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Reflect.Net;
+using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Types;
 using Sharpen.IO;
 
@@ -666,7 +667,10 @@ namespace Db4objects.Db4o.Internal
 
         public static void RegisterPlatformHandlers(ObjectContainerBase container)
         {
-            // do nothing
+            EnumTypeHandler enumTypeHandler = new EnumTypeHandler();
+            container.ConfigImpl().RegisterTypeHandler(new EnumTypeHandlerPredicate(), enumTypeHandler);
+            container.Handlers().RegisterHandlerVersion(enumTypeHandler, 4, new FirstClassObjectHandler());
+            container.Handlers().RegisterHandlerVersion(enumTypeHandler, 0, new FirstClassObjectHandler0());
         }
 
         public static object NullValue(Type type) 

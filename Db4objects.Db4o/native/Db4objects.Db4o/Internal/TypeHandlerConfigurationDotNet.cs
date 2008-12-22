@@ -20,12 +20,6 @@ namespace Db4objects.Db4o.Internal
             RegisterCollection(typeof(System.Collections.ArrayList));
             RegisterGenericTypeHandlers();
 			RegisterBigSetTypeHandler();
-            // RegisterEnumTypeHandler();
-        }
-
-        private void RegisterEnumTypeHandler()
-        {
-            _config.RegisterTypeHandler(new EnumTypeHandlerPredicate(), new EnumTypeHandler());
         }
 
     	private void RegisterBigSetTypeHandler()
