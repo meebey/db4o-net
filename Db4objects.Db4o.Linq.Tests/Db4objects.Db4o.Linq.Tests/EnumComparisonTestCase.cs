@@ -140,7 +140,7 @@ namespace Db4objects.Db4o.Linq.Tests
                                  where p.Style == style || p.Name == name
                                  select p;
 
-                    AssertSequence(MatchingPersons(p => p.Style == style || p.Name == name), actual);
+                    AssertSet(MatchingPersons(p => p.Style == style || p.Name == name), actual);
                 });
         }
 
@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Linq.Tests
                                  where p.Style == style && p.Name == name
                                  select p;
 
-                    AssertSequence(MatchingPersons(p => p.Style == style && p.Name == name), actual);
+                    AssertSet(MatchingPersons(p => p.Style == style && p.Name == name), actual);
                 });
         }
 
@@ -170,7 +170,7 @@ namespace Db4objects.Db4o.Linq.Tests
                                  where p.Style == style
                                  select p;
 
-                    AssertSequence(MatchingPersons(p => p.Style == style), actual);
+                    AssertSet(MatchingPersons(p => p.Style == style), actual);
                 });
         }
 
@@ -185,7 +185,7 @@ namespace Db4objects.Db4o.Linq.Tests
                                  where p.Sex == sex
                                  select p;
 
-                    AssertSequence(MatchingPersons(p => p.Sex == sex), actual);
+                    AssertSet(MatchingPersons(p => p.Sex == sex), actual);
                 });
         }
 
