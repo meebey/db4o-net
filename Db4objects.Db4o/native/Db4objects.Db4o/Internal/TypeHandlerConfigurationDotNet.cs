@@ -18,6 +18,7 @@ namespace Db4objects.Db4o.Internal
         public override void Apply()
         {
             RegisterCollection(typeof(System.Collections.ArrayList));
+            RegisterMap(typeof (System.Collections.Hashtable));
             RegisterGenericTypeHandlers();
 			RegisterBigSetTypeHandler();
         }
