@@ -29,6 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
                 typeof(DecimalHandlerUpdateTestCase),
                 typeof(EnumHandlerUpdateTestCase),
                 typeof(GUIDHandlerUpdateTestCase),
+                typeof(HashtableUpdateTestCase),
                 typeof(NestedStructHandlerUpdateTestCase),
                 typeof(SByteHandlerUpdateTestCase),
                 typeof(StructHandlerUpdateTestCase),
