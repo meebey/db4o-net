@@ -89,12 +89,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         }
 
         private static readonly Item[] _items = new Item[]
-		                      	{
-									new Item(EnumAsByte.First, EnumAsInteger.Second, EnumAsLong.Third),
-									new Item(EnumAsByte.Second, EnumAsInteger.Second, EnumAsLong.Second),
-									new Item(EnumAsByte.Third, EnumAsInteger.Second, EnumAsLong.First),
-									new Item((EnumAsByte)99, (EnumAsInteger) 98, (EnumAsLong) 97),
-		                      	};
+        {
+			new Item(EnumAsByte.First, EnumAsInteger.Second, EnumAsLong.Third),
+			new Item(EnumAsByte.Second, EnumAsInteger.Second, EnumAsLong.Second),
+			new Item(EnumAsByte.Third, EnumAsInteger.Second, EnumAsLong.First),
+			new Item((EnumAsByte)99, (EnumAsInteger) 98, (EnumAsLong) 97),
+        };
 
 
         protected override void Configure(IConfiguration config)
@@ -131,6 +131,26 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         public void TestRetrieveAll()
         {
             AssertCanRetrieveAll();
+        }
+
+        public void TestQueryByExample()
+        {
+            Item item = new Item(EnumAsByte.Second, 0, 0);
+            IObjectSet result = Db().QueryByExample(item);
+            Assert.AreEqual(1, result.Count);
+            Item itemFound = (Item) result[0];
+            Assert.AreEqual(EnumAsByte.Second, itemFound._asByte);
+            Assert.AreEqual(EnumAsInteger.Second, itemFound._asInteger);
+            Assert.AreEqual(EnumAsLong.Second, itemFound._asLong);
+        }
+
+        public void TestQueryByExampleAll()
+        {
+            // Just like in primitives, if enum 0 is used, the 
+            // constraint is ignored.
+            Item item = new Item(EnumAsByte.First, 0, 0);
+            IObjectSet result = Db().QueryByExample(item);
+            Assert.AreEqual(4, result.Count);
         }
 
         private void AssertCanRetrieveAll()
