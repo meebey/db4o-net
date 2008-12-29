@@ -42,7 +42,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             {
                 AssertAreEqual(data[i], itemArrays._typedPrimitiveArray[i]);
                 AssertAreEqual(data[i], ((decimal[])itemArrays._primitiveArrayInObject)[i]);
-                //AssertAreEqual(data[i], (decimal) itemArrays._nullableTypedPrimitiveArray[i]);
+                if (NullableSupported())
+                {
+                    AssertAreEqual(data[i], (decimal) itemArrays._nullableTypedPrimitiveArray[i]);
+                }
             }
             AssertAreEqual(0, itemArrays._typedPrimitiveArray[data.Length]);
             AssertAreEqual(0, ((decimal[])itemArrays._primitiveArrayInObject)[data.Length]);

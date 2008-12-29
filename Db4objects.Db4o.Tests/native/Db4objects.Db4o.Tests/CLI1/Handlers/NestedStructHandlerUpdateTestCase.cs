@@ -53,11 +53,16 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             {
                 AssertAreEqual(data[i], itemArrays._nestedStructArray[i]);
                 AssertAreEqual(data[i], ((NestedStruct[])itemArrays._arrayInObject)[i]);
-                //AssertAreEqual(data[i], (NestedStruct) itemArrays._nullableNestedStructArray[i]);
+                if (NullableSupported())
+                {
+                    AssertAreEqual(data[i], (NestedStruct) itemArrays._nullableNestedStructArray[i]);
+                }
                 AssertAreEqual(data[i], (NestedStruct) itemArrays._untypedArray[i]);
             }
-
-            //Assert.IsNull(itemArrays._nullableNestedStructArray[data.Length]);
+            if (NullableSupported())
+            {
+                Assert.IsNull(itemArrays._nullableNestedStructArray[data.Length]);
+            }
             Assert.IsNull(itemArrays._untypedArray[data.Length]);
         }
 

@@ -12,5 +12,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 			base.ConfigureForTest(config);
 			config.ExceptionsOnNotStorable(false);
 		}
+
+        protected bool NullableSupported()
+        {
+            return Db4oHandlerVersion() >= 4;
+        }
 	}
 }

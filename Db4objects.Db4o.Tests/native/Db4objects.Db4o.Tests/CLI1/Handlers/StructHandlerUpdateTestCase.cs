@@ -71,14 +71,16 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 AssertAreEqual(data[i], itemArrays._fooArray[i]);
                 AssertAreEqual(data[i], (Foo)itemArrays._untypedArray[i]);
                 AssertAreEqual(data[i], fooArray[i]);
-                //FIXME: Cannot retrieve nullable struct array.
-                //AssertAreEqual(data[i], (Foo)itemArrays._nullableFooArray[i]);
+                if (NullableSupported())
+                {
+                    AssertAreEqual(data[i], (Foo) itemArrays._nullableFooArray[i]);
+                }
             }
-
             Assert.IsNull(itemArrays._untypedArray[data.Length]);
-            
-            //FIXME: Cannot retrieve nullable struct array.
-            //Assert.IsNull(itemArrays._nullableFooArray[data.Length]);
+            if (NullableSupported())
+            {
+                Assert.IsNull(itemArrays._nullableFooArray[data.Length]);
+            }
         }
 
         protected override void AssertValues(IExtObjectContainer objectContainer, object[] values)
