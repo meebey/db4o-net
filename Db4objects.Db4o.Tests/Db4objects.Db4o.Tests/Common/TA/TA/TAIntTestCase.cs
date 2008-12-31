@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.TA.TA;
 
@@ -14,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			new TAIntTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			TAIntItem item = new TAIntItem();
@@ -24,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			return item;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			TAIntItem item = (TAIntItem)obj;

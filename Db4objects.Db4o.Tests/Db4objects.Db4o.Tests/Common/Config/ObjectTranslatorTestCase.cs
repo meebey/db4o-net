@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				ObjectTranslatorTestCase.ThingCounterTranslator());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Db().Store(new ObjectTranslatorTestCase.Thing("jbe"));

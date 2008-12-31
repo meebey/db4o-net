@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -109,7 +108,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual bool IsArray()
 		{
-			return i_yapField != null && i_yapField.GetHandler() is ArrayHandler;
+			return i_yapField != null && Handlers4.HandlesArray(i_yapField.GetHandler());
 		}
 
 		internal virtual bool IsClass()

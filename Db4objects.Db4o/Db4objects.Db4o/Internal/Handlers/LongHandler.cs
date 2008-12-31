@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.LongLength;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		public override object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
 			)
 		{

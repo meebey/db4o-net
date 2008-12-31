@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -32,8 +30,8 @@ namespace Db4objects.Db4o.Defragment
 			_objectCommitFrequency = objectCommitFrequency;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public void ProcessClass(DefragmentServicesImpl services, ClassMetadata yapClass, 
 			int id, int classIndexID)
 		{
@@ -63,8 +61,8 @@ namespace Db4objects.Db4o.Defragment
 			private readonly int classIndexID;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public void ProcessObjectSlot(DefragmentServicesImpl services, ClassMetadata yapClass
 			, int id)
 		{
@@ -104,8 +102,8 @@ namespace Db4objects.Db4o.Defragment
 			private readonly DefragmentServicesImpl services;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public void ProcessClassCollection(DefragmentServicesImpl services)
 		{
 			DefragmentContextImpl.ProcessCopy(services, services.SourceClassCollectionID(), new 
@@ -160,8 +158,8 @@ namespace Db4objects.Db4o.Defragment
 			private readonly DefragmentServicesImpl services;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public void ProcessBTree(DefragmentServicesImpl context, BTree btree)
 		{
 			btree.DefragBTree(context);

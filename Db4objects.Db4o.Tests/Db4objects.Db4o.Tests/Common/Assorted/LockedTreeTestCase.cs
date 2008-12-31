@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				this.lockedTree = lockedTree;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				lockedTree.TraverseLocked(new _IVisitor4_23(lockedTree));
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				this.lockedTree = lockedTree;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				lockedTree.TraverseLocked(new _IVisitor4_40(lockedTree));

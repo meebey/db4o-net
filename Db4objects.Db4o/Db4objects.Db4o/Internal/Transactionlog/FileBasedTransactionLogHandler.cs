@@ -36,7 +36,8 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 
 		private IBin OpenBin(LocalTransaction trans, string fileName)
 		{
-			return new FileStorage().Open(fileName, trans.Config().LockFile(), 0, false);
+			return new FileStorage().Open(new BinConfiguration(fileName, trans.Config().LockFile
+				(), 0, false));
 		}
 
 		public override bool CheckForInterruptedTransaction(LocalTransaction trans, ByteArrayBuffer

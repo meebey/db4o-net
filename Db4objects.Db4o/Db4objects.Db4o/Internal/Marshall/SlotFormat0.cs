@@ -16,9 +16,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public override bool IsIndirectedWithinSlot(ITypeHandler4 handler)
 		{
-			// TODO: Past knowledge from #scrollToContent
-			// Consider to try the following:
-			// return arrayElementHandler instanceof ArrayHandler;
 			return false;
 		}
 

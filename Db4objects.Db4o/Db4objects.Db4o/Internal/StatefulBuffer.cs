@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -137,13 +136,13 @@ namespace Db4objects.Db4o.Internal
 			return linkOffSet;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public void Read()
 		{
 			Container().ReadBytes(_buffer, i_address, _addressOffset, i_length);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public Db4objects.Db4o.Internal.StatefulBuffer ReadEmbeddedObject()
 		{
 			int id = ReadInt();

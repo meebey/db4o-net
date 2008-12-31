@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private int NumRuns = 10;
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Test()
 		{
 			for (int idx = 0; idx < NumRuns; idx++)
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void AssertRun()
 		{
 			string fileName = FileName;

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Internal;
 
@@ -16,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		private static int TestId = 5;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			_registry = new ReferenceSystemRegistry();
@@ -26,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 			_registry.AddReferenceSystem(_referenceSystem2);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 		}

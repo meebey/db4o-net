@@ -45,8 +45,8 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 
 		protected override void Store()
 		{
-			Db().Store(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test"));
-			Db().Store(new NativeQueryOptimizerDiagnosticsTestCase.Subject(this, "Test2"));
+			Db().Store(new NativeQueryOptimizerDiagnosticsTestCase.Subject("Test"));
+			Db().Store(new NativeQueryOptimizerDiagnosticsTestCase.Subject("Test2"));
 		}
 
 		public virtual void TestNativeQueryNotOptimized()
@@ -72,23 +72,20 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 		{
 			private string _name;
 
-			public Subject(NativeQueryOptimizerDiagnosticsTestCase _enclosing, string name)
+			public Subject(string name)
 			{
-				this._enclosing = _enclosing;
-				this._name = name;
+				_name = name;
 			}
 
 			public virtual string ComplexName()
 			{
-				StringBuilder sb = new StringBuilder(this._name);
+				StringBuilder sb = new StringBuilder(_name);
 				for (int i = 0; i < 10; i++)
 				{
 					sb.Append(i);
 				}
 				return sb.ToString();
 			}
-
-			private readonly NativeQueryOptimizerDiagnosticsTestCase _enclosing;
 		}
 	}
 }

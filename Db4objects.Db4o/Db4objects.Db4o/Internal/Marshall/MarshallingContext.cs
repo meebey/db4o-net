@@ -3,7 +3,6 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
@@ -278,7 +277,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void WriteObject(ITypeHandler4 handler, object obj)
 		{
 			MarshallingContextState state = CurrentState();
-			if (FieldMetadata.UseDedicatedSlot(this, handler))
+			if (Handlers4.UseDedicatedSlot(this, handler))
 			{
 				WriteObject(obj);
 			}
@@ -310,13 +309,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				WriteNullLink();
 				return;
 			}
-			if (handler is PrimitiveHandler)
-			{
-				PrimitiveHandler primitiveHandler = (PrimitiveHandler)handler;
-				handler.Write(this, primitiveHandler.NullRepresentationInUntypedArrays());
-				return;
-			}
-			handler.Write(this, null);
+			handler.Write(this, Handlers4.NullRepresentationInUntypedArrays(handler));
 		}
 
 		private void WriteNullLink()

@@ -109,7 +109,7 @@ namespace Db4objects.Db4o.Internal
 			_handler = handler;
 		}
 
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		public virtual void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot)
 		{
 			if (!HasIndex())
@@ -165,12 +165,12 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public object ReadIndexEntry(IObjectIdContext context)
 		{
-			IIndexableTypeHandler indexableTypeHandler = (IIndexableTypeHandler)Handlers4.CorrectHandlerVersion
-				(context, _handler);
+			IIndexableTypeHandler indexableTypeHandler = (IIndexableTypeHandler)HandlerRegistry
+				.CorrectHandlerVersion(context, _handler);
 			return indexableTypeHandler.ReadIndexEntry(context);
 		}
 
@@ -238,12 +238,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void CheckHandlerID()
 		{
-			if (!(_handler is ClassMetadata))
-			{
-				return;
-			}
-			ClassMetadata classMetadata = (ClassMetadata)_handler;
-			int id = classMetadata.GetID();
+			int id = Container().Handlers().TypeHandlerID(_handler);
 			if (_handlerID == 0)
 			{
 				_handlerID = id;
@@ -307,15 +302,7 @@ namespace Db4objects.Db4o.Internal
 
 		public bool CanLoadByIndex()
 		{
-			if (_handler is ClassMetadata)
-			{
-				ClassMetadata yc = (ClassMetadata)_handler;
-				if (yc.IsArray())
-				{
-					return false;
-				}
-			}
-			return true;
+			return Handlers4.CanLoadFieldByIndex(_handler);
 		}
 
 		public sealed override void CascadeActivation(Transaction trans, object onObject, 
@@ -325,7 +312,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (!(_handler is IFirstClassHandler))
+			if (!Handlers4.IsFirstClass(_handler))
 			{
 				return;
 			}
@@ -335,9 +322,8 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			EnsureObjectIsActive(trans, cascadeTo, depth);
-			IFirstClassHandler cascadingHandler = (IFirstClassHandler)_handler;
 			ActivationContext4 context = new ActivationContext4(trans, cascadeTo, depth);
-			cascadingHandler.CascadeActivation(context);
+			Handlers4.CascadeActivation(context, _handler);
 		}
 
 		private void EnsureObjectIsActive(Transaction trans, object cascadeTo, IActivationDepth
@@ -347,7 +333,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (_handler is IEmbeddedTypeHandler)
+			if (Handlers4.IsEmbedded(_handler))
 			{
 				return;
 			}
@@ -405,7 +391,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						if (_isPrimitive)
 						{
-							if (_handler is PrimitiveHandler)
+							if (Handlers4.IsPrimitive(_handler))
 							{
 								object nullValue = _reflectField.GetFieldType().NullValue();
 								if (obj.Equals(nullValue))
@@ -429,7 +415,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		public sealed override void CollectIDs(CollectIdContext context)
 		{
 			if (!Alive())
@@ -437,20 +423,20 @@ namespace Db4objects.Db4o.Internal
 				IncrementOffset(context.Buffer());
 				return;
 			}
-			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(context, _handler);
-			if (!(handler is IFirstClassHandler))
+			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, _handler);
+			if (!(Handlers4.IsFirstClass(handler)))
 			{
 				IncrementOffset(context.Buffer());
 				return;
 			}
-			if (handler is ClassMetadata)
+			if (Handlers4.IsClassMetadata(handler))
 			{
 				context.AddId();
 				return;
 			}
 			LocalObjectContainer container = (LocalObjectContainer)context.Container();
 			SlotFormat slotFormat = context.SlotFormat();
-			if (slotFormat.HandleAsObject(handler))
+			if (Handlers4.HandleAsObject(handler))
 			{
 				// TODO: Code is similar to QCandidate.readArrayCandidates. Try to refactor to one place.
 				int collectionID = context.ReadInt();
@@ -464,13 +450,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_402
+			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_389
 				(handler, queryingReadContext));
 		}
 
-		private sealed class _IClosure4_402 : IClosure4
+		private sealed class _IClosure4_389 : IClosure4
 		{
-			public _IClosure4_402(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_389(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;
@@ -560,7 +546,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="isUpdate"></param>
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
 			if (!CheckAlive(context))
@@ -573,7 +559,7 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_475(this
+				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_462(this
 					, childContext));
 			}
 			catch (CorruptionException exc)
@@ -582,9 +568,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_475 : IClosure4
+		private sealed class _IClosure4_462 : IClosure4
 		{
-			public _IClosure4_475(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_462(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -601,8 +587,8 @@ namespace Db4objects.Db4o.Internal
 			private readonly DeleteContextImpl childContext;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private void RemoveIndexEntry(DeleteContextImpl context)
 		{
 			if (!HasIndex())
@@ -893,39 +879,7 @@ namespace Db4objects.Db4o.Internal
 
 		private int CalculateLinkLength()
 		{
-			// TODO: Clean up here by creating a common interface
-			//       for the Typehandlers that have a "linkLength"
-			//       concept.
-			if (_handler == null)
-			{
-				// must be ClassMetadata
-				return Const4.IdLength;
-			}
-			if (_handler is PersistentBase)
-			{
-				return ((PersistentBase)_handler).LinkLength();
-			}
-			if (_handler is PrimitiveHandler)
-			{
-				return ((PrimitiveHandler)_handler).LinkLength();
-			}
-			if (_handler is IVariableLengthTypeHandler)
-			{
-				if (_handler is IEmbeddedTypeHandler)
-				{
-					return Const4.IndirectionLength;
-				}
-				return Const4.IdLength;
-			}
-			// TODO: For custom handlers there will have to be a way 
-			//       to calculate the length in the slot.
-			//        Options:
-			//        (1) Remember when the first object is marshalled.
-			//        (2) Add a #defaultValue() method to TypeHandler4,
-			//            marshall the default value and check.
-			//        (3) Add a way to test the custom handler when it
-			//            is installed and remember the length there. 
-			throw new NotImplementedException();
+			return Handlers4.CalculateLinkLength(_handler);
 		}
 
 		public virtual void LoadHandlerById(ObjectContainerBase container)
@@ -1004,7 +958,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				context.UpdateDepth(AdjustUpdateDepthForCascade(obj, updateDepth));
 			}
-			if (UseDedicatedSlot(context, _handler))
+			if (Handlers4.UseDedicatedSlot(context, _handler))
 			{
 				context.WriteObject(_handler, obj);
 			}
@@ -1018,23 +972,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				context.AddIndexEntry(this, obj);
 			}
-		}
-
-		public static bool UseDedicatedSlot(IContext context, ITypeHandler4 handler)
-		{
-			if (handler is IEmbeddedTypeHandler)
-			{
-				return false;
-			}
-			if (handler is UntypedFieldHandler)
-			{
-				return false;
-			}
-			if (handler is ClassMetadata)
-			{
-				return UseDedicatedSlot(context, ((ClassMetadata)handler).DelegateTypeHandler());
-			}
-			return true;
 		}
 
 		public virtual bool NeedsArrayAndPrimitiveInfo()
@@ -1147,8 +1084,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual bool SupportsIndex()
 		{
-			return Alive() && (_handler is IIndexable4) && (!(_handler is UntypedFieldHandler
-				));
+			return Alive() && (_handler is IIndexable4) && (!Handlers4.IsUntyped(_handler));
 		}
 
 		public void TraverseValues(IVisitor4 userVisitor)
@@ -1176,13 +1112,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_956(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_896(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_956 : IVisitor4
+		private sealed class _IVisitor4_896 : IVisitor4
 		{
-			public _IVisitor4_956(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_896(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1288,21 +1224,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual IBTreeRange Search(Transaction transaction, object value)
 		{
 			AssertHasIndex();
-			object transActionalValue = WrapWithTransactionContext(transaction, value);
+			object transActionalValue = Handlers4.WrapWithTransactionContext(transaction, value
+				, _handler);
 			BTreeNodeSearchResult lowerBound = SearchLowerBound(transaction, transActionalValue
 				);
 			BTreeNodeSearchResult upperBound = SearchUpperBound(transaction, transActionalValue
 				);
 			return lowerBound.CreateIncludingRange(upperBound);
-		}
-
-		private object WrapWithTransactionContext(Transaction transaction, object value)
-		{
-			if (_handler is ClassMetadata)
-			{
-				value = ((ClassMetadata)_handler).WrapWithTransactionContext(transaction, value);
-			}
-			return value;
 		}
 
 		private BTreeNodeSearchResult SearchUpperBound(Transaction transaction, object value
@@ -1337,7 +1265,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <param name="classMetadata"></param>
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		protected virtual void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
 			 classMetadata, int objectId)
 		{
@@ -1398,14 +1326,15 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
-			ITypeHandler4 typeHandler = Handlers4.CorrectHandlerVersion(context, _handler);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1117
+			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, _handler
+				);
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1050
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1117 : IClosure4
+		private sealed class _IClosure4_1050 : IClosure4
 		{
-			public _IClosure4_1117(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1050(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

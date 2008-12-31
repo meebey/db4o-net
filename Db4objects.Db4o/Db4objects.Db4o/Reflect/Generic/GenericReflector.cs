@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
@@ -20,7 +19,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 	/// ObjectContainer is opened. All subsequent reflector
 	/// calls are routed through this interface.<br /><br />
 	/// An instance of GenericReflector can be obtained through
-	/// <see cref="IExtObjectContainer.Reflector">IExtObjectContainer.Reflector</see>
+	/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Reflector">Db4objects.Db4o.Ext.IExtObjectContainer.Reflector
+	/// 	</see>
 	/// .<br /><br />
 	/// GenericReflector keeps list of known classes in memory.
 	/// When the GenericReflector is called, it first checks its list of
@@ -197,7 +197,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <summary>Returns a ReflectClass instance for the specified class</summary>
 		/// <param name="clazz">class</param>
 		/// <returns>a ReflectClass instance for the specified class</returns>
-		/// <seealso cref="IReflectClass">IReflectClass</seealso>
+		/// <seealso cref="Db4objects.Db4o.Reflect.IReflectClass">Db4objects.Db4o.Reflect.IReflectClass
+		/// 	</seealso>
 		public virtual IReflectClass ForClass(Type clazz)
 		{
 			if (clazz == null)
@@ -231,7 +232,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <summary>Returns a ReflectClass instance for the specified class name</summary>
 		/// <param name="className">class name</param>
 		/// <returns>a ReflectClass instance for the specified class name</returns>
-		/// <seealso cref="IReflectClass">IReflectClass</seealso>
+		/// <seealso cref="Db4objects.Db4o.Reflect.IReflectClass">Db4objects.Db4o.Reflect.IReflectClass
+		/// 	</seealso>
 		public virtual IReflectClass ForName(string className)
 		{
 			IReflectClass clazz = _repository.LookupByName(className);
@@ -250,7 +252,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <summary>Returns a ReflectClass instance for the specified class object</summary>
 		/// <param name="obj">class object</param>
 		/// <returns>a ReflectClass instance for the specified class object</returns>
-		/// <seealso cref="IReflectClass">IReflectClass</seealso>
+		/// <seealso cref="Db4objects.Db4o.Reflect.IReflectClass">Db4objects.Db4o.Reflect.IReflectClass
+		/// 	</seealso>
 		public virtual IReflectClass ForObject(object obj)
 		{
 			if (obj is GenericObject)

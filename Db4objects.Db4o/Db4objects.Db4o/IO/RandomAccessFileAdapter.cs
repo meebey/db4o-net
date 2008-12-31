@@ -11,6 +11,7 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>IO adapter for random access files.</summary>
 	/// <remarks>IO adapter for random access files.</remarks>
+	[System.ObsoleteAttribute(@"Use")]
 	public class RandomAccessFileAdapter : IoAdapter
 	{
 		private string _path;
@@ -21,7 +22,7 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		protected RandomAccessFileAdapter(string path, bool lockFile, long initialLength, 
 			bool readOnly)
 		{
@@ -54,7 +55,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Close()
 		{
 			// FIXME: This is a temporary quickfix for a bug in Android.
@@ -95,7 +96,7 @@ namespace Db4objects.Db4o.IO
 			return existingFile.Exists() && existingFile.Length() > 0;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override long GetLength()
 		{
 			try
@@ -108,7 +109,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -116,7 +117,7 @@ namespace Db4objects.Db4o.IO
 				, readOnly);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override int Read(byte[] bytes, int length)
 		{
 			try
@@ -129,7 +130,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			if (DTrace.enabled)
@@ -146,7 +147,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Sync()
 		{
 			try
@@ -159,7 +160,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Write(byte[] buffer, int length)
 		{
 			try

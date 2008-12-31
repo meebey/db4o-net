@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Annotation
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestIndexed()
 		{
 			StoreData();

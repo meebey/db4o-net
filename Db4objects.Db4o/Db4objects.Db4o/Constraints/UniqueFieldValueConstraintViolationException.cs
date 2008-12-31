@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Constraints;
 
 namespace Db4objects.Db4o.Constraints
@@ -8,11 +7,14 @@ namespace Db4objects.Db4o.Constraints
 	/// <summary>
 	/// db4o-specific exception.<br /><br />
 	/// This exception can be thrown by a
-	/// <see cref="UniqueFieldValueConstraint">UniqueFieldValueConstraint</see>
+	/// <see cref="Db4objects.Db4o.Constraints.UniqueFieldValueConstraint">Db4objects.Db4o.Constraints.UniqueFieldValueConstraint
+	/// 	</see>
 	/// on commit.
 	/// </summary>
-	/// <seealso cref="IObjectField.Indexed">IObjectField.Indexed</seealso>
-	/// <seealso cref="IConfiguration.Add">IConfiguration.Add</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IObjectField.Indexed">Db4objects.Db4o.Config.IObjectField.Indexed
+	/// 	</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Add">Db4objects.Db4o.Config.IConfiguration.Add
+	/// 	</seealso>
 	[System.Serializable]
 	public class UniqueFieldValueConstraintViolationException : ConstraintViolationException
 	{

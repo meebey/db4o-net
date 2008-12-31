@@ -98,7 +98,7 @@ namespace Db4oUnit.Extensions.Tests
 				));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDeleteDir()
 		{
 			System.IO.Directory.CreateDirectory("a/b/c");

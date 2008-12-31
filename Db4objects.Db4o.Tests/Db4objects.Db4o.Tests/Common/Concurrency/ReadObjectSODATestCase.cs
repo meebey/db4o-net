@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -20,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		private static string testString = "simple test string";
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			for (int i = 0; i < ThreadCount(); i++)
@@ -29,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void ConcReadSameObject(IExtObjectContainer oc)
 		{
 			int mid = ThreadCount() / 2;
@@ -42,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			Assert.AreEqual(expected, result.Next());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void ConcReadDifferentObject(IExtObjectContainer oc, int seq)
 		{
 			IQuery query = oc.Query();

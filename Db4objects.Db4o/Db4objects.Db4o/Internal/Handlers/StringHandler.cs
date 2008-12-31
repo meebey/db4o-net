@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
@@ -31,7 +29,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		// do nothing
+		// do nothing, we are in a slot indirection anyway, the 
+		// buffer position does not need to be changed.
 		internal virtual byte GetIdentifier()
 		{
 			return Const4.Yapstring;
@@ -50,8 +49,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		/// <summary>This readIndexEntry method reads from the parent slot.</summary>
 		/// <remarks>This readIndexEntry method reads from the parent slot.</remarks>
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer
 			 buffer)
 		{
@@ -64,8 +63,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return buffer.ReadPayloadWriter(payLoadOffSet, length);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(IObjectIdContext context)
 		{
 			int payLoadOffSet = context.ReadInt();
@@ -256,12 +255,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_227(this, context, sourceBuffer);
+			return new _IPreparedComparison_228(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_227 : IPreparedComparison
+		private sealed class _IPreparedComparison_228 : IPreparedComparison
 		{
-			public _IPreparedComparison_227(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_228(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

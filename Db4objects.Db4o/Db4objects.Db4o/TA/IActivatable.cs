@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Activation;
-using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.TA
 {
@@ -86,7 +85,8 @@ namespace Db4objects.Db4o.TA
 		/// called by db4o upon instantiation.
 		/// <br /><br />The recommended implementation of this method is to store
 		/// the passed
-		/// <see cref="IActivator">IActivator</see>
+		/// <see cref="Db4objects.Db4o.Activation.IActivator">Db4objects.Db4o.Activation.IActivator
+		/// 	</see>
 		/// in a transient field of the object.
 		/// </remarks>
 		/// <param name="activator">the Activator</param>
@@ -96,12 +96,15 @@ namespace Db4objects.Db4o.TA
 		/// <remarks>
 		/// should be called by every reading field access of an object.
 		/// <br /><br />The recommended implementation of this method is to call
-		/// <see cref="IActivator.Activate">IActivator.Activate</see>
+		/// <see cref="Db4objects.Db4o.Activation.IActivator.Activate">Db4objects.Db4o.Activation.IActivator.Activate
+		/// 	</see>
 		/// on the
-		/// <see cref="IActivator">IActivator</see>
+		/// <see cref="Db4objects.Db4o.Activation.IActivator">Db4objects.Db4o.Activation.IActivator
+		/// 	</see>
 		/// that was
 		/// previously passed to
-		/// <see cref="IActivatable.Bind">IActivatable.Bind</see>
+		/// <see cref="Db4objects.Db4o.TA.IActivatable.Bind">Db4objects.Db4o.TA.IActivatable.Bind
+		/// 	</see>
 		/// .
 		/// </remarks>
 		/// <param name="purpose">TODO</param>

@@ -9,11 +9,16 @@ namespace Db4objects.Db4o.Tests.Common.IO
 {
 	public class AllTests : ReflectionTestSuite
 	{
+		public static void Main(string[] arguments)
+		{
+			new ConsoleTestRunner(typeof(Db4objects.Db4o.Tests.Common.IO.AllTests)).Run();
+		}
+
 		protected override Type[] TestCases()
 		{
-			Type[] commonCases = new Type[] { typeof(BlockAwareBinTestSuite), typeof(IoAdapterTestSuite
-				), typeof(RandomAccessFileStorageFactoryTestCase), typeof(StorageTestSuite), typeof(
-				NonFlushingStorageTestCase) };
+			Type[] commonCases = new Type[] { typeof(BlockAwareBinTestSuite), typeof(BlockSizeDependentBinTestCase
+				), typeof(IoAdapterTestSuite), typeof(RandomAccessFileStorageFactoryTestCase), typeof(
+				StorageTestSuite), typeof(NonFlushingStorageTestCase) };
 			return Db4oUnitTestUtil.MergeClasses(commonCases, StackTraceBasedCases());
 		}
 

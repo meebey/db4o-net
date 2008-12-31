@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(SecondClassTestCase.CustomFirstClassItem
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				)), new SecondClassTestCase.SecondClassTypeHandler());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new SecondClassTestCase.Item());

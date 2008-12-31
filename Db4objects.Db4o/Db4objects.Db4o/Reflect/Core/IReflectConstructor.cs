@@ -9,7 +9,8 @@ namespace Db4objects.Db4o.Reflect.Core
 	/// representation for java.lang.reflect.Constructor.
 	/// <br /><br />See the respective documentation in the JDK API.
 	/// </remarks>
-	/// <seealso cref="IReflector">IReflector</seealso>
+	/// <seealso cref="Db4objects.Db4o.Reflect.IReflector">Db4objects.Db4o.Reflect.IReflector
+	/// 	</seealso>
 	public interface IReflectConstructor
 	{
 		IReflectClass[] GetParameterTypes();

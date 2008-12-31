@@ -1,15 +1,13 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Replication;
 
 namespace Db4objects.Db4o.Replication
 {
 	/// <summary>db4o replication interface.</summary>
 	/// <remarks>db4o replication interface.</remarks>
-	/// <seealso cref="IExtObjectContainer.ReplicationBegin">IExtObjectContainer.ReplicationBegin
+	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.ReplicationBegin">Db4objects.Db4o.Ext.IExtObjectContainer.ReplicationBegin
 	/// 	</seealso>
 	[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS) instead.<br><br>"
 		)]
@@ -35,7 +33,8 @@ namespace Db4objects.Db4o.Replication
 		/// write all changes back to the database files. This method
 		/// synchronizes both ObjectContainers by setting the transaction
 		/// serial number
-		/// <see cref="IExtObjectContainer.Version">IExtObjectContainer.Version</see>
+		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Version">Db4objects.Db4o.Ext.IExtObjectContainer.Version
+		/// 	</see>
 		/// on both
 		/// ObjectContainers to be equal
 		/// to the higher version number among the two. A record with
@@ -74,7 +73,8 @@ namespace Db4objects.Db4o.Replication
 
 		/// <summary>
 		/// modifies the replication policy, what to do on a call to
-		/// <see cref="IReplicationProcess.Replicate">IReplicationProcess.Replicate</see>
+		/// <see cref="Db4objects.Db4o.Replication.IReplicationProcess.Replicate">Db4objects.Db4o.Replication.IReplicationProcess.Replicate
+		/// 	</see>
 		/// .
 		/// <br /><br />If no direction is set, the replication process will be bidirectional by
 		/// default.

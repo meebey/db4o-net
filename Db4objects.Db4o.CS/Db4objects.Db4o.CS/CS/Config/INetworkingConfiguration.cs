@@ -1,10 +1,11 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.CS.Config
 {
+	/// <summary>Configuration interface for networking configuration settings.</summary>
+	/// <remarks>Configuration interface for networking configuration settings.</remarks>
 	/// <since>7.5</since>
 	public interface INetworkingConfiguration
 	{
@@ -19,11 +20,11 @@ namespace Db4objects.Db4o.CS.Config
 		/// Default value: 600000ms (10 minutes)<br />
 		/// <br />
 		/// It is recommended to use the same values for
-		/// <see cref="INetworkingConfiguration.TimeoutClientSocket">INetworkingConfiguration.TimeoutClientSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket
+		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket</see>
 		/// and
-		/// <see cref="INetworkingConfiguration.TimeoutServerSocket">INetworkingConfiguration.TimeoutServerSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket
+		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket</see>
 		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />
@@ -55,11 +56,11 @@ namespace Db4objects.Db4o.CS.Config
 		/// Default value: 600000ms (10 minutes)<br />
 		/// <br />
 		/// It is recommended to use the same values for
-		/// <see cref="INetworkingConfiguration.TimeoutClientSocket">INetworkingConfiguration.TimeoutClientSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket
+		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket</see>
 		/// and
-		/// <see cref="INetworkingConfiguration.TimeoutServerSocket">INetworkingConfiguration.TimeoutServerSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket
+		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket</see>
 		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />

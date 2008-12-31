@@ -16,20 +16,20 @@ namespace Db4objects.Db4o.Tests.Common.TP
 {
 	public class TransparentPersistenceTestCase : AbstractDb4oTestCase
 	{
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentPersistenceSupport());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new Item("Foo"));
 			Store(new Item("Bar"));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestActivateOnWrite()
 		{
 			Item foo = ItemByName("Foo");
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			Assert.AreEqual("Foo*", foo.GetName());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestConcurrentClientModification()
 		{
 			if (!IsClientServer())
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestTransparentUpdate()
 		{
 			Item foo = ItemByName("Foo");
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			Assert.IsNotNull(ItemByName("Bar"));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestChangedAfterCommit()
 		{
 			Item item = ItemByName("Foo");
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			AssertUpdatedObjects(item);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestUpdateAfterActivation()
 		{
 			Item foo = ItemByName("Foo");

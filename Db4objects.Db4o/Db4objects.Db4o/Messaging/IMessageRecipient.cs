@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Messaging
@@ -15,12 +14,13 @@ namespace Db4objects.Db4o.Messaging
 	/// http://developer.db4o.com/Resources/view.aspx/Reference/Client-Server/Messaging<br />
 	/// http://developer.db4o.com/Resources/view.aspx/Reference/Client-Server/Remote_Code_Execution<br /><br />
 	/// <b>See Also:</b><br />
-	/// <see cref="IClientServerConfiguration.SetMessageRecipient">ClientServerConfiguration.setMessageRecipient(MessageRecipient)
-	/// 	</see>
+	/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.SetMessageRecipient"
+	/// 	>ClientServerConfiguration.setMessageRecipient(MessageRecipient)</see>
 	/// , <br />
-	/// <see cref="IMessageSender">IMessageSender</see>
+	/// <see cref="Db4objects.Db4o.Messaging.IMessageSender">Db4objects.Db4o.Messaging.IMessageSender
+	/// 	</see>
 	/// ,<br />
-	/// <see cref="IClientServerConfiguration.GetMessageSender">IClientServerConfiguration.GetMessageSender
+	/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.GetMessageSender">Db4objects.Db4o.Config.IClientServerConfiguration.GetMessageSender
 	/// 	</see>
 	/// ,<br />
 	/// <see cref="MessageRecipientWithContext">MessageRecipientWithContext</see>

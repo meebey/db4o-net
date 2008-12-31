@@ -53,7 +53,7 @@ namespace Db4oUnit
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
 			if (Green)

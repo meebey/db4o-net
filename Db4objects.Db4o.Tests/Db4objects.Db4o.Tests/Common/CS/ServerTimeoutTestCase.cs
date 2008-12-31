@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Config;
@@ -24,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			config.ClientServer().TimeoutServerSocket(1);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void _test()
 		{
 			ObjectServerImpl serverImpl = (ObjectServerImpl)ClientServerFixture().Server();

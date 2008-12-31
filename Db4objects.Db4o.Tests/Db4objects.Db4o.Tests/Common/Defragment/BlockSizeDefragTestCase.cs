@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private const int DeleteRatio = 3;
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Test()
 		{
 			for (int idx = 0; idx < BlockSizes.Length; idx++)
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void AssertBlockSizeDefrag(int blockSize)
 		{
 			string fileName = FileName;
@@ -112,7 +112,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			db.Commit();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void Defrag(string fileName, int blockSize)
 		{
 			DefragmentConfig config = new DefragmentConfig(fileName);

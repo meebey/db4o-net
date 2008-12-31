@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -68,19 +67,19 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStoreIntItem()
 		{
 			DoTestStoreObject(new UntypedHandlerTestCase.Item(3355));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStoreStringItem()
 		{
 			DoTestStoreObject(new UntypedHandlerTestCase.Item("one"));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStoreArrayItem()
 		{
 			DoTestStoreObject(new UntypedHandlerTestCase.Item(new string[] { "one", "two", "three"

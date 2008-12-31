@@ -7,7 +7,8 @@ namespace Db4objects.Db4o.Events
 {
 	/// <summary>Arguments for object related events.</summary>
 	/// <remarks>Arguments for object related events.</remarks>
-	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
+	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
+	/// 	</seealso>
 	public class ObjectEventArgs : TransactionalEventArgs
 	{
 		private object _obj;

@@ -4,7 +4,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Typehandlers;
 
@@ -110,8 +109,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteInt(field.HandlerID());
 			BitMap4 bitmap = new BitMap4(3);
 			bitmap.Set(0, field.IsPrimitive());
-			bitmap.Set(1, handler is ArrayHandler);
-			bitmap.Set(2, handler is MultidimensionalArrayHandler);
+			bitmap.Set(1, Handlers4.HandlesArray(handler));
+			bitmap.Set(2, Handlers4.HandlesMultidimensionalArray(handler));
 			// keep the order
 			writer.WriteByte(bitmap.GetByte(0));
 		}

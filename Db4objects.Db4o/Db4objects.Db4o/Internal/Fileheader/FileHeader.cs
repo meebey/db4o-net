@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
 
@@ -24,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return length;
 		}
 
-		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		public static FileHeader ReadFixedPart(LocalObjectContainer file)
 		{
 			ByteArrayBuffer reader = PrepareFileHeaderReader(file);
@@ -63,10 +62,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return null;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public abstract void Close();
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public abstract void InitNew(LocalObjectContainer file);
 
 		public abstract Transaction InterruptedTransaction();

@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		protected Db4oUUID uuid;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			object value = CreateItem();
@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			uuid = Db().Ext().GetObjectInfo(value).GetUUID();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestQuery()
 		{
 			object item = RetrieveOnlyInstance();
@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			AssertItemValue(item);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDeactivate()
 		{
 			object item = RetrieveOnlyInstance();
@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			return RetrieveOnlyInstance(_clazz);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void AssertNullItem(object obj)
 		{
 			IReflectClass claxx = Reflector().ForObject(obj);
@@ -73,13 +73,13 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected abstract void AssertItemValue(object obj);
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected abstract object CreateItem();
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected abstract void AssertRetrievedItem(object obj);
 	}
 }

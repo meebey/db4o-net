@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Acid;
 using Sharpen;
@@ -39,7 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				_fileName = fileName;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override int Read(long pos, byte[] bytes, int length)
 			{
 				_curPos = pos;
@@ -51,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				return readBytes;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Write(long pos, byte[] buffer, int length)
 			{
 				_curPos = pos;
@@ -62,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				_curPos += length;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Sync()
 			{
 				base.Sync();

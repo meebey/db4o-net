@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			ActivationEventsTestCase.NonActivatableItem nonActivatable = new ActivationEventsTestCase.NonActivatableItem

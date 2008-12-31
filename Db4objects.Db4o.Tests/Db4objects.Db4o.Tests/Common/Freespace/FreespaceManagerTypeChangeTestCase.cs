@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			new FreespaceManagerTypeChangeTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			configuration = config;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestSwitchingBackAndForth()
 		{
 			ProduceSomeFreeSpace();

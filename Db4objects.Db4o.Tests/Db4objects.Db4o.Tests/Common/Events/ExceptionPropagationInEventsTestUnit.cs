@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			_eventFirer.Add("delete", NewObjectDeleter());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new EventsTestCaseBase.Item(1));
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				EventsTestCaseBase.Item item = this._enclosing.RetrieveItem(1);
@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Delete(this._enclosing.RetrieveItem(1));
@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Store(new EventsTestCaseBase.Item());

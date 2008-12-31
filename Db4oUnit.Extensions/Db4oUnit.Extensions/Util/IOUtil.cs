@@ -9,7 +9,7 @@ namespace Db4oUnit.Extensions.Util
 	public class IOUtil
 	{
 		/// <summary>Deletes the directory</summary>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public static void DeleteDir(string dir)
 		{
 			string absolutePath = new Sharpen.IO.File(dir).GetCanonicalPath();

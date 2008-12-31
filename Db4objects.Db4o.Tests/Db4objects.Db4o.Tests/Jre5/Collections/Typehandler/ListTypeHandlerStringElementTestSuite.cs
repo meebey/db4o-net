@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public class ListTypeHandlerStringElementTestUnit : ListTypeHandlerTestUnitBase
 		{
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public virtual void TestSuccessfulEndsWithQuery()
 			{
 				IQuery q = NewQuery(ItemFactory().ItemClass());
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				AssertQueryResult(q, true);
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public virtual void TestFailingEndsWithQuery()
 			{
 				IQuery q = NewQuery(ItemFactory().ItemClass());

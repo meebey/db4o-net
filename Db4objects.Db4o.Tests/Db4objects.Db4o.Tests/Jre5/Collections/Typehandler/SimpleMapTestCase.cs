@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(Hashtable))
@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			config.ObjectClass(typeof(SimpleMapTestCase.Item)).CascadeOnDelete(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			SimpleMapTestCase.Item item = new SimpleMapTestCase.Item();

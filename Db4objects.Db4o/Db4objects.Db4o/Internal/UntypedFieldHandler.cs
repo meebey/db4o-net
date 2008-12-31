@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
@@ -24,10 +23,7 @@ namespace Db4objects.Db4o.Internal
 		public override void CascadeActivation(ActivationContext4 context)
 		{
 			ITypeHandler4 typeHandler = TypeHandlerForObject(context.TargetObject());
-			if (typeHandler is IFirstClassHandler)
-			{
-				((IFirstClassHandler)typeHandler).CascadeActivation(context);
-			}
+			Handlers4.CascadeActivation(context, typeHandler);
 		}
 
 		private Db4objects.Db4o.Internal.HandlerRegistry HandlerRegistry()
@@ -35,7 +31,7 @@ namespace Db4objects.Db4o.Internal
 			return Container()._handlers;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Delete(IDeleteContext context)
 		{
 			int payLoadOffset = context.ReadInt();
@@ -157,7 +153,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			context.Seek(payloadOffset);
 			ITypeHandler4 typeHandler = Container().TypeHandlerForId(context.ReadInt());
-			return Handlers4.CorrectHandlerVersion(context, typeHandler);
+			return Db4objects.Db4o.Internal.HandlerRegistry.CorrectHandlerVersion(context, typeHandler
+				);
 		}
 
 		/// <param name="buffer"></param>
@@ -168,12 +165,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing, no longer needed in current implementation.
-		protected virtual bool IsPrimitiveArray(ITypeHandler4 classMetadata)
-		{
-			return classMetadata is PrimitiveFieldHandler && ((PrimitiveFieldHandler)classMetadata
-				).IsArray();
-		}
-
 		public override object Read(IReadContext readContext)
 		{
 			IInternalReadContext context = (IInternalReadContext)readContext;
@@ -224,7 +215,7 @@ namespace Db4objects.Db4o.Internal
 			MarshallingContextState state = marshallingContext.CurrentState();
 			marshallingContext.CreateChildBuffer(false, false);
 			context.WriteInt(id);
-			if (!IsPrimitiveArray(typeHandler))
+			if (!Handlers4.HandlesPrimitiveArray(typeHandler))
 			{
 				marshallingContext.DoNotIndirectWrites();
 			}
@@ -235,7 +226,7 @@ namespace Db4objects.Db4o.Internal
 		private void WriteObject(IWriteContext context, ITypeHandler4 typeHandler, object
 			 obj)
 		{
-			if (FieldMetadata.UseDedicatedSlot(context, typeHandler))
+			if (Handlers4.UseDedicatedSlot(context, typeHandler))
 			{
 				context.WriteObject(obj);
 			}

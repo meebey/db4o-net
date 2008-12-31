@@ -52,19 +52,19 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private static readonly string Filename = Path.GetTempFileName();
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void TestDefragWithTranslator()
 		{
 			AssertDefragment(true);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void TestDefragWithoutTranslator()
 		{
 			AssertDefragment(true);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void AssertDefragment(bool registerTranslator)
 		{
 			Store();
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			AssertTranslated();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void Defragment(bool registerTranslator)
 		{
 			DefragmentConfig defragConfig = new DefragmentConfig(Filename);
@@ -117,13 +117,13 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return config;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			DeleteDatabaseFile();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			DeleteDatabaseFile();

@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		public const byte HandlerVersion = (byte)4;
+		public const byte HandlerVersion = (byte)5;
 
 		private readonly ObjectContainerBase _container;
 
@@ -300,7 +300,7 @@ namespace Db4objects.Db4o.Internal
 			_mapReflectorToFieldHandler.Put(classReflector, fieldHandler);
 		}
 
-		private void RegisterHandlerVersion(IFieldHandler handler, int version, ITypeHandler4
+		public void RegisterHandlerVersion(IFieldHandler handler, int version, ITypeHandler4
 			 replacement)
 		{
 			if (replacement is IBuiltinTypeHandler)
@@ -404,7 +404,7 @@ namespace Db4objects.Db4o.Internal
 			return (TypeInfo)_mapIdToTypeInfo.Get(id);
 		}
 
-		public int TypeHandlerID(ITypeHandler4 handler)
+		public int TypeHandlerID(IFieldHandler handler)
 		{
 			if (handler is ClassMetadata)
 			{
@@ -416,6 +416,17 @@ namespace Db4objects.Db4o.Internal
 				return 0;
 			}
 			return ((int)idAsInt);
+		}
+
+		public int FieldHandlerIdForFieldHandler(IFieldHandler fieldHandler)
+		{
+			object wrappedIdObj = _mapFieldHandlerToId.Get(fieldHandler);
+			if (wrappedIdObj != null)
+			{
+				int wrappedId = (int)wrappedIdObj;
+				return wrappedId;
+			}
+			return 0;
 		}
 
 		private void InitClassReflectors(GenericReflector reflector)
@@ -509,7 +520,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 configuredHandler = Container().ConfigImpl().TypeHandlerForClass(clazz
 				, Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
-			if (configuredHandler != null && SlotFormat.IsEmbedded(configuredHandler))
+			if (configuredHandler != null && Handlers4.IsEmbedded(configuredHandler))
 			{
 				MapFieldHandler(clazz, configuredHandler);
 				return configuredHandler;
@@ -566,7 +577,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			// This method never gets called from test cases so far.
 			// It is written for the usecase of custom Typehandlers and
-			// it is only require for arrays.
+			// it is only required for arrays.
 			// The methodology is highly problematic since it implies that 
 			// one Typehandler can only be used for one ReflectClass.
 			return (IReflectClass)_mapFieldHandlerToReflector.Get(handler);
@@ -603,11 +614,6 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public bool IsVariableLength(ITypeHandler4 handler)
-		{
-			return handler is IVariableLengthTypeHandler;
-		}
-
 		public SharedIndexedFields Indexes()
 		{
 			return _indexes;
@@ -638,26 +644,27 @@ namespace Db4objects.Db4o.Internal
 			return new Hashtable4(32);
 		}
 
-		public int FieldHandlerIdForFieldHandler(IFieldHandler fieldHandler)
-		{
-			object wrappedIdObj = _mapFieldHandlerToId.Get(fieldHandler);
-			if (wrappedIdObj != null)
-			{
-				int wrappedId = (int)wrappedIdObj;
-				return wrappedId;
-			}
-			return 0;
-		}
-
 		public ITypeHandler4 ConfiguredTypeHandler(IReflectClass claxx)
 		{
 			ITypeHandler4 typeHandler = Container().ConfigImpl().TypeHandlerForClass(claxx, HandlerVersion
 				);
-			if (typeHandler != null && typeHandler is IEmbeddedTypeHandler)
+			if (Handlers4.IsEmbedded(typeHandler))
 			{
 				_mapReflectorToTypeHandler.Put(claxx, typeHandler);
 			}
 			return typeHandler;
+		}
+
+		public static ITypeHandler4 CorrectHandlerVersion(IHandlerVersionContext context, 
+			ITypeHandler4 handler)
+		{
+			int version = context.HandlerVersion();
+			if (version >= HandlerVersion)
+			{
+				return handler;
+			}
+			return context.Transaction().Container().Handlers().CorrectHandlerVersion(handler
+				, version);
 		}
 	}
 }

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -11,19 +10,19 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 {
 	public class SlotDefragmentTestCase : ITestLifeCycle
 	{
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestPrimitiveIndex()
 		{
 			SlotDefragmentFixture.AssertIndex(SlotDefragmentFixture.PrimitiveFieldname);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestWrapperIndex()
 		{
 			SlotDefragmentFixture.AssertIndex(SlotDefragmentFixture.WrapperFieldname);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestTypedObjectIndex()
 		{
 			SlotDefragmentFixture.ForceIndex();
@@ -40,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			db.Close();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestNoForceDelete()
 		{
 			Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.Filename
@@ -54,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			{
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Db4objects.Db4o.Defragment.Defragment.Defrag(SlotDefragmentTestConstants.Filename
@@ -62,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			new Sharpen.IO.File(SlotDefragmentTestConstants.Filename).Delete();
@@ -70,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			SlotDefragmentFixture.CreateFile(SlotDefragmentTestConstants.Filename);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 		}

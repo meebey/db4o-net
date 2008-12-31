@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal.Caching;
@@ -10,6 +9,7 @@ using Sharpen;
 
 namespace Db4objects.Db4o.IO
 {
+	/// <exclude></exclude>
 	internal class CachingBin : BinDecorator
 	{
 		private readonly int _pageSize;
@@ -20,9 +20,9 @@ namespace Db4objects.Db4o.IO
 
 		private long _fileLength;
 
-		private sealed class _IProcedure4_21 : IProcedure4
+		private sealed class _IProcedure4_22 : IProcedure4
 		{
-			public _IProcedure4_21(CachingBin _enclosing)
+			public _IProcedure4_22(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -38,13 +38,13 @@ namespace Db4objects.Db4o.IO
 
 		private IProcedure4 _onDiscardPage;
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public CachingBin(IBin bin, ICache4 cache, int pageCount, int pageSize) : base(bin
 			)
 		{
-			_onDiscardPage = new _IProcedure4_21(this);
-			_producerFromDisk = new _IFunction4_124(this);
-			_producerFromPool = new _IFunction4_133(this);
+			_onDiscardPage = new _IProcedure4_22(this);
+			_producerFromDisk = new _IFunction4_135(this);
+			_producerFromPool = new _IFunction4_144(this);
 			_pageSize = pageSize;
 			_pagePool = new SimpleObjectPool(NewPagePool(pageCount));
 			_cache = cache;
@@ -68,15 +68,21 @@ namespace Db4objects.Db4o.IO
 		/// </remarks>
 		/// <param name="buffer">destination buffer</param>
 		/// <param name="length">how many bytes to read</param>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override int Read(long pos, byte[] buffer, int length)
+		{
+			return ReadInternal(pos, buffer, length, false);
+		}
+
+		private int ReadInternal(long pos, byte[] buffer, int length, bool syncRead)
 		{
 			long startAddress = pos;
 			int bytesToRead = length;
 			int totalRead = 0;
 			while (bytesToRead > 0)
 			{
-				CachingBin.Page page = GetPage(startAddress, _producerFromDisk);
+				CachingBin.Page page = syncRead ? SyncReadPage(startAddress) : GetPage(startAddress
+					, _producerFromDisk);
 				int readBytes = page.Read(buffer, totalRead, startAddress, bytesToRead);
 				if (readBytes <= 0)
 				{
@@ -92,7 +98,7 @@ namespace Db4objects.Db4o.IO
 		/// <summary>Writes the buffer to cache using pages</summary>
 		/// <param name="buffer">source buffer</param>
 		/// <param name="length">how many bytes to write</param>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Write(long _position, byte[] buffer, int length)
 		{
 			long startAddress = _position;
@@ -113,22 +119,27 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>Flushes cache to a physical storage</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Sync()
 		{
 			FlushAllPages();
 			base.Sync();
 		}
 
+		public override int SyncRead(long position, byte[] bytes, int bytesToRead)
+		{
+			return ReadInternal(position, bytes, bytesToRead, true);
+		}
+
 		/// <summary>Returns the file length</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override long Length()
 		{
 			return _fileLength;
 		}
 
 		/// <summary>Flushes and closes the file</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Close()
 		{
 			try
@@ -141,9 +152,9 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		private sealed class _IFunction4_124 : IFunction4
+		private sealed class _IFunction4_135 : IFunction4
 		{
-			public _IFunction4_124(CachingBin _enclosing)
+			public _IFunction4_135(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -162,9 +173,9 @@ namespace Db4objects.Db4o.IO
 
 		internal readonly IFunction4 _producerFromDisk;
 
-		private sealed class _IFunction4_133 : IFunction4
+		private sealed class _IFunction4_144 : IFunction4
 		{
-			public _IFunction4_133(CachingBin _enclosing)
+			public _IFunction4_144(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -183,7 +194,7 @@ namespace Db4objects.Db4o.IO
 
 		internal readonly IFunction4 _producerFromPool;
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private CachingBin.Page GetPage(long startAddress, bool loadFromDisk)
 		{
 			IFunction4 producer = loadFromDisk ? _producerFromDisk : _producerFromPool;
@@ -194,6 +205,14 @@ namespace Db4objects.Db4o.IO
 		{
 			CachingBin.Page page = ((CachingBin.Page)_cache.Produce(PageAddressFor(startAddress
 				), producer, _onDiscardPage));
+			page.EnsureEndAddress(_fileLength);
+			return page;
+		}
+
+		private CachingBin.Page SyncReadPage(long startAddress)
+		{
+			CachingBin.Page page = new CachingBin.Page(_pageSize);
+			LoadPage(page, startAddress);
 			page.EnsureEndAddress(_fileLength);
 			return page;
 		}
@@ -209,7 +228,7 @@ namespace Db4objects.Db4o.IO
 			page._endAddress = startAddress + _pageSize;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		protected virtual void FlushAllPages()
 		{
 			for (IEnumerator pIter = _cache.GetEnumerator(); pIter.MoveNext(); )
@@ -219,7 +238,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private void FlushPage(CachingBin.Page page)
 		{
 			if (!page._dirty)
@@ -229,7 +248,7 @@ namespace Db4objects.Db4o.IO
 			WritePageToDisk(page);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private void LoadPage(CachingBin.Page page, long pos)
 		{
 			long startAddress = pos - pos % _pageSize;
@@ -245,7 +264,7 @@ namespace Db4objects.Db4o.IO
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private void WritePageToDisk(CachingBin.Page page)
 		{
 			base.Write(page._startAddress, page._buffer, page.Size());

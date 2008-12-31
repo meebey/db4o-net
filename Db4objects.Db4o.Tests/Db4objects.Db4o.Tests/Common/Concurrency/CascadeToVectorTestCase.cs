@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -72,7 +71,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void ConcDelete(IExtObjectContainer oc, int seq)
 		{
 			IObjectSet os = oc.Query(typeof(CascadeToVectorTestCase));

@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Instrumentation.Core
 	/// <exclude></exclude>
 	public class DefaultNativeClassFactory : INativeClassFactory
 	{
-		/// <exception cref="TypeLoadException"></exception>
+		/// <exception cref="System.TypeLoadException"></exception>
 		public virtual Type ForName(string className)
 		{
 			return Sharpen.Runtime.GetType(className);

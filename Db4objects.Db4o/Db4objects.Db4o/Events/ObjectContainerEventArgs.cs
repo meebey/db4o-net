@@ -2,13 +2,13 @@
 
 using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Events;
 
 namespace Db4objects.Db4o.Events
 {
 	/// <summary>Arguments for container related events.</summary>
 	/// <remarks>Arguments for container related events.</remarks>
-	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
+	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
+	/// 	</seealso>
 	public class ObjectContainerEventArgs : EventArgs
 	{
 		private readonly IObjectContainer _container;

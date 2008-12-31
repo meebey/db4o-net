@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -32,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		}
 
 		// FIXME: solve the workspacePath issue and uncomment this
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void _test()
 		{
 			string dbFile = GetTempFile();
@@ -105,13 +104,13 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return items;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private string GetTempFile()
 		{
 			return Path.GetTempFileName();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void Defrag(string dbFile)
 		{
 			DefragmentConfig config = new DefragmentConfig(dbFile);
@@ -119,7 +118,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			Db4objects.Db4o.Defragment.Defragment.Defrag(config);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void CreateLegacyDatabase(string dbFile)
 		{
 			Db4oLibrary library = Librarian().ForVersion("6.1");

@@ -21,7 +21,7 @@ namespace Db4oUnit.Extensions.Concurrency
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Invoke()
 		{
 			AbstractDb4oTestCase toTest = Subject();
@@ -34,7 +34,7 @@ namespace Db4oUnit.Extensions.Concurrency
 			return (AbstractDb4oTestCase)GetSubject();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void InvokeConcurrencyMethod(AbstractDb4oTestCase toTest, MethodInfo method
 			)
 		{
@@ -76,7 +76,7 @@ namespace Db4oUnit.Extensions.Concurrency
 			CheckConcurrencyMethod(toTest, method.Name);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void CheckConcurrencyMethod(AbstractDb4oTestCase toTest, string testMethodName
 			)
 		{

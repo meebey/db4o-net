@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -19,13 +18,13 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			new ConsoleTestRunner(typeof(GlobalVsNonStaticConfigurationTestCase)).Run();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			new Sharpen.IO.File(Filename).Delete();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			new Sharpen.IO.File(Filename).Delete();
@@ -80,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				this.config1 = config1;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenFile(config1, GlobalVsNonStaticConfigurationTestCase.Filename);
@@ -96,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				this.db1 = db1;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				db1.Store(new GlobalVsNonStaticConfigurationTestCase.Data(1));
@@ -126,7 +125,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			{
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenFile(GlobalVsNonStaticConfigurationTestCase.Filename);

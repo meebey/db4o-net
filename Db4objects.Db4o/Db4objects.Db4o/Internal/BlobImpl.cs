@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
@@ -72,7 +71,7 @@ namespace Db4objects.Db4o.Internal
 			return name;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void Copy(Sharpen.IO.File from, Sharpen.IO.File to)
 		{
 			System.IO.File.Copy(from, to);
@@ -86,13 +85,13 @@ namespace Db4objects.Db4o.Internal
 			return bi;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual FileInputStream GetClientInputStream()
 		{
 			return new FileInputStream(i_file);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual FileOutputStream GetClientOutputStream()
 		{
 			return new FileOutputStream(i_file);
@@ -134,7 +133,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void ReadFrom(Sharpen.IO.File file)
 		{
 			if (!file.Exists())
@@ -154,7 +153,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void ReadLocal(Sharpen.IO.File file)
 		{
 			bool copied = false;
@@ -184,7 +183,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual Sharpen.IO.File ServerFile(string promptName, bool writeToServer)
 		{
 			lock (i_stream._lock)
@@ -242,7 +241,7 @@ namespace Db4objects.Db4o.Internal
 			return new Sharpen.IO.File(lastTryPath);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private string ServerPath()
 		{
 			string path = i_stream.ConfigImpl().BlobPath();
@@ -265,14 +264,14 @@ namespace Db4objects.Db4o.Internal
 			i_stream = a_trans.Container();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void WriteLocal(Sharpen.IO.File file)
 		{
 			Copy(ServerFile(null, false), file);
 			i_status = Status.Completed;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void WriteTo(Sharpen.IO.File file)
 		{
 			if (GetStatus() == Status.Unused)
@@ -301,7 +300,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// not necessary
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void DeleteFile()
 		{
 			if (GetStatus() == Status.Unused)

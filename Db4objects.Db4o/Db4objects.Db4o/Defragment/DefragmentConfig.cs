@@ -115,7 +115,8 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <returns>
 		/// The
-		/// <see cref="IStoredClassFilter">IStoredClassFilter</see>
+		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
+		/// 	</see>
 		/// used to select stored class extents to
 		/// be included into the defragmented file.
 		/// </returns>
@@ -126,7 +127,8 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <param name="storedClassFilter">
 		/// The
-		/// <see cref="IStoredClassFilter">IStoredClassFilter</see>
+		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
+		/// 	</see>
 		/// used to select stored class extents to
 		/// be included into the defragmented file.
 		/// </param>
@@ -173,7 +175,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <returns>
 		/// The db4o
-		/// <see cref="IConfiguration">IConfiguration</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// to be applied
 		/// during the defragment process.
 		/// </returns>
@@ -188,7 +190,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <param name="config">
 		/// The db4o
-		/// <see cref="IConfiguration">IConfiguration</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// to be applied
 		/// during the defragment process.
 		/// </param>

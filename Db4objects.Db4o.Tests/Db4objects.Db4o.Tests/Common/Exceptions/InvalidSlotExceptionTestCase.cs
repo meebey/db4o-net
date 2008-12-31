@@ -23,13 +23,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			new InvalidSlotExceptionTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.Storage = new InvalidSlotExceptionTestCase.MockStorage();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
 			Assert.Expect(typeof(InvalidIDException), typeof(InvalidSlotException), new _ICodeBlock_29
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().GetByID(InvalidSlotExceptionTestCase.InvalidId);
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().GetByID(InvalidSlotExceptionTestCase.OutOfMemoryId);
@@ -105,7 +105,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				{
 				}
 
-				/// <exception cref="Db4oIOException"></exception>
+				/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 				public override int Read(long pos, byte[] bytes, int length)
 				{
 					Seek(pos);
@@ -120,7 +120,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 					return base.Read(pos, bytes, length);
 				}
 
-				/// <exception cref="Db4oIOException"></exception>
+				/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 				private void Seek(long pos)
 				{
 					if (pos == OutOfMemoryId)

@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ArrayAssert.AreEqual(expected, actual);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestIntArrayStoreObject()
 		{
 			ArrayHandlerTestCase.IntArrayHolder expectedItem = new ArrayHandlerTestCase.IntArrayHolder
@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ArrayAssert.AreEqual(expected, actual);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStringArrayStoreObject()
 		{
 			ArrayHandlerTestCase.StringArrayHolder expectedItem = new ArrayHandlerTestCase.StringArrayHolder

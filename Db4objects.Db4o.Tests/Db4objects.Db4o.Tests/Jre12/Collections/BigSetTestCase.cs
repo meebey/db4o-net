@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			Assert.IsTrue(set.Contains(ItemOne));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestPersistence()
 		{
 			BigSetTestCase.Holder<BigSetTestCase.Item> holder = new BigSetTestCase.Holder<BigSetTestCase.Item
@@ -171,7 +171,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			IteratorAssert.SameContent(collection.GetEnumerator(), i);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDelete()
 		{
 			ISet<BigSetTestCase.Item> set = NewBigSet();
@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 				this.set = set;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Db().Delete(set);
@@ -211,7 +211,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 				this.set = set;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				set.Add(BigSetTestCase.ItemOne);
@@ -220,7 +220,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			private readonly ISet<BigSetTestCase.Item> set;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDefragment()
 		{
 			ISet<BigSetTestCase.Item> set = NewBigSet();
@@ -250,7 +250,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			return c;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestGetInternalImplementation()
 		{
 			ISet<BigSetTestCase.Item> set = NewBigSet();
@@ -264,7 +264,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 				);
 		}
 
-		/// <exception cref="MemberAccessException"></exception>
+		/// <exception cref="System.MemberAccessException"></exception>
 		public static BTree BTree(ISet<BigSetTestCase.Item> set)
 		{
 			return (BTree)Reflection4.GetFieldValue(set, "_bTree");

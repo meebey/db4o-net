@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			new IdentityTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestIdentityPreserved()
 		{
 			Db4oDatabase ident = Db().Identity();
@@ -27,7 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			Assert.AreEqual(ident, ident2);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestGenerateIdentity()
 		{
 			byte[] oldSignature = Db().Identity().GetSignature();

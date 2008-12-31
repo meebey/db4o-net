@@ -5,7 +5,6 @@ using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
@@ -96,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				throw new NotImplementedException();
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Delete(IDeleteContext context)
 			{
 				throw new NotImplementedException();
@@ -157,7 +156,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			_fileName = Path.GetTempFileName();
@@ -165,7 +164,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			_translator = new TranslatorToTypehandlerMigrationTestCase.ItemTranslator();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			File4.Delete(_fileName);
@@ -308,7 +307,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		}
 
 		// TODO Auto-generated method stub
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void Delete(IDeleteContext context)
 		{
 		}

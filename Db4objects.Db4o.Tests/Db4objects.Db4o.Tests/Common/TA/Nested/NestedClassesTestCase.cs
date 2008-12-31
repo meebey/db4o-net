@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -19,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 			new NestedClassesTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			OuterClass outerObject = new OuterClass();
@@ -30,13 +29,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nested
 			Store(objTwo);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentActivationSupport());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			string property = Runtime.GetProperty("java.version");

@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public object ReadObject(ITypeHandler4 handlerType)
 		{
-			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(this, handlerType);
+			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(this, handlerType);
 			return SlotFormat().DoWithSlotIndirection(this, handler, new _IClosure4_33(this, 
 				handler));
 		}
@@ -65,16 +65,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 						Descend(classMetadata));
 				}
 			}
-			if (UseDedicatedSlot(handler))
+			if (Handlers4.UseDedicatedSlot(this, handler))
 			{
 				return ReadObject();
 			}
 			return handler.Read(this);
-		}
-
-		public virtual bool UseDedicatedSlot(ITypeHandler4 handler)
-		{
-			return FieldMetadata.UseDedicatedSlot(this, handler);
 		}
 
 		public object ReadObject()

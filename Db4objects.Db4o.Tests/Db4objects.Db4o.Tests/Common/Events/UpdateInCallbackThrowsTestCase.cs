@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new UpdateInCallbackThrowsTestCase.Item("foo", new UpdateInCallbackThrowsTestCase.Item

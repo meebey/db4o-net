@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal
 
 		private int _length = 0;
 
-		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		protected InMemoryObjectContainer(IConfiguration config, ObjectContainerBase parent
 			, MemoryFile memoryFile) : base(config, parent)
 		{
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		protected sealed override void OpenImpl()
 		{
 			byte[] bytes = _memoryFile.GetBytes();
@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="NotSupportedException"></exception>
+		/// <exception cref="System.NotSupportedException"></exception>
 		public override void Backup(string path)
 		{
 			throw new NotSupportedException();

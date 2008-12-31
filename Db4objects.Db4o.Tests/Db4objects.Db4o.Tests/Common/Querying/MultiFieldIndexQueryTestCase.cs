@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			MultiFieldIndexQueryTestCase.Person aaron = new MultiFieldIndexQueryTestCase.Person

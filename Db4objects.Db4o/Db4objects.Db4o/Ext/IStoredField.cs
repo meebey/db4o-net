@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Reflect;
 
@@ -33,7 +32,8 @@ namespace Db4objects.Db4o.Ext
 		/// returns the Class (Java) / Type (.NET) of the field.
 		/// <br /><br />For array fields this method will return the type of the array.
 		/// Use
-		/// <see cref="IStoredField.IsArray">IStoredField.IsArray</see>
+		/// <see cref="Db4objects.Db4o.Ext.IStoredField.IsArray">Db4objects.Db4o.Ext.IStoredField.IsArray
+		/// 	</see>
 		/// to detect arrays.
 		/// </remarks>
 		IReflectClass GetStoredType();

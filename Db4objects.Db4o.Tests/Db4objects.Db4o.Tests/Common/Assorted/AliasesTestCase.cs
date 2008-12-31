@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -51,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			public string bar;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			AddACAlias();
@@ -62,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			id = (int)Db().GetID(bar);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestAccessByChildClass()
 		{
 			AddABAlias();
@@ -71,7 +70,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertInstanceOK(bar);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestAccessByParentClass()
 		{
 			AddABAlias();
@@ -80,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertInstanceOK(bar);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestAccessById()
 		{
 			AddABAlias();
@@ -89,7 +88,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertInstanceOK(bar);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestAccessWithoutAlias()
 		{
 			RemoveAlias();
@@ -110,19 +109,19 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Assert.AreEqual("bar", bar.bar);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AddABAlias()
 		{
 			AddAlias("A", "B");
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AddACAlias()
 		{
 			AddAlias("A", "C");
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AddAlias(string storedLetter, string runtimeLetter)
 		{
 			RemoveAlias();
@@ -146,7 +145,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			private readonly AliasesTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void RemoveAlias()
 		{
 			if (alias != null)

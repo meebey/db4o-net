@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -62,7 +61,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Delete(IDeleteContext context)
 		{
 			if (context.IsLegacyHandlerVersion())
@@ -189,7 +188,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ((ClassMetadata)_handler).ReadObjectID(context);
 			}
-			if (_handler is ArrayHandler)
+			if (Handlers4.HandlesArray(_handler))
 			{
 				// TODO: Here we should theoretically read through the array and collect candidates.
 				// The respective construct is wild: "Contains query through an array in an array."
@@ -240,7 +239,7 @@ namespace Db4objects.Db4o.Internal
 			return _handler;
 		}
 
-		public override ITypeHandler4 DelegateTypeHandler()
+		public override ITypeHandler4 DelegateTypeHandler(IContext context)
 		{
 			return _handler;
 		}
@@ -280,19 +279,20 @@ namespace Db4objects.Db4o.Internal
 			Db4objects.Db4o.Internal.PrimitiveFieldHandler original = (Db4objects.Db4o.Internal.PrimitiveFieldHandler
 				)typeHandlerCloneContext.original;
 			ITypeHandler4 delegateTypeHandler = typeHandlerCloneContext.CorrectHandlerVersion
-				(original.DelegateTypeHandler());
+				(original.DelegateTypeHandler(null));
 			return new Db4objects.Db4o.Internal.PrimitiveFieldHandler(original.Container(), delegateTypeHandler
 				, original._id, original.ClassReflector());
 		}
 
 		public override bool IsSecondClass()
 		{
-			return IsSecondClass(_handler);
+			return Handlers4.HoldsEmbedded(_handler);
 		}
 
 		private ITypeHandler4 CorrectHandlerVersion(IContext context)
 		{
-			return Handlers4.CorrectHandlerVersion((IHandlerVersionContext)context, _handler);
+			return HandlerRegistry.CorrectHandlerVersion((IHandlerVersionContext)context, _handler
+				);
 		}
 	}
 }

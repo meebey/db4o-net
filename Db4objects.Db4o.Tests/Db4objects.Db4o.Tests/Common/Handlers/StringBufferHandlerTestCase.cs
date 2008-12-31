@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Text;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -36,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		internal static string _bufferValue = "42";
 
 		//$NON-NLS-1$
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ExceptionsOnNotStorable(true);
@@ -60,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new StringBufferHandlerTestCase.Item(new StringBuilder(_bufferValue)));
@@ -84,7 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Store(new StringBuilder("a"));

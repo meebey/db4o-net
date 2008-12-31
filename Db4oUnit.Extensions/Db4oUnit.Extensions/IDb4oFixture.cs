@@ -11,13 +11,13 @@ namespace Db4oUnit.Extensions
 {
 	public interface IDb4oFixture : ILabeled
 	{
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		void Open(Type testCaseClass);
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		void Close();
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		void Reopen(Type testCaseClass);
 
 		void Clean();
@@ -30,11 +30,13 @@ namespace Db4oUnit.Extensions
 
 		bool Accept(Type clazz);
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		void Defragment();
 
 		void ConfigureAtRuntime(IRuntimeConfigureAction action);
 
 		void FixtureConfiguration(IFixtureConfiguration configuration);
+
+		void ResetConfig();
 	}
 }

@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_messageDispatcher.StartDispatcher();
 		}
 
-		/// <exception cref="NotSupportedException"></exception>
+		/// <exception cref="System.NotSupportedException"></exception>
 		public override void Backup(string path)
 		{
 			throw new NotSupportedException();
@@ -236,7 +236,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return Converter.Version;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		internal virtual ISocket4 CreateParalellSocket()
 		{
 			Write(Msg.GetThreadId);
@@ -534,7 +534,7 @@ namespace Db4objects.Db4o.Internal.CS
 			return true;
 		}
 
-		/// <exception cref="InvalidPasswordException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.InvalidPasswordException"></exception>
 		private void LoginToServer(ISocket4 socket)
 		{
 			UnicodeStringIO stringWriter = new UnicodeStringIO();
@@ -938,7 +938,7 @@ namespace Db4objects.Db4o.Internal.CS
 			throw new NotImplementedException("Functionality not availble on clients.");
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void WriteBlobTo(Transaction trans, BlobImpl blob, Sharpen.IO.File
 			 file)
 		{
@@ -947,7 +947,7 @@ namespace Db4objects.Db4o.Internal.CS
 			ProcessBlobMessage(msg);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void ReadBlobFrom(Transaction trans, BlobImpl blob, Sharpen.IO.File
 			 file)
 		{

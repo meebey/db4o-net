@@ -7,7 +7,8 @@ namespace Db4objects.Db4o.TA
 {
 	/// <summary>
 	/// An
-	/// <see cref="IActivator">IActivator</see>
+	/// <see cref="Db4objects.Db4o.Activation.IActivator">Db4objects.Db4o.Activation.IActivator
+	/// 	</see>
 	/// implementation that activates an object on a specific
 	/// transaction.
 	/// </summary>

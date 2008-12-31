@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Internal;
@@ -18,13 +17,13 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			new BTreeSearchTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			CycleIntKeys(new int[] { 3, 5, 7, 10, 11, 12, 14, 15, 17, 20, 21, 25 });
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void CycleIntKeys(int[] values)
 		{
 			BTree btree = BTreeAssert.CreateIntKeyBTree(Container(), 0, BtreeNodeSize);
@@ -34,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private BTree CycleIntKeys(BTree btree, int[] values)
 		{
 			for (int i = 0; i < values.Length; i++)

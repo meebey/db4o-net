@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
@@ -40,13 +39,13 @@ namespace Db4objects.Db4o.Internal
 
 		Slot AllocateMappedTargetSlot(int sourceAddress, int length);
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		int CopySlotToNewMapped(int sourceAddress, int length);
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		ByteArrayBuffer SourceBufferByAddress(int sourceAddress, int length);
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		ByteArrayBuffer SourceBufferById(int sourceId);
 
 		void TargetWriteBytes(int address, ByteArrayBuffer buffer);

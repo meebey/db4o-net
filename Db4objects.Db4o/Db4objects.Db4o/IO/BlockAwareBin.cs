@@ -3,15 +3,20 @@
 using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
 {
+	/// <exclude></exclude>
 	public class BlockAwareBin : Db4objects.Db4o.IO.BinDecorator
 	{
 		private const int CopySize = 4096;
 
-		private int _blockSize;
+		private bool _readOnly;
+
+		private readonly IBlockSize _blockSize = ((IBlockSize)Environments.My(typeof(IBlockSize
+			)));
 
 		public BlockAwareBin(IBin bin) : base(bin)
 		{
@@ -20,15 +25,15 @@ namespace Db4objects.Db4o.IO
 		/// <summary>converts address and address offset to an absolute address</summary>
 		protected long RegularAddress(int blockAddress, int blockAddressOffset)
 		{
-			if (0 == _blockSize)
+			if (0 == BlockSize())
 			{
 				throw new InvalidOperationException();
 			}
-			return (long)blockAddress * _blockSize + blockAddressOffset;
+			return (long)blockAddress * BlockSize() + blockAddressOffset;
 		}
 
 		/// <summary>copies a block within a file in block mode</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void BlockCopy(int oldAddress, int oldAddressOffset, int newAddress
 			, int newAddressOffset, int length)
 		{
@@ -36,18 +41,8 @@ namespace Db4objects.Db4o.IO
 				), length);
 		}
 
-		/// <summary>outside call to set the block size of this adapter</summary>
-		public virtual void BlockSize(int blockSize)
-		{
-			if (blockSize < 1)
-			{
-				throw new ArgumentException();
-			}
-			_blockSize = blockSize;
-		}
-
 		/// <summary>copies a block within a file in absolute mode</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void Copy(long oldAddress, long newAddress, int length)
 		{
 			if (DTrace.enabled)
@@ -70,7 +65,7 @@ namespace Db4objects.Db4o.IO
 			Copy(new byte[length], oldAddress, newAddress);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private void Copy(byte[] buffer, long oldAddress, long newAddress)
 		{
 			Read(oldAddress, buffer);
@@ -79,14 +74,14 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual int BlockRead(int address, int offset, byte[] buffer)
 		{
 			return BlockRead(address, offset, buffer, buffer.Length);
 		}
 
 		/// <summary>implement to read a buffer at the seeked address</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual int BlockRead(int address, int offset, byte[] bytes, int length)
 		{
 			return Read(RegularAddress(address, offset), bytes, length);
@@ -94,14 +89,14 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual int BlockRead(int address, byte[] buffer)
 		{
 			return BlockRead(address, 0, buffer, buffer.Length);
 		}
 
 		/// <summary>implement to read a buffer at the seeked address</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual int BlockRead(int address, byte[] bytes, int length)
 		{
 			return BlockRead(address, 0, bytes, length);
@@ -109,7 +104,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual int Read(long pos, byte[] buffer)
 		{
 			return Read(pos, buffer, buffer.Length);
@@ -117,14 +112,14 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void BlockWrite(int address, int offset, byte[] buffer)
 		{
 			BlockWrite(address, offset, buffer, buffer.Length);
 		}
 
 		/// <summary>implement to read a buffer at the seeked address</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void BlockWrite(int address, int offset, byte[] bytes, int length)
 		{
 			Write(RegularAddress(address, offset), bytes, length);
@@ -132,30 +127,71 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>reads a buffer at the seeked address</summary>
 		/// <returns>the number of bytes read and returned</returns>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void BlockWrite(int address, byte[] buffer)
 		{
 			BlockWrite(address, 0, buffer, buffer.Length);
 		}
 
 		/// <summary>implement to read a buffer at the seeked address</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void BlockWrite(int address, byte[] bytes, int length)
 		{
 			BlockWrite(address, 0, bytes, length);
 		}
 
+		public override void Sync()
+		{
+			ValidateReadOnly();
+			try
+			{
+				base.Sync();
+			}
+			catch (Db4oIOException e)
+			{
+				_readOnly = true;
+				throw;
+			}
+		}
+
 		/// <summary>writes a buffer to the seeked address</summary>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void Write(long pos, byte[] bytes)
 		{
-			Write(pos, bytes, bytes.Length);
+			ValidateReadOnly();
+			try
+			{
+				Write(pos, bytes, bytes.Length);
+			}
+			catch (Db4oIOException e)
+			{
+				_readOnly = true;
+				throw;
+			}
+		}
+
+		private void ValidateReadOnly()
+		{
+			if (_readOnly)
+			{
+				throw new EmergencyShutdownReadOnlyException();
+			}
 		}
 
 		/// <summary>returns the block size currently used</summary>
 		public virtual int BlockSize()
 		{
-			return _blockSize;
+			return _blockSize.Value();
+		}
+
+		/// <summary>outside call to set the block size of this adapter</summary>
+		public virtual void BlockSize(int blockSize)
+		{
+			if (blockSize < 1)
+			{
+				throw new ArgumentException();
+			}
+			_blockSize.Set(blockSize);
 		}
 	}
 }

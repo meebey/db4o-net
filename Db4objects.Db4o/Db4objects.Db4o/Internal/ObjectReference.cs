@@ -26,8 +26,6 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class ObjectReference : PersistentBase, IObjectInfo, IActivator
 	{
-		public static readonly DynamicVariable _inCallback = new DynamicVariable();
-
 		private Db4objects.Db4o.Internal.ClassMetadata _class;
 
 		private object _object;
@@ -116,14 +114,14 @@ namespace Db4objects.Db4o.Internal
 				_updateListener = NullTransactionListener.Instance;
 				return;
 			}
-			_updateListener = new _ITransactionListener_93(this, transparentPersistence, transaction
+			_updateListener = new _ITransactionListener_92(this, transparentPersistence, transaction
 				);
 			transaction.AddTransactionListener(_updateListener);
 		}
 
-		private sealed class _ITransactionListener_93 : ITransactionListener
+		private sealed class _ITransactionListener_92 : ITransactionListener
 		{
-			public _ITransactionListener_93(ObjectReference _enclosing, TransparentPersistenceSupport
+			public _ITransactionListener_92(ObjectReference _enclosing, TransparentPersistenceSupport
 				 transparentPersistence, Db4objects.Db4o.Internal.Transaction transaction)
 			{
 				this._enclosing = _enclosing;
@@ -538,7 +536,7 @@ namespace Db4objects.Db4o.Internal
 			// preventing recursive
 			if (!BeginProcessing())
 			{
-				if ((((bool)_inCallback.Value)))
+				if ((((bool)InCallbackState._inCallback.Value)))
 				{
 					throw new InvalidOperationException("Objects must not be updated in callback");
 				}

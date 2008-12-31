@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Ext
@@ -36,7 +35,8 @@ namespace Db4objects.Db4o.Ext
 		/// returns a UUID representation of the referenced object.
 		/// UUID generation has to be turned on, in order to be able
 		/// to use this feature:
-		/// <see cref="IConfiguration.GenerateUUIDs">IConfiguration.GenerateUUIDs</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs
+		/// 	</see>
 		/// </remarks>
 		/// <returns>the UUID of the referenced object.</returns>
 		Db4oUUID GetUUID();
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Ext
 		/// referenced object was stored with last.
 		/// Version number generation has to be turned on, in order to
 		/// be able to use this feature:
-		/// <see cref="IConfiguration.GenerateVersionNumbers">IConfiguration.GenerateVersionNumbers
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers
 		/// 	</see>
 		/// </remarks>
 		/// <returns>the version number.</returns>

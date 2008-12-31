@@ -28,7 +28,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			_db = CreateDatabase(config).Ext();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public override void Close()
 		{
 			if (null != _db)

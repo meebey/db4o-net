@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Internal.CS
 			_config.ObjectClass(typeof(User)).MinimumActivationDepth(1);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Backup(string path)
 		{
 			_container.Backup(path);

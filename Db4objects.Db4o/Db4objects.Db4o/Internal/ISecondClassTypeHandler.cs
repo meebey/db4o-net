@@ -6,7 +6,8 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <summary>
 	/// Marker interface for
-	/// <see cref="ITypeHandler4">ITypeHandler4</see>
+	/// <see cref="Db4objects.Db4o.Typehandlers.ITypeHandler4">Db4objects.Db4o.Typehandlers.ITypeHandler4
+	/// 	</see>
 	/// s for second class
 	/// types.
 	/// </summary>

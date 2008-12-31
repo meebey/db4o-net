@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		private const int ItemDepth = 10;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			TAActivateTestCase.TAItem taItem = (TAActivateTestCase.TAItem)obj;
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			Assert.IsNull(taItem.Next());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertRetrievedItem(object obj)
 		{
 			TAActivateTestCase.TAItem taItem = (TAActivateTestCase.TAItem)obj;
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			return q.Execute().Next();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			TAActivateTestCase.TAItem taItem = TAActivateTestCase.TAItem.NewTAItem(ItemDepth);

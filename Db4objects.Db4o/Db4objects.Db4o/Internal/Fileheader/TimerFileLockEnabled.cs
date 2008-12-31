@@ -35,17 +35,15 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public TimerFileLockEnabled(IoAdaptedObjectContainer file)
 		{
-			_timerLock = file.Lock();
-			// FIXME: No reason to sync over the big master lock.
-			//        A local lock should be OK.
-			// _timerLock = new Object();
+			_timerLock = new object();
 			_timerFile = file.TimerFile();
 			_opentime = UniqueOpenTime();
 		}
 
 		public override void CheckHeaderLock()
 		{
-			if (((int)_opentime) != ReadInt(0, _headerLockOffset))
+			long openTime = ReadInt(0, _headerLockOffset);
+			if (((int)_opentime) != openTime)
 			{
 				throw new DatabaseFileLockedException(_timerFile.ToString());
 			}
@@ -62,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			WriteOpenTime();
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void CheckIfOtherSessionAlive(LocalObjectContainer container, int
 			 address, int offset, long lastAccessTime)
 		{
@@ -85,7 +83,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Close()
 		{
 			WriteAccessTime(true);
@@ -129,11 +127,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_accessTimeOffset = accessTimeOffset;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Start()
 		{
 			WriteAccessTime(false);
-			_timerFile.Sync();
 			CheckOpenTime();
 			Thread thread = new Thread(this);
 			thread.SetName("db4o file lock");
@@ -148,7 +145,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		// TODO: More security is possible here to make this time unique
 		// to other processes. 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private bool WriteAccessTime(bool closing)
 		{
 			if (NoAddressSet())
@@ -178,7 +175,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			Sync();
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private bool WriteLong(int address, int offset, long time)
 		{
 			lock (_timerLock)
@@ -193,7 +190,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private long ReadLong(int address, int offset)
 		{
 			lock (_timerLock)
@@ -202,7 +199,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				{
 					return 0;
 				}
-				_timerFile.BlockRead(address, offset, _longBytes);
+				_timerFile.SyncRead(address + offset, _longBytes, Const4.LongLength);
 				return PrimitiveCodec.ReadLong(_longBytes, 0);
 			}
 		}
@@ -229,15 +226,22 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				{
 					return 0;
 				}
-				_timerFile.BlockRead(address, offset, _longBytes);
+				_timerFile.SyncRead(address + offset, _longBytes, Const4.LongLength);
 				return PrimitiveCodec.ReadInt(_longBytes, 0);
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private void Sync()
 		{
-			_timerFile.Sync();
+			try
+			{
+				_timerFile.Sync();
+			}
+			catch (EmergencyShutdownReadOnlyException)
+			{
+			}
 		}
+		// ignore this one, emergency shutdown in progress
 	}
 }

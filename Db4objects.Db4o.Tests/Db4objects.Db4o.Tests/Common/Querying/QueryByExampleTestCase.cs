@@ -47,14 +47,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			IQuery q = Db().Query();
 			q.Constrain(itemOne);
 			IObjectSet objectSet = q.Execute();
-			// Expect to get the sample 
-			Assert.AreEqual(1, objectSet.Count);
-			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
-				.Next();
-			Assert.AreSame(itemOne, retrievedItem);
+			AssertItem(objectSet, itemOne);
 		}
 
-		public virtual void TestQueryByExample()
+		public virtual void TestConstrainByExample()
 		{
 			QueryByExampleTestCase.Item itemOne = new QueryByExampleTestCase.Item("one");
 			QueryByExampleTestCase.Item itemTwo = new QueryByExampleTestCase.Item("two");
@@ -67,10 +63,40 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			q.Constrain(itemOne).ByExample();
 			IObjectSet objectSet = q.Execute();
 			// Expect to get the other 
+			AssertItem(objectSet, itemTwo);
+		}
+
+		private void AssertItem(IObjectSet objectSet, QueryByExampleTestCase.Item item)
+		{
 			Assert.AreEqual(1, objectSet.Count);
 			QueryByExampleTestCase.Item retrievedItem = (QueryByExampleTestCase.Item)objectSet
 				.Next();
-			Assert.AreSame(itemTwo, retrievedItem);
+			Assert.AreSame(item, retrievedItem);
+		}
+
+		public virtual void TestQueryByExample()
+		{
+			QueryByExampleTestCase.Item itemOne = new QueryByExampleTestCase.Item("one");
+			QueryByExampleTestCase.Item itemTwo = new QueryByExampleTestCase.Item("two");
+			Store(itemOne);
+			Store(itemTwo);
+			// Change the name of the "sample"
+			itemOne._name = "two";
+			// Query by Example
+			IObjectSet objectSet = Db().QueryByExample(itemOne);
+			AssertItem(objectSet, itemTwo);
+		}
+
+		public virtual void TestQueryByExampleNoneFound()
+		{
+			QueryByExampleTestCase.Item itemOne = new QueryByExampleTestCase.Item("one");
+			QueryByExampleTestCase.Item itemTwo = new QueryByExampleTestCase.Item("two");
+			Store(itemOne);
+			Store(itemTwo);
+			// Change the name of the "sample"
+			itemOne._name = "three";
+			IObjectSet objectSet = Db().QueryByExample(itemOne);
+			Assert.AreEqual(0, objectSet.Count);
 		}
 
 		public virtual void TestByExample()

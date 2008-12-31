@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			currentWrite.Add(crashSimulatingWrite);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private byte[] ReadAllBytes(string fileName)
 		{
 			int length = (int)new Sharpen.IO.File(fileName).Length();
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			return writes.Size();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual int WriteVersions(string file)
 		{
 			int count = 0;

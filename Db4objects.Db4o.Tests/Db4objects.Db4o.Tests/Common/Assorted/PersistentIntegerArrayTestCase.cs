@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			new PersistentIntegerArrayTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			int[] original = new int[] { 10, 99, 77 };

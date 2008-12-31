@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -41,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			Store(item);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void ConcDelete(IExtObjectContainer oc)
 		{
 			IObjectSet os = oc.Query(typeof(CascadeDeleteFalseTestCase.Item));

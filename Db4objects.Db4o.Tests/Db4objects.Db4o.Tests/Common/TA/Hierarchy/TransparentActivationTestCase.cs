@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Hierarchy
 			config.Add(new PagedListSupport());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Project project = new PrioritizedProject("db4o", Priority);

@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Typehandlers;
@@ -69,16 +68,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return CurrentSlotFormat;
 		}
 
-		protected virtual bool IsVariableLength(ITypeHandler4 handler)
-		{
-			return handler is IVariableLengthTypeHandler;
-		}
-
-		public static bool IsEmbedded(ITypeHandler4 handler)
-		{
-			return handler is IEmbeddedTypeHandler;
-		}
-
 		public virtual object DoWithSlotIndirection(IReadBuffer buffer, ITypeHandler4 typeHandler
 			, IClosure4 closure)
 		{
@@ -104,19 +93,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			}
 			buffer.Seek(savedOffset);
 			return res;
-		}
-
-		public virtual bool HandleAsObject(ITypeHandler4 typeHandler)
-		{
-			if (IsEmbedded(typeHandler))
-			{
-				return false;
-			}
-			if (typeHandler is UntypedFieldHandler)
-			{
-				return false;
-			}
-			return true;
 		}
 
 		public virtual void WriteObjectClassID(ByteArrayBuffer buffer, int id)

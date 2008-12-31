@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Internal
 		protected override void SeekSecondaryOffset(IReadBuffer buffer, ITypeHandler4 typeHandler
 			)
 		{
-			if (IsPrimitiveArray(typeHandler))
+			if (Handlers4.HandlesPrimitiveArray(typeHandler))
 			{
 				buffer.SeekCurrentInt();
 			}

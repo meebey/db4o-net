@@ -30,13 +30,13 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(SimpleListTestCase.Item)).CascadeOnDelete(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			SimpleListTestCase.Item item = new SimpleListTestCase.Item();

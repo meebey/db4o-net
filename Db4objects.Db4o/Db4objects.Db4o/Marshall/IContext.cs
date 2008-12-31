@@ -1,18 +1,19 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Internal.Delete;
-using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Marshall
 {
 	/// <summary>
 	/// common functionality for
-	/// <see cref="IReadContext">IReadContext</see>
+	/// <see cref="Db4objects.Db4o.Marshall.IReadContext">Db4objects.Db4o.Marshall.IReadContext
+	/// 	</see>
 	/// and
-	/// <see cref="IWriteContext">IWriteContext</see>
+	/// <see cref="Db4objects.Db4o.Marshall.IWriteContext">Db4objects.Db4o.Marshall.IWriteContext
+	/// 	</see>
 	/// and
-	/// <see cref="IDeleteContext">IDeleteContext</see>
+	/// <see cref="Db4objects.Db4o.Internal.Delete.IDeleteContext">Db4objects.Db4o.Internal.Delete.IDeleteContext
+	/// 	</see>
 	/// 
 	/// </summary>
 	public interface IContext

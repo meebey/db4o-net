@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -33,7 +32,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		/// <remarks>
 		/// Creates a suite builder for the specific FormatMigrationTestCaseBase derived classes
 		/// and specific db4o libraries. If no libraries are specified (either null or empty array)
-		/// <see cref="Db4oLibrarian.Libraries">Db4oLibrarian.Libraries</see>
+		/// <see cref="Db4objects.Db4o.Tests.Common.Migration.Db4oLibrarian.Libraries">Db4objects.Db4o.Tests.Common.Migration.Db4oLibrarian.Libraries
+		/// 	</see>
 		/// is used to find archived libraries.
 		/// </remarks>
 		/// <param name="classes"></param>
@@ -44,31 +44,24 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			_specificLibraries = specificLibraries;
 		}
 
+		/// <exception cref="System.Exception"></exception>
 		protected override IEnumerator FromClass(Type clazz)
 		{
 			AssertMigrationTestCase(clazz);
 			IEnumerator defaultTestSuite = base.FromClass(clazz);
-			try
-			{
-				IEnumerator migrationTestSuite = MigrationTestSuite(clazz, Db4oLibraries());
-				return Iterators.Concat(migrationTestSuite, defaultTestSuite);
-			}
-			catch (Exception e)
-			{
-				return Iterators.Concat(Iterators.SingletonIterator(new FailingTest(clazz.FullName
-					, e)), defaultTestSuite);
-			}
+			IEnumerator migrationTestSuite = MigrationTestSuite(clazz, Db4oLibraries());
+			return Iterators.Concat(migrationTestSuite, defaultTestSuite);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private IEnumerator MigrationTestSuite(Type clazz, Db4oLibrary[] libraries)
 		{
-			return Iterators.Map(libraries, new _IFunction4_56(this, clazz));
+			return Iterators.Map(libraries, new _IFunction4_52(this, clazz));
 		}
 
-		private sealed class _IFunction4_56 : IFunction4
+		private sealed class _IFunction4_52 : IFunction4
 		{
-			public _IFunction4_56(Db4oMigrationSuiteBuilder _enclosing, Type clazz)
+			public _IFunction4_52(Db4oMigrationSuiteBuilder _enclosing, Type clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;
@@ -91,7 +84,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			private readonly Type clazz;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private Db4oMigrationSuiteBuilder.Db4oMigrationTest MigrationTest(Db4oLibrary library
 			, Type clazz)
 		{
@@ -100,7 +93,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return new Db4oMigrationSuiteBuilder.Db4oMigrationTest(instance, library);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private Db4oLibrary[] Db4oLibraries()
 		{
 			if (HasSpecificLibraries())
@@ -110,7 +103,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return Librarian().Libraries();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private Db4oLibrary[] SpecificLibraries()
 		{
 			Db4oLibrary[] libraries = new Db4oLibrary[_specificLibraries.Length];
@@ -147,7 +140,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 			private readonly string _version;
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public Db4oMigrationTest(FormatMigrationTestCaseBase test, Db4oLibrary library)
 			{
 				_library = library;
@@ -177,13 +170,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				}
 			}
 
-			/// <exception cref="IOException"></exception>
+			/// <exception cref="System.IO.IOException"></exception>
 			private void Test()
 			{
 				_test.Test(_version);
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			private void CreateDatabase()
 			{
 				Environment().InvokeInstanceMethod(_test.GetType(), "createDatabaseFor", new object

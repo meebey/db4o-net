@@ -48,13 +48,13 @@ namespace Db4oUnit.Extensions
 			return Fixture().Db() is EmbeddedClientObjectContainer;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Reopen()
 		{
 			Fixture().Reopen(GetType());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public void SetUp()
 		{
 			IDb4oFixture _fixture = Fixture();
@@ -69,7 +69,7 @@ namespace Db4oUnit.Extensions
 			Db4oSetupAfterStore();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public void TearDown()
 		{
 			try
@@ -85,32 +85,32 @@ namespace Db4oUnit.Extensions
 			Db4oTearDownAfterClean();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Db4oSetupBeforeStore()
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Db4oSetupAfterStore()
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Db4oTearDownBeforeClean()
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Db4oTearDownAfterClean()
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Configure(IConfiguration config)
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Store()
 		{
 		}
@@ -343,7 +343,7 @@ namespace Db4oUnit.Extensions
 		{
 			IObjectSet result = NewQuery(oc, clazz).Execute();
 			Assert.AreEqual(1, result.Count);
-			return (object)result.Next();
+			return result.Next();
 		}
 
 		protected virtual int CountOccurences(Type clazz)
@@ -432,7 +432,7 @@ namespace Db4oUnit.Extensions
 			return Reflector().ForClass(clazz);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Defragment()
 		{
 			Fixture().Close();

@@ -1,10 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
-using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.Config
@@ -20,6 +16,8 @@ namespace Db4objects.Db4o.Config
 	/// Client/Server setup.
 	/// </remarks>
 	/// <since>7.5</since>
+	/// <seealso cref="Db4objects.Db4o.Config.IFileConfigurationProvider.File">Db4objects.Db4o.Config.IFileConfigurationProvider.File
+	/// 	</seealso>
 	public interface IFileConfiguration
 	{
 		/// <summary>sets the storage data blocksize for new ObjectContainers.</summary>
@@ -118,18 +116,23 @@ namespace Db4objects.Db4o.Config
 		/// <summary>allows to configure db4o to use a customized byte IO storage mechanism.</summary>
 		/// <remarks>
 		/// allows to configure db4o to use a customized byte IO storage mechanism.
-		/// <br /><br />Implement the interface
-		/// <see cref="IStorage">IStorage</see>
+		/// <br /><br />You can implement the interface
+		/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
 		/// to
 		/// write your own. Possible usecases could be improved performance
 		/// with a native library, mirrored write to two files, encryption or
 		/// read-on-write fail-safety control.<br /><br />
 		/// </remarks>
 		/// <param name="storage">- the storage</param>
-		/// <exception cref="GlobalOnlyConfigException"></exception>
+		/// <seealso cref="Db4objects.Db4o.IO.FileStorage">Db4objects.Db4o.IO.FileStorage</seealso>
+		/// <seealso cref="Db4objects.Db4o.IO.CachingStorage">Db4objects.Db4o.IO.CachingStorage
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.IO.MemoryStorage">Db4objects.Db4o.IO.MemoryStorage
+		/// 	</seealso>
+		/// <exception cref="Db4objects.Db4o.Config.GlobalOnlyConfigException"></exception>
 		/// <summary>
 		/// returns the configured
-		/// <see cref="IStorage">IStorage</see>
+		/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
 		/// .
 		/// </summary>
 		/// <returns></returns>
@@ -169,7 +172,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />The global setting is used for the creation of new database
 		/// files. Continous calls on an ObjectContainer Configuration context
 		/// (see
-		/// <see cref="IExtObjectContainer.Configure">IExtObjectContainer.Configure</see>
+		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Configure">Db4objects.Db4o.Ext.IExtObjectContainer.Configure
+		/// 	</see>
 		/// ) will
 		/// continually allocate space.
 		/// <br /><br />The allocation of a fixed number of bytes at one time
@@ -187,8 +191,8 @@ namespace Db4objects.Db4o.Config
 		/// Default configuration: 0<br /><br />
 		/// </remarks>
 		/// <param name="byteCount">the number of bytes to reserve</param>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
-		/// <exception cref="NotSupportedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+		/// <exception cref="System.NotSupportedException"></exception>
 		long ReserveStorageSpace
 		{
 			set;
@@ -206,7 +210,7 @@ namespace Db4objects.Db4o.Config
 		/// server side. <br /><br />
 		/// </remarks>
 		/// <param name="path">the path to be used</param>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		string BlobPath
 		{
 			set;
@@ -216,7 +220,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// turns readOnly mode on and off.
 		/// <br /><br />This method configures the mode in which subsequent calls to
-		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
 		/// will open files.
 		/// <br /><br />Readonly mode allows to open an unlimited number of reading
 		/// processes on one database file. It is also convenient
@@ -227,7 +231,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="flag">
 		/// <code>true</code> for configuring readOnly mode for subsequent
 		/// calls to
-		/// <see cref="Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
 		/// .
 		/// TODO: this is rather embedded + client than base?
 		/// </param>

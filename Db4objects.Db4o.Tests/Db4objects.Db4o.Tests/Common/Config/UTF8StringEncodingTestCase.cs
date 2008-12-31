@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 {
 	public class UTF8StringEncodingTestCase : StringEncodingTestCaseBase
 	{
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.StringEncoding(StringEncodings.Utf8());

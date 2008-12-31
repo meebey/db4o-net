@@ -11,16 +11,18 @@ namespace Db4objects.Db4o.Events
 {
 	/// <summary>
 	/// Provides an interface for getting an
-	/// <see cref="IEventRegistry">IEventRegistry</see>
+	/// <see cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
+	/// 	</see>
 	/// from an
-	/// <see cref="IObjectContainer">IObjectContainer</see>
+	/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
 	/// .
 	/// </summary>
 	public class EventRegistryFactory
 	{
 		/// <summary>
 		/// Returns an
-		/// <see cref="IEventRegistry">IEventRegistry</see>
+		/// <see cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
+		/// 	</see>
 		/// for registering events with the specified container.
 		/// </summary>
 		public static IEventRegistry ForObjectContainer(IObjectContainer objectContainer)

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Query;
@@ -23,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private const int Port = 4447;
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public static void Main(string[] arguments)
 		{
 			new CsSchemaMigrationSourceCode().Run();

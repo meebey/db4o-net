@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
@@ -25,11 +24,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ConfigureForTest(config);
 		}
 
-		protected static readonly string TempPath;
-
-		static FormatMigrationTestCaseBase()
+		private string DatabasePath
 		{
-			TempPath = Path.Combine(GetTempPath(), "test/db4oVersions");
+			get
+			{
+				return Path.Combine(GetTempPath(), "test/db4oVersions");
+			}
 		}
 
 		protected virtual string FileName()
@@ -45,7 +45,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected virtual string OldVersionFileName(string versionName)
 		{
-			return Path.Combine(TempPath, FileNamePrefix() + versionName.Replace(' ', '_'));
+			return Path.Combine(DatabasePath, FileNamePrefix() + versionName.Replace(' ', '_'
+				));
 		}
 
 		public virtual void CreateDatabase()
@@ -73,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CreateDatabase(string file)
 		{
-			System.IO.Directory.CreateDirectory(TempPath);
+			System.IO.Directory.CreateDirectory(DatabasePath);
 			if (System.IO.File.Exists(file))
 			{
 				File4.Delete(file);
@@ -89,14 +90,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			Configure();
 			CreateDatabase();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Test()
 		{
 			for (int i = 0; i < VersionNames().Length; i++)
@@ -106,7 +107,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Test(string versionName)
 		{
 			_db4oVersion = versionName;
@@ -132,7 +133,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		// FIXME: The following fails the CC build since not all files are there on .NET.
 		//        Change back when we have all files.
 		// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void RunDefrag(string testFileName)
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
@@ -156,7 +157,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 		}
@@ -239,7 +240,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void InvestigateFileHeaderVersion(string testFile)
 		{
 			_db4oHeaderVersion = VersionServices.FileHeaderVersion(testFile);

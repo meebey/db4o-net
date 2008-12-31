@@ -14,7 +14,8 @@ namespace Db4objects.Db4o.Foundation
 	{
 		/// <summary>
 		/// Constant indicating that the current element in a
-		/// <see cref="Iterators.Map">Iterators.Map</see>
+		/// <see cref="Db4objects.Db4o.Foundation.Iterators.Map">Db4objects.Db4o.Foundation.Iterators.Map
+		/// 	</see>
 		/// operation
 		/// should be skipped.
 		/// </summary>
@@ -41,7 +42,6 @@ namespace Db4objects.Db4o.Foundation
 
 			public void Reset()
 			{
-				throw new NotImplementedException();
 			}
 		}
 
@@ -53,6 +53,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 			}
 
+			// do nothing
 			public IEnumerator GetEnumerator()
 			{
 				return Iterators.EmptyIterator;
@@ -65,7 +66,8 @@ namespace Db4objects.Db4o.Foundation
 
 		/// <summary>
 		/// Generates
-		/// <see cref="EnumerateIterator.Tuple">EnumerateIterator.Tuple</see>
+		/// <see cref="Db4objects.Db4o.Foundation.EnumerateIterator.Tuple">Db4objects.Db4o.Foundation.EnumerateIterator.Tuple
+		/// 	</see>
 		/// items with indexes starting at 0.
 		/// </summary>
 		/// <param name="iterable">the iterable to be enumerated</param>
@@ -126,7 +128,8 @@ namespace Db4objects.Db4o.Foundation
 		/// <remarks>
 		/// Returns a new iterator which yields the result of applying the function
 		/// to every element in the original iterator.
-		/// <see cref="Iterators.Skip">Iterators.Skip</see>
+		/// <see cref="Db4objects.Db4o.Foundation.Iterators.Skip">Db4objects.Db4o.Foundation.Iterators.Skip
+		/// 	</see>
 		/// can be returned from function to indicate the current
 		/// element should be skipped.
 		/// </remarks>
@@ -294,9 +297,9 @@ namespace Db4objects.Db4o.Foundation
 		/// <summary>Yields a flat sequence of elements.</summary>
 		/// <remarks>
 		/// Yields a flat sequence of elements. Any
-		/// <see cref="IEnumerable">IEnumerable</see>
+		/// <see cref="System.Collections.IEnumerable">System.Collections.IEnumerable</see>
 		/// or
-		/// <see cref="IEnumerator">IEnumerator</see>
+		/// <see cref="System.Collections.IEnumerator">System.Collections.IEnumerator</see>
 		/// found in the original sequence is recursively flattened.
 		/// </remarks>
 		/// <param name="iterable">original sequence</param>

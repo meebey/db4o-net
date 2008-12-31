@@ -11,8 +11,8 @@ namespace Db4objects.Db4o.Tests.Common.IO
 	{
 		public virtual void TestInitialLength()
 		{
-			Storage().Open(_tempFile, false, 1000, false).Close();
-			IBin bin = Storage().Open(_tempFile, false, 0, false);
+			Storage().Open(new BinConfiguration(_tempFile, false, 1000, false)).Close();
+			IBin bin = Storage().Open(new BinConfiguration(_tempFile, false, 0, false));
 			try
 			{
 				Assert.AreEqual(1000, bin.Length());

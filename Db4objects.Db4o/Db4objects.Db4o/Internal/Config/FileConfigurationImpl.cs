@@ -1,9 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
-using System.IO;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 
@@ -67,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Config
 			}
 		}
 
-		/// <exception cref="GlobalOnlyConfigException"></exception>
+		/// <exception cref="Db4objects.Db4o.Config.GlobalOnlyConfigException"></exception>
 		public virtual IStorage Storage
 		{
 			get
@@ -90,8 +87,8 @@ namespace Db4objects.Db4o.Internal.Config
 			}
 		}
 
-		/// <exception cref="DatabaseReadOnlyException"></exception>
-		/// <exception cref="NotSupportedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+		/// <exception cref="System.NotSupportedException"></exception>
 		public virtual long ReserveStorageSpace
 		{
 			set
@@ -101,7 +98,7 @@ namespace Db4objects.Db4o.Internal.Config
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual string BlobPath
 		{
 			set

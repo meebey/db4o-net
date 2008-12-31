@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Mixed;
@@ -15,20 +14,20 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			new TNTTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			return new TNTItem(42);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertRetrievedItem(object obj)
 		{
 			TNTItem item = (TNTItem)obj;
 			Assert.IsNull(item.ntItem);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			TNTItem item = (TNTItem)obj;

@@ -12,9 +12,9 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		public StorageTestSuite()
 		{
 			{
-				FixtureProviders(new IFixtureProvider[] { new SubjectFixtureProvider(new object[]
-					 { new FileStorage(), new MemoryStorage(), new CachingStorage(new FileStorage())
-					, new IoAdapterStorage(new RandomAccessFileAdapter()) }) });
+				FixtureProviders(new IFixtureProvider[] { new EnvironmentProvider(), new SubjectFixtureProvider
+					(new object[] { new FileStorage(), new MemoryStorage(), new CachingStorage(new FileStorage
+					()), new IoAdapterStorage(new RandomAccessFileAdapter()) }) });
 				TestUnits(new Type[] { typeof(BinTest), typeof(ReadOnlyBinTest), typeof(StorageTest
 					) });
 			}

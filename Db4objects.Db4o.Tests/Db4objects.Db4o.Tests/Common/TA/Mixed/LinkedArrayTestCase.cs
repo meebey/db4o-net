@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
@@ -23,14 +22,14 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 		private Db4oUUID _linkedArraysUUID;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.GenerateUUIDs(ConfigScope.Globally);
 			config.Add(new TransparentActivationSupport());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			LinkedArrays linkedArrays = LinkedArrays.NewLinkedArrayRoot(TestedDepth);

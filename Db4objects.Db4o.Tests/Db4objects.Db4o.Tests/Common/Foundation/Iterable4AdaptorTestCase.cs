@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				this.adaptor = adaptor;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				adaptor.Next();

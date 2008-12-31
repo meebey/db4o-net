@@ -10,26 +10,31 @@ namespace Db4objects.Db4o
 	/// <remarks>
 	/// the db4o server interface.
 	/// <br /><br />- db4o servers can be opened with
-	/// <see cref="Db4oFactory.OpenServer">Db4oFactory.OpenServer</see>
+	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4objects.Db4o.Db4oFactory.OpenServer
+	/// 	</see>
 	/// .<br />
 	/// - Direct in-memory connections to servers can be made with
-	/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
+	/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
+	/// 	</see>
 	/// <br />
 	/// - TCP connections are available through
-	/// <see cref="Db4oFactory.OpenClient">Db4oFactory.OpenClient</see>
+	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
+	/// 	</see>
 	/// .
 	/// <br /><br />Before connecting clients over TCP, you have to
-	/// <see cref="IObjectServer.GrantAccess">IObjectServer.GrantAccess</see>
+	/// <see cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
+	/// 	</see>
 	/// to the username and password combination
 	/// that you want to use.
 	/// </remarks>
-	/// <seealso cref="Db4oFactory.OpenServer">Db4o.openServer</seealso>
-	/// <seealso cref="IExtObjectServer">ExtObjectServer for extended functionality</seealso>
+	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4o.openServer</seealso>
+	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectServer">ExtObjectServer for extended functionality
+	/// 	</seealso>
 	public interface IObjectServer
 	{
 		/// <summary>
 		/// closes the
-		/// <see cref="IObjectServer"></see>
+		/// <see cref="Db4objects.Db4o.IObjectServer"></see>
 		/// and writes all cached data.
 		/// <br /><br />
 		/// </summary>
@@ -41,13 +46,14 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// returns an
-		/// <see cref="IObjectServer"></see>
+		/// <see cref="Db4objects.Db4o.IObjectServer"></see>
 		/// with extended functionality.
 		/// <br /><br />Use this method as a convenient accessor to extended methods.
 		/// Every
-		/// <see cref="IObjectServer"></see>
+		/// <see cref="Db4objects.Db4o.IObjectServer"></see>
 		/// can be casted to an
-		/// <see cref="IExtObjectServer">IExtObjectServer</see>
+		/// <see cref="Db4objects.Db4o.Ext.IExtObjectServer">Db4objects.Db4o.Ext.IExtObjectServer
+		/// 	</see>
 		/// .
 		/// <br /><br />The functionality is split to two interfaces to allow newcomers to
 		/// focus on the essential methods.
@@ -71,7 +77,8 @@ namespace Db4objects.Db4o
 		/// as the server. Since an embedded client can use direct communication, without
 		/// an in-between socket connection, performance will be better than a client
 		/// opened with
-		/// <see cref="Db4oFactory.OpenClient">Db4oFactory.OpenClient</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
+		/// 	</see>
 		/// <br /><br />Every client has it's own transaction and uses it's own cache
 		/// for it's own version of all peristent objects.
 		/// </remarks>
@@ -79,17 +86,19 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// See
-		/// <see cref="IObjectServer.OpenClient">IObjectServer.OpenClient</see>
+		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
+		/// 	</see>
 		/// </summary>
 		/// <param name="config">
 		/// a custom
-		/// <see cref="IConfiguration">IConfiguration</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4oFactory.NewConfiguration">Db4oFactory.NewConfiguration</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.NewConfiguration">Db4objects.Db4o.Db4oFactory.NewConfiguration
+		/// 	</see>
 		/// </param>
 		/// <returns>
 		/// an open
-		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// </returns>
 		IObjectContainer OpenClient(IConfiguration config);
 	}

@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 				this.sender = sender;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				sender.Send(new PingTestCase.Data());

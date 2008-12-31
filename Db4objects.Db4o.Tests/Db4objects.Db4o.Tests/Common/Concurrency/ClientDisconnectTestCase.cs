@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Ext;
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			new ClientDisconnectTestCase().RunConcurrency();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void _concDelete(IExtObjectContainer oc, int seq)
 		{
 			ClientObjectContainer client = (ClientObjectContainer)oc;
@@ -49,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				this.client = client;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				client.QueryByExample(null);

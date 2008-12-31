@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Db4oEmbedded.OpenFile(null, this._enclosing._tempFile);

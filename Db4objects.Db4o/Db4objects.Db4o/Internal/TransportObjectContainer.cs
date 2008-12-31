@@ -195,8 +195,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public override int StoreInternal(Transaction trans, object obj, int depth, bool 
 			checkJustSet)
 		{

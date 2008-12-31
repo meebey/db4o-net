@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Reflect
@@ -13,7 +12,7 @@ namespace Db4objects.Db4o.Reflect
 	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectMethod
 	{
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		object Invoke(object onObject, object[] parameters);
 
 		IReflectClass GetReturnType();

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
@@ -11,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 {
 	public class OldHeaderTest : ITestCase, IOptOutNoFileSystemData
 	{
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Test()
 		{
 			string originalFilePath = OriginalFilePath();

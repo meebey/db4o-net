@@ -12,7 +12,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 	/// <remarks>
 	/// Old freespacemanager, before version 7.0.
 	/// If it is still in use freespace is dropped.
-	/// <see cref="BTreeFreespaceManager">BTreeFreespaceManager</see>
+	/// <see cref="Db4objects.Db4o.Internal.Freespace.BTreeFreespaceManager">Db4objects.Db4o.Internal.Freespace.BTreeFreespaceManager
+	/// 	</see>
 	/// should be used instead.
 	/// </remarks>
 	public class FreespaceManagerIx : Db4objects.Db4o.Internal.Freespace.AbstractFreespaceManager

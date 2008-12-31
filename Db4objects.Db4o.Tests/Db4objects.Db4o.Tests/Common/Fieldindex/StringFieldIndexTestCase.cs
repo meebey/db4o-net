@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -64,7 +63,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		}
 
 		//$NON-NLS-1$
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			for (int i = 0; i < _fooValues.Length; i++)

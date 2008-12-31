@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				return item;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public void Delete(IDeleteContext context)
 			{
 			}
@@ -136,7 +136,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				return item;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public void Delete(IDeleteContext context)
 			{
 			}
@@ -255,7 +255,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			RegisterTypeHandler(config, typeof(CustomTypeHandlerTestCase.Item), new CustomTypeHandlerTestCase.CustomItemTypeHandler
@@ -288,7 +288,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			private readonly IReflectClass itemClass;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(StoredItem());

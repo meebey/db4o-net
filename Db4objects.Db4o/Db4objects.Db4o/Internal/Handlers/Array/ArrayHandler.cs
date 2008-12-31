@@ -2,7 +2,6 @@
 
 using System.Collections;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -70,7 +69,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		public void CascadeActivation(ActivationContext4 context)
 		{
-			if (!(_handler is ClassMetadata))
+			if (!Handlers4.IsClassMetadata(_handler))
 			{
 				return;
 			}
@@ -89,26 +88,18 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		protected virtual IReflectClass ClassReflector(ObjectContainerBase container)
 		{
-			if (_handler is IBuiltinTypeHandler)
-			{
-				return ((IBuiltinTypeHandler)_handler).ClassReflector();
-			}
-			if (_handler is ClassMetadata)
-			{
-				return ((ClassMetadata)_handler).ClassReflector();
-			}
-			return container.Handlers().ClassReflectorForHandler(_handler);
+			return Handlers4.ClassReflectorForHandler(container.Handlers(), _handler);
 		}
 
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
-			ITypeHandler4 handler = Handlers4.CorrectHandlerVersion(context, _handler);
-			ForEachElement(context, new _IRunnable_86(context, handler));
+			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, _handler);
+			ForEachElement(context, new _IRunnable_80(context, handler));
 		}
 
-		private sealed class _IRunnable_86 : IRunnable
+		private sealed class _IRunnable_80 : IRunnable
 		{
-			public _IRunnable_86(QueryingReadContext context, ITypeHandler4 handler)
+			public _IRunnable_80(QueryingReadContext context, ITypeHandler4 handler)
 			{
 				this.context = context;
 				this.handler = handler;
@@ -128,13 +119,13 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			 elementRunnable)
 		{
 			ArrayInfo info = NewArrayInfo();
-			WithContent(context, new _IRunnable_96(this, context, info, elementRunnable));
+			WithContent(context, new _IRunnable_90(this, context, info, elementRunnable));
 			return info;
 		}
 
-		private sealed class _IRunnable_96 : IRunnable
+		private sealed class _IRunnable_90 : IRunnable
 		{
-			public _IRunnable_96(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
+			public _IRunnable_90(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
 				 info, IRunnable elementRunnable)
 			{
 				this._enclosing = _enclosing;
@@ -200,19 +191,19 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return nullCount;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void Delete(IDeleteContext context)
 		{
 			if (!CascadeDelete(context))
 			{
 				return;
 			}
-			ForEachElement((AbstractBufferContext)context, new _IRunnable_143(this, context));
+			ForEachElement((AbstractBufferContext)context, new _IRunnable_137(this, context));
 		}
 
-		private sealed class _IRunnable_143 : IRunnable
+		private sealed class _IRunnable_137 : IRunnable
 		{
-			public _IRunnable_143(ArrayHandler _enclosing, IDeleteContext context)
+			public _IRunnable_137(ArrayHandler _enclosing, IDeleteContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -230,7 +221,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		private bool CascadeDelete(IDeleteContext context)
 		{
-			return context.CascadeDelete() && _handler is ClassMetadata;
+			return context.CascadeDelete() && Handlers4.IsClassMetadata(_handler);
 		}
 
 		// FIXME: This code has not been called in any test case when the 
@@ -474,7 +465,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		private bool IsUntypedByteArray(IBufferContext context)
 		{
-			return _handler is UntypedFieldHandler && HandleAsByteArray(context);
+			return Handlers4.IsUntyped(_handler) && HandleAsByteArray(context);
 		}
 
 		private bool HandleAsByteArray(IBufferContext context)

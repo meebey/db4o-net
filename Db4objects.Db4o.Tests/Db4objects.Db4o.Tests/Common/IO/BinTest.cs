@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.IO;
@@ -14,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			new ConsoleTestRunner(typeof(BinTest)).Run();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestReadWrite()
 		{
 			int count = 1024 * 8 + 10;
@@ -49,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestSeek()
 		{
 			int count = 1024 * 2 + 10;
@@ -90,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			return data;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestReadWriteBytes()
 		{
 			string[] strs = new string[] { "short string", "this is a really long string, just to make sure all Storage implementations work correctly. "
@@ -101,7 +100,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertReadWriteString(IBin adapter, string str)
 		{
 			byte[] data = Sharpen.Runtime.GetBytesForString(str);
@@ -111,14 +110,14 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			Assert.AreEqual(str, Sharpen.Runtime.GetStringForBytes(read, 0, data.Length));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void _testReadWriteAheadFileEnd()
 		{
 			string str = "this is a really long string, just to make sure that all Storage implementations work correctly. ";
 			AssertReadWriteAheadFileEnd(_bin, str);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertReadWriteAheadFileEnd(IBin adapter, string str)
 		{
 			byte[] data = Sharpen.Runtime.GetBytesForString(str);

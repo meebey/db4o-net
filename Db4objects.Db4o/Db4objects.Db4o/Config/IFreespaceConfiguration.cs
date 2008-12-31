@@ -10,10 +10,10 @@ namespace Db4objects.Db4o.Config
 	/// <br /><br />All methods should be called before opening database files.
 	/// If db4o is instructed to exchange the system
 	/// (
-	/// <see cref="IFreespaceConfiguration.UseIndexSystem">IFreespaceConfiguration.UseIndexSystem
+	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseIndexSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseIndexSystem
 	/// 	</see>
 	/// ,
-	/// <see cref="IFreespaceConfiguration.UseRamSystem">IFreespaceConfiguration.UseRamSystem
+	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem
 	/// 	</see>
 	/// )
 	/// this will happen on opening the database file.<br /><br />

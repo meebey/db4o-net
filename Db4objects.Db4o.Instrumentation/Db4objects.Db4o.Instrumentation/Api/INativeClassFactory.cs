@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Instrumentation.Api
 	/// <exclude></exclude>
 	public interface INativeClassFactory
 	{
-		/// <exception cref="TypeLoadException"></exception>
+		/// <exception cref="System.TypeLoadException"></exception>
 		Type ForName(string className);
 	}
 }

@@ -20,11 +20,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				ClientDisconnectTestCase), typeof(ClientTimeOutTestCase), typeof(ClientTransactionHandleTestCase
 				), typeof(ClientTransactionPoolTestCase), typeof(CloseServerBeforeClientTestCase
 				), typeof(DeleteReaddTestCase), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase
-				), typeof(ObjectServerTestCase), typeof(PrimitiveMessageTestCase), typeof(SendMessageToClientTestCase
-				), typeof(ServerClosedTestCase), typeof(ServerPortUsedTestCase), typeof(ServerRevokeAccessTestCase
-				), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase), typeof(SetSemaphoreTestCase
-				), typeof(SwitchingFilesFromClientTestCase), typeof(SwitchingFilesFromMultipleClientsTestCase
-				) };
+				), typeof(ObjectServerTestCase), typeof(PrimitiveMessageTestCase), typeof(QueryConsistencyTestCase
+				), typeof(SendMessageToClientTestCase), typeof(ServerClosedTestCase), typeof(ServerPortUsedTestCase
+				), typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase
+				), typeof(SetSemaphoreTestCase), typeof(SwitchingFilesFromClientTestCase), typeof(
+				SwitchingFilesFromMultipleClientsTestCase) };
 			return Db4oUnitTestUtil.MergeClasses(commonCases, NonDecafTestCases());
 		}
 

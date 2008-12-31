@@ -11,7 +11,8 @@ namespace Db4oUnit.Mocking
 	{
 		/// <summary>
 		/// Generates an array that can be used with
-		/// <see cref="MethodCallRecorder.Verify">MethodCallRecorder.Verify</see>
+		/// <see cref="Db4oUnit.Mocking.MethodCallRecorder.Verify">Db4oUnit.Mocking.MethodCallRecorder.Verify
+		/// 	</see>
 		/// .
 		/// Example:
 		/// MethodCallRecorder recorder = new MethodCallRecorder();

@@ -26,7 +26,8 @@ namespace Db4objects.Db4o.Marshall
 		/// have an identity in the database). If the object can potentially
 		/// be a primitive type, do not use this method but use
 		/// a matching
-		/// <see cref="IWriteBuffer">IWriteBuffer</see>
+		/// <see cref="Db4objects.Db4o.Marshall.IWriteBuffer">Db4objects.Db4o.Marshall.IWriteBuffer
+		/// 	</see>
 		/// method instead.
 		/// </remarks>
 		/// <param name="obj">the object to write.</param>

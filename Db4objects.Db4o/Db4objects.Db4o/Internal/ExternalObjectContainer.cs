@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 			Activate(null, obj);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public sealed override void Activate(object obj, int depth)
 		{
 			Activate(null, obj, ActivationDepthProvider().ActivationDepth(depth, ActivationMode
@@ -37,8 +37,8 @@ namespace Db4objects.Db4o.Internal
 			Deactivate(null, obj);
 		}
 
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="System.ArgumentNullException"></exception>
+		/// <exception cref="System.ArgumentException"></exception>
 		public sealed override void Bind(object obj, long id)
 		{
 			Bind(null, obj, id);
@@ -50,14 +50,14 @@ namespace Db4objects.Db4o.Internal
 			return Collections(null);
 		}
 
-		/// <exception cref="DatabaseReadOnlyException"></exception>
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public sealed override void Commit()
 		{
 			Commit(null);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public sealed override void Deactivate(object obj, int depth)
 		{
 			Deactivate(null, obj, depth);
@@ -78,21 +78,21 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		[System.ObsoleteAttribute(@"Use")]
 		public sealed override IObjectSet Get(object template)
 		{
 			return QueryByExample(template);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public sealed override IObjectSet QueryByExample(object template)
 		{
 			return QueryByExample(null, template);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="InvalidIDException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.InvalidIDException"></exception>
 		public sealed override object GetByID(long id)
 		{
 			return GetByID(null, id);
@@ -128,7 +128,7 @@ namespace Db4objects.Db4o.Internal
 			return IsStored(null, obj);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public sealed override object PeekPersisted(object obj, int depth, bool committed
 			)
 		{
@@ -172,31 +172,31 @@ namespace Db4objects.Db4o.Internal
 			Rollback(null);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		[System.ObsoleteAttribute(@"Use")]
 		public sealed override void Set(object obj)
 		{
 			Store(obj);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public sealed override void Store(object obj)
 		{
 			Store(obj, Const4.Unspecified);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		[System.ObsoleteAttribute(@"Use")]
 		public sealed override void Set(object obj, int depth)
 		{
 			Store(obj, depth);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public sealed override void Store(object obj, int depth)
 		{
 			Store(null, obj, depth);
@@ -212,9 +212,9 @@ namespace Db4objects.Db4o.Internal
 			return StoredClasses(null);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="NotSupportedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="System.NotSupportedException"></exception>
 		public abstract override void Backup(string path);
 
 		public abstract override Db4oDatabase Identity();

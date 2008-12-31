@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly object _mainLock;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		internal ServerMessageDispatcherImpl(ObjectServerImpl server, ClientTransactionHandle
 			 transactionHandle, ISocket4 socket, int threadID, bool loggedIn, object mainLock
 			)
@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private bool MessageProcessor()
 		{
 			Msg message = Msg.ReadMessage(this, GetTransaction(), _socket);

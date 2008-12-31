@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -14,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
 	public class IncompatibleFileFormatExceptionTestCase : IDb4oTestCase, ITestLifeCycle
 	{
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public static void Main(string[] args)
 		{
 			new ConsoleTestRunner(typeof(IncompatibleFileFormatExceptionTestCase)).Run();
@@ -22,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		private static readonly string IncompatibleFileFormat = Path.GetTempFileName();
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			File4.Delete(IncompatibleFileFormat);
@@ -32,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			adapter.Close();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			File4.Delete(IncompatibleFileFormat);
@@ -52,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			{
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenFile(IncompatibleFileFormatExceptionTestCase.IncompatibleFileFormat

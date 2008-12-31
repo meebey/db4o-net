@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 			new NativeQueryTestCase().RunSoloAndClientServer();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new NativeQueryTestCase.Item("hello"));
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Fatalerror
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Predicate fatalErrorPredicate = new NativeQueryTestCase.FatalErrorPredicate();

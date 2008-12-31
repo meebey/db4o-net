@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
-using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
@@ -22,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		}
 
 		// It is also regression test for COR-634.
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			if (WorkspaceServices.WorkspaceRoot == null)
@@ -65,7 +63,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this.oldDatabaseFilePath = oldDatabaseFilePath;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Db4oFactory.OpenFile(oldDatabaseFilePath);
@@ -74,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly string oldDatabaseFilePath;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		protected virtual string OldDatabaseFilePath()
 		{
 			string oldFile = IOServices.BuildTempPath("old_db.yap");

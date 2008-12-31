@@ -34,7 +34,7 @@ namespace Db4oUnit
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
 			writer.Write(_testLabel);

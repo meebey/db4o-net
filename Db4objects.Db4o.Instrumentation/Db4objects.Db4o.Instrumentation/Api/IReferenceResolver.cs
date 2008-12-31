@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Instrumentation.Api
 {
 	public interface IReferenceResolver
 	{
-		/// <exception cref="InstrumentationException"></exception>
+		/// <exception cref="Db4objects.Db4o.Instrumentation.Api.InstrumentationException"></exception>
 		MethodInfo Resolve(IMethodRef methodRef);
 	}
 }

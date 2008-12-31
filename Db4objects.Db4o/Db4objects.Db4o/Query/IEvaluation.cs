@@ -9,18 +9,19 @@ namespace Db4objects.Db4o.Query
 	/// for implementation of callback evaluations.
 	/// <br /><br />
 	/// To constrain a
-	/// <see cref="IQuery">IQuery</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 	/// node with your own callback
 	/// <code>Evaluation</code>, construct an object that implements the
 	/// <code>Evaluation</code> interface and register it by passing it
 	/// to
-	/// <see cref="IQuery.Constrain">IQuery.Constrain</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Constrain">Db4objects.Db4o.Query.IQuery.Constrain
+	/// 	</see>
 	/// .
 	/// <br /><br />
 	/// Evaluations are called as the last step during query execution,
 	/// after all other constraints have been applied. Evaluations in higher
 	/// level
-	/// <see cref="IQuery">IQuery</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 	/// nodes in the query graph are called first.
 	/// <br /><br />Java client/server only:<br />
 	/// db4o first attempts to use Java Serialization to allow to pass final
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Query
 	{
 		/// <summary>
 		/// callback method during
-		/// <see cref="IQuery.Execute">query execution</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">query execution</see>
 		/// .
 		/// </summary>
 		/// <param name="candidate">reference to the candidate persistent object.</param>

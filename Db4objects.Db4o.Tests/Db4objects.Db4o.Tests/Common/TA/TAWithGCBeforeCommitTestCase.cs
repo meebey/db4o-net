@@ -64,13 +64,13 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentPersistenceSupport());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new TAWithGCBeforeCommitTestCase.Item(OrigId));

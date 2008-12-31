@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
-
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
@@ -11,8 +9,9 @@ namespace Db4objects.Db4o.Config
 	/// - enabled individually for a specified class; <br />
 	/// - disabled.<br /><br />
 	/// </summary>
-	/// <seealso cref="IConfiguration.GenerateUUIDs">IConfiguration.GenerateUUIDs</seealso>
-	/// <seealso cref="IConfiguration.GenerateVersionNumbers">IConfiguration.GenerateVersionNumbers
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs
+	/// 	</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers
 	/// 	</seealso>
 	[System.Serializable]
 	public sealed class ConfigScope

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public override void SetUp()
 		{
 			base.SetUp();
@@ -28,10 +28,10 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			{
 				throw new InvalidOperationException();
 			}
-			_bin = Storage().Open(_tempFile, false, 0, readOnly);
+			_bin = Storage().Open(new BinConfiguration(_tempFile, false, 0, readOnly));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public override void TearDown()
 		{
 			Close();

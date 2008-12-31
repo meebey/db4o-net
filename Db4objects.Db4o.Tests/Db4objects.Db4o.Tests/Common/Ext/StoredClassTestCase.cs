@@ -35,21 +35,21 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 
 		private long _id;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(StoredClassTestCase.Item)).ObjectField(FieldName).Indexed
 				(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			StoredClassTestCase.Item item = new StoredClassTestCase.Item(ItemName);
 			Store(item);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
 			_id = Db().GetID(((StoredClassTestCase.Item)RetrieveOnlyInstance(typeof(StoredClassTestCase.Item
@@ -147,7 +147,7 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 				this.storedField = storedField;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				storedField.TraverseValues(new _IVisitor4_115());

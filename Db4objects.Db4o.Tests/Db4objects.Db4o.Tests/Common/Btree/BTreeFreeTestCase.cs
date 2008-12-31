@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			new BTreeFreeTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			Add(Values);
@@ -32,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing._btree.Free(this._enclosing.SystemTrans());

@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
@@ -62,14 +61,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// <param name="mf"></param>
 		/// <param name="buffer"></param>
 		/// <param name="redirect"></param>
-		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		public virtual object Read(MarshallerFamily mf, StatefulBuffer buffer, bool redirect
 			)
 		{
 			return Read1(buffer);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		internal abstract object Read1(ByteArrayBuffer reader);
 
 		public virtual object ReadIndexEntry(ByteArrayBuffer buffer)
@@ -84,15 +83,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return null;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer a_writer
 			)
 		{
 			return Read(mf, a_writer, true);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(IObjectIdContext context)
 		{
 			return Read(context);

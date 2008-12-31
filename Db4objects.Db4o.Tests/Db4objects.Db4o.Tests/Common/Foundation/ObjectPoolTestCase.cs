@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				this.pool = pool;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				pool.BorrowObject();

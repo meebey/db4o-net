@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Generic
 				))).Run();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestCreate()
 		{
 			InitGenericObjects();

@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			Assert.AreEqual(Modified, item2.name);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestPushedUpdates()
 		{
 			RegisterPushedUpdates(Client2());
@@ -83,20 +83,20 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			Assert.AreEqual(Modified, item2.name);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
 			IDb4oClientServerFixture fixture = (IDb4oClientServerFixture)Fixture();
 			_client2 = fixture.OpenNewClient();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
 			_client2.Close();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new ReadCommittedIsolationTestCase.Item(Original));

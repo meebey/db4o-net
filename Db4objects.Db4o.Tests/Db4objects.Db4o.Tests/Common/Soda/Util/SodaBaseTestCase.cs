@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Soda.Util;
@@ -12,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 		[System.NonSerialized]
 		protected object[] _array;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupBeforeStore()
 		{
 			_array = CreateData();

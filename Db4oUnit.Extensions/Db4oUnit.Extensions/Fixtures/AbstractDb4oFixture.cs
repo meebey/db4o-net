@@ -26,7 +26,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			_fixtureConfiguration = fc;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Reopen(Type testCaseClass)
 		{
 			Close();
@@ -48,12 +48,12 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		protected abstract void DoClean();
 
-		protected virtual void ResetConfig()
+		public virtual void ResetConfig()
 		{
 			_configSource.Reset();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Defragment(string fileName)
 		{
 			string targetFile = fileName + ".defrag.backup";

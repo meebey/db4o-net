@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Nonta
@@ -13,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 			return;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestGetByID()
 		{
 			object item = Db().Ext().GetByID(id);
@@ -22,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 			AssertItemValue(item);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestGetByUUID()
 		{
 			object item = Db().Ext().GetByUUID(uuid);

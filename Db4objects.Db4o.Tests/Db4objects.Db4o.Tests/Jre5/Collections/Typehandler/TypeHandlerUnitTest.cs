@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			return item;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDefragRetrieveInstance()
 		{
 			Defragment();
@@ -47,43 +47,43 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			AssertContent(item);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestSuccessfulQuery()
 		{
 			AssertQuery(true, Elements()[0], false);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestFailingQuery()
 		{
 			AssertQuery(false, NotContained(), false);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestSuccessfulContainsQuery()
 		{
 			AssertQuery(true, Elements()[0], true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestFailingContainsQuery()
 		{
 			AssertQuery(false, NotContained(), true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestCompareItems()
 		{
 			AssertCompareItems(Elements()[0], true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestFailingCompareItems()
 		{
 			AssertCompareItems(NotContained(), false);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDeletion()
 		{
 			AssertFirstClassElementCount(Elements().Length);

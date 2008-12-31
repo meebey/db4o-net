@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
@@ -17,14 +16,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		private static readonly string BackupFile = "backup.db4o";
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupBeforeStore()
 		{
 			base.Db4oSetupBeforeStore();
 			File4.Delete(BackupFile);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
 			base.Db4oTearDownBeforeClean();
@@ -43,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				ExceptionSimulatingStorage.exception = true;

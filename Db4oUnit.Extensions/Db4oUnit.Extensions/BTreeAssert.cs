@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -94,7 +93,7 @@ namespace Db4oUnit.Extensions
 			expectingVisitor.AssertExpectations();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public static void AssertAllSlotsFreed(LocalTransaction trans, BTree bTree, ICodeBlock
 			 block)
 		{

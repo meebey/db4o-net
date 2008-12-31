@@ -12,7 +12,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	/// Marker interface to denote that implementing test cases should be excluded
 	/// from running with any fixture but a networking C/S one.
 	/// </remarks>
-	public interface IOptOutAllButNetworkingCS : IOptOutFromTestFixture
+	public interface IOptOutAllButNetworkingCS : IOptOutSolo
 	{
 	}
 }

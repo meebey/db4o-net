@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Config
 {
@@ -14,7 +12,7 @@ namespace Db4objects.Db4o.Config
 	/// This class provides static constants for the query evaluation
 	/// modes that db4o supports.
 	/// <br /><br /><b>For detailed documentation please see
-	/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
+	/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
 	/// 	</see>
 	/// </b>
 	/// </remarks>
@@ -32,7 +30,7 @@ namespace Db4objects.Db4o.Config
 		/// Constant for immediate query evaluation. The query is executed fully
 		/// when Query#execute() is called.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
+		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
 		/// 	</see>
 		/// </b>
 		/// </remarks>
@@ -46,10 +44,10 @@ namespace Db4objects.Db4o.Config
 		/// and creates a snapshot of the index at this point in time. Non-indexed
 		/// constraints are evaluated lazily when the application iterates through
 		/// the
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
+		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
 		/// 	</see>
 		/// </b>
 		/// </remarks>
@@ -62,10 +60,10 @@ namespace Db4objects.Db4o.Config
 		/// query processor only chooses the best index and creates an iterator on
 		/// this index. Indexes and constraints are evaluated lazily when the
 		/// application iterates through the
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="IQueryConfiguration.EvaluationMode">IQueryConfiguration.EvaluationMode
+		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
 		/// 	</see>
 		/// </b>
 		/// </remarks>

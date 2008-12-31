@@ -79,23 +79,23 @@ namespace Db4objects.Db4o.Internal
 		// Unicode byte
 		// complete possible data in config block
 		// (two transaction pointers, PDB ID, lost int, freespace address, converter_version, index id)
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public static Db4objects.Db4o.Internal.ConfigBlock ForNewFile(LocalObjectContainer
 			 file)
 		{
 			return new Db4objects.Db4o.Internal.ConfigBlock(file, true, 0);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		public static Db4objects.Db4o.Internal.ConfigBlock ForExistingFile(LocalObjectContainer
 			 file, int address)
 		{
 			return new Db4objects.Db4o.Internal.ConfigBlock(file, false, address);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		private ConfigBlock(LocalObjectContainer stream, bool isNew, int address)
 		{
 			_container = stream;
@@ -156,8 +156,8 @@ namespace Db4objects.Db4o.Internal
 			return _container.SystemData();
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		private void Read(int address)
 		{
 			AddressChanged(address);
@@ -340,7 +340,7 @@ namespace Db4objects.Db4o.Internal
 			return _address;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public void Close()
 		{
 			TimerFileLock().Close();

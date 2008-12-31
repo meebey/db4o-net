@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
@@ -350,7 +349,7 @@ namespace Db4objects.Db4o.Internal
 			return slot;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public int CopySlotToNewMapped(int sourceAddress, int length)
 		{
 			Slot slot = AllocateMappedTargetSlot(sourceAddress, length);
@@ -364,7 +363,7 @@ namespace Db4objects.Db4o.Internal
 			_services.TargetWriteBytes(buffer, address);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public ByteArrayBuffer SourceBufferByAddress(int sourceAddress, int length)
 		{
 			ByteArrayBuffer sourceBuffer = _services.SourceBufferByAddress(sourceAddress, length
@@ -372,7 +371,7 @@ namespace Db4objects.Db4o.Internal
 			return sourceBuffer;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public ByteArrayBuffer SourceBufferById(int sourceId)
 		{
 			ByteArrayBuffer sourceBuffer = _services.SourceBufferByID(sourceId);
@@ -402,10 +401,10 @@ namespace Db4objects.Db4o.Internal
 
 		public void Defragment(ITypeHandler4 handler)
 		{
-			ITypeHandler4 typeHandler = Handlers4.CorrectHandlerVersion(this, handler);
-			if (FieldMetadata.UseDedicatedSlot(this, typeHandler))
+			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(this, handler);
+			if (Handlers4.UseDedicatedSlot(this, typeHandler))
 			{
-				if (HasClassIndex(typeHandler))
+				if (Handlers4.HasClassIndex(typeHandler))
 				{
 					CopyID();
 				}
@@ -416,15 +415,6 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			typeHandler.Defragment(this);
-		}
-
-		private bool HasClassIndex(ITypeHandler4 typeHandler)
-		{
-			if (typeHandler is Db4objects.Db4o.Internal.ClassMetadata)
-			{
-				return ((Db4objects.Db4o.Internal.ClassMetadata)typeHandler).HasClassIndex();
-			}
-			return false;
 		}
 
 		public void BeginSlot()

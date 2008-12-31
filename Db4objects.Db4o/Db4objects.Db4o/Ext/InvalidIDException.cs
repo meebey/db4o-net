@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Ext
 {
@@ -15,8 +14,10 @@ namespace Db4objects.Db4o.Ext
 	/// This exception is thrown when the supplied object ID
 	/// is incorrect (outside the scope of the database IDs).
 	/// </remarks>
-	/// <seealso cref="IExtObjectContainer.Bind">IExtObjectContainer.Bind</seealso>
-	/// <seealso cref="IExtObjectContainer.GetByID">IExtObjectContainer.GetByID</seealso>
+	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Bind">Db4objects.Db4o.Ext.IExtObjectContainer.Bind
+	/// 	</seealso>
+	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.GetByID">Db4objects.Db4o.Ext.IExtObjectContainer.GetByID
+	/// 	</seealso>
 	[System.Serializable]
 	public class InvalidIDException : Db4objects.Db4o.Ext.Db4oException
 	{

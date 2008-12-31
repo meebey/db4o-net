@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				this.i = i;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				Sharpen.Runtime.Out.WriteLine(i.Current);

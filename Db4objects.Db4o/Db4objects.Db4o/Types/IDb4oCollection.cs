@@ -5,6 +5,7 @@ using Db4objects.Db4o.Types;
 namespace Db4objects.Db4o.Types
 {
 	/// <summary>base interface for db4o collections</summary>
+	[System.ObsoleteAttribute(@"since 7.0")]
 	public interface IDb4oCollection : IDb4oType
 	{
 		/// <summary>configures the activation depth for objects returned from this collection.

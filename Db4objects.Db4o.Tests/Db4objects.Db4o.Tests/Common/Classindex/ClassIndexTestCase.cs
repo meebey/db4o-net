@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Internal.Classindex;
@@ -25,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Classindex
 			new ClassIndexTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDelete()
 		{
 			ClassIndexTestCase.Item item = new ClassIndexTestCase.Item("test");

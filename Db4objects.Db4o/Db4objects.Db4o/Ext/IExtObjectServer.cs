@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 
@@ -11,7 +10,7 @@ namespace Db4objects.Db4o.Ext
 	/// extended functionality for the ObjectServer interface.
 	/// <br /><br />Every ObjectServer also always is an ExtObjectServer
 	/// so a cast is possible.<br /><br />
-	/// <see cref="IObjectServer.Ext">IObjectServer.Ext</see>
+	/// <see cref="Db4objects.Db4o.IObjectServer.Ext">Db4objects.Db4o.IObjectServer.Ext</see>
 	/// is a convenient method to perform the cast.<br /><br />
 	/// The functionality is split to two interfaces to allow newcomers to
 	/// focus on the essential methods.
@@ -28,7 +27,7 @@ namespace Db4objects.Db4o.Ext
 		/// If a file already exists at the specified path, it will be overwritten.<br /><br />
 		/// </remarks>
 		/// <param name="path">a fully qualified path</param>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		void Backup(string path);
 
 		/// <summary>returns the number of connected clients.</summary>
@@ -37,21 +36,25 @@ namespace Db4objects.Db4o.Ext
 
 		/// <summary>
 		/// returns the
-		/// <see cref="IConfiguration">IConfiguration</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Db4objects.Db4o.Config.IConfiguration
+		/// 	</see>
 		/// context for this ObjectServer.
 		/// <br /><br />
 		/// Upon opening an ObjectServer with any of the factory methods in the
-		/// <see cref="Db4oFactory">Db4oFactory</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory">Db4objects.Db4o.Db4oFactory</see>
 		/// class, the global
-		/// <see cref="IConfiguration">IConfiguration</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Db4objects.Db4o.Config.IConfiguration
+		/// 	</see>
 		/// context
 		/// is copied into the ObjectServer. The
-		/// <see cref="IConfiguration">IConfiguration</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Db4objects.Db4o.Config.IConfiguration
+		/// 	</see>
 		/// can be modified individually for
 		/// each ObjectServer without any effects on the global settings.<br /><br />
 		/// </summary>
 		/// <returns>the Configuration context for this ObjectServer</returns>
-		/// <seealso cref="Db4oFactory.Configure">Db4oFactory.Configure</seealso>
+		/// <seealso cref="Db4objects.Db4o.Db4oFactory.Configure">Db4objects.Db4o.Db4oFactory.Configure
+		/// 	</seealso>
 		IConfiguration Configure();
 
 		/// <summary>returns the ObjectContainer used by the server.</summary>

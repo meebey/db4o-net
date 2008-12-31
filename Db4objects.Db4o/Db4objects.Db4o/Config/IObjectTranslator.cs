@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Config
 {
@@ -28,7 +27,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="applicationObject">the Object to be translated</param>
 		/// <returns>
 		/// return the object to store.<br />It needs to be of the class
-		/// <see cref="IObjectTranslator.StoredClass">storedClass()</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator.StoredClass">storedClass()</see>
 		/// .
 		/// </returns>
 		object OnStore(IObjectContainer container, object applicationObject);
@@ -45,7 +44,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>return the Class you are converting to.</remarks>
 		/// <returns>
 		/// the Class of the object you are returning with the method
-		/// <see cref="IObjectTranslator.OnStore">onStore()</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator.OnStore">onStore()</see>
 		/// </returns>
 		Type StoredClass();
 	}

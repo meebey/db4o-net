@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void _configure(IConfiguration config)
 		{
 			ConfigIndexed(config, typeof(InterfaceQueryTestCase.DataA), FieldA);
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			config.ObjectClass(clazz).ObjectField(fieldName).Indexed(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new InterfaceQueryTestCase.DataA(10, 10));

@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal
 			SetName(Const4.VirtualFieldPrefix + "uuid");
 		}
 
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		public override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot)
 		{
 			bool isnew = (oldSlot == null);
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private UUIDFieldMetadata.DatabaseIdentityIDAndUUID ReadDatabaseIdentityIDAndUUID
 			(ObjectContainerBase container, ClassMetadata classMetadata, Slot oldSlot, bool 
 			checkClass)
@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Internal
 			return base.GetIndex(transaction);
 		}
 
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		protected override void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
 			 yapClass, int objectId)
 		{

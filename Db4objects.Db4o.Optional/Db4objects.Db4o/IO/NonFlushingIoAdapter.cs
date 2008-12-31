@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
@@ -45,10 +44,12 @@ namespace Db4objects.Db4o.IO
 	/// file caching, the OS cache may revert the order of writes to optimize
 	/// file performance.<br /><br />
 	/// db4o enforces the correct write order by calling
-	/// <see cref="NonFlushingIoAdapter.Sync">NonFlushingIoAdapter.Sync</see>
+	/// <see cref="Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync">Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync
+	/// 	</see>
 	/// after every single one of the above steps during transaction
 	/// commit. The calls to
-	/// <see cref="NonFlushingIoAdapter.Sync">NonFlushingIoAdapter.Sync</see>
+	/// <see cref="Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync">Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync
+	/// 	</see>
 	/// have a high performance cost.
 	/// By using this IoAdapter it is possible to omit these calls, at the cost
 	/// of a risc of corrupted database files upon hardware-, power- or operating
@@ -60,14 +61,14 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private NonFlushingIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile
 			, long initialLength, bool readOnly) : base(delegateAdapter, path, lockFile, initialLength
 			, readOnly)
 		{
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -75,7 +76,7 @@ namespace Db4objects.Db4o.IO
 				);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Sync()
 		{
 		}

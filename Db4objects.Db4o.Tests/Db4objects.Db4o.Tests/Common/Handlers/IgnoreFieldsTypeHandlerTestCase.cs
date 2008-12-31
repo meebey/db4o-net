@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
@@ -36,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public int id5;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(IgnoreFieldsTypeHandlerTestCase.Item2
@@ -45,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				)), new IgnoreFieldsTypeHandler());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			IgnoreFieldsTypeHandlerTestCase.Item5 item = new IgnoreFieldsTypeHandlerTestCase.Item5

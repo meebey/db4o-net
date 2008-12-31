@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
@@ -40,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return IOServices.BuildTempPath(fname);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			DeleteAllFiles();
@@ -83,7 +82,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return CrossPlatformServices.FullyQualifiedName(klass);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void Defrag(string fname)
 		{
 			DefragmentConfig config = new DefragmentConfig(fname);

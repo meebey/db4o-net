@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Config
 	/// namespaces or multiple similar named classes. One single '*'
 	/// wildcard character is supported in the names.
 	/// <br /><br />See
-	/// <see cref="IAlias">IAlias</see>
+	/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
 	/// for concrete examples.
 	/// </remarks>
 	public class WildcardAlias : IAlias

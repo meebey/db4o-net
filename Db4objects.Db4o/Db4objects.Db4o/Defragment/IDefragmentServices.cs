@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -17,10 +16,10 @@ namespace Db4objects.Db4o.Defragment
 	/// <exclude></exclude>
 	public interface IDefragmentServices : IIDMapping
 	{
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		ByteArrayBuffer SourceBufferByAddress(int address, int length);
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		ByteArrayBuffer TargetBufferByAddress(int address, int length);
 
 		ByteArrayBuffer SourceBufferByID(int sourceID);

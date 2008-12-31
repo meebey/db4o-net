@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -112,7 +111,7 @@ namespace Db4objects.Db4o.Internal
 			_offset += length;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public Db4objects.Db4o.Internal.ByteArrayBuffer ReadEmbeddedObject(Transaction trans
 			)
 		{
@@ -125,7 +124,7 @@ namespace Db4objects.Db4o.Internal
 			return trans.Container().BufferByAddress(address, length);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void ReadEncrypt(ObjectContainerBase stream, int address)
 		{
 			stream.ReadBytes(_buffer, address, Length());

@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			_logFileData = logFileData;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Write(string path, RandomAccessFile raf)
 		{
 			raf.Seek(_offset);

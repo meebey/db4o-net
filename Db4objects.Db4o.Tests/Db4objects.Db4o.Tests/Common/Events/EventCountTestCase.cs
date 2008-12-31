@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			new EventCountTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestEventRegistryCounts()
 		{
 			RegisterEventHandlers();
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			AssertCount(_deleted, 1000, "deleted");
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertCount(IntByRef @ref, int expected, string name)
 		{
 			for (int checkCount = 0; checkCount < MaxChecks; checkCount++)
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			Assert.AreEqual(expected, @ref.value, "Incorrect count for " + name);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void ReopenAndRegister()
 		{
 			Reopen();

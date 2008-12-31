@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			context.Buffer(temp);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Delete(IDeleteContext context)
 		{
 			context.ReadSlot();

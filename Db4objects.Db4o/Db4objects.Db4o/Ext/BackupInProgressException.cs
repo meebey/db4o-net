@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Ext
 	/// <remarks>
 	/// db4o-specific exception. <br /><br />
 	/// This exception is thrown when the current
-	/// <see cref="IExtObjectContainer.Backup">backup</see>
+	/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Backup">backup</see>
 	/// process encounters another backup process already running.
 	/// </remarks>
 	[System.Serializable]

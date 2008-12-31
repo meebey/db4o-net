@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
 
@@ -14,30 +13,35 @@ namespace Db4objects.Db4o.Query
 	/// classes, one class or an attribute of a class.<br /><br />The graph
 	/// is automatically extended with attributes of added constraints
 	/// (see
-	/// <see cref="IQuery.Constrain">IQuery.Constrain</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Constrain">Db4objects.Db4o.Query.IQuery.Constrain
+	/// 	</see>
 	/// ) and upon calls to
-	/// <see cref="IQuery.Descend">IQuery.Descend</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Descend">Db4objects.Db4o.Query.IQuery.Descend
+	/// 	</see>
 	/// that request nodes that do not yet exist.
 	/// <br /><br />
 	/// References to joined nodes in the query graph can be obtained
 	/// by "walking" along the nodes of the graph with the method
-	/// <see cref="IQuery.Descend">IQuery.Descend</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Descend">Db4objects.Db4o.Query.IQuery.Descend
+	/// 	</see>
 	/// .
 	/// <br /><br />
-	/// <see cref="IQuery.Execute">IQuery.Execute</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+	/// 	</see>
 	/// evaluates the entire graph against all persistent objects.
 	/// <br /><br />
-	/// <see cref="IQuery.Execute">IQuery.Execute</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+	/// 	</see>
 	/// can be called from any
-	/// <see cref="IQuery">IQuery</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 	/// node
 	/// of the graph. It will return an
-	/// <see cref="IObjectSet">IObjectSet</see>
+	/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 	/// filled with
 	/// objects of the class/classes that the node, it was called from,
 	/// represents.<br /><br />
 	/// <b>Note:<br />
-	/// <see cref="Predicate">Native queries</see>
+	/// <see cref="Db4objects.Db4o.Query.Predicate">Native queries</see>
 	/// are the recommended main query
 	/// interface of db4o.</b>
 	/// </remarks>
@@ -54,11 +58,11 @@ namespace Db4objects.Db4o.Query
 		/// Special behaviour for:
 		/// <ul>
 		/// <li> class
-		/// <see cref="Type">Type</see>
+		/// <see cref="System.Type">System.Type</see>
 		/// : confine the result to objects of one
 		/// class or to objects implementing an interface.</li>
 		/// <li> interface
-		/// <see cref="IEvaluation">IEvaluation</see>
+		/// <see cref="Db4objects.Db4o.Query.IEvaluation">Db4objects.Db4o.Query.IEvaluation</see>
 		/// : run
 		/// evaluation callbacks against all candidates.</li>
 		/// </ul>
@@ -66,24 +70,26 @@ namespace Db4objects.Db4o.Query
 		/// <param name="constraint">the constraint to be added to this Query.</param>
 		/// <returns>
 		/// 
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// a new
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// for this
 		/// query node or <code>null</code> for objects implementing the
-		/// <see cref="IEvaluation">IEvaluation</see>
+		/// <see cref="Db4objects.Db4o.Query.IEvaluation">Db4objects.Db4o.Query.IEvaluation</see>
 		/// interface.
 		/// </returns>
 		IConstraint Constrain(object constraint);
 
 		/// <summary>
 		/// returns a
-		/// <see cref="IConstraints">IConstraints</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraints">Db4objects.Db4o.Query.IConstraints
+		/// 	</see>
 		/// object that holds an array of all constraints on this node.
 		/// </summary>
 		/// <returns>
 		/// 
-		/// <see cref="IConstraints">IConstraints</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraints">Db4objects.Db4o.Query.IConstraints
+		/// 	</see>
 		/// on this query node.
 		/// </returns>
 		IConstraints Constraints();
@@ -101,21 +107,21 @@ namespace Db4objects.Db4o.Query
 		/// <param name="fieldName">path to the descendant.</param>
 		/// <returns>
 		/// descendant
-		/// <see cref="IQuery">IQuery</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 		/// node
 		/// </returns>
 		IQuery Descend(string fieldName);
 
 		/// <summary>
 		/// executes the
-		/// <see cref="IQuery">IQuery</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 		/// .
 		/// </summary>
 		/// <returns>
 		/// 
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// - the result of the
-		/// <see cref="IQuery">IQuery</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 		/// .
 		/// </returns>
 		IObjectSet Execute();
@@ -139,7 +145,7 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IQuery">IQuery</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 		/// object to allow the chaining of method calls.
 		/// </returns>
 		IQuery OrderAscending();
@@ -153,12 +159,13 @@ namespace Db4objects.Db4o.Query
 		/// the query graph.
 		/// <br /><br />
 		/// For semantics of multiple calls setting ordering criteria, see
-		/// <see cref="IQuery.OrderAscending">IQuery.OrderAscending</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery.OrderAscending">Db4objects.Db4o.Query.IQuery.OrderAscending
+		/// 	</see>
 		/// .
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IQuery">IQuery</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 		/// object to allow the chaining of method calls.
 		/// </returns>
 		IQuery OrderDescending();
@@ -168,7 +175,7 @@ namespace Db4objects.Db4o.Query
 		/// <param name="comparator">The comparator to apply.</param>
 		/// <returns>
 		/// this
-		/// <see cref="IQuery">IQuery</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 		/// object to allow the chaining of method calls.
 		/// </returns>
 		IQuery SortBy(IQueryComparator comparator);

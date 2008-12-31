@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using System.IO;
 using Db4oUnit;
@@ -37,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			File4.Delete(_fileName);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestMigrateFromRamToBTree()
 		{
 			CreateDatabaseUsingRamManager();
@@ -51,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			_container.Close();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestMigrateFromBTreeToRam()
 		{
 			CreateDatabaseUsingBTreeManager();
@@ -93,7 +92,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			_container.Free(slot);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void MigrateToBTree()
 		{
 			_container.Close();
@@ -107,7 +106,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			_currentConfig.Freespace().UseBTreeSystem();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void MigrateToRam()
 		{
 			_container.Close();

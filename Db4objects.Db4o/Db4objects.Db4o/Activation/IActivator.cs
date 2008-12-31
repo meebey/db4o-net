@@ -1,15 +1,13 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
-using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Activation
 {
 	/// <summary>
 	/// Activator interface.<br />
 	/// <br /><br />
-	/// <see cref="IActivatable">IActivatable</see>
+	/// <see cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</see>
 	/// objects need to have a reference to
 	/// an Activator implementation, which is called
 	/// by Transparent Activation, when a request is received to
@@ -23,10 +21,12 @@ namespace Db4objects.Db4o.Activation
 		/// <remarks>Method to be called to activate the host object.</remarks>
 		/// <param name="purpose">
 		/// for which purpose is the object being activated?
-		/// <see cref="ActivationPurpose.Write">ActivationPurpose.Write</see>
+		/// <see cref="Db4objects.Db4o.Activation.ActivationPurpose.Write">Db4objects.Db4o.Activation.ActivationPurpose.Write
+		/// 	</see>
 		/// will cause the object
 		/// to be saved on the next
-		/// <see cref="IObjectContainer.Commit">IObjectContainer.Commit</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Commit">Db4objects.Db4o.IObjectContainer.Commit
+		/// 	</see>
 		/// operation.
 		/// </param>
 		void Activate(ActivationPurpose purpose);

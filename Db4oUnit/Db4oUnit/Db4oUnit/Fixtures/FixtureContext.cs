@@ -8,7 +8,7 @@ namespace Db4oUnit.Fixtures
 {
 	/// <summary>
 	/// Set of live
-	/// <see cref="FixtureVariable">FixtureVariable</see>
+	/// <see cref="Db4oUnit.Fixtures.FixtureVariable">Db4oUnit.Fixtures.FixtureVariable</see>
 	/// /value pairs.
 	/// </summary>
 	public class FixtureContext

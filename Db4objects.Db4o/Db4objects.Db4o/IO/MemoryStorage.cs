@@ -2,39 +2,57 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Sharpen;
 
 namespace Db4objects.Db4o.IO
 {
+	/// <summary>
+	/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+	/// implementation that produces
+	/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+	/// instances
+	/// that operate in memory.
+	/// Use this
+	/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+	/// to work with db4o as an in-memory database.
+	/// </summary>
 	public class MemoryStorage : IStorage
 	{
 		private readonly IDictionary _storages = new Hashtable();
 
+		/// <summary>
+		/// returns true if a MemoryBin with the given URI name already exists
+		/// in this Storage.
+		/// </summary>
+		/// <remarks>
+		/// returns true if a MemoryBin with the given URI name already exists
+		/// in this Storage.
+		/// </remarks>
 		public virtual bool Exists(string uri)
 		{
 			return _storages.Contains(uri);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		public virtual IBin Open(string uri, bool lockFile, long initialLength, bool readOnly
-			)
+		/// <summary>opens a MemoryBin for the given URI (name can be freely chosen).</summary>
+		/// <remarks>opens a MemoryBin for the given URI (name can be freely chosen).</remarks>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		public virtual IBin Open(BinConfiguration config)
 		{
-			IBin storage = ProduceStorage(uri, initialLength);
-			return readOnly ? new ReadOnlyBin(storage) : storage;
+			IBin storage = ProduceStorage(config);
+			return config.ReadOnly() ? new ReadOnlyBin(storage) : storage;
 		}
 
-		private IBin ProduceStorage(string uri, long initialLength)
+		private IBin ProduceStorage(BinConfiguration config)
 		{
-			IBin storage = ((IBin)_storages[uri]);
+			IBin storage = ((IBin)_storages[config.Uri()]);
 			if (null != storage)
 			{
 				return storage;
 			}
-			MemoryStorage.MemoryBin newStorage = new MemoryStorage.MemoryBin(new byte[(int)initialLength
-				]);
-			_storages.Add(uri, newStorage);
+			MemoryStorage.MemoryBin newStorage = new MemoryStorage.MemoryBin(new byte[(int)config
+				.InitialLength()]);
+			_storages.Add(config.Uri(), newStorage);
 			return newStorage;
 		}
 
@@ -57,7 +75,7 @@ namespace Db4objects.Db4o.IO
 				return _length;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual int Read(long pos, byte[] bytes, int length)
 			{
 				long avail = _length - pos;
@@ -70,9 +88,14 @@ namespace Db4objects.Db4o.IO
 				return read;
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Sync()
 			{
+			}
+
+			public virtual int SyncRead(long position, byte[] bytes, int bytesToRead)
+			{
+				return Read(position, bytes, bytesToRead);
 			}
 
 			public virtual void Close()
@@ -81,7 +104,7 @@ namespace Db4objects.Db4o.IO
 
 			/// <summary>for internal processing only.</summary>
 			/// <remarks>for internal processing only.</remarks>
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Write(long pos, byte[] buffer, int length)
 			{
 				if (pos + length > _bytes.Length)

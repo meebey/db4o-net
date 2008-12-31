@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -107,7 +106,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 		// 3
 		// 4
 		// 5
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			for (int dataIdx = 0; dataIdx < TestData.Length; dataIdx++)

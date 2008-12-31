@@ -162,7 +162,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 
 		public class LocalConfigurationProviderTestUnit : ITestCase
 		{
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public virtual void Test()
 			{
 				if (CommonAndLocalConfigurationTestSuite.Subject() is IClientConfiguration)

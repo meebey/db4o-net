@@ -203,22 +203,6 @@ namespace Db4objects.Db4o.Tools
 
 		private static readonly string Remove = "XXxxREMOVExxXX";
 
-		private class TreeStringObject : Statistics.TreeString
-		{
-			public readonly object _object;
-
-			public TreeStringObject(string a_key, object a_object) : base(a_key)
-			{
-				this._object = a_object;
-			}
-
-			public override object ShallowClone()
-			{
-				Statistics.TreeStringObject tso = new Statistics.TreeStringObject(_key, _object);
-				return ShallowCloneInternal(tso);
-			}
-		}
-
 		private class TreeString : Tree
 		{
 			public string _key;
@@ -249,6 +233,22 @@ namespace Db4objects.Db4o.Tools
 			public override object Key()
 			{
 				return _key;
+			}
+		}
+
+		private class TreeStringObject : Statistics.TreeString
+		{
+			public readonly object _object;
+
+			public TreeStringObject(string a_key, object a_object) : base(a_key)
+			{
+				this._object = a_object;
+			}
+
+			public override object ShallowClone()
+			{
+				Statistics.TreeStringObject tso = new Statistics.TreeStringObject(_key, _object);
+				return ShallowCloneInternal(tso);
 			}
 		}
 	}

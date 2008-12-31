@@ -47,27 +47,28 @@ namespace Db4objects.Db4o.Internal
 		public override void CascadeActivation(Transaction trans, object obj, IActivationDepth
 			 depth)
 		{
-			if (_typeHandler is IFirstClassHandler)
+			if (!Handlers4.IsFirstClass(_typeHandler))
 			{
-				ActivationContext4 context = new ActivationContext4(trans, obj, depth);
-				((IFirstClassHandler)_typeHandler).CascadeActivation(context);
+				return;
 			}
+			ActivationContext4 context = new ActivationContext4(trans, obj, depth);
+			Handlers4.CascadeActivation(context, _typeHandler);
 		}
 
 		public override void CollectIDs(CollectIdContext context)
 		{
-			if (!(_typeHandler is IFirstClassHandler))
+			if (!Handlers4.IsFirstClass(_typeHandler))
 			{
 				IncrementOffset(context);
 				return;
 			}
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_54(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_55(this, context
 				));
 		}
 
-		private sealed class _IClosure4_54 : IClosure4
+		private sealed class _IClosure4_55 : IClosure4
 		{
-			public _IClosure4_54(TypeHandlerAspect _enclosing, CollectIdContext context)
+			public _IClosure4_55(TypeHandlerAspect _enclosing, CollectIdContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -89,13 +90,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_64(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_65(this, context
 				));
 		}
 
-		private sealed class _IClosure4_64 : IClosure4
+		private sealed class _IClosure4_65 : IClosure4
 		{
-			public _IClosure4_64(TypeHandlerAspect _enclosing, IDefragmentContext context)
+			public _IClosure4_65(TypeHandlerAspect _enclosing, IDefragmentContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -135,13 +136,13 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			object oldObject = context.PersistentObject();
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_91(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_92(this, context
 				, oldObject));
 		}
 
-		private sealed class _IClosure4_91 : IClosure4
+		private sealed class _IClosure4_92 : IClosure4
 		{
-			public _IClosure4_91(TypeHandlerAspect _enclosing, UnmarshallingContext context, 
+			public _IClosure4_92(TypeHandlerAspect _enclosing, UnmarshallingContext context, 
 				object oldObject)
 			{
 				this._enclosing = _enclosing;
@@ -168,13 +169,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_103(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_104(this, context
 				));
 		}
 
-		private sealed class _IClosure4_103 : IClosure4
+		private sealed class _IClosure4_104 : IClosure4
 		{
-			public _IClosure4_103(TypeHandlerAspect _enclosing, DeleteContextImpl context)
+			public _IClosure4_104(TypeHandlerAspect _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;

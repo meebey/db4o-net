@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			new ConsoleTestRunner(typeof(NetworkSocketTestCase)).Run();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			_serverSocket = new ServerSocket4(_plainSocketFactory, 0);
@@ -38,13 +38,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			_server = _serverSocket.Accept();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			_serverSocket.Close();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestReadIntCloseClient()
 		{
 			AssertReadClose(_client, new _ICodeBlock_43(this));
@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestReadIntCloseServer()
 		{
 			AssertReadClose(_server, new _ICodeBlock_51(this));
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestReadByteArrayCloseClient()
 		{
 			AssertReadClose(_client, new _ICodeBlock_59(this));
@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestReadByteArrayCloseServer()
 		{
 			AssertReadClose(_server, new _ICodeBlock_67(this));
@@ -128,7 +128,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestWriteByteArrayCloseClient()
 		{
 			AssertWriteClose(_client, new _ICodeBlock_76(this));
@@ -149,7 +149,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestWriteByteArrayCloseServer()
 		{
 			AssertWriteClose(_server, new _ICodeBlock_84(this));
@@ -170,7 +170,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestWriteByteArrayPartCloseClient()
 		{
 			AssertWriteClose(_client, new _ICodeBlock_92(this));
@@ -191,7 +191,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestWriteByteArrayPartCloseServer()
 		{
 			AssertWriteClose(_server, new _ICodeBlock_100(this));
@@ -212,7 +212,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestWriteIntCloseClient()
 		{
 			AssertWriteClose(_client, new _ICodeBlock_108(this));
@@ -233,7 +233,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestWriteIntCloseServer()
 		{
 			AssertWriteClose(_server, new _ICodeBlock_116(this));
@@ -254,7 +254,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			private readonly NetworkSocketTestCase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertReadClose(ISocket4 socketToBeClosed, ICodeBlock codeBlock)
 		{
 			NetworkSocketTestCase.CatchAllThread thread = new NetworkSocketTestCase.CatchAllThread
@@ -278,7 +278,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 				this.codeBlock = codeBlock;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				// This is a magic number: 
@@ -335,7 +335,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 				private readonly CatchAllThread _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public virtual void Join()
 			{
 				_thread.Join();

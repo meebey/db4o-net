@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		protected abstract ListTypeHandlerTestElementsSpec ElementsSpec();
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			ITypeHandler4 typeHandler = TypeHandler();
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			config.ObjectClass(ItemFactory().ItemClass()).CascadeOnDelete(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			AbstractItemFactory factory = ItemFactory();

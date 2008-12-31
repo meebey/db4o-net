@@ -13,10 +13,10 @@ using System.Security;
 [assembly: AssemblyKeyName("")]
 
 // attributes are automatically set by the build
-[assembly: AssemblyVersion("7.7.71.12178")]
+[assembly: AssemblyVersion("7.7.75.12339")]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
-[assembly: AssemblyDescription("Db4objects.Db4o 7.7.71.12178 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Db4o 7.7.75.12339 (.NET)")]
 
 #if !CF
 [assembly: AllowPartiallyTrustedCallers]

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.Assorted;
@@ -28,13 +27,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			public int value;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new DeleteSetTestCase.Item(1));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDeleteStore()
 		{
 			object item = ((DeleteSetTestCase.Item)RetrieveOnlyInstance(typeof(DeleteSetTestCase.Item
@@ -45,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertOccurrences(typeof(DeleteSetTestCase.Item), 1);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDeleteStoreStore()
 		{
 			DeleteSetTestCase.Item item = (DeleteSetTestCase.Item)((DeleteSetTestCase.Item)RetrieveOnlyInstance

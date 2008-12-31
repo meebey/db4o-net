@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -20,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			// TODO fix db4ounit call logic - this should actually be run in C/S mode
 		}
 
-		/// <exception cref="Exception">Exception</exception>
+		/// <exception cref="System.Exception">System.Exception</exception>
 		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void Test()
 		{
@@ -42,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void WithClient(IContainerBlock block)
 		{
 			ContainerServices.WithContainer(OpenClient(), block);
@@ -60,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			return _port;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected abstract void RunTest();
 
 		protected abstract void Configure(IConfiguration config);

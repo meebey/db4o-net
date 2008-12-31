@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Tests.Common.Handlers;
@@ -62,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.AreEqual(expected, charValue);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStoreObject()
 		{
 			CharHandlerTestCase.Item storedItem = new CharHandlerTestCase.Item((char)unchecked(

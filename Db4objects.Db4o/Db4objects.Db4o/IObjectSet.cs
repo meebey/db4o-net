@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
-using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o
@@ -17,13 +15,13 @@ namespace Db4objects.Db4o
 	/// recommended, never to reference ObjectSet directly in code but to use
 	/// List / IList instead.
 	/// <br /><br />Note that the underlying
-	/// <see cref="IObjectContainer">IObjectContainer</see>
+	/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 	/// of an ObjectSet
 	/// needs to remain open as long as an ObjectSet is used. This is necessary
 	/// for lazy instantiation. The objects in an ObjectSet are only instantiated
 	/// when they are actually being used by the application.
 	/// </remarks>
-	/// <seealso cref="IExtObjectSet">for extended functionality.</seealso>
+	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectSet">for extended functionality.</seealso>
 	/// <decaf.ignore.implements.jdk11></decaf.ignore.implements.jdk11>
 	public interface IObjectSet : IList
 	{
@@ -54,9 +52,10 @@ namespace Db4objects.Db4o
 		/// <br /><br />
 		/// Before returning the Object, next() triggers automatic activation of the
 		/// Object with the respective
-		/// <see cref="IConfiguration.ActivationDepth">global</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">global</see>
 		/// or
-		/// <see cref="IObjectClass.MaximumActivationDepth">class specific</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">class specific
+		/// 	</see>
 		/// setting.<br /><br />
 		/// </remarks>
 		/// <returns>the next object in the <code>ObjectSet</code>.</returns>

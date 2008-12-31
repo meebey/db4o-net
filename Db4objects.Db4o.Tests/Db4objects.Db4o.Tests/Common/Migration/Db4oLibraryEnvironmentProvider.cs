@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Migration;
 
@@ -18,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			_classPath = classPath;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual Db4oLibraryEnvironment EnvironmentFor(string path)
 		{
 			Db4oLibraryEnvironment existing = ExistingEnvironment(path);
@@ -34,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return (Db4oLibraryEnvironment)_environments.Get(path);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private Db4oLibraryEnvironment NewEnvironment(string path)
 		{
 			Db4oLibraryEnvironment env = new Db4oLibraryEnvironment(new Sharpen.IO.File(path)

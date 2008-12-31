@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new HandlerRegistryTestCase.Item());
@@ -86,8 +86,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			PrimitiveFieldHandler primitiveFieldHandler0 = (PrimitiveFieldHandler)CorrectHandlerVersion
 				(primitiveFieldHandler, version);
-			Assert.AreSame(fieldHandlerClass, primitiveFieldHandler0.DelegateTypeHandler().GetType
-				());
+			Assert.AreSame(fieldHandlerClass, primitiveFieldHandler0.DelegateTypeHandler(null
+				).GetType());
 		}
 
 		private ClassMetadata ItemClassMetadata()

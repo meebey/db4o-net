@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -17,14 +16,14 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private static readonly string[] Names = new string[] { "Foo", "Bar", "Baz" };
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(DefragInheritedFieldIndexTestCase.ParentItem)).ObjectField
 				(FieldName).Indexed(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			for (int nameIndex = 0; nameIndex < Names.Length; ++nameIndex)
@@ -34,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDefragInheritedFieldIndex()
 		{
 			AssertQueryByIndex();

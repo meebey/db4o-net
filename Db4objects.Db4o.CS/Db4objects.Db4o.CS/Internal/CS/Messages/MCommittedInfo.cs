@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
-using System.IO;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -195,7 +194,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			private readonly CallbackObjectInfoCollections callbackInfos;
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		protected virtual void WriteByteArray(ByteArrayOutputStream os, byte[] signaturePart
 			)
 		{

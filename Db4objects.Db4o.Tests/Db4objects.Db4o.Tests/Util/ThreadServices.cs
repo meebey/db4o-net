@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.Util
 {
 	public class ThreadServices
 	{
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public static void SpawnAndJoin(int threadCount, ICodeBlock codeBlock)
 		{
 			Thread[] threads = new Thread[threadCount];

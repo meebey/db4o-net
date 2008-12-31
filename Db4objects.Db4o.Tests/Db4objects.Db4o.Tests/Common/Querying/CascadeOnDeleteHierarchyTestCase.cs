@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Common.Querying;
@@ -32,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(CascadeOnDeleteHierarchyTestCase.Item)).CascadeOnDelete
@@ -41,13 +40,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			base.Configure(config);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new CascadeOnDeleteHierarchyTestCase.SubItem());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			CascadeOnDeleteHierarchyTestCase.SubItem item = (CascadeOnDeleteHierarchyTestCase.SubItem

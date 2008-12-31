@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			return typeof(LatinStringIO);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.StringEncoding(StringEncodings.Latin());

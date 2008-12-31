@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal
 			if (_classMetadata == null)
 			{
 				IFieldHandler fieldHandler = _container.FieldHandlerForClass(claxx);
-				if (fieldHandler is ISecondClassTypeHandler)
+				if (Handlers4.IsSecondClass(fieldHandler))
 				{
 					NotStorable(_obj, claxx);
 				}

@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Internal
 			SetName(VirtualField.Version);
 		}
 
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		public override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot)
 		{
 			StatefulBuffer buffer = (StatefulBuffer)context.Buffer();

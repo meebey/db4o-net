@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Query;
@@ -26,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			public string _name;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			CollectIdTestCase.ListHolder holder = new CollectIdTestCase.ListHolder();

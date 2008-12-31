@@ -9,40 +9,54 @@ using Sharpen.IO;
 
 namespace Db4objects.Db4o.IO
 {
+	/// <summary>
+	/// Storage adapter to store db4o database data to physical
+	/// files on hard disc.
+	/// </summary>
+	/// <remarks>
+	/// Storage adapter to store db4o database data to physical
+	/// files on hard disc.
+	/// </remarks>
 	public class FileStorage : IStorage
 	{
-		/// <exception cref="Db4oIOException"></exception>
-		public virtual IBin Open(string uri, bool lockFile, long initialLength, bool readOnly
-			)
+		/// <summary>
+		/// opens a
+		/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+		/// on the specified URI (file system path).
+		/// </summary>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		public virtual IBin Open(BinConfiguration config)
 		{
-			return new FileStorage.FileBin(uri, lockFile, initialLength, readOnly);
+			return new FileStorage.FileBin(config);
 		}
 
+		/// <summary>returns true if the specified file system path already exists.</summary>
+		/// <remarks>returns true if the specified file system path already exists.</remarks>
 		public virtual bool Exists(string uri)
 		{
 			Sharpen.IO.File file = new Sharpen.IO.File(uri);
 			return file.Exists() && file.Length() > 0;
 		}
 
-		internal class FileBin : IBin
+		private class FileBin : IBin
 		{
 			private readonly string _path;
 
 			private readonly RandomAccessFile _file;
 
-			/// <exception cref="Db4oIOException"></exception>
-			internal FileBin(string path, bool lockFile, long initialLength, bool readOnly)
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+			internal FileBin(BinConfiguration config)
 			{
 				bool ok = false;
 				try
 				{
-					_path = new Sharpen.IO.File(path).GetCanonicalPath();
-					_file = new RandomAccessFile(_path, readOnly ? "r" : "rw");
-					if (initialLength > 0)
+					_path = new Sharpen.IO.File(config.Uri()).GetCanonicalPath();
+					_file = new RandomAccessFile(_path, config.ReadOnly() ? "r" : "rw");
+					if (config.InitialLength() > 0)
 					{
-						Write(initialLength - 1, new byte[] { 0 }, 1);
+						Write(config.InitialLength() - 1, new byte[] { 0 }, 1);
 					}
-					if (lockFile)
+					if (config.LockFile())
 					{
 						Platform4.LockFile(_path, _file);
 					}
@@ -61,7 +75,7 @@ namespace Db4objects.Db4o.IO
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Close()
 			{
 				// TODO: use separate subclass for Android with the fix
@@ -93,7 +107,7 @@ namespace Db4objects.Db4o.IO
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual long Length()
 			{
 				try
@@ -106,7 +120,7 @@ namespace Db4objects.Db4o.IO
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual int Read(long pos, byte[] bytes, int length)
 			{
 				try
@@ -120,7 +134,7 @@ namespace Db4objects.Db4o.IO
 				}
 			}
 
-			/// <exception cref="IOException"></exception>
+			/// <exception cref="System.IO.IOException"></exception>
 			private void Seek(long pos)
 			{
 				if (DTrace.enabled)
@@ -130,7 +144,7 @@ namespace Db4objects.Db4o.IO
 				_file.Seek(pos);
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Sync()
 			{
 				try
@@ -143,7 +157,12 @@ namespace Db4objects.Db4o.IO
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			public virtual int SyncRead(long position, byte[] bytes, int bytesToRead)
+			{
+				return Read(position, bytes, bytesToRead);
+			}
+
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Write(long pos, byte[] buffer, int length)
 			{
 				try

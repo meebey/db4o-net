@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -14,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private string fileName;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			fileName = Path.GetTempFileName();
@@ -23,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			server.GrantAccess(Credentials(), Credentials());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			server.Close();

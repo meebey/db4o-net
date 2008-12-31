@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -49,13 +48,13 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			SimpleListQueryTestCase.FirstClassElement("one"), new SimpleListQueryTestCase.FirstClassElement
 			("fortytwo") };
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(SimpleListQueryTestCase.Item)).CascadeOnDelete(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			for (int i = 0; i < Data.Length; i++)

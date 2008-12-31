@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 	{
 		private readonly string DatabasePath = Path.GetTempFileName();
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			DeleteFile();
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			private readonly AccessFieldTestCaseBase _enclosing;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			DeleteFile();

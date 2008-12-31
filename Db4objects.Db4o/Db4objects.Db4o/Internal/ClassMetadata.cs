@@ -195,8 +195,8 @@ namespace Db4objects.Db4o.Internal
 				ObjectHeader oh = new ObjectHeader(_container, this, buffer);
 				ObjectIdContextImpl context = new ObjectIdContextImpl(buffer.Transaction(), buffer
 					, oh, buffer.GetID());
-				FieldAwareTypeHandler(CorrectHandlerVersion(context)).AddFieldIndices(context, slot
-					);
+				Handlers4.FieldAwareTypeHandler(CorrectHandlerVersion(context)).AddFieldIndices(context
+					, slot);
 			}
 		}
 
@@ -285,7 +285,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			if (customTypeHandler is IEmbeddedTypeHandler)
+			if (Handlers4.IsEmbedded(customTypeHandler))
 			{
 				_typeHandler = customTypeHandler;
 			}
@@ -377,7 +377,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						continue;
 					}
-					int fieldHandlerId = container.FieldHandlerIdForFieldHandler(fieldHandler);
+					int fieldHandlerId = container.Handlers().TypeHandlerID(fieldHandler);
 					FieldMetadata field = new FieldMetadata(this, fields[i], (ITypeHandler4)fieldHandler
 						, fieldHandlerId);
 					bool found = false;
@@ -434,20 +434,7 @@ namespace Db4objects.Db4o.Internal
 
 		private IFieldAwareTypeHandler FieldAwareTypeHandler()
 		{
-			if (_typeHandler is IFieldAwareTypeHandler)
-			{
-				return (IFieldAwareTypeHandler)_typeHandler;
-			}
-			return NullFieldAwareTypeHandler.Instance;
-		}
-
-		private IFieldAwareTypeHandler FieldAwareTypeHandler(ITypeHandler4 typeHandler)
-		{
-			if (typeHandler is IFieldAwareTypeHandler)
-			{
-				return (IFieldAwareTypeHandler)typeHandler;
-			}
-			return NullFieldAwareTypeHandler.Instance;
+			return Handlers4.FieldAwareTypeHandler(_typeHandler);
 		}
 
 		public virtual bool DescendOnCascadingActivation()
@@ -576,12 +563,12 @@ namespace Db4objects.Db4o.Internal
 		public virtual void CollectConstraints(Transaction trans, QConObject parentConstraint
 			, object obj, IVisitor4 visitor)
 		{
-			ForEachField(new _IProcedure4_465(trans, parentConstraint, obj, visitor));
+			ForEachField(new _IProcedure4_455(trans, parentConstraint, obj, visitor));
 		}
 
-		private sealed class _IProcedure4_465 : IProcedure4
+		private sealed class _IProcedure4_455 : IProcedure4
 		{
-			public _IProcedure4_465(Transaction trans, QConObject parentConstraint, object obj
+			public _IProcedure4_455(Transaction trans, QConObject parentConstraint, object obj
 				, IVisitor4 visitor)
 			{
 				this.trans = trans;
@@ -624,11 +611,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new InvalidOperationException();
 			}
-			ITypeHandler4 typeHandler = CorrectHandlerVersion(context);
-			if (typeHandler is IFirstClassHandler)
-			{
-				((IFirstClassHandler)typeHandler).CollectIDs(context);
-			}
+			Handlers4.CollectIDs(context, CorrectHandlerVersion(context));
 		}
 
 		public virtual bool CustomizedNewInstance()
@@ -747,12 +730,12 @@ namespace Db4objects.Db4o.Internal
 		internal void DeactivateFields(Transaction trans, object obj, IActivationDepth depth
 			)
 		{
-			ForEachAspect(new _IProcedure4_596(trans, obj, depth));
+			ForEachAspect(new _IProcedure4_583(trans, obj, depth));
 		}
 
-		private sealed class _IProcedure4_596 : IProcedure4
+		private sealed class _IProcedure4_583 : IProcedure4
 		{
-			public _IProcedure4_596(Transaction trans, object obj, IActivationDepth depth)
+			public _IProcedure4_583(Transaction trans, object obj, IActivationDepth depth)
 			{
 				this.trans = trans;
 				this.obj = obj;
@@ -787,7 +770,7 @@ namespace Db4objects.Db4o.Internal
 			DeleteMembers(context, typeId, false);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void Delete(IDeleteContext context)
 		{
 			CorrectHandlerVersion(context).Delete(context);
@@ -811,8 +794,8 @@ namespace Db4objects.Db4o.Internal
 						buffer.SetCascadeDeletes(1);
 					}
 				}
-				FieldAwareTypeHandler(CorrectHandlerVersion(context)).DeleteMembers(context, isUpdate
-					);
+				Handlers4.FieldAwareTypeHandler(CorrectHandlerVersion(context)).DeleteMembers(context
+					, isUpdate);
 			}
 			catch (Exception e)
 			{
@@ -928,8 +911,8 @@ namespace Db4objects.Db4o.Internal
 
 		public bool SeekToField(ObjectHeaderContext context, FieldMetadata field)
 		{
-			return FieldAwareTypeHandler(CorrectHandlerVersion(context)).SeekToField(context, 
-				field);
+			return Handlers4.FieldAwareTypeHandler(CorrectHandlerVersion(context)).SeekToField
+				(context, field);
 		}
 
 		public virtual bool GenerateUUIDs()
@@ -1070,7 +1053,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			return FirstClassObjectHandlerIsUsed() || !(_typeHandler is IEmbeddedTypeHandler);
+			return FirstClassObjectHandlerIsUsed() || !(Handlers4.IsEmbedded(_typeHandler));
 		}
 
 		private bool AncestorHasUUIDField()
@@ -1164,16 +1147,16 @@ namespace Db4objects.Db4o.Internal
 					return new IStoredField[0];
 				}
 				Collection4 storedFields = new Collection4();
-				ForEachDeclaredField(new _IProcedure4_919(storedFields));
+				ForEachDeclaredField(new _IProcedure4_906(storedFields));
 				IStoredField[] fields = new IStoredField[storedFields.Size()];
 				storedFields.ToArray(fields);
 				return fields;
 			}
 		}
 
-		private sealed class _IProcedure4_919 : IProcedure4
+		private sealed class _IProcedure4_906 : IProcedure4
 		{
-			public _IProcedure4_919(Collection4 storedFields)
+			public _IProcedure4_906(Collection4 storedFields)
 			{
 				this.storedFields = storedFields;
 			}
@@ -1194,13 +1177,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual FieldMetadata FieldMetadataForName(string name)
 		{
 			ByRef byReference = new ByRef();
-			ForEachField(new _IProcedure4_936(name, byReference));
+			ForEachField(new _IProcedure4_923(name, byReference));
 			return (FieldMetadata)byReference.value;
 		}
 
-		private sealed class _IProcedure4_936 : IProcedure4
+		private sealed class _IProcedure4_923 : IProcedure4
 		{
-			public _IProcedure4_936(string name, ByRef byReference)
+			public _IProcedure4_923(string name, ByRef byReference)
 			{
 				this.name = name;
 				this.byReference = byReference;
@@ -1548,6 +1531,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool IsValueType()
 		{
+			if (!FirstClassObjectHandlerIsUsed())
+			{
+				return false;
+			}
 			return Platform4.IsValueType(ClassReflector());
 		}
 
@@ -1696,15 +1683,15 @@ namespace Db4objects.Db4o.Internal
 			return a_reader.ReadInt();
 		}
 
-		/// <exception cref="CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer a_writer
 			)
 		{
 			return ReadIndexEntry(a_writer);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual object ReadIndexEntry(IObjectIdContext context)
 		{
 			return context.ReadInt();
@@ -1754,8 +1741,8 @@ namespace Db4objects.Db4o.Internal
 			ObjectHeader oh = new ObjectHeader(stream, this, buffer);
 			ObjectReferenceContext context = new ObjectReferenceContext(trans, buffer, oh, @ref
 				);
-			FieldAwareTypeHandler(CorrectHandlerVersion(context)).ReadVirtualAttributes(context
-				);
+			Handlers4.FieldAwareTypeHandler(CorrectHandlerVersion(context)).ReadVirtualAttributes
+				(context);
 		}
 
 		public virtual GenericReflector Reflector()
@@ -1867,13 +1854,13 @@ namespace Db4objects.Db4o.Internal
 				CreateConstructor(_container, i_name);
 				BitFalse(Const4.CheckedChanges);
 				CheckChanges();
-				ForEachDeclaredField(new _IProcedure4_1494());
+				ForEachDeclaredField(new _IProcedure4_1485());
 			}
 		}
 
-		private sealed class _IProcedure4_1494 : IProcedure4
+		private sealed class _IProcedure4_1485 : IProcedure4
 		{
-			public _IProcedure4_1494()
+			public _IProcedure4_1485()
 			{
 			}
 
@@ -1906,13 +1893,13 @@ namespace Db4objects.Db4o.Internal
 					return false;
 				}
 			}
-			ForEachDeclaredField(new _IProcedure4_1519(oldName, newName, renamed));
+			ForEachDeclaredField(new _IProcedure4_1510(oldName, newName, renamed));
 			return renamed.value;
 		}
 
-		private sealed class _IProcedure4_1519 : IProcedure4
+		private sealed class _IProcedure4_1510 : IProcedure4
 		{
-			public _IProcedure4_1519(string oldName, string newName, BooleanByRef renamed)
+			public _IProcedure4_1510(string oldName, string newName, BooleanByRef renamed)
 			{
 				this.oldName = oldName;
 				this.newName = newName;
@@ -2033,16 +2020,15 @@ namespace Db4objects.Db4o.Internal
 				Db4objects.Db4o.Internal.ClassMetadata classMetadata = _container.ClassMetadataForReflectClass
 					(ReflectorUtils.ReflectClassFor(Reflector(), clazz));
 				ByRef foundField = new ByRef();
-				ForEachField(new _IProcedure4_1615(this, foundField, name, classMetadata));
-				// FIXME: The == comparison in the following line could be wrong. 
+				ForEachField(new _IProcedure4_1606(this, foundField, name, classMetadata));
 				//TODO: implement field creation
 				return (IStoredField)foundField.value;
 			}
 		}
 
-		private sealed class _IProcedure4_1615 : IProcedure4
+		private sealed class _IProcedure4_1606 : IProcedure4
 		{
-			public _IProcedure4_1615(ClassMetadata _enclosing, ByRef foundField, string name, 
+			public _IProcedure4_1606(ClassMetadata _enclosing, ByRef foundField, string name, 
 				Db4objects.Db4o.Internal.ClassMetadata classMetadata)
 			{
 				this._enclosing = _enclosing;
@@ -2124,7 +2110,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase stream = trans.Container();
 			stream.Activate(trans, sc, new FixedActivationDepth(4));
 			StaticField[] existingFields = sc.fields;
-			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1678
+			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1667
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
 			if (!stream.IsClient())
@@ -2133,9 +2119,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IFunction4_1678 : IFunction4
+		private sealed class _IFunction4_1667 : IFunction4
 		{
-			public _IFunction4_1678(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
+			public _IFunction4_1667(ClassMetadata _enclosing, StaticField[] existingFields, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -2176,12 +2162,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFieldsToStaticFields()
 		{
-			return Iterators.Map(StaticReflectFields(), new _IFunction4_1706(this));
+			return Iterators.Map(StaticReflectFields(), new _IFunction4_1695(this));
 		}
 
-		private sealed class _IFunction4_1706 : IFunction4
+		private sealed class _IFunction4_1695 : IFunction4
 		{
-			public _IFunction4_1706(ClassMetadata _enclosing)
+			public _IFunction4_1695(ClassMetadata _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -2223,12 +2209,12 @@ namespace Db4objects.Db4o.Internal
 
 		private IEnumerator StaticReflectFields()
 		{
-			return Iterators.Filter(ReflectFields(), new _IPredicate4_1735());
+			return Iterators.Filter(ReflectFields(), new _IPredicate4_1724());
 		}
 
-		private sealed class _IPredicate4_1735 : IPredicate4
+		private sealed class _IPredicate4_1724 : IPredicate4
 		{
-			public _IPredicate4_1735()
+			public _IPredicate4_1724()
 			{
 			}
 
@@ -2465,24 +2451,32 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		protected virtual bool IsSecondClass(ITypeHandler4 handler)
+		public virtual ITypeHandler4 DelegateTypeHandler(IContext context)
 		{
-			return Handlers4.BaseTypeHandler(handler) is IEmbeddedTypeHandler;
-		}
-
-		public virtual ITypeHandler4 DelegateTypeHandler()
-		{
+			if (context is IHandlerVersionContext)
+			{
+				return CorrectHandlerVersion((IHandlerVersionContext)context);
+			}
 			return _typeHandler;
 		}
 
 		public virtual bool IsSecondClass()
 		{
-			return IsSecondClass(_typeHandler);
+			return Handlers4.HoldsEmbedded(_typeHandler);
 		}
 
 		private ITypeHandler4 CorrectHandlerVersion(IHandlerVersionContext context)
 		{
-			return Handlers4.CorrectHandlerVersion(context, _typeHandler);
+			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, _typeHandler
+				);
+			if (typeHandler != _typeHandler)
+			{
+				if (typeHandler is FirstClassObjectHandler)
+				{
+					((FirstClassObjectHandler)typeHandler).ClassMetadata(this);
+				}
+			}
+			return typeHandler;
 		}
 
 		public virtual void ForEachField(IProcedure4 procedure)

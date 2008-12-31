@@ -346,7 +346,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				FieldMetadata yf = (FieldMetadata)pair[1];
 				ClassMetadata childYc = yf.HandlerClassMetadata(this._enclosing.Stream());
 				bool take = true;
-				if (childYc is UntypedFieldHandler)
+				if (Handlers4.IsUntyped(childYc))
 				{
 					if (anyClassCollected.value)
 					{

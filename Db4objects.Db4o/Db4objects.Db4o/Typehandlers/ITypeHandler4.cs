@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Fieldhandlers;
@@ -17,7 +15,7 @@ namespace Db4objects.Db4o.Typehandlers
 	/// </summary>
 	/// <seealso>
 	/// 
-	/// <see cref="IConfiguration.RegisterTypeHandler">IConfiguration.RegisterTypeHandler
+	/// <see cref="Db4objects.Db4o.Config.IConfiguration.RegisterTypeHandler">Db4objects.Db4o.Config.IConfiguration.RegisterTypeHandler
 	/// 	</see>
 	/// 
 	/// </seealso>
@@ -30,7 +28,8 @@ namespace Db4objects.Db4o.Typehandlers
 		/// <summary>gets called when an object gets deleted.</summary>
 		/// <remarks>gets called when an object gets deleted.</remarks>
 		/// <param name="context"></param>
-		/// <exception cref="Db4oIOException">Db4oIOException</exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">Db4objects.Db4o.Ext.Db4oIOException
+		/// 	</exception>
 		void Delete(IDeleteContext context);
 
 		/// <summary>gets called when an object gets defragmented.</summary>

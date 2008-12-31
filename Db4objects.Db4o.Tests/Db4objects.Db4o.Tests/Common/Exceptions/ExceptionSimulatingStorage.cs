@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			{
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override int Read(long pos, byte[] bytes, int length)
 			{
 				if (exception)
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Sync()
 			{
 				if (exception)
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Write(long pos, byte[] buffer, int length)
 			{
 				if (exception)
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Close()
 			{
 				if (exception)
@@ -103,7 +103,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				}
 			}
 
-			/// <exception cref="Db4oIOException"></exception>
+			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override long Length()
 			{
 				if (exception)

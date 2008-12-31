@@ -1,10 +1,11 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
 {
+	/// <exclude></exclude>
 	public class IoAdapterStorage : IStorage
 	{
 		private readonly IoAdapter _io;
@@ -19,15 +20,16 @@ namespace Db4objects.Db4o.IO
 			return _io.Exists(uri);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		public virtual IBin Open(string uri, bool lockFile, long initialLength, bool readOnly
-			)
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		public virtual IBin Open(BinConfiguration config)
 		{
-			return new IoAdapterStorage.IoAdapterBin(_io.Open(uri, lockFile, initialLength, readOnly
-				));
+			IoAdapterStorage.IoAdapterBin bin = new IoAdapterStorage.IoAdapterBin(_io.Open(config
+				.Uri(), config.LockFile(), config.InitialLength(), config.ReadOnly()));
+			((IBlockSize)Environments.My(typeof(IBlockSize))).Register(bin);
+			return bin;
 		}
 
-		internal class IoAdapterBin : IBin
+		internal class IoAdapterBin : IBin, IListener
 		{
 			private readonly IoAdapter _io;
 
@@ -57,10 +59,25 @@ namespace Db4objects.Db4o.IO
 				_io.Sync();
 			}
 
+			public virtual int SyncRead(long position, byte[] bytes, int bytesToRead)
+			{
+				return Read(position, bytes, bytesToRead);
+			}
+
 			public virtual void Write(long position, byte[] bytes, int bytesToWrite)
 			{
 				_io.Seek(position);
 				_io.Write(bytes, bytesToWrite);
+			}
+
+			public virtual void BlockSize(int blockSize)
+			{
+				_io.BlockSize(blockSize);
+			}
+
+			public virtual void OnEvent(object @event)
+			{
+				BlockSize((((int)@event)));
 			}
 		}
 	}

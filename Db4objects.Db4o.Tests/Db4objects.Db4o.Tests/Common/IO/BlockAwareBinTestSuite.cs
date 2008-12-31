@@ -4,18 +4,77 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Fixtures;
 using Db4oUnit.Mocking;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
 	public class BlockAwareBinTestSuite : FixtureTestSuiteDescription
 	{
-		public class BlockAwareBinTest : ITestLifeCycle
+		public class BlockAwareBinTest : ITestCase, IEnvironment
 		{
 			private readonly MockBin _mockBin = new MockBin();
 
-			private readonly BlockAwareBin _subject;
+			private sealed class _IBlockSize_20 : IBlockSize
+			{
+				public _IBlockSize_20(BlockAwareBinTest _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+
+				public void Register(IListener listener)
+				{
+					throw new NotImplementedException();
+				}
+
+				public void Set(int newValue)
+				{
+					Assert.AreEqual(this._enclosing.BlockSize(), newValue);
+				}
+
+				public int Value()
+				{
+					return this._enclosing.BlockSize();
+				}
+
+				private readonly BlockAwareBinTest _enclosing;
+			}
+
+			private readonly IBlockSize _mockBlockSize;
+
+			private BlockAwareBin _subject;
+
+			public BlockAwareBinTest()
+			{
+				_mockBlockSize = new _IBlockSize_20(this);
+				Environments.RunWith(this, new _IRunnable_37(this));
+			}
+
+			private sealed class _IRunnable_37 : IRunnable
+			{
+				public _IRunnable_37(BlockAwareBinTest _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+
+				public void Run()
+				{
+					this._enclosing._subject = new BlockAwareBin(this._enclosing._mockBin);
+				}
+
+				private readonly BlockAwareBinTest _enclosing;
+			}
+
+			public virtual object Provide(Type service)
+			{
+				if (service != typeof(IBlockSize))
+				{
+					throw new ArgumentException();
+				}
+				return (object)_mockBlockSize;
+			}
 
 			public virtual void TestBlockSize()
 			{
@@ -96,22 +155,6 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			private int BlockSize()
 			{
 				return ((int)SubjectFixtureProvider.Value());
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void SetUp()
-			{
-				_subject.BlockSize(BlockSize());
-			}
-
-			/// <exception cref="Exception"></exception>
-			public virtual void TearDown()
-			{
-			}
-
-			public BlockAwareBinTest()
-			{
-				_subject = new BlockAwareBin(_mockBin);
 			}
 		}
 

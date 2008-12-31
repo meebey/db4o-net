@@ -72,7 +72,7 @@ namespace Db4oUnit
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected virtual void Invoke()
 		{
 			_method.Invoke(_subject, new object[0]);

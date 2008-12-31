@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			new ExceptionsOnNotStorableIsDefaultTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.CallConstructors(true);
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				this.item = item;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.Store(item);

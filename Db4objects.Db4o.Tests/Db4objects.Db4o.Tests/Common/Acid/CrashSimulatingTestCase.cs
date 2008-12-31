@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			return !Platform4.HasNio();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void DoTest(bool cached, bool useLogFile)
 		{
 			if (HasLockFileThread())
@@ -171,7 +171,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			return expected.IsEmpty();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void CreateFile(IConfiguration config, string fileName)
 		{
 			IObjectContainer oc = Db4oFactory.OpenFile(config, fileName);

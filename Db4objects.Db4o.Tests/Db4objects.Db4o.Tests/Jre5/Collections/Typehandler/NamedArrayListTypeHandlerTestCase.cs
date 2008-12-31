@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -18,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		private static object[] Data = new object[] { "one", "two", 3, System.Convert.ToInt64
 			(4), null };
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(CreateNamedArrayList());

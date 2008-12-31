@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
 
@@ -21,13 +20,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Assert.IsFalse(_queue.HasNext());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			_queue = new NoDuplicatesQueue(new NonblockingQueue());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			_queue = null;

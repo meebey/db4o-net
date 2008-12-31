@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -49,13 +48,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Db().Store(parentItem1);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestAllObjectStored()
 		{
 			AssertAllObjectStored();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestUpdate()
 		{
 			IQuery q = NewQuery(typeof(CascadedDeleteUpdate.ParentItem));
@@ -68,7 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			AssertAllObjectStored();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertAllObjectStored()
 		{
 			Reopen();

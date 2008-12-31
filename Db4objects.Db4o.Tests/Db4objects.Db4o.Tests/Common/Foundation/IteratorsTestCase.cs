@@ -179,5 +179,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 			private readonly Collection4 args;
 		}
+
+		public virtual void TestEmptyIterator()
+		{
+			IEnumerator i = Iterators.EmptyIterator;
+			Assert.IsFalse(i.MoveNext());
+			i.Reset();
+		}
 	}
 }

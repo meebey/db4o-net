@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private static int StoredItems = 1000;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void SetUp()
 		{
@@ -47,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			return memoryFile.GetBytes().Length;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 		}

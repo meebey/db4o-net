@@ -1,10 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
-using Db4objects.Db4o.TA;
 using Sharpen;
 
 namespace Db4objects.Db4o.Collections
@@ -20,9 +18,8 @@ namespace Db4objects.Db4o.Collections
 	/// perform an operation, the instance transparently activates all
 	/// the members.
 	/// </remarks>
-	/// <seealso cref="ArrayList">ArrayList</seealso>
-	/// <seealso cref="IActivatable">IActivatable</seealso>
-	/// <decaf.ignore></decaf.ignore>
+	/// <seealso cref="System.Collections.ArrayList">System.Collections.ArrayList</seealso>
+	/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 	public partial class ArrayList4<E>
 	{
 		private E[] elements;
@@ -34,7 +31,7 @@ namespace Db4objects.Db4o.Collections
 
 		/// <summary>activate basic implementation.</summary>
 		/// <remarks>activate basic implementation.</remarks>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
@@ -45,7 +42,7 @@ namespace Db4objects.Db4o.Collections
 
 		/// <summary>bind basic implementation.</summary>
 		/// <remarks>bind basic implementation.</remarks>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void Bind(IActivator activator)
 		{
 			if (_activator == activator)
@@ -60,13 +57,13 @@ namespace Db4objects.Db4o.Collections
 		}
 
 		/// <summary>Same behavior as java.util.ArrayList</summary>
-		/// <seealso cref="ArrayList"></seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
 		public ArrayList4() : this(10)
 		{
 		}
 
 		/// <summary>Same behaviour as java.util.ArrayList</summary>
-		/// <seealso cref="ArrayList"></seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
 		public ArrayList4(ICollection<E> c)
 		{
 			E[] data = CollectionToArray(c);
@@ -76,7 +73,7 @@ namespace Db4objects.Db4o.Collections
 		}
 
 		/// <summary>Same behaviour as java.util.ArrayList</summary>
-		/// <seealso cref="ArrayList"></seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
 		public ArrayList4(int initialCapacity)
 		{
 			if (initialCapacity < 0)
@@ -95,8 +92,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		internal virtual void Add(int index, E element)
 		{
 			CheckIndex(index, 0, Count);
@@ -137,8 +134,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void Clear()
 		{
 			int size = Count;
@@ -156,8 +153,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void EnsureCapacity(int minCapacity)
 		{
 			Activate(ActivationPurpose.Read);
@@ -181,8 +178,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual E Get(int index)
 		{
 			CheckIndex(index, 0, Count - 1);
@@ -197,8 +194,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		internal virtual E RemoveImpl(int index)
 		{
 			int size = Count;
@@ -236,8 +233,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		internal virtual E Set(int index, E element)
 		{
 			E oldValue = this[index];
@@ -254,8 +251,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual int Count
 		{
 			get
@@ -273,8 +270,8 @@ namespace Db4objects.Db4o.Collections
 		/// same as java.util.ArrayList but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="ArrayList"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.ArrayList"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void TrimExcess()
 		{
 			ActivateForWrite();

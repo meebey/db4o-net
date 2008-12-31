@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		}
 
 		#if !CF
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestByteArrayHolder()
 		{
 			TimeQueryLoop("raw byte array", typeof(ByteArrayTestCase.ByteArrayHolder));
@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		#endif // !CF
 
 		#if !CF
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestSerializableByteArrayHolder()
 		{
 			TimeQueryLoop("TSerializable", typeof(ByteArrayTestCase.SerializableByteArrayHolder
@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 		}
 		#endif // !CF
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void TimeQueryLoop(string label, Type clazz)
 		{
 			IQuery query = NewQuery(clazz);

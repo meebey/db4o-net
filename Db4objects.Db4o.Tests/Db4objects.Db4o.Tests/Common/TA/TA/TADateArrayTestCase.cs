@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			new TADateArrayTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			TADateArrayItem item = (TADateArrayItem)obj;
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			TADateArrayItem item = new TADateArrayItem();

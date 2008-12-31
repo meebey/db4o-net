@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Ext
@@ -16,7 +15,8 @@ namespace Db4objects.Db4o.Ext
 	/// this Exception is thrown during any of the db4o open calls
 	/// if the database file is locked by another process.
 	/// </remarks>
-	/// <seealso cref="Db4oFactory.OpenFile">Db4oFactory.OpenFile</seealso>
+	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4objects.Db4o.Db4oFactory.OpenFile
+	/// 	</seealso>
 	[System.Serializable]
 	public class DatabaseFileLockedException : Db4oException
 	{

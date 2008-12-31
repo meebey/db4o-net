@@ -14,7 +14,6 @@ namespace Db4objects.Db4o.Collections
 	/// Example usage:<br />
 	/// <code>CollectionFactory.forObjectContainer(objectContainer).newBigSet();<code>
 	/// </summary>
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class CollectionFactory
 	{
 		private readonly IObjectContainer _objectContainer;

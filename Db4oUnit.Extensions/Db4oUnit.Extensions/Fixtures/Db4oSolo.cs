@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
@@ -37,7 +36,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			return BuildLabel("SOLO");
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public override void Defragment()
 		{
 			Defragment(FilePath());

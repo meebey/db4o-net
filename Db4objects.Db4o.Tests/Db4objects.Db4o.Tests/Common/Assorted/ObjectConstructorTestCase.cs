@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(ObjectConstructorTestCase.Item)).Translate(new ObjectConstructorTestCase.ItemConstructor

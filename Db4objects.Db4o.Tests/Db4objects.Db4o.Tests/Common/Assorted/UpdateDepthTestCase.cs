@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -61,13 +60,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new UpdateDepthTestCase.RootItem(NewGraph()));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			IObjectClass itemClass = config.ObjectClass(typeof(UpdateDepthTestCase.Item));
@@ -76,14 +75,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		}
 
 		//		itemClass.cascadeOnDelete(true);
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDepth0()
 		{
 			Db().Store(PokeName(QueryRoot()), 0);
 			Expect(NewGraph());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDepth1()
 		{
 			UpdateDepthTestCase.Item item = PokeChild(PokeName(QueryRoot()));
@@ -91,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Expect(PokeName(NewGraph()));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDepth2()
 		{
 			UpdateDepthTestCase.Item root = PokeChild(PokeName(QueryRoot()));
@@ -101,7 +100,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Expect(PokeChild(PokeName(NewGraph())));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDepth3()
 		{
 			UpdateDepthTestCase.Item item = PokeChild(PokeName(QueryRoot()));
@@ -135,7 +134,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			return item;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void Expect(UpdateDepthTestCase.Item expected)
 		{
 			Reopen();

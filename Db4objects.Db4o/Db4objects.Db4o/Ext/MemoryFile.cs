@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
-
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>carries in-memory data for db4o in-memory operation.</summary>
@@ -28,7 +26,8 @@ namespace Db4objects.Db4o.Ext
 
 		/// <summary>constructs a new MemoryFile without any data.</summary>
 		/// <remarks>constructs a new MemoryFile without any data.</remarks>
-		/// <seealso cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile
+		/// 	</seealso>
 		public MemoryFile()
 		{
 		}
@@ -42,7 +41,8 @@ namespace Db4objects.Db4o.Ext
 		/// MemoryFile.
 		/// </remarks>
 		/// <param name="bytes">the raw byte data.</param>
-		/// <seealso cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile
+		/// 	</seealso>
 		public MemoryFile(byte[] bytes)
 		{
 			i_bytes = bytes;
@@ -109,7 +109,8 @@ namespace Db4objects.Db4o.Ext
 		/// configures the size the MemoryFile is to be enlarged by, if it grows
 		/// beyond the current size.
 		/// <br /><br />Call this method before passing the MemoryFile to
-		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
+		/// <see cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile
+		/// 	</see>
 		/// .
 		/// <br /><br />
 		/// This parameter can be modified to tune the maximum performance of
@@ -126,7 +127,8 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>
 		/// configures the initial size of the MemoryFile.
 		/// <br /><br />Call this method before passing the MemoryFile to
-		/// <see cref="ExtDb4oFactory.OpenMemoryFile">ExtDb4oFactory.OpenMemoryFile</see>
+		/// <see cref="Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile">Db4objects.Db4o.Ext.ExtDb4oFactory.OpenMemoryFile
+		/// 	</see>
 		/// .
 		/// <br /><br />
 		/// This parameter can be modified to tune the maximum performance of

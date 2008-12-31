@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Defragment
 		/// builds a defragmented version of the file in the original place.
 		/// </remarks>
 		/// <param name="origPath">The path to the file to be defragmented.</param>
-		/// <exception cref="IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
 		public static void Defrag(string origPath)
 		{
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Defragment
 		/// </remarks>
 		/// <param name="origPath">The path to the file to be defragmented.</param>
 		/// <param name="backupPath">The path to the backup file to be created.</param>
-		/// <exception cref="IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
 		public static void Defrag(string origPath, string backupPath)
 		{
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Defragment
 		/// place.
 		/// </remarks>
 		/// <param name="config">The configuration for this defragmentation run.</param>
-		/// <exception cref="IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
 		public static void Defrag(DefragmentConfig config)
 		{
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Defragment
 		/// A listener for status notifications during the defragmentation
 		/// process.
 		/// </param>
-		/// <exception cref="IOException">if the original file cannot be moved to the backup location
+		/// <exception cref="System.IO.IOException">if the original file cannot be moved to the backup location
 		/// 	</exception>
 		public static void Defrag(DefragmentConfig config, IDefragmentListener listener)
 		{
@@ -169,7 +169,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void EnsureFileExists(string origPath)
 		{
 			Sharpen.IO.File file = new Sharpen.IO.File(origPath);
@@ -180,7 +180,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void UpgradeFile(DefragmentConfig config)
 		{
 			File4.Copy(config.BackupPath(), config.TempPath());
@@ -235,8 +235,8 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void FirstPass(DefragmentServicesImpl context, DefragmentConfig config
 			)
 		{
@@ -244,8 +244,8 @@ namespace Db4objects.Db4o.Defragment
 			Pass(context, config, new FirstPassCommand());
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void SecondPass(DefragmentServicesImpl context, DefragmentConfig config
 			)
 		{
@@ -253,8 +253,8 @@ namespace Db4objects.Db4o.Defragment
 			Pass(context, config, new SecondPassCommand(config.ObjectCommitFrequency()));
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void Pass(DefragmentServicesImpl context, DefragmentConfig config, 
 			IPassCommand command)
 		{
@@ -290,8 +290,8 @@ namespace Db4objects.Db4o.Defragment
 		// deletions appear in the source class index?!?
 		// reproducable with SelectiveCascadingDeleteTestCase and ObjectSetTestCase
 		// - investigate.
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void ProcessYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
@@ -358,8 +358,8 @@ namespace Db4objects.Db4o.Defragment
 			private readonly ClassMetadata curClass;
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void ProcessYapClassAndFieldIndices(DefragmentServicesImpl context
 			, ClassMetadata curClass, IPassCommand command)
 		{
@@ -373,8 +373,8 @@ namespace Db4objects.Db4o.Defragment
 			command.ProcessClass(context, curClass, curClass.GetID(), targetClassIndexID);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private static void ProcessClassIndex(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{

@@ -40,7 +40,15 @@ namespace Db4oUnit
 
 			public object Apply(object arg)
 			{
-				return this._enclosing.FromClass((Type)arg);
+				Type klass = (Type)arg;
+				try
+				{
+					return this._enclosing.FromClass(klass);
+				}
+				catch (Exception e)
+				{
+					return new FailingTest(klass.FullName, e);
+				}
 			}
 
 			private readonly ReflectionTestSuiteBuilder _enclosing;
@@ -61,14 +69,15 @@ namespace Db4oUnit
 			return closure.Run();
 		}
 
+		/// <exception cref="System.Exception"></exception>
 		protected virtual IEnumerator FromClass(Type clazz)
 		{
-			return (IEnumerator)WithContext(new _IClosure4_46(this, clazz));
+			return (IEnumerator)WithContext(new _IClosure4_51(this, clazz));
 		}
 
-		private sealed class _IClosure4_46 : IClosure4
+		private sealed class _IClosure4_51 : IClosure4
 		{
-			public _IClosure4_46(ReflectionTestSuiteBuilder _enclosing, Type clazz)
+			public _IClosure4_51(ReflectionTestSuiteBuilder _enclosing, Type clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;
@@ -76,14 +85,7 @@ namespace Db4oUnit
 
 			public object Run()
 			{
-				try
-				{
-					return new ContextfulIterator(this._enclosing.SuiteFor(clazz));
-				}
-				catch (Exception e)
-				{
-					return Iterators.SingletonIterator(new FailingTest(clazz.FullName, e));
-				}
+				return new ContextfulIterator(this._enclosing.SuiteFor(clazz));
 			}
 
 			private readonly ReflectionTestSuiteBuilder _enclosing;
@@ -127,12 +129,12 @@ namespace Db4oUnit
 		// just removing the 'parameter not used' warning
 		private IEnumerator FromMethods(Type clazz)
 		{
-			return Iterators.Map(clazz.GetMethods(), new _IFunction4_83(this, clazz));
+			return Iterators.Map(clazz.GetMethods(), new _IFunction4_84(this, clazz));
 		}
 
-		private sealed class _IFunction4_83 : IFunction4
+		private sealed class _IFunction4_84 : IFunction4
 		{
-			public _IFunction4_83(ReflectionTestSuiteBuilder _enclosing, Type clazz)
+			public _IFunction4_84(ReflectionTestSuiteBuilder _enclosing, Type clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;
@@ -199,12 +201,12 @@ namespace Db4oUnit
 
 		protected ITest FromMethod(Type clazz, MethodInfo method)
 		{
-			return new ContextfulTest(new _ITestFactory_130(this, clazz, method));
+			return new ContextfulTest(new _ITestFactory_131(this, clazz, method));
 		}
 
-		private sealed class _ITestFactory_130 : ITestFactory
+		private sealed class _ITestFactory_131 : ITestFactory
 		{
-			public _ITestFactory_130(ReflectionTestSuiteBuilder _enclosing, Type clazz, MethodInfo
+			public _ITestFactory_131(ReflectionTestSuiteBuilder _enclosing, Type clazz, MethodInfo
 				 method)
 			{
 				this._enclosing = _enclosing;

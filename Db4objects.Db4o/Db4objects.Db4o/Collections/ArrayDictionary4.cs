@@ -1,10 +1,8 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
-using Db4objects.Db4o.TA;
 using Sharpen;
 
 namespace Db4objects.Db4o.Collections
@@ -18,9 +16,8 @@ namespace Db4objects.Db4o.Collections
 	/// perform an operation, the instance transparently activates all
 	/// the members.
 	/// </remarks>
-	/// <seealso cref="IDictionary">IDictionary</seealso>
-	/// <seealso cref="IActivatable">IActivatable</seealso>
-	/// <decaf.ignore></decaf.ignore>
+	/// <seealso cref="System.Collections.IDictionary">System.Collections.IDictionary</seealso>
+	/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 	public partial class ArrayDictionary4<K, V>
 	{
 		private K[] _keys;
@@ -43,7 +40,7 @@ namespace Db4objects.Db4o.Collections
 
 		/// <summary>activate basic implementation.</summary>
 		/// <remarks>activate basic implementation.</remarks>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void Activate(ActivationPurpose purpose)
 		{
 			if (_activator != null)
@@ -54,7 +51,7 @@ namespace Db4objects.Db4o.Collections
 
 		/// <summary>bind basic implementation.</summary>
 		/// <remarks>bind basic implementation.</remarks>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void Bind(IActivator activator)
 		{
 			if (_activator == activator)
@@ -76,8 +73,8 @@ namespace Db4objects.Db4o.Collections
 		/// java.util.Map implementation but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="IDictionary"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.IDictionary"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual void Clear()
 		{
 			Activate(ActivationPurpose.Write);
@@ -117,8 +114,8 @@ namespace Db4objects.Db4o.Collections
 		/// java.util.Map implementation but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="IDictionary"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.IDictionary"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual int Count
 		{
 			get
@@ -136,8 +133,8 @@ namespace Db4objects.Db4o.Collections
 		/// java.util.Map implementation but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="IDictionary"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.IDictionary"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public virtual ICollection<V> Values
 		{
 			get
@@ -160,8 +157,8 @@ namespace Db4objects.Db4o.Collections
 		/// java.util.Map implementation but transparently
 		/// activates the members as required.
 		/// </remarks>
-		/// <seealso cref="IDictionary"></seealso>
-		/// <seealso cref="IActivatable">IActivatable</seealso>
+		/// <seealso cref="System.Collections.IDictionary"></seealso>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
 		public override int GetHashCode()
 		{
 			int hashCode = 0;

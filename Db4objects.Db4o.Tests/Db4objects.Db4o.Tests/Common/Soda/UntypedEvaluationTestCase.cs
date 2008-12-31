@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new UntypedEvaluationTestCase.Data(42));

@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
@@ -16,14 +15,14 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		protected DebugIoAdapter(IoAdapter delegateAdapter, string path, bool lockFile, long
 			 initialLength, bool readOnly) : base(delegateAdapter.Open(path, lockFile, initialLength
 			, readOnly))
 		{
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
@@ -31,7 +30,7 @@ namespace Db4objects.Db4o.IO
 				, readOnly);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Seek(long pos)
 		{
 			if (pos >= RangeOfInterest[0] && pos <= RangeOfInterest[1])

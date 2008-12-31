@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Ext
 		/// </param>
 		/// <returns>
 		/// the
-		/// <see cref="IStoredField">IStoredField</see>
+		/// <see cref="Db4objects.Db4o.Ext.IStoredField">Db4objects.Db4o.Ext.IStoredField</see>
 		/// </returns>
 		IStoredField StoredField(string name, object type);
 

@@ -1,12 +1,11 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Events;
-
 namespace Db4objects.Db4o.Events
 {
 	/// <summary>Argument for events related to cancellable actions.</summary>
 	/// <remarks>Argument for events related to cancellable actions.</remarks>
-	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
+	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
+	/// 	</seealso>
 	public interface ICancellableEventArgs
 	{
 		/// <summary>Queries if the action was already cancelled by some event listener.</summary>

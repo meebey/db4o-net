@@ -1,7 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System.IO;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Types
@@ -56,7 +54,7 @@ namespace Db4objects.Db4o.Types
 		/// between 0 and 1 that signifies the completion of the currently running operation.<br /><br />
 		/// </remarks>
 		/// <returns>status - the current status</returns>
-		/// <seealso cref="Status">STATUS constants</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.Status">STATUS constants</seealso>
 		double GetStatus();
 
 		/// <summary>reads a file into the db4o system and stores it as a blob.</summary>
@@ -68,7 +66,7 @@ namespace Db4objects.Db4o.Types
 		/// <br /><br />
 		/// </remarks>
 		/// <param name="file">the file the blob is to be read from.</param>
-		/// <exception cref="IOException">in case of errors</exception>
+		/// <exception cref="System.IO.IOException">in case of errors</exception>
 		void ReadFrom(Sharpen.IO.File file);
 
 		/// <summary>reads a file into the db4o system and stores it as a blob.</summary>
@@ -79,7 +77,7 @@ namespace Db4objects.Db4o.Types
 		/// <br /><br />
 		/// </remarks>
 		/// <param name="file">the file the blob is to be read from.</param>
-		/// <exception cref="IOException">in case of errors</exception>
+		/// <exception cref="System.IO.IOException">in case of errors</exception>
 		void ReadLocal(Sharpen.IO.File file);
 
 		/// <summary>writes stored blob data to a file.</summary>
@@ -89,7 +87,7 @@ namespace Db4objects.Db4o.Types
 		/// db4o will use the local file system in Client/Server mode also.
 		/// <br /><br />
 		/// </remarks>
-		/// <exception cref="IOException">
+		/// <exception cref="System.IO.IOException">
 		/// in case of errors and in case no blob
 		/// data was stored
 		/// </exception>
@@ -104,7 +102,7 @@ namespace Db4objects.Db4o.Types
 		/// process writing data in an additional thread.
 		/// <br /><br />
 		/// </remarks>
-		/// <exception cref="IOException">
+		/// <exception cref="System.IO.IOException">
 		/// in case of errors and in case no blob
 		/// data was stored
 		/// </exception>
@@ -113,7 +111,7 @@ namespace Db4objects.Db4o.Types
 
 		/// <summary>Deletes the current file stored in this BLOB.</summary>
 		/// <remarks>Deletes the current file stored in this BLOB.</remarks>
-		/// <exception cref="IOException">
+		/// <exception cref="System.IO.IOException">
 		/// in case of errors and in case no
 		/// data was stored
 		/// </exception>

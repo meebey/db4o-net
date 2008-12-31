@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Mixed;
@@ -14,13 +13,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			new MixedArrayTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			return new MixedArrayItem(42);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			MixedArrayItem item = (MixedArrayItem)obj;
@@ -29,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			Assert.AreEqual(42, ((TItem)objects[3]).Value());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertRetrievedItem(object obj)
 		{
 			MixedArrayItem item = (MixedArrayItem)obj;

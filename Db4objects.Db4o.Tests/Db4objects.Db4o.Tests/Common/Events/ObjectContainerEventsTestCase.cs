@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 {
 	public class ObjectContainerEventsTestCase : AbstractDb4oTestCase
 	{
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestClose()
 		{
 			IExtObjectContainer container = Db();

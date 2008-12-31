@@ -1,14 +1,12 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
-
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>a unique universal identify for an object.</summary>
 	/// <remarks>
 	/// a unique universal identify for an object. <br /><br />The db4o UUID consists of
 	/// two parts:<br /> - an indexed long for fast access,<br /> - the signature of the
-	/// <see cref="IObjectContainer">IObjectContainer</see>
+	/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 	/// the object was created with.
 	/// <br /><br />Db4oUUIDs are valid representations of objects over multiple
 	/// ObjectContainers
@@ -45,7 +43,7 @@ namespace Db4objects.Db4o.Ext
 		/// returns the signature part of this UUID. <br /><br /> <br /><br />To uniquely
 		/// identify an object universally, db4o uses an indexed long and a reference to
 		/// the Db4oDatabase singleton object of the
-		/// <see cref="IObjectContainer">IObjectContainer</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// it was created on. This method
 		/// returns the signature of the Db4oDatabase object of the ObjectContainer: the
 		/// signature of the origin ObjectContainer.

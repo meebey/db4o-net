@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing._client1.Backup(string.Empty);
@@ -452,7 +452,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			return retrievedItem;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			File4.Delete(Filename);
@@ -466,7 +466,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			_client2 = new EmbeddedClientObjectContainer(_server);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			_client1.Close();

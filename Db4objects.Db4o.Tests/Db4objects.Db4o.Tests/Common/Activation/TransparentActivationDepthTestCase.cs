@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			// configured depth should be ignored by ta provider
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 				(42);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new TransparentActivationDepthTestCase.TAAware());

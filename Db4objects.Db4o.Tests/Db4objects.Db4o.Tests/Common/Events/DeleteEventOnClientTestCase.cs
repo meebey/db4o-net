@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.EventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				this._enclosing.EventRegistry().Deleted += new Db4objects.Db4o.Events.ObjectEventHandler

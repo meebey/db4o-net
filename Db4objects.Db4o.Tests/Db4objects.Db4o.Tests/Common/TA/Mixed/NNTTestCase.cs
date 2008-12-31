@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Mixed;
@@ -15,13 +14,13 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			new NNTTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			return new NNTItem(42);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertRetrievedItem(object obj)
 		{
 			NNTItem item = (NNTItem)obj;
@@ -30,14 +29,14 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			Assert.AreEqual(0, item.ntItem.tItem.value);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			NNTItem item = (NNTItem)obj;
 			Assert.AreEqual(42, item.ntItem.tItem.Value());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDeactivateDepth()
 		{
 			NNTItem item = (NNTItem)RetrieveOnlyInstance();

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 
 		private Type _class;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			NonTARefreshTestCase.TAItem item = NonTARefreshTestCase.TAItem.NewTAItem(ItemDepth

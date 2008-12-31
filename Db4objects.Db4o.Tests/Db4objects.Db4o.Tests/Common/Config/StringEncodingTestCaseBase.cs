@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			public string _name;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStoreSimpleObject()
 		{
 			string name = "one";

@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
-using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Types
@@ -13,17 +11,19 @@ namespace Db4objects.Db4o.Types
 	/// <br /><br />
 	/// A <code>Db4oList</code> supplies the methods specified in java.util.List.<br /><br />
 	/// All access to the list is controlled by the
-	/// <see cref="IObjectContainer">IObjectContainer</see>
+	/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 	/// to help the
 	/// programmer produce expected results with as little work as possible:<br />
 	/// - newly added objects are automatically persisted.<br />
 	/// - list elements are automatically activated when they are needed. The activation
 	/// depth is configurable with
-	/// <see cref="IDb4oCollection.ActivationDepth">IDb4oCollection.ActivationDepth</see>
+	/// <see cref="Db4objects.Db4o.Types.IDb4oCollection.ActivationDepth">Db4objects.Db4o.Types.IDb4oCollection.ActivationDepth
+	/// 	</see>
 	/// .<br />
 	/// - removed objects can be deleted automatically, if the list is configured
 	/// with
-	/// <see cref="IDb4oCollection.DeleteRemoved">IDb4oCollection.DeleteRemoved</see>
+	/// <see cref="Db4objects.Db4o.Types.IDb4oCollection.DeleteRemoved">Db4objects.Db4o.Types.IDb4oCollection.DeleteRemoved
+	/// 	</see>
 	/// <br /><br />
 	/// Usage:<br />
 	/// - declare a <code>java.util.List</code> variable on your persistent classes.<br />
@@ -35,8 +35,10 @@ namespace Db4objects.Db4o.Types
 	/// MyClass myObject = new MyClass();<br />
 	/// myObject.myList = objectContainer.ext().collections().newLinkedList();
 	/// </remarks>
-	/// <seealso cref="IExtObjectContainer.Collections">IExtObjectContainer.Collections</seealso>
+	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Collections">Db4objects.Db4o.Ext.IExtObjectContainer.Collections
+	/// 	</seealso>
 	/// <decaf.ignore.implements.jdk11>List</decaf.ignore.implements.jdk11>
+	[System.ObsoleteAttribute(@"since 7.0")]
 	public interface IDb4oList : IDb4oCollection, IList
 	{
 	}

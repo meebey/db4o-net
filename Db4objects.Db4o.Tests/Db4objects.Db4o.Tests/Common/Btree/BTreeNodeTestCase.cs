@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -22,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		private readonly int[] keys = new int[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 7, 9
 			 };
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
 			base.Db4oSetupAfterStore();

@@ -8,11 +8,13 @@ namespace Db4objects.Db4o.Diagnostic
 	/// <remarks>
 	/// prints Diagnostic messsages to the Console.
 	/// Install this
-	/// <see cref="IDiagnosticListener">IDiagnosticListener</see>
+	/// <see cref="Db4objects.Db4o.Diagnostic.IDiagnosticListener">Db4objects.Db4o.Diagnostic.IDiagnosticListener
+	/// 	</see>
 	/// with: <br />
 	/// <code>Db4o.configure().diagnostic().addListener(new DiagnosticToConsole());</code><br />
 	/// </remarks>
-	/// <seealso cref="IDiagnosticConfiguration">IDiagnosticConfiguration</seealso>
+	/// <seealso cref="Db4objects.Db4o.Diagnostic.IDiagnosticConfiguration">Db4objects.Db4o.Diagnostic.IDiagnosticConfiguration
+	/// 	</seealso>
 	public class DiagnosticToConsole : IDiagnosticListener
 	{
 		/// <summary>redirects Diagnostic messages to the Console.</summary>

@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				this.stack = stack;
 			}
 
-			/// <exception cref="Exception"></exception>
+			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
 				stack.Pop();

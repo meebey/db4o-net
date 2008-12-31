@@ -45,6 +45,12 @@ namespace Db4objects.Db4o.Foundation
 		{
 		}
 
+		public virtual void Clear()
+		{
+			_size = 0;
+			Arrays4.Fill(_table, null);
+		}
+
 		public virtual int Size()
 		{
 			return _size;
@@ -103,12 +109,13 @@ namespace Db4objects.Db4o.Foundation
 
 		/// <summary>
 		/// Iterates through all the
-		/// <see cref="IEntry4">entries</see>
+		/// <see cref="Db4objects.Db4o.Foundation.IEntry4">entries</see>
 		/// .
 		/// </summary>
 		/// <returns>
 		/// 
-		/// <see cref="IEntry4">IEntry4</see>
+		/// <see cref="Db4objects.Db4o.Foundation.IEntry4">Db4objects.Db4o.Foundation.IEntry4
+		/// 	</see>
 		/// iterator
 		/// </returns>
 		public virtual IEnumerator Iterator()
@@ -121,12 +128,12 @@ namespace Db4objects.Db4o.Foundation
 		/// <returns>key iterator</returns>
 		public virtual IEnumerator Keys()
 		{
-			return Iterators.Map(Iterator(), new _IFunction4_102());
+			return Iterators.Map(Iterator(), new _IFunction4_108());
 		}
 
-		private sealed class _IFunction4_102 : IFunction4
+		private sealed class _IFunction4_108 : IFunction4
 		{
-			public _IFunction4_102()
+			public _IFunction4_108()
 			{
 			}
 
@@ -138,12 +145,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IEnumerable Values()
 		{
-			return new _IEnumerable_110(this);
+			return new _IEnumerable_116(this);
 		}
 
-		private sealed class _IEnumerable_110 : IEnumerable
+		private sealed class _IEnumerable_116 : IEnumerable
 		{
-			public _IEnumerable_110(Hashtable4 _enclosing)
+			public _IEnumerable_116(Hashtable4 _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -161,12 +168,12 @@ namespace Db4objects.Db4o.Foundation
 		/// <returns>value iterator</returns>
 		public virtual IEnumerator ValuesIterator()
 		{
-			return Iterators.Map(Iterator(), new _IFunction4_123());
+			return Iterators.Map(Iterator(), new _IFunction4_129());
 		}
 
-		private sealed class _IFunction4_123 : IFunction4
+		private sealed class _IFunction4_129 : IFunction4
 		{
-			public _IFunction4_123()
+			public _IFunction4_129()
 			{
 			}
 

@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
 			DeleteTestFile();
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			_adapter = Factory().Open(_filename, false, 0, readOnly);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
 			Close();
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			return ((IoAdapter)SubjectFixtureProvider.Value());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void DeleteTestFile()
 		{
 			new Sharpen.IO.File(_filename).Delete();

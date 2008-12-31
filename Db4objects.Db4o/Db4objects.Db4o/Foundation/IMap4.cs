@@ -18,5 +18,7 @@ namespace Db4objects.Db4o.Foundation
 		object Remove(object key);
 
 		IEnumerable Values();
+
+		void Clear();
 	}
 }

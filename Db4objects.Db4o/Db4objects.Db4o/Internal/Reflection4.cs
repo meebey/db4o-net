@@ -13,13 +13,13 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public class Reflection4
 	{
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(object obj, string methodName)
 		{
 			return Invoke(obj.GetType(), methodName, null, null, obj);
 		}
 
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(object obj, string methodName, object[] @params)
 		{
 			Type[] paramClasses = new Type[@params.Length];
@@ -30,14 +30,14 @@ namespace Db4objects.Db4o.Internal
 			return Invoke(obj.GetType(), methodName, paramClasses, @params, obj);
 		}
 
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(object obj, string methodName, Type[] paramClasses, object
 			[] @params)
 		{
 			return Invoke(obj.GetType(), methodName, paramClasses, @params, obj);
 		}
 
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(Type clazz, string methodName, Type[] paramClasses, object
 			[] @params)
 		{
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal
 			return Invoke(@params, onObject, GetMethod(clazz, methodName, paramClasses));
 		}
 
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(string className, string methodName, Type[] paramClasses
 			, object[] @params, object onObject)
 		{
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Internal
 			return Invoke(@params, onObject, method);
 		}
 
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(object[] @params, object onObject, MethodInfo method)
 		{
 			if (method == null)
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		/// <exception cref="ReflectException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(object obj, string methodName, Type signature, object
 			 value)
 		{
@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		/// <exception cref="MemberAccessException"></exception>
+		/// <exception cref="System.MemberAccessException"></exception>
 		public static object GetFieldValue(object obj, string fieldName)
 		{
 			return GetField(obj.GetType(), fieldName).GetValue(obj);

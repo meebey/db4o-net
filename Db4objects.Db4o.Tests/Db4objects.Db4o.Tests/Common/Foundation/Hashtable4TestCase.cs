@@ -14,6 +14,19 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			new ConsoleTestRunner(typeof(Hashtable4TestCase)).Run();
 		}
 
+		public virtual void TestClear()
+		{
+			Hashtable4 table = new Hashtable4();
+			for (int i = 0; i < 2; ++i)
+			{
+				table.Clear();
+				Assert.AreEqual(0, table.Size());
+				table.Put("foo", "bar");
+				Assert.AreEqual(1, table.Size());
+				AssertIterator(table, new object[] { "foo" });
+			}
+		}
+
 		public virtual void TestToString()
 		{
 			Hashtable4 table = new Hashtable4();
@@ -156,8 +169,14 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void AssertIsIteratable(object[] keys)
 		{
+			Hashtable4 table = TableFromKeys(keys);
+			AssertIterator(table, keys);
+		}
+
+		private void AssertIterator(Hashtable4 table, object[] keys)
+		{
+			IEnumerator iter = table.Iterator();
 			Collection4 expected = new Collection4(keys);
-			IEnumerator iter = TableFromKeys(keys).Iterator();
 			while (iter.MoveNext())
 			{
 				IEntry4 entry = (IEntry4)iter.Current;

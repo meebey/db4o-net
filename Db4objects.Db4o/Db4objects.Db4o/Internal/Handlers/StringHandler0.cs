@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
@@ -53,8 +52,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.TargetBuffer().WriteInt(length);
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer
 			 buffer)
 		{
@@ -62,8 +61,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 				(), buffer.ReadInt());
 		}
 
-		/// <exception cref="CorruptionException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override object ReadIndexEntry(IObjectIdContext context)
 		{
 			return context.Transaction().Container().ReadWriterByAddress(context.Transaction(

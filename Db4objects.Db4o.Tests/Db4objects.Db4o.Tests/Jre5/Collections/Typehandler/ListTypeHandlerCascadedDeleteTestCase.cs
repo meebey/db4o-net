@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
@@ -30,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		{
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(ListTypeHandlerCascadedDeleteTestCase.Item)).CascadeOnDelete
@@ -40,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				, new CollectionTypeHandler());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			ListTypeHandlerCascadedDeleteTestCase.Item item = new ListTypeHandlerCascadedDeleteTestCase.Item

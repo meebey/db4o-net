@@ -4,6 +4,7 @@ using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -373,12 +374,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_326(this);
+			return new _IContext_327(this);
 		}
 
-		private sealed class _IContext_326 : IContext
+		private sealed class _IContext_327 : IContext
 		{
-			public _IContext_326(Transaction _enclosing)
+			public _IContext_327(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -394,6 +395,17 @@ namespace Db4objects.Db4o.Internal
 			}
 
 			private readonly Transaction _enclosing;
+		}
+
+		public virtual void Deactivate(int id, IActivationDepth activationDepth)
+		{
+			//FIXME: JavaServerCrossplatformTestCase crashes with we remove
+			//		  null test.
+			ObjectReference reference = ReferenceForId(id);
+			if (null != reference)
+			{
+				reference.Deactivate(this, activationDepth);
+			}
 		}
 	}
 }

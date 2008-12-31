@@ -58,5 +58,13 @@ namespace Db4objects.Db4o.Foundation
 			}
 			return false;
 		}
+
+		public static void Fill(object[] array, object value)
+		{
+			for (int i = 0; i < array.Length; ++i)
+			{
+				array[i] = value;
+			}
+		}
 	}
 }

@@ -6,17 +6,20 @@ namespace Db4objects.Db4o.Query
 {
 	/// <summary>
 	/// constraint to limit the objects returned upon
-	/// <see cref="IQuery.Execute">query execution</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">query execution</see>
 	/// .
 	/// <br /><br />
 	/// Constraints are constructed by calling
-	/// <see cref="IQuery.Constrain">IQuery.Constrain</see>
+	/// <see cref="Db4objects.Db4o.Query.IQuery.Constrain">Db4objects.Db4o.Query.IQuery.Constrain
+	/// 	</see>
 	/// .
 	/// <br /><br />
 	/// Constraints can be joined with the methods
-	/// <see cref="IConstraint.And">IConstraint.And</see>
+	/// <see cref="Db4objects.Db4o.Query.IConstraint.And">Db4objects.Db4o.Query.IConstraint.And
+	/// 	</see>
 	/// and
-	/// <see cref="IConstraint.Or">IConstraint.Or</see>
+	/// <see cref="Db4objects.Db4o.Query.IConstraint.Or">Db4objects.Db4o.Query.IConstraint.Or
+	/// 	</see>
 	/// .
 	/// <br /><br />
 	/// The methods to modify the constraint evaluation algorithm may
@@ -40,16 +43,16 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <param name="with">
 		/// the other
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// </param>
 		/// <returns>
 		/// a new
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// , that can be used for further calls
 		/// to
-		/// <see cref="IConstraint.And">and()</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.And">and()</see>
 		/// and
-		/// <see cref="IConstraint.Or">or()</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.Or">or()</see>
 		/// </returns>
 		IConstraint And(IConstraint with);
 
@@ -63,24 +66,26 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <param name="with">
 		/// the other
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// </param>
 		/// <returns>
 		/// a new
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// , that can be used for further calls
 		/// to
-		/// <see cref="IConstraint.And">and()</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.And">and()</see>
 		/// and
-		/// <see cref="IConstraint.Or">or()</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.Or">or()</see>
 		/// </returns>
 		IConstraint Or(IConstraint with);
 
 		/// <summary>
 		/// Used in conjunction with
-		/// <see cref="IConstraint.Smaller">IConstraint.Smaller</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.Smaller">Db4objects.Db4o.Query.IConstraint.Smaller
+		/// 	</see>
 		/// or
-		/// <see cref="IConstraint.Greater">IConstraint.Greater</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.Greater">Db4objects.Db4o.Query.IConstraint.Greater
+		/// 	</see>
 		/// to create constraints
 		/// like "smaller or equal", "greater or equal".
 		/// For example:<br />
@@ -90,7 +95,7 @@ namespace Db4objects.Db4o.Query
 		/// </summary>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint Equal();
@@ -105,7 +110,7 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint Greater();
@@ -120,7 +125,7 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint Smaller();
@@ -147,7 +152,7 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint Identity();
@@ -156,7 +161,7 @@ namespace Db4objects.Db4o.Query
 		/// <remarks>set the evaluation mode to object comparison (query by example).</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint ByExample();
@@ -175,7 +180,7 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint Like();
@@ -195,12 +200,13 @@ namespace Db4objects.Db4o.Query
 		/// <code>query.descend("pilots").constrain(pilot2).contains();</code><br />
 		/// will return the Team object as it contains pilot2.<br />
 		/// If applied to a String object, this constrain will behave as
-		/// <see cref="IConstraint.Like">IConstraint.Like</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.Like">Db4objects.Db4o.Query.IConstraint.Like
+		/// 	</see>
 		/// .
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint Contains();
@@ -219,7 +225,7 @@ namespace Db4objects.Db4o.Query
 		/// 	</param>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint StartsWith(bool caseSensitive);
@@ -238,7 +244,7 @@ namespace Db4objects.Db4o.Query
 		/// 	</param>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint EndsWith(bool caseSensitive);
@@ -255,7 +261,7 @@ namespace Db4objects.Db4o.Query
 		/// </remarks>
 		/// <returns>
 		/// this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint Not();
@@ -263,7 +269,7 @@ namespace Db4objects.Db4o.Query
 		/// <summary>
 		/// returns the Object the query graph was constrained with to
 		/// create this
-		/// <see cref="IConstraint">IConstraint</see>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
 		/// .
 		/// </summary>
 		/// <returns>Object the constraining object.</returns>

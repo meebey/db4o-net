@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Tests;
 using Db4objects.Db4o.Foundation;
@@ -28,7 +27,7 @@ namespace Db4oUnit.Tests
 			return _setupCalled;
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestMethod()
 		{
 			Assert.IsTrue(_setupCalled);

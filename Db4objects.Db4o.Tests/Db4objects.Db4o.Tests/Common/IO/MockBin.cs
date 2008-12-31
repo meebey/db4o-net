@@ -36,6 +36,13 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			Record("sync");
 		}
 
+		public virtual int SyncRead(long position, byte[] buffer, int bytesToRead)
+		{
+			Record(new MethodCall("syncRead", new object[] { position, buffer, bytesToRead })
+				);
+			return _returnValue;
+		}
+
 		public virtual void Write(long position, byte[] bytes, int bytesToWrite)
 		{
 			Record(new MethodCall("write", new object[] { position, bytes, bytesToWrite }));

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			new TADateTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			TADateItem item = (TADateItem)obj;
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			Assert.AreEqual(first, item.GetTyped());
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertRetrievedItem(object obj)
 		{
 			TADateItem item = (TADateItem)obj;
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			return Db().Reflector().ForClass(typeof(DateTime)).NullValue();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			TADateItem item = new TADateItem();

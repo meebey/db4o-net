@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -34,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Concurrency.Query
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			ConfigLazyQueries(config);
@@ -45,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Concurrency.Query
 			config.Queries().EvaluationMode(QueryEvaluationMode.Lazy);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			ConcurrentLazyQueriesTestCase.Item root = new ConcurrentLazyQueriesTestCase.Item(

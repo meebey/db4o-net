@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Internal
 			ThrowRuntimeException(53);
 		}
 
-		/// <exception cref="Db4oException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oException"></exception>
 		public static void CatchAllExceptDb4oException(Exception exc)
 		{
 			if (exc is Db4oException)

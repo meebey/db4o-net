@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			new MixedActivateTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			AssertActivatedItemByMethod((MixedActivateTestCase.Item)obj, ItemDepth);
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void AssertRetrievedItem(object obj)
 		{
 			MixedActivateTestCase.Item item = (MixedActivateTestCase.Item)obj;
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
 			MixedActivateTestCase.TAItem item = MixedActivateTestCase.TAItem.NewTAITem(10);

@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 
 		private const int CountA = 5;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			for (int idx = 0; idx < CountA; idx++)

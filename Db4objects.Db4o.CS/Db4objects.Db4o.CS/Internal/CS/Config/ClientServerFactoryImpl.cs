@@ -13,9 +13,9 @@ namespace Db4objects.Db4o.Internal.CS.Config
 	[System.ObsoleteAttribute(@"Use Db4oClientServer")]
 	public class ClientServerFactoryImpl : IClientServerFactory
 	{
-		/// <exception cref="Db4oIOException"></exception>
-		/// <exception cref="OldFormatException"></exception>
-		/// <exception cref="InvalidPasswordException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.InvalidPasswordException"></exception>
 		[System.ObsoleteAttribute(@"Use")]
 		public virtual IObjectContainer OpenClient(IConfiguration config, string hostName
 			, int port, string user, string password, INativeSocketFactory socketFactory)
@@ -28,11 +28,11 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			return new ClientObjectContainer(config, networkSocket, user, password, true);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
-		/// <exception cref="IncompatibleFileFormatException"></exception>
-		/// <exception cref="OldFormatException"></exception>
-		/// <exception cref="DatabaseFileLockedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.IncompatibleFileFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		[System.ObsoleteAttribute(@"Use")]
 		public virtual IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port, INativeSocketFactory socketFactory)

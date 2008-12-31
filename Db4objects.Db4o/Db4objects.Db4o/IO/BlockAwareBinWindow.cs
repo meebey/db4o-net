@@ -7,6 +7,7 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>Bounded handle into an IoAdapter: Can only access a restricted area.</summary>
 	/// <remarks>Bounded handle into an IoAdapter: Can only access a restricted area.</remarks>
+	/// <exclude></exclude>
 	public class BlockAwareBinWindow
 	{
 		private BlockAwareBin _bin;
@@ -37,8 +38,8 @@ namespace Db4objects.Db4o.IO
 
 		/// <param name="off">Offset in bytes relative to the window start</param>
 		/// <param name="data">Data to write into the window starting from the given offset</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="System.ArgumentException"></exception>
+		/// <exception cref="System.InvalidOperationException"></exception>
 		public virtual void Write(int off, byte[] data)
 		{
 			CheckBounds(off, data);
@@ -48,8 +49,8 @@ namespace Db4objects.Db4o.IO
 		/// <param name="off">Offset in bytes relative to the window start</param>
 		/// <param name="data">Data buffer to read from the window starting from the given offset
 		/// 	</param>
-		/// <exception cref="ArgumentException"></exception>
-		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="System.ArgumentException"></exception>
+		/// <exception cref="System.InvalidOperationException"></exception>
 		public virtual int Read(int off, byte[] data)
 		{
 			CheckBounds(off, data);

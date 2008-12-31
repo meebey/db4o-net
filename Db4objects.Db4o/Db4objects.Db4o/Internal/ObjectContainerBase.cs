@@ -26,6 +26,7 @@ using Db4objects.Db4o.Replication;
 using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Types;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -83,6 +84,9 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _topLevelCallCompleted;
 
+		private readonly IEnvironment _environment = Environments.NewConventionBasedEnvironment
+			();
+
 		protected ObjectContainerBase(IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
 			 parent)
 		{
@@ -114,31 +118,51 @@ namespace Db4objects.Db4o.Internal
 			_config = (Config4Impl)config;
 		}
 
-		/// <exception cref="OldFormatException"></exception>
-		public void Open()
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
+		protected void Open()
 		{
-			bool ok = false;
-			lock (_lock)
+			WithEnvironment(new _IRunnable_114(this));
+		}
+
+		private sealed class _IRunnable_114 : IRunnable
+		{
+			public _IRunnable_114(ObjectContainerBase _enclosing)
 			{
-				try
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				bool ok = false;
+				lock (this._enclosing._lock)
 				{
-					InitializeTransactions();
-					Initialize1(_config);
-					OpenImpl();
-					InitializePostOpen();
-					ok = true;
-				}
-				finally
-				{
-					if (!ok)
+					try
 					{
-						ShutdownObjectContainer();
+						this._enclosing.InitializeTransactions();
+						this._enclosing.Initialize1(this._enclosing._config);
+						this._enclosing.OpenImpl();
+						this._enclosing.InitializePostOpen();
+						ok = true;
+					}
+					finally
+					{
+						if (!ok)
+						{
+							this._enclosing.ShutdownObjectContainer();
+						}
 					}
 				}
 			}
+
+			private readonly ObjectContainerBase _enclosing;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		protected virtual void WithEnvironment(IRunnable runnable)
+		{
+			Environments.RunWith(_environment, runnable);
+		}
+
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		protected abstract void OpenImpl();
 
 		public virtual IActivationDepth DefaultActivationDepth(ClassMetadata classMetadata
@@ -237,8 +261,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="System.ArgumentNullException"></exception>
+		/// <exception cref="System.ArgumentException"></exception>
 		public void Bind(Transaction trans, object obj, long id)
 		{
 			lock (_lock)
@@ -329,7 +353,7 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public void CheckClosed()
 		{
 			if (_classCollection == null)
@@ -338,7 +362,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		protected void CheckReadOnly()
 		{
 			if (_config.IsReadOnly())
@@ -442,8 +466,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseReadOnlyException"></exception>
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public void Commit(Transaction trans)
 		{
 			lock (_lock)
@@ -546,7 +570,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public void Deactivate(Transaction trans, object obj, int depth)
 		{
 			lock (_lock)
@@ -592,8 +616,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseReadOnlyException"></exception>
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public void Delete(Transaction trans, object obj)
 		{
 			lock (_lock)
@@ -761,7 +785,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_619(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_628(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -783,9 +807,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_619 : IProcedure4
+		private sealed class _IProcedure4_628 : IProcedure4
 		{
-			public _IProcedure4_619(string fieldName, ByRef foundField)
+			public _IProcedure4_628(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -928,13 +952,13 @@ namespace Db4objects.Db4o.Internal
 				return QueryAllObjects(trans);
 			}
 			IQuery q = Query(trans);
-			q.Constrain(template);
+			q.Constrain(template).ByExample();
 			return ExecuteQuery((QQuery)q);
 		}
 
 		public abstract AbstractQueryResult QueryAllObjects(Transaction ta);
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public object TryGetByID(Transaction ta, long id)
 		{
 			try
@@ -952,8 +976,8 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="InvalidIDException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.InvalidIDException"></exception>
 		public object GetByID(Transaction ta, long id)
 		{
 			lock (_lock)
@@ -1149,11 +1173,6 @@ namespace Db4objects.Db4o.Internal
 			return _classCollection.ClassMetadataForReflectClass(claxx);
 		}
 
-		public ITypeHandler4 TypeHandlerForObject(object obj)
-		{
-			return TypeHandlerForReflectClass(ReflectorForObject(obj));
-		}
-
 		public ITypeHandler4 TypeHandlerForReflectClass(IReflectClass claxx)
 		{
 			if (HideClassForExternalUse(claxx))
@@ -1165,7 +1184,7 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			ITypeHandler4 typeHandler = _handlers.TypeHandlerForClass(claxx);
-			if (typeHandler != null)
+			if (Handlers4.HasID(typeHandler))
 			{
 				return typeHandler;
 			}
@@ -1174,8 +1193,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			// TODO: consider to return classMetadata
-			return classMetadata.TypeHandler();
+			return classMetadata;
 		}
 
 		// TODO: Some ReflectClass implementations could hold a 
@@ -1467,15 +1485,6 @@ namespace Db4objects.Db4o.Internal
 			return ClassMetadataForId(id);
 		}
 
-		public virtual int FieldHandlerIdForFieldHandler(IFieldHandler fieldHandler)
-		{
-			if (fieldHandler is ClassMetadata)
-			{
-				return ((ClassMetadata)fieldHandler).GetID();
-			}
-			return _handlers.FieldHandlerIdForFieldHandler(fieldHandler);
-		}
-
 		public virtual IFieldHandler FieldHandlerForClass(IReflectClass claxx)
 		{
 			if (HideClassForExternalUse(claxx))
@@ -1529,9 +1538,9 @@ namespace Db4objects.Db4o.Internal
 			new Message(this, msg);
 		}
 
-		public void NeedsUpdate(ClassMetadata a_yapClass)
+		public void NeedsUpdate(ClassMetadata classMetadata)
 		{
-			_pendingClassUpdates = new List4(_pendingClassUpdates, a_yapClass);
+			_pendingClassUpdates = new List4(_pendingClassUpdates, classMetadata);
 		}
 
 		public virtual long GenerateTimeStampId()
@@ -1541,7 +1550,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract int NewUserObject();
 
-		/// <exception cref="DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public object PeekPersisted(Transaction trans, object obj, IActivationDepth depth
 			, bool committed)
 		{
@@ -1662,7 +1671,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				trans = CheckTransaction(trans);
 				return GetNativeQueryHandler().Execute(Query(trans), predicate, comparator);
 			}
 		}
@@ -1679,14 +1687,14 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void RaiseVersion(long a_minimumVersion);
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public abstract void ReadBytes(byte[] a_bytes, int a_address, int a_length);
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public abstract void ReadBytes(byte[] bytes, int address, int addressOffset, int 
 			length);
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public ByteArrayBuffer BufferByAddress(int address, int length)
 		{
 			CheckAddress(address);
@@ -1696,7 +1704,7 @@ namespace Db4objects.Db4o.Internal
 			return reader;
 		}
 
-		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="System.ArgumentException"></exception>
 		private void CheckAddress(int address)
 		{
 			if (address <= 0)
@@ -1705,7 +1713,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public StatefulBuffer ReadWriterByAddress(Transaction a_trans, int address, int length
 			)
 		{
@@ -1878,15 +1886,15 @@ namespace Db4objects.Db4o.Internal
 			throw new NotSupportedException();
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public void Store(Transaction trans, object obj)
 		{
 			Store(trans, obj, Const4.Unspecified);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public int Store(Transaction trans, object obj, int depth)
 		{
 			lock (_lock)
@@ -1895,15 +1903,15 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public int StoreInternal(Transaction trans, object obj, bool checkJustSet)
 		{
 			return StoreInternal(trans, obj, Const4.Unspecified, checkJustSet);
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public virtual int StoreInternal(Transaction trans, object obj, int depth, bool checkJustSet
 			)
 		{
@@ -2361,7 +2369,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="Db4oException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oException"></exception>
 		private void CompleteTopLevelCall(Db4oException e)
 		{
 			CompleteTopLevelCall();

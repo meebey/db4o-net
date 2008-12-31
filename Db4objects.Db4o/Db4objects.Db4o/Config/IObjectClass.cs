@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Config
 {
@@ -39,7 +37,8 @@ namespace Db4objects.Db4o.Config
 		/// FormatterServices.GetUninitializedObject() on
 		/// the .NET framework (not available on CompactFramework).<br /><br />
 		/// This setting may also be set globally for all classes in
-		/// <see cref="IConfiguration.CallConstructors">IConfiguration.CallConstructors</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.CallConstructors">Db4objects.Db4o.Config.IConfiguration.CallConstructors
+		/// 	</see>
 		/// .<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
@@ -49,7 +48,8 @@ namespace Db4objects.Db4o.Config
 		/// - specify true, to request calling constructors, specify
 		/// false to request <b>not</b> calling constructors.
 		/// </param>
-		/// <seealso cref="IConfiguration.CallConstructors">IConfiguration.CallConstructors</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.CallConstructors">Db4objects.Db4o.Config.IConfiguration.CallConstructors
+		/// 	</seealso>
 		void CallConstructor(bool flag);
 
 		/// <summary>sets cascaded activation behaviour.</summary>
@@ -65,10 +65,13 @@ namespace Db4objects.Db4o.Config
 		/// Can be applied to an open ObjectContainer.<br /><br />
 		/// </remarks>
 		/// <param name="flag">whether activation is to be cascaded to member objects.</param>
-		/// <seealso cref="IObjectField.CascadeOnActivate">IObjectField.CascadeOnActivate</seealso>
-		/// <seealso cref="IObjectContainer.Activate">IObjectContainer.Activate</seealso>
-		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
-		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnActivate">Db4objects.Db4o.Config.IObjectField.CascadeOnActivate
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Activate">Db4objects.Db4o.IObjectContainer.Activate
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?
+		/// 	</seealso>
 		void CascadeOnActivate(bool flag);
 
 		/// <summary>sets cascaded delete behaviour.</summary>
@@ -78,13 +81,15 @@ namespace Db4objects.Db4o.Config
 		/// Setting cascadeOnDelete to true will result in the deletion of
 		/// all member objects of instances of this class, if they are
 		/// passed to
-		/// <see cref="IObjectContainer.Delete">IObjectContainer.Delete</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Delete">Db4objects.Db4o.IObjectContainer.Delete
+		/// 	</see>
 		/// .
 		/// <br /><br />
 		/// <b>Caution !</b><br />
 		/// This setting will also trigger deletion of old member objects, on
 		/// calls to
-		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
+		/// 	</see>
 		/// .<br /><br />
 		/// An example of the behaviour:<br />
 		/// <code>
@@ -105,9 +110,11 @@ namespace Db4objects.Db4o.Config
 		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether deletes are to be cascaded to member objects.</param>
-		/// <seealso cref="IObjectField.CascadeOnDelete">IObjectField.CascadeOnDelete</seealso>
-		/// <seealso cref="IObjectContainer.Delete">IObjectContainer.Delete</seealso>
-		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnDelete">Db4objects.Db4o.Config.IObjectField.CascadeOnDelete
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Delete">Db4objects.Db4o.IObjectContainer.Delete
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		void CascadeOnDelete(bool flag);
 
 		/// <summary>sets cascaded update behaviour.</summary>
@@ -117,7 +124,8 @@ namespace Db4objects.Db4o.Config
 		/// Setting cascadeOnUpdate to true will result in the update
 		/// of all member objects if a stored instance of this class is passed
 		/// to
-		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
+		/// 	</see>
 		/// .<br /><br />
 		/// The default setting is <b>false</b>.<br /><br />
 		/// In client-server environment this setting should be used on both
@@ -125,9 +133,11 @@ namespace Db4objects.Db4o.Config
 		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="flag">whether updates are to be cascaded to member objects.</param>
-		/// <seealso cref="IObjectField.CascadeOnUpdate">IObjectField.CascadeOnUpdate</seealso>
-		/// <seealso cref="IObjectContainer.Set">IObjectContainer.Set</seealso>
-		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Set">Db4objects.Db4o.IObjectContainer.Set
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		void CascadeOnUpdate(bool flag);
 
 		/// <summary>registers an attribute provider for special query behavior.</summary>
@@ -195,30 +205,34 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// sets the maximum activation depth to the desired value.
 		/// <br /><br />A class specific setting overrides the
-		/// <see cref="IConfiguration.ActivationDepth">global setting</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">global setting</see>
 		/// <br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
 		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the desired maximum activation depth</param>
-		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
-		/// <seealso cref="IObjectClass.CascadeOnActivate">IObjectClass.CascadeOnActivate</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnActivate">Db4objects.Db4o.Config.IObjectClass.CascadeOnActivate
+		/// 	</seealso>
 		void MaximumActivationDepth(int depth);
 
 		/// <summary>sets the minimum activation depth to the desired value.</summary>
 		/// <remarks>
 		/// sets the minimum activation depth to the desired value.
 		/// <br /><br />A class specific setting overrides the
-		/// <see cref="IConfiguration.ActivationDepth">global setting</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">global setting</see>
 		/// <br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
 		/// This setting can be applied to an open object container. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the desired minimum activation depth</param>
-		/// <seealso cref="IConfiguration.ActivationDepth">Why activation?</seealso>
-		/// <seealso cref="IObjectClass.CascadeOnActivate">IObjectClass.CascadeOnActivate</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnActivate">Db4objects.Db4o.Config.IObjectClass.CascadeOnActivate
+		/// 	</seealso>
 		void MinimumActivationDepth(int depth);
 
 		/// <summary>gets the configured minimum activation depth.</summary>
@@ -232,7 +246,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// returns an
-		/// <see cref="IObjectField">IObjectField</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectField">IObjectField</see>
 		/// object
 		/// to configure the specified field.
 		/// <br /><br />
@@ -240,7 +254,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="fieldName">the fieldname of the field to be configured.<br /><br /></param>
 		/// <returns>
 		/// an instance of an
-		/// <see cref="IObjectField">IObjectField</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectField">IObjectField</see>
 		/// object for configuration.
 		/// </returns>
 		IObjectField ObjectField(string fieldName);
@@ -319,7 +333,7 @@ namespace Db4objects.Db4o.Config
 		/// registers a translator for this class.
 		/// <br /><br />
 		/// <br /><br />The use of an
-		/// <see cref="IObjectTranslator">IObjectTranslator</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator">IObjectTranslator</see>
 		/// is not
 		/// compatible with the use of an
 		/// internal class ObjectMarshaller.<br /><br />
@@ -329,31 +343,38 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="translator">
 		/// this may be an
-		/// <see cref="IObjectTranslator">IObjectTranslator</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator">IObjectTranslator</see>
 		/// or an
-		/// <see cref="IObjectConstructor">IObjectConstructor</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectConstructor">IObjectConstructor</see>
 		/// </param>
-		/// <seealso cref="IObjectTranslator">IObjectTranslator</seealso>
-		/// <seealso cref="IObjectConstructor">IObjectConstructor</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectTranslator">Db4objects.Db4o.Config.IObjectTranslator
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectConstructor">Db4objects.Db4o.Config.IObjectConstructor
+		/// 	</seealso>
 		void Translate(IObjectTranslator translator);
 
 		/// <summary>specifies the updateDepth for this class.</summary>
 		/// <remarks>
 		/// specifies the updateDepth for this class.
 		/// <br /><br />see the documentation of
-		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
+		/// 	</see>
 		/// for further details.<br /><br />
 		/// The default setting is 0: Only the object passed to
-		/// <see cref="IObjectContainer.Store">IObjectContainer.Store</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
+		/// 	</see>
 		/// will be updated.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
 		/// </remarks>
 		/// <param name="depth">the depth of the desired update for this class.</param>
-		/// <seealso cref="IConfiguration.UpdateDepth">IConfiguration.UpdateDepth</seealso>
-		/// <seealso cref="IObjectClass.CascadeOnUpdate">IObjectClass.CascadeOnUpdate</seealso>
-		/// <seealso cref="IObjectField.CascadeOnUpdate">IObjectField.CascadeOnUpdate</seealso>
-		/// <seealso cref="IObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">Db4objects.Db4o.Config.IConfiguration.UpdateDepth
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		void UpdateDepth(int depth);
 	}
 }

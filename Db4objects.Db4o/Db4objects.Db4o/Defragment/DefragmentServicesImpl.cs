@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
-using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
@@ -93,7 +91,12 @@ namespace Db4objects.Db4o.Defragment
 			Config4Impl originalConfig = (Config4Impl)defragConfig.Db4oConfig();
 			Config4Impl sourceConfig = (Config4Impl)originalConfig.DeepClone(null);
 			sourceConfig.WeakReferences(false);
-			sourceConfig.Storage = new NonFlushingStorage(sourceConfig.Storage);
+			IStorage storage = sourceConfig.Storage;
+			if (defragConfig.ReadOnly())
+			{
+				storage = new NonFlushingStorage(storage);
+			}
+			sourceConfig.Storage = storage;
 			sourceConfig.ReadOnly(defragConfig.ReadOnly());
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
@@ -124,7 +127,7 @@ namespace Db4objects.Db4o.Defragment
 			return (mapped != 0 ? mapped : defaultID);
 		}
 
-		/// <exception cref="MappingNotFoundException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
 		public virtual int MappedID(int oldID)
 		{
 			int mapped = InternalMappedID(oldID, false);
@@ -135,7 +138,7 @@ namespace Db4objects.Db4o.Defragment
 			return mapped;
 		}
 
-		/// <exception cref="MappingNotFoundException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
 		public virtual int MappedID(int id, bool lenient)
 		{
 			if (id == 0)
@@ -152,7 +155,7 @@ namespace Db4objects.Db4o.Defragment
 			return mapped;
 		}
 
-		/// <exception cref="MappingNotFoundException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
 		private int InternalMappedID(int oldID, bool lenient)
 		{
 			if (oldID == 0)
@@ -185,13 +188,13 @@ namespace Db4objects.Db4o.Defragment
 			return BufferByAddress(selector, slot.Address(), slot.Length());
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual ByteArrayBuffer SourceBufferByAddress(int address, int length)
 		{
 			return BufferByAddress(Sourcedb, address, length);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual ByteArrayBuffer TargetBufferByAddress(int address, int length)
 		{
 			return BufferByAddress(Targetdb, address, length);
@@ -203,7 +206,7 @@ namespace Db4objects.Db4o.Defragment
 			return selector.Db(this).BufferByAddress(address, length);
 		}
 
-		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="System.ArgumentException"></exception>
 		public virtual StatefulBuffer TargetStatefulBufferByAddress(int address, int length
 			)
 		{
@@ -260,7 +263,7 @@ namespace Db4objects.Db4o.Defragment
 			return _sourceDb.ClassCollection().GetID();
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public static void TargetClassCollectionID(string file, int id)
 		{
 			RandomAccessFile raf = new RandomAccessFile(file, "rw");
@@ -316,12 +319,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_235(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_239(this, collector));
 		}
 
-		private sealed class _IVisitor4_235 : IVisitor4
+		private sealed class _IVisitor4_239 : IVisitor4
 		{
-			public _IVisitor4_235(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_239(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -441,16 +444,16 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata curClazz = clazz;
 			while (!hasFieldIndex.value && curClazz != null)
 			{
-				curClazz.ForEachDeclaredField(new _IProcedure4_331(hasFieldIndex));
+				curClazz.ForEachDeclaredField(new _IProcedure4_335(hasFieldIndex));
 				curClazz = curClazz.GetAncestor();
 			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_331 : IProcedure4
+		private sealed class _IProcedure4_335 : IProcedure4
 		{
-			public _IProcedure4_331(BooleanByRef hasFieldIndex)
+			public _IProcedure4_335(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}

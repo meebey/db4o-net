@@ -29,14 +29,14 @@ namespace Db4oUnit
 			_failures.Add(failure);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public override void Print(TextWriter writer)
 		{
 			PrintSummary(writer);
 			PrintDetails(writer);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void PrintSummary(TextWriter writer)
 		{
 			int index = 1;
@@ -51,7 +51,7 @@ namespace Db4oUnit
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		private void PrintDetails(TextWriter writer)
 		{
 			int index = 1;

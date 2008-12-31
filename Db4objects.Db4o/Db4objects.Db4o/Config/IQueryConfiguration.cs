@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Config
 {
@@ -23,32 +21,35 @@ namespace Db4objects.Db4o.Config
 		/// - <b>Snapshot</b> mode<br />
 		/// - <b>Lazy</b> mode<br /><br />
 		/// In <b>Immediate</b> mode, a query will be fully evaluated when
-		/// <see cref="IQuery.Execute">IQuery.Execute</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// 	</see>
 		/// 
 		/// is called. The complete
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// of all matching IDs is
 		/// generated immediately.<br /><br />
 		/// In <b>Snapshot</b> mode, the
-		/// <see cref="IQuery.Execute">IQuery.Execute</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// 	</see>
 		/// call will trigger all index
 		/// processing immediately. A snapshot of the current state of all relevant indexes
 		/// is taken for further processing by the SODA query processor. All non-indexed
 		/// constraints and all evaluations will be run when the user application iterates
 		/// through the resulting
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// .<br /><br />
 		/// In <b>Lazy</b> mode, the
-		/// <see cref="IQuery.Execute">IQuery.Execute</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// 	</see>
 		/// call will only create an Iterator
 		/// against the best index found. Further query processing (including all index
 		/// processing) will happen when the user application iterates through the resulting
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// .<br /><br />
 		/// Advantages and disadvantages of the individual modes:<br /><br />
 		/// <b>Immediate</b> mode<br />
 		/// <b>+</b> If the query is intended to iterate through the entire resulting
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// ,
 		/// this mode will be slightly faster than the others.<br />
 		/// <b>+</b> The query will process without intermediate side effects from changed
@@ -67,13 +68,14 @@ namespace Db4objects.Db4o.Config
 		/// be used on the server side.<br /><br />
 		/// <b>Lazy</b> mode<br />
 		/// <b>+</b> The call to
-		/// <see cref="IQuery.Execute">IQuery.Execute</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// 	</see>
 		/// will return very fast. First results can be
 		/// made available to the application before the query is fully processed.<br />
 		/// <b>+</b> A query will consume hardly any memory at all because no intermediate ID
 		/// representation is ever created.<br />
 		/// <b>-</b> Lazy queries check candidates when iterating through the resulting
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// .
 		/// In doing so the query processor takes changes into account that may have happened
 		/// since the Query#execute()call: committed changes from other transactions, <b>and
@@ -81,21 +83,21 @@ namespace Db4objects.Db4o.Config
 		/// of possible side effects. The underlying index may have changed. Objects themselves
 		/// may have changed in the meanwhile. There even is the chance of creating an endless
 		/// loop, if the caller of the iterates through the
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// and changes each
 		/// object in a way that it is placed at the end of the index: The same objects can be
 		/// revisited over and over. <b>In lazy mode it can make sense to work in a way one would
 		/// work with collections to avoid concurrent modification exceptions.</b> For instance one
 		/// could iterate through the
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// first and store all objects to a temporary
 		/// other collection representation before changing objects and storing them back to db4o.<br /><br />
 		/// Note: Some method calls against a lazy
-		/// <see cref="IObjectSet">IObjectSet</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// will require the query
 		/// processor to create a snapshot or to evaluate the query fully. An example of such
 		/// a call is
-		/// <see cref="IObjectSet.Count">IObjectSet.Count</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet.Count">Db4objects.Db4o.IObjectSet.Count</see>
 		/// .
 		/// <br /><br />
 		/// The default query evaluation mode is <b>Immediate</b> mode.
@@ -107,18 +109,23 @@ namespace Db4objects.Db4o.Config
 		/// <b>Snapshot</b> mode to avoid side effects from other transactions.
 		/// <br /><br />
 		/// To change the evaluationMode, pass any of the three static
-		/// <see cref="QueryEvaluationMode">QueryEvaluationMode</see>
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode">Db4objects.Db4o.Config.QueryEvaluationMode
+		/// 	</see>
 		/// constants from the
-		/// <see cref="QueryEvaluationMode">QueryEvaluationMode</see>
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode">Db4objects.Db4o.Config.QueryEvaluationMode
+		/// 	</see>
 		/// class to this method:<br />
 		/// -
-		/// <see cref="QueryEvaluationMode.Immediate">QueryEvaluationMode.Immediate</see>
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.Immediate">Db4objects.Db4o.Config.QueryEvaluationMode.Immediate
+		/// 	</see>
 		/// <br />
 		/// -
-		/// <see cref="QueryEvaluationMode.Snapshot">QueryEvaluationMode.Snapshot</see>
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.Snapshot">Db4objects.Db4o.Config.QueryEvaluationMode.Snapshot
+		/// 	</see>
 		/// <br />
 		/// -
-		/// <see cref="QueryEvaluationMode.Lazy">QueryEvaluationMode.Lazy</see>
+		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.Lazy">Db4objects.Db4o.Config.QueryEvaluationMode.Lazy
+		/// 	</see>
 		/// <br /><br />
 		/// This setting must be issued from the client side.
 		/// </remarks>

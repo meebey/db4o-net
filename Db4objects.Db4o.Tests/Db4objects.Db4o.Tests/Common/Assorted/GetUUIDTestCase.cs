@@ -18,13 +18,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			new GetUUIDTestCase().RunAll();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.GenerateUUIDs(ConfigScope.Globally);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			Store(new GetUUIDTestCase.Item("Item to be deleted"));

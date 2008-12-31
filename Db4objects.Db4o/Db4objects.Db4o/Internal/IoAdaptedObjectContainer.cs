@@ -9,6 +9,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -19,27 +20,24 @@ namespace Db4objects.Db4o.Internal
 
 		private BlockAwareBin _file;
 
-		private BlockAwareBin _timerFile;
-
 		private volatile BlockAwareBin _backupFile;
 
 		private object _fileLock;
 
 		private readonly IFreespaceFiller _freespaceFiller;
 
-		/// <exception cref="OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		internal IoAdaptedObjectContainer(IConfiguration config, string fileName) : base(
 			config, null)
 		{
-			//This is necessary as a separate File because access is not synchronized with access for normal data read/write so the seek pointer can get lost.
 			_fileLock = new object();
 			_fileName = fileName;
 			_freespaceFiller = CreateFreespaceFiller();
 			Open();
 		}
 
-		/// <exception cref="OldFormatException"></exception>
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		protected sealed override void OpenImpl()
 		{
 			IStorage storage = ConfigImpl().Storage;
@@ -52,11 +50,16 @@ namespace Db4objects.Db4o.Internal
 			}
 			bool readOnly = ConfigImpl().IsReadOnly();
 			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!readOnly);
-			_file = new BlockAwareBin(storage.Open(FileName(), lockFile, 0, readOnly));
 			if (NeedsLockFileThread())
 			{
-				// FIXME: with a SynchronizedStorage or something
-				_timerFile = new BlockAwareBin(storage.Open(FileName(), false, 0, false));
+				IBin fileBin = storage.Open(new BinConfiguration(FileName(), false, 0, false));
+				IBin synchronizedBin = new SynchronizedBin(fileBin);
+				_file = new BlockAwareBin(synchronizedBin);
+			}
+			else
+			{
+				_file = new BlockAwareBin(storage.Open(new BinConfiguration(FileName(), lockFile, 
+					0, readOnly)));
 			}
 			if (isNew)
 			{
@@ -74,51 +77,64 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseClosedException"></exception>
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Backup(string path)
 		{
-			lock (_lock)
+			WithEnvironment(new _IRunnable_71(this, path));
+		}
+
+		private sealed class _IRunnable_71 : IRunnable
+		{
+			public _IRunnable_71(IoAdaptedObjectContainer _enclosing, string path)
 			{
-				CheckClosed();
-				if (_backupFile != null)
-				{
-					throw new BackupInProgressException();
-				}
-				_backupFile = new BlockAwareBin(ConfigImpl().Storage.Open(path, true, _file.Length
-					(), false));
-				_backupFile.BlockSize(BlockSize());
+				this._enclosing = _enclosing;
+				this.path = path;
 			}
-			long pos = 0;
-			byte[] buffer = new byte[8192];
-			while (true)
+
+			public void Run()
 			{
-				lock (_lock)
+				lock (this._enclosing._lock)
 				{
-					int read = _file.Read(pos, buffer);
-					if (read <= 0)
+					this._enclosing.CheckClosed();
+					if (this._enclosing._backupFile != null)
 					{
-						break;
+						throw new BackupInProgressException();
 					}
-					_backupFile.Write(pos, buffer, read);
-					pos += read;
+					this._enclosing._backupFile = new BlockAwareBin(this._enclosing.ConfigImpl().Storage
+						.Open(new BinConfiguration(path, true, this._enclosing._file.Length(), false)));
+				}
+				long pos = 0;
+				byte[] buffer = new byte[8192];
+				while (true)
+				{
+					lock (this._enclosing._lock)
+					{
+						int read = this._enclosing._file.Read(pos, buffer);
+						if (read <= 0)
+						{
+							break;
+						}
+						this._enclosing._backupFile.Write(pos, buffer, read);
+						pos += read;
+					}
+				}
+				Cool.SleepIgnoringInterruption(1);
+				lock (this._enclosing._lock)
+				{
+					this._enclosing._backupFile.Close();
+					this._enclosing._backupFile = null;
 				}
 			}
-			Cool.SleepIgnoringInterruption(1);
-			lock (_lock)
-			{
-				_backupFile.Close();
-				_backupFile = null;
-			}
+
+			private readonly IoAdaptedObjectContainer _enclosing;
+
+			private readonly string path;
 		}
 
 		public override void BlockSize(int size)
 		{
 			_file.BlockSize(size);
-			if (_timerFile != null)
-			{
-				_timerFile.BlockSize(size);
-			}
 		}
 
 		public override byte BlockSize()
@@ -135,9 +151,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_fileLock)
 			{
-				CloseDatabaseFile();
-				CloseFileHeader();
-				CloseTimerFile();
+				try
+				{
+					CloseFileHeader();
+				}
+				finally
+				{
+					CloseDatabaseFile();
+				}
 			}
 		}
 
@@ -174,21 +195,6 @@ namespace Db4objects.Db4o.Internal
 		protected override void CloseSystemTransaction()
 		{
 			((LocalTransaction)SystemTransaction()).Close();
-		}
-
-		private void CloseTimerFile()
-		{
-			try
-			{
-				if (_timerFile != null)
-				{
-					_timerFile.Close();
-				}
-			}
-			finally
-			{
-				_timerFile = null;
-			}
 		}
 
 		public override void Commit1(Transaction trans)
@@ -268,13 +274,13 @@ namespace Db4objects.Db4o.Internal
 			return _fileName;
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void ReadBytes(byte[] bytes, int address, int length)
 		{
 			ReadBytes(bytes, address, 0, length);
 		}
 
-		/// <exception cref="Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
 			length)
 		{
@@ -294,7 +300,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public override void Reserve(int byteCount)
 		{
 			CheckReadOnly();
@@ -336,17 +342,6 @@ namespace Db4objects.Db4o.Internal
 		public override void SyncFiles()
 		{
 			_file.Sync();
-			if (_timerFile != null)
-			{
-				// _timerFile can be set to null here by other thread
-				try
-				{
-					_timerFile.Sync();
-				}
-				catch (Exception)
-				{
-				}
-			}
 		}
 
 		public override void WriteBytes(ByteArrayBuffer buffer, int blockedAddress, int addressOffset
@@ -414,18 +409,17 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual BlockAwareBin TimerFile()
 		{
-			return _timerFile;
+			return _file;
 		}
 
 		private IFreespaceFiller CreateFreespaceFiller()
 		{
-			IFreespaceFiller freespaceFiller = Config().FreespaceFiller();
-			return freespaceFiller;
+			return Config().FreespaceFiller();
 		}
 
 		private class XByteFreespaceFiller : IFreespaceFiller
 		{
-			/// <exception cref="IOException"></exception>
+			/// <exception cref="System.IO.IOException"></exception>
 			public virtual void Fill(BlockAwareBinWindow io)
 			{
 				io.Write(0, XBytes(io.Length()));

@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			new IndexCreateDropTestCase().RunSolo();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			// TODO
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			AssertQueryResults();
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			AssertQueryResults(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertQueryResults(bool indexed)
 		{
 			Indexed(indexed);

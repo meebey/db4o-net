@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		/// <exception cref="FieldIndexException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		public abstract override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot
 			);
 

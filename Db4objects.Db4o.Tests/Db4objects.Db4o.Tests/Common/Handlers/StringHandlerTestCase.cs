@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
@@ -77,7 +76,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.AreEqual("one", str);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStoreObject()
 		{
 			DoTestStoreObject(new StringHandlerTestCase.Item("one"));

@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 
 		private Db4oUUID countryUUID;
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new TransparentActivationSupport());
@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 			Store(customer);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
 			object customer = ((Customer)RetrieveOnlyInstance(typeof(Customer)));
@@ -66,14 +66,14 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 			Reopen();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestRetrieveNonActivatable()
 		{
 			CheckGraphActivation((Customer)((Customer)RetrieveOnlyInstance(typeof(Customer)))
 				);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		public virtual void TestRetrieveActivatable()
 		{
 			CheckGraphActivation((Country)((Country)RetrieveOnlyInstance(typeof(Country))));
@@ -268,7 +268,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 				[0], country });
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void CheckGraphActivation(Customer customer)
 		{
 			AssertIsActivated(customer);
@@ -281,7 +281,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 			CheckGraphActivation(address._country);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void CheckGraphActivation(Country country)
 		{
 			AssertIsDeactivated(country);
@@ -405,19 +405,19 @@ namespace Db4objects.Db4o.Tests.Common.TA.Sample
 			return claxx.GetDeclaredFields();
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertIsNull(object obj, string fieldName)
 		{
 			Assert.IsTrue(FieldIsNull(obj, fieldName));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private void AssertIsNotNull(object obj, string fieldName)
 		{
 			Assert.IsFalse(FieldIsNull(obj, fieldName));
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		private bool FieldIsNull(object obj, string fieldName)
 		{
 			Type clazz = obj.GetType();

@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 			config.ObjectClass(typeof(COR57TestCase.Base)).ObjectField("name").Indexed(true);
 		}
 
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
 			for (int i = 0; i < 5; i++)

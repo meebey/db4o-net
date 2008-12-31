@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Config
@@ -15,10 +14,14 @@ namespace Db4objects.Db4o.Config
 	/// This exception is thrown when a global configuration
 	/// setting is attempted on an open object container.
 	/// </remarks>
-	/// <seealso cref="IConfiguration.BlockSize">IConfiguration.BlockSize</seealso>
-	/// <seealso cref="IConfiguration.Encrypt">IConfiguration.Encrypt</seealso>
-	/// <seealso cref="IConfiguration.Io">IConfiguration.Io</seealso>
-	/// <seealso cref="IConfiguration.Password">IConfiguration.Password</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.BlockSize">Db4objects.Db4o.Config.IConfiguration.BlockSize
+	/// 	</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">Db4objects.Db4o.Config.IConfiguration.Encrypt
+	/// 	</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Io">Db4objects.Db4o.Config.IConfiguration.Io
+	/// 	</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
+	/// 	</seealso>
 	[System.Serializable]
 	public class GlobalOnlyConfigException : Db4oException
 	{

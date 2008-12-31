@@ -8,7 +8,8 @@ namespace Db4objects.Db4o.Events
 {
 	/// <summary>Arguments for commit time related events.</summary>
 	/// <remarks>Arguments for commit time related events.</remarks>
-	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
+	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
+	/// 	</seealso>
 	public class CommitEventArgs : TransactionalEventArgs
 	{
 		private readonly CallbackObjectInfoCollections _collections;

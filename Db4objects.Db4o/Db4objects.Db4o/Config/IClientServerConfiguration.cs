@@ -64,11 +64,11 @@ namespace Db4objects.Db4o.Config
 		/// Default value: 600000ms (10 minutes)<br />
 		/// <br />
 		/// It is recommended to use the same values for
-		/// <see cref="IClientServerConfiguration.TimeoutClientSocket">IClientServerConfiguration.TimeoutClientSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutClientSocket"
+		/// 	>Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutClientSocket</see>
 		/// and
-		/// <see cref="IClientServerConfiguration.TimeoutServerSocket">IClientServerConfiguration.TimeoutServerSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutServerSocket"
+		/// 	>Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutServerSocket</see>
 		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />
@@ -97,11 +97,11 @@ namespace Db4objects.Db4o.Config
 		/// Default value: 600000ms (10 minutes)<br />
 		/// <br />
 		/// It is recommended to use the same values for
-		/// <see cref="IClientServerConfiguration.TimeoutClientSocket">IClientServerConfiguration.TimeoutClientSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutClientSocket"
+		/// 	>Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutClientSocket</see>
 		/// and
-		/// <see cref="IClientServerConfiguration.TimeoutServerSocket">IClientServerConfiguration.TimeoutServerSocket
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutServerSocket"
+		/// 	>Db4objects.Db4o.Config.IClientServerConfiguration.TimeoutServerSocket</see>
 		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />

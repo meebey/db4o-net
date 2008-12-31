@@ -4,6 +4,7 @@ using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
 {
+	/// <exclude></exclude>
 	public class SynchronizedBin : Db4objects.Db4o.IO.BinDecorator
 	{
 		public SynchronizedBin(IBin bin) : base(bin)

@@ -7,7 +7,6 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
@@ -164,8 +163,8 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec WeakReferencesKey = new KeySpec(true);
 
-		private static readonly KeySpec StorageFactoryKey = new KeySpec(new FileStorage()
-			);
+		private static readonly KeySpec StorageFactoryKey = new KeySpec(new CachingStorage
+			(new FileStorage()));
 
 		private static readonly KeySpec AliasesKey = new KeySpec(null);
 
@@ -209,11 +208,13 @@ namespace Db4objects.Db4o.Internal
 
 		/// <summary>
 		/// Returns an iterator for all
-		/// <see cref="IConfigurationItem">IConfigurationItem</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfigurationItem">Db4objects.Db4o.Config.IConfigurationItem
+		/// 	</see>
 		/// instances
 		/// added.
 		/// </summary>
-		/// <seealso cref="Config4Impl.Add">Config4Impl.Add</seealso>
+		/// <seealso cref="Db4objects.Db4o.Internal.Config4Impl.Add">Db4objects.Db4o.Internal.Config4Impl.Add
+		/// 	</seealso>
 		/// <returns>the iterator</returns>
 		public IEnumerator ConfigurationItemsIterator()
 		{
@@ -394,7 +395,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(EncryptKey, false);
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		internal void EnsureDirExists(string path)
 		{
 			Sharpen.IO.File file = new Sharpen.IO.File(path);
@@ -623,7 +624,7 @@ namespace Db4objects.Db4o.Internal
 			renameCollection.Add(a_rename);
 		}
 
-		/// <exception cref="DatabaseReadOnlyException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public void ReserveStorageSpace(long byteCount)
 		{
 			int reservedStorageSpace = (int)byteCount;
@@ -647,7 +648,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		/// <exception cref="IOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public void SetBlobPath(string path)
 		{
 			EnsureDirExists(path);
