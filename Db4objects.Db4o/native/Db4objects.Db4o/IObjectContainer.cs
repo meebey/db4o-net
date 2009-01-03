@@ -48,20 +48,19 @@ namespace Db4objects.Db4o
 		/// but deactivated, their fields will be null.
 		/// The activation depth of individual classes can be overruled
 		/// with the methods
-		/// <see cref="Db4objects.Db4o.Config.ObjectClass.MaximumActivationDepth">MaximumActivationDepth()
+		/// <see cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">MaximumActivationDepth()
 		/// 	</see>
 		/// and
-		/// <see cref="Db4objects.Db4o.Config.ObjectClass.MinimumActivationDepth">MinimumActivationDepth()
+		/// <see cref="Db4objects.Db4o.Config.IObjectClass.MinimumActivationDepth">MinimumActivationDepth()
 		/// 	</see>
 		/// in the
-		/// <see cref="Db4objects.Db4o.Config.ObjectClass">ObjectClass interface</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectClass">ObjectClass interface</see>
 		/// .<br /><br />
-		/// A successful call to activate triggers the callback method
-		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnActivate">objectOnActivate</see>
+		/// A successful call to activate triggers Activating and Activated callback methods,
 		/// which can be used for cascaded activation.<br /><br />
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
-		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		/// <param name="obj">the object to be activated.</param>
 		/// <param name="depth">
 		/// the member
@@ -76,7 +75,7 @@ namespace Db4objects.Db4o
 		/// <br /><br />A call to Close() automatically performs a
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Commit">Commit()</see>
 		/// .
-		/// <br /><br />Note that every session opened with Db4o.OpenFile() requires one
+		/// <br /><br />Note that every session opened with Db4oFactory.OpenFile() requires one
 		/// Close()call, even if the same filename was used multiple times.<br /><br />
 		/// Use <code>while(!Close()){}</code> to kill all sessions using this container.<br /><br />
 		/// </remarks>
@@ -99,19 +98,16 @@ namespace Db4objects.Db4o
 		/// <remarks>
 		/// deactivates a stored object by setting all members to <code>NULL</code>.
 		/// <br />Primitive types will be set to their default values.
-		/// <br /><br /><b>Examples: ../com/db4o/samples/activate.</b><br /><br />
 		/// Calls to this method save memory.
 		/// The method has no effect, if the passed object is not stored in the
 		/// <code>IObjectContainer</code>.<br /><br />
-		/// <code>Deactivate()</code> triggers the callback method
-		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnDeactivate">objectOnDeactivate</see>
-		/// .
+		/// <code>Deactivate()</code> triggers Deactivating and Deactivated callbacks.
 		/// <br /><br />
 		/// Be aware that calling this method with a depth parameter greater than
 		/// 1 sets members on member objects to null. This may have side effects
 		/// in other places of the application.<br /><br />
 		/// </remarks>
-		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
 		/// <param name="obj">the object to be deactivated.</param>
 		/// <param name="depth">
@@ -130,24 +126,23 @@ namespace Db4objects.Db4o
 		/// and array member types are destroyed.
 		/// <br /><br />Object members of the passed object remain untouched, unless
 		/// cascaded deletes are
-		/// <see cref="Db4objects.Db4o.Config.ObjectClass.CascadeOnDelete">configured for the class</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnDelete">configured for the class</see>
 		/// or for
-		/// <see cref="Db4objects.Db4o.Config.ObjectField.CascadeOnDelete">one of the member fields</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectField.CascadeOnDelete">one of the member fields</see>
 		/// .
 		/// <br /><br />The method has no effect, if
 		/// the passed object is not stored in the <code>IObjectContainer</code>.
 		/// <br /><br />A subsequent call to
-		/// <code>Set()</code> with the same object newly stores the object
+		/// <code>Store()</code> with the same object newly stores the object
 		/// to the <code>IObjectContainer</code>.<br /><br />
-		/// <code>Delete()</code> triggers the callback method
-		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnDelete">objectOnDelete</see>
+		/// <code>Delete()</code> triggers Deleting and Deleted callbacks,
 		/// which can be also used for cascaded deletes.<br /><br />
 		/// </remarks>
-		/// <seealso cref="Db4objects.Db4o.Config.ObjectClass.CascadeOnDelete">Db4objects.Db4o.Config.ObjectClass.CascadeOnDelete
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnDelete">Db4objects.Db4o.Config.IObjectClass.CascadeOnDelete
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.ObjectField.CascadeOnDelete">Db4objects.Db4o.Config.ObjectField.CascadeOnDelete
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnDelete">Db4objects.Db4o.Config.IObjectField.CascadeOnDelete
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		/// <param name="obj">
 		/// the object to be deleted from the
 		/// <code>IObjectContainer</code>.<br />
@@ -176,12 +171,12 @@ namespace Db4objects.Db4o
 		/// template object.<br /><br />
 		/// Calling <code>Get(NULL)</code> returns all objects stored in the
 		/// <code>IObjectContainer</code>.<br /><br /><br />
-		/// <b>Query IEvaluation</b>
+		/// <b>Query Evaluation</b>
 		/// <br />All non-null members of the template object are compared against
 		/// all stored objects of the same class.
 		/// Primitive type members are ignored if they are 0 or false respectively.
 		/// <br /><br />Arrays and all supported <code>Collection</code> classes are
-		/// evaluated for containment. Differences in <code>length/Size()</code> are
+		/// evaluated for containment. Differences in <code>Length/Count/Size()</code> are
 		/// ignored.
 		/// <br /><br />Consult the documentation of the IConfiguration package to
 		/// configure class-specific behaviour.<br /><br /><br />
@@ -194,16 +189,14 @@ namespace Db4objects.Db4o
 		/// may be configured
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">globally</see>
 		/// or
-		/// <see cref="Db4objects.Db4o.Config.ObjectClass">individually for classes</see>
+		/// <see cref="Db4objects.Db4o.Config.IObjectClass">individually for classes</see>
 		/// .
 		/// <br /><br />
 		/// db4o keeps track of all instantiatied objects. Queries will return
 		/// references to these objects instead of instantiating them a second time.
 		/// <br /><br />
-		/// Objects newly activated by <code>Get()</code> can respond to the callback
-		/// method
-		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnActivate">objectOnActivate</see>
-		/// .
+		/// Objects newly activated by <code>Get()</code> can respond to the Activating callback
+		/// method.
 		/// <br /><br />
 		/// </remarks>
 		/// <param name="template">object to be used as an example to find all matching objects.<br /><br />
@@ -214,26 +207,26 @@ namespace Db4objects.Db4o
 		/// containing all found objects.<br /><br />
 		/// </returns>
 		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
-		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
         [System.ObsoleteAttribute(@"Use QueryByExample")]
 		Db4objects.Db4o.IObjectSet Get(object template);
 
         /// <summary>Query-By-Example interface to retrieve objects.</summary>
         /// <remarks>
         /// Query-By-Example interface to retrieve objects.
-        /// <br /><br /><code>Get()</code> creates an
+        /// <br /><br /><code>QueryByExample()</code> creates an
         /// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
         /// containing
         /// all objects in the <code>IObjectContainer</code> that match the passed
         /// template object.<br /><br />
-        /// Calling <code>Get(NULL)</code> returns all objects stored in the
+        /// Calling <code>QueryByExample(null)</code> returns all objects stored in the
         /// <code>IObjectContainer</code>.<br /><br /><br />
-        /// <b>Query IEvaluation</b>
+        /// <b>Query Evaluation</b>
         /// <br />All non-null members of the template object are compared against
         /// all stored objects of the same class.
         /// Primitive type members are ignored if they are 0 or false respectively.
         /// <br /><br />Arrays and all supported <code>Collection</code> classes are
-        /// evaluated for containment. Differences in <code>length/Size()</code> are
+        /// evaluated for containment. Differences in <code>Length/Count/Size()</code> are
         /// ignored.
         /// <br /><br />Consult the documentation of the IConfiguration package to
         /// configure class-specific behaviour.<br /><br /><br />
@@ -246,16 +239,14 @@ namespace Db4objects.Db4o
         /// may be configured
         /// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">globally</see>
         /// or
-        /// <see cref="Db4objects.Db4o.Config.ObjectClass">individually for classes</see>
+        /// <see cref="Db4objects.Db4o.Config.IObjectClass">individually for classes</see>
         /// .
         /// <br /><br />
         /// db4o keeps track of all instantiatied objects. Queries will return
         /// references to these objects instead of instantiating them a second time.
         /// <br /><br />
-        /// Objects newly activated by <code>Get()</code> can respond to the callback
-        /// method
-        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnActivate">objectOnActivate</see>
-        /// .
+        /// Objects newly activated by <code>QueryByExample()</code> can respond to the Activating callback
+        /// method.
         /// <br /><br />
         /// </remarks>
         /// <param name="template">object to be used as an example to find all matching objects.<br /><br />
@@ -266,19 +257,19 @@ namespace Db4objects.Db4o
         /// containing all found objects.<br /><br />
         /// </returns>
         /// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">Why activation?</seealso>
-        /// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+        /// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
         Db4objects.Db4o.IObjectSet QueryByExample(object template);
 
 
 		/// <summary>
 		/// creates a new SODA
-		/// <see cref="Db4objects.Db4o.Query.IQuery">IQuery</see>
+		/// <see cref="Db4objects.Db4o.Query.IQuery">Query</see>
 		/// .
 		/// <br /><br />
 		/// Use
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Get">Get(Object template)</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.QueryByExample">QueryByExample(Object template)</see>
 		/// for simple Query-By-Example.<br /><br />
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Query">Native queries</see>
+		/// Linq queries 
 		/// are the recommended main db4o query
 		/// interface.
 		/// <br /><br />
@@ -307,69 +298,18 @@ namespace Db4objects.Db4o
 		/// db4o will  attempt to optimize native query expressions and execute them
 		/// against indexes and without instantiating actual objects, where this is
 		/// possible.<br /><br />
-		/// The syntax of the enclosing object for the native query expression varies,
-		/// depending on the language version used. Here are some examples,
-		/// how a simple native query will look like in some of the programming languages
-		/// and dialects that db4o supports:<br /><br />
+		/// Example:<br /><br />
 		/// <code>
-		/// <b>// C# .NET 2.0</b><br />
+		/// <br />
 		/// IList &lt;Cat&gt; cats = db.Query &lt;Cat&gt; (delegate(Cat cat) {<br />
 		/// &#160;&#160;&#160;return cat.Name == "Occam";<br />
 		/// });<br />
 		/// <br />
-		/// <br />
-		/// <b>// Java JDK 5</b><br />
-		/// List &lt;Cat&gt; cats = db.Query(new Predicate&lt;Cat&gt;() {<br />
-		/// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-		/// &#160;&#160;&#160;&#160;&#160;&#160;return cat.GetName().Equals("Occam");<br />
-		/// &#160;&#160;&#160;}<br />
-		/// });<br />
-		/// <br />
-		/// <br />
-		/// <b>// Java JDK 1.2 to 1.4</b><br />
-		/// List cats = db.Query(new Predicate() {<br />
-		/// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-		/// &#160;&#160;&#160;&#160;&#160;&#160;return cat.GetName().Equals("Occam");<br />
-		/// &#160;&#160;&#160;}<br />
-		/// });<br />
-		/// <br />
-		/// <br />
-		/// <b>// Java JDK 1.1</b><br />
-		/// IObjectSet cats = db.Query(new CatOccam());<br />
-		/// <br />
-		/// public static class CatOccam extends Predicate {<br />
-		/// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-		/// &#160;&#160;&#160;&#160;&#160;&#160;return cat.GetName().Equals("Occam");<br />
-		/// &#160;&#160;&#160;}<br />
-		/// });<br />
-		/// <br />
-		/// <br />
-		/// <b>// C# .NET 1.1</b><br />
-		/// IList cats = db.Query(new CatOccam());<br />
-		/// <br />
-		/// public class CatOccam : Predicate {<br />
-		/// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-		/// &#160;&#160;&#160;&#160;&#160;&#160;return cat.Name == "Occam";<br />
-		/// &#160;&#160;&#160;}<br />
-		/// });<br />
-		/// </code>
-		/// <br />
 		/// Summing up the above:<br />
-		/// In order to run a Native Query, you can<br />
-		/// - use the delegate notation for .NET 2.0.<br />
-		/// - extend the Predicate class for all other language dialects<br /><br />
-		/// A class that extends Predicate is required to
-		/// implement the #Match() / #Match() method, following the native query
-		/// conventions:<br />
-		/// - The name of the method is "#Match()" (Java) / "#Match()" (.NET).<br />
-		/// - The method must be public public.<br />
-		/// - The method returns a boolean.<br />
-		/// - The method takes one parameter.<br />
-		/// - The Type (.NET) / Class (Java) of the parameter specifies the extent.<br />
-		/// - For all instances of the extent that are to be included into the
-		/// resultset of the query, the match method should return true. For all
-		/// instances that are not to be included, the match method should return
-		/// false.<br /><br />
+		/// In order to run a Native Query, you can use the delegate notation 
+	        /// with a delegate method taking the extend type as a parameter and 
+		/// returning bool. True is returned for the objects that are to be included in the result.<br />
+		/// <br /><br />
 		/// </remarks>
 		/// <param name="predicate">
 		/// the
@@ -475,14 +415,9 @@ namespace Db4objects.Db4o
 		/// or in
 		/// <see cref="Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">one of the member fields</see>
 		/// .
-		/// <br /><br /><b>Examples: ../com/db4o/samples/update.</b><br /><br />
-		/// Depending if the passed object is newly stored or updated, the
-		/// callback method
-		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnNew">objectOnNew</see>
-		/// or
-		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnUpdate">objectOnUpdate</see>
-		/// is triggered.
-		/// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnUpdate">objectOnUpdate</see>
+		/// Depending if the passed object is newly stored or updated, Creating/Created or
+		/// Updaing/Updated callback method is triggered.
+		/// Callbacks
 		/// might also be used for cascaded updates.<br /><br />
 		/// </remarks>
 		/// <param name="obj">the object to be stored or updated.</param>
@@ -490,13 +425,13 @@ namespace Db4objects.Db4o
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">Db4objects.Db4o.Config.IConfiguration.UpdateDepth
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.ObjectClass.UpdateDepth">Db4objects.Db4o.Config.ObjectClass.UpdateDepth
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.UpdateDepth">Db4objects.Db4o.Config.IObjectClass.UpdateDepth
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
         [System.ObsoleteAttribute(@"Use Store")]
 		void Set(object obj);
 
@@ -516,34 +451,29 @@ namespace Db4objects.Db4o
         /// call to <code>Store()</code> unless a deep
         /// <see cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">global</see>
         /// or
-        /// <see cref="Db4objects.Db4o.Config.ObjectClass.UpdateDepth">class-specific</see>
+        /// <see cref="Db4objects.Db4o.Config.IObjectClass.UpdateDepth">class-specific</see>
         /// update depth was configured or cascaded updates were
-        /// <see cref="Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate">defined in the class</see>
+        /// <see cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate">defined in the class</see>
         /// or in
-        /// <see cref="Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">one of the member fields</see>
+        /// <see cref="Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate">one of the member fields</see>
         /// .
-        /// <br /><br /><b>Examples: ../com/db4o/samples/update.</b><br /><br />
-        /// Depending if the passed object is newly stored or updated, the
-        /// callback method
-        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnNew">objectOnNew</see>
-        /// or
-        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnUpdate">objectOnUpdate</see>
-        /// is triggered.
-        /// <see cref="Db4objects.Db4o.Ext.ObjectCallbacks.ObjectOnUpdate">objectOnUpdate</see>
-        /// might also be used for cascaded updates.<br /><br />
+       	/// Depending if the passed object is newly stored or updated, Creating/Created or
+       	/// Updaing/Updated callback method is triggered.
+       	/// Callbacks
+       	/// might also be used for cascaded updates.<br /><br />
         /// </remarks>
         /// <param name="obj">the object to be stored or updated.</param>
         /// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Store">IExtObjectContainer#Store(object, depth)
         /// 	</seealso>
         /// <seealso cref="Db4objects.Db4o.Config.IConfiguration.UpdateDepth">Db4objects.Db4o.Config.IConfiguration.UpdateDepth
         /// 	</seealso>
-        /// <seealso cref="Db4objects.Db4o.Config.ObjectClass.UpdateDepth">Db4objects.Db4o.Config.ObjectClass.UpdateDepth
+        /// <seealso cref="Db4objects.Db4o.Config.IObjectClass.UpdateDepth">Db4objects.Db4o.Config.IObjectClass.UpdateDepth
         /// 	</seealso>
-        /// <seealso cref="Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.ObjectClass.CascadeOnUpdate
+        /// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate
         /// 	</seealso>
-        /// <seealso cref="Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.ObjectField.CascadeOnUpdate
+        /// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectField.CascadeOnUpdate
         /// 	</seealso>
-        /// <seealso cref="Db4objects.Db4o.Ext.ObjectCallbacks">Using callbacks</seealso>
+        /// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
         void Store(object obj);
 
         /// <summary>.NET 2.0 Native Query interface.</summary>
@@ -557,69 +487,18 @@ namespace Db4objects.Db4o
         /// db4o will  attempt to optimize native query expressions and execute them
         /// against indexes and without instantiating actual objects, where this is
         /// possible.<br /><br />
-        /// The syntax of the enclosing object for the native query expression varies,
-        /// depending on the language version used. Here are some examples,
-        /// how a simple native query will look like in some of the programming languages
-        /// and dialects that db4o supports:<br /><br />
-        /// <code>
-        /// <b>// C# .NET 2.0</b><br />
-        /// IList &lt;Cat&gt; cats = db.Query &lt;Cat&gt; (delegate(Cat cat) {<br />
-        /// &#160;&#160;&#160;return cat.Name == "Occam";<br />
-        /// });<br />
-        /// <br />
-        /// <br />
-        /// <b>// Java JDK 5</b><br />
-        /// List &lt;Cat&gt; cats = db.Query(new Predicate&lt;Cat&gt;() {<br />
-        /// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-        /// &#160;&#160;&#160;&#160;&#160;&#160;return cat.GetName().Equals("Occam");<br />
-        /// &#160;&#160;&#160;}<br />
-        /// });<br />
-        /// <br />
-        /// <br />
-        /// <b>// Java JDK 1.2 to 1.4</b><br />
-        /// List cats = db.Query(new Predicate() {<br />
-        /// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-        /// &#160;&#160;&#160;&#160;&#160;&#160;return cat.GetName().Equals("Occam");<br />
-        /// &#160;&#160;&#160;}<br />
-        /// });<br />
-        /// <br />
-        /// <br />
-        /// <b>// Java JDK 1.1</b><br />
-        /// IObjectSet cats = db.Query(new CatOccam());<br />
-        /// <br />
-        /// public static class CatOccam extends Predicate {<br />
-        /// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-        /// &#160;&#160;&#160;&#160;&#160;&#160;return cat.GetName().Equals("Occam");<br />
-        /// &#160;&#160;&#160;}<br />
-        /// });<br />
-        /// <br />
-        /// <br />
-        /// <b>// C# .NET 1.1</b><br />
-        /// IList cats = db.Query(new CatOccam());<br />
-        /// <br />
-        /// public class CatOccam : Predicate {<br />
-        /// &#160;&#160;&#160;public boolean Match(Cat cat) {<br />
-        /// &#160;&#160;&#160;&#160;&#160;&#160;return cat.Name == "Occam";<br />
-        /// &#160;&#160;&#160;}<br />
-        /// });<br />
-        /// </code>
-        /// <br />
-        /// Summing up the above:<br />
-        /// In order to run a Native Query, you can<br />
-        /// - use the delegate notation for .NET 2.0.<br />
-        /// - extend the Predicate class for all other language dialects<br /><br />
-        /// A class that extends Predicate is required to
-        /// implement the #Match() / #Match() method, following the native query
-        /// conventions:<br />
-        /// - The name of the method is "#Match()" (Java) / "#Match()" (.NET).<br />
-        /// - The method must be public public.<br />
-        /// - The method returns a boolean.<br />
-        /// - The method takes one parameter.<br />
-        /// - The Type (.NET) / Class (Java) of the parameter specifies the extent.<br />
-        /// - For all instances of the extent that are to be included into the
-        /// resultset of the query, the match method should return true. For all
-        /// instances that are not to be included, the match method should return
-        /// false.<br /><br />
+	/// Example:<br /><br />
+       	/// <code>
+       	/// <br />
+       	/// IList &lt;Cat&gt; cats = db.Query &lt;Cat&gt; (delegate(Cat cat) {<br />
+       	/// &#160;&#160;&#160;return cat.Name == "Occam";<br />
+       	/// });<br />
+       	/// <br />
+       	/// Summing up the above:<br />
+       	/// In order to run a Native Query, you can use the delegate notation 
+               /// with a delegate method taking the extend type as a parameter and 
+       	/// returning bool. True is returned for the objects that are to be included in the result.<br />
+       	/// <br /><br />
         /// </remarks>
         /// <param name="match">
         /// use an anonymous delegate that takes a single paramter and returns
