@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         class Item
         {
-            public readonly EnumAsByte _asByte;
+			public readonly EnumAsByte _asByte;
             public readonly EnumAsInteger _asInteger;
             public readonly EnumAsLong _asLong;
 
@@ -96,11 +96,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 			new Item((EnumAsByte)99, (EnumAsInteger) 98, (EnumAsLong) 97),
         };
 
-
         protected override void Configure(IConfiguration config)
         {
-            base.Configure(config);
-            config.RegisterTypeHandler(new EnumTypeHandlerPredicate(), new EnumTypeHandler());
+			base.Configure(config);
+			config.RegisterTypeHandler(new EnumTypeHandlerPredicate(), new EnumTypeHandler());
         }
 
         protected override void Store()
@@ -111,7 +110,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             }
         }
 
-        public void TestNativeQuery()
+		public void TestEnumsAreNotStoredAsObjects()
+		{
+			Assert.AreEqual(0, Db().Query<EnumAsByte>().Count);
+		}
+
+		public void TestNativeQuery()
         {
             AssertItem(EnumAsByte.Second, AsByteFinder(), AsByteSelectorFor);
             AssertItem(EnumAsByte.Third, AsByteFinder(), AsByteSelectorFor);
@@ -178,10 +182,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Db().Delete(item);
                 Db().Delete(item._asInteger);
             }
-            
         }
 
-        private void AssertAsLong()
+    	private void AssertAsLong()
         {
             Func<object, Item> itemFinder = delegate(object value)
             {
