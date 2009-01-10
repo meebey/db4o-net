@@ -13,13 +13,13 @@ namespace Db4objects.Db4o.Foundation
 			return new ListenerRegistry();
 		}
 
-		private Collection4 _listeners;
+		private IdentitySet4 _listeners;
 
 		public virtual void Register(IListener listener)
 		{
 			if (_listeners == null)
 			{
-				_listeners = new Collection4();
+				_listeners = new IdentitySet4();
 			}
 			_listeners.Add(listener);
 		}
@@ -35,6 +35,15 @@ namespace Db4objects.Db4o.Foundation
 			{
 				((IListener)i.Current).OnEvent(@event);
 			}
+		}
+
+		public virtual void Remove(IListener listener)
+		{
+			if (_listeners == null)
+			{
+				return;
+			}
+			_listeners.Remove(listener);
 		}
 	}
 }

@@ -4,7 +4,6 @@ using System;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
-	/// <decaf.ignore></decaf.ignore>
 	public abstract class AbstractItemFactory
 	{
 		internal static readonly string MapFieldName = "_map";

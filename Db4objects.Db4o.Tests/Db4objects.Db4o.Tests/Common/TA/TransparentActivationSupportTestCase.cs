@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		public virtual void TestActivationDepth()
 		{
-			Assert.IsInstanceOf(typeof(TransparentActivationDepthProvider), Stream().ConfigImpl
+			Assert.IsInstanceOf(typeof(TransparentActivationDepthProviderImpl), Stream().ConfigImpl
 				().ActivationDepthProvider());
 		}
 

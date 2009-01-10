@@ -13,7 +13,6 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Collections
 {
 	/// <exclude></exclude>
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class BigSetTypeHandler : ITypeHandler4
 	{
 		public virtual void Defragment(IDefragmentContext context)

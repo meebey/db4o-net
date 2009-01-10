@@ -13,10 +13,10 @@ namespace Db4objects.Db4o.Tests.Common.Api
 		public virtual void TestOpenFile()
 		{
 			IObjectContainer container = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(
-				), _tempFile);
+				), TempFile());
 			try
 			{
-				Assert.IsTrue(System.IO.File.Exists(_tempFile));
+				Assert.IsTrue(System.IO.File.Exists(TempFile()));
 			}
 			finally
 			{
@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				Db4oEmbedded.OpenFile(null, this._enclosing._tempFile);
+				Db4oEmbedded.OpenFile(null, this._enclosing.TempFile());
 			}
 
 			private readonly Db4oEmbeddedTestCase _enclosing;

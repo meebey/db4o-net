@@ -79,6 +79,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _isVirtual;
 		}
 
+		public virtual bool IsVirtualField()
+		{
+			return IsVirtual() && IsField();
+		}
+
+		private bool IsField()
+		{
+			return _type.IsField();
+		}
+
 		public virtual int IndexID()
 		{
 			return _indexID;

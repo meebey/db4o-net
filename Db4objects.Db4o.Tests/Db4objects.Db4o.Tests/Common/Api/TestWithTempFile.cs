@@ -8,7 +8,12 @@ namespace Db4objects.Db4o.Tests.Common.Api
 {
 	public class TestWithTempFile : ITestLifeCycle
 	{
-		protected readonly string _tempFile = Path.GetTempFileName();
+		private readonly string _tempFile = Path.GetTempFileName();
+
+		protected virtual string TempFile()
+		{
+			return _tempFile;
+		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
@@ -18,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
-			File4.Delete(_tempFile);
+			File4.Delete(TempFile());
 		}
 	}
 }

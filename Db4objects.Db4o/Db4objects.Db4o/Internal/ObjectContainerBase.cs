@@ -31,8 +31,8 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract partial class ObjectContainerBase : ITransientClass, IInternal4, 
-		IObjectContainerSpec, IInternalObjectContainer, System.IDisposable
+	public abstract partial class ObjectContainerBase : System.IDisposable, ITransientClass
+		, IInternal4, IObjectContainerSpec, IInternalObjectContainer
 	{
 		protected ClassMetadataRepository _classCollection;
 
@@ -2553,6 +2553,31 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				return block.Run();
+			}
+		}
+
+		public virtual void StoreAll(Transaction transaction, IEnumerator objects)
+		{
+			while (objects.MoveNext())
+			{
+				Store(transaction, objects.Current);
+			}
+		}
+
+		public virtual void WithTransaction(Transaction transaction, IRunnable runnable)
+		{
+			lock (_lock)
+			{
+				Transaction old = transaction;
+				_transaction = transaction;
+				try
+				{
+					runnable.Run();
+				}
+				finally
+				{
+					_transaction = old;
+				}
 			}
 		}
 

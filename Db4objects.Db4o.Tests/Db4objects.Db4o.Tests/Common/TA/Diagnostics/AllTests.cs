@@ -6,7 +6,6 @@ using Db4objects.Db4o.Tests.Common.TA.Diagnostics;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Diagnostics
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class AllTests : Db4oTestSuite
 	{
 		protected override Type[] TestCases()

@@ -19,9 +19,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		{
 			EventsTestCaseBase.EventLog activationLog = new EventsTestCaseBase.EventLog();
 			EventRegistry().Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_19(activationLog).OnEvent);
-			EventRegistry().Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_24
-				(activationLog).OnEvent);
+				(new _IEventListener4_19(this, activationLog).OnEvent);
+			EventRegistry().Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_25
+				(this, activationLog).OnEvent);
 			RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			Assert.IsTrue(activationLog.xing);
 			Assert.IsTrue(activationLog.xed);
@@ -29,31 +29,41 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private sealed class _IEventListener4_19
 		{
-			public _IEventListener4_19(EventsTestCaseBase.EventLog activationLog)
+			public _IEventListener4_19(ActivationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
+				 activationLog)
 			{
+				this._enclosing = _enclosing;
 				this.activationLog = activationLog;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
 				 args)
 			{
+				this._enclosing.AssertClientTransaction(args);
 				activationLog.xing = true;
 			}
+
+			private readonly ActivationEventsTestCase _enclosing;
 
 			private readonly EventsTestCaseBase.EventLog activationLog;
 		}
 
-		private sealed class _IEventListener4_24
+		private sealed class _IEventListener4_25
 		{
-			public _IEventListener4_24(EventsTestCaseBase.EventLog activationLog)
+			public _IEventListener4_25(ActivationEventsTestCase _enclosing, EventsTestCaseBase.EventLog
+				 activationLog)
 			{
+				this._enclosing = _enclosing;
 				this.activationLog = activationLog;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
+				this._enclosing.AssertClientTransaction(args);
 				activationLog.xed = true;
 			}
+
+			private readonly ActivationEventsTestCase _enclosing;
 
 			private readonly EventsTestCaseBase.EventLog activationLog;
 		}

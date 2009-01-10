@@ -12,14 +12,14 @@ namespace Db4objects.Db4o.Tests.Common.IO
 
 		public virtual void TestExistsWithUnexistentFile()
 		{
-			Assert.IsFalse(subject.Exists(_tempFile));
+			Assert.IsFalse(subject.Exists(TempFile()));
 		}
 
 		public virtual void TestExistsWithZeroLengthFile()
 		{
-			IBin storage = subject.Open(new BinConfiguration(_tempFile, false, 0, false));
+			IBin storage = subject.Open(new BinConfiguration(TempFile(), false, 0, false));
 			storage.Close();
-			Assert.IsFalse(subject.Exists(_tempFile));
+			Assert.IsFalse(subject.Exists(TempFile()));
 		}
 	}
 }

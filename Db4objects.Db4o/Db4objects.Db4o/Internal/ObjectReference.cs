@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Ext;
@@ -11,7 +10,6 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
-using Db4objects.Db4o.TA;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -77,11 +75,17 @@ namespace Db4objects.Db4o.Internal
 			ActivationPurpose purpose)
 		{
 			ObjectContainerBase container = transaction.Container();
+			if (!(container.ActivationDepthProvider() is ITransparentActivationDepthProvider))
+			{
+				return;
+			}
+			ITransparentActivationDepthProvider provider = (ITransparentActivationDepthProvider
+				)container.ActivationDepthProvider();
 			if (ActivationPurpose.Write == purpose)
 			{
 				lock (container.Lock())
 				{
-					EnlistForUpdate(transaction);
+					provider.AddModified(GetObject(), transaction);
 				}
 			}
 			if (IsActive())
@@ -90,85 +94,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (container.Lock())
 			{
-				TransparentActivationDepthProvider provider = (TransparentActivationDepthProvider
-					)container.ActivationDepthProvider();
 				Activate(transaction, GetObject(), new DescendingActivationDepth(provider, ActivationMode
 					.Activate));
 			}
-		}
-
-		[System.NonSerialized]
-		private ITransactionListener _updateListener;
-
-		private void EnlistForUpdate(Db4objects.Db4o.Internal.Transaction transaction)
-		{
-			if (null != _updateListener)
-			{
-				return;
-			}
-			TransparentPersistenceSupport transparentPersistence = ConfiguredTransparentPersistence
-				();
-			if (null == transparentPersistence)
-			{
-				// don't check for update again for this object
-				_updateListener = NullTransactionListener.Instance;
-				return;
-			}
-			_updateListener = new _ITransactionListener_92(this, transparentPersistence, transaction
-				);
-			transaction.AddTransactionListener(_updateListener);
-		}
-
-		private sealed class _ITransactionListener_92 : ITransactionListener
-		{
-			public _ITransactionListener_92(ObjectReference _enclosing, TransparentPersistenceSupport
-				 transparentPersistence, Db4objects.Db4o.Internal.Transaction transaction)
-			{
-				this._enclosing = _enclosing;
-				this.transparentPersistence = transparentPersistence;
-				this.transaction = transaction;
-				this._hardRef = this._enclosing.GetObject();
-			}
-
-			private object _hardRef;
-
-			public void PostRollback()
-			{
-				this._enclosing.ResetListener();
-				transparentPersistence.Rollback(transaction.ObjectContainer(), this._hardRef);
-				this._hardRef = null;
-			}
-
-			public void PreCommit()
-			{
-				this._enclosing.ResetListener();
-				this._enclosing.Container().Store(transaction, this._hardRef);
-				this._hardRef = null;
-			}
-
-			private readonly ObjectReference _enclosing;
-
-			private readonly TransparentPersistenceSupport transparentPersistence;
-
-			private readonly Db4objects.Db4o.Internal.Transaction transaction;
-		}
-
-		private void ResetListener()
-		{
-			_updateListener = null;
-		}
-
-		private TransparentPersistenceSupport ConfiguredTransparentPersistence()
-		{
-			IEnumerator iterator = Container().Config().ConfigurationItemsIterator();
-			while (iterator.MoveNext())
-			{
-				if (iterator.Current is TransparentPersistenceSupport)
-				{
-					return (TransparentPersistenceSupport)iterator.Current;
-				}
-			}
-			return null;
 		}
 
 		public virtual void Activate(Db4objects.Db4o.Internal.Transaction ta, object obj, 

@@ -68,6 +68,29 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly ClassInfoHelper _classInfoHelper = new ClassInfoHelper();
 
+		private sealed class _IMessageListener_71 : ClientObjectContainer.IMessageListener
+		{
+			public _IMessageListener_71()
+			{
+			}
+
+			// null denotes password not necessary
+			// initial value of _batchedQueueLength is YapConst.INT_LENGTH, which is
+			// used for to write the number of messages.
+			public void OnMessage(Msg msg)
+			{
+			}
+		}
+
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_71
+			();
+
+		public interface IMessageListener
+		{
+			// do nothing
+			void OnMessage(Msg msg);
+		}
+
 		static ClientObjectContainer()
 		{
 		}
@@ -75,9 +98,6 @@ namespace Db4objects.Db4o.Internal.CS
 		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
 			string password, bool login) : base(config, null)
 		{
-			// null denotes password not necessary
-			// initial value of _batchedQueueLength is YapConst.INT_LENGTH, which is
-			// used for to write the number of messages.
 			// Db4o.registerClientConstructor(new ClientConstructor());
 			_userName = user;
 			_password = password;
@@ -871,12 +891,24 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 			else
 			{
-				WriteMessageToSocket(msg);
+				if (!_batchedMessages.IsEmpty())
+				{
+					AddToBatch(msg);
+					WriteBatchedMessages();
+				}
+				else
+				{
+					WriteMessageToSocket(msg);
+				}
 			}
 		}
 
 		public virtual bool WriteMessageToSocket(Msg msg)
 		{
+			if (_messageListener != null)
+			{
+				_messageListener.OnMessage(msg);
+			}
 			return msg.Write(i_socket);
 		}
 
@@ -1112,6 +1144,26 @@ namespace Db4objects.Db4o.Internal.CS
 			Write(msg);
 			MsgD response = (MsgD)ExpectedResponse(Msg.InstanceCount);
 			return response.ReadInt();
+		}
+
+		public virtual void MessageListener(ClientObjectContainer.IMessageListener listener
+			)
+		{
+			_messageListener = listener;
+		}
+
+		public override void StoreAll(Transaction transaction, IEnumerator objects)
+		{
+			bool configuredBatchMessages = _config.BatchMessages();
+			_config.BatchMessages(true);
+			try
+			{
+				base.StoreAll(transaction, objects);
+			}
+			finally
+			{
+				_config.BatchMessages(configuredBatchMessages);
+			}
 		}
 	}
 }

@@ -52,8 +52,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual bool IsFieldMetadata()
 		{
-			return this == Db4objects.Db4o.Internal.Marshall.AspectType.Field || this == Db4objects.Db4o.Internal.Marshall.AspectType
-				.Translator;
+			return IsField() || IsTranslator();
+		}
+
+		public virtual bool IsTranslator()
+		{
+			return this == Db4objects.Db4o.Internal.Marshall.AspectType.Translator;
+		}
+
+		public virtual bool IsField()
+		{
+			return this == Db4objects.Db4o.Internal.Marshall.AspectType.Field;
 		}
 	}
 }

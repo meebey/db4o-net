@@ -14,6 +14,11 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 {
 	public class StoredClassTestCase : AbstractDb4oTestCase
 	{
+		public static void Main(string[] args)
+		{
+			new StoredClassTestCase().RunAll();
+		}
+
 		private static readonly string FieldName = "_name";
 
 		private static readonly string ItemName = "item";
@@ -130,19 +135,19 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 			// FIXME: test rename
 			if (!hasIndex)
 			{
-				Assert.Expect(typeof(Exception), new _ICodeBlock_113(storedField));
+				Assert.Expect(typeof(Exception), new _ICodeBlock_117(storedField));
 			}
 			else
 			{
 				IntByRef count = new IntByRef();
-				storedField.TraverseValues(new _IVisitor4_123(count, expectedFieldValue));
+				storedField.TraverseValues(new _IVisitor4_127(count, expectedFieldValue));
 				Assert.AreEqual(1, count.value);
 			}
 		}
 
-		private sealed class _ICodeBlock_113 : ICodeBlock
+		private sealed class _ICodeBlock_117 : ICodeBlock
 		{
-			public _ICodeBlock_113(IStoredField storedField)
+			public _ICodeBlock_117(IStoredField storedField)
 			{
 				this.storedField = storedField;
 			}
@@ -150,12 +155,12 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				storedField.TraverseValues(new _IVisitor4_115());
+				storedField.TraverseValues(new _IVisitor4_119());
 			}
 
-			private sealed class _IVisitor4_115 : IVisitor4
+			private sealed class _IVisitor4_119 : IVisitor4
 			{
-				public _IVisitor4_115()
+				public _IVisitor4_119()
 				{
 				}
 
@@ -167,9 +172,9 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 			private readonly IStoredField storedField;
 		}
 
-		private sealed class _IVisitor4_123 : IVisitor4
+		private sealed class _IVisitor4_127 : IVisitor4
 		{
-			public _IVisitor4_123(IntByRef count, object expectedFieldValue)
+			public _IVisitor4_127(IntByRef count, object expectedFieldValue)
 			{
 				this.count = count;
 				this.expectedFieldValue = expectedFieldValue;

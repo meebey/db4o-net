@@ -37,5 +37,10 @@ namespace Db4oUnit.Mocking
 		{
 			Iterator4Assert.AreEqual(expectedCalls, GetEnumerator());
 		}
+
+		public virtual void VerifyUnordered(MethodCall[] expectedCalls)
+		{
+			Iterator4Assert.SameContent(expectedCalls, GetEnumerator());
+		}
 	}
 }

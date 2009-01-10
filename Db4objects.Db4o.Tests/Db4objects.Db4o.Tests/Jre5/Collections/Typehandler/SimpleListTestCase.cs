@@ -12,7 +12,6 @@ using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
 	/// <exclude></exclude>
-	/// <decaf.ignore></decaf.ignore>
 	public class SimpleListTestCase : AbstractDb4oTestCase
 	{
 		public class Item

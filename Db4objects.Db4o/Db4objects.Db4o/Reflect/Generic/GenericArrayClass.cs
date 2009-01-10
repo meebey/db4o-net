@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 	{
 		public GenericArrayClass(GenericReflector reflector, IReflectClass delegateClass, 
 			string name, Db4objects.Db4o.Reflect.Generic.GenericClass superclass) : base(reflector
-			, delegateClass, "(GA) " + name, superclass)
+			, delegateClass, name, superclass)
 		{
 		}
 
@@ -40,6 +40,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 				return false;
 			}
 			return base.Equals(obj);
+		}
+
+		public override string ToString(object obj)
+		{
+			if (_converter == null)
+			{
+				return "(GA) " + GetName();
+			}
+			return _converter.ToString((GenericArray)obj);
 		}
 	}
 }

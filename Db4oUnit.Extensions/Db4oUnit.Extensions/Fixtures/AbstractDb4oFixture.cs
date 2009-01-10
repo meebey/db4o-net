@@ -59,7 +59,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			string targetFile = fileName + ".defrag.backup";
 			DefragmentConfig defragConfig = new DefragmentConfig(fileName, targetFile);
 			defragConfig.ForceBackupDelete(true);
-			defragConfig.Db4oConfig(Config());
+			defragConfig.Db4oConfig(CloneConfiguration());
 			Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
 		}
 
@@ -85,6 +85,16 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override string ToString()
 		{
 			return Label();
+		}
+
+		protected virtual Config4Impl CloneConfiguration()
+		{
+			return CloneDb4oConfiguration((Config4Impl)Config());
+		}
+
+		protected virtual Config4Impl CloneDb4oConfiguration(IConfiguration config)
+		{
+			return (Config4Impl)((Config4Impl)config).DeepClone(this);
 		}
 
 		public abstract string Label();

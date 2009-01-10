@@ -15,7 +15,6 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
 	/// <exclude></exclude>
-	/// <decaf.ignore></decaf.ignore>
 	public class EmbeddedListTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler, IEmbeddedTypeHandler
 	{

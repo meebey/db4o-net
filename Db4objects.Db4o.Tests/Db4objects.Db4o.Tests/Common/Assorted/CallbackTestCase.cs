@@ -20,13 +20,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			RunTest(new CallbackTestCase.PublicCallback());
 		}
 
-		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 		public virtual void TestPrivateCallback()
 		{
 			RunTest(new CallbackTestCase.PrivateCallback());
 		}
 
-		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 		public virtual void TestPackageCallback()
 		{
 			RunTest(new CallbackTestCase.PackageCallback());
@@ -37,13 +35,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			RunTest(new CallbackTestCase.InheritedPublicCallback());
 		}
 
-		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 		public virtual void TestInheritedPrivateCallback()
 		{
 			RunTest(new CallbackTestCase.InheritedPrivateCallback());
 		}
 
-		/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 		public virtual void TestInheritedPackageCallback()
 		{
 			RunTest(new CallbackTestCase.InheritedPackageCallback());

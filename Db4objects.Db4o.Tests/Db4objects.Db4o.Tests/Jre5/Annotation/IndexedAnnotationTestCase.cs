@@ -9,7 +9,6 @@ using Db4objects.Db4o.Tests.Jre5.Annotation;
 
 namespace Db4objects.Db4o.Tests.Jre5.Annotation
 {
-	/// <decaf.ignore></decaf.ignore>
 	public class IndexedAnnotationTestCase : AbstractDb4oTestCase
 	{
 		private class DataAnnotated

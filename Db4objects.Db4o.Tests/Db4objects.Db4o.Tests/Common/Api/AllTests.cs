@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(CommonAndLocalConfigurationTestSuite), typeof(Db4oClientServerTestCase
-				), typeof(Db4oEmbeddedTestCase) };
+				), typeof(Db4oEmbeddedTestCase), typeof(StoreAllTestCase) };
 		}
 	}
 }

@@ -1,15 +1,14 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.TA
 {
 	/// <summary>Enables the Transparent Update and Transparent Activation behaviors.</summary>
 	/// <remarks>Enables the Transparent Update and Transparent Activation behaviors.</remarks>
-	public class TransparentPersistenceSupport : IConfigurationItem
+	public class TransparentPersistenceSupport : TransparentActivationSupport
 	{
 		private readonly IRollbackStrategy _rollbackStrategy;
 
@@ -22,22 +21,17 @@ namespace Db4objects.Db4o.TA
 		{
 		}
 
-		public virtual void Apply(IInternalObjectContainer container)
+		public override void Apply(IInternalObjectContainer container)
 		{
+			base.Apply(container);
+			EnableTransparentPersistenceFor(container);
 		}
 
-		public virtual void Prepare(IConfiguration configuration)
+		private void EnableTransparentPersistenceFor(IInternalObjectContainer container)
 		{
-			configuration.Add(new TransparentActivationSupport());
-		}
-
-		public virtual void Rollback(IObjectContainer container, object obj)
-		{
-			if (null == _rollbackStrategy)
-			{
-				return;
-			}
-			_rollbackStrategy.Rollback(container, obj);
+			ITransparentActivationDepthProvider provider = (ITransparentActivationDepthProvider
+				)ActivationProvider(container);
+			provider.EnableTransparentPersistenceSupportFor(container, _rollbackStrategy);
 		}
 	}
 }

@@ -7,9 +7,9 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	public class DescendingActivationDepth : ActivationDepthImpl
 	{
-		private readonly TransparentActivationDepthProvider _provider;
+		private readonly IActivationDepthProvider _provider;
 
-		public DescendingActivationDepth(TransparentActivationDepthProvider provider, ActivationMode
+		public DescendingActivationDepth(IActivationDepthProvider provider, ActivationMode
 			 mode) : base(mode)
 		{
 			_provider = provider;

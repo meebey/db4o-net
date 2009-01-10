@@ -10,7 +10,6 @@ namespace Db4objects.Db4o.Internal
 	/// otherwise and implementing it directly kills .NET conversion.)
 	/// </remarks>
 	/// <exclude></exclude>
-	/// <decaf.ignore.implements>InternalObjectContainer</decaf.ignore.implements>
 	public interface IObjectContainerSpec
 	{
 	}

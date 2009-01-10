@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Tests.Common.Api
 		public virtual void TestClientServerApi()
 		{
 			IServerConfiguration config = Db4oClientServer.NewServerConfiguration();
-			IObjectServer server = Db4oClientServer.OpenServer(config, _tempFile, unchecked((
-				int)(0xdb40)));
+			IObjectServer server = Db4oClientServer.OpenServer(config, TempFile(), unchecked(
+				(int)(0xdb40)));
 			try
 			{
 				server.GrantAccess("user", "password");

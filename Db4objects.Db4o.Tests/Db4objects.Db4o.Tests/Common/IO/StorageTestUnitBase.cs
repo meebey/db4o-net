@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			{
 				throw new InvalidOperationException();
 			}
-			_bin = Storage().Open(new BinConfiguration(_tempFile, false, 0, readOnly));
+			_bin = Storage().Open(new BinConfiguration(TempFile(), false, 0, readOnly));
 		}
 
 		/// <exception cref="System.Exception"></exception>

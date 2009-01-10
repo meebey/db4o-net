@@ -58,8 +58,8 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		public virtual void Test()
 		{
 			int configuredBlockSize = 13;
-			IObjectContainer db = Db4oEmbedded.OpenFile(Configure(configuredBlockSize), _tempFile
-				);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Configure(configuredBlockSize), TempFile
+				());
 			try
 			{
 				Assert.AreEqual(configuredBlockSize, _blockSize.value);
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			{
 				db.Close();
 			}
-			db = Db4oEmbedded.OpenFile(Configure(14), _tempFile);
+			db = Db4oEmbedded.OpenFile(Configure(14), TempFile());
 			try
 			{
 				Assert.AreEqual(configuredBlockSize, _blockSize.value);

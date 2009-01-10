@@ -8,5 +8,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 	public interface IGenericConverter
 	{
 		string ToString(GenericObject obj);
+
+		string ToString(GenericArray array);
 	}
 }

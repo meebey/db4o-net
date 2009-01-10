@@ -19,7 +19,6 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class FieldsToTypeHandlerMigrationTestCase : ITestLifeCycle
 	{
 		public class Item

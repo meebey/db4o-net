@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 			Assert.IsNotNull(cache);
 			IEnumerator i = cache.GetEnumerator();
 		}
-		// doesn't decaf
+		// FIXME: doesn't decaf
 		//		Assert.isTrue(i.hasNext());
 	}
 }

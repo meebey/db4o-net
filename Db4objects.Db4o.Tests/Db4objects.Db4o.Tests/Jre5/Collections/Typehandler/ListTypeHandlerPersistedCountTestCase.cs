@@ -8,7 +8,6 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
-	/// <decaf.ignore></decaf.ignore>
 	public class ListTypeHandlerPersistedCountTestCase : AbstractDb4oTestCase
 	{
 		public static void Main(string[] args)

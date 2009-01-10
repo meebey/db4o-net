@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
@@ -14,15 +13,13 @@ using Db4objects.Db4o.Tests.Common.Reflect.Generic;
 
 namespace Db4objects.Db4o.Tests.Common.Reflect.Generic
 {
-	/// <author>treeder, Andrew</author>
 	public class GenericObjectsTest : AbstractDb4oTestCase
 	{
 		private string PersonClassname = "com.acme.Person";
 
 		public static void Main(string[] args)
 		{
-			new ConsoleTestRunner(new Db4oTestSuiteBuilder(new Db4oSolo(), typeof(GenericObjectsTest
-				))).Run();
+			new GenericObjectsTest().RunAll();
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -134,9 +131,6 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Generic
 
 		private IReflectClass GetReflectClass(IExtObjectContainer oc, string className)
 		{
-			// FIXME: If GenericReflector#knownClasses is not called, the test will
-			// fail.
-			oc.Reflector().KnownClasses();
 			return oc.Reflector().ForName(className);
 		}
 
@@ -148,8 +142,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Generic
 		{
 			IExtObjectContainer oc = Fixture().Db();
 			InitGenericObjects();
-			IReflectClass rc = oc.Reflector().ForName(PersonClassname);
-			object array = Reflector().Array().NewInstance(rc, 5);
+			IReflectClass elementType = oc.Reflector().ForName(PersonClassname);
+			object array = Reflector().Array().NewInstance(elementType, 5);
 			IReflectClass arrayClass = oc.Reflector().ForObject(array);
 			Assert.IsTrue(arrayClass.IsArray());
 			Assert.IsTrue(arrayClass is GenericArrayClass);
@@ -159,6 +153,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Generic
 			arrayClass = oc.Reflector().ForClass(array.GetType());
 			Assert.IsTrue(arrayClass.IsArray());
 			Assert.IsTrue(arrayClass is GenericArrayClass);
+			Assert.AreEqual(arrayClass.GetName(), ReflectPlatform.FullyQualifiedName(array.GetType
+				()));
+			Assert.AreEqual("(GA) " + elementType.GetName(), array.ToString());
 		}
 	}
 }

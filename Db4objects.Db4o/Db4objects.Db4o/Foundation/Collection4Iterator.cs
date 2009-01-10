@@ -36,6 +36,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (_initialVersion != CurrentVersion())
 			{
+				// FIXME: change to ConcurrentModificationException
 				throw new InvalidIteratorException();
 			}
 		}

@@ -9,7 +9,6 @@ using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
-	/// <decaf.ignore></decaf.ignore>
 	public abstract class TypeHandlerUnitTest : TypeHandlerTestUnitBase
 	{
 		protected abstract void AssertCompareItems(object element, bool successful);

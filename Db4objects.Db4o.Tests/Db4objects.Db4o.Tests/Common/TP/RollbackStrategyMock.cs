@@ -19,5 +19,10 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		{
 			_recorder.Verify(expectedCalls);
 		}
+
+		public virtual void VerifyUnordered(MethodCall[] methodCalls)
+		{
+			_recorder.VerifyUnordered(methodCalls);
+		}
 	}
 }

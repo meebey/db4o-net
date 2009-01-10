@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.Common.IO;
-using Db4objects.Db4o.Tests.Common.Util;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
@@ -16,16 +15,9 @@ namespace Db4objects.Db4o.Tests.Common.IO
 
 		protected override Type[] TestCases()
 		{
-			Type[] commonCases = new Type[] { typeof(BlockAwareBinTestSuite), typeof(BlockSizeDependentBinTestCase
-				), typeof(IoAdapterTestSuite), typeof(RandomAccessFileStorageFactoryTestCase), typeof(
-				StorageTestSuite), typeof(NonFlushingStorageTestCase) };
-			return Db4oUnitTestUtil.MergeClasses(commonCases, StackTraceBasedCases());
-		}
-
-		/// <decaf.replaceFirst>return new Class[0];</decaf.replaceFirst>
-		private Type[] StackTraceBasedCases()
-		{
-			return new Type[0];
+			return new Type[] { typeof(BlockAwareBinTestSuite), typeof(BlockSizeDependentBinTestCase
+				), typeof(IoAdapterTestSuite), typeof(MemoryBinIsReusableTestCase), typeof(RandomAccessFileStorageFactoryTestCase
+				), typeof(StorageTestSuite), typeof(NonFlushingStorageTestCase) };
 		}
 	}
 }

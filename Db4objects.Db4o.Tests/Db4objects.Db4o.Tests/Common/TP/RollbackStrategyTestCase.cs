@@ -27,8 +27,8 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			Change(item2);
 			_mock.Verify(new MethodCall[0]);
 			Db().Rollback();
-			_mock.Verify(new MethodCall[] { new MethodCall("rollback", new object[] { Db(), item2
-				 }), new MethodCall("rollback", new object[] { Db(), item1 }) });
+			_mock.VerifyUnordered(new MethodCall[] { new MethodCall("rollback", new object[] 
+				{ Db(), item1 }), new MethodCall("rollback", new object[] { Db(), item2 }) });
 		}
 
 		private void Change(Item item)

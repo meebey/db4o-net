@@ -13,7 +13,6 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Collections
 {
 	/// <exclude></exclude>
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public partial class BigSet<E> : ISet<E>, IBigSetPersistence
 	{
 		private Db4objects.Db4o.Internal.Btree.BTree _bTree;

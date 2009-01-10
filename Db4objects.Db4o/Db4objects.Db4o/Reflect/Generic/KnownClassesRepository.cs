@@ -40,6 +40,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private IReflectClassBuilder _builder;
 
+		private readonly ListenerRegistry _listeners = ListenerRegistry.NewInstance();
+
 		private readonly Hashtable4 _classByName = new Hashtable4();
 
 		private readonly Hashtable4 _classByID = new Hashtable4();
@@ -64,8 +66,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual void Register(IReflectClass clazz)
 		{
-			_classByName.Put(clazz.GetName(), clazz);
-			_classes.Add(clazz);
+			Register(clazz.GetName(), clazz);
 		}
 
 		public virtual IReflectClass ForID(int id)
@@ -83,7 +84,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		public virtual IReflectClass ForName(string className)
 		{
-			IReflectClass clazz = (IReflectClass)_classByName.Get(className);
+			IReflectClass clazz = LookupByName(className);
 			if (clazz != null)
 			{
 				return clazz;
@@ -116,13 +117,45 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private void ReadAll()
 		{
-			for (IEnumerator idIter = _stream.ClassCollection().Ids(); idIter.MoveNext(); )
+			ForEachClassId(new _IProcedure4_103(this));
+			ForEachClassId(new _IProcedure4_106(this));
+		}
+
+		private sealed class _IProcedure4_103 : IProcedure4
+		{
+			public _IProcedure4_103(KnownClassesRepository _enclosing)
 			{
-				EnsureClassAvailability(((int)idIter.Current));
+				this._enclosing = _enclosing;
 			}
-			for (IEnumerator idIter = _stream.ClassCollection().Ids(); idIter.MoveNext(); )
+
+			public void Apply(object id)
 			{
-				EnsureClassRead(((int)idIter.Current));
+				this._enclosing.EnsureClassAvailability((((int)id)));
+			}
+
+			private readonly KnownClassesRepository _enclosing;
+		}
+
+		private sealed class _IProcedure4_106 : IProcedure4
+		{
+			public _IProcedure4_106(KnownClassesRepository _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Apply(object id)
+			{
+				this._enclosing.EnsureClassRead((((int)id)));
+			}
+
+			private readonly KnownClassesRepository _enclosing;
+		}
+
+		private void ForEachClassId(IProcedure4 procedure)
+		{
+			for (IEnumerator ids = _stream.ClassCollection().Ids(); ids.MoveNext(); )
+			{
+				procedure.Apply((int)ids.Current);
 			}
 		}
 
@@ -141,7 +174,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 			ClassMarshaller marshaller = MarshallerFamily()._class;
 			RawClassSpec spec = marshaller.ReadSpec(_trans, classreader);
 			string className = spec.Name();
-			ret = (IReflectClass)_classByName.Get(className);
+			ret = LookupByName(className);
 			if (ret != null)
 			{
 				_classByID.Put(id, ret);
@@ -167,13 +200,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 			// that the class is fully read. This is breakable if we start
 			// returning GenericClass'es in other methods like forName
 			// even if a native class has not been found
-			if (_classByName.Get(className) != null)
+			if (LookupByName(className) != null)
 			{
 				return;
 			}
 			// step 2 add the class to _classByName and _classes to denote reading is completed
-			_classByName.Put(className, clazz);
-			_classes.Add(clazz);
+			Register(className, clazz);
 			int numFields = classInfo.NumFields();
 			IReflectField[] fields = _builder.FieldArray(numFields);
 			IFieldMarshaller fieldMarshaller = MarshallerFamily()._field;
@@ -189,10 +221,21 @@ namespace Db4objects.Db4o.Reflect.Generic
 			_builder.InitFields(clazz, fields);
 		}
 
+		private void Register(string className, IReflectClass clazz)
+		{
+			if (LookupByName(className) != null)
+			{
+				throw new ArgumentException();
+			}
+			_classByName.Put(className, clazz);
+			_classes.Add(clazz);
+			_listeners.NotifyListeners(clazz);
+		}
+
 		private IReflectClass ReflectClassForFieldSpec(RawFieldSpec fieldInfo, IReflector
 			 reflector)
 		{
-			if (fieldInfo.IsVirtual())
+			if (fieldInfo.IsVirtualField())
 			{
 				return VirtualFieldByName(fieldInfo.Name()).ClassReflector(reflector);
 			}
@@ -307,6 +350,16 @@ namespace Db4objects.Db4o.Reflect.Generic
 				return baseClass.Reflector().ForClass(primitive);
 			}
 			return baseClass;
+		}
+
+		public virtual void AddListener(IListener listener)
+		{
+			_listeners.Register(listener);
+		}
+
+		public virtual void RemoveListener(IListener listener)
+		{
+			_listeners.Remove(listener);
 		}
 	}
 }

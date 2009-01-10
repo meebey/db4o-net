@@ -6,7 +6,6 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Tests.Jre12.Collections
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class IteratorAssert
 	{
 		public static void AreEqual(IEnumerator expected, IEnumerator actual)

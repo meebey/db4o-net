@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -592,6 +593,12 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool IsClient()
 		{
 			return true;
+		}
+
+		public virtual void StoreAll(Db4objects.Db4o.Internal.Transaction transaction, IEnumerator
+			 objects)
+		{
+			_server.StoreAll(transaction, objects);
 		}
 	}
 }

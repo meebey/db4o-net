@@ -8,15 +8,11 @@ namespace Db4objects.Db4o.Tests.Common.TP
 {
 	public class AllTests : Db4oTestSuite
 	{
-		public static void Main(string[] args)
-		{
-			new Db4objects.Db4o.Tests.Common.TP.AllTests().RunAll();
-		}
-
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(DeactivateDeletedObjectOnRollbackStrategyTestCase), typeof(
-				RollbackStrategyTestCase), typeof(TransparentPersistenceTestCase) };
+				QueryConsistencyTestCase), typeof(RollbackStrategyTestCase), typeof(TransparentPersistenceTestCase
+				) };
 		}
 	}
 }

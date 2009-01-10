@@ -565,7 +565,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				_preceding.Traverse(a_visitor);
 			}
-			a_visitor.Visit(this);
+			a_visitor.Visit((Tree)this);
 			if (_subsequent != null)
 			{
 				_subsequent.Traverse(a_visitor);

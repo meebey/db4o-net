@@ -108,20 +108,20 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// Operates just like
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
-		/// 	</see>
-		/// , but uses
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">
+		/// Db4objects.Db4o.Db4oFactory.OpenClient
+		/// </see>, but uses
 		/// the global db4o
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// context.
 		/// opens an
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
-		/// <br /><br />
+		/// <br/><br/>
 		/// The server needs to
 		/// <see cref="Db4objects.Db4o.IObjectServer.GrantAccess">allow access</see>
 		/// for the specified user and password.
-		/// <br /><br />
+		/// <br/><br/>
 		/// A client
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// can be cast to
@@ -132,8 +132,18 @@ namespace Db4objects.Db4o
 		/// and
 		/// <see cref="Db4objects.Db4o.Ext.IExtClient">IExtClient</see>
 		/// methods.
-		/// <br /><br />
+		/// <br/><br/>
+		/// This method is obsolete, see the Db4objects.Db4o.CS.Db4oClientServer class in
+		/// Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients.
 		/// </summary>
+		/// <param name="config">
+		/// a custom
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
+		/// instance to be obtained via
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">
+		/// Db4objects.Db4o.Db4oEmbedded.NewConfiguration
+		/// </see>
+		/// </param>
 		/// <param name="hostName">the host name</param>
 		/// <param name="port">the port the server is using</param>
 		/// <param name="user">the user name</param>
@@ -142,15 +152,18 @@ namespace Db4objects.Db4o
 		/// an open
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
-		/// 	</seealso>
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">
+		/// Db4objects.Db4o.IObjectServer.GrantAccess
+		/// </seealso>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">
+		/// Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
+		/// </see>
 		/// 
 		/// is set to false.
 		/// </exception>
@@ -158,8 +171,6 @@ namespace Db4objects.Db4o
 		/// password supplied for the connection is
 		/// invalid.
 		/// </exception>
-		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar / Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients."
-			)]
 		public static IObjectContainer OpenClient(string hostName, int port, string user, 
 			string password)
 		{
@@ -171,11 +182,11 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
-		/// <br /><br />
+		/// <br/><br/>
 		/// The server needs to
 		/// <see cref="Db4objects.Db4o.IObjectServer.GrantAccess">allow access</see>
 		/// for the specified user and password.
-		/// <br /><br />
+		/// <br/><br/>
 		/// A client
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// can be cast to
@@ -186,14 +197,17 @@ namespace Db4objects.Db4o
 		/// and
 		/// <see cref="Db4objects.Db4o.Ext.IExtClient">IExtClient</see>
 		/// methods.
-		/// <br /><br />
+		/// <br/><br/>
+		/// This method is obsolete, see the Db4objects.Db4o.CS.Db4oClientServer class in
+		/// Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients.
 		/// </summary>
 		/// <param name="config">
 		/// a custom
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">Db4objects.Db4o.Db4oEmbedded.NewConfiguration
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">
+		/// Db4objects.Db4o.Db4oEmbedded.NewConfiguration
+		/// </see>
 		/// </param>
 		/// <param name="hostName">the host name</param>
 		/// <param name="port">the port the server is using</param>
@@ -203,15 +217,18 @@ namespace Db4objects.Db4o
 		/// an open
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
-		/// 	</seealso>
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">
+		/// Db4objects.Db4o.IObjectServer.GrantAccess
+		/// </seealso>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">
+		/// Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
+		/// </see>
 		/// 
 		/// is set to false.
 		/// </exception>
@@ -219,8 +236,6 @@ namespace Db4objects.Db4o
 		/// password supplied for the connection is
 		/// invalid.
 		/// </exception>
-		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar / Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients."
-			)]
 		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
 			int port, string user, string password)
 		{
@@ -232,11 +247,11 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// client and connects it to the specified named server and port.
-		/// <br /><br />
+		/// <br/><br/>
 		/// The server needs to
 		/// <see cref="Db4objects.Db4o.IObjectServer.GrantAccess">allow access</see>
 		/// for the specified user and password.
-		/// <br /><br />
+		/// <br/><br/>
 		/// A client
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// can be cast to
@@ -247,32 +262,39 @@ namespace Db4objects.Db4o
 		/// and
 		/// <see cref="Db4objects.Db4o.Ext.IExtClient">IExtClient</see>
 		/// methods.
-		/// <br /><br />
+		/// <br/><br/>
+		/// This method is obsolete, see the Db4objects.Db4o.CS.Db4oClientServer class in
+		/// Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients.
 		/// </summary>
 		/// <param name="config">
 		/// a custom
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">Db4objects.Db4o.Db4oEmbedded.NewConfiguration
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">
+		/// Db4objects.Db4o.Db4oEmbedded.NewConfiguration
+		/// </see>
 		/// </param>
 		/// <param name="hostName">the host name</param>
 		/// <param name="port">the port the server is using</param>
 		/// <param name="user">the user name</param>
 		/// <param name="password">the user password</param>
+		/// <param name="socketFactory">socketFactory NativeSocketFactory instance to provide platform native sockets</param>
 		/// <returns>
 		/// an open
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
-		/// 	</seealso>
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">
+		/// Db4objects.Db4o.IObjectServer.GrantAccess
+		/// </seealso>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">
+		/// Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
+		/// </see>
 		/// 
 		/// is set to false.
 		/// </exception>
@@ -280,8 +302,6 @@ namespace Db4objects.Db4o
 		/// password supplied for the connection is
 		/// invalid.
 		/// </exception>
-		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar / Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients."
-			)]
 		public static IObjectContainer OpenClient(IConfiguration config, string hostName, 
 			int port, string user, string password, INativeSocketFactory socketFactory)
 		{
@@ -440,33 +460,47 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// Operates just like
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4objects.Db4o.Db4oFactory.OpenServer
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer">
+		/// Db4objects.Db4o.Db4oFactory.OpenServer
+		/// </see>
 		/// , but uses
 		/// the global db4o
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// context.
-		/// opens an
+		/// Opens an
 		/// <see cref="Db4objects.Db4o.IObjectServer">IObjectServer</see>
 		/// on the specified database file and port.
-		/// <br /><br />
+		/// <br/><br/>
 		/// If the server does not need to listen on a port because it will only be used
 		/// in embedded mode with
-		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">
+		/// Db4objects.Db4o.IObjectServer.OpenClient
+		/// </see>
 		/// , specify '0' as the
 		/// port number.
+		/// <br/><br/>This method is obsolete, see the Db4objects.Db4o.CS.Db4oClientServer class in
+		/// Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients.
 		/// </summary>
+		/// <param name="config">
+		/// a custom
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
+		/// instance to be obtained via
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">
+		/// Db4objects.Db4o.Db4oEmbedded.NewConfiguration
+		/// </see>
+		/// </param>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <param name="port">
 		/// the port to be used, or 0, if the server should not open a port,
 		/// because it will only be used with
-		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">
+		/// Db4objects.Db4o.IObjectServer.OpenClient
+		/// </see>
 		/// .
 		/// Specify a value &lt; 0 if an arbitrary free port should be chosen - see
-		/// <see cref="Db4objects.Db4o.Ext.IExtObjectServer.Port">Db4objects.Db4o.Ext.IExtObjectServer.Port
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Ext.IExtObjectServer.Port">
+		/// Db4objects.Db4o.Ext.IExtObjectServer.Port
+		/// </see>
 		/// .
 		/// </param>
 		/// <returns>
@@ -475,14 +509,18 @@ namespace Db4objects.Db4o
 		/// listening
 		/// on the specified port.
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly">Db4objects.Db4o.Config.IConfiguration.ReadOnly
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">Db4objects.Db4o.Config.IConfiguration.Encrypt
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
-		/// 	</seealso>
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly">
+		/// Db4objects.Db4o.Config.IConfiguration.ReadOnly
+		/// </seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">
+		/// Db4objects.Db4o.Config.IConfiguration.Encrypt
+		/// </seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">
+		/// Db4objects.Db4o.Config.IConfiguration.Password
+		/// </seealso>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException">
 		/// the required database file is locked by
 		/// another process.
@@ -496,15 +534,15 @@ namespace Db4objects.Db4o
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">
+		/// Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
+		/// </see>
 		/// 
 		/// is set to false.
 		/// </exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">database was configured as read-only.
-		/// 	</exception>
-		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar / Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients."
-			)]
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">
+		/// database was configured as read-only.
+		/// </exception>
 		public static IObjectServer OpenServer(string databaseFileName, int port)
 		{
 			return OpenServer(CloneConfiguration(), databaseFileName, port);
@@ -514,31 +552,37 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="Db4objects.Db4o.IObjectServer">IObjectServer</see>
 		/// on the specified database file and port.
-		/// <br /><br />
+		/// <br/><br/>
 		/// If the server does not need to listen on a port because it will only be used
 		/// in embedded mode with
-		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">
+		/// Db4objects.Db4o.IObjectServer.OpenClient
+		/// </see>
 		/// , specify '0' as the
 		/// port number.
+		/// <br/><br/>This method is obsolete, see the Db4objects.Db4o.CS.Db4oClientServer class in
+		/// Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients.
 		/// </summary>
 		/// <param name="config">
 		/// a custom
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// instance to be obtained via
-		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">Db4objects.Db4o.Db4oEmbedded.NewConfiguration
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">
+		/// Db4objects.Db4o.Db4oEmbedded.NewConfiguration
+		/// </see>
 		/// </param>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
 		/// <param name="port">
 		/// the port to be used, or 0, if the server should not open a port,
 		/// because it will only be used with
-		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">
+		/// Db4objects.Db4o.IObjectServer.OpenClient
+		/// </see>
 		/// .
 		/// Specify a value &lt; 0 if an arbitrary free port should be chosen - see
-		/// <see cref="Db4objects.Db4o.Ext.IExtObjectServer.Port">Db4objects.Db4o.Ext.IExtObjectServer.Port
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Ext.IExtObjectServer.Port">
+		/// Db4objects.Db4o.Ext.IExtObjectServer.Port
+		/// </see>
 		/// .
 		/// </param>
 		/// <returns>
@@ -547,14 +591,18 @@ namespace Db4objects.Db4o
 		/// listening
 		/// on the specified port.
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly">Db4objects.Db4o.Config.IConfiguration.ReadOnly
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">Db4objects.Db4o.Config.IConfiguration.Encrypt
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
-		/// 	</seealso>
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly">
+		/// Db4objects.Db4o.Config.IConfiguration.ReadOnly
+		/// </seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">
+		/// Db4objects.Db4o.Config.IConfiguration.Encrypt
+		/// </seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">
+		/// Db4objects.Db4o.Config.IConfiguration.Password
+		/// </seealso>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException">
 		/// the required database file is locked by
 		/// another process.
@@ -568,15 +616,15 @@ namespace Db4objects.Db4o
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">
+		/// Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
+		/// </see>
 		/// 
 		/// is set to false.
 		/// </exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">database was configured as read-only.
-		/// 	</exception>
-		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar / Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients."
-			)]
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">
+		/// database was configured as read-only.
+		/// </exception>
 		public static IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port)
 		{
@@ -654,7 +702,7 @@ namespace Db4objects.Db4o
 		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">database was configured as read-only.
 		/// 	</exception>
-		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar / Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients."
+		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar  for methods to open db4o servers and db4o clients."
 			)]
 		public static IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port, INativeSocketFactory socketFactory)

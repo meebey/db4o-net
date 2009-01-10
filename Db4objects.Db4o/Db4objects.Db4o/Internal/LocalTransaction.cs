@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected readonly StatefulBuffer i_pointerIo;
 
-		private readonly Collection4 _participants = new Collection4();
+		private readonly IdentitySet4 _participants = new IdentitySet4();
 
 		private readonly LockedTree _slotChanges = new LockedTree();
 
@@ -171,7 +171,7 @@ namespace Db4objects.Db4o.Internal
 				throw new ArgumentNullException();
 			}
 			CheckSynchronization();
-			if (!_participants.ContainsByIdentity(participant))
+			if (!_participants.Contains(participant))
 			{
 				_participants.Add(participant);
 			}
@@ -286,7 +286,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void DisposeParticipants()
 		{
-			IEnumerator iterator = _participants.GetEnumerator();
+			IEnumerator iterator = _participants.ValuesIterator();
 			while (iterator.MoveNext())
 			{
 				((ITransactionParticipant)iterator.Current).Dispose(this);
@@ -306,7 +306,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void RollbackParticipants()
 		{
-			IEnumerator iterator = _participants.GetEnumerator();
+			IEnumerator iterator = _participants.ValuesIterator();
 			while (iterator.MoveNext())
 			{
 				((ITransactionParticipant)iterator.Current).Rollback(this);

@@ -13,7 +13,6 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
-	/// <decaf.ignore></decaf.ignore>
 	public abstract class TypeHandlerTestUnitBase : AbstractDb4oTestCase, IOptOutDefragSolo
 	{
 		protected abstract AbstractItemFactory ItemFactory();

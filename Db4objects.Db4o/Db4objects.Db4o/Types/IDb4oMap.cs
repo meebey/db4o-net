@@ -37,7 +37,6 @@ namespace Db4objects.Db4o.Types
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Collections">Db4objects.Db4o.Ext.IExtObjectContainer.Collections
 	/// 	</seealso>
-	/// <decaf.ignore.implements.jdk11>Map</decaf.ignore.implements.jdk11>
 	[System.ObsoleteAttribute(@"since 7.0")]
 	public interface IDb4oMap : IDb4oCollection, IDictionary
 	{

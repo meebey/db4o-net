@@ -5,6 +5,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal.CS.Messages;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
@@ -17,10 +18,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			try
 			{
 				Unmarshall(_payLoad._offset);
-				lock (StreamLock())
-				{
-					WriteQueryResult(Execute(), _evaluationMode);
-				}
+				Stream().WithTransaction(Transaction(), new _IRunnable_18(this));
 			}
 			catch (Db4oException e)
 			{
@@ -29,18 +27,31 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return true;
 		}
 
+		private sealed class _IRunnable_18 : IRunnable
+		{
+			public _IRunnable_18(MQueryExecute _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				this._enclosing.WriteQueryResult(this._enclosing.Execute(), this._enclosing._evaluationMode
+					);
+			}
+
+			private readonly MQueryExecute _enclosing;
+		}
+
 		private AbstractQueryResult Execute()
 		{
-			lock (StreamLock())
-			{
-				// TODO: The following used to run outside of the
-				// synchronisation block for better performance but
-				// produced inconsistent results, cause unknown.
-				QQuery query = (QQuery)ReadObjectFromPayLoad();
-				query.Unmarshall(Transaction());
-				_evaluationMode = query.EvaluationMode();
-				return ExecuteFully(query);
-			}
+			// TODO: The following used to run outside of the
+			// synchronisation block for better performance but
+			// produced inconsistent results, cause unknown.
+			QQuery query = (QQuery)ReadObjectFromPayLoad();
+			query.Unmarshall(Transaction());
+			_evaluationMode = query.EvaluationMode();
+			return ExecuteFully(query);
 		}
 
 		private AbstractQueryResult ExecuteFully(QQuery query)

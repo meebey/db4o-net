@@ -5,7 +5,6 @@ using Db4objects.Db4o.Tests.Common.Migration;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class Db4oLibraryEnvironmentProvider
 	{
 		private readonly Hashtable4 _environments = new Hashtable4();

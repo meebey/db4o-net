@@ -22,7 +22,6 @@ namespace Db4objects.Db4o
 	/// when they are actually being used by the application.
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectSet">for extended functionality.</seealso>
-	/// <decaf.ignore.implements.jdk11></decaf.ignore.implements.jdk11>
 	public interface IObjectSet : IList
 	{
 		/// <summary>returns an ObjectSet with extended functionality.</summary>

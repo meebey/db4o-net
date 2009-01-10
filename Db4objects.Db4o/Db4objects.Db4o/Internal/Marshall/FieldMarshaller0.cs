@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				field.Init(field.ContainingClass(), name);
 				return field;
 			}
-			if (spec.IsVirtual())
+			if (spec.IsVirtualField())
 			{
 				return stream._handlers.VirtualFieldByName(name);
 			}

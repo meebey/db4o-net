@@ -10,7 +10,6 @@ using Db4objects.Db4o.Tests.Common.Migration;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class Db4oMigrationSuiteBuilder : ReflectionTestSuiteBuilder
 	{
 		/// <summary>Runs the tests against all archived libraries + the current one</summary>
@@ -56,12 +55,12 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		/// <exception cref="System.Exception"></exception>
 		private IEnumerator MigrationTestSuite(Type clazz, Db4oLibrary[] libraries)
 		{
-			return Iterators.Map(libraries, new _IFunction4_52(this, clazz));
+			return Iterators.Map(libraries, new _IFunction4_51(this, clazz));
 		}
 
-		private sealed class _IFunction4_52 : IFunction4
+		private sealed class _IFunction4_51 : IFunction4
 		{
-			public _IFunction4_52(Db4oMigrationSuiteBuilder _enclosing, Type clazz)
+			public _IFunction4_51(Db4oMigrationSuiteBuilder _enclosing, Type clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;

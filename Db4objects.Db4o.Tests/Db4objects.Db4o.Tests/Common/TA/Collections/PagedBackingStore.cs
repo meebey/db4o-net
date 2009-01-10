@@ -7,7 +7,6 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Collections
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class PagedBackingStore : ActivatableImpl
 	{
 		public const int InitialPageCount = 16;

@@ -52,7 +52,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override void Open(Type testCaseClass)
 		{
 			OpenServer();
-			IConfiguration config = Config();
+			IConfiguration config = CloneConfiguration();
 			ApplyFixtureConfiguration(testCaseClass, config);
 			_objectContainer = _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient
 				(config, Host, _port, Username, Password).Ext();
@@ -60,14 +60,14 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public virtual IExtObjectContainer OpenNewClient()
 		{
-			return _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient(CloneDb4oConfiguration
-				((Config4Impl)Config()), Host, _port, Username, Password).Ext();
+			return _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient(CloneConfiguration
+				(), Host, _port, Username, Password).Ext();
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		private void OpenServer()
 		{
-			_serverConfig = CloneDb4oConfiguration(Config());
+			_serverConfig = CloneConfiguration();
 			_server = Db4oFactory.OpenServer(_serverConfig, _file.GetAbsolutePath(), -1);
 			_port = _server.Ext().Port();
 			_server.GrantAccess(Username, Password);
@@ -161,12 +161,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IObjectContainer OpenEmbeddedClient()
 		{
-			return _server.OpenClient(Config());
-		}
-
-		private Config4Impl CloneDb4oConfiguration(IConfiguration config)
-		{
-			return (Config4Impl)((Config4Impl)config).DeepClone(this);
+			return _server.OpenClient(CloneConfiguration());
 		}
 
 		public override string Label()

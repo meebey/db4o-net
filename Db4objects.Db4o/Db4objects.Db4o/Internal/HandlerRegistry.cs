@@ -257,8 +257,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void Map(int id, ClassMetadata classMetadata, IFieldHandler fieldHandler, 
-			ITypeHandler4 typeHandler, IReflectClass classReflector)
+		private void Map(int id, PrimitiveFieldHandler classMetadata, IFieldHandler fieldHandler
+			, ITypeHandler4 typeHandler, IReflectClass classReflector)
 		{
 			// TODO: remove when _mapIdToClassMetadata is gone 
 			MapTypeInfo(id, classMetadata, fieldHandler, typeHandler, classReflector);
@@ -665,6 +665,12 @@ namespace Db4objects.Db4o.Internal
 			}
 			return context.Transaction().Container().Handlers().CorrectHandlerVersion(handler
 				, version);
+		}
+
+		public bool IsTransient(IReflectClass claxx)
+		{
+			return IclassTransientclass.IsAssignableFrom(claxx) || Platform4.IsTransient(claxx
+				);
 		}
 	}
 }

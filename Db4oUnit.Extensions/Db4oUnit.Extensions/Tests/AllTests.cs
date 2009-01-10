@@ -15,8 +15,8 @@ namespace Db4oUnit.Extensions.Tests
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(DynamicFixtureTestCase), typeof(FixtureConfigurationTestCase
-				), typeof(FixtureTestCase) };
+			return new Type[] { typeof(DynamicFixtureTestCase), typeof(ExcludingReflectorTestCase
+				), typeof(FixtureConfigurationTestCase), typeof(FixtureTestCase) };
 		}
 	}
 }

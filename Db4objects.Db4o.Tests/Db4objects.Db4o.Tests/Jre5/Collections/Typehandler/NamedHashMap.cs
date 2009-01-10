@@ -4,7 +4,6 @@ using System.Collections;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
-	/// <decaf.ignore></decaf.ignore>
 	[System.Serializable]
 	public class NamedHashMap : Hashtable
 	{

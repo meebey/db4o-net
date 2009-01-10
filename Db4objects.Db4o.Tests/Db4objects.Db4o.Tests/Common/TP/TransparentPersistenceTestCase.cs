@@ -16,6 +16,11 @@ namespace Db4objects.Db4o.Tests.Common.TP
 {
 	public class TransparentPersistenceTestCase : AbstractDb4oTestCase
 	{
+		public static void Main(string[] args)
+		{
+			new TransparentPersistenceTestCase().RunClientServer();
+		}
+
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
@@ -49,8 +54,8 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			try
 			{
 				Item foo1 = ItemByName(client1, "Foo");
-				foo1.SetName("Foo*");
 				Item foo2 = ItemByName(client2, "Foo");
+				foo1.SetName("Foo*");
 				foo2.SetName("Foo**");
 				AssertUpdatedObjects(client1, foo1);
 				AssertUpdatedObjects(client2, foo2);
@@ -67,12 +72,12 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		public virtual void TestTransparentUpdate()
 		{
 			Item foo = ItemByName("Foo");
-			foo.SetName("Bar");
-			// changing more than once shouldn't be a problem
-			foo.SetName("Foo*");
 			Item bar = ItemByName("Bar");
 			Assert.AreEqual("Bar", bar.GetName());
 			// accessed but not changed
+			foo.SetName("Bar");
+			// changing more than once shouldn't be a problem
+			foo.SetName("Foo*");
 			AssertUpdatedObjects(foo);
 			Reopen();
 			Assert.IsNotNull(ItemByName("Foo*"));
@@ -115,14 +120,14 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		{
 			Collection4 updated = new Collection4();
 			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
-				(new _IEventListener4_104(updated).OnEvent);
+				(new _IEventListener4_107(updated).OnEvent);
 			container.Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_104
+		private sealed class _IEventListener4_107
 		{
-			public _IEventListener4_104(Collection4 updated)
+			public _IEventListener4_107(Collection4 updated)
 			{
 				this.updated = updated;
 			}

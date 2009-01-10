@@ -14,7 +14,6 @@ namespace Db4objects.Db4o.Typehandlers
 {
 	/// <summary>Typehandler for classes that implement java.util.Map.</summary>
 	/// <remarks>Typehandler for classes that implement java.util.Map.</remarks>
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class MapTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler
 	{

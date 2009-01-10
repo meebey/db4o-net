@@ -11,7 +11,6 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class ArrayListUpdateTestCase : HandlerUpdateTestCaseBase
 	{
 		private static readonly object[] Data = new object[] { "one", "aAzZ|!Â§$%&/()=?ÃŸÃ¶Ã¤Ã¼Ã„Ã–ÃœYZ;:-_+*~#^Â°'@"

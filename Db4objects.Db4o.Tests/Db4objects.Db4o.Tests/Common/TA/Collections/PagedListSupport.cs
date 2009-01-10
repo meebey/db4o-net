@@ -9,18 +9,17 @@ using Db4objects.Db4o.Tests.Common.TA.Collections;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Collections
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class PagedListSupport : IConfigurationItem
 	{
 		public virtual void Apply(IInternalObjectContainer db)
 		{
 			EventRegistry(db).Updating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
-				(new _IEventListener4_20().OnEvent);
+				(new _IEventListener4_19().OnEvent);
 		}
 
-		private sealed class _IEventListener4_20
+		private sealed class _IEventListener4_19
 		{
-			public _IEventListener4_20()
+			public _IEventListener4_19()
 			{
 			}
 

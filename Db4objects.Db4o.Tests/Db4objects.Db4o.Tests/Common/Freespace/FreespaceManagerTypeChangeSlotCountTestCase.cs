@@ -14,7 +14,6 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class FreespaceManagerTypeChangeSlotCountTestCase : ITestCase
 	{
 		private const int Size = 10000;
@@ -123,13 +122,13 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		private IList GetSlots(IFreespaceManager freespaceManager)
 		{
 			IList retVal = new ArrayList();
-			freespaceManager.Traverse(new _IVisitor4_109(retVal));
+			freespaceManager.Traverse(new _IVisitor4_108(retVal));
 			return retVal;
 		}
 
-		private sealed class _IVisitor4_109 : IVisitor4
+		private sealed class _IVisitor4_108 : IVisitor4
 		{
-			public _IVisitor4_109(IList retVal)
+			public _IVisitor4_108(IList retVal)
 			{
 				this.retVal = retVal;
 			}

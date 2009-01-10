@@ -36,6 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
 			{
+				this._enclosing.AssertClientTransaction(args);
 				instantiatedLog.xed = true;
 				object obj = ((ObjectEventArgs)args).Object;
 				Assert.IsNotNull(this._enclosing.Trans().ReferenceSystem().ReferenceForObject(obj

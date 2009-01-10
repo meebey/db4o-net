@@ -17,7 +17,6 @@ namespace Db4objects.Db4o.Typehandlers
 	/// TypeHandler for Collections.
 	/// On the .NET side, usage is restricted to instances of IList.
 	/// </remarks>
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public partial class CollectionTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
 		, IVariableLengthTypeHandler
 	{

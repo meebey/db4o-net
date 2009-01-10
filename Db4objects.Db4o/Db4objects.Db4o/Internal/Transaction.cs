@@ -43,6 +43,8 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly TransactionalReferenceSystem _referenceSystem;
 
+		private readonly IDictionary _locals = new Hashtable();
+
 		public Transaction(ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
 			 systemTransaction, TransactionalReferenceSystem referenceSystem)
 		{
@@ -50,6 +52,22 @@ namespace Db4objects.Db4o.Internal
 			_container = container;
 			_systemTransaction = systemTransaction;
 			_referenceSystem = referenceSystem;
+		}
+
+		/// <summary>Transaction local variables.</summary>
+		/// <remarks>Transaction local variables.</remarks>
+		/// <param name="local"></param>
+		/// <returns></returns>
+		public virtual ByRef Get(TransactionLocal local)
+		{
+			ByRef existing = (ByRef)_locals[local];
+			if (null != existing)
+			{
+				return existing;
+			}
+			ByRef initialValue = ByRef.NewInstance(local.InitialValueFor(this));
+			_locals.Add(local, initialValue);
+			return initialValue;
 		}
 
 		public void CheckSynchronization()
@@ -65,6 +83,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			Clear();
 			_transactionListeners = null;
+			_locals.Clear();
 		}
 
 		protected abstract void Clear();
@@ -374,12 +393,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_327(this);
+			return new _IContext_348(this);
 		}
 
-		private sealed class _IContext_327 : IContext
+		private sealed class _IContext_348 : IContext
 		{
-			public _IContext_327(Transaction _enclosing)
+			public _IContext_348(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

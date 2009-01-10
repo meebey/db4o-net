@@ -114,9 +114,9 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 				);
 		}
 
-		private TransparentActivationDepthProvider Provider()
+		private TransparentActivationDepthProviderImpl Provider()
 		{
-			return new TransparentActivationDepthProvider();
+			return new TransparentActivationDepthProviderImpl();
 		}
 
 		private IActivationDepth TAAwareDepth()

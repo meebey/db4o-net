@@ -5,7 +5,6 @@ using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections
 {
-	/// <decaf.ignore></decaf.ignore>
 	public class Product : ActivatableImpl
 	{
 		private string _code;

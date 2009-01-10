@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private int _isCollection;
 
-		private IGenericConverter _converter;
+		protected IGenericConverter _converter;
 
 		private GenericField[] _fields = NoFields;
 
@@ -352,13 +352,13 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return "GenericClass " + _name;
 		}
 
-		public virtual string ToString(GenericObject obj)
+		public virtual string ToString(object obj)
 		{
 			if (_converter == null)
 			{
 				return "(G) " + GetName();
 			}
-			return _converter.ToString(obj);
+			return _converter.ToString((GenericObject)obj);
 		}
 
 		public virtual bool EnsureCanBeInstantiated()

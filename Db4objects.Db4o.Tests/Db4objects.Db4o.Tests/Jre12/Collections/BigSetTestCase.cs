@@ -15,7 +15,6 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Jre12.Collections
 {
-	/// <decaf.ignore.jdk11></decaf.ignore.jdk11>
 	public class BigSetTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
 		private static readonly BigSetTestCase.Item ItemOne = new BigSetTestCase.Item("one"

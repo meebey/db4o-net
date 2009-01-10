@@ -12,8 +12,9 @@ namespace Db4objects.Db4o.Tests.Common.Reflect
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(GenericReflectorStateTest), typeof(NoTestConstructorsTestCase
-				), typeof(ReflectArrayTestCase), typeof(ReflectFieldExceptionTestCase), typeof(Db4objects.Db4o.Tests.Common.Reflect.Custom.AllTests
-				), typeof(GenericObjectsTest) };
+				), typeof(ReflectArrayTestCase), typeof(ReflectClassTestCase), typeof(ReflectFieldExceptionTestCase
+				), typeof(Db4objects.Db4o.Tests.Common.Reflect.Custom.AllTests), typeof(GenericObjectsTest
+				) };
 		}
 
 		public static void Main(string[] args)

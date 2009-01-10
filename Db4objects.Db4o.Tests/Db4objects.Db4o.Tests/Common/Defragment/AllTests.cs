@@ -10,14 +10,14 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Defragment.AllTests().RunSolo();
+			new Db4objects.Db4o.Tests.Common.Defragment.AllTests().RunAll();
 		}
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(BlockSizeDefragTestCase), typeof(DefragInheritedFieldIndexTestCase
-				), typeof(SlotDefragmentTestCase), typeof(StoredClassFilterTestCase), typeof(TranslatedDefragTestCase
-				) };
+			return new Type[] { typeof(BlockSizeDefragTestCase), typeof(DefragEncryptedFileTestCase
+				), typeof(DefragInheritedFieldIndexTestCase), typeof(SlotDefragmentTestCase), typeof(
+				StoredClassFilterTestCase), typeof(TranslatedDefragTestCase) };
 		}
 	}
 }

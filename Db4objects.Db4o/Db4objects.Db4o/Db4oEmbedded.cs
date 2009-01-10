@@ -11,10 +11,11 @@ namespace Db4objects.Db4o
 	/// <summary>Factory class to open db4o instances in embedded mode.</summary>
 	/// <remarks>
 	/// Factory class to open db4o instances in embedded mode.
-	/// <br /><br />See the <code>com.db4o.cs.Db4oClientServer</code> class in
-	/// db4o-[version]-cs-java[java-version].jar/ Db4objects.Db4o.CS.dll
-	/// for methods to open db4o servers and db4o clients.
 	/// </remarks>
+	/// <seealso cref="Db4objects.Db4o.CS.Db4oClientServer">
+	/// Db4objects.Db4o.CS.Db4oClientServer
+	/// in Db4objects.Db4o.CS.dll for methods to open db4o servers and db4o clients.
+	/// </seealso>
 	/// <since>7.5</since>
 	public class Db4oEmbedded
 	{
@@ -34,18 +35,19 @@ namespace Db4objects.Db4o
 		/// opens an
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// on the specified database file for local use.
-		/// <br /><br />A database file can only be opened once, subsequent attempts to open
+		/// <br/><br/>A database file can only be opened once, subsequent attempts to open
 		/// another
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// against the same file will result in
 		/// a
-		/// <see cref="Db4objects.Db4o.Ext.DatabaseFileLockedException">DatabaseFileLockedException
-		/// 	</see>
-		/// .<br /><br />
+		/// <see cref="Db4objects.Db4o.Ext.DatabaseFileLockedException">
+		/// DatabaseFileLockedException
+		/// </see>
+		/// .<br/><br/>
 		/// Database files can only be accessed for readwrite access from one process
-		/// (one Java VM) at one time. All versions except for db4o mobile edition use an
+		/// at one time. All versions except for db4o mobile edition use an
 		/// internal mechanism to lock the database file for other processes.
-		/// <br /><br />
+		/// <br/><br/>
 		/// </summary>
 		/// <param name="config">
 		/// a custom
@@ -58,14 +60,18 @@ namespace Db4objects.Db4o
 		/// an open
 		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly">Db4objects.Db4o.Config.IConfiguration.ReadOnly
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">Db4objects.Db4o.Config.IConfiguration.Encrypt
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
-		/// 	</seealso>
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
-		/// 	</exception>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly">
+		/// Db4objects.Db4o.Config.IConfiguration.ReadOnly
+		/// </seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">
+		/// Db4objects.Db4o.Config.IConfiguration.Encrypt
+		/// </seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">
+		/// Db4objects.Db4o.Config.IConfiguration.Password
+		/// </seealso>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">
+		/// I/O operation failed or was unexpectedly interrupted.
+		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException">
 		/// the required database file is locked by
 		/// another process.
@@ -79,13 +85,15 @@ namespace Db4objects.Db4o
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException">
 		/// open operation failed because the database file
 		/// is in old format and
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">
+		/// Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
+		/// </see>
 		/// 
 		/// is set to false.
 		/// </exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">database was configured as read-only.
-		/// 	</exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">
+		/// database was configured as read-only.
+		/// </exception>
 		public static IObjectContainer OpenFile(IEmbeddedConfiguration config, string databaseFileName
 			)
 		{

@@ -246,9 +246,9 @@ namespace Db4objects.Db4o.Internal
 				this._enclosing = _enclosing;
 			}
 
-			public void Visit(object a_object)
+			public void Visit(object node)
 			{
-				this._enclosing.Free(((TreeInt)a_object)._key, Const4.PointerLength);
+				this._enclosing.Free(((TreeInt)node)._key, Const4.PointerLength);
 			}
 
 			private readonly LocalObjectContainer _enclosing;
@@ -708,15 +708,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_619(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_618(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_619 : IVisitor4
+		private sealed class _IVisitor4_618 : IVisitor4
 		{
-			public _IVisitor4_619(Hashtable4 semaphores)
+			public _IVisitor4_618(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -958,13 +958,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_817(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_816(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_817 : IVisitor4
+		private sealed class _IVisitor4_816 : IVisitor4
 		{
-			public _IVisitor4_817(IntArrayList ids)
+			public _IVisitor4_816(IntArrayList ids)
 			{
 				this.ids = ids;
 			}
