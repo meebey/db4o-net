@@ -1,4 +1,4 @@
-/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2009 db4objects Inc.   http://www.db4o.com */
 
 using System;
 using System.Threading;
@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Foundation
         private volatile Thread waitReleased;
         private volatile Thread closureReleased;
 
-        AutoResetEvent waitEvent = new AutoResetEvent(false);
-        AutoResetEvent closureEvent = new AutoResetEvent(false);
+    	readonly AutoResetEvent waitEvent = new AutoResetEvent(false);
+    	readonly AutoResetEvent closureEvent = new AutoResetEvent(false);
 
         public Object Run(IClosure4 closure4)
         {
@@ -29,10 +29,10 @@ namespace Db4objects.Db4o.Foundation
             }
         }
 
-        public void Snooze(long l)
+        public void Snooze(long timeout)
         {
             AwakeClosure();
-            WaitWait();
+            WaitWait(timeout);
             EnterClosure();
         }
 
@@ -70,9 +70,11 @@ namespace Db4objects.Db4o.Foundation
             }
         }
 
-        private void WaitWait()
+        private void WaitWait(long timeout)
         {
-            waitEvent.WaitOne();
+            if (!waitEvent.WaitOne((int) timeout, false))
+            	return;
+
             waitReleased = Thread.CurrentThread;
         }
 
