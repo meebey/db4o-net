@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Internal.Collections;
+using Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Typehandlers;
@@ -25,6 +26,7 @@ namespace Db4objects.Db4o.Internal
 #endif
             RegisterGenericTypeHandlers();
 			RegisterBigSetTypeHandler();
+            RegisterSystemArrayTypeHandler();
         }
 
     	private void RegisterBigSetTypeHandler()
@@ -79,5 +81,11 @@ namespace Db4objects.Db4o.Internal
             	return ((IList<Type>) _genericTypes).Contains(type.GetGenericTypeDefinition());
             }
         }
+
+        private void RegisterSystemArrayTypeHandler()
+        {
+            _config.RegisterTypeHandler(new SystemArrayPredicate(), new SystemArrayTypeHandler());
+        }
+
     }
 }
