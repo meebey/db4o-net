@@ -16,9 +16,14 @@ namespace Db4objects.Db4o.Foundation
     	readonly AutoResetEvent waitEvent = new AutoResetEvent(false);
     	readonly AutoResetEvent closureEvent = new AutoResetEvent(false);
 
-        public Object Run(IClosure4 closure4)
+		public void Awake()
+		{
+			AwakeWait();
+		}
+
+		public Object Run(IClosure4 closure4)
         {
-            EnterClosure();
+			EnterClosure();
             try
             {
                 return closure4.Run();
@@ -29,33 +34,25 @@ namespace Db4objects.Db4o.Foundation
             }
         }
 
-        public void Snooze(long timeout)
-        {
-            AwakeClosure();
-            WaitWait(timeout);
-            EnterClosure();
-        }
+		public void Snooze(long timeout)
+		{
+			AwakeClosure();
+			WaitWait(timeout);
+			EnterClosure();
+		}
 
-        public void Awake()
-        {
-            AwakeWait();
-        }
+		private void EnterClosure()
+		{
+			while (lockedByThread != Thread.CurrentThread)
+			{
+				while (!SetLock())
+				{
+					WaitClosure();
+				}
+			}
+		}
 
-        private void AwakeWait()
-        {
-            lock (this)
-            {
-                waitReleased = Thread.CurrentThread;
-                waitEvent.Set();
-                Thread.Sleep(0);
-                if (waitReleased == Thread.CurrentThread)
-                {
-                    waitEvent.Reset();
-                }
-            }
-        }
-
-        private void AwakeClosure()
+		private void AwakeClosure()
         {
             lock (this)
             {
@@ -70,11 +67,23 @@ namespace Db4objects.Db4o.Foundation
             }
         }
 
-        private void WaitWait(long timeout)
-        {
-            if (!waitEvent.WaitOne((int) timeout, false))
-            	return;
+		private void AwakeWait()
+		{
+			lock (this)
+			{
+				waitReleased = Thread.CurrentThread;
+				waitEvent.Set();
+				Thread.Sleep(0);
+				if (waitReleased == Thread.CurrentThread)
+				{
+					waitEvent.Reset();
+				}
+			}
+		}
 
+		private void WaitWait(long timeout)
+        {
+        	waitEvent.WaitOne((int) timeout, false);
             waitReleased = Thread.CurrentThread;
         }
 
@@ -82,17 +91,6 @@ namespace Db4objects.Db4o.Foundation
         {
             closureEvent.WaitOne();
             closureReleased = Thread.CurrentThread;
-        }
-
-        private void EnterClosure()
-        {
-            while (lockedByThread != Thread.CurrentThread)
-            {
-                while (!SetLock())
-                {
-                    WaitClosure();
-                }
-            }
         }
 
         private bool SetLock()
