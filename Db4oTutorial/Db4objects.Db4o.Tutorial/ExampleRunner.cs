@@ -3,10 +3,9 @@
     using System;
     using System.IO;
     using System.Reflection;
+    using Db4odoc.Tutorial.F1;
     
-	using Db4objects.Db4o.Tutorial.F1;
-    
-    public class ExampleRunner
+	public class ExampleRunner
     {   
         /// <summary>
         /// Executes the method passed as argument if its signature is

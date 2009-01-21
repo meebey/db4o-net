@@ -1,6 +1,6 @@
 using Db4objects.Db4o.Query;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter1
+namespace Db4odoc.Tutorial.F1.Chapter1
 {
 	public class ComplexQuery : Predicate
     {

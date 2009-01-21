@@ -7,9 +7,9 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.Query;
 
-using Db4objects.Db4o.Tutorial;
+using Db4odoc.Tutorial;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter9
+namespace Db4odoc.Tutorial.F1.Chapter10
 {
 	public class NQExample : Util
 	{

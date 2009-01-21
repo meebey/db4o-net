@@ -11,9 +11,8 @@ using Db4objects.Db4o.Bench.Logging.Replay;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
-using Db4objects.Db4o.Tutorial.F1.Chapter10;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter10
+namespace Db4odoc.Tutorial.F1.Chapter11
 {
     public class BenchmarkExample
     {

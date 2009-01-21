@@ -88,9 +88,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Db4objects.Db4o.Tutorial.Chapters\Db4objects.Db4o.Tutorial.Chapters-2005.csproj">
+    <ProjectReference Include="..\Db4odoc.Tutorial.Chapters\Db4odoc.Tutorial.Chapters-2005.csproj">
       <Project>{0194A3AA-0EDE-46FE-BF3B-BA9B25C815E3}</Project>
-      <Name>Db4objects.Db4o.Tutorial.Chapters-2005</Name>
+      <Name>Db4odoc.Tutorial.Chapters-2005</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

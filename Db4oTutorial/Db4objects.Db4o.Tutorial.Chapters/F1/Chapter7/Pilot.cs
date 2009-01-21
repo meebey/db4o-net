@@ -1,8 +1,9 @@
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter7
+namespace Db4odoc.Tutorial.F1.Chapter8
 {
     public class Pilot : IActivatable
     {

@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o-2005", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tutorial-2005", "Db4objects.Db4o.Tutorial\Db4objects.Db4o.Tutorial-2005.csproj", "{5A2D7BEE-8E16-4E97-99EB-D2815F653131}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tutorial.Chapters-2005", "Db4objects.Db4o.Tutorial.Chapters\Db4objects.Db4o.Tutorial.Chapters-2005.csproj", "{0194A3AA-0EDE-46FE-BF3B-BA9B25C815E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4odoc.Tutorial.Chapters-2005", "Db4odoc.Tutorial.Chapters\Db4odoc.Tutorial.Chapters-2005.csproj", "{0194A3AA-0EDE-46FE-BF3B-BA9B25C815E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tutorial.Console-2005", "Db4objects.Db4o.Tutorial.Console\Db4objects.Db4o.Tutorial.Console-2005.csproj", "{0265D23A-4B95-45C1-A393-6A08A220736A}"
 EndProject

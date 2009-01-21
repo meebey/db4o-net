@@ -1,8 +1,9 @@
 using System;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter8
+namespace Db4odoc.Tutorial.F1.Chapter9
 {
     public class SensorReadout : IActivatable
     {
@@ -26,7 +27,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter8
         {
             get
             {
-				Activate(ActivationPurpose.Read);
+                Activate(ActivationPurpose.Read);
                 return _car;
             }
         }
@@ -44,12 +45,12 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter8
         {
             get
             {
-				Activate(ActivationPurpose.Read);
+                Activate(ActivationPurpose.Read);
                 return _description;
             }
             set
             {
-				Activate(ActivationPurpose.Write);
+                Activate(ActivationPurpose.Write);
                 _description = value;
             }
         }
@@ -58,7 +59,7 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter8
         {
             get
             {
-				Activate(ActivationPurpose.Read);
+                Activate(ActivationPurpose.Read);
                 return _next;
             }
         }
@@ -78,13 +79,13 @@ namespace Db4objects.Db4o.Tutorial.F1.Chapter8
 
         public int CountElements()
         {
-			Activate(ActivationPurpose.Read);
+            Activate(ActivationPurpose.Read);
             return (_next == null ? 1 : _next.CountElements() + 1);
         }
 
         public override String ToString()
         {
-			Activate(ActivationPurpose.Read);
+            Activate(ActivationPurpose.Read);
             return String.Format("{0} : {1} : {2}", _car, _time, _description);
         }
 

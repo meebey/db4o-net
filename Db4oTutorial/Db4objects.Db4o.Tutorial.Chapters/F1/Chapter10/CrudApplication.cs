@@ -6,7 +6,7 @@ using Db4objects.Db4o.Bench.Logging;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.IO;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter10
+namespace Db4odoc.Tutorial.F1.Chapter11
 {
     /// <summary>
     /// Very simple CRUD (Create, Read, Update, Delete) application to

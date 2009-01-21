@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Db4objects.Db4o;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter5
+namespace Db4odoc.Tutorial.F1.Chapter6
 {
     public class TransactionExample : Util
     {

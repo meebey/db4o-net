@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Tutorial
 		
 		private string ToNewConventions(string typeName)
 		{
-			return ToPascalCaseNamespace(typeName.Replace("com.db4o", "Db4objects.Db4o.Tutorial"));
+			return ToPascalCaseNamespace(typeName.Replace("com.db4odoc", "Db4odoc.Tutorial"));
 		}
 		
 		private string ToPascalCaseNamespace(string name)

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
     
-namespace Db4objects.Db4o.Tutorial.F1.Chapter3
+namespace Db4odoc.Tutorial.F1.Chapter4
 {
     public class Car
     {

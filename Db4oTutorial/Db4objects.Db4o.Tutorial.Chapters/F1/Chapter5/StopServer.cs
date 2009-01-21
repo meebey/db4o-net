@@ -2,7 +2,7 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Messaging;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter5
+namespace Db4odoc.Tutorial.F1.Chapter6
 {
     /// <summary>
     /// stops the db4o Server started with StartServer.

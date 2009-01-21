@@ -1,7 +1,7 @@
 using System;
 using Db4objects.Db4o.Activation;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter8
+namespace Db4odoc.Tutorial.F1.Chapter9
 {
     public class TemperatureSensorReadout : SensorReadout
     {

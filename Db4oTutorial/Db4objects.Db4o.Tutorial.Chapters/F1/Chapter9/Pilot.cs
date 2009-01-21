@@ -1,4 +1,4 @@
-namespace Db4objects.Db4o.Tutorial.F1.Chapter9
+namespace Db4odoc.Tutorial.F1.Chapter10
 {
     public class Pilot
     {

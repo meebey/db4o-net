@@ -3,9 +3,9 @@ using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.TA;
-using Db4objects.Db4o.Tutorial.F1;
+using Db4odoc.Tutorial.F1;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter8
+namespace Db4odoc.Tutorial.F1.Chapter9
 {
     public class TransparentPersistenceExample : Util
     {

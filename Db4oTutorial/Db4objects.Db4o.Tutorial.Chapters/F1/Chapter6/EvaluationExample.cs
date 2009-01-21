@@ -1,11 +1,11 @@
 using System;
 using System.IO;
-
+using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
 
-using Db4objects.Db4o.Tutorial.F1.Chapter3;
+using Db4odoc.Tutorial.F1.Chapter4;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter6
+namespace Db4odoc.Tutorial.F1.Chapter7
 {
 	public class EvaluationExample : Util
 	{

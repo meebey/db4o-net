@@ -3,7 +3,7 @@ using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 
-namespace Db4objects.Db4o.Tutorial.F1.Chapter5
+namespace Db4odoc.Tutorial.F1.Chapter6
 {
 	public class DeepExample : Util
     {
