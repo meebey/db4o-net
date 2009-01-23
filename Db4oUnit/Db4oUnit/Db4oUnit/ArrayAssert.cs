@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit
 {
@@ -15,27 +16,26 @@ namespace Db4oUnit
 			Assert.Fail("Expecting '" + expected + "'.");
 		}
 
-		public static void Contains(object[] array, object[] expected)
+		public static void ContainsByIdentity(object[] array, object[] expected)
 		{
 			for (int i = 0; i < expected.Length; i++)
 			{
-				if (-1 == IndexOf(array, expected[i]))
+				if (-1 == Arrays4.IndexOfIdentity(array, expected[i]))
 				{
 					Assert.Fail("Expecting contains '" + expected[i] + "'.");
 				}
 			}
 		}
 
-		public static int IndexOf(object[] array, object expected)
+		public static void ContainsByEquality(object[] array, object[] expected)
 		{
-			for (int i = 0; i < array.Length; ++i)
+			for (int i = 0; i < expected.Length; i++)
 			{
-				if (expected.Equals(array[i]))
+				if (-1 == Arrays4.IndexOfEquals(array, expected[i]))
 				{
-					return i;
+					Assert.Fail("Expecting contains '" + expected[i] + "'.");
 				}
 			}
-			return -1;
 		}
 
 		public static void AreEqual(object[] expected, object[] actual)

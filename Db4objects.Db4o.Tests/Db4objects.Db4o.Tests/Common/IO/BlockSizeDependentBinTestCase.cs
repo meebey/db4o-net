@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			public override IBin Open(BinConfiguration config)
 			{
 				IBin bin = base.Open(config);
-				((IBlockSize)Environments.My(typeof(IBlockSize))).Register((IListener)bin);
+				((IBlockSize)Environments.My(typeof(IBlockSize))).Register((IListener4)bin);
 				return bin;
 			}
 
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 					(bin, _blockSize);
 			}
 
-			private class BlockSizeDependentBin : BinDecorator, IListener
+			private class BlockSizeDependentBin : BinDecorator, IListener4
 			{
 				private readonly IntByRef _blockSize;
 

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.IO
 	/// <since>7.7</since>
 	public interface IBlockSize
 	{
-		void Register(IListener listener);
+		void Register(IListener4 listener);
 
 		void Set(int newValue);
 

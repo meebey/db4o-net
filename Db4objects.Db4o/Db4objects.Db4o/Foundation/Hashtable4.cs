@@ -145,9 +145,9 @@ namespace Db4objects.Db4o.Foundation
 		/// 	</see>
 		/// iterator
 		/// </returns>
-		/// <seealso>#values();</seealso>
-		/// <seealso>
-		/// #keys();
+		/// <seealso cref="Db4objects.Db4o.Foundation.HashtableBase.Values">Db4objects.Db4o.Foundation.HashtableBase.Values
+		/// 	</seealso>
+		/// <seealso cref="Db4objects.Db4o.Foundation.HashtableBase.Keys">
 		/// #see
 		/// <see cref="Db4objects.Db4o.Foundation.HashtableBase.ValuesIterator">Db4objects.Db4o.Foundation.HashtableBase.ValuesIterator
 		/// 	</see>

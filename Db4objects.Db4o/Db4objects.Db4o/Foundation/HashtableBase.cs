@@ -143,22 +143,25 @@ namespace Db4objects.Db4o.Foundation
 
 		private void Reposition(HashtableIntEntry entry)
 		{
-			if (entry != null)
+			HashtableIntEntry currentEntry = entry;
+			HashtableIntEntry nextEntry = null;
+			while (currentEntry != null)
 			{
-				Reposition(entry._next);
-				entry._next = _table[EntryIndex(entry)];
-				_table[EntryIndex(entry)] = entry;
+				nextEntry = currentEntry._next;
+				currentEntry._next = _table[EntryIndex(currentEntry)];
+				_table[EntryIndex(currentEntry)] = currentEntry;
+				currentEntry = nextEntry;
 			}
 		}
 
 		public virtual IEnumerator Keys()
 		{
-			return Iterators.Map(HashtableIterator(), new _IFunction4_129());
+			return Iterators.Map(HashtableIterator(), new _IFunction4_133());
 		}
 
-		private sealed class _IFunction4_129 : IFunction4
+		private sealed class _IFunction4_133 : IFunction4
 		{
-			public _IFunction4_129()
+			public _IFunction4_133()
 			{
 			}
 
@@ -170,12 +173,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IEnumerable Values()
 		{
-			return new _IEnumerable_137(this);
+			return new _IEnumerable_141(this);
 		}
 
-		private sealed class _IEnumerable_137 : IEnumerable
+		private sealed class _IEnumerable_141 : IEnumerable
 		{
-			public _IEnumerable_137(HashtableBase _enclosing)
+			public _IEnumerable_141(HashtableBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -193,12 +196,12 @@ namespace Db4objects.Db4o.Foundation
 		/// <returns>value iterator</returns>
 		public virtual IEnumerator ValuesIterator()
 		{
-			return Iterators.Map(HashtableIterator(), new _IFunction4_150());
+			return Iterators.Map(HashtableIterator(), new _IFunction4_154());
 		}
 
-		private sealed class _IFunction4_150 : IFunction4
+		private sealed class _IFunction4_154 : IFunction4
 		{
-			public _IFunction4_150()
+			public _IFunction4_154()
 			{
 			}
 

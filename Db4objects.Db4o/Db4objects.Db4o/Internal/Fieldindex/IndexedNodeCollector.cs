@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 					OrIndexedLeaf other = FindJoinOnSameFieldAtSameLevel(current);
 					if (null != other)
 					{
-						nodes[Arrays4.IndexOf(nodes, other)] = null;
+						nodes[Arrays4.IndexOfIdentity(nodes, other)] = null;
 						CollectImplicitAnd(current.GetConstraint(), current, other);
 					}
 				}

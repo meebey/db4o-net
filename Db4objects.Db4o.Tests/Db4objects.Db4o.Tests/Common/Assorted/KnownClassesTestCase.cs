@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private bool IsKnownClass(Type klass)
 		{
-			return IsKnownClass(klass.FullName);
+			return IsKnownClass(ReflectPlatform.FullyQualifiedName(klass));
 		}
 
 		private bool IsKnownClass(string expected)

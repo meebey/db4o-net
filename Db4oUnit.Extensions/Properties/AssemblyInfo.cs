@@ -13,7 +13,7 @@ using System.Security;
 [assembly: AssemblyKeyName("")]
 
 // attributes are automatically set by the build
-[assembly: AssemblyVersion("7.7.77.12406")]
+[assembly: AssemblyVersion("7.8.79.12486")]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
-[assembly: AssemblyDescription("Db4oUnit.Extensions 7.7.77.12406 (.NET)")]
+[assembly: AssemblyDescription("Db4oUnit.Extensions 7.8.79.12486 (.NET)")]

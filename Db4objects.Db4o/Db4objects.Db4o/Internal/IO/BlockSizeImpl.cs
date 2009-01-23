@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.IO
 
 		private int _value;
 
-		public virtual void Register(IListener listener)
+		public virtual void Register(IListener4 listener)
 		{
 			_listenerRegistry.Register(listener);
 		}

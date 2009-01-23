@@ -275,7 +275,6 @@ namespace Db4objects.Db4o.Foundation
 		/// Removes all the elements from this collection that are returned by
 		/// iterator.
 		/// </remarks>
-		/// <param name="iterable"></param>
 		public virtual void RemoveAll(IEnumerator iterator)
 		{
 			while (iterator.MoveNext())

@@ -37,25 +37,51 @@ namespace Db4objects.Db4o.Foundation
 		public void Stop()
 		{
 			stopped = true;
-			lock (_lock)
+			_lock.Run(new _IClosure4_37(this));
+		}
+
+		private sealed class _IClosure4_37 : IClosure4
+		{
+			public _IClosure4_37(SimpleTimer _enclosing)
 			{
-				_lock.Awake();
+				this._enclosing = _enclosing;
 			}
+
+			public object Run()
+			{
+				this._enclosing._lock.Awake();
+				return null;
+			}
+
+			private readonly SimpleTimer _enclosing;
 		}
 
 		public void Run()
 		{
 			while (!stopped)
 			{
-				lock (_lock)
-				{
-					_lock.Snooze(_interval);
-				}
+				_lock.Run(new _IClosure4_47(this));
 				if (!stopped)
 				{
 					_runnable.Run();
 				}
 			}
+		}
+
+		private sealed class _IClosure4_47 : IClosure4
+		{
+			public _IClosure4_47(SimpleTimer _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Run()
+			{
+				this._enclosing._lock.Snooze(this._enclosing._interval);
+				return null;
+			}
+
+			private readonly SimpleTimer _enclosing;
 		}
 	}
 }

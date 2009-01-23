@@ -122,6 +122,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				CheckDatabaseFile(testFileName);
 				UpdateDatabaseFile(testFileName);
 				CheckUpdatedDatabaseFile(testFileName);
+				RunDefrag(testFileName);
+				CheckUpdatedDatabaseFile(testFileName);
 			}
 			else
 			{
@@ -165,12 +167,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		// do nothing
 		private void CheckDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_157(this));
+			WithDatabase(testFile, new _IFunction4_160(this));
 		}
 
-		private sealed class _IFunction4_157 : IFunction4
+		private sealed class _IFunction4_160 : IFunction4
 		{
-			public _IFunction4_157(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_160(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -186,12 +188,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_166(this));
+			WithDatabase(testFile, new _IFunction4_169(this));
 		}
 
-		private sealed class _IFunction4_166 : IFunction4
+		private sealed class _IFunction4_169 : IFunction4
 		{
-			public _IFunction4_166(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_169(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -207,12 +209,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckUpdatedDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_176(this));
+			WithDatabase(testFile, new _IFunction4_179(this));
 		}
 
-		private sealed class _IFunction4_176 : IFunction4
+		private sealed class _IFunction4_179 : IFunction4
 		{
-			public _IFunction4_176(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_179(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

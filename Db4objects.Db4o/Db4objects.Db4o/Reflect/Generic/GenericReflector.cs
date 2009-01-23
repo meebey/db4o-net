@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Reflect.Generic;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 
@@ -338,14 +339,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_306(collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_307(collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_306 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_307 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_306(IReflectClass collectionClass)
+			public _IReflectClassPredicate_307(IReflectClass collectionClass)
 			{
 				this.collectionClass = collectionClass;
 			}
@@ -390,83 +391,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <returns>an array of classes known to the reflector</returns>
 		public virtual IReflectClass[] KnownClasses()
 		{
-			Collection4 classes = new Collection4();
-			CollectKnownClasses(classes);
-			return (IReflectClass[])classes.ToArray(new IReflectClass[classes.Size()]);
-		}
-
-		private void CollectKnownClasses(Collection4 classes)
-		{
-			IListener collectingListener = NewCollectingClassListener(classes);
-			_repository.AddListener(collectingListener);
-			try
-			{
-				CollectKnownClasses(classes, Iterators.Copy(_repository.Classes()));
-			}
-			finally
-			{
-				_repository.RemoveListener(collectingListener);
-			}
-		}
-
-		private IListener NewCollectingClassListener(Collection4 classes)
-		{
-			return new _IListener_364(this, classes);
-		}
-
-		private sealed class _IListener_364 : IListener
-		{
-			public _IListener_364(GenericReflector _enclosing, Collection4 classes)
-			{
-				this._enclosing = _enclosing;
-				this.classes = classes;
-			}
-
-			public void OnEvent(object addedClass)
-			{
-				this._enclosing.CollectKnownClass(classes, ((IReflectClass)addedClass));
-			}
-
-			private readonly GenericReflector _enclosing;
-
-			private readonly Collection4 classes;
-		}
-
-		private void CollectKnownClasses(Collection4 collector, IEnumerator knownClasses)
-		{
-			while (knownClasses.MoveNext())
-			{
-				IReflectClass clazz = (IReflectClass)knownClasses.Current;
-				CollectKnownClass(collector, clazz);
-			}
-		}
-
-		private void CollectKnownClass(Collection4 classes, IReflectClass clazz)
-		{
-			if (IsInternalClass(clazz))
-			{
-				return;
-			}
-			if (IsSecondClass(clazz))
-			{
-				return;
-			}
-			if (clazz.IsArray())
-			{
-				return;
-			}
-			classes.Add(clazz);
-		}
-
-		private bool IsInternalClass(IReflectClass clazz)
-		{
-			return _stream._handlers.IclassInternal.IsAssignableFrom(clazz);
-		}
-
-		private bool IsSecondClass(IReflectClass clazz)
-		{
-			ClassMetadata clazzMeta = _stream.ClassMetadataForReflectClass(clazz);
-			return clazzMeta != null && clazzMeta.IsSecondClass();
+			return new KnownClassesCollector(_stream, _repository).Collect();
 		}
 
 		/// <summary>Registers primitive class</summary>

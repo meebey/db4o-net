@@ -7,11 +7,23 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Arrays4
 	{
-		public static int IndexOf(object[] array, object element)
+		public static int IndexOfIdentity(object[] array, object element)
 		{
 			for (int i = 0; i < array.Length; i++)
 			{
 				if (array[i] == element)
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
+
+		public static int IndexOfEquals(object[] array, object expected)
+		{
+			for (int i = 0; i < array.Length; ++i)
+			{
+				if (expected.Equals(array[i]))
 				{
 					return i;
 				}

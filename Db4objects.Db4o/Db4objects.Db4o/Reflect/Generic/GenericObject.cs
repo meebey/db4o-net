@@ -1,11 +1,12 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Reflect.Generic;
 
 namespace Db4objects.Db4o.Reflect.Generic
 {
 	/// <exclude></exclude>
-	public class GenericObject
+	public class GenericObject : IComparable
 	{
 		internal readonly GenericClass _class;
 
@@ -51,6 +52,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public virtual GenericClass GetGenericClass()
 		{
 			return _class;
+		}
+
+		public virtual int CompareTo(object o)
+		{
+			return 0;
 		}
 	}
 }

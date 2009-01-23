@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Foundation
 
 		private IdentitySet4 _listeners;
 
-		public virtual void Register(IListener listener)
+		public virtual void Register(IListener4 listener)
 		{
 			if (_listeners == null)
 			{
@@ -33,11 +33,11 @@ namespace Db4objects.Db4o.Foundation
 			IEnumerator i = _listeners.GetEnumerator();
 			while (i.MoveNext())
 			{
-				((IListener)i.Current).OnEvent(@event);
+				((IListener4)i.Current).OnEvent(@event);
 			}
 		}
 
-		public virtual void Remove(IListener listener)
+		public virtual void Remove(IListener4 listener)
 		{
 			if (_listeners == null)
 			{

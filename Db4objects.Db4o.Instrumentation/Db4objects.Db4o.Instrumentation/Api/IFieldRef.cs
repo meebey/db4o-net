@@ -4,12 +4,8 @@ using Db4objects.Db4o.Instrumentation.Api;
 
 namespace Db4objects.Db4o.Instrumentation.Api
 {
-	/// <summary>A reference to a field.</summary>
-	/// <remarks>
-	/// A reference to a field. See
-	/// <see cref="ReferenceProvider#forField">ReferenceProvider#forField</see>
-	/// .
-	/// </remarks>
+	/// <summary>A reference to a field..</summary>
+	/// <remarks>A reference to a field..</remarks>
 	public interface IFieldRef
 	{
 		ITypeRef Type

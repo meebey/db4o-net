@@ -3,7 +3,7 @@
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public interface IListener
+	public interface IListener4
 	{
 		void OnEvent(object @event);
 	}

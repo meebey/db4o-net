@@ -54,10 +54,14 @@ namespace Db4objects.Db4o.Internal
 			_referenceSystem = referenceSystem;
 		}
 
-		/// <summary>Transaction local variables.</summary>
-		/// <remarks>Transaction local variables.</remarks>
-		/// <param name="local"></param>
-		/// <returns></returns>
+		/// <summary>Retrieves the value of a transaction local variables.</summary>
+		/// <remarks>
+		/// Retrieves the value of a transaction local variables.
+		/// If this is the first time the variable is accessed
+		/// <see cref="Db4objects.Db4o.Internal.TransactionLocal.InitialValueFor">Db4objects.Db4o.Internal.TransactionLocal.InitialValueFor
+		/// 	</see>
+		/// will provide the initial value.
+		/// </remarks>
 		public virtual ByRef Get(TransactionLocal local)
 		{
 			ByRef existing = (ByRef)_locals[local];

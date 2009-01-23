@@ -352,12 +352,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return baseClass;
 		}
 
-		public virtual void AddListener(IListener listener)
+		public virtual void AddListener(IListener4 listener)
 		{
 			_listeners.Register(listener);
 		}
 
-		public virtual void RemoveListener(IListener listener)
+		public virtual void RemoveListener(IListener4 listener)
 		{
 			_listeners.Remove(listener);
 		}

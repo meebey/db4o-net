@@ -291,7 +291,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			IReflectClass[] knownClasses = _client1.KnownClasses();
 			IReflectClass itemClass = _client1.Reflector().ForClass(typeof(EmbeddedClientObjectContainerTestCase.Item
 				));
-			ArrayAssert.Contains(knownClasses, new IReflectClass[] { itemClass });
+			ArrayAssert.ContainsByIdentity(knownClasses, new IReflectClass[] { itemClass });
 		}
 
 		public virtual void TestLock()
@@ -408,7 +408,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			IStoredClass[] storedClasses = _client1.StoredClasses();
 			IStoredClass storedClass = _client1.StoredClass(typeof(EmbeddedClientObjectContainerTestCase.Item
 				));
-			ArrayAssert.Contains(storedClasses, new object[] { storedClass });
+			ArrayAssert.ContainsByEquality(storedClasses, new object[] { storedClass });
 		}
 
 		public virtual void TestSystemInfo()

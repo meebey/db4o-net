@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 					this._enclosing = _enclosing;
 				}
 
-				public void Register(IListener listener)
+				public void Register(IListener4 listener)
 				{
 					throw new NotImplementedException();
 				}

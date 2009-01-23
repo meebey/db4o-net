@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.IO
 			return bin;
 		}
 
-		internal class IoAdapterBin : IBin, IListener
+		internal class IoAdapterBin : IBin, IListener4
 		{
 			private readonly IoAdapter _io;
 

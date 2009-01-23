@@ -97,6 +97,11 @@ namespace Db4objects.Db4o.Internal
 				);
 		}
 
+		public override string ToString()
+		{
+			return "StoredClass(" + _classMetadata + ")";
+		}
+
 		public virtual int InstanceCount()
 		{
 			return _classMetadata.InstanceCount(_transaction);
