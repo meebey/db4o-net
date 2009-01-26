@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Tutorial.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oBench-2005", "..\Db4oBench\Db4oBench-2005.csproj", "{D8AB00B9-7769-4136-98FA-920F89B12653}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.CS-2005", "..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-2005.csproj", "{3028DD51-034F-495B-8970-2F27BA021B85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Optional-2005", "..\Db4objects.Db4o.Optional\Db4objects.Db4o.Optional-2005.csproj", "{BB607235-9240-455B-A8F2-2D2299F1448C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +40,14 @@ Global
 		{D8AB00B9-7769-4136-98FA-920F89B12653}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8AB00B9-7769-4136-98FA-920F89B12653}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8AB00B9-7769-4136-98FA-920F89B12653}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3028DD51-034F-495B-8970-2F27BA021B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3028DD51-034F-495B-8970-2F27BA021B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3028DD51-034F-495B-8970-2F27BA021B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3028DD51-034F-495B-8970-2F27BA021B85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB607235-9240-455B-A8F2-2D2299F1448C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB607235-9240-455B-A8F2-2D2299F1448C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB607235-9240-455B-A8F2-2D2299F1448C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB607235-9240-455B-A8F2-2D2299F1448C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.NativeQueri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Instrumentation-CF-2008", "..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-CF-2008.csproj", "{F266671C-596C-486B-B9E2-CE456FBC40D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.CS-CF-2008", "..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-CF-2008.csproj", "{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Optional-CF-2008", "..\Db4objects.Db4o.Optional\Db4objects.Db4o.Optional-CF-2008.csproj", "{667C616E-FEA2-4D5E-93F0-9D18D17275FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{F266671C-596C-486B-B9E2-CE456FBC40D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F266671C-596C-486B-B9E2-CE456FBC40D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F266671C-596C-486B-B9E2-CE456FBC40D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{667C616E-FEA2-4D5E-93F0-9D18D17275FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{667C616E-FEA2-4D5E-93F0-9D18D17275FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{667C616E-FEA2-4D5E-93F0-9D18D17275FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{667C616E-FEA2-4D5E-93F0-9D18D17275FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
