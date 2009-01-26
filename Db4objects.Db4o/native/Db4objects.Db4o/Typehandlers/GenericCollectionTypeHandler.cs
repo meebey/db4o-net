@@ -14,7 +14,7 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Typehandlers
 {
-	/// <summary>TypeHandler for LinkedList class.<br /><br /></summary>
+
 	public class GenericCollectionTypeHandler : IFirstClassHandler, ICanHoldAnythingHandler, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj)
@@ -24,11 +24,12 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public virtual void Write(IWriteContext context, object obj)
 		{
-			ICollection collection = (ICollection)obj;
-			ITypeHandler4 elementHandler = DetectElementTypeHandler(Container(context), collection);
+            ICollectionInitializer initializer = CollectionInitializer.For(obj);
+            IEnumerable enumerable = (IEnumerable)obj;
+			ITypeHandler4 elementHandler = DetectElementTypeHandler(Container(context), enumerable);
 			WriteElementTypeHandlerId(context, elementHandler);
-			WriteElementCount(context, collection);
-			WriteElements(context, collection, elementHandler);
+			WriteElementCount(context, initializer);
+			WriteElements(context, enumerable, elementHandler);
 		}
 
 		public virtual object Read(IReadContext context)
@@ -69,7 +70,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public void CascadeActivation(ActivationContext4 context)
 		{
-			ICollection collection = ((ICollection)context.TargetObject());
+            IEnumerable collection = ((IEnumerable)context.TargetObject());
 			foreach (object item in collection)
 			{
 				context.CascadeActivationToChild(item);
@@ -124,14 +125,14 @@ namespace Db4objects.Db4o.Typehandlers
 			return (elementHandler is UntypedFieldHandler);
 		}
 
-		private static void WriteElementCount(IWriteBuffer context, ICollection collection)
+        private static void WriteElementCount(IWriteBuffer context, ICollectionInitializer initializer)
 		{
-			context.WriteInt(collection.Count);
+            context.WriteInt(initializer.Count());
 		}
 
-		private static void WriteElements(IWriteContext context, IEnumerable collection, ITypeHandler4 elementHandler)
+		private static void WriteElements(IWriteContext context, IEnumerable enumerable, ITypeHandler4 elementHandler)
 		{
-			IEnumerator elements = collection.GetEnumerator();
+			IEnumerator elements = enumerable.GetEnumerator();
 			while (elements.MoveNext())
 			{
 				context.WriteObject(elementHandler, elements.Current);
@@ -152,7 +153,7 @@ namespace Db4objects.Db4o.Typehandlers
 			return elementHandler ?? UntypedObjectHandlerFrom(context);
 		}
 
-		private static ITypeHandler4 DetectElementTypeHandler(ObjectContainerBase container, ICollection collection)
+		private static ITypeHandler4 DetectElementTypeHandler(ObjectContainerBase container, IEnumerable collection)
 		{
 			Type elementType = ElementTypeOf(collection);
 			if (IsNullableInstance(elementType))
@@ -174,9 +175,10 @@ namespace Db4objects.Db4o.Typehandlers
 			return elementType.IsGenericType && (elementType.GetGenericTypeDefinition() == typeof(Nullable<>));
 		}
 
-		private static Type ElementTypeOf(ICollection collection)
+		private static Type ElementTypeOf(IEnumerable collection)
 		{
 			return collection.GetType().GetGenericArguments()[0];
 		}
 	}
+
 }

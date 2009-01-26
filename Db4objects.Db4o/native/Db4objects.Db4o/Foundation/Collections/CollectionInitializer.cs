@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Foundation.Collections
 		void Clear();
 		void Add(object o);
 		void FinishAdding();
+	    int Count();
 	}
 
 	public sealed class CollectionInitializer
@@ -26,6 +27,9 @@ namespace Db4objects.Db4o.Foundation.Collections
 			initializerByType[typeof (ICollection<>)] = typeof (CollectionInitializerImpl<>);
 			initializerByType[typeof(Stack<>)] = typeof(StackInitializer<>);
 			initializerByType[typeof(Queue<>)] = typeof(QueueInitializer<>);
+#if NET_3_5 && ! CF
+		    initializerByType[typeof (HashSet<>)] = typeof (HashSetInitializer<>);
+#endif
 		}
 
 		public static ICollectionInitializer For(object destination)
@@ -88,7 +92,6 @@ namespace Db4objects.Db4o.Foundation.Collections
 			{
 				Type genericProtocolType = initializerType.MakeGenericType(containedElementType);
 				initializer = InstantiateInitializer(destination, genericProtocolType);
-				
 			}
 			return initializer;
 		}
@@ -133,6 +136,11 @@ namespace Db4objects.Db4o.Foundation.Collections
 				_list.Add(o);
 			}
 
+            public int Count()
+            {
+                return _list.Count;
+            }
+
 			public void FinishAdding()
 			{
 			}
@@ -151,6 +159,11 @@ namespace Db4objects.Db4o.Foundation.Collections
 			{
 				_collection.Clear();
 			}
+
+            public int Count()
+            {
+                return _collection.Count;
+            }
 
 			public void Add(object o)
 			{
@@ -178,6 +191,11 @@ namespace Db4objects.Db4o.Foundation.Collections
 				_tempStack.Clear();
 				_stack.Clear();
 			}
+
+            public int Count()
+            {
+                return _stack.Count;
+            }
 
 			public void Add(object o)
 			{
@@ -209,6 +227,11 @@ namespace Db4objects.Db4o.Foundation.Collections
 				_queue.Clear();
 			}
 
+            public int Count()
+            {
+                return _queue.Count;
+            }
+
 			public void Add(object o)
 			{
 				_queue.Enqueue((T) o);
@@ -218,5 +241,37 @@ namespace Db4objects.Db4o.Foundation.Collections
 			{
 			}
 		}
+
+#if NET_3_5 && ! CF
+        private sealed class HashSetInitializer<T> : ICollectionInitializer
+        {
+            private readonly HashSet<T> _hashSet;
+
+            public HashSetInitializer(HashSet<T> stack)
+            {
+                _hashSet = stack;
+            }
+
+            public void Clear()
+            {
+                _hashSet.Clear();
+            }
+
+            public void Add(object o)
+            {
+                _hashSet.Add((T)o);
+            }
+
+            public int Count()
+            {
+                return _hashSet.Count;
+            }
+
+            public void FinishAdding()
+            {
+            }
+        }
+#endif
+
 	}
 }

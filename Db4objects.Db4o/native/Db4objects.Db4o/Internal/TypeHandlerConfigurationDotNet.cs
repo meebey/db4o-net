@@ -41,6 +41,11 @@ namespace Db4objects.Db4o.Internal
 			RegisterGenericTypeHandler(typeof(LinkedList<>), collectionHandler);
 			RegisterGenericTypeHandler(typeof(Stack<>), collectionHandler);
 			RegisterGenericTypeHandler(typeof(Queue<>), collectionHandler);
+#if NET_3_5 && ! CF
+            RegisterGenericTypeHandler(typeof(HashSet<>), collectionHandler);
+            _config.Reflector().RegisterCollection(new GenericCollectionTypePredicate(typeof(HashSet<>)));
+
+#endif 
 
 			System.Type[] dictionaryTypes = new Type[] {
 				typeof(Dictionary<,>),
@@ -85,6 +90,31 @@ namespace Db4objects.Db4o.Internal
         private void RegisterSystemArrayTypeHandler()
         {
             _config.RegisterTypeHandler(new SystemArrayPredicate(), new SystemArrayTypeHandler());
+        }
+
+        internal class GenericCollectionTypePredicate : IReflectClassPredicate
+        {
+            private readonly Type _type;
+
+            internal GenericCollectionTypePredicate(Type t)
+            {
+                _type = t;
+            }
+
+
+            public bool Match(IReflectClass classReflector)
+            {
+                Type type = NetReflector.ToNative(classReflector);
+                if (type == null)
+                {
+                    return false;
+                }
+                if (!type.IsGenericType)
+                {
+                    return false;
+                }
+                return _type == type.GetGenericTypeDefinition();
+            }
         }
 
     }
