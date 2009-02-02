@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Linq
 		{
 			var temp = self as PlaceHolderQuery<TSource>;
 			if (temp == null) return new UnoptimizedQuery<TRet>(Enumerable.Select(self, selector));
-			return new Db4oQuery<TRet>(temp.Container);
+			return new Db4oQuery<TRet>(temp.QueryFactory);
 		}
 	}
 }

@@ -14,12 +14,12 @@ namespace Db4objects.Db4o.Linq
 		/// on the <see cref="Db4objects.Db4o.Linq.IDb4oLinqQuery">IDb4oLinqQuery</see> marker interface.
 		/// </summary>
 		/// <typeparam name="T">The type to query the ObjectContainer</typeparam>
-		/// <param name="self">An ObjectContainer</param>
+		/// <param name="self">A query factory (any IObjectContainer implementation)</param>
 		/// <returns>A <see cref="Db4objects.Db4o.Linq.IDb4oLinqQuery">IDb4oLinqQuery</see> marker interface</returns>
-		public static IDb4oLinqQuery<T> Cast<T>(this IObjectContainer container)
+		public static IDb4oLinqQuery<T> Cast<T>(this ISodaQueryFactory queryFactory)
 		{
-			if (typeof(T) == typeof(object)) return new PlaceHolderQuery<T>(container);
-			return new Db4oQuery<T>(container);
+			if (typeof(T) == typeof(object)) return new PlaceHolderQuery<T>(queryFactory);
+			return new Db4oQuery<T>(queryFactory);
 		}
 	}
 }

@@ -8,21 +8,23 @@ namespace Db4objects.Db4o.Linq.Internals
 {
 	internal class PlaceHolderQuery<T> : IDb4oLinqQuery<T>
 	{
-		private IObjectContainer _container;
+		private ISodaQueryFactory _queryFactory;
 
-		public IObjectContainer Container
+		public ISodaQueryFactory QueryFactory
 		{
-			get { return _container; }
+			get { return _queryFactory; }
 		}
 
-		public PlaceHolderQuery(IObjectContainer container)
+		public PlaceHolderQuery(ISodaQueryFactory queryFactory)
 		{
-			_container = container;
+			_queryFactory = queryFactory;
 		}
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return new ObjectSequence<T>(_container.Query(typeof(T))).GetEnumerator();
+			var query = _queryFactory.Query();
+			query.Constrain(typeof(T));
+			return new ObjectSequence<T>(query.Execute()).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

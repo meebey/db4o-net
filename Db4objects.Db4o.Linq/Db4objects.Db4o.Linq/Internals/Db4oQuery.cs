@@ -12,25 +12,25 @@ namespace Db4objects.Db4o.Linq.Internals
 {
 	internal class Db4oQuery<T> : IDb4oLinqQueryInternal<T>
 	{
-		private readonly IObjectContainer _container;
+		private readonly ISodaQueryFactory _queryFactory;
 		private readonly IQueryBuilderRecord _record;
 
-		public Db4oQuery(IObjectContainer container)
+		public Db4oQuery(ISodaQueryFactory queryFactory)
 		{
-			if (container == null) throw new ArgumentNullException("container");
-			_container = container;
+			if (queryFactory == null) throw new ArgumentNullException("queryFactory");
+			_queryFactory = queryFactory;
 			_record = NullQueryBuilderRecord.Instance;
 		}
 
 		public Db4oQuery(Db4oQuery<T> parent, IQueryBuilderRecord record)
 		{			
-			_container = parent.Container;
+			_queryFactory = parent.QueryFactory;
 			_record = new CompositeQueryBuilderRecord(parent.Record, record);
 		}
 
-		public IObjectContainer Container
+		public ISodaQueryFactory QueryFactory
 		{
-			get { return _container; }
+			get { return _queryFactory; }
 		}
 
 		public IQueryBuilderRecord Record
@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		private IQuery NewQuery()
 		{
-			var query = _container.Query();
+			var query = _queryFactory.Query();
 			query.Constrain(typeof(T));
 			return query;
 		}
