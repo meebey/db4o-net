@@ -22,8 +22,8 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		{
 //			_assemblyCache = new SingleItemCachingStrategy<Assembly, AssemblyDefinition>();
 //			_methodCache = new SingleItemCachingStrategy<MethodInfo, MethodDefinition>();
-			_assemblyCache = new Cache4CachingStrategy<Assembly, AssemblyDefinition>(CacheFactory.New2QXCache(5));
-			_methodCache = new Cache4CachingStrategy<MethodInfo, MethodDefinition>(CacheFactory.New2QXCache(5));
+			_assemblyCache = Cache4CachingStrategy<Assembly, AssemblyDefinition>.NewInstance(CacheFactory.New2QXCache(5));
+			_methodCache = Cache4CachingStrategy<MethodInfo, MethodDefinition>.NewInstance(CacheFactory.New2QXCache(5));
 		}
 
 		private AssemblyDefinition GetAssembly(Assembly assembly)

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Caching;
@@ -27,7 +28,7 @@ namespace Db4objects.Db4o.Linq.Tests.Caching
 		public void TestProduce()
 		{
 			var cache4Mock = new Cache4Mock();
-			var subject = new Cache4CachingStrategy<string, int>(cache4Mock);
+			var subject = Cache4CachingStrategy<string, int>.NewInstance(cache4Mock);
 
 			cache4Mock.Verify(new MethodCall[0]);
 			Assert.AreEqual(42, subject.Produce("42", key => 42));
@@ -42,6 +43,18 @@ namespace Db4objects.Db4o.Linq.Tests.Caching
 			                  {
 			                  	new MethodCall("Produce", new object[] { "42" }),
 			                  });
+
+		}
+
+		public void TestProduceWithEqualityComparer()
+		{
+			var cache4 = CacheFactory.NewLRUCache(2);
+			var subject = Cache4CachingStrategy<string, int>.NewInstance(cache4, StringComparer.CurrentCultureIgnoreCase);
+
+			Assert.AreEqual(42, subject.Produce("foo", key=>42));
+			Assert.AreEqual(42, subject.Produce("FOO", key=>-1));
+
+			Iterator4Assert.AreEqual(new object[] { 42 }, cache4);
 
 		}
 	}

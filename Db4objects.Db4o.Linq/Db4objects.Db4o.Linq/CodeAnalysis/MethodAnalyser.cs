@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 	internal class MethodAnalyser
 	{
 		private static ICachingStrategy<MethodDefinition, ActionFlowGraph> _graphCache =
-			new Cache4CachingStrategy<MethodDefinition, ActionFlowGraph>(CacheFactory.New2QXCache(5));
+			Cache4CachingStrategy<MethodDefinition, ActionFlowGraph>.NewInstance(CacheFactory.New2QXCache(5));
 
 		private ActionFlowGraph _graph;
 		private Expression _queryExpression;

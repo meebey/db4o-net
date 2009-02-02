@@ -35,7 +35,8 @@ namespace Db4objects.Db4o.Linq.Tests.Caching
 		public void TestNullStrategy()
 		{
 			var strategy = new NullCachingStrategy<string, string>();
-			Assert.AreEqual(null, strategy.Produce("foo", delegate { throw new NotSupportedException(); }));
+			Assert.AreEqual("bar", strategy.Produce("foo", key=>"bar"));
+			Assert.AreEqual("baz", strategy.Produce("foo", key =>"baz"));
 		}
 	}
 }

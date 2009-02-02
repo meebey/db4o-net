@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Linq.Caching
 	{	
 		public TValue Produce(TKey key, Func<TKey, TValue> producer)
 		{
-			return default(TValue);
+			return producer(key);
 		}
 	}
 }
