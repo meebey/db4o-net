@@ -34,31 +34,17 @@ namespace Db4objects.Db4o.Linq.Expressions
 			return new ExpressionTreeNormalizer().Normalize(expression);
 		}
 
-		private bool IsRecorderCached(Expression expression, out IQueryBuilderRecord record)
-		{
-			var cache = GetCachingStrategy();
-			record = cache.Get(expression);
-			return record != null;
-		}
-
-		private void CacheRecorder(Expression expression, IQueryBuilderRecord record)
-		{
-			GetCachingStrategy().Add(expression, record);
-		}
-
 		protected abstract ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy();
 
 		private IQueryBuilderRecord ProcessExpression(Expression expression)
 		{
-			IQueryBuilderRecord record;
-			if (IsRecorderCached(expression, out record))
-			{
-				return record;
-			}
+			return GetCachingStrategy().Produce(expression, CreateRecord);
+		}
 
+		private IQueryBuilderRecord CreateRecord(Expression expression)
+		{
 			_recorder = new QueryBuilderRecorder();
 			Visit(expression);
-			CacheRecorder(expression, _recorder.Record);
 			return _recorder.Record;
 		}
 

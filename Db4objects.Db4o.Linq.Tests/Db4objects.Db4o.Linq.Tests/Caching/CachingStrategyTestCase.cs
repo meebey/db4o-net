@@ -16,33 +16,26 @@ namespace Db4objects.Db4o.Linq.Tests.Caching
 		public void TestSingleItemStrategy()
 		{
 			var strategy = new SingleItemCachingStrategy<string, int>();
-			strategy.Add("foo", 42);
-			Assert.AreEqual(42, strategy.Get("foo"));
-			strategy.Add("bar", 7);
-			Assert.AreEqual(0, strategy.Get("foo"));
-			Assert.AreEqual(7, strategy.Get("bar"));
+			Assert.AreEqual(42, strategy.Produce("foo", key => 42));
+			Assert.AreEqual(7, strategy.Produce("bar", key => 7));
+			Assert.AreEqual(0, strategy.Produce("foo", key => 0));
 		}
 
 		public void TestAllItemsStrategy()
 		{
 			var strategy = new AllItemsCachingStrategy<string, int>();
-			strategy.Add("foo", 42);
-			strategy.Add("bar", 7);
-			strategy.Add("baz", 12);
-
-			Assert.AreEqual(7, strategy.Get("bar"));
-			Assert.AreEqual(12, strategy.Get("baz"));
-			Assert.AreEqual(42, strategy.Get("foo"));
+			for (int delta = 0; delta < 2; ++delta)
+			{
+				Assert.AreEqual(7, strategy.Produce("bar", key => 7 + delta));
+				Assert.AreEqual(12, strategy.Produce("baz", key => 12 + delta));
+				Assert.AreEqual(42, strategy.Produce("foo", key => 42 + delta));
+			}
 		}
 
 		public void TestNullStrategy()
 		{
 			var strategy = new NullCachingStrategy<string, string>();
-			strategy.Add("foo", "42");
-			strategy.Add("bar", "7");
-
-			Assert.AreEqual(null, strategy.Get("foo"));
-			Assert.AreEqual(null, strategy.Get("bar"));
+			Assert.AreEqual(null, strategy.Produce("foo", delegate { throw new NotSupportedException(); }));
 		}
 	}
 }

@@ -10,7 +10,9 @@ namespace Db4objects.Db4o.Linq.Tests.Caching
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] {
+			return new Type[]
+			{
+				typeof(Cache4CachingStrategyTestCase),
 				typeof(CachingStrategyTestCase),
 			};
 		}

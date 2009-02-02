@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-
+using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.Linq.Caching;
 
@@ -20,29 +20,16 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 		private MetadataResolver()
 		{
-			_assemblyCache = new AllItemsCachingStrategy<Assembly, AssemblyDefinition>();
-			_methodCache = new SingleItemCachingStrategy<MethodInfo, MethodDefinition>();
-		}
-
-		private AssemblyDefinition GetCachedAssembly(Assembly assembly)
-		{
-			return _assemblyCache.Get(assembly);
-		}
-
-		private void CacheAssembly(Assembly assembly, AssemblyDefinition asm)
-		{
-			_assemblyCache.Add(assembly, asm);
+//			_assemblyCache = new SingleItemCachingStrategy<Assembly, AssemblyDefinition>();
+//			_methodCache = new SingleItemCachingStrategy<MethodInfo, MethodDefinition>();
+			_assemblyCache = new Cache4CachingStrategy<Assembly, AssemblyDefinition>(CacheFactory.New2QXCache(5));
+			_methodCache = new Cache4CachingStrategy<MethodInfo, MethodDefinition>(CacheFactory.New2QXCache(5));
 		}
 
 		private AssemblyDefinition GetAssembly(Assembly assembly)
 		{
-			var asm = GetCachedAssembly(assembly);
-			if (asm != null)
-				return asm;
-
-			asm = AssemblyFactory.GetAssembly(assembly.ManifestModule.FullyQualifiedName);
-			CacheAssembly(assembly, asm);
-			return asm;
+			return _assemblyCache.Produce(assembly,
+						newAssembly => AssemblyFactory.GetAssembly(newAssembly.ManifestModule.FullyQualifiedName));
 		}
 
 		private static string GetFullName(Type type)
@@ -95,12 +82,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		{
 			if (method == null) throw new ArgumentNullException("method");
 
-			var definition = _methodCache.Get(method);
-			if (definition != null) return definition;
-
-			definition = GetMethod(method);
-			_methodCache.Add(method, definition);
-			return definition;
+			return _methodCache.Produce(method, GetMethod);
 		}
 	}
 }

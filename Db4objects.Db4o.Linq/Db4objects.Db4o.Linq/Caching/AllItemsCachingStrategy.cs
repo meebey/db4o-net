@@ -18,18 +18,15 @@ namespace Db4objects.Db4o.Linq.Caching
 			_cache = new Dictionary<TKey,TValue>(keyComparer);
 		}
 
-		public void Add(TKey key, TValue value)
-		{
-			_cache.Add(key, value);
-		}
-
-		public TValue Get(TKey key)
+		public TValue Produce(TKey key, Func<TKey, TValue> producer)
 		{
 			TValue value;
 			if (_cache.TryGetValue(key, out value))
 				return value;
 
-			return default(TValue);
+			value = producer(key);
+			_cache.Add(key, value);
+			return value;
 		}
 	}
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Query;
 
@@ -20,7 +21,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 	internal class MethodAnalyser
 	{
 		private static ICachingStrategy<MethodDefinition, ActionFlowGraph> _graphCache =
-			new SingleItemCachingStrategy<MethodDefinition, ActionFlowGraph>();
+			new Cache4CachingStrategy<MethodDefinition, ActionFlowGraph>(CacheFactory.New2QXCache(5));
 
 		private ActionFlowGraph _graph;
 		private Expression _queryExpression;
@@ -67,24 +68,8 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 		private static MethodAnalyser GetAnalyserFor(MethodDefinition method, object[] parameters)
 		{
-			var graph = GetCachedGraph(method);
-			if (graph != null) return new MethodAnalyser(graph, parameters);
-
-			graph = CreateActionFlowGraph(method);
-
-			CacheGraph(method, graph);
-
+			var graph = _graphCache.Produce(method, CreateActionFlowGraph);
 			return new MethodAnalyser(graph, parameters);
-		}
-
-		private static ActionFlowGraph GetCachedGraph(MethodDefinition method)
-		{
-			return _graphCache.Get(method);
-		}
-
-		private static void CacheGraph(MethodDefinition method, ActionFlowGraph graph)
-		{
-			_graphCache.Add(method, graph);
 		}
 
 		private static ActionFlowGraph CreateActionFlowGraph(MethodDefinition method)

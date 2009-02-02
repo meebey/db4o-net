@@ -21,20 +21,16 @@ namespace Db4objects.Db4o.Linq.Caching
 			_keyComparer = keyComparer;
 		}
 
-		public void Add(TKey key, TValue value)
+		public TValue Produce(TKey key, Func<TKey, TValue> producer)
 		{
 			lock (_lock)
 			{
-				_lastKey = key;
-				_lastValue = value;
-			}
-		}
+				if (_keyComparer.Equals(_lastKey, key))
+					return _lastValue;
 
-		public TValue Get(TKey key)
-		{
-			lock (_lock)
-			{
-				return _keyComparer.Equals(_lastKey, key) ? _lastValue : default(TValue);
+				_lastValue = producer(key);
+				_lastKey = key;
+				return _lastValue;
 			}
 		}
 	}

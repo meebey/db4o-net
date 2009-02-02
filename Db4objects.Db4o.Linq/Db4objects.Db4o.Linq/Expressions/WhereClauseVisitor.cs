@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 	internal class WhereClauseVisitor : ExpressionQueryBuilder
 	{
 		private static ICachingStrategy<Expression, IQueryBuilderRecord> _cache =
-			new SingleItemCachingStrategy<Expression, IQueryBuilderRecord>(ExpressionEqualityComparer.Instance);
+			new AllItemsCachingStrategy<Expression, IQueryBuilderRecord>(ExpressionEqualityComparer.Instance);
 
 		public WhereClauseVisitor()
 		{

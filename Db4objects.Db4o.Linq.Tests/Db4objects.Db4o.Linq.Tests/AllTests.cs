@@ -15,6 +15,10 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		protected override Type[] TestCases()
 		{
+//			return new[]
+//			       {
+//			       	typeof(Caching.AllTests),
+//			       };
 			return new [] {
 				typeof(Caching.AllTests),
 				typeof(CodeAnalysis.AllTests),
