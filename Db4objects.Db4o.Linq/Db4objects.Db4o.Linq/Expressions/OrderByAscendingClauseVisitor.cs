@@ -12,10 +12,9 @@ namespace Db4objects.Db4o.Linq.Expressions
 {
 	internal class OrderByAscendingClauseVisitor : OrderByClauseVisitorBase
 	{
-		private static ICachingStrategy<Expression, IQueryBuilderRecord> _cache =
-			Cache4CachingStrategy<Expression, IQueryBuilderRecord>.NewInstance(CacheFactory.New2QXCache(10), ExpressionEqualityComparer.Instance);
+		private static ICache4<Expression, IQueryBuilderRecord> _cache = ExpressionCacheFactory.NewInstance(10);
 
-		protected override ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy()
+		protected override ICache4<Expression, IQueryBuilderRecord> GetCachingStrategy()
 		{
 			return _cache;
 		}

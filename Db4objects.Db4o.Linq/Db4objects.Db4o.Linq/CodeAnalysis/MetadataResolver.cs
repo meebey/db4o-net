@@ -15,15 +15,15 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 	{
 		public static MetadataResolver Instance = new MetadataResolver();
 
-		private ICachingStrategy<Assembly, AssemblyDefinition> _assemblyCache;
-		private ICachingStrategy<MethodInfo, MethodDefinition> _methodCache;
+		private ICache4<Assembly, AssemblyDefinition> _assemblyCache;
+		private ICache4<MethodInfo, MethodDefinition> _methodCache;
 
 		private MetadataResolver()
 		{
 //			_assemblyCache = new SingleItemCachingStrategy<Assembly, AssemblyDefinition>();
 //			_methodCache = new SingleItemCachingStrategy<MethodInfo, MethodDefinition>();
-			_assemblyCache = Cache4CachingStrategy<Assembly, AssemblyDefinition>.NewInstance(CacheFactory.New2QXCache(5));
-			_methodCache = Cache4CachingStrategy<MethodInfo, MethodDefinition>.NewInstance(CacheFactory.New2QXCache(5));
+			_assemblyCache = CacheFactory<Assembly, AssemblyDefinition>.For(CacheFactory.New2QXCache(5));
+			_methodCache = CacheFactory<MethodInfo, MethodDefinition>.For(CacheFactory.New2QXCache(5));
 		}
 
 		private AssemblyDefinition GetAssembly(Assembly assembly)

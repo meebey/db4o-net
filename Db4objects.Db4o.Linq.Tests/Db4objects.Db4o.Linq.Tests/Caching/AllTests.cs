@@ -12,8 +12,7 @@ namespace Db4objects.Db4o.Linq.Tests.Caching
 		{
 			return new Type[]
 			{
-				typeof(Cache4CachingStrategyTestCase),
-				typeof(CachingStrategyTestCase),
+				typeof(GenericCacheFactoryTestCase),
 			};
 		}
 	}

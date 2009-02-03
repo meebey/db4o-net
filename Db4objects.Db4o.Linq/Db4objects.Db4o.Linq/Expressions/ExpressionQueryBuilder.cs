@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 			return new ExpressionTreeNormalizer().Normalize(expression);
 		}
 
-		protected abstract ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy();
+		protected abstract ICache4<Expression, IQueryBuilderRecord> GetCachingStrategy();
 
 		private IQueryBuilderRecord ProcessExpression(Expression expression)
 		{

@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 namespace Db4objects.Db4o.Linq.Caching
 {
-	public class TracingCachingStrategy<TKey, TValue> : ICachingStrategy<TKey, TValue>
+	public class TracingCacheDecorator<TKey, TValue> : ICache4<TKey, TValue>
 	{
-		private readonly ICachingStrategy<TKey, TValue> _delegate;
+		private readonly ICache4<TKey, TValue> _delegate;
 
-		public TracingCachingStrategy(ICachingStrategy<TKey, TValue> @delegate)
+		public TracingCacheDecorator(ICache4<TKey, TValue> @delegate)
 		{
 			_delegate = @delegate;
 		}

@@ -6,21 +6,29 @@ using Db4objects.Db4o.Internal.Caching;
 
 namespace Db4objects.Db4o.Linq.Caching
 {
-	public class Cache4CachingStrategy<TKey, TValue> : ICachingStrategy<TKey, TValue>
+	/// <summary>
+	/// Generic wrappers for <see cref="ICache4"/>.
+	/// </summary>
+	/// <typeparam name="TKey"></typeparam>
+	/// <typeparam name="TValue"></typeparam>
+	public class CacheFactory<TKey, TValue>
 	{
-		public static ICachingStrategy<TKey, TValue> NewInstance(ICache4 cache4)
+		public static ICache4<TKey, TValue> For(ICache4 cache4)
 		{
 			return new Cache4CachingStrategy<TKey, TValue>(cache4);
 		}
 
-		public static ICachingStrategy<TKey, TValue> NewInstance(ICache4 cache4, IEqualityComparer<TKey> comparer)
+		public static ICache4<TKey, TValue> For(ICache4 cache4, IEqualityComparer<TKey> comparer)
 		{
 			return new Cache4CachingStrategyWithComparer<TKey, TValue>(cache4, comparer);
 		}
+	}
 
+	internal class Cache4CachingStrategy<TKey, TValue> : ICache4<TKey, TValue>
+	{	
 		private readonly ICache4 _cache4;
 
-		protected Cache4CachingStrategy(ICache4 cache4)
+		public Cache4CachingStrategy(ICache4 cache4)
 		{
 			_cache4 = cache4;
 		}

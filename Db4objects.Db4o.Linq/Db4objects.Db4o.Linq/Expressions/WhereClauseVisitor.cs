@@ -2,10 +2,8 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Linq.Internals;
 using Db4objects.Db4o.Query;
@@ -14,14 +12,9 @@ namespace Db4objects.Db4o.Linq.Expressions
 {
 	internal class WhereClauseVisitor : ExpressionQueryBuilder
 	{
-		private static ICachingStrategy<Expression, IQueryBuilderRecord> _cache =
-			Cache4CachingStrategy<Expression, IQueryBuilderRecord>.NewInstance(CacheFactory.New2QXCache(42), ExpressionEqualityComparer.Instance);
+		private static ICache4<Expression, IQueryBuilderRecord> _cache = ExpressionCacheFactory.NewInstance(42);
 
-		public WhereClauseVisitor()
-		{
-		}
-
-		protected override ICachingStrategy<Expression, IQueryBuilderRecord> GetCachingStrategy()
+		protected override ICache4<Expression, IQueryBuilderRecord> GetCachingStrategy()
 		{
 			return _cache;
 		}
