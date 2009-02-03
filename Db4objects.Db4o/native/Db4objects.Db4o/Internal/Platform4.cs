@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2007 db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2004 - 2009 db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -673,6 +673,11 @@ namespace Db4objects.Db4o.Internal
             container.Handlers().RegisterHandlerVersion(enumTypeHandler, 0, new FirstClassObjectHandler0());
         }
 
+		public static Type[] PrimitiveTypes()
+		{
+			return PRIMITIVE_TYPES;
+		}
+
         public static object NullValue(Type type) 
         {
             if(_nullValues == null) 
@@ -718,23 +723,36 @@ namespace Db4objects.Db4o.Internal
         private static void InitPrimitive2Wrapper()
         {
     	    _primitive2Wrapper = new Hashtable4();
-            _primitive2Wrapper.Put(typeof(int), typeof(int?));
-            _primitive2Wrapper.Put(typeof(uint), typeof(uint?));
-            _primitive2Wrapper.Put(typeof(byte), typeof(byte?));
-    	    _primitive2Wrapper.Put(typeof(short), typeof(short?));
-    	    _primitive2Wrapper.Put(typeof(float), typeof(float?));
-    	    _primitive2Wrapper.Put(typeof(double), typeof(double?));
-            _primitive2Wrapper.Put(typeof(ulong), typeof(ulong?));
-            _primitive2Wrapper.Put(typeof(long), typeof(long?));
-    	    _primitive2Wrapper.Put(typeof(bool), typeof(bool?));
-            _primitive2Wrapper.Put(typeof(char), typeof(char?));
-            _primitive2Wrapper.Put(typeof(sbyte), typeof(sbyte?));
-            _primitive2Wrapper.Put(typeof(decimal), typeof(decimal?));
-            _primitive2Wrapper.Put(typeof(ushort), typeof(ushort?));
-            _primitive2Wrapper.Put(typeof(DateTime), typeof(DateTime?));
-        	
+
+        	foreach (Type type in PRIMITIVE_TYPES)
+        	{
+				_primitive2Wrapper.Put(type, ConcreteNullableTypeFor(type));
+        	}
         }
 
-        private static Hashtable4 _primitive2Wrapper;
+    	private static Type ConcreteNullableTypeFor(Type type)
+    	{
+    		return typeof (Nullable<>).MakeGenericType(type);
+    	}
+
+    	private static Hashtable4 _primitive2Wrapper;
+
+    	private static readonly Type[] PRIMITIVE_TYPES = new Type[]
+    	                                        	{
+														typeof(int),
+														typeof(uint), 
+														typeof(byte), 
+														typeof(short),
+														typeof(float),
+														typeof(double),
+														typeof(ulong),
+														typeof(long), 
+														typeof(bool), 
+														typeof(char), 
+														typeof(sbyte),
+														typeof(decimal),
+														typeof(ushort),
+														typeof(DateTime),
+    	                                        	};
 	}
 }
