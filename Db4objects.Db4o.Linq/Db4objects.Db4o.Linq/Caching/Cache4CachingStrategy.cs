@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Linq.Caching
 
 	internal class Cache4CachingStrategyWithComparer<TKey, TValue> : Cache4CachingStrategy<TKey, TValue>
 	{
-		private IEqualityComparer<TKey> _comparer;
+		private readonly IEqualityComparer<TKey> _comparer;
 
 		public Cache4CachingStrategyWithComparer(ICache4 cache4, IEqualityComparer<TKey> comparer) : base(cache4)
 		{
