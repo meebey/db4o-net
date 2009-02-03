@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{23FCA753-47E0-4E0B-8FB3-E2A0F3756FD2}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -57,7 +57,7 @@
     <Compile Include="Db4objects.Db4o.Linq.Tests\AbstractDb4oLinqTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\AllTests.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\Caching\AllTests.cs" />
-    <Compile Include="Db4objects.Db4o.Linq.Tests\Caching\CachingStrategyTestCase.cs" />
+    <Compile Include="Db4objects.Db4o.Linq.Tests\Caching\GenericCacheFactoryTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\CodeAnalysis\ActivatedPropertyQueryTestCase.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\CodeAnalysis\AllTests.cs" />
     <Compile Include="Db4objects.Db4o.Linq.Tests\CodeAnalysis\OrderByPropertyTestCase.cs" />
