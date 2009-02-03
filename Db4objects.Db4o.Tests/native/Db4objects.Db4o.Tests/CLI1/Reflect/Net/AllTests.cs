@@ -11,6 +11,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 				{
                     typeof(NetFieldTestCase),
 					typeof(UninitializedObjectsWithFinalizerTestCase),
+					typeof(UnavailableClassPrimitiveRepresentationTestCase),
 				};
 		}
 	}
