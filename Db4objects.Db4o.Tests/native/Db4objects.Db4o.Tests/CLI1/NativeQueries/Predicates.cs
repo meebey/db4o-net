@@ -524,4 +524,21 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 				
 		}
 	}
+
+    class Identity
+    {
+
+        private Data _identity;
+
+        public Identity(Data identity_)
+        {
+            _identity = identity_;
+        }
+
+        public bool Match(Data candidate)
+        {
+            return candidate == _identity;
+        }
+        
+    }
 }

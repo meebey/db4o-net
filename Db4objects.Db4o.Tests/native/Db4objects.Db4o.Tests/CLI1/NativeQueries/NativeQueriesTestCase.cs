@@ -255,5 +255,14 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			AssertNQResult(new ConstStringFieldNotEqual(), _a, _b);
 		}
 
+        /**
+         * Exception in Cecil FlowAnalysis. COR-498
+        */
+        public void _TestIdentityComparison()
+        {
+            AssertNQResult(new Identity(_a));
+            
+        }
+
 	}
 }
