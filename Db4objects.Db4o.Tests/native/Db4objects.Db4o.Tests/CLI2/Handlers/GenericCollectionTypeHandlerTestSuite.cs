@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 
 	class GenericCollectionTypeHandlerTestUnit : GenericCollectionTypeHandlerTestUnitBase
 	{
-		public void _testSubQuery()
+		public void TestSubQuery()
 		{
 			IQuery q = NewQuery(_helper.ItemType);
 			IQuery qq = q.Descend(GenericCollectionTestFactory.FieldName);
