@@ -11,6 +11,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 				{
                     typeof(Aliases.AllTests),
 					typeof(CrossPlatform.AllTests),
+                    typeof(EnumTestCase),
 #if !CF
 					typeof(CsAppDomains),
 					typeof(CsAssemblyVersionChange),
