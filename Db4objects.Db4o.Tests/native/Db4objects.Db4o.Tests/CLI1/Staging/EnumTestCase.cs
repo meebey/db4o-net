@@ -22,12 +22,19 @@ namespace Db4objects.Db4o.Tests.CLI1
            Store(item);
        }
 
+       public void TestEnumIdentity()
+       {
+           Item item = (Item)RetrieveOnlyInstance(typeof(Item));
+           Assert.AreSame(MyEnum.C, item._enum);
+       }
+
        public void TestPeekPersisted()
        {
            Item item = (Item) RetrieveOnlyInstance(typeof (Item));
            Item peeked = (Item) Db().PeekPersisted(item, int.MaxValue, true);
            Assert.AreSame(item._enum, peeked._enum);
        }
+
     } 
 
 }

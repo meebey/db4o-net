@@ -5,6 +5,9 @@ using Db4objects.Db4o.Query;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
+/**
+ *  COR-1432
+ */
 namespace Db4objects.Db4o.Tests.CLI1
 {
     public class CsEvaluationDelegate : AbstractDb4oTestCase
