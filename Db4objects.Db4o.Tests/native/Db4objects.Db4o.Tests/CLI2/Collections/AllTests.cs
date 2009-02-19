@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 				typeof(ArrayList4ActivatableTestCase), 
 				typeof(ArrayList4TestCase), 
                 typeof(ArrayList4TATestCase), 
+                typeof(BindingListTestCase),
                 typeof(GenericDictionaryTestCase),
 				typeof(GenericDictionaryTestSuite),
 
