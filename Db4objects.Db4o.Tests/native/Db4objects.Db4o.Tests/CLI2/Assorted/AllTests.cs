@@ -9,7 +9,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			{
 				typeof(AssemblyInfoTestCase),
                 typeof(ListOfNullableItemTestCase),
-				typeof(NullableTypes),
+				typeof(NullableDateTimeTestCase),
+                typeof(NullableTypes),
 				typeof(NullableArraysElementsTestCase),
 				typeof(SimpleGenericTypeTestCase),
 				typeof(UntypedDelegateArrayTestCase),
