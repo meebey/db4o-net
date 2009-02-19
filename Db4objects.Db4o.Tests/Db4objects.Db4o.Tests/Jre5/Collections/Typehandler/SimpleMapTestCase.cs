@@ -43,8 +43,8 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		{
 			SimpleMapTestCase.Item item = new SimpleMapTestCase.Item();
 			item.map = new Hashtable();
-			item.map.Add("zero", "zero");
-			item.map.Add(new SimpleMapTestCase.FirstClassElement("one"), "one");
+			item.map["zero"] = "zero";
+			item.map[new SimpleMapTestCase.FirstClassElement("one")] = "one";
 			Store(item);
 		}
 

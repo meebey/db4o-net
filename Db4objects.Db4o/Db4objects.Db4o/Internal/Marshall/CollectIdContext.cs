@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		private readonly IdObjectCollector _collector;
 
-		private CollectIdContext(Transaction transaction, IdObjectCollector collector, ObjectHeader
+		public CollectIdContext(Transaction transaction, IdObjectCollector collector, ObjectHeader
 			 oh, IReadBuffer buffer) : base(transaction, buffer, oh)
 		{
 			_collector = collector;

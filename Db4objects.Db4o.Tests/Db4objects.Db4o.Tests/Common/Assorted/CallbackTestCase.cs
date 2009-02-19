@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -45,6 +46,27 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			RunTest(new CallbackTestCase.InheritedPackageCallback());
 		}
 
+		public virtual void TestThrowingCallback()
+		{
+			Assert.Expect(typeof(Exception), new _ICodeBlock_52(this));
+		}
+
+		private sealed class _ICodeBlock_52 : ICodeBlock
+		{
+			public _ICodeBlock_52(CallbackTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			/// <exception cref="System.Exception"></exception>
+			public void Run()
+			{
+				this._enclosing.Store(new CallbackTestCase.ThrowingCallback());
+			}
+
+			private readonly CallbackTestCase _enclosing;
+		}
+
 		private void RunTest(CallbackTestCase.Item item)
 		{
 			Store(item);
@@ -69,6 +91,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			internal virtual void ObjectOnNew(IObjectContainer container)
 			{
 				_objectContainer = container;
+			}
+		}
+
+		public class ThrowingCallback : CallbackTestCase.Item
+		{
+			internal virtual void ObjectOnNew(IObjectContainer container)
+			{
+				throw new Exception();
 			}
 		}
 

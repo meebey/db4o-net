@@ -16,16 +16,30 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 		/// <exception cref="System.Exception"></exception>
 		protected override object CreateItem()
 		{
-			return new MixedArrayItem(42);
+			return new MixedArrayItem(Depth());
 		}
+
+		#if !CF
+		private int Depth()
+		{
+			return 42;
+		}
+		#endif // !CF
+
+		#if CF
+		private int Depth()
+		{
+			return 10;
+		}
+		#endif // CF
 
 		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)
 		{
 			MixedArrayItem item = (MixedArrayItem)obj;
 			object[] objects = item.objects;
-			Assert.AreEqual(42, ((TItem)objects[1]).Value());
-			Assert.AreEqual(42, ((TItem)objects[3]).Value());
+			Assert.AreEqual(Depth(), ((TItem)objects[1]).Value());
+			Assert.AreEqual(Depth(), ((TItem)objects[3]).Value());
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -38,9 +52,9 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			{
 				Assert.IsNotNull(objects[i]);
 			}
-			Assert.AreEqual(LinkedList.NewList(42), objects[0]);
+			Assert.AreEqual(LinkedList.NewList(Depth()), objects[0]);
 			Assert.AreEqual(0, ((TItem)objects[1]).value);
-			Assert.AreEqual(LinkedList.NewList(42), objects[2]);
+			Assert.AreEqual(LinkedList.NewList(Depth()), objects[2]);
 			Assert.AreEqual(0, ((TItem)objects[3]).value);
 		}
 	}

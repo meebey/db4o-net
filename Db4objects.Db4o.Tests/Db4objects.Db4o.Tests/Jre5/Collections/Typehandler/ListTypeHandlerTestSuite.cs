@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			return new Type[] { typeof(ListTypeHandlerTestSuite.ListTypeHandlerTestUnit) };
 		}
 
-		public class ListTypeHandlerTestUnit : TypeHandlerUnitTest
+		public class ListTypeHandlerTestUnit : CollectionTypeHandlerUnitTest
 		{
 			protected override AbstractItemFactory ItemFactory()
 			{

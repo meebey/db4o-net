@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class Transaction
 	{
-		protected Tree _delete;
+		internal Tree _delete;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _systemTransaction;
 
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 				return existing;
 			}
 			ByRef initialValue = ByRef.NewInstance(local.InitialValueFor(this));
-			_locals.Add(local, initialValue);
+			_locals[local] = initialValue;
 			return initialValue;
 		}
 
@@ -292,8 +292,8 @@ namespace Db4objects.Db4o.Internal
 			return Container().ToString();
 		}
 
-		public abstract void WriteUpdateDeleteMembers(int id, ClassMetadata clazz, int typeInfo
-			, int cascade);
+		public abstract void WriteUpdateAdjustIndexes(int id, ClassMetadata clazz, ArrayType
+			 typeInfo, int cascade);
 
 		public ObjectContainerBase Container()
 		{
@@ -429,6 +429,16 @@ namespace Db4objects.Db4o.Internal
 			{
 				reference.Deactivate(this, activationDepth);
 			}
+		}
+
+		protected virtual void TraverseDelete(IVisitor4 deleteVisitor)
+		{
+			if (_delete == null)
+			{
+				return;
+			}
+			_delete.Traverse(deleteVisitor);
+			_delete = null;
 		}
 	}
 }

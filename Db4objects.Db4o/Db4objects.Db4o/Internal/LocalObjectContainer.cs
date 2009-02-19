@@ -340,7 +340,7 @@ namespace Db4objects.Db4o.Internal
 			int reservedBlocks = BytesToBlocks(reservedStorageSpace);
 			int reservedBytes = BlocksToBytes(reservedBlocks);
 			Slot slot = new Slot(_blockEndAddress, reservedBlocks);
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				OverwriteDeletedBlockedSlot(slot);
 			}
@@ -360,7 +360,7 @@ namespace Db4objects.Db4o.Internal
 			CheckBlockedAddress(blockedEndAddress);
 			_blockEndAddress = blockedEndAddress;
 			Slot slot = new Slot(blockedStartAddress, blockCount);
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				OverwriteDeletedBlockedSlot(slot);
 			}
@@ -539,15 +539,14 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.ReadId.Log(a_id);
 			}
-			Slot slot = null;
-			if (!lastCommitted)
-			{
-				slot = ((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
-			}
-			else
-			{
-				slot = ((LocalTransaction)a_ta).GetCommittedSlotOfID(a_id);
-			}
+			Slot slot = lastCommitted ? ((LocalTransaction)a_ta).GetCommittedSlotOfID(a_id) : 
+				((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
+			return ReadReaderOrWriterBySlot(a_ta, a_id, useReader, slot);
+		}
+
+		internal virtual ByteArrayBuffer ReadReaderOrWriterBySlot(Transaction a_ta, int a_id
+			, bool useReader, Slot slot)
+		{
 			if (slot == null)
 			{
 				return null;
@@ -708,15 +707,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_618(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_619(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_618 : IVisitor4
+		private sealed class _IVisitor4_619 : IVisitor4
 		{
-			public _IVisitor4_618(Hashtable4 semaphores)
+			public _IVisitor4_619(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -918,7 +917,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, ByteArrayBuffer buffer)
+			 classMetadata, ArrayType arrayType, ByteArrayBuffer buffer)
 		{
 			int address = pointer.Address();
 			if (address == 0)
@@ -958,13 +957,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_816(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_817(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_816 : IVisitor4
+		private sealed class _IVisitor4_817 : IVisitor4
 		{
-			public _IVisitor4_816(IntArrayList ids)
+			public _IVisitor4_817(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

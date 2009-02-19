@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Internal
 
 		public const int LockTimeInterval = 1000;
 
-		public const int ServerSocketTimeout = Debug.longTimeOuts ? 1000000 : 600000;
+		public const int ServerSocketTimeout = Debug4.longTimeOuts ? 1000000 : 600000;
 
 		public const int ClientSocketTimeout = ServerSocketTimeout;
 

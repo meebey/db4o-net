@@ -138,17 +138,5 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="newName">the new fieldname.</param>
 		void Rename(string newName);
-
-		/// <summary>toggles query evaluation.</summary>
-		/// <remarks>
-		/// toggles query evaluation.
-		/// <br /><br />All fields are evaluated by default. Use this method to turn query
-		/// evaluation off for specific fields.<br /><br />
-		/// In client-server environment this setting should be used on both
-		/// client and server. <br /><br />
-		/// </remarks>
-		/// <param name="flag">specify <code>false</code> to ignore this field during query evaluation.
-		/// 	</param>
-		void QueryEvaluation(bool flag);
 	}
 }

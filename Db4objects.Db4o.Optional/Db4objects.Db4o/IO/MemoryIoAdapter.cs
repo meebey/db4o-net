@@ -216,9 +216,10 @@ namespace Db4objects.Db4o.IO
 			if (_seekPos + length > _bytes.Length)
 			{
 				int growBy = _growBy;
-				if (_seekPos + length > growBy)
+				int missing = _seekPos + length - _bytes.Length;
+				if (missing > growBy)
 				{
-					growBy = _seekPos + length;
+					growBy = missing;
 				}
 				byte[] temp = new byte[_bytes.Length + growBy];
 				System.Array.Copy(_bytes, 0, temp, 0, _length);

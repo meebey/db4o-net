@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			bytes.MoveForward(offset);
 			bytes.WriteInt(transactionAddress);
 			bytes.WriteInt(transactionAddress);
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				bytes.SetID(Const4.IgnoreId);
 			}

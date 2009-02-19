@@ -480,14 +480,15 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase container = transaction.Container();
 			LogEvent(container, "update", Const4.State);
 			SetStateClean();
-			transaction.WriteUpdateDeleteMembers(GetID(), _class, container._handlers.ArrayType
+			transaction.WriteUpdateAdjustIndexes(GetID(), _class, container._handlers.ArrayType
 				(obj), 0);
 			MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
 				, false);
 			_class.Write(context, obj);
 			Pointer4 pointer = context.AllocateSlot();
 			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);
-			container.WriteUpdate(transaction, pointer, ClassMetadata(), buffer);
+			container.WriteUpdate(transaction, pointer, _class, container._handlers.ArrayType
+				(obj), buffer);
 			if (IsActive())
 			{
 				SetStateClean();

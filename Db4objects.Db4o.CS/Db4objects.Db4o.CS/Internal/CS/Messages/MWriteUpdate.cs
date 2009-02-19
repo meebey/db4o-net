@@ -12,16 +12,19 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 		public bool ProcessAtServer()
 		{
 			int yapClassId = _payLoad.ReadInt();
+			int arrayTypeValue = _payLoad.ReadInt();
+			ArrayType arrayType = ArrayType.ForValue(arrayTypeValue);
 			LocalObjectContainer stream = (LocalObjectContainer)Stream();
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				ClassMetadata yc = stream.ClassMetadataForId(yapClassId);
+				ClassMetadata classMetadata = stream.ClassMetadataForId(yapClassId);
 				int id = _payLoad.GetID();
+				Transaction().WriteUpdateAdjustIndexes(id, classMetadata, arrayType, 0);
 				Transaction().DontDelete(id);
 				Slot oldSlot = ((LocalTransaction)Transaction()).GetCommittedSlotOfID(id);
 				stream.GetSlotForUpdate(_payLoad);
-				yc.AddFieldIndices(_payLoad, oldSlot);
+				classMetadata.AddFieldIndices(_payLoad, oldSlot);
 				_payLoad.WriteEncrypt();
 				DeactivateCacheFor(id);
 			}

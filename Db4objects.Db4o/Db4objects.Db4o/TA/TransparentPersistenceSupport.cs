@@ -6,21 +6,47 @@ using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.TA
 {
-	/// <summary>Enables the Transparent Update and Transparent Activation behaviors.</summary>
-	/// <remarks>Enables the Transparent Update and Transparent Activation behaviors.</remarks>
+	/// <summary>
+	/// Enables Transparent Persistence and Transparent Activation behaviours for
+	/// the current session.
+	/// </summary>
+	/// <remarks>
+	/// Enables Transparent Persistence and Transparent Activation behaviours for
+	/// the current session.
+	/// <br /><br />
+	/// configuration.add(new TransparentPersistenceSupport());
+	/// </remarks>
+	/// <seealso cref="Db4objects.Db4o.TA.TransparentActivationSupport">Db4objects.Db4o.TA.TransparentActivationSupport
+	/// 	</seealso>
 	public class TransparentPersistenceSupport : TransparentActivationSupport
 	{
 		private readonly IRollbackStrategy _rollbackStrategy;
 
+		/// <summary>Creates a new instance of TransparentPersistenceSupport class</summary>
+		/// <param name="rollbackStrategy">
+		/// RollbackStrategy interface implementation, which
+		/// defines the actions to be taken on the object when the transaction is rolled back.
+		/// </param>
 		public TransparentPersistenceSupport(IRollbackStrategy rollbackStrategy)
 		{
 			_rollbackStrategy = rollbackStrategy;
 		}
 
+		/// <summary>
+		/// Creates a new instance of TransparentPersistenceSupport class
+		/// with no rollback strategies defined.
+		/// </summary>
+		/// <remarks>
+		/// Creates a new instance of TransparentPersistenceSupport class
+		/// with no rollback strategies defined.
+		/// </remarks>
 		public TransparentPersistenceSupport() : this(null)
 		{
 		}
 
+		/// <summary>Configures current ObjectContainer to support Transparent Activation and Transparent Persistence
+		/// 	</summary>
+		/// <seealso cref="Db4objects.Db4o.TA.TransparentActivationSupport.Apply"></seealso>
 		public override void Apply(IInternalObjectContainer container)
 		{
 			base.Apply(container);

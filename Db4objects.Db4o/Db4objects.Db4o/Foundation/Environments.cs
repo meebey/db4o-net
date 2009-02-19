@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Foundation
 					return (object)existing;
 				}
 				object binding = Resolve(service);
-				_bindings.Add(service, binding);
+				_bindings[service] = binding;
 				return binding;
 			}
 

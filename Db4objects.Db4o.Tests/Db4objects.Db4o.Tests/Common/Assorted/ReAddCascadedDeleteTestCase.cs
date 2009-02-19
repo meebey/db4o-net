@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public static void Main(string[] args)
 		{
-			new ReAddCascadedDeleteTestCase().RunClientServer();
+			new ReAddCascadedDeleteTestCase().RunAll();
 		}
 
 		public class Item
@@ -41,6 +41,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			config.ObjectClass(typeof(ReAddCascadedDeleteTestCase.Item)).CascadeOnDelete(true
 				);
+			config.ObjectClass(typeof(ReAddCascadedDeleteTestCase.Item)).ObjectField("_name")
+				.Indexed(true);
 		}
 
 		protected override void Store()
@@ -64,6 +66,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			Db().Delete(i);
 			Db().Store(i._member);
 			Db().Commit();
+			long id = Db().GetID(i._member);
+			new FieldIndexAssert(typeof(ReAddCascadedDeleteTestCase.Item), "_name").AssertSingleEntry
+				(FileSession(), id);
 		}
 
 		private ReAddCascadedDeleteTestCase.Item Query(string name)

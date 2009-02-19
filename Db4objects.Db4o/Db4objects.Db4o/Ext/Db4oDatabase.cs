@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Ext
 	/// <exclude></exclude>
 	public class Db4oDatabase : IDb4oType, IInternal4
 	{
-		public static readonly Db4objects.Db4o.Ext.Db4oDatabase StaticIdentity = Debug.staticIdentity
+		public static readonly Db4objects.Db4o.Ext.Db4oDatabase StaticIdentity = Debug4.staticIdentity
 			 ? new Db4objects.Db4o.Ext.Db4oDatabase(new byte[] { (byte)'d', (byte)'e', (byte
 			)'b', (byte)'u', (byte)'g' }, 1) : null;
 

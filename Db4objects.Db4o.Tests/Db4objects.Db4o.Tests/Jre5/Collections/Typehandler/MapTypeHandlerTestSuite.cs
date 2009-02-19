@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			return new Type[] { typeof(MapTypeHandlerTestSuite.MapTypeHandlerUnitTestCase) };
 		}
 
-		public class MapTypeHandlerUnitTestCase : TypeHandlerUnitTest
+		public class MapTypeHandlerUnitTestCase : CollectionTypeHandlerUnitTest
 		{
 			protected override void FillItem(object item)
 			{
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				IQuery q = NewQuery();
 				object item = ItemFactory().NewItem();
 				IDictionary map = MapFromItem(item);
-				map.Add(element, Values()[0]);
+				map[element] = Values()[0];
 				q.Constrain(item);
 				AssertQueryResult(q, successful);
 			}

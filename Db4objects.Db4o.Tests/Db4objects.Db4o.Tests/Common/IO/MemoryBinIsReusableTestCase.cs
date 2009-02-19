@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			MemoryBin origBin = origStorage.Bin(BinUri);
 			byte[] data = origBin.Data();
 			Assert.AreEqual(data.Length, origBin.Length());
-			MemoryBin newBin = new MemoryBin(data);
+			MemoryBin newBin = new MemoryBin(data, new DoublingGrowthStrategy());
 			MemoryStorage newStorage = new MemoryStorage();
 			newStorage.Bin(BinUri, newBin);
 			IObjectContainer newDb = Db4oEmbedded.OpenFile(Config(newStorage), BinUri);

@@ -359,7 +359,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void NoXByteCheck()
 		{
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				SetID(Const4.IgnoreId);
 			}

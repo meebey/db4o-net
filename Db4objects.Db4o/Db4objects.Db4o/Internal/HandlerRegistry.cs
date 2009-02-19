@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		public const byte HandlerVersion = (byte)5;
+		public const byte HandlerVersion = (byte)6;
 
 		private readonly ObjectContainerBase _container;
 
@@ -212,6 +212,7 @@ namespace Db4objects.Db4o.Internal
 			RegisterHandlerVersion(arrayHandler, 0, new ArrayHandler0());
 			RegisterHandlerVersion(arrayHandler, 2, new ArrayHandler2());
 			RegisterHandlerVersion(arrayHandler, 3, new ArrayHandler3());
+			RegisterHandlerVersion(arrayHandler, 5, new ArrayHandler5());
 			MultidimensionalArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler
 				();
 			RegisterHandlerVersion(multidimensionalArrayHandler, 0, new MultidimensionalArrayHandler0
@@ -315,18 +316,18 @@ namespace Db4objects.Db4o.Internal
 			return _handlerVersions.CorrectHandlerVersion(handler, version);
 		}
 
-		internal int ArrayType(object obj)
+		internal Db4objects.Db4o.Internal.ArrayType ArrayType(object obj)
 		{
 			IReflectClass claxx = Reflector().ForObject(obj);
 			if (!claxx.IsArray())
 			{
-				return 0;
+				return Db4objects.Db4o.Internal.ArrayType.None;
 			}
 			if (Reflector().Array().IsNDimensional(claxx))
 			{
-				return Const4.TypeNarray;
+				return Db4objects.Db4o.Internal.ArrayType.MultidimensionalArray;
 			}
-			return Const4.TypeArray;
+			return Db4objects.Db4o.Internal.ArrayType.PlainArray;
 		}
 
 		public void Decrypt(ByteArrayBuffer reader)

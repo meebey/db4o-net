@@ -71,34 +71,17 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual void DeleteMembers(MarshallerFamily mf, ObjectHeaderAttributes attributes
-			, StatefulBuffer a_bytes, int a_type, bool isUpdate)
+		internal override void DeleteMembers(DeleteContextImpl context, ArrayType arrayType
+			, bool isUpdate)
 		{
-			if (a_type == Const4.TypeArray)
-			{
-				new ArrayHandler(this, true).DeletePrimitiveEmbedded(a_bytes, this);
-			}
-			else
-			{
-				if (a_type == Const4.TypeNarray)
-				{
-					new MultidimensionalArrayHandler(this, true).DeletePrimitiveEmbedded(a_bytes, this
-						);
-				}
-			}
-		}
-
-		internal override void DeleteMembers(DeleteContextImpl context, int a_type, bool 
-			isUpdate)
-		{
-			if (a_type == Const4.TypeArray)
+			if (arrayType == ArrayType.PlainArray)
 			{
 				new ArrayHandler(this, true).DeletePrimitiveEmbedded((StatefulBuffer)context.Buffer
 					(), this);
 			}
 			else
 			{
-				if (a_type == Const4.TypeNarray)
+				if (arrayType == ArrayType.MultidimensionalArray)
 				{
 					new MultidimensionalArrayHandler(this, true).DeletePrimitiveEmbedded((StatefulBuffer
 						)context.Buffer(), this);

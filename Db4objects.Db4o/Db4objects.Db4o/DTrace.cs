@@ -42,36 +42,26 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				BreakOnEvent(395);
-				//            breakOnEvent(10);
+				// breakOnEvent(395);
+				BreakOnEvent(57);
 				// addRange(4874);
 				// addRangeWithEnd(3835808, 3836267);
 				// breakOnEvent(5);
-				//addRangeWithLength(122866, 1);
-				AddRangeWithLength(122405, 1);
-				//addRangeWithLength(139520, 1);
-				// addRangeWithLength(119190, 1);
-				//        	 addRangeWithLength(139520,1);
-				//        	 
-				//        	 addRangeWithLength(122866, 265);
-				//        	addRangeWithLength(17673,1);
-				//            addRangeWithLength(455404,1);
-				//            
-				//            addRangeWithLength(455570,1);
-				//            
-				//            addRangeWithLength(455926,1);
-				//
-				//            addRangeWithLength(1647603457,1);
-				TrackEventsWithoutRange();
-				//            turnAllOffExceptFor(new DTrace[] {WRITE_BYTES});
-				//            turnAllOffExceptFor(new DTrace[] {
-				//                PERSISTENT_OWN_LENGTH,
-				//                });
-				TurnAllOffExceptFor(new Db4objects.Db4o.DTrace[] { GetSlot, FileFree, TransCommit
-					 });
+				AddRangeWithLength(1068, 1);
 			}
 		}
 
+		// addRangeWithLength(1722, 1);
+		//            trackEventsWithoutRange();
+		//            turnAllOffExceptFor(new DTrace[] {WRITE_BYTES});
+		//            turnAllOffExceptFor(new DTrace[] {
+		//                PERSISTENT_OWN_LENGTH,
+		//                });
+		//            turnAllOffExceptFor(new DTrace[] {
+		//                GET_SLOT,
+		//                FILE_FREE,
+		//                TRANS_COMMIT,
+		//                });
 		//          turnAllOffExceptFor(new DTrace[] {BTREE_NODE_COMMIT_OR_ROLLBACK });
 		//            turnAllOffExceptFor(new DTrace[] {BTREE_NODE_REMOVE, BTREE_NODE_COMMIT_OR_ROLLBACK YAPMETA_SET_ID});
 		private static void Init()
@@ -171,7 +161,7 @@ namespace Db4objects.Db4o
 				TransFlush = new Db4objects.Db4o.DTrace(true, true, "trans flush", true);
 				WriteBytes = new Db4objects.Db4o.DTrace(true, true, "writeBytes", true);
 				WritePointer = new Db4objects.Db4o.DTrace(true, true, "write pointer", true);
-				WriteUpdateDeleteMembers = new Db4objects.Db4o.DTrace(true, true, "trans writeUpdateDeleteMembers"
+				WriteUpdateAdjustIndexes = new Db4objects.Db4o.DTrace(true, true, "trans writeUpdateDeleteMembers"
 					, true);
 				WriteXbytes = new Db4objects.Db4o.DTrace(true, true, "writeXBytes", true);
 				Configure();
@@ -353,7 +343,7 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace WriteXbytes;
 
-		public static Db4objects.Db4o.DTrace WriteUpdateDeleteMembers;
+		public static Db4objects.Db4o.DTrace WriteUpdateAdjustIndexes;
 
 		static DTrace()
 		{

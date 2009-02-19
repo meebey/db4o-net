@@ -9,7 +9,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <exclude></exclude>
-	public class ArrayVersionHelper3 : ArrayVersionHelper
+	public class ArrayVersionHelper3 : ArrayVersionHelper5
 	{
 		public override int ClassIDFromInfo(ObjectContainerBase container, ArrayInfo info
 			)

@@ -1142,7 +1142,7 @@ namespace Db4objects.Db4o.Internal
 
 		public StatefulBuffer GetWriter(Transaction a_trans, int a_address, int a_length)
 		{
-			if (Debug.ExceedsMaximumBlockSize(a_length))
+			if (Debug4.ExceedsMaximumBlockSize(a_length))
 			{
 				return null;
 			}
@@ -2453,7 +2453,7 @@ namespace Db4objects.Db4o.Internal
 		public abstract void WriteTransactionPointer(int address);
 
 		public abstract void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, ByteArrayBuffer buffer);
+			 classMetadata, ArrayType arrayType, ByteArrayBuffer buffer);
 
 		public virtual ICallbacks Callbacks()
 		{

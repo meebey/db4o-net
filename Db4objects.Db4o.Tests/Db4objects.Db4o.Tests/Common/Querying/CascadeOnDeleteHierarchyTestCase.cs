@@ -57,5 +57,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			Db().Commit();
 			AssertOccurrences(typeof(CascadeOnDeleteHierarchyTestCase.Data), 0);
 		}
+
+		public virtual void TestMultipleStoreCalls()
+		{
+			CascadeOnDeleteHierarchyTestCase.SubItem item = ((CascadeOnDeleteHierarchyTestCase.SubItem
+				)RetrieveOnlyInstance(typeof(CascadeOnDeleteHierarchyTestCase.SubItem)));
+			Store(item);
+			AssertOccurrences(typeof(CascadeOnDeleteHierarchyTestCase.Data), 1);
+		}
 	}
 }

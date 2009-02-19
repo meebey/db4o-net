@@ -27,10 +27,11 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 		public sealed override IEnumerator AllElements(ObjectContainerBase container, object
 			 array)
 		{
-			return AllElements(ArrayReflector(container), array);
+			return AllElementsMultidimensional(ArrayReflector(container), array);
 		}
 
-		public static IEnumerator AllElements(IReflectArray reflectArray, object array)
+		public static IEnumerator AllElementsMultidimensional(IReflectArray reflectArray, 
+			object array)
 		{
 			return new MultidimensionalArrayIterator(reflectArray, (object[])array);
 		}

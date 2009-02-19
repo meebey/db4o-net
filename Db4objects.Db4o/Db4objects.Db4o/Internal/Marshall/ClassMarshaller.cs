@@ -173,7 +173,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 			context.WriteInt(metaClassID);
 			// ancestor ID
 			context.CopyID();
-			context.WriteInt(IndexIDForWriting(classIndexID));
+			context.WriteInt((classMetadata.HasClassIndex() ? IndexIDForWriting(classIndexID)
+				 : 0));
 			int aspectCount = context.ReadInt();
 			if (aspectCount > classMetadata.DeclaredAspectCount())
 			{

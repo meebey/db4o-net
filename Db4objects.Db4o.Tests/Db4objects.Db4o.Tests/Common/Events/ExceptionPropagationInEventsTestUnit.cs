@@ -15,10 +15,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 	{
 		public ExceptionPropagationInEventsTestUnit()
 		{
-			_eventFirer.Add("insert", NewObjectInserter());
-			_eventFirer.Add("query", NewQueryRunner());
-			_eventFirer.Add("update", NewObjectUpdater());
-			_eventFirer.Add("delete", NewObjectDeleter());
+			_eventFirer["insert"] = NewObjectInserter();
+			_eventFirer["query"] = NewQueryRunner();
+			_eventFirer["update"] = NewObjectUpdater();
+			_eventFirer["delete"] = NewObjectDeleter();
 		}
 
 		/// <exception cref="System.Exception"></exception>

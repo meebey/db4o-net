@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			{
 				return;
 			}
-			object bootRecord = Debug.readBootRecord ? GetBootRecord(file) : null;
+			object bootRecord = Debug4.readBootRecord ? GetBootRecord(file) : null;
 			if (!(bootRecord is PBootRecord))
 			{
 				InitBootRecord(file);
@@ -160,7 +160,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt((int)TimeToWrite(_configBlock.OpenTime(), shuttingDown));
 			writer.WriteInt(file.SystemData().ClassCollectionID());
 			writer.WriteInt(freespaceID);
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				writer.SetID(Const4.IgnoreId);
 			}

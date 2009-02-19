@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.Jre5.Collections.Typehandler;
 
 namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 {
-	public abstract class TypeHandlerUnitTest : TypeHandlerTestUnitBase
+	public abstract class CollectionTypeHandlerUnitTest : TypeHandlerTestUnitBase
 	{
 		protected abstract void AssertCompareItems(object element, bool successful);
 
@@ -101,12 +101,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			AssertQueryResult(q, true);
 		}
 
-		// TODO
-		public virtual void _testSubQuery()
+		public virtual void TestSubQuery()
 		{
 			IQuery q = NewQuery(ItemFactory().ItemClass());
 			IQuery qq = q.Descend(ItemFactory().FieldName());
-			IConstraint constraint = qq.Constrain(Elements()[0]);
+			qq.Constrain(Elements()[0]);
 			IObjectSet set = qq.Execute();
 			Assert.AreEqual(1, set.Count);
 			AssertPlainContent(set.Next());

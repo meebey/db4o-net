@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal.Handlers.Array;
 namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <exclude></exclude>
-	public class ArrayHandler3 : ArrayHandler
+	public class ArrayHandler3 : ArrayHandler5
 	{
 		protected override ArrayVersionHelper CreateVersionHelper()
 		{

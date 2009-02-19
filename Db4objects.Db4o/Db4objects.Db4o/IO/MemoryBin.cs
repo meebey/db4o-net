@@ -8,21 +8,27 @@ namespace Db4objects.Db4o.IO
 {
 	public class MemoryBin : IBin
 	{
-		private const int GrowBy = 10000;
-
 		private byte[] _bytes;
 
 		private int _length;
 
-		public MemoryBin(byte[] bytes)
+		private IGrowthStrategy _growthStrategy;
+
+		public MemoryBin(byte[] bytes, IGrowthStrategy growthStrategy)
 		{
 			_bytes = bytes;
 			_length = bytes.Length;
+			_growthStrategy = growthStrategy;
 		}
 
 		public virtual long Length()
 		{
 			return _length;
+		}
+
+		public virtual long BufferSize()
+		{
+			return _bytes.Length;
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -70,12 +76,12 @@ namespace Db4objects.Db4o.IO
 		{
 			if (pos + length > _bytes.Length)
 			{
-				long growBy = GrowBy;
-				if (pos + length > growBy)
+				long newSize = _growthStrategy.NewSize(_bytes.Length);
+				if (pos + length > newSize)
 				{
-					growBy = pos + length;
+					newSize = pos + length;
 				}
-				byte[] temp = new byte[(int)(_bytes.Length + growBy)];
+				byte[] temp = new byte[(int)newSize];
 				System.Array.Copy(_bytes, 0, temp, 0, _length);
 				_bytes = temp;
 			}

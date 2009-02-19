@@ -424,54 +424,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, _handler);
-			if (!(Handlers4.IsFirstClass(handler)))
-			{
-				IncrementOffset(context.Buffer());
-				return;
-			}
-			if (Handlers4.IsClassMetadata(handler))
-			{
-				context.AddId();
-				return;
-			}
-			LocalObjectContainer container = (LocalObjectContainer)context.Container();
-			SlotFormat slotFormat = context.SlotFormat();
-			if (Handlers4.HandleAsObject(handler))
-			{
-				// TODO: Code is similar to QCandidate.readArrayCandidates. Try to refactor to one place.
-				int collectionID = context.ReadInt();
-				ByteArrayBuffer collectionBuffer = container.ReadReaderByID(context.Transaction()
-					, collectionID);
-				ObjectHeader objectHeader = new ObjectHeader(container, collectionBuffer);
-				QueryingReadContext subContext = new QueryingReadContext(context.Transaction(), context
-					.HandlerVersion(), collectionBuffer, collectionID, context.Collector());
-				objectHeader.ClassMetadata().CollectIDs(subContext);
-				return;
-			}
-			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
-				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_389
-				(handler, queryingReadContext));
-		}
-
-		private sealed class _IClosure4_389 : IClosure4
-		{
-			public _IClosure4_389(ITypeHandler4 handler, QueryingReadContext queryingReadContext
-				)
-			{
-				this.handler = handler;
-				this.queryingReadContext = queryingReadContext;
-			}
-
-			public object Run()
-			{
-				((IFirstClassHandler)handler).CollectIDs(queryingReadContext);
-				return null;
-			}
-
-			private readonly ITypeHandler4 handler;
-
-			private readonly QueryingReadContext queryingReadContext;
+			Handlers4.CollectIdsInternal(context, handler, LinkLength());
 		}
 
 		internal virtual void Configure(IReflectClass clazz, bool isPrimitive)
@@ -556,10 +509,14 @@ namespace Db4objects.Db4o.Internal
 			try
 			{
 				RemoveIndexEntry(context);
+				if (isUpdate)
+				{
+					return;
+				}
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_462(this
+				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_434(this
 					, childContext));
 			}
 			catch (CorruptionException exc)
@@ -568,9 +525,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_462 : IClosure4
+		private sealed class _IClosure4_434 : IClosure4
 		{
-			public _IClosure4_462(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_434(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -779,7 +736,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			_config = containingClass.Config().ConfigField(name);
-			if (Debug.configureAllFields && _config == null)
+			if (Debug4.configureAllFields && _config == null)
 			{
 				_config = (Config4Field)containingClass.Config().ObjectField(_name);
 			}
@@ -1112,13 +1069,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_896(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_868(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_896 : IVisitor4
+		private sealed class _IVisitor4_868 : IVisitor4
 		{
-			public _IVisitor4_896(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_868(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1328,13 +1285,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, _handler
 				);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1050
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1022
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1050 : IClosure4
+		private sealed class _IClosure4_1022 : IClosure4
 		{
-			public _IClosure4_1050(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1022(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

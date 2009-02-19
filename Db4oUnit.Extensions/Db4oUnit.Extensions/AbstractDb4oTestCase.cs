@@ -130,6 +130,27 @@ namespace Db4oUnit.Extensions
 			return RunAll(true);
 		}
 
+		public virtual int RunSolo(string testLabelSubstring)
+		{
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(true), new _IPredicate4_103
+				(testLabelSubstring))).Run();
+		}
+
+		private sealed class _IPredicate4_103 : IPredicate4
+		{
+			public _IPredicate4_103(string testLabelSubstring)
+			{
+				this.testLabelSubstring = testLabelSubstring;
+			}
+
+			public bool Match(object candidate)
+			{
+				return (((ITest)candidate).Label().IndexOf(testLabelSubstring) >= 0);
+			}
+
+			private readonly string testLabelSubstring;
+		}
+
 		private int RunAll(bool independentConfig)
 		{
 			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(independentConfig
@@ -386,12 +407,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_317(oc));
+			Foreach(clazz, new _IVisitor4_326(oc));
 		}
 
-		private sealed class _IVisitor4_317 : IVisitor4
+		private sealed class _IVisitor4_326 : IVisitor4
 		{
-			public _IVisitor4_317(IExtObjectContainer oc)
+			public _IVisitor4_326(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

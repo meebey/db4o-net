@@ -270,20 +270,6 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(PersistStaticFieldValuesKey, true);
 		}
 
-		internal virtual bool QueryEvaluation(string fieldName)
-		{
-			Hashtable4 exceptionalFields = ExceptionalFieldsOrNull();
-			if (exceptionalFields != null)
-			{
-				Config4Field field = (Config4Field)exceptionalFields.Get(fieldName);
-				if (field != null)
-				{
-					return field.QueryEvaluation();
-				}
-			}
-			return true;
-		}
-
 		[System.ObsoleteAttribute]
 		public virtual void ReadAs(object clazz)
 		{

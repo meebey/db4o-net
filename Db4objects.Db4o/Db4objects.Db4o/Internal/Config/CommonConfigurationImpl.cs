@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Internal.Config
 			set
 			{
 				bool flag = value;
-				_config.CallConstructors(false);
+				_config.CallConstructors(flag);
 			}
 		}
 

@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				FreeSlotNode node = new FreeSlotNode(size);
 				node.CreatePeer(address);
-				if (Deploy.debug && Debug.xbytes)
+				if (Deploy.debug && Debug4.xbytes)
 				{
 					DebugCheckBuffer(buffer, node);
 				}

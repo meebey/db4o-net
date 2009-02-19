@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Fieldhandlers;
@@ -352,6 +353,60 @@ namespace Db4objects.Db4o.Internal
 				value = ((ClassMetadata)handler).WrapWithTransactionContext(transaction, value);
 			}
 			return value;
+		}
+
+		public static void CollectIdsInternal(CollectIdContext context, ITypeHandler4 handler
+			, int linkLength)
+		{
+			if (!(IsFirstClass(handler)))
+			{
+				IReadBuffer buffer = context.Buffer();
+				buffer.Seek(buffer.Offset() + linkLength);
+				return;
+			}
+			if (handler.GetType() == typeof(ClassMetadata))
+			{
+				context.AddId();
+				return;
+			}
+			LocalObjectContainer container = (LocalObjectContainer)context.Container();
+			SlotFormat slotFormat = context.SlotFormat();
+			if (HandleAsObject(handler))
+			{
+				// TODO: Code is similar to QCandidate.readArrayCandidates. Try to refactor to one place.
+				int collectionID = context.ReadInt();
+				ByteArrayBuffer collectionBuffer = container.ReadReaderByID(context.Transaction()
+					, collectionID);
+				ObjectHeader objectHeader = new ObjectHeader(container, collectionBuffer);
+				QueryingReadContext subContext = new QueryingReadContext(context.Transaction(), context
+					.HandlerVersion(), collectionBuffer, collectionID, context.Collector());
+				objectHeader.ClassMetadata().CollectIDs(subContext);
+				return;
+			}
+			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
+				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
+			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_322
+				(handler, queryingReadContext));
+		}
+
+		private sealed class _IClosure4_322 : IClosure4
+		{
+			public _IClosure4_322(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+				)
+			{
+				this.handler = handler;
+				this.queryingReadContext = queryingReadContext;
+			}
+
+			public object Run()
+			{
+				((IFirstClassHandler)handler).CollectIDs(queryingReadContext);
+				return null;
+			}
+
+			private readonly ITypeHandler4 handler;
+
+			private readonly QueryingReadContext queryingReadContext;
 		}
 	}
 }

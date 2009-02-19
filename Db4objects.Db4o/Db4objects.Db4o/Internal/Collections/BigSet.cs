@@ -4,10 +4,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Db4o.Collections;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Collections;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Collections
@@ -26,13 +26,7 @@ namespace Db4objects.Db4o.Internal.Collections
 				return;
 			}
 			_transaction = db.Transaction();
-			_bTree = NewBTree(0);
-		}
-
-		private Db4objects.Db4o.Internal.Btree.BTree NewBTree(int id)
-		{
-			return new Db4objects.Db4o.Internal.Btree.BTree(SystemTransaction(), id, new IntHandler
-				());
+			_bTree = BTreeManager().NewBTree();
 		}
 
 		private ObjectContainerBase Container()
@@ -42,18 +36,21 @@ namespace Db4objects.Db4o.Internal.Collections
 
 		public virtual bool Add(E obj)
 		{
-			int id = GetID(obj);
-			if (id == 0)
+			lock (Lock())
 			{
-				Add(Store(obj));
+				int id = GetID(obj);
+				if (id == 0)
+				{
+					Add(Store(obj));
+					return true;
+				}
+				if (Contains(id))
+				{
+					return false;
+				}
+				Add(id);
 				return true;
 			}
-			if (Contains(id))
-			{
-				return false;
-			}
-			Add(id);
-			return true;
 		}
 
 		private int Store(E obj)
@@ -63,7 +60,7 @@ namespace Db4objects.Db4o.Internal.Collections
 
 		private void Add(int id)
 		{
-			BTree().Add(_transaction, id);
+			BTreeForUpdate().Add(_transaction, id);
 		}
 
 		private int GetID(object obj)
@@ -86,7 +83,10 @@ namespace Db4objects.Db4o.Internal.Collections
 
 		public virtual void Clear()
 		{
-			BTree().Clear(Transaction());
+			lock (Lock())
+			{
+				BTreeForUpdate().Clear(Transaction());
+			}
 		}
 
 		public virtual bool Contains(object obj)
@@ -101,8 +101,11 @@ namespace Db4objects.Db4o.Internal.Collections
 
 		private bool Contains(int id)
 		{
-			IBTreeRange range = BTree().Search(Transaction(), id);
-			return !range.IsEmpty();
+			lock (Lock())
+			{
+				IBTreeRange range = BTree().Search(Transaction(), id);
+				return !range.IsEmpty();
+			}
 		}
 
 		public virtual bool IsEmpty
@@ -115,25 +118,31 @@ namespace Db4objects.Db4o.Internal.Collections
 
 		private IEnumerator BTreeIterator()
 		{
-			return BTree().Iterator(Transaction());
+			return new SynchronizedIterator4(BTree().Iterator(Transaction()), Lock());
 		}
 
 		public virtual bool Remove(object obj)
 		{
-			if (!Contains(obj))
+			lock (Lock())
 			{
-				return false;
+				if (!Contains(obj))
+				{
+					return false;
+				}
+				int id = GetID(obj);
+				BTreeForUpdate().Remove(Transaction(), id);
+				return true;
 			}
-			int id = GetID(obj);
-			BTree().Remove(Transaction(), id);
-			return true;
 		}
 
 		public virtual int Count
 		{
 			get
 			{
-				return BTree().Size(Transaction());
+				lock (Lock())
+				{
+					return BTree().Size(Transaction());
+				}
 			}
 		}
 
@@ -152,7 +161,7 @@ namespace Db4objects.Db4o.Internal.Collections
 			int id = BTree().GetID();
 			if (id == 0)
 			{
-				BTree().Write(Container().SystemTransaction());
+				BTree().Write(SystemTransaction());
 			}
 			context.WriteInt(BTree().GetID());
 		}
@@ -160,13 +169,25 @@ namespace Db4objects.Db4o.Internal.Collections
 		public virtual void Read(IReadContext context)
 		{
 			int id = context.ReadInt();
-			if (_transaction == null)
+			if (_bTree != null)
 			{
-				_transaction = context.Transaction();
+				AssertCurrentBTreeId(id);
+				return;
 			}
-			if (_bTree == null)
+			_transaction = context.Transaction();
+			_bTree = BTreeManager().ProduceBTree(id);
+		}
+
+		private BigSetBTreeManager BTreeManager()
+		{
+			return new BigSetBTreeManager(_transaction);
+		}
+
+		private void AssertCurrentBTreeId(int id)
+		{
+			if (id != _bTree.GetID())
 			{
-				_bTree = NewBTree(id);
+				throw new InvalidOperationException();
 			}
 		}
 
@@ -194,11 +215,23 @@ namespace Db4objects.Db4o.Internal.Collections
 			return _bTree;
 		}
 
+		private Db4objects.Db4o.Internal.Btree.BTree BTreeForUpdate()
+		{
+			Db4objects.Db4o.Internal.Btree.BTree bTree = BTree();
+			BTreeManager().EnsureIsManaged(bTree);
+			return bTree;
+		}
+
 		private object Element(int id)
 		{
 			object obj = Container().GetByID(Transaction(), id);
 			Container().Activate(obj);
 			return obj;
+		}
+
+		private object Lock()
+		{
+			return Container().Lock();
 		}
 	}
 }

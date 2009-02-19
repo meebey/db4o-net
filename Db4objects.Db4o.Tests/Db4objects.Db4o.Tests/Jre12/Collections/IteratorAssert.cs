@@ -34,6 +34,11 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			AreEqual(v.GetEnumerator(), iterator);
 		}
 
+		public static void SameContent(IEnumerable expected, IEnumerable actual)
+		{
+			SameContent(expected.GetEnumerator(), actual.GetEnumerator());
+		}
+
 		public static void SameContent(IEnumerator expected, IEnumerator actual)
 		{
 			Collection4 allExpected = new Collection4();

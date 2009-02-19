@@ -19,6 +19,17 @@ namespace Db4objects.Db4o.IO
 	{
 		private readonly IDictionary _storages = new Hashtable();
 
+		private readonly IGrowthStrategy _growthStrategy;
+
+		public MemoryStorage() : this(new DoublingGrowthStrategy())
+		{
+		}
+
+		public MemoryStorage(IGrowthStrategy growthStrategy)
+		{
+			_growthStrategy = growthStrategy;
+		}
+
 		/// <summary>
 		/// returns true if a MemoryBin with the given URI name already exists
 		/// in this Storage.
@@ -52,7 +63,7 @@ namespace Db4objects.Db4o.IO
 		/// <remarks>Registers the given bin for this storage with the given URI.</remarks>
 		public virtual void Bin(string uri, MemoryBin bin)
 		{
-			_storages.Add(uri, bin);
+			_storages[uri] = bin;
 		}
 
 		private IBin ProduceStorage(BinConfiguration config)
@@ -62,8 +73,9 @@ namespace Db4objects.Db4o.IO
 			{
 				return storage;
 			}
-			MemoryBin newStorage = new MemoryBin(new byte[(int)config.InitialLength()]);
-			_storages.Add(config.Uri(), newStorage);
+			MemoryBin newStorage = new MemoryBin(new byte[(int)config.InitialLength()], _growthStrategy
+				);
+			_storages[config.Uri()] = newStorage;
 			return newStorage;
 		}
 	}

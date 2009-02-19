@@ -10,8 +10,6 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly Config4Class _configClass;
 
-		private static readonly KeySpec QueryEvaluationKey = new KeySpec(true);
-
 		private static readonly KeySpec IndexedKey = new KeySpec(TernaryBool.Unspecified);
 
 		protected Config4Field(Config4Class a_class, KeySpecHashtable4 config) : base(config
@@ -39,11 +37,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual object DeepClone(object param)
 		{
 			return new Db4objects.Db4o.Internal.Config4Field((Config4Class)param, _config);
-		}
-
-		public virtual void QueryEvaluation(bool flag)
-		{
-			_config.Put(QueryEvaluationKey, flag);
 		}
 
 		public virtual void Rename(string newName)
@@ -89,11 +82,6 @@ namespace Db4objects.Db4o.Internal
 		private bool UseExistingIndex(Transaction systemTrans, FieldMetadata yapField)
 		{
 			return yapField.GetIndex(systemTrans) != null;
-		}
-
-		internal virtual bool QueryEvaluation()
-		{
-			return _config.GetAsBoolean(QueryEvaluationKey);
 		}
 	}
 }

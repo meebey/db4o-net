@@ -8,9 +8,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Internal.Callbacks;
-using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Freespace;
-using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Transactionlog;
 
@@ -27,7 +25,7 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly LockedTree _slotChanges = new LockedTree();
 
-		private Tree _writtenUpdateDeletedMembers;
+		internal Tree _writtenUpdateAdjustedIndexes;
 
 		protected readonly LocalObjectContainer _file;
 
@@ -359,7 +357,7 @@ namespace Db4objects.Db4o.Internal
 			i_pointerIo.UseSlot(id);
 			i_pointerIo.WriteInt(slot.Address());
 			i_pointerIo.WriteInt(slot.Length());
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				i_pointerIo.SetID(Const4.IgnoreId);
 			}
@@ -661,7 +659,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (_delete == null)
 			{
-				_writtenUpdateDeletedMembers = null;
+				_writtenUpdateAdjustedIndexes = null;
 				return;
 			}
 			while (_delete != null)
@@ -676,7 +674,7 @@ namespace Db4objects.Db4o.Internal
 			// This means the object was gc'd.
 			// Let's try to read it again, but this may fail in
 			// CS mode if another transaction has deleted it. 
-			_writtenUpdateDeletedMembers = null;
+			_writtenUpdateAdjustedIndexes = null;
 		}
 
 		private sealed class _IVisitor4_572 : IVisitor4
@@ -717,53 +715,10 @@ namespace Db4objects.Db4o.Internal
 			private readonly LocalTransaction _enclosing;
 		}
 
-		public override void WriteUpdateDeleteMembers(int id, ClassMetadata clazz, int typeInfo
-			, int cascade)
+		public override void WriteUpdateAdjustIndexes(int id, ClassMetadata clazz, ArrayType
+			 typeInfo, int cascade)
 		{
-			CheckSynchronization();
-			if (DTrace.enabled)
-			{
-				DTrace.WriteUpdateDeleteMembers.Log(id);
-			}
-			TreeInt newNode = new TreeInt(id);
-			_writtenUpdateDeletedMembers = Tree.Add(_writtenUpdateDeletedMembers, newNode);
-			if (!newNode.WasAddedToTree())
-			{
-				return;
-			}
-			if (clazz.CanUpdateFast())
-			{
-				Slot currentSlot = GetCurrentSlotOfID(id);
-				if (currentSlot == null || currentSlot.Address() == 0)
-				{
-					clazz.AddToIndex(this, id);
-				}
-				else
-				{
-					SlotFreeOnCommit(id, currentSlot);
-				}
-				return;
-			}
-			StatefulBuffer objectBytes = Container().ReadWriterByID(this, id);
-			if (objectBytes == null)
-			{
-				clazz.AddToIndex(this, id);
-				return;
-			}
-			ObjectHeader oh = new ObjectHeader(Container(), clazz, objectBytes);
-			DeleteInfo info = (DeleteInfo)TreeInt.Find(_delete, id);
-			if (info != null)
-			{
-				if (info._cascade > cascade)
-				{
-					cascade = info._cascade;
-				}
-			}
-			objectBytes.SetCascadeDeletes(cascade);
-			DeleteContextImpl context = new DeleteContextImpl(objectBytes, oh, clazz.ClassReflector
-				(), null);
-			clazz.DeleteMembers(context, typeInfo, true);
-			SlotFreeOnCommit(id, new Slot(objectBytes.GetAddress(), objectBytes.Length()));
+			new WriteUpdateProcessor(this, id, clazz, typeInfo, cascade).Run();
 		}
 
 		private ICallbacks Callbacks()
@@ -774,13 +729,13 @@ namespace Db4objects.Db4o.Internal
 		private Collection4 CollectCommittedCallbackDeletedInfo()
 		{
 			Collection4 deleted = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_664(this, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_622(this, deleted));
 			return deleted;
 		}
 
-		private sealed class _ISlotChangeCollector_664 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_622 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_664(LocalTransaction _enclosing, Collection4 deleted
+			public _ISlotChangeCollector_622(LocalTransaction _enclosing, Collection4 deleted
 				)
 			{
 				this._enclosing = _enclosing;
@@ -814,13 +769,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			Collection4 added = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_685(this, added, updated));
+			CollectSlotChanges(new _ISlotChangeCollector_643(this, added, updated));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_685 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_643 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_685(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_643(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -858,13 +813,13 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_708(this, added, updated, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_666(this, added, updated, deleted));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_708 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_666 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_708(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_666(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated, Collection4 deleted)
 			{
 				this._enclosing = _enclosing;
@@ -910,12 +865,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			_slotChanges.TraverseLocked(new _IVisitor4_738(collector));
+			_slotChanges.TraverseLocked(new _IVisitor4_696(collector));
 		}
 
-		private sealed class _IVisitor4_738 : IVisitor4
+		private sealed class _IVisitor4_696 : IVisitor4
 		{
-			public _IVisitor4_738(ISlotChangeCollector collector)
+			public _IVisitor4_696(ISlotChangeCollector collector)
 			{
 				this.collector = collector;
 			}

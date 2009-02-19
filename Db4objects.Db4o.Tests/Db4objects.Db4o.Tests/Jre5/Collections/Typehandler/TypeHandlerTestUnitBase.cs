@@ -151,7 +151,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			IDictionary map = MapFromItem(item);
 			for (int eltIdx = 0; eltIdx < Elements().Length; eltIdx++)
 			{
-				map.Add(Elements()[eltIdx], Values()[eltIdx]);
+				map[Elements()[eltIdx]] = Values()[eltIdx];
 			}
 		}
 

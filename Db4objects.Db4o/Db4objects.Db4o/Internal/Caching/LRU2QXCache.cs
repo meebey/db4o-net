@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal.Caching
 		{
 			if (_slots.Count < _maxSize)
 			{
-				_slots.Add(key, producer.Apply(key));
+				_slots[key] = producer.Apply(key);
 				return;
 			}
 			if (_a1in.Size() > _inSize)
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Internal.Caching
 				object lastKey = _am.RemoveLast();
 				Discard(lastKey, onDiscard);
 			}
-			_slots.Add(key, producer.Apply(key));
+			_slots[key] = producer.Apply(key);
 		}
 
 		public virtual IEnumerator GetEnumerator()

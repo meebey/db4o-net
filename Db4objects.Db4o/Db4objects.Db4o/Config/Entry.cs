@@ -1,12 +1,13 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Config
 {
 	/// <exclude></exclude>
-	public class Entry : ICompare, ISecondClass
+	public class Entry : ICompare, IInternal4, ISecondClass
 	{
 		public object key;
 

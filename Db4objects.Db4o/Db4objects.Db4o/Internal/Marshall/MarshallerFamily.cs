@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert.Conversions;
 using Db4objects.Db4o.Internal.Marshall;
@@ -83,7 +84,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public static MarshallerFamily Version(int n)
 		{
+			CheckIfVersionIsTooNew(n);
 			return allVersions[n];
+		}
+
+		private static void CheckIfVersionIsTooNew(int n)
+		{
+			if (n > allVersions.Length)
+			{
+				throw new IncompatibleFileFormatException("Databasefile was created with a newer db4o version. Marshaller version: "
+					 + n);
+			}
 		}
 
 		public static MarshallerFamily Current()

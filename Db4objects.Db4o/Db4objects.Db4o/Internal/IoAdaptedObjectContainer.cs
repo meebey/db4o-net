@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal
 				_handlers.OldEncryptionOff();
 			}
 			bool readOnly = ConfigImpl().IsReadOnly();
-			bool lockFile = Debug.lockFile && ConfigImpl().LockFile() && (!readOnly);
+			bool lockFile = Debug4.lockFile && ConfigImpl().LockFile() && (!readOnly);
 			if (NeedsLockFileThread())
 			{
 				IBin fileBin = storage.Open(new BinConfiguration(FileName(), false, 0, false));
@@ -110,6 +110,9 @@ namespace Db4objects.Db4o.Internal
 				{
 					lock (this._enclosing._lock)
 					{
+						// Let the database engine continue to do 
+						// some work if it likes to.
+						Cool.SleepIgnoringInterruption(1);
 						int read = this._enclosing._file.Read(pos, buffer);
 						if (read <= 0)
 						{
@@ -119,7 +122,6 @@ namespace Db4objects.Db4o.Internal
 						pos += read;
 					}
 				}
-				Cool.SleepIgnoringInterruption(1);
 				lock (this._enclosing._lock)
 				{
 					this._enclosing._backupFile.Close();
@@ -206,7 +208,7 @@ namespace Db4objects.Db4o.Internal
 		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
 			 newAddressOffset, int length)
 		{
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				CheckXBytes(newAddress, newAddressOffset, length);
 			}
@@ -234,7 +236,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void CheckXBytes(int newAddress, int newAddressOffset, int length)
 		{
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				try
 				{
@@ -351,7 +353,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (Debug.xbytes && Deploy.overwrite)
+			if (Debug4.xbytes && Deploy.overwrite)
 			{
 				bool doCheck = true;
 				if (buffer is StatefulBuffer)

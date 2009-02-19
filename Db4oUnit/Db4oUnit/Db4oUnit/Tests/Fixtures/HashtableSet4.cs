@@ -11,7 +11,7 @@ namespace Db4oUnit.Tests.Fixtures
 
 		public virtual void Add(object value)
 		{
-			_table.Add(value, value);
+			_table[value] = value;
 		}
 
 		public virtual bool Contains(object value)

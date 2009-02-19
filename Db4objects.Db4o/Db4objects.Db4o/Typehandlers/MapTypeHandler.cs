@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Typehandlers
 				object value = context.ReadObject(handlers._valueHandler);
 				if (key != null && value != null)
 				{
-					map.Add(key, value);
+					map[key] = value;
 				}
 			}
 			return map;

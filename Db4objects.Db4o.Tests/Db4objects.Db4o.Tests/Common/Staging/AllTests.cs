@@ -17,8 +17,8 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		{
 			return new Type[] { typeof(ActivateDepthTestCase), typeof(ClientServerPingTestCase
 				), typeof(InterfaceQueryTestCase), typeof(LazyQueryDeleteTestCase), typeof(PingTestCase
-				), typeof(SODAClassTypeDescend) };
+				), typeof(SODAClassTypeDescend), typeof(StoredClassUnknownClassQueryTestCase) };
 		}
-		// TODO is there a Jira for this one?
+		// COR-1131
 	}
 }

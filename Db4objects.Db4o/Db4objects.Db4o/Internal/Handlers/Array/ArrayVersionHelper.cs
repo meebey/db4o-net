@@ -39,6 +39,10 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		public virtual bool HasNullBitmap(ArrayInfo info)
 		{
+			if (info.Nullable())
+			{
+				return true;
+			}
 			return !info.Primitive();
 		}
 

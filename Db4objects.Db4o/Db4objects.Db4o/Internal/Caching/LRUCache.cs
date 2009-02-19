@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Caching
 					}
 				}
 				object newValue = producer.Apply(key);
-				_slots.Add(key, newValue);
+				_slots[key] = newValue;
 				_lru.AddFirst(key);
 				return newValue;
 			}

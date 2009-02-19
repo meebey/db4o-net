@@ -14,6 +14,17 @@ using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.TA
 {
+	/// <summary>
+	/// Configuration item that enables Transparent Activation Mode for this
+	/// session.
+	/// </summary>
+	/// <remarks>
+	/// Configuration item that enables Transparent Activation Mode for this
+	/// session. TA mode should be switched on explicitly for manual TA implementation:
+	/// <br /><br />
+	/// configuration.add(new TransparentActivationSupport());
+	/// </remarks>
+	/// <seealso cref="Db4objects.Db4o.TA.TransparentPersistenceSupport"></seealso>
 	public class TransparentActivationSupport : IConfigurationItem
 	{
 		// TODO: unbindOnClose should be configurable
@@ -22,6 +33,17 @@ namespace Db4objects.Db4o.TA
 		}
 
 		// Nothing to do...
+		/// <summary>
+		/// Configures the just opened ObjectContainer by setting event listeners,
+		/// which will be triggered when activation or de-activation is required.
+		/// </summary>
+		/// <remarks>
+		/// Configures the just opened ObjectContainer by setting event listeners,
+		/// which will be triggered when activation or de-activation is required.
+		/// </remarks>
+		/// <param name="container">the ObjectContainer to configure</param>
+		/// <seealso cref="Db4objects.Db4o.TA.TransparentPersistenceSupport.Apply">Db4objects.Db4o.TA.TransparentPersistenceSupport.Apply
+		/// 	</seealso>
 		public virtual void Apply(IInternalObjectContainer container)
 		{
 			if (ActivationProvider(container) is ITransparentActivationDepthProvider)
@@ -32,21 +54,21 @@ namespace Db4objects.Db4o.TA
 				();
 			SetActivationDepthProvider(container, provider);
 			IEventRegistry registry = EventRegistryFor(container);
-			registry.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_30
+			registry.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_44
 				(this).OnEvent);
-			registry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_35
+			registry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_49
 				(this).OnEvent);
-			registry.Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler(new _IEventListener4_41
+			registry.Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler(new _IEventListener4_55
 				(this).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
-			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_52
+			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_66
 				(processor).OnEvent);
 		}
 
-		private sealed class _IEventListener4_30
+		private sealed class _IEventListener4_44
 		{
-			public _IEventListener4_30(TransparentActivationSupport _enclosing)
+			public _IEventListener4_44(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -59,9 +81,9 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_35
+		private sealed class _IEventListener4_49
 		{
-			public _IEventListener4_35(TransparentActivationSupport _enclosing)
+			public _IEventListener4_49(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -74,9 +96,9 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_41
+		private sealed class _IEventListener4_55
 		{
-			public _IEventListener4_41(TransparentActivationSupport _enclosing)
+			public _IEventListener4_55(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -96,9 +118,9 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_52
+		private sealed class _IEventListener4_66
 		{
-			public _IEventListener4_52(TransparentActivationSupport.TADiagnosticProcessor processor
+			public _IEventListener4_66(TransparentActivationSupport.TADiagnosticProcessor processor
 				)
 			{
 				this.processor = processor;
@@ -133,12 +155,12 @@ namespace Db4objects.Db4o.TA
 				return;
 			}
 			IReferenceSystem referenceSystem = transaction.ReferenceSystem();
-			referenceSystem.TraverseReferences(new _IVisitor4_76(this));
+			referenceSystem.TraverseReferences(new _IVisitor4_90(this));
 		}
 
-		private sealed class _IVisitor4_76 : IVisitor4
+		private sealed class _IVisitor4_90 : IVisitor4
 		{
-			public _IVisitor4_76(TransparentActivationSupport _enclosing)
+			public _IVisitor4_90(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

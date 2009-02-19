@@ -65,7 +65,7 @@ namespace Db4oUnit
 					Unexpected(current);
 				}
 			}
-			Assert.IsTrue(allExpected.IsEmpty(), allExpected.ToString());
+			Assert.IsTrue(allExpected.IsEmpty(), "Still missing: " + allExpected.ToString());
 		}
 
 		public static void AreInstanceOf(Type expectedType, IEnumerable values)

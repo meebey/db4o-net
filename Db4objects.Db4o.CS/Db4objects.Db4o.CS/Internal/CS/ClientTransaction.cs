@@ -107,17 +107,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void ProcessDeletes()
 		{
-			if (_delete != null)
-			{
-				_delete.Traverse(new _IVisitor4_86(this));
-			}
-			_delete = null;
+			IVisitor4 deleteVisitor = new _IVisitor4_84(this);
+			TraverseDelete(deleteVisitor);
 			i_client.WriteBatchedMessage(Msg.ProcessDeletes);
 		}
 
-		private sealed class _IVisitor4_86 : IVisitor4
+		private sealed class _IVisitor4_84 : IVisitor4
 		{
-			public _IVisitor4_86(ClientTransaction _enclosing)
+			public _IVisitor4_84(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -142,12 +139,10 @@ namespace Db4objects.Db4o.Internal.CS
 			ClearAll();
 		}
 
-		public override void WriteUpdateDeleteMembers(int a_id, ClassMetadata a_yc, int a_type
-			, int a_cascade)
+		public override void WriteUpdateAdjustIndexes(int id, ClassMetadata classMetadata
+			, ArrayType arrayType, int cascade)
 		{
-			MsgD msg = Msg.WriteUpdateDeleteMembers.GetWriterForInts(this, new int[] { a_id, 
-				a_yc.GetID(), a_type, a_cascade });
-			i_client.WriteBatchedMessage(msg);
 		}
+		// do nothing
 	}
 }

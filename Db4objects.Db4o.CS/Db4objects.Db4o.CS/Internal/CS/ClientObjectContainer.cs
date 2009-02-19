@@ -925,9 +925,10 @@ namespace Db4objects.Db4o.Internal.CS
 
 		// do nothing
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
-			 classMetadata, ByteArrayBuffer buffer)
+			 classMetadata, ArrayType arrayType, ByteArrayBuffer buffer)
 		{
-			MsgD msg = Msg.WriteUpdate.GetWriter(trans, pointer, classMetadata, buffer);
+			MsgD msg = Msg.WriteUpdate.GetWriter(trans, pointer, classMetadata, arrayType.Value
+				(), buffer);
 			WriteBatchedMessage(msg);
 		}
 

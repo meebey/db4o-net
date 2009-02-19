@@ -335,7 +335,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 				info.ReflectClass(ClassReflector(Container(trans)));
 				DetectDimensionsPreVersion0Format(buffer, info, classID);
 			}
-			if (Debug.ExceedsMaximumArrayEntries(info.ElementCount(), _usePrimitiveClassReflector
+			if (Debug4.ExceedsMaximumArrayEntries(info.ElementCount(), _usePrimitiveClassReflector
 				))
 			{
 				info.ElementCount(0);
@@ -376,7 +376,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			IReflectArray reflectArray = claxx.Reflector().Array();
 			if (reflectArray.IsNDimensional(claxx))
 			{
-				return MultidimensionalArrayHandler.AllElements(reflectArray, obj);
+				return MultidimensionalArrayHandler.AllElementsMultidimensional(reflectArray, obj
+					);
 			}
 			return Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler.AllElements(reflectArray
 				, obj);

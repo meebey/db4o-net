@@ -17,21 +17,19 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		static KnownClassesRepository()
 		{
-			// FIXME very java-centric, what about .NET?
 			Primitives = new Hashtable4();
-			RegisterPrimitive(typeof(bool), typeof(bool));
-			RegisterPrimitive(typeof(byte), typeof(byte));
-			RegisterPrimitive(typeof(short), typeof(short));
-			RegisterPrimitive(typeof(char), typeof(char));
-			RegisterPrimitive(typeof(int), typeof(int));
-			RegisterPrimitive(typeof(long), typeof(long));
-			RegisterPrimitive(typeof(float), typeof(float));
-			RegisterPrimitive(typeof(double), typeof(double));
+			Type[] primitiveArray = Platform4.PrimitiveTypes();
+			for (int primitiveIndex = 0; primitiveIndex < primitiveArray.Length; ++primitiveIndex)
+			{
+				Type primitive = primitiveArray[primitiveIndex];
+				RegisterPrimitive(primitive);
+			}
 		}
 
-		private static void RegisterPrimitive(Type wrapper, Type primitive)
+		private static void RegisterPrimitive(Type primitive)
 		{
-			Primitives.Put(wrapper.FullName, primitive);
+			Primitives.Put(ReflectPlatform.FullyQualifiedName(Platform4.NullableTypeFor(primitive
+				)), primitive);
 		}
 
 		private ObjectContainerBase _stream;

@@ -9,7 +9,7 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
-	public abstract class Debug
+	public sealed class Debug4
 	{
 		/// <summary>indexes all fields</summary>
 		public const bool indexAllFields = false;
@@ -141,6 +141,10 @@ namespace Db4objects.Db4o
 				}
 				buffer.WriteByte(Const4.Yapend);
 			}
+		}
+
+		private Debug4()
+		{
 		}
 	}
 }

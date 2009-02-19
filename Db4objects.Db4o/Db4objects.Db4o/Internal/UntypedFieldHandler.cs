@@ -186,6 +186,29 @@ namespace Db4objects.Db4o.Internal
 			return obj;
 		}
 
+		public override void CollectIDs(QueryingReadContext readContext)
+		{
+			IInternalReadContext context = (IInternalReadContext)readContext;
+			int payloadOffset = context.ReadInt();
+			if (payloadOffset == 0)
+			{
+				return;
+			}
+			int savedOffSet = context.Offset();
+			ITypeHandler4 typeHandler = ReadTypeHandler(context, payloadOffset);
+			if (typeHandler == null)
+			{
+				context.Seek(savedOffSet);
+				return;
+			}
+			SeekSecondaryOffset(context, typeHandler);
+			CollectIdContext collectIdContext = new CollectIdContext(readContext.Transaction(
+				), readContext.Collector(), null, readContext.Buffer());
+			Handlers4.CollectIdsInternal(collectIdContext, context.Container().Handlers().CorrectHandlerVersion
+				(typeHandler, context.HandlerVersion()), 0);
+			context.Seek(savedOffSet);
+		}
+
 		public virtual ITypeHandler4 ReadTypeHandlerRestoreOffset(IInternalReadContext context
 			)
 		{

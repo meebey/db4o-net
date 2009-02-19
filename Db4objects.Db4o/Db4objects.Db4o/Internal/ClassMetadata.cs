@@ -762,11 +762,11 @@ namespace Db4objects.Db4o.Internal
 			ObjectHeader oh = new ObjectHeader(_container, this, buffer);
 			Transaction trans = buffer.Transaction();
 			int id = buffer.GetID();
-			int typeId = trans.Container()._handlers.ArrayType(obj);
+			ArrayType arrayType = trans.Container()._handlers.ArrayType(obj);
 			RemoveFromIndex(trans, id);
 			DeleteContextImpl context = new DeleteContextImpl(buffer, oh, ClassReflector(), null
 				);
-			DeleteMembers(context, typeId, false);
+			DeleteMembers(context, arrayType, false);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -775,8 +775,8 @@ namespace Db4objects.Db4o.Internal
 			CorrectHandlerVersion(context).Delete(context);
 		}
 
-		internal virtual void DeleteMembers(DeleteContextImpl context, int a_type, bool isUpdate
-			)
+		internal virtual void DeleteMembers(DeleteContextImpl context, ArrayType arrayType
+			, bool isUpdate)
 		{
 			StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 			int preserveCascade = context.CascadeDeleteDepth();

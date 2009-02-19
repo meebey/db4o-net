@@ -17,5 +17,12 @@ namespace Db4objects.Db4o.Ext
 	[System.Serializable]
 	public class IncompatibleFileFormatException : Db4oException
 	{
+		public IncompatibleFileFormatException() : base()
+		{
+		}
+
+		public IncompatibleFileFormatException(string message) : base(message)
+		{
+		}
 	}
 }

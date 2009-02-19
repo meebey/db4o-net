@@ -158,9 +158,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public static readonly MWriteUpdate WriteUpdate = new MWriteUpdate();
 
-		public static readonly MWriteUpdateDeleteMembers WriteUpdateDeleteMembers = new MWriteUpdateDeleteMembers
-			();
-
 		public static readonly MWriteBatchedMessages WriteBatchedMessages = new MWriteBatchedMessages
 			();
 
