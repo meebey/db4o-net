@@ -15,7 +15,7 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Typehandlers
 {
 
-	public class GenericCollectionTypeHandler : IFirstClassHandler, ICanHoldAnythingHandler, IVariableLengthTypeHandler
+	public class GenericCollectionTypeHandler : IFirstClassHandler, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj)
 		{
@@ -30,6 +30,11 @@ namespace Db4objects.Db4o.Typehandlers
 			WriteElementTypeHandlerId(context, elementHandler);
 			WriteElementCount(context, initializer);
 			WriteElements(context, enumerable, elementHandler);
+		}
+
+		public bool CanHold(IReflectClass type)
+		{
+			return true;
 		}
 
 		public virtual object Read(IReadContext context)

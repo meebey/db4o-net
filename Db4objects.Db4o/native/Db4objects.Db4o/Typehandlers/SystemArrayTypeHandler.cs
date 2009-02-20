@@ -16,7 +16,7 @@ using Db4objects.Db4o.Internal.Handlers.Array;
 
 namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
 {
-    public class SystemArrayTypeHandler : IFirstClassHandler, ICanHoldAnythingHandler, IVariableLengthTypeHandler, IEmbeddedTypeHandler
+    public class SystemArrayTypeHandler : IFirstClassHandler, IVariableLengthTypeHandler, IEmbeddedTypeHandler
     {
 
         public virtual IPreparedComparison PrepareComparison(IContext context, object obj)
@@ -32,7 +32,12 @@ namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
             new ArrayHandler(elementHandler, false).Write(context, obj);
         }
 
-        public virtual object Read(IReadContext context)
+    	public bool CanHold(IReflectClass type)
+    	{
+    		return true;
+    	}
+
+    	public virtual object Read(IReadContext context)
         {
             return readArrayHandler(context).Read(context);
         }
