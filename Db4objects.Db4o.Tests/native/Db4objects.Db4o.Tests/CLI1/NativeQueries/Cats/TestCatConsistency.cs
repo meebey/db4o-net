@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Db4objects.Db4o.Query;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -26,6 +27,27 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 				Db().Configure().OptimizeNativeQueries(true);
 			}
 
+		}
+
+
+		// FIXME: COR-1535
+		public class EitherParentByName : Predicate
+		{
+			private string _parentName;
+
+			public EitherParentByName(string parentName)
+			{
+				_parentName = parentName;
+			}
+
+			public bool Match(Cat cat)
+			{
+				// if the _mother field is null
+				// the right hand side of the or is
+				// never evaluated in unoptimized mode
+				return cat._mother._firstName == _parentName
+					|| cat._father._firstName == _parentName;
+			}
 		}
 
 		public class NoneFound : Predicate
@@ -111,12 +133,15 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 		}
 
 		public void RunTests()
-		{
+		{	
+//			FIXME: COR-1535
+//			Expect(new EitherParentByName("Occam"), "Vahin\u00E9", "Achat", "Acrobat");
+
 			Expect(new NoneFound());
 			Expect(new AgeOne(), "Occam", "Vahin\u00E9");
-			Expect(new FatherAgeOne(), "Achat", "Acrobat");
-			Expect(new GrandFatherName(), "Achat", "Acrobat");
-			Expect(new OrFatherName(), "Achat", "Acrobat", "Occam");
+			Expect(new FatherAgeOne(), "Achat", "Acrobat", "Vahin\u00E9");
+			Expect(new GrandFatherName(), "Achat", "Acrobat", "Vahin\u00E9");
+			Expect(new OrFatherName(), "Achat", "Acrobat", "Occam", "Vahin\u00E9");
 			Expect(new AddToAge(), "Occam", "Vahin\u00E9");
 			Expect(new TwoGetters(), "Occam");
 			Expect(new CalculatedGetter(), "Achat");
@@ -136,17 +161,17 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return cat._father._age == 1;
-			}, "Achat", "Acrobat");
+			}, "Achat", "Acrobat", "Vahin\u00E9");
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return cat._father._father._firstName == "Edwin";
-			}, "Achat", "Acrobat");
+			}, "Achat", "Acrobat", "Vahin\u00E9");
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return (cat._father._father != null &&
 						cat._father._father._firstName == "Edwin")
 					|| cat._father._firstName == "Edwin";
-			}, "Achat", "Acrobat", "Occam");
+			}, "Achat", "Acrobat", "Occam", "Vahin\u00E9");
 			Expect<Cat>(delegate(Cat cat)
 			{
 				return cat._age + 1 == 2;
@@ -199,6 +224,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 			zora._sex = Animal.FEMALE;
 			zora._firstName = "Vahin\u00E9";
 			zora._lastName = "des Fauves et Or";
+			zora._father = occam;
 			zora._age = 1;
 
 			Cat achat = new Cat();
@@ -248,27 +274,17 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries.Cats
 
 		private static void Expect(IList list, string[] names)
 		{
-			if (names == null)
-			{
-				names = new string[0];
-			}
-			
-			foreach (string name in names)
-			{
-				Assert.IsTrue(ContainsCat(list, name), "Expected '" + name + "'");
-			}
+			names = names ?? new string[0];
+
+			Iterator4Assert.SameContent(names, CatNamesFrom(list).GetEnumerator());
 		}
 
-		private static bool ContainsCat(IList list, string name)
+		private static IEnumerable<string> CatNamesFrom(IList list)
 		{
 			foreach (Cat cat in list)
 			{
-				if (cat._firstName == name)
-				{
-					return true;
-				}
+				yield return cat._firstName;
 			}
-			return false;
 		}
 	}
 }
