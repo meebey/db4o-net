@@ -18,8 +18,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                 typeof(GenericDictionaryTestCase),
 				typeof(GenericDictionaryTestSuite),
 
-				typeof(GenericListTypeHandlerTestCase),
-
 #if NET_3_5 && ! CF
                 typeof(HashSetTestCase),
 #endif 
