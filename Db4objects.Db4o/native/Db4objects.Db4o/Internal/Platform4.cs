@@ -616,13 +616,12 @@ namespace Db4objects.Db4o.Internal
         {
 			return new NetTypeHandler[]
 				{
-					//new DoubleHandler(stream),
 					new SByteHandler(),
 					new DecimalHandler(),
 					new UIntHandler(),
 					new ULongHandler(),
 					new UShortHandler(),
-					new DateTimeHandler(),
+					// new DateTimeHandler(),
 				};
         }
 
@@ -671,6 +670,11 @@ namespace Db4objects.Db4o.Internal
             container.ConfigImpl().RegisterTypeHandler(new EnumTypeHandlerPredicate(), enumTypeHandler);
             container.Handlers().RegisterHandlerVersion(enumTypeHandler, 4, new FirstClassObjectHandler());
             container.Handlers().RegisterHandlerVersion(enumTypeHandler, 0, new FirstClassObjectHandler0());
+
+            DateTimeHandler dateTimeHandler = new DateTimeHandler();
+            container.Handlers().RegisterNetTypeHandler(dateTimeHandler);
+            container.Handlers().RegisterHandlerVersion(dateTimeHandler, 6, new DateTimeHandler6());
+
         }
 
 		public static Type[] PrimitiveTypes()

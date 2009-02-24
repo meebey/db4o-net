@@ -19,12 +19,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 			long ticks = 0;
 			for (int i = 0; i < 8; i++)
 			{
-				ticks = (ticks << 8) + (long)(bytes[offset++] & 255);
+				ticks = (ticks << 8) + (bytes[offset++] & 255);
 			}
-			return new DateTime(ticks);
+		    return ReadKind(new DateTime(ticks), bytes, offset);
 		}
 
-		public override int TypeID()
+	    protected virtual DateTime ReadKind (DateTime dateTime, byte[] bytes, int offset)
+	    {
+            int kind  = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                kind = (kind << 8) + (bytes[offset++] & 255);
+            }
+            return DateTime.SpecifyKind(dateTime, (DateTimeKind)kind);
+	    }
+
+	    public override int TypeID()
 		{
 			return 25;
 		}
@@ -36,23 +46,49 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				bytes[offset++] = (byte)(int)(ticks >> (7 - i) * 8);
 			}
+		    WriteKind((DateTime)obj, bytes, offset);
 		}
 
-		public override object Read(IReadContext context)
+	    protected virtual void WriteKind(DateTime dateTime, byte[] bytes, int offset)
+	    {
+	        int kind = (int) dateTime.Kind;
+            for (int i = 0; i < 4; i++)
+            {
+                bytes[offset++] = (byte)(int)(kind >> (3 - i) * 8);
+            }
+	    }
+
+	    public override object Read(IReadContext context)
 		{	
 			long ticks = context.ReadLong();
-			return new DateTime(ticks);
+            DateTime dateTime = new DateTime(ticks);
+		    return ReadKind(context, dateTime);
 		}
 
-		public override void Write(IWriteContext context, object obj)
+	    protected virtual object ReadKind(IReadContext context, DateTime dateTime)
+	    {
+	        DateTimeKind kind = (DateTimeKind) context.ReadInt();
+	        return DateTime.SpecifyKind(dateTime, kind);
+	    }
+
+	    public override void Write(IWriteContext context, object obj)
 		{
-			long ticks = ((DateTime)obj).Ticks;
+	        DateTime dateTime = (DateTime)obj;
+	        long ticks = dateTime.Ticks;
 			context.WriteLong(ticks);
+	        WriteKind(context, dateTime);
 		}
 
-        public override IPreparedComparison InternalPrepareComparison(object obj)
+	    protected virtual void WriteKind(IWriteContext context, DateTime dateTime)
+	    {
+	        context.WriteInt((int) dateTime.Kind);
+	    }
+
+	    public override IPreparedComparison InternalPrepareComparison(object obj)
         {
             return new PreparedComparasionFor<DateTime>(((DateTime)obj));
         }
+
+
 	}
 }
