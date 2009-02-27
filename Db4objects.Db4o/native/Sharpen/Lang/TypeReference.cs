@@ -84,10 +84,24 @@ namespace Sharpen.Lang
 
 		public override Type Resolve()
 		{
-            return _assemblyName == null
-                ? Type.GetType(SimpleName)
+			return _assemblyName == null
+				? Type.GetType(SimpleName)
+#if CF_2_0
+			    : ResolveTypeFromAssemblyWorkaround(ResolveAssembly(), SimpleName);
+#else
                 : ResolveAssembly().GetType(SimpleName);
+#endif
 		}
+
+#if CF_2_0
+		private Type ResolveTypeFromAssemblyWorkaround(Assembly assembly, string typeName)
+		{
+			foreach (Type type in assembly.GetTypes())
+				if (type.FullName == typeName)
+					return type;
+			throw new TypeLoadException(typeName + " not found in assembly " + assembly);
+		}
+#endif
 
 		public override void AppendTypeName(StringBuilder builder)
 		{
@@ -245,7 +259,7 @@ namespace Sharpen.Lang
 
 	public class GenericTypeReference : SimpleTypeReference
 	{
-		TypeReference[] _genericArguments;
+		private readonly TypeReference[] _genericArguments;
 
 		internal GenericTypeReference(string simpleName, TypeReference[] genericArguments)
 			: base(simpleName)
