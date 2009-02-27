@@ -289,7 +289,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (this)
 			{
 				CheckClosed();
-				lock (_container._lock)
+				lock (_container.Lock())
 				{
 					User existing = GetUser(userName);
 					if (existing != null)
@@ -344,30 +344,18 @@ namespace Db4objects.Db4o.Internal.CS
 			return _container;
 		}
 
-		[System.ObsoleteAttribute]
 		public virtual IObjectContainer OpenClient()
-		{
-			return OpenClient(Db4oFactory.CloneConfiguration());
-		}
-
-		public virtual IObjectContainer OpenClient(IConfiguration config)
 		{
 			lock (this)
 			{
 				CheckClosed();
-				lock (_container._lock)
+				lock (_container.Lock())
 				{
 					return new EmbeddedClientObjectContainer(_container);
 				}
 			}
 		}
 
-		//      The following uses old embedded C/S mode:      
-		//		ClientObjectContainer client = new ClientObjectContainer(config,
-		//				openClientSocket(), Const4.EMBEDDED_CLIENT_USER
-		//						+ (i_threadIDGen - 1), "", false);
-		//		client.blockSize(_container.blockSize());
-		//		return client;
 		internal virtual void RemoveThread(ServerMessageDispatcherImpl dispatcher)
 		{
 			lock (_dispatchers)
@@ -382,7 +370,7 @@ namespace Db4objects.Db4o.Internal.CS
 			lock (this)
 			{
 				CheckClosed();
-				lock (_container._lock)
+				lock (_container.Lock())
 				{
 					DeleteUsers(userName);
 					_container.Commit();

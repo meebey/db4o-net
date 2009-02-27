@@ -35,17 +35,37 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestCreateIndexAtRuntime()
 		{
-			IStoredField field = Db().StoredClass(typeof(RuntimeFieldIndexTestCase.Data)).StoredField
-				(Fieldname, null);
+			IStoredField field = StoredField();
 			Assert.IsFalse(field.HasIndex());
 			field.CreateIndex();
 			Assert.IsTrue(field.HasIndex());
+			AssertQuery();
+			field.CreateIndex();
+		}
+
+		// ensure that second call is ignored
+		private void AssertQuery()
+		{
 			IQuery query = NewQuery(typeof(RuntimeFieldIndexTestCase.Data));
 			query.Descend(Fieldname).Constrain(2);
 			IObjectSet result = query.Execute();
 			Assert.AreEqual(1, result.Count);
-			field.CreateIndex();
 		}
-		// ensure that second call is ignored
+
+		public virtual void TestDropIndex()
+		{
+			IStoredField field = StoredField();
+			field.CreateIndex();
+			AssertQuery();
+			field.DropIndex();
+			Assert.IsFalse(field.HasIndex());
+			AssertQuery();
+		}
+
+		private IStoredField StoredField()
+		{
+			return Db().StoredClass(typeof(RuntimeFieldIndexTestCase.Data)).StoredField(Fieldname
+				, null);
+		}
 	}
 }

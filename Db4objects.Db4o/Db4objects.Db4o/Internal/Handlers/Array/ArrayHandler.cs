@@ -469,7 +469,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return Handlers4.IsUntyped(_handler) && HandleAsByteArray(context);
 		}
 
-		private bool HandleAsByteArray(IBufferContext context)
+		protected virtual bool HandleAsByteArray(IBufferContext context)
 		{
 			int offset = context.Offset();
 			ArrayInfo info = NewArrayInfo();
@@ -677,5 +677,10 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 		}
 
 		private const int HashcodeForNull = 9141078;
+
+		public virtual bool CanHold(IReflectClass type)
+		{
+			return _handler.CanHold(type);
+		}
 	}
 }

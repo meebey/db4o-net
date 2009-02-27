@@ -246,38 +246,28 @@ namespace Db4oUnit.Extensions
 
 		protected virtual Db4oTestSuiteBuilder SoloSuite(bool independentConfig)
 		{
-			return new Db4oTestSuiteBuilder(new Db4oSolo(ConfigSource(independentConfig)), TestCases
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewSolo(independentConfig), TestCases
 				());
 		}
 
 		protected virtual Db4oTestSuiteBuilder ClientServerSuite(bool independentConfig)
 		{
-			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
-				), false, "C/S"), TestCases());
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewNetworkingCS(independentConfig), 
+				TestCases());
 		}
 
 		protected virtual Db4oTestSuiteBuilder EmbeddedClientServerSuite(bool independentConfig
 			)
 		{
-			return new Db4oTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
-				), true, "C/S EMBEDDED"), TestCases());
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewEmbeddedCS(independentConfig), TestCases
+				());
 		}
 
 		protected virtual Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool independentConfig
 			, bool embedded, string label)
 		{
-			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(ConfigSource(independentConfig
-				), embedded, label), TestCases());
-		}
-
-		protected virtual IConfigurationSource ConfigSource(bool independentConfig)
-		{
-			IConfigurationSource configSource = new IndependentConfigurationSource();
-			if (!independentConfig)
-			{
-				configSource = new CachingConfigurationSource(configSource);
-			}
-			return configSource;
+			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(Db4oFixtures.ConfigSource
+				(independentConfig), embedded, label), TestCases());
 		}
 
 		protected virtual IInternalObjectContainer Stream()
@@ -407,12 +397,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_326(oc));
+			Foreach(clazz, new _IVisitor4_318(oc));
 		}
 
-		private sealed class _IVisitor4_326 : IVisitor4
+		private sealed class _IVisitor4_318 : IVisitor4
 		{
-			public _IVisitor4_326(IExtObjectContainer oc)
+			public _IVisitor4_318(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

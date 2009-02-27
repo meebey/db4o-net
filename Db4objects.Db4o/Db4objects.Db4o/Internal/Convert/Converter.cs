@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Convert
 	/// <exclude></exclude>
 	public class Converter
 	{
-		public const int Version = ClassAspects_7_4.Version;
+		public const int Version = ReindexNetDateTime_7_8.Version;
 
 		private static Converter _converter;
 

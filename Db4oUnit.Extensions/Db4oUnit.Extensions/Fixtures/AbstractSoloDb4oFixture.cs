@@ -23,7 +23,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		public sealed override void Open(Type testCaseClass)
 		{
 			Assert.IsNull(_db);
-			IConfiguration config = Config();
+			IConfiguration config = CloneConfiguration();
 			ApplyFixtureConfiguration(testCaseClass, config);
 			_db = CreateDatabase(config).Ext();
 		}

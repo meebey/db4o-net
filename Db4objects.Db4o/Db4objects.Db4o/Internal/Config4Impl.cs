@@ -174,6 +174,8 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec SlotCacheSizeKey = new KeySpec(30);
 
+		private static readonly KeySpec TaintedKey = new KeySpec(false);
+
 		private ObjectContainerBase i_stream;
 
 		private bool _internStrings;
@@ -1219,6 +1221,24 @@ namespace Db4objects.Db4o.Internal
 		public void FileBasedTransactionLog(bool flag)
 		{
 			_config.Put(FileBasedTransactionLogKey, flag);
+		}
+
+		public bool IsTainted()
+		{
+			return _config.GetAsBoolean(TaintedKey);
+		}
+
+		public void Taint()
+		{
+			_config.Put(TaintedKey, true);
+		}
+
+		public static void AssertIsNotTainted(IConfiguration config)
+		{
+			if (((Config4Impl)config).IsTainted())
+			{
+				throw new ArgumentException("Configuration already used.");
+			}
 		}
 	}
 }

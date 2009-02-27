@@ -18,16 +18,29 @@ namespace Db4objects.Db4o.Internal
 		private int _length = 0;
 
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
-		protected InMemoryObjectContainer(IConfiguration config, ObjectContainerBase parent
-			, MemoryFile memoryFile) : base(config, parent)
+		public InMemoryObjectContainer(IConfiguration config, MemoryFile memoryFile) : base
+			(config)
 		{
 			_memoryFile = memoryFile;
 			Open();
 		}
 
-		public InMemoryObjectContainer(IConfiguration config, MemoryFile memoryFile) : this
-			(config, null, memoryFile)
+		protected sealed class ConstructionMode
 		{
+		}
+
+		protected static readonly InMemoryObjectContainer.ConstructionMode DeferredOpenMode = 
+			new InMemoryObjectContainer.ConstructionMode();
+
+		protected InMemoryObjectContainer(Config4Impl config, MemoryFile memoryFile, InMemoryObjectContainer.ConstructionMode
+			 ignored) : base(config)
+		{
+			_memoryFile = memoryFile;
+		}
+
+		public virtual void DeferredOpen()
+		{
+			Open();
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>

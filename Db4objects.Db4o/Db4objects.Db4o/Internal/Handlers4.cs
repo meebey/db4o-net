@@ -4,7 +4,6 @@ using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
-using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
@@ -46,43 +45,17 @@ namespace Db4objects.Db4o.Internal
 		public static bool HandlerCanHold(ITypeHandler4 handler, IReflector reflector, IReflectClass
 			 claxx)
 		{
-			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
-			if (handler is ITypeFamilyTypeHandler)
-			{
-				return ((ITypeFamilyTypeHandler)handler).CanHold(claxx);
-			}
-			if (HandlesSimple(baseTypeHandler))
-			{
-				if (baseTypeHandler is PrimitiveHandler)
-				{
-					return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector()) || claxx
-						.Equals(((PrimitiveHandler)baseTypeHandler).PrimitiveClassReflector());
-				}
-				return claxx.Equals(((IBuiltinTypeHandler)baseTypeHandler).ClassReflector());
-			}
-			if (baseTypeHandler is UntypedFieldHandler)
-			{
-				return true;
-			}
-			if (handler is ICanHoldAnythingHandler)
-			{
-				return true;
-			}
-			ClassMetadata classMetadata = (ClassMetadata)baseTypeHandler;
-			IReflectClass classReflector = classMetadata.ClassReflector();
-			if (classReflector.IsCollection())
-			{
-				return true;
-			}
-			return classReflector.IsAssignableFrom(claxx);
+			return handler.CanHold(claxx);
 		}
 
 		public static bool HandlesSimple(ITypeHandler4 handler)
 		{
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
-			return (baseTypeHandler is PrimitiveHandler) || (baseTypeHandler is StringHandler
-				) || (baseTypeHandler is ISecondClassTypeHandler) || (baseTypeHandler is ITypeFamilyTypeHandler
-				 && ((ITypeFamilyTypeHandler)baseTypeHandler).IsSimple());
+			if (!(baseTypeHandler is IQueryableTypeHandler))
+			{
+				return false;
+			}
+			return ((IQueryableTypeHandler)baseTypeHandler).IsSimple();
 		}
 
 		public static bool HandlesArray(ITypeHandler4 handler)
@@ -137,7 +110,7 @@ namespace Db4objects.Db4o.Internal
 			return clazz;
 		}
 
-		public static bool HasID(ITypeHandler4 typeHandler)
+		public static bool IsClassAware(ITypeHandler4 typeHandler)
 		{
 			return typeHandler is IBuiltinTypeHandler || typeHandler is ClassMetadata || typeHandler
 				 is PlainObjectHandler;
@@ -218,11 +191,6 @@ namespace Db4objects.Db4o.Internal
 		public static bool IsPrimitive(ITypeHandler4 handler)
 		{
 			return handler is PrimitiveHandler;
-		}
-
-		public static bool IsSecondClass(IFieldHandler handler)
-		{
-			return handler is ISecondClassTypeHandler;
 		}
 
 		public static bool IsUntyped(ITypeHandler4 handler)
@@ -385,13 +353,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_322
+			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_291
 				(handler, queryingReadContext));
 		}
 
-		private sealed class _IClosure4_322 : IClosure4
+		private sealed class _IClosure4_291 : IClosure4
 		{
-			public _IClosure4_322(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_291(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;

@@ -13,6 +13,10 @@ namespace Db4objects.Db4o.Ext
 		/// <remarks>creates an index on this field at runtime.</remarks>
 		void CreateIndex();
 
+		/// <summary>drops an existing index on this field at runtime.</summary>
+		/// <remarks>drops an existing index on this field at runtime.</remarks>
+		void DropIndex();
+
 		/// <summary>returns the field value on the passed object.</summary>
 		/// <remarks>
 		/// returns the field value on the passed object.

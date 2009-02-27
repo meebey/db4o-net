@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal
 			VirtualAttributes attr = @ref.VirtualAttributes();
 			if (!isMigrating)
 			{
-				attr.i_version = trans.Container()._parent.GenerateTimeStampId();
+				attr.i_version = trans.Container().GenerateTimeStampId();
 			}
 			if (attr == null)
 			{

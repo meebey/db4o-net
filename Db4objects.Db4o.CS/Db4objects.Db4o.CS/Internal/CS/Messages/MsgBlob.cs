@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			BlobImpl blobImpl = null;
 			int id = _payLoad.ReadInt();
 			ObjectContainerBase stream = Stream();
-			lock (stream._lock)
+			lock (stream.Lock())
 			{
 				blobImpl = (BlobImpl)stream.GetByID(Transaction(), id);
 				stream.Activate(Transaction(), blobImpl, new FixedActivationDepth(3));

@@ -46,18 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		{
 			IConfiguration config1 = Db4oFactory.NewConfiguration();
 			config1.ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_43(config1));
-			config1.ReadOnly(false);
-			IObjectContainer db1 = Db4oFactory.OpenFile(config1, Filename);
-			config1.ReadOnly(true);
-			try
-			{
-				Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_52(db1));
-			}
-			finally
-			{
-				db1.Close();
-			}
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_44(config1));
 			IConfiguration config2 = Db4oFactory.NewConfiguration();
 			IObjectContainer db2 = Db4oFactory.OpenFile(config2, Filename);
 			try
@@ -72,9 +61,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _ICodeBlock_43 : ICodeBlock
+		private sealed class _ICodeBlock_44 : ICodeBlock
 		{
-			public _ICodeBlock_43(IConfiguration config1)
+			public _ICodeBlock_44(IConfiguration config1)
 			{
 				this.config1 = config1;
 			}
@@ -88,27 +77,11 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			private readonly IConfiguration config1;
 		}
 
-		private sealed class _ICodeBlock_52 : ICodeBlock
-		{
-			public _ICodeBlock_52(IObjectContainer db1)
-			{
-				this.db1 = db1;
-			}
-
-			/// <exception cref="System.Exception"></exception>
-			public void Run()
-			{
-				db1.Store(new GlobalVsNonStaticConfigurationTestCase.Data(1));
-			}
-
-			private readonly IObjectContainer db1;
-		}
-
 		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void TestOpenWithStaticConfiguration()
 		{
 			Db4oFactory.Configure().ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_76());
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_65());
 			Db4oFactory.Configure().ReadOnly(false);
 			IObjectContainer db = Db4oFactory.OpenFile(Filename);
 			db.Store(new GlobalVsNonStaticConfigurationTestCase.Data(1));
@@ -119,9 +92,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			db.Close();
 		}
 
-		private sealed class _ICodeBlock_76 : ICodeBlock
+		private sealed class _ICodeBlock_65 : ICodeBlock
 		{
-			public _ICodeBlock_76()
+			public _ICodeBlock_65()
 			{
 			}
 

@@ -11,8 +11,8 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public sealed class StringBufferHandler : ITypeHandler4, IBuiltinTypeHandler, ISecondClassTypeHandler
-		, IVariableLengthTypeHandler, IEmbeddedTypeHandler
+	public sealed class StringBufferHandler : ITypeHandler4, IBuiltinTypeHandler, IVariableLengthTypeHandler
+		, IEmbeddedTypeHandler, IQueryableTypeHandler
 	{
 		private IReflectClass _classReflector;
 
@@ -65,6 +65,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public void RegisterReflector(IReflector reflector)
 		{
 			_classReflector = reflector.ForClass(typeof(StringBuilder));
+		}
+
+		public bool IsSimple()
+		{
+			return true;
+		}
+
+		public bool CanHold(IReflectClass type)
+		{
+			return type.Equals(ClassReflector());
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private LocalObjectContainer _container;
 
-		private IConfiguration _currentConfig;
+		private IClosure4 _currentConfig;
 
 		private string _fileName;
 
@@ -81,8 +81,8 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void Open()
 		{
-			_container = (LocalObjectContainer)Db4oFactory.OpenFile(_currentConfig, _fileName
-				);
+			_container = (LocalObjectContainer)Db4oFactory.OpenFile(((IConfiguration)_currentConfig
+				.Run()), _fileName);
 		}
 
 		private void CreateFreeSpace()
@@ -101,8 +101,21 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void ConfigureBTreeManager()
 		{
-			_currentConfig = Db4oFactory.NewConfiguration();
-			_currentConfig.Freespace().UseBTreeSystem();
+			_currentConfig = new _IClosure4_90();
+		}
+
+		private sealed class _IClosure4_90 : IClosure4
+		{
+			public _IClosure4_90()
+			{
+			}
+
+			public object Run()
+			{
+				IConfiguration config = Db4oFactory.NewConfiguration();
+				config.Freespace().UseBTreeSystem();
+				return config;
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -115,20 +128,33 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void ConfigureRamManager()
 		{
-			_currentConfig = Db4oFactory.NewConfiguration();
-			_currentConfig.Freespace().UseRamSystem();
+			_currentConfig = new _IClosure4_105();
+		}
+
+		private sealed class _IClosure4_105 : IClosure4
+		{
+			public _IClosure4_105()
+			{
+			}
+
+			public object Run()
+			{
+				IConfiguration config = Db4oFactory.NewConfiguration();
+				config.Freespace().UseRamSystem();
+				return config;
+			}
 		}
 
 		private IList GetSlots(IFreespaceManager freespaceManager)
 		{
 			IList retVal = new ArrayList();
-			freespaceManager.Traverse(new _IVisitor4_108(retVal));
+			freespaceManager.Traverse(new _IVisitor4_114(retVal));
 			return retVal;
 		}
 
-		private sealed class _IVisitor4_108 : IVisitor4
+		private sealed class _IVisitor4_114 : IVisitor4
 		{
-			public _IVisitor4_108(IList retVal)
+			public _IVisitor4_114(IList retVal)
 			{
 				this.retVal = retVal;
 			}

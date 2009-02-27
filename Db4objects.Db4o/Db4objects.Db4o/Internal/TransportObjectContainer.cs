@@ -22,10 +22,14 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class TransportObjectContainer : InMemoryObjectContainer
 	{
-		public TransportObjectContainer(ObjectContainerBase serviceProvider, MemoryFile memoryFile
-			) : base(serviceProvider.Config(), serviceProvider, memoryFile)
+		private readonly ObjectContainerBase _parent;
+
+		public TransportObjectContainer(ObjectContainerBase parent, MemoryFile memoryFile
+			) : base(parent.Config(), memoryFile, DeferredOpenMode)
 		{
-			_showInternalClasses = serviceProvider._showInternalClasses;
+			_parent = parent;
+			_lock = parent.Lock();
+			_showInternalClasses = parent._showInternalClasses;
 		}
 
 		protected override void Initialize1(IConfiguration config)
@@ -140,6 +144,11 @@ namespace Db4objects.Db4o.Internal
 		public override bool MaintainsIndices()
 		{
 			return false;
+		}
+
+		public override long GenerateTimeStampId()
+		{
+			return _parent.GenerateTimeStampId();
 		}
 
 		internal override void Message(string msg)

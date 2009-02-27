@@ -13,7 +13,9 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Migration;
 using Db4objects.Db4o.Typehandlers;
 
@@ -40,6 +42,12 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			private int _writeCalls;
 
 			private int _readCalls;
+
+			public virtual bool CanHold(IReflectClass type)
+			{
+				return ReflectClasses.AreEqual(typeof(FieldsToTypeHandlerMigrationTestCase.Item), 
+					type);
+			}
 
 			public virtual void Defragment(IDefragmentContext context)
 			{

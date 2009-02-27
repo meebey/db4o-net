@@ -4,6 +4,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Typehandlers
 {
@@ -48,5 +49,7 @@ namespace Db4objects.Db4o.Typehandlers
 		/// <param name="context"></param>
 		/// <param name="obj">the object</param>
 		void Write(IWriteContext context, object obj);
+
+		bool CanHold(IReflectClass type);
 	}
 }

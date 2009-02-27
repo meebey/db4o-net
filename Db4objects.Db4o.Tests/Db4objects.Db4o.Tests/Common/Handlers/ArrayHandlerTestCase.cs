@@ -13,18 +13,67 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public class ArrayHandlerTestCase : AbstractDb4oTestCase
 	{
-		public static void Main(string[] args)
+		public class FloatArrayHolder
 		{
-			new ArrayHandlerTestCase().RunSolo();
+			public float[] _floats;
+
+			public float[][] _jaggedFloats;
+
+			public float[][] _jaggedFloatWrappers;
+
+			public FloatArrayHolder()
+			{
+			}
+
+			public FloatArrayHolder(float[] floats)
+			{
+				// for jres that require instantiation through the constructor
+				_floats = floats;
+				_jaggedFloats = new float[][] { floats };
+				_jaggedFloatWrappers = new float[][] { Lift(floats) };
+			}
+
+			public static float[] Lift(float[] floats)
+			{
+				float[] wrappers = new float[floats.Length];
+				for (int i = 0; i < floats.Length; ++i)
+				{
+					wrappers[i] = floats[i];
+				}
+				return wrappers;
+			}
+
+			public virtual float[] Floats()
+			{
+				return _floats;
+			}
+
+			public virtual float[] JaggedFloats()
+			{
+				return _jaggedFloats[0];
+			}
+
+			public virtual float[] JaggedWrappers()
+			{
+				return _jaggedFloatWrappers[0];
+			}
 		}
 
 		public class IntArrayHolder
 		{
 			public int[] _ints;
 
+			public int[][] _jaggedInts;
+
 			public IntArrayHolder(int[] ints)
 			{
 				_ints = ints;
+				_jaggedInts = new int[][] { _ints };
+			}
+
+			public virtual int[] JaggedInts()
+			{
+				return _jaggedInts[0];
 			}
 		}
 
@@ -38,21 +87,49 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		private ArrayHandler IntArrayHandler()
+		public static void Main(string[] args)
 		{
-			return ArrayHandler(typeof(int), true);
+			new ArrayHandlerTestCase().RunSolo();
 		}
 
-		private ArrayHandler StringArrayHandler()
+		/// <exception cref="System.Exception"></exception>
+		public virtual void TestFloatArrayRoundtrip()
 		{
-			return ArrayHandler(typeof(string), false);
+			float[] expected = new float[] { float.MinValue, float.MinValue + 1, 0.0f, float.MaxValue
+				 - 1, float.MaxValue };
+			Store(new ArrayHandlerTestCase.FloatArrayHolder(expected));
+			Reopen();
+			ArrayHandlerTestCase.FloatArrayHolder stored = ((ArrayHandlerTestCase.FloatArrayHolder
+				)RetrieveOnlyInstance(typeof(ArrayHandlerTestCase.FloatArrayHolder)));
+			ArrayAssert.AreEqual(expected, stored.JaggedFloats());
+			ArrayAssert.AreEqual(expected, stored.Floats());
+			ArrayAssert.AreEqual(ArrayHandlerTestCase.FloatArrayHolder.Lift(expected), stored
+				.JaggedWrappers());
 		}
 
-		private ArrayHandler ArrayHandler(Type clazz, bool isPrimitive)
+		public virtual void TestCanHold()
 		{
-			ClassMetadata classMetadata = Container().ProduceClassMetadata(Reflector().ForClass
-				(clazz));
-			return new ArrayHandler(classMetadata.TypeHandler(), isPrimitive);
+			Assert.IsTrue(IntArrayHandler().CanHold(ReflectClass(typeof(int))));
+			Assert.IsFalse(IntArrayHandler().CanHold(ReflectClass(typeof(long))));
+		}
+
+		public virtual void TestHandlerVersion()
+		{
+			ArrayHandlerTestCase.IntArrayHolder intArrayHolder = new ArrayHandlerTestCase.IntArrayHolder
+				(new int[0]);
+			Store(intArrayHolder);
+			IReflectClass claxx = Reflector().ForObject(intArrayHolder);
+			ClassMetadata classMetadata = (ClassMetadata)Container().TypeHandlerForReflectClass
+				(claxx);
+			FieldMetadata fieldMetadata = classMetadata.FieldMetadataForName("_ints");
+			ITypeHandler4 arrayHandler = fieldMetadata.GetHandler();
+			Assert.IsInstanceOf(typeof(ArrayHandler), arrayHandler);
+			AssertCorrectedHandlerVersion(arrayHandler, 0, typeof(ArrayHandler0));
+			AssertCorrectedHandlerVersion(arrayHandler, 1, typeof(ArrayHandler1));
+			AssertCorrectedHandlerVersion(arrayHandler, 2, typeof(ArrayHandler3));
+			AssertCorrectedHandlerVersion(arrayHandler, 3, typeof(ArrayHandler3));
+			AssertCorrectedHandlerVersion(arrayHandler, HandlerRegistry.HandlerVersion, typeof(
+				ArrayHandler));
 		}
 
 		public virtual void TestIntArrayReadWrite()
@@ -77,6 +154,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				)));
 			Assert.AreNotSame(expectedItem, readItem);
 			ArrayAssert.AreEqual(expectedItem._ints, readItem._ints);
+			ArrayAssert.AreEqual(expectedItem._ints, readItem.JaggedInts());
 		}
 
 		public virtual void TestStringArrayReadWrite()
@@ -103,23 +181,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ArrayAssert.AreEqual(expectedItem._strings, readItem._strings);
 		}
 
-		public virtual void TestHandlerVersion()
+		private ArrayHandler ArrayHandler(Type clazz, bool isPrimitive)
 		{
-			ArrayHandlerTestCase.IntArrayHolder intArrayHolder = new ArrayHandlerTestCase.IntArrayHolder
-				(new int[0]);
-			Store(intArrayHolder);
-			IReflectClass claxx = Reflector().ForObject(intArrayHolder);
-			ClassMetadata classMetadata = (ClassMetadata)Container().TypeHandlerForReflectClass
-				(claxx);
-			FieldMetadata fieldMetadata = classMetadata.FieldMetadataForName("_ints");
-			ITypeHandler4 arrayHandler = fieldMetadata.GetHandler();
-			Assert.IsInstanceOf(typeof(ArrayHandler), arrayHandler);
-			AssertCorrectedHandlerVersion(arrayHandler, 0, typeof(ArrayHandler0));
-			AssertCorrectedHandlerVersion(arrayHandler, 1, typeof(ArrayHandler2));
-			AssertCorrectedHandlerVersion(arrayHandler, 2, typeof(ArrayHandler2));
-			AssertCorrectedHandlerVersion(arrayHandler, 3, typeof(ArrayHandler3));
-			AssertCorrectedHandlerVersion(arrayHandler, HandlerRegistry.HandlerVersion, typeof(
-				ArrayHandler));
+			ClassMetadata classMetadata = Container().ProduceClassMetadata(Reflector().ForClass
+				(clazz));
+			return new ArrayHandler(classMetadata.TypeHandler(), isPrimitive);
 		}
 
 		private void AssertCorrectedHandlerVersion(ITypeHandler4 arrayHandler, int version
@@ -128,6 +194,16 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ITypeHandler4 correctedHandlerVersion = Container().Handlers().CorrectHandlerVersion
 				(arrayHandler, version);
 			Assert.IsInstanceOf(handlerClass, correctedHandlerVersion);
+		}
+
+		private ArrayHandler IntArrayHandler()
+		{
+			return ArrayHandler(typeof(int), true);
+		}
+
+		private ArrayHandler StringArrayHandler()
+		{
+			return ArrayHandler(typeof(string), false);
 		}
 	}
 }

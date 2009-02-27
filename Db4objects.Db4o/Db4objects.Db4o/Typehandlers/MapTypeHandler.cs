@@ -8,14 +8,15 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
+using Db4objects.Db4o.Typehandlers.Internal;
 
 namespace Db4objects.Db4o.Typehandlers
 {
 	/// <summary>Typehandler for classes that implement java.util.Map.</summary>
 	/// <remarks>Typehandler for classes that implement java.util.Map.</remarks>
-	public class MapTypeHandler : ITypeHandler4, IFirstClassHandler, ICanHoldAnythingHandler
-		, IVariableLengthTypeHandler
+	public class MapTypeHandler : ITypeHandler4, IFirstClassHandler, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
 			)
@@ -152,6 +153,11 @@ namespace Db4objects.Db4o.Typehandlers
 		{
 			ITypeHandler4 untypedHandler = container.Handlers().UntypedObjectHandler();
 			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
+		}
+
+		public virtual bool CanHold(IReflectClass type)
+		{
+			return true;
 		}
 	}
 }

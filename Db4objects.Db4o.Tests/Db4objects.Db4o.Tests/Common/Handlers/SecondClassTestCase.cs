@@ -21,10 +21,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 		}
 
-		public class CustomSecondClassItem
-		{
-		}
-
 		public class CustomFirstClassItem
 		{
 		}
@@ -41,7 +37,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Register(new SecondClassTestCase.Item[] { new SecondClassTestCase.Item() }, false
 				);
 			Register(new SecondClassTestCase.CustomFirstClassItem(), false);
-			Register(new SecondClassTestCase.CustomSecondClassItem(), true);
 		}
 
 		private static void Register(object obj, bool isSecondClass)
@@ -53,17 +48,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 		}
 
-		public class SecondClassTypeHandler : FirstClassObjectHandler, IEmbeddedTypeHandler
-		{
-		}
-
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(SecondClassTestCase.CustomFirstClassItem
 				)), new SecondClassTestCase.FirstClassTypeHandler());
-			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(SecondClassTestCase.CustomSecondClassItem
-				)), new SecondClassTestCase.SecondClassTypeHandler());
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -71,7 +60,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			Store(new SecondClassTestCase.Item());
 			Store(new SecondClassTestCase.CustomFirstClassItem());
-			Store(new SecondClassTestCase.CustomSecondClassItem());
 		}
 
 		public virtual void Test()

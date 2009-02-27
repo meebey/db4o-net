@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public abstract class PrimitiveHandler : IIndexableTypeHandler, IBuiltinTypeHandler
-		, IEmbeddedTypeHandler
+		, IEmbeddedTypeHandler, IQueryableTypeHandler
 	{
 		protected IReflectClass _classReflector;
 
@@ -45,6 +45,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 		protected virtual Type JavaClass()
 		{
 			return Platform4.NullableTypeFor(PrimitiveJavaClass());
+		}
+
+		public virtual bool IsSimple()
+		{
+			return true;
+		}
+
+		public virtual bool CanHold(IReflectClass type)
+		{
+			return type.Equals(ClassReflector()) || type.Equals(PrimitiveClassReflector());
 		}
 
 		protected virtual object PrimitiveNull()

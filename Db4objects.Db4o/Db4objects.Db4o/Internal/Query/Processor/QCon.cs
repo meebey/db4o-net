@@ -780,7 +780,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		protected virtual object StreamLock()
 		{
-			return i_trans.Container()._lock;
+			return i_trans.Container().Lock();
 		}
 
 		internal virtual bool SupportsOrdering()

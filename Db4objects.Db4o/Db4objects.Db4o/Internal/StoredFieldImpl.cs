@@ -26,6 +26,11 @@ namespace Db4objects.Db4o.Internal
 			_fieldMetadata.CreateIndex();
 		}
 
+		public virtual void DropIndex()
+		{
+			_fieldMetadata.DropIndex();
+		}
+
 		public virtual Db4objects.Db4o.Internal.FieldMetadata FieldMetadata()
 		{
 			return _fieldMetadata;

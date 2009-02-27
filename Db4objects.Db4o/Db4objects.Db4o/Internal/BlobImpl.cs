@@ -171,7 +171,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Copy(file, ServerFile(CheckExt(file), true));
 			}
-			lock (i_stream._lock)
+			lock (i_stream.Lock())
 			{
 				i_stream.StoreInternal(i_trans, this, false);
 			}
@@ -186,7 +186,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual Sharpen.IO.File ServerFile(string promptName, bool writeToServer)
 		{
-			lock (i_stream._lock)
+			lock (i_stream.Lock())
 			{
 				i_stream.Activate(i_trans, this, new FixedActivationDepth(2));
 			}
@@ -217,7 +217,7 @@ namespace Db4objects.Db4o.Internal
 						}
 					}
 					fileName = tryPath;
-					lock (i_stream._lock)
+					lock (i_stream.Lock())
 					{
 						i_stream.StoreInternal(i_trans, this, false);
 					}
@@ -319,7 +319,7 @@ namespace Db4objects.Db4o.Internal
 			i_ext = null;
 			i_length = 0;
 			SetStatus(Status.Unused);
-			lock (i_stream._lock)
+			lock (i_stream.Lock())
 			{
 				i_stream.StoreInternal(i_trans, this, false);
 			}

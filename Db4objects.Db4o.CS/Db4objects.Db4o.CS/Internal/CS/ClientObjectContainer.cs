@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
-			string password, bool login) : base(config, null)
+			string password, bool login) : base(config)
 		{
 			// Db4o.registerClientConstructor(new ClientConstructor());
 			_userName = user;

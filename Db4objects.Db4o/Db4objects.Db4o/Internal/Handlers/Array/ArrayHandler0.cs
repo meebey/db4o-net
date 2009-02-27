@@ -13,7 +13,7 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <exclude></exclude>
-	public class ArrayHandler0 : ArrayHandler2
+	public class ArrayHandler0 : ArrayHandler1
 	{
 		protected override ArrayVersionHelper CreateVersionHelper()
 		{

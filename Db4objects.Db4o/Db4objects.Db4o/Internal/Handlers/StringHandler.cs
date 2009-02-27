@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
 	public class StringHandler : IIndexableTypeHandler, IBuiltinTypeHandler, IVariableLengthTypeHandler
-		, IEmbeddedTypeHandler
+		, IQueryableTypeHandler, IEmbeddedTypeHandler
 	{
 		private IReflectClass _classReflector;
 
@@ -34,6 +34,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 		internal virtual byte GetIdentifier()
 		{
 			return Const4.Yapstring;
+		}
+
+		public virtual bool IsSimple()
+		{
+			return true;
+		}
+
+		public virtual bool CanHold(IReflectClass type)
+		{
+			return type.Equals(ClassReflector());
 		}
 
 		public object IndexEntryToObject(IContext context, object indexEntry)
@@ -255,12 +265,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_228(this, context, sourceBuffer);
+			return new _IPreparedComparison_236(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_228 : IPreparedComparison
+		private sealed class _IPreparedComparison_236 : IPreparedComparison
 		{
-			public _IPreparedComparison_228(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_236(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

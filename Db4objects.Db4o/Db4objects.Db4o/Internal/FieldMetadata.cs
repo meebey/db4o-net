@@ -272,7 +272,7 @@ namespace Db4objects.Db4o.Internal
 			return Handlers4.HandlerCanHold(_handler, Reflector(), claxx);
 		}
 
-		private GenericReflector Reflector()
+		public virtual GenericReflector Reflector()
 		{
 			ObjectContainerBase container = Container();
 			if (container == null)
@@ -511,12 +511,13 @@ namespace Db4objects.Db4o.Internal
 				RemoveIndexEntry(context);
 				if (isUpdate)
 				{
+					IncrementOffset(context);
 					return;
 				}
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_434(this
+				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_435(this
 					, childContext));
 			}
 			catch (CorruptionException exc)
@@ -525,9 +526,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_434 : IClosure4
+		private sealed class _IClosure4_435 : IClosure4
 		{
-			public _IClosure4_434(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_435(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -593,7 +594,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			lock (container._lock)
+			lock (container.Lock())
 			{
 				// FIXME: The following is not really transactional.
 				//        This will work OK for normal C/S and for
@@ -1069,13 +1070,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_868(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_869(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_868 : IVisitor4
+		private sealed class _IVisitor4_869 : IVisitor4
 		{
-			public _IVisitor4_868(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_869(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1285,13 +1286,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, _handler
 				);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1022
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1023
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1022 : IClosure4
+		private sealed class _IClosure4_1023 : IClosure4
 		{
-			public _IClosure4_1022(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1023(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;
@@ -1342,6 +1343,11 @@ namespace Db4objects.Db4o.Internal
 		public override bool CanBeDisabled()
 		{
 			return true;
+		}
+
+		public virtual void DropIndex()
+		{
+			DropIndex(Container().SystemTransaction());
 		}
 	}
 }

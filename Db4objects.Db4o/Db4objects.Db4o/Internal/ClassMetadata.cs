@@ -2566,5 +2566,15 @@ namespace Db4objects.Db4o.Internal
 		{
 			return _container.InstanceCount(this, trans);
 		}
+
+		public virtual bool CanHold(IReflectClass type)
+		{
+			IReflectClass classReflector = ClassReflector();
+			if (classReflector.IsCollection())
+			{
+				return true;
+			}
+			return classReflector.IsAssignableFrom(type);
+		}
 	}
 }

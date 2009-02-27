@@ -30,8 +30,6 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private static readonly string Defgared = Original + ".bk";
 
-		internal IConfiguration db4oConfig;
-
 		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
@@ -110,16 +108,12 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private IConfiguration GetConfiguration()
 		{
-			if (db4oConfig == null)
-			{
-				db4oConfig = Db4oFactory.NewConfiguration();
-				db4oConfig.ActivationDepth(int.MaxValue);
-				db4oConfig.CallConstructors(true);
-				IStorage storage = new DefragEncryptedFileTestCase.MockStorage(new FileStorage(), 
-					"db4o");
-				db4oConfig.Storage = storage;
-			}
-			return db4oConfig;
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			config.ActivationDepth(int.MaxValue);
+			config.CallConstructors(true);
+			config.Storage = new DefragEncryptedFileTestCase.MockStorage(new FileStorage(), "db4o"
+				);
+			return config;
 		}
 
 		public class Item

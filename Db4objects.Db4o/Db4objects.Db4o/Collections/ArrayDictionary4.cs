@@ -7,17 +7,22 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Collections
 {
-	/// <summary>Transparent activatable Map implementation.</summary>
+	/// <summary>Transparent activatable IDictionary implementation.
+	/// </summary>
 	/// <remarks>
-	/// Transparent activatable Map implementation.
-	/// Implements Map interface using two arrays to store keys and values.<br /><br />
+	/// Transparent activatable IDictionary implementation. Implements IDictionary interface
+	/// using two arrays to store keys and values.
+	/// <br/>
+	/// <br/>
 	/// When instantiated as a result of a query, all the internal members
 	/// are NOT activated at all. When internal members are required to
-	/// perform an operation, the instance transparently activates all
-	/// the members.
+	/// perform an operation, the instance transparently activates all the
+	/// members.
 	/// </remarks>
-	/// <seealso cref="System.Collections.IDictionary">System.Collections.IDictionary</seealso>
-	/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
+	/// <seealso cref="System.Collections.Generic.IDictionary">System.Collections.IDictionary
+	/// </seealso>
+	/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable
+	/// </seealso>
 	public partial class ArrayDictionary4<K, V>
 	{
 		private K[] _keys;
@@ -29,10 +34,16 @@ namespace Db4objects.Db4o.Collections
 		[System.NonSerialized]
 		private IActivator _activator;
 
+		/// <summary>
+		/// Initializes a new collection with the initial capacity = 16.
+		/// </summary>
 		public ArrayDictionary4() : this(16)
 		{
 		}
 
+		/// <summary>
+		/// Initializes a collection of the specified initial capacity.
+		/// </summary>
 		public ArrayDictionary4(int initialCapacity)
 		{
 			InitializeBackingArray(initialCapacity);
@@ -65,16 +76,13 @@ namespace Db4objects.Db4o.Collections
 			_activator = activator;
 		}
 
-		/// <summary>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </summary>
-		/// <remarks>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </remarks>
-		/// <seealso cref="System.Collections.IDictionary"></seealso>
-		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
+		/// <summary> System.Collections.Generic.IDictionary implementation but transparently activates
+		/// the members as required.</summary>
+		/// <remarks> System.Collections.Generic.IDictionary implementation but transparently activates
+		/// the members as required.</remarks>
+		/// <seealso cref="System.Collections.Generic.IDictionary"/>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable
+		/// </seealso>
 		public virtual void Clear()
 		{
 			Activate(ActivationPurpose.Write);
@@ -106,16 +114,11 @@ namespace Db4objects.Db4o.Collections
 			return oldValue;
 		}
 
-		/// <summary>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </summary>
-		/// <remarks>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </remarks>
-		/// <seealso cref="System.Collections.IDictionary"></seealso>
-		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
+		/// <summary> Returns the number of elements in the collection.</summary>
+		/// <remarks> Returns the number of elements in the collection. The collection gets activated. </remarks>
+		/// <seealso cref="System.Collections.Generic.IDictionary"/>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable
+		/// </seealso>
 		public virtual int Count
 		{
 			get
@@ -125,16 +128,11 @@ namespace Db4objects.Db4o.Collections
 			}
 		}
 
-		/// <summary>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </summary>
-		/// <remarks>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </remarks>
-		/// <seealso cref="System.Collections.IDictionary"></seealso>
-		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
+		/// <summary> Returns the values of the collection.</summary>
+		/// <remarks> Returns the values of the collection. The collection gets activated.</remarks>
+		/// <seealso cref="System.Collections.Generic.IDictionary"/>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable
+		/// </seealso>
 		public virtual ICollection<V> Values
 		{
 			get
@@ -149,16 +147,12 @@ namespace Db4objects.Db4o.Collections
 			}
 		}
 
-		/// <summary>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </summary>
-		/// <remarks>
-		/// java.util.Map implementation but transparently
-		/// activates the members as required.
-		/// </remarks>
-		/// <seealso cref="System.Collections.IDictionary"></seealso>
-		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable</seealso>
+		/// <summary> Returns the hash code of the collection.</summary>
+		/// <remarks> Returns the hash code of the collection. Collection members
+		/// get activated as required.</remarks>
+		/// <seealso cref="System.Collections.Generic.IDictionary"/>
+		/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable
+		/// </seealso>
 		public override int GetHashCode()
 		{
 			int hashCode = 0;

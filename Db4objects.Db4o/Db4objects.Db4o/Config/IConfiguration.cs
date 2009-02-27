@@ -12,84 +12,105 @@ namespace Db4objects.Db4o.Config
 {
 	/// <member name="ActivationDepth(int)">
 	/// <doc>
-	/// <summary>sets the activation depth to the specified value.</summary>
+	/// <summary>sets the activation depth to the specified value.
+	/// </summary>
 	/// <remarks>
 	/// sets the activation depth to the specified value.
-	/// <br/><br/><b>Why activation?</b><br/>
-	/// When objects are instantiated from the database, the instantiation of member
-	/// objects needs to be limited to a certain depth. Otherwise a single object
-	/// could lead to loading the complete database into memory, if all objects where
-	/// reachable from a single root object.<br/><br/>
-	/// db4o uses the concept "depth", the number of field-to-field hops an object
-	/// is away from another object. <b>
-	/// The preconfigured "activation depth" db4o uses
-	/// in the default setting is 5.
-	/// </b>
-	/// <br/><br/>Whenever an application iterates through the
+	/// <br/>
+	/// <br/>
+	/// <b>Why activation?</b>
+	/// <br/>
+	/// When objects are instantiated from the database, the instantiation
+	/// of member objects needs to be limited to a certain depth.
+	/// Otherwise a single object could lead to loading the complete
+	/// database into memory, if all objects where reachable from a single
+	/// root object.
+	/// <br/>
+	/// <br/>
+	/// db4o uses the concept "depth", the number of field-to-field hops
+	/// an object is away from another object.
+	/// <b> The preconfigured "activation depth" db4o uses in the default
+	/// setting is 5.</b>
+	/// <br/>
+	/// <br/>
+	/// Whenever an application iterates through the
 	/// <see cref="IObjectSet">IObjectSet</see>
-	/// of a query result, the result objects
-	/// will be activated to the configured activation depth.<br/><br/>
-	/// A concrete example with the preconfigured activation depth of 5:<br/>
-	/// <pre>
-	/// Object foo is the result of a query, it is delivered by the ObjectSet
-	/// object foo = objectSet.Next();
-	/// </pre>
-	/// foo.member1.member2.member3.member4.member5 will be a valid object<br/>
-	/// foo, member1, member2, member3 and member4 will be activated<br/>
-	/// member5 will be deactivated, all of it's members will be null<br/>
+	/// of a query result, the result objects will be activated to the
+	/// configured activation depth.
+	/// <br/>
+	/// <br/>
+	/// A concrete example with the preconfigured activation depth of 5:
+	/// <br/>
+	/// <pre> Object foo is the result of a query, it is delivered by the
+	/// ObjectSet object foo = objectSet.Next();</pre>
+	/// foo.member1.member2.member3.member4.member5 will be a valid object
+	/// <br/>
+	/// foo, member1, member2, member3 and member4 will be activated
+	/// <br/>
+	/// member5 will be deactivated, all of it's members will be null
+	/// <br/>
 	/// member5 can be activated at any time by calling
-	/// <see cref="IObjectContainer.Activate">ObjectContainer#activate(member5, depth)</see>
+	/// <see cref="IObjectContainer.Activate">ObjectContainer#activate(member5,
+	/// depth)</see>
 	/// .
-	/// <br/><br/>
-	/// Note that raising the global activation depth will consume more memory and
-	/// have negative effects on the performance of first-time retrievals. Lowering
-	/// the global activation depth needs more individual activation work but can
-	/// increase performance of queries.<br/><br/>
-	/// <see cref="IObjectContainer.Deactivate">
-	/// ObjectContainer#deactivate(Object, depth)
-	/// </see>
-	/// can be used to manually free memory by deactivating objects.<br/><br/>
+	/// <br/>
+	/// <br/>
+	/// Note that raising the global activation depth will consume more
+	/// memory and have negative effects on the performance of first-time
+	/// retrievals. Lowering the global activation depth needs more
+	/// individual activation work but can increase performance of
+	/// queries.
+	/// <br/>
+	/// <br/>
+	/// <see cref="IObjectContainer.Deactivate"> ObjectContainer#deactivate(Object, depth)</see>
+	/// can be used to manually free memory by deactivating objects.
+	/// <br/>
+	/// <br/>
 	/// </remarks>
 	/// <param name="depth">the desired global activation depth.</param>
-	/// <seealso cref="IObjectClass.MaximumActivationDepth">
-	/// configuring classes individually
-	/// </seealso>
-	/// 
+	/// <seealso cref="IObjectClass.MaximumActivationDepth"> configuring classes individually</seealso>
 	/// </doc>
 	/// </member>
 	/// <member name="AddAlias(IAlias)">
 	/// <doc>
-	/// <summary>adds a new Alias for a class, namespace or package.</summary>
+	/// <summary>adds a new Alias for a class, namespace or package.
+	/// </summary>
 	/// <remarks>
 	/// adds a new Alias for a class, namespace or package.
-	/// <br/><br/>Aliases can be used to persist classes in the running
-	/// application to different persistent classes in a database file
-	/// or on a db4o server.
-	/// <br/><br/>Two simple Alias implementations are supplied along with
-	/// db4o:<br/>
+	/// <br/>
+	/// <br/>
+	/// Aliases can be used to persist classes in the running application
+	/// to different persistent classes in a database file or on a db4o
+	/// server.
+	/// <br/>
+	/// <br/>
+	/// Two simple Alias implementations are supplied along with db4o:
+	/// <br/>
 	/// -
 	/// <see cref="TypeAlias">TypeAlias</see>
-	/// provides an #equals() resolver to match
-	/// names directly.<br/>
+	/// provides an #equals() resolver to match names directly.
+	/// <br/>
 	/// -
 	/// <see cref="WildcardAlias">WildcardAlias</see>
-	/// allows simple pattern matching
-	/// with one single '*' wildcard character.<br/>
+	/// allows simple pattern matching with one single '*' wildcard
+	/// character.
 	/// <br/>
-	/// It is possible to create
-	/// own complex
+	/// <br/>
+	/// It is possible to create own complex
 	/// <see cref="IAlias">IAlias</see>
-	/// constructs by creating own resolvers
-	/// that implement the
+	/// constructs by creating own resolvers that implement the
 	/// <see cref="IAlias">IAlias</see>
 	/// interface.
-	/// <br/><br/>
+	/// <br/>
+	/// <br/>
 	/// Four examples of concrete usecases:
-	/// <br/><br/>
+	/// <br/>
+	/// <br/>
 	/// <code>
-	/// <b>// Creating an Alias for a single class</b><br/>
-	/// Db4oFactory.Configure().AddAlias(<br/>
-	///   new TypeAlias("Tutorial.F1.Pilot", "Tutorial.F1.Driver"));<br/>
+	/// <b>// Creating an Alias for a single class</b>
+	/// <br/>
+	/// Db4oFactory.Configure().AddAlias(
+	/// <br/>  new TypeAlias("Tutorial.F1.Pilot", "Tutorial.F1.Driver"));<br/>
 	/// <br/><br/>
 	/// <b>// Accessing a Java package from a .NET assembly</b><br/>
 	/// Db4o.configure().addAlias(<br/>

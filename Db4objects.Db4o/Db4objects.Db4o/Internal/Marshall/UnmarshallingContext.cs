@@ -4,6 +4,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Marshall
@@ -14,6 +15,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// 	</remarks>
 	/// <exclude></exclude>
 	public class UnmarshallingContext : ObjectReferenceContext, IHandlerVersionContext
+		, IFirstClassReadContext
 	{
 		private object _object;
 

@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.TA
 		/// 	</seealso>
 		public virtual void Apply(IInternalObjectContainer container)
 		{
-			if (ActivationProvider(container) is ITransparentActivationDepthProvider)
+			if (IsTransparentActivationAlreadyEnabled(container))
 			{
 				return;
 			}
@@ -135,6 +135,12 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport.TADiagnosticProcessor processor;
 		}
 
+		private bool IsTransparentActivationAlreadyEnabled(IInternalObjectContainer container
+			)
+		{
+			return ActivationProvider(container) is ITransparentActivationDepthProvider;
+		}
+
 		private void SetActivationDepthProvider(IInternalObjectContainer container, IActivationDepthProvider
 			 provider)
 		{
@@ -155,12 +161,12 @@ namespace Db4objects.Db4o.TA
 				return;
 			}
 			IReferenceSystem referenceSystem = transaction.ReferenceSystem();
-			referenceSystem.TraverseReferences(new _IVisitor4_90(this));
+			referenceSystem.TraverseReferences(new _IVisitor4_94(this));
 		}
 
-		private sealed class _IVisitor4_90 : IVisitor4
+		private sealed class _IVisitor4_94 : IVisitor4
 		{
-			public _IVisitor4_90(TransparentActivationSupport _enclosing)
+			public _IVisitor4_94(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

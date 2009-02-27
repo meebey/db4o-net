@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		internal IoAdaptedObjectContainer(IConfiguration config, string fileName) : base(
-			config, null)
+			config)
 		{
 			_fileLock = new object();
 			_fileName = fileName;

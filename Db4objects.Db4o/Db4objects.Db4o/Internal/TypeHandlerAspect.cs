@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -155,6 +156,11 @@ namespace Db4objects.Db4o.Internal
 				object readObject = this._enclosing._typeHandler.Read(context);
 				if (readObject != null && oldObject != readObject)
 				{
+					if (!Handlers4.IsEmbedded(this._enclosing._typeHandler))
+					{
+						throw new InvalidOperationException("First class handler can only return the object in the context."
+							);
+					}
 					context.PersistentObject(readObject);
 				}
 				return null;
@@ -169,13 +175,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_104(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_107(this, context
 				));
 		}
 
-		private sealed class _IClosure4_104 : IClosure4
+		private sealed class _IClosure4_107 : IClosure4
 		{
-			public _IClosure4_104(TypeHandlerAspect _enclosing, DeleteContextImpl context)
+			public _IClosure4_107(TypeHandlerAspect _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;

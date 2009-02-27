@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (_defaultValue is KeySpec.IDeferred)
 			{
-				_defaultValue = ((KeySpec.IDeferred)_defaultValue).Evaluate();
+				return ((KeySpec.IDeferred)_defaultValue).Evaluate();
 			}
 			return _defaultValue;
 		}

@@ -870,7 +870,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		protected virtual object StreamLock()
 		{
-			return Stream()._lock;
+			return Stream().Lock();
 		}
 
 		public virtual IQuery SortBy(IQueryComparator comparator)

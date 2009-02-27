@@ -12,9 +12,15 @@ namespace Db4objects.Db4o.Internal
 		public static IObjectContainer OpenObjectContainer(IConfiguration config, string 
 			databaseFileName)
 		{
+			Config4Impl.AssertIsNotTainted(config);
+			EmitDebugInfo();
 			IObjectContainer oc = new IoAdaptedObjectContainer(config, databaseFileName);
 			Db4objects.Db4o.Internal.Messages.LogMsg(config, 5, databaseFileName);
 			return oc;
+		}
+
+		private static void EmitDebugInfo()
+		{
 		}
 	}
 }

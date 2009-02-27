@@ -449,6 +449,7 @@ namespace Db4objects.Db4o
 		protected static IObjectContainer OpenMemoryFile1(IConfiguration config, MemoryFile
 			 memoryFile)
 		{
+			Config4Impl.AssertIsNotTainted(config);
 			if (memoryFile == null)
 			{
 				memoryFile = new MemoryFile();

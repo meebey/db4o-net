@@ -93,14 +93,27 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		}
 
 		//$NON-NLS-1$
+		public virtual void _testStringBufferQuery()
+		{
+			IQuery query = NewItemQuery();
+			query.Descend("buffer").Constrain(_bufferValue);
+			Assert.AreEqual(1, query.Execute().Count);
+		}
+
 		public virtual void TestDelete()
 		{
 			StringBufferHandlerTestCase.Item item = RetrieveItem();
 			Assert.AreEqual(_bufferValue, item.buffer.ToString());
 			Db().Delete(item);
+			IQuery query = NewItemQuery();
+			Assert.AreEqual(0, query.Execute().Count);
+		}
+
+		private IQuery NewItemQuery()
+		{
 			IQuery query = NewQuery();
 			query.Constrain(typeof(StringBufferHandlerTestCase.Item));
-			Assert.AreEqual(0, query.Execute().Count);
+			return query;
 		}
 
 		public virtual void TestPrepareComparison()
@@ -112,6 +125,29 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		}
 
 		//$NON-NLS-1$
+		public virtual void TestStoringStringBufferDirectly()
+		{
+			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_90(this));
+		}
+
+		private sealed class _ICodeBlock_90 : ICodeBlock
+		{
+			public _ICodeBlock_90(StringBufferHandlerTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			/// <exception cref="System.Exception"></exception>
+			public void Run()
+			{
+				StringBuilder stringBuffer = new StringBuilder(StringBufferHandlerTestCase._bufferValue
+					);
+				this._enclosing.Store(stringBuffer);
+			}
+
+			private readonly StringBufferHandlerTestCase _enclosing;
+		}
+
 		private StringBufferHandlerTestCase.Item RetrieveItem()
 		{
 			return (StringBufferHandlerTestCase.Item)((StringBufferHandlerTestCase.Item)RetrieveOnlyInstance

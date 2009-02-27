@@ -8,6 +8,7 @@ using Db4objects.Db4o.Internal.Collections;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Collections
@@ -83,6 +84,13 @@ namespace Db4objects.Db4o.Internal.Collections
 		{
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		public virtual bool CanHold(IReflectClass type)
+		{
+			// FIXME: for .net generics we can actually
+			// know
+			return true;
 		}
 	}
 }

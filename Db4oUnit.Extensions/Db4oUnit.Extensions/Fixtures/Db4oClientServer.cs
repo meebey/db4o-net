@@ -161,7 +161,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IObjectContainer OpenEmbeddedClient()
 		{
-			return _server.OpenClient(CloneConfiguration());
+			return _server.OpenClient();
 		}
 
 		public override string Label()

@@ -24,6 +24,7 @@ namespace Db4objects.Db4o.Internal.CS.Config
 			{
 				throw new InvalidPasswordException();
 			}
+			Config4Impl.AssertIsNotTainted(config);
 			NetworkSocket networkSocket = new NetworkSocket(socketFactory, hostName, port);
 			return new ClientObjectContainer(config, networkSocket, user, password, true);
 		}

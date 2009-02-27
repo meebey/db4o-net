@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -56,11 +55,6 @@ namespace Db4objects.Db4o.Internal
 			_classMetadata = _container.GetActiveClassMetadata(claxx);
 			if (_classMetadata == null)
 			{
-				IFieldHandler fieldHandler = _container.FieldHandlerForClass(claxx);
-				if (Handlers4.IsSecondClass(fieldHandler))
-				{
-					NotStorable(_obj, claxx);
-				}
 				_classMetadata = _container.ProduceClassMetadata(claxx);
 				if (_classMetadata == null)
 				{
@@ -89,8 +83,8 @@ namespace Db4objects.Db4o.Internal
 		private bool IsPlainObjectOrPrimitive(Db4objects.Db4o.Internal.ClassMetadata classMetadata
 			)
 		{
-			return classMetadata.GetID() == Handlers4.UntypedId || classMetadata.IsPrimitive(
-				);
+			return classMetadata.GetID() == Handlers4.UntypedId || classMetadata.IsSecondClass
+				();
 		}
 
 		internal virtual Db4objects.Db4o.Internal.ObjectReference ObjectReference()

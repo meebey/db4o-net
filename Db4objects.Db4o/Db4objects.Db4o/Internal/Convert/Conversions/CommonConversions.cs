@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			converter.Register(FieldIndexesToBTrees_5_7.Version, new FieldIndexesToBTrees_5_7
 				());
 			converter.Register(ClassAspects_7_4.Version, new ClassAspects_7_4());
+			converter.Register(ReindexNetDateTime_7_8.Version, new ReindexNetDateTime_7_8());
 		}
 	}
 }

@@ -42,6 +42,8 @@ namespace Db4objects.Db4o.CS
 		/// the specified database file and provides access through
 		/// the specified port.
 		/// </remarks>
+		/// <exception cref="System.ArgumentException">if the configuration passed in has already been used.
+		/// 	</exception>
 		public static IObjectServer OpenServer(IServerConfiguration config, string databaseFileName
 			, int port)
 		{
@@ -61,6 +63,8 @@ namespace Db4objects.Db4o.CS
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
 		/// 	</seealso>
+		/// <exception cref="System.ArgumentException">if the configuration passed in has already been used.
+		/// 	</exception>
 		public static IObjectContainer OpenClient(IClientConfiguration config, string host
 			, int port, string user, string password)
 		{

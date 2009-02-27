@@ -62,8 +62,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, HandlerRegistry.HandlerVersion);
 			ArrayHandler arrayHandler = new ArrayHandler(untypedFieldHandler, false);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler0), arrayHandler, 0);
-			AssertCorrectedHandlerVersion(typeof(ArrayHandler2), arrayHandler, 1);
-			AssertCorrectedHandlerVersion(typeof(ArrayHandler2), arrayHandler, 2);
+			AssertCorrectedHandlerVersion(typeof(ArrayHandler1), arrayHandler, 1);
+			AssertCorrectedHandlerVersion(typeof(ArrayHandler3), arrayHandler, 2);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler3), arrayHandler, 3);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler), arrayHandler, HandlerRegistry
 				.HandlerVersion);

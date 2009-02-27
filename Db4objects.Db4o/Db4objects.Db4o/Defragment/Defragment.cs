@@ -17,34 +17,60 @@ namespace Db4objects.Db4o.Defragment
 	/// <summary>defragments database files.</summary>
 	/// <remarks>
 	/// defragments database files.
-	/// <br/><br/>db4o structures storage inside database files as free and occupied slots, very
-	/// much like a file system - and just like a file system it can be fragmented.<br/><br/>
-	/// The simplest way to defragment a database file:<br/><br/>
-	/// <code>Defragment.Defrag("sample.yap");</code><br/><br/>
-	/// This will move the file to "sample.yap.backup", then create a defragmented
-	/// version of this file in the original position, using a temporary file
-	/// "sample.yap.mapping". If the backup file already exists, this will throw an
-	/// exception and no action will be taken.<br/><br/>
-	/// For more detailed configuration of the defragmentation process, provide a
-	/// DefragmentConfig instance:<br/><br/>
+	/// <br/>
+	/// <br/>
+	/// db4o structures storage inside database files as free and occupied
+	/// slots, very much like a file system - and just like a file system it
+	/// can be fragmented.
+	/// <br/>
+	/// <br/>
+	/// The simplest way to defragment a database file:
+	/// <br/>
+	/// <br/>
+	/// <code>Defragment.Defrag("sample.yap");
+	/// </code>
+	/// <br/>
+	/// <br/>
+	/// This will move the file to "sample.yap.backup", then create a
+	/// defragmented version of this file in the original position, using a
+	/// temporary file "sample.yap.mapping". If the backup file already
+	/// exists, this will throw an exception and no action will be taken.
+	/// <br/>
+	/// <br/>
+	/// For more detailed configuration of the defragmentation process,
+	/// provide a DefragmentConfig instance:
+	/// <br/>
+	/// <br/>
 	/// <code>
-	/// DefragmentConfig config=new DefragmentConfig("sample.yap","sample.bap",new BTreeIDMapping("sample.map"));<br/>
-	/// config.ForceBackupDelete(true);<br/>
-	/// config.StoredClassFilter(new AvailableClassFilter());<br/>
-	/// config.Db4oConfig(db4oConfig);<br/>
+	/// DefragmentConfig config=new
+	/// DefragmentConfig("sample.yap","sample.bap",new
+	/// BTreeIDMapping("sample.map"));
+	/// <br/>
+	/// config.ForceBackupDelete(true);
+	/// <br/>
+	/// config.StoredClassFilter(new AvailableClassFilter());
+	/// <br/>
+	/// config.Db4oConfig(db4oConfig);
+	/// <br/>
 	/// Defragment.Defrag(config);
-	/// </code><br/><br/>
-	/// This will move the file to "sample.bap", then create a defragmented version
-	/// of this file in the original position, using a temporary file "sample.map" for BTree mapping.
-	/// If the backup file already exists, it will be deleted. The defragmentation
-	/// process will skip all classes that have instances stored within the yap file,
-	/// but that are not available on the class path (through the current
+	/// </code>
+	/// <br/>
+	/// <br/>
+	/// This will move the file to "sample.bap", then create a defragmented
+	/// version of this file in the original position, using a temporary
+	/// file "sample.map" for BTree mapping. If the backup file already
+	/// exists, it will be deleted. The defragmentation process will skip
+	/// all classes that have instances stored within the yap file, but that
+	/// are not available on the class path (through the current
 	/// classloader). Custom db4o configuration options are read from the
 	/// <see cref="IConfiguration">IConfiguration</see>
 	/// passed as db4oConfig.
-	/// <strong>Note:</strong> For some specific, non-default configuration settings like
-	/// UUID generation, etc., you <strong>must</strong> pass an appropriate db4o configuration,
-	/// just like you'd use it within your application for normal database operation.
+	/// <strong>Note:</strong>
+	/// For some specific, non-default configuration settings like UUID
+	/// generation, etc., you
+	/// <strong>must</strong>
+	/// pass an appropriate db4o configuration, just like you'd use it
+	/// within your application for normal database operation.
 	/// </remarks>
 	public class Defragment
 	{

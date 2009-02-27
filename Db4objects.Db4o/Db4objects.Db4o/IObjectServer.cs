@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o
@@ -83,23 +82,5 @@ namespace Db4objects.Db4o
 		/// for it's own version of all peristent objects.
 		/// </remarks>
 		IObjectContainer OpenClient();
-
-		/// <summary>
-		/// See
-		/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
-		/// 	</see>
-		/// </summary>
-		/// <param name="config">
-		/// a custom
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
-		/// instance to be obtained via
-		/// <see cref="Db4objects.Db4o.Db4oFactory.NewConfiguration">Db4objects.Db4o.Db4oFactory.NewConfiguration
-		/// 	</see>
-		/// </param>
-		/// <returns>
-		/// an open
-		/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
-		/// </returns>
-		IObjectContainer OpenClient(IConfiguration config);
 	}
 }

@@ -194,13 +194,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					if (!i_evaluator.Identity())
 					{
-						//                	TODO: consider another strategy to avoid reevaluating the class constraint when
-						//                	the candidate collection is loaded from the class index
-						//                    if (i_yapClass == i_candidates.i_yapClass) {
-						//                        if (i_evaluator.isDefault() && (! hasJoins())) {
-						//                            return;
-						//                        }
-						//                    }
 						i_selfComparison = true;
 					}
 					object transactionalObject = i_yapClass.WrapWithTransactionContext(Transaction(), 

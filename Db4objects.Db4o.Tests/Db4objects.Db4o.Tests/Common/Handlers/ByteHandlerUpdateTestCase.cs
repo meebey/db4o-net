@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Util;
@@ -50,13 +51,25 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			if (Db4oHeaderVersion() == VersionServices.Header3040)
 			{
 			}
+			else
+			{
+				// Bug in the oldest format: It accidentally byte[] arrays to Byte[]
+				// arrays.
+				if (Db4oHandlerVersion() == 1 && Db4oHeaderVersion() == 100 && itemArrays._primitiveArrayInObject
+					 == null)
+				{
+				}
+				else
+				{
+					// do nothing
+					// We started treating byte[] in untyped variables differently
+					// but we forgot to update the handler version.
+					// Concerns only 6.3.500: Updates are not possible.
+					AssertPrimitiveArray((byte[])itemArrays._primitiveArrayInObject);
+				}
+			}
 		}
 
-		// Bug in the oldest format: It accidentally byte[] arrays to Byte[]
-		// arrays.
-		// FIXME: Bug of store/retrieve byte[] as object.
-		// assertPrimitiveArray((byte[])
-		// itemArrays._primitiveArrayInObject);
 		private void AssertPrimitiveArray(byte[] primitiveArray)
 		{
 			for (int i = 0; i < data.Length; i++)
@@ -109,11 +122,24 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				);
 			byte[] primitiveArray = new byte[data.Length];
 			System.Array.Copy(data, 0, primitiveArray, 0, data.Length);
-			itemArrays._primitiveArrayInObject = primitiveArray;
+			if (PrimitiveArrayInUntypedVariableSupported())
+			{
+				itemArrays._primitiveArrayInObject = primitiveArray;
+			}
 			byte[] wrapperArray = new byte[data.Length + 1];
 			System.Array.Copy(dataWrapper, 0, wrapperArray, 0, dataWrapper.Length);
-			itemArrays._wrapperArrayInObject = wrapperArray;
+			if (PrimitiveArrayInUntypedVariableSupported() || !Deploy.csharp)
+			{
+				itemArrays._wrapperArrayInObject = wrapperArray;
+			}
 			return itemArrays;
+		}
+
+		private bool PrimitiveArrayInUntypedVariableSupported()
+		{
+			// We can't convert primitive arrays in object variables in 6.3
+			// Keeping the member to null value helps to identify the exact version.
+			return !(Db4oMajorVersion() == 6 && Db4oMinorVersion() == 3);
 		}
 
 		protected override object[] CreateValues()

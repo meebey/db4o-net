@@ -24,13 +24,22 @@ namespace Db4objects.Db4o.Internal
 			MemoryFile memoryFile = new MemoryFile();
 			memoryFile.SetInitialSize(223);
 			memoryFile.SetIncrementSizeBy(300);
-			TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
-				memoryFile);
+			TransportObjectContainer carrier = NewTransportObjectContainer(serviceProvider, memoryFile
+				);
 			carrier.ProduceClassMetadata(carrier.Reflector().ForObject(obj));
 			carrier.Store(obj);
 			int id = (int)carrier.GetID(obj);
 			carrier.Close();
 			return new SerializedGraph(id, memoryFile.GetBytes());
+		}
+
+		private static TransportObjectContainer NewTransportObjectContainer(ObjectContainerBase
+			 serviceProvider, MemoryFile memoryFile)
+		{
+			TransportObjectContainer container = new TransportObjectContainer(serviceProvider
+				, memoryFile);
+			container.DeferredOpen();
+			return container;
 		}
 
 		public static object Unmarshall(ObjectContainerBase serviceProvider, StatefulBuffer
@@ -53,8 +62,8 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			MemoryFile memoryFile = new MemoryFile(bytes);
-			TransportObjectContainer carrier = new TransportObjectContainer(serviceProvider, 
-				memoryFile);
+			TransportObjectContainer carrier = NewTransportObjectContainer(serviceProvider, memoryFile
+				);
 			object obj = carrier.GetByID(id);
 			carrier.Activate(carrier.Transaction(), obj, new FullActivationDepth());
 			carrier.Close();

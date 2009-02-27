@@ -149,7 +149,12 @@ namespace Db4oUnit.Fixtures
 
 		private IEnumerable Tests()
 		{
-			return new ReflectionTestSuiteBuilder(TestUnits());
+			Type[] units = TestUnits();
+			if (units == null || units.Length == 0)
+			{
+				throw new InvalidOperationException(GetType() + " has no TestUnits.");
+			}
+			return new ReflectionTestSuiteBuilder(units);
 		}
 
 		private ITest Decorate(ITest test, IEnumerator decorators)

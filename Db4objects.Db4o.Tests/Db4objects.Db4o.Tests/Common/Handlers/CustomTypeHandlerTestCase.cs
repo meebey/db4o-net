@@ -10,6 +10,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
@@ -32,12 +33,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				return new _IPreparedComparison_33();
+				return new _IPreparedComparison_34();
 			}
 
-			private sealed class _IPreparedComparison_33 : IPreparedComparison
+			private sealed class _IPreparedComparison_34 : IPreparedComparison
 			{
-				public _IPreparedComparison_33()
+				public _IPreparedComparison_34()
 				{
 				}
 
@@ -88,6 +89,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 			}
 
+			public bool CanHold(IReflectClass type)
+			{
+				return ReflectClasses.AreEqual(typeof(CustomTypeHandlerTestCase.Item), type);
+			}
+
 			internal CustomItemTypeHandler(CustomTypeHandlerTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
@@ -100,12 +106,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				return new _IPreparedComparison_78();
+				return new _IPreparedComparison_83();
 			}
 
-			private sealed class _IPreparedComparison_78 : IPreparedComparison
+			private sealed class _IPreparedComparison_83 : IPreparedComparison
 			{
-				public _IPreparedComparison_78()
+				public _IPreparedComparison_83()
 				{
 				}
 
@@ -126,7 +132,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public object Read(IReadContext context)
 			{
 				CustomTypeHandlerTestCase.ItemGrandChild item = (CustomTypeHandlerTestCase.ItemGrandChild
-					)((UnmarshallingContext)context).PersistentObject();
+					)((IFirstClassReadContext)context).PersistentObject();
 				item.age = context.ReadInt();
 				int check = context.ReadInt();
 				if (check != 100)
@@ -143,6 +149,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public void Defragment(IDefragmentContext context)
 			{
+			}
+
+			public bool CanHold(IReflectClass type)
+			{
+				return ReflectClasses.AreEqual(typeof(CustomTypeHandlerTestCase.ItemGrandChild), 
+					type);
 			}
 
 			internal CustomItemGrandChildTypeHandler(CustomTypeHandlerTestCase _enclosing)
@@ -269,13 +281,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			GenericReflector reflector = ((Config4Impl)config).Reflector();
 			IReflectClass itemClass = reflector.ForClass(clazz);
-			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_206(itemClass);
+			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_215(itemClass);
 			config.RegisterTypeHandler(predicate, typeHandler);
 		}
 
-		private sealed class _ITypeHandlerPredicate_206 : ITypeHandlerPredicate
+		private sealed class _ITypeHandlerPredicate_215 : ITypeHandlerPredicate
 		{
-			public _ITypeHandlerPredicate_206(IReflectClass itemClass)
+			public _ITypeHandlerPredicate_215(IReflectClass itemClass)
 			{
 				this.itemClass = itemClass;
 			}

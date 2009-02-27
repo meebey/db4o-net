@@ -45,11 +45,9 @@ namespace Db4objects.Db4o.Internal
 
 		private Tree _justPeeked;
 
-		public readonly object _lock;
+		protected object _lock;
 
 		private List4 _pendingClassUpdates;
-
-		internal readonly Db4objects.Db4o.Internal.ObjectContainerBase _parent;
 
 		internal int _showInternalClasses = 0;
 
@@ -87,8 +85,7 @@ namespace Db4objects.Db4o.Internal
 		private readonly IEnvironment _environment = Environments.NewConventionBasedEnvironment
 			();
 
-		protected ObjectContainerBase(IConfiguration config, Db4objects.Db4o.Internal.ObjectContainerBase
-			 parent)
+		protected ObjectContainerBase(IConfiguration config)
 		{
 			// Collection of all classes
 			// if (_classCollection == null) the engine is down.
@@ -96,8 +93,6 @@ namespace Db4objects.Db4o.Internal
 			// Counts the number of toplevel calls into YapStream
 			// currently used to resolve self-linking concurrency problems
 			// in cylic links, stores only YapClass objects
-			//  the parent ObjectContainer for TransportObjectContainer or this for all
-			//  others. Allows identifying the responsible Objectcontainer for IDs
 			// a value greater than 0 indicates class implementing the
 			// "Internal" interface are visible in queries and can
 			// be used.
@@ -113,20 +108,19 @@ namespace Db4objects.Db4o.Internal
 			// Call state has to be maintained here, so YapObjectCarrier (who shares i_handlers) does
 			// not accidentally think it operates in a replication call. 
 			// weak reference management
-			_parent = parent == null ? this : parent;
-			_lock = parent == null ? new object() : parent._lock;
+			_lock = new object();
 			_config = (Config4Impl)config;
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		protected void Open()
 		{
-			WithEnvironment(new _IRunnable_114(this));
+			WithEnvironment(new _IRunnable_109(this));
 		}
 
-		private sealed class _IRunnable_114 : IRunnable
+		private sealed class _IRunnable_109 : IRunnable
 		{
-			public _IRunnable_114(ObjectContainerBase _enclosing)
+			public _IRunnable_109(ObjectContainerBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -785,7 +779,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_628(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_623(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -807,9 +801,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_628 : IProcedure4
+		private sealed class _IProcedure4_623 : IProcedure4
 		{
-			public _IProcedure4_628(string fieldName, ByRef foundField)
+			public _IProcedure4_623(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -1184,7 +1178,7 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			ITypeHandler4 typeHandler = _handlers.TypeHandlerForClass(claxx);
-			if (Handlers4.HasID(typeHandler))
+			if (Handlers4.IsClassAware(typeHandler))
 			{
 				return typeHandler;
 			}
@@ -1331,6 +1325,7 @@ namespace Db4objects.Db4o.Internal
 			impl.Stream(this);
 			impl.Reflector().SetTransaction(SystemTransaction());
 			impl.Reflector().Configuration(new ReflectorConfigurationImpl(impl));
+			impl.Taint();
 			return impl;
 		}
 

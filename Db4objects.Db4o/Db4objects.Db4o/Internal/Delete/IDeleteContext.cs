@@ -20,8 +20,6 @@ namespace Db4objects.Db4o.Internal.Delete
 
 		bool IsLegacyHandlerVersion();
 
-		int HandlerVersion();
-
 		void DefragmentRecommended();
 
 		Slot ReadSlot();
