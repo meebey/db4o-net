@@ -41,7 +41,7 @@ public class TestNQOptimizerLoadFailure : MarshalByRefObject, INQTestRunner
         config.Diagnostic().AddListener(listener);
 
 		string databaseFile = Path.GetTempFileName();
-        using(IObjectContainer db = Db4oFactory.OpenFile(databaseFile))
+        using(IObjectContainer db = Db4oFactory.OpenFile(config, databaseFile))
         {
             db.Set(new Item());
             db.Query<Object>(delegate { return true; });
