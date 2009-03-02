@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text;
 using Db4objects.Db4o.Tests.CLI1.Handlers;
 using System.IO;
+using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.CLI2.Handlers;
 
@@ -26,6 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
                 typeof(GenericListVersionUpdateTestCase),
                 typeof(GenericDictionaryVersionUpdateTestCase),
                 typeof(DateTimeHandlerUpdateTestCase),
+                typeof(IndexedDateTimeUpdateTestCase),
                 typeof(DecimalHandlerUpdateTestCase),
                 typeof(EnumHandlerUpdateTestCase),
                 typeof(GUIDHandlerUpdateTestCase),

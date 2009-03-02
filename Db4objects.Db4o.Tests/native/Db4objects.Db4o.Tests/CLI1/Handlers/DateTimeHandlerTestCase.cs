@@ -30,6 +30,17 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             DoTestStoreObject(storedItem);
         }
 
+        public void TestKind()
+        {
+            DateTimeKind kind = DateTimeKind.Utc;
+            DateTime storedDateTime = DateTime.SpecifyKind(new DateTime(), kind);
+            DateTimeHandlerTestCase.Item storedItem = new DateTimeHandlerTestCase.Item(storedDateTime);
+            Store(storedItem);
+            Reopen();
+            Item retrievedItem = (Item) RetrieveOnlyInstance(typeof(Item));
+            Assert.AreEqual(kind, retrievedItem._dateTime.Kind);
+        }
+
         private Db4objects.Db4o.Internal.Handlers.DateTimeHandler DateTimeHandler()
         {
             return new Db4objects.Db4o.Internal.Handlers.DateTimeHandler();
