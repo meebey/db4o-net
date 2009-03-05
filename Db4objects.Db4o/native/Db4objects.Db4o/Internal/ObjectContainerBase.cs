@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Internal
 {
     using System;
@@ -137,5 +139,30 @@ namespace Db4objects.Db4o.Internal
             }
         }
 
+    	public delegate R SyncExecClosure<R>();
+
+		public R SyncExec<R>(SyncExecClosure<R> closure)
+		{
+			return (R)SyncExec(new SyncExecClosure4<R>(closure));
+		}
+
+    	public class SyncExecClosure4<R> : IClosure4
+    	{
+    		private readonly SyncExecClosure<R> _closure;
+
+    		public SyncExecClosure4(SyncExecClosure<R> closure)
+    		{
+    			_closure = closure;
+    		}
+
+    		#region Implementation of IClosure4
+
+    		public object Run()
+    		{
+    			return _closure.Invoke();
+    		}
+
+    		#endregion
+    	}
     }
 }

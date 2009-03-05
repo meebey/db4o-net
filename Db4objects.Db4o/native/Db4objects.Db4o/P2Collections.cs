@@ -19,59 +19,36 @@ namespace Db4objects.Db4o
 
 		public IDb4oList NewLinkedList()
 		{
-			lock (Lock())
+			return Container().SyncExec<IDb4oList>(delegate
 			{
-				if (CanCreateCollection(Container()))
-				{
-					IDb4oList l = new P2LinkedList();
-					Container().Store(_transaction, l);
-					return l;
-				}
-				return null;
-			}
+				IDb4oList l = new P2LinkedList();
+				Container().Store(_transaction, l);
+				return l;
+			});
 		}
 
 		public IDb4oMap NewHashMap(int size)
 		{
-			lock (Lock())
+			return Container().SyncExec<IDb4oMap>(delegate
 			{
-				if (CanCreateCollection(Container()))
-				{
-					return new P2HashMap(size);
-				}
-				return null;
-			}
+				return new P2HashMap(size);
+			});
 		}
 
 		public IDb4oMap NewIdentityHashMap(int size)
 		{
-			lock (Lock())
+			return Container().SyncExec<IDb4oMap>(delegate
 			{
-				if (CanCreateCollection(Container()))
-				{
-					P2HashMap m = new P2HashMap(size);
-					m.i_type = 1;
-					Container().Store(_transaction, m);
-					return m;
-				}
-				return null;
-			}
-		}
-
-		private Object Lock()
-		{
-			return Container().Lock();
+				P2HashMap m = new P2HashMap(size);
+				m.i_type = 1;
+				Container().Store(_transaction, m);
+				return m;
+			});
 		}
 
 		private ObjectContainerBase Container()
 		{
 			return _transaction.Container();
-		}
-
-		private bool CanCreateCollection(ObjectContainerBase container)
-		{
-			container.CheckClosed();
-			return !container.IsInstantiating();
 		}
 	}
 }
