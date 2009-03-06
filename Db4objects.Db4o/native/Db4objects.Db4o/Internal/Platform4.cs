@@ -581,7 +581,11 @@ namespace Db4objects.Db4o.Internal
     	{
     		return type.IsPointer
     		       || type.IsSubclassOf(typeof(Delegate))
+#if CF
+                   ;
+#else
     		       || type == typeof(System.Reflection.Pointer);
+#endif
     	}
 
     	private static Type GetNetType(IReflectClass clazz)
