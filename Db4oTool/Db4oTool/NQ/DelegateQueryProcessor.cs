@@ -144,7 +144,7 @@ namespace Db4oTool.NQ
 	        }
 	    }
 
-	    private bool IsPublicField(FieldReference reference)
+	    private bool IsPublicField(IMemberReference reference)
 	    {
 	        TypeDefinition parentType = _reflector.ResolveTypeReference(reference.DeclaringType);
 	        return (parentType.Fields.GetField(reference.Name).Attributes & FieldAttributes.Public) == FieldAttributes.Public;
@@ -181,7 +181,7 @@ namespace Db4oTool.NQ
 
 	    private void AddConstructor(TypeDefinition type, IDictionary<FieldReference, FieldDefinition> fields)
 	    {
-	        MethodAttributes methodAttributes = MethodAttributes.SpecialName | Mono.Cecil.MethodAttributes.RTSpecialName | MethodAttributes.Public;
+	        const MethodAttributes methodAttributes = MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.Public;
 	        MethodDefinition ctor = new MethodDefinition(MethodDefinition.Ctor, methodAttributes, Import(typeof(void)));
             
             AddMethodParameters(ctor, fields.Values);
@@ -212,15 +212,15 @@ namespace Db4oTool.NQ
 
 	    private static void AddMethodParameters(IMethodSignature method, IEnumerable<FieldDefinition> fields)
 	    {
-            int i = 0;
-            foreach (FieldDefinition parameter in fields)
+	    	int i = 0;
+	    	foreach (FieldDefinition parameter in fields)
             {
                 method.Parameters.Add(
-                    new ParameterDefinition(parameter.Name, i, ParameterAttributes.None, parameter.FieldType));
+                    new ParameterDefinition(parameter.Name, i++, ParameterAttributes.None, parameter.FieldType));
             }
 	    }
 
-	    private static IDictionary<FieldReference,FieldDefinition> AddFields(TypeDefinition type, IEnumerable<IFieldRef> fields)
+		private static IDictionary<FieldReference, FieldDefinition> AddFields(TypeDefinition type, IEnumerable<IFieldRef> fields)
 	    {
             Dictionary<FieldReference, FieldDefinition> fieldMap = new Dictionary<FieldReference, FieldDefinition>();
             foreach (IFieldRef field in fields)
@@ -316,9 +316,15 @@ namespace Db4oTool.NQ
 			return _context.Import(typeof(NativeQueryHandler).GetMethod("ExecuteEnhancedFilter", new Type[] { typeof(IObjectContainer), typeof(IDb4oEnhancedFilter) }));
 		}
 
-		private static MethodDefinition Resolve(MethodReference reference)
+		private static MethodDefinition Resolve(MethodReference methodRef)
 		{
-			return (MethodDefinition) reference;
+			MethodDefinition methodDefinition = methodRef as MethodDefinition;
+			if (methodDefinition != null)
+				return methodDefinition;
+
+			AssemblyDefinition assemblyDefinition = AssemblyFactory.GetAssembly(methodRef.DeclaringType.Module.Image.FileInformation.FullName);
+			TypeDefinition type = assemblyDefinition.MainModule.Types[methodRef.DeclaringType.Name];
+			return type.Methods.GetMethod(methodRef.Name, methodRef.Parameters);
 		}
 
 		private static MethodReference GetMethodReferenceFromInlinePredicatePattern(Instruction queryInvocation)

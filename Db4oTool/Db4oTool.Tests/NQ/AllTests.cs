@@ -8,11 +8,12 @@ namespace Db4oTool.Tests.NQ
 		protected override Type[] TestCases()
 		{
 			return new Type[]
-				{
-					typeof(DelegateBuildTimeOptimizationTestCase),
-					typeof(PredicateBuildTimeOptimizationTestCase),
-					typeof(UnoptimizablePredicatesTestCase),
-				};
+			    {
+			        typeof(DelegateBuildTimeOptimizationTestCase),
+			        typeof(OptimizedGenericClassTestCase),
+			        typeof(PredicateBuildTimeOptimizationTestCase),
+			        typeof(UnoptimizablePredicatesTestCase),
+			    };
 		}
 	}
 }

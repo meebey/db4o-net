@@ -18,11 +18,11 @@ namespace Db4objects.Db4o.NativeQueries
 	using Cecil.FlowAnalysis.CodeStructure;
 	using Ast = Cecil.FlowAnalysis.CodeStructure;
 
-	using Db4objects.Db4o.NativeQueries.Expr;
-	using Db4objects.Db4o.NativeQueries.Expr.Cmp;
-	using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
-	using NQExpression = Db4objects.Db4o.NativeQueries.Expr.IExpression;
-	using Db4objects.Db4o.Internal.Query;
+	using Expr;
+	using Expr.Cmp;
+	using Expr.Cmp.Operand;
+	using NQExpression = Expr.IExpression;
+	using Internal.Query;
 
 	/// <summary>
 	/// Build a Db4objects.Db4o.Nativequery.Expr tree out of
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.NativeQueries
 			}
 		}
 
-		public NQExpression FromMethod(System.Reflection.MethodBase method)
+		public NQExpression FromMethod(MethodBase method)
 		{
 			if (method == null) throw new ArgumentNullException("method");
 			
@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.NativeQueries
 			return methodDef;
 		}
 
-		private NQExpression AdjustBoxedValueTypes(NQExpression expression)
+		private static NQExpression AdjustBoxedValueTypes(NQExpression expression)
 		{
 			expression.Accept(new BoxedValueTypeProcessor());
 			return expression;
@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.NativeQueries
 
 		private static Type[] GetParameterTypes(MethodBase method)
 		{
-			ParameterInfo[] parameters = method.GetParameters();
+			ParameterInfo[] parameters = ParametersFor(method);
 			Type[] types = new Type[parameters.Length];
 			for (int i = 0; i < parameters.Length; ++i)
 			{
@@ -125,11 +125,24 @@ namespace Db4objects.Db4o.NativeQueries
 			return types;
 		}
 
+		private static ParameterInfo[] ParametersFor(MethodBase method)
+		{
+			if (method.IsGenericMethod)
+			{
+				MethodInfo methodInfo = (MethodInfo) method;
+				return methodInfo.GetGenericMethodDefinition().GetParameters();
+			}
+
+			return method.DeclaringType.IsGenericType 
+								? method.DeclaringType.GetGenericTypeDefinition().GetMethod(method.Name).GetParameters() 
+								: method.GetParameters();
+		}
+
 		private static TypeDefinition FindTypeDefinition(ModuleDefinition module, Type type)
 		{
 			return IsNested(type)
 				? FindNestedTypeDefinition(module, type)
-				: FindTypeDefinition(module, type.FullName);
+				: FindTypeDefinition(module, type.IsGenericType ? type.Name : type.FullName);
 		}
 
 		private static bool IsNested(Type type)
@@ -146,9 +159,9 @@ namespace Db4objects.Db4o.NativeQueries
 			return null;
 		}
 
-		private static TypeDefinition FindTypeDefinition(ModuleDefinition module, string fullName)
+		private static TypeDefinition FindTypeDefinition(ModuleDefinition module, string name)
 		{
-			return module.Types[fullName];
+			return module.Types[name];
 		}
 
 		private static string GetAssemblyLocation(MethodBase method)
@@ -295,9 +308,9 @@ namespace Db4objects.Db4o.NativeQueries
 		class Visitor : AbstractCodeStructureVisitor
 		{
 			object _current;
-			private int _insideCandidate = 0;
-			Hashtable _assemblies = new Hashtable();
-			IList _methodDefinitionStack = new ArrayList();
+			private int _insideCandidate;
+			readonly Hashtable _assemblies = new Hashtable();
+			readonly IList _methodDefinitionStack = new ArrayList();
 			private readonly CecilReferenceProvider _referenceProvider;
 
 			public Visitor(MethodDefinition topLevelMethod)
@@ -349,15 +362,15 @@ namespace Db4objects.Db4o.NativeQueries
 				}
 			}
 
-		    private NQExpression ToNQExpression(ConstValue value)
+		    private static NQExpression ToNQExpression(ConstValue value)
 		    {
                 if (IsTrue(value.Value())) return BoolConstExpression.True;
 		        return BoolConstExpression.False;
 		    }
 
-		    private bool IsTrue(object o)
+		    private static bool IsTrue(object o)
 		    {
-                return (o as IConvertible).ToBoolean(null);
+                return ((IConvertible) o).ToBoolean(null);
 		    }
 
 		    private bool InsideCandidate
@@ -478,7 +491,7 @@ namespace Db4objects.Db4o.NativeQueries
 				}
 			}
 
-			private bool IsCandidateFieldValue(object o)
+			private static bool IsCandidateFieldValue(object o)
 			{
 				FieldValue value = o as FieldValue;
 				if (value == null) return false;
@@ -571,9 +584,9 @@ namespace Db4objects.Db4o.NativeQueries
 				}
 			}
 
-			private void ProcessOperatorMethodInvocation(MethodInvocationExpression node, MethodReference method)
+			private void ProcessOperatorMethodInvocation(MethodInvocationExpression node, IMemberReference methodReference)
 			{
-				switch (method.Name)
+				switch (methodReference.Name)
 				{
 					case "op_Equality":
 						PushComparison(node.Arguments[0], node.Arguments[1], ComparisonOperator.ValueEquality);
@@ -610,17 +623,17 @@ namespace Db4objects.Db4o.NativeQueries
 				}
 			}
 
-			private void ProcessCandidateMethodInvocation(MethodInvocationExpression node, MethodReferenceExpression methodRef)
+			private void ProcessCandidateMethodInvocation(Expression methodInvocationExpression, MethodReferenceExpression methodRef)
 			{
 				MethodDefinition method = GetMethodDefinition(methodRef);
 				if (null == method)
-					UnsupportedExpression(node);
+					UnsupportedExpression(methodInvocationExpression);
 
-				AssertMethodCanBeVisited(node, method);
+				AssertMethodCanBeVisited(methodInvocationExpression, method);
 
 				Expression expression = GetQueryExpression(method);
 				if (null == expression)
-					UnsupportedExpression(node);
+					UnsupportedExpression(methodInvocationExpression);
 
 				EnterCandidateMethod(method);
 				try
@@ -633,18 +646,16 @@ namespace Db4objects.Db4o.NativeQueries
 				}
 			}
 
-			private void AssertMethodCanBeVisited(MethodInvocationExpression node, MethodDefinition method)
+			private void AssertMethodCanBeVisited(Expression methodInvocationExpression, MethodDefinition method)
 			{
 				if (_methodDefinitionStack.Contains(method))
-					UnsupportedExpression(node);
+					UnsupportedExpression(methodInvocationExpression);
 			}
 
 			private MethodDefinition GetMethodDefinition(MethodReferenceExpression methodRef)
 			{
 				MethodDefinition definition = methodRef.Method as MethodDefinition;
-				return definition != null
-					? definition
-					: LoadExternalMethodDefinition(methodRef);
+				return definition ?? LoadExternalMethodDefinition(methodRef);
 			}
 
 			private MethodDefinition LoadExternalMethodDefinition(MethodReferenceExpression methodRef)
@@ -664,7 +675,7 @@ namespace Db4objects.Db4o.NativeQueries
 				{
 					Assembly assembly = Assembly.Load(assemblyName);
 					string location = assembly.GetType(type.FullName).Module.FullyQualifiedName;
-					definition = QueryExpressionBuilder.GetAssembly(location);
+					definition = GetAssembly(location);
 					RegisterAssembly(definition);
 				}
 				return definition;
@@ -693,7 +704,6 @@ namespace Db4objects.Db4o.NativeQueries
 				switch (target.CodeElementType)
 				{
 					case CodeElementType.ArgumentReferenceExpression:
-						//IArgumentReferenceExpression arg = (IArgumentReferenceExpression)target;
 						PushFieldValue(CandidateFieldRoot.Instance, node.Field);
 						break;
 
@@ -780,7 +790,7 @@ namespace Db4objects.Db4o.NativeQueries
 				_current = value;
 			}
 
-			object Pop(Expression node, System.Type expectedType)
+			object Pop(Expression node, Type expectedType)
 			{
 				object value = Pop();
 				AssertType(value, expectedType, node);
@@ -806,7 +816,7 @@ namespace Db4objects.Db4o.NativeQueries
 				return value;
 			}
 
-			private void Assert(bool condition, string message)
+			private static void Assert(bool condition, string message)
 			{
 				System.Diagnostics.Debug.Assert(condition, message);
 			}
@@ -831,7 +841,7 @@ namespace Db4objects.Db4o.NativeQueries
 			return ((CecilFieldRef) field.Field).FieldType;
 		}
 
-		private void AdjustConstValue(TypeReference typeRef, ConstValue constValue)
+		private static void AdjustConstValue(TypeReference typeRef, ConstValue constValue)
 		{
 			object value = constValue.Value();
 			if (!value.GetType().IsValueType) return;

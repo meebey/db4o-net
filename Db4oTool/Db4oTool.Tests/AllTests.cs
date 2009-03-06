@@ -9,7 +9,6 @@ namespace Db4oTool.Tests
 	{
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(TA.TAInstrumentationAppliedMoreThanOnce)};
 			return new Type[]
 				{
 					typeof(ProgramOptionsTestCase),
