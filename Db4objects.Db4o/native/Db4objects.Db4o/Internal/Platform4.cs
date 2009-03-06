@@ -60,15 +60,6 @@ namespace Db4objects.Db4o.Internal
             }
         }
 
-        internal static bool IsDb4oClass(string className)
-        {
-            if (className.IndexOf(".Tests.") > 0)
-            {
-                return false;
-            }
-            return className.StartsWith("Db4objects.Db4o");
-        }
-
         internal static void AddShutDownHook(ObjectContainerBase container)
         {
             lock (_shutdownStreamsLock)
