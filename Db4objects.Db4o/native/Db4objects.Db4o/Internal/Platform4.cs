@@ -580,7 +580,8 @@ namespace Db4objects.Db4o.Internal
     	public static bool IsTransient(Type type)
     	{
     		return type.IsPointer
-    		       || type.IsSubclassOf(typeof(Delegate));
+    		       || type.IsSubclassOf(typeof(Delegate))
+    		       || type == typeof(System.Reflection.Pointer);
     	}
 
     	private static Type GetNetType(IReflectClass clazz)
