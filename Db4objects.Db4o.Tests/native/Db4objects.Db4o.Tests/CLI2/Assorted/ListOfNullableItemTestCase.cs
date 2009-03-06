@@ -1,5 +1,4 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
-using System;
 using System.Collections.Generic;
 using Db4oUnit.Extensions;
 using Db4oUnit;
@@ -29,10 +28,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
             Store(item);
         }
 
-        /**
-         * TODO: Enable after fixing nullable array handling.
-         */
-        public void _test() 
+        public void test() 
         {
             Item item = (Item)RetrieveOnlyInstance(typeof(Item));
             Assert.IsNotNull(item.nullableList);
