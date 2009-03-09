@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 
 namespace Sharpen.IO
@@ -25,7 +24,11 @@ namespace Sharpen.IO
             }
             catch (IOException x)
             {
-                throw new DatabaseFileLockedException(file,x);
+                if(new File(file).Exists())
+                {
+                    throw new DatabaseFileLockedException(file, x);    
+                }
+                throw new Db4oIOException(x);
             }
         }
 
