@@ -378,6 +378,11 @@ namespace Db4objects.Db4o.NativeQueries
 				get { return _insideCandidate > 0; }
 			}
 
+			public override void Visit(CastExpression node)
+			{
+				node.Target.Accept(this);
+			}
+
 			public override void Visit(AssignExpression node)
 			{
 				UnsupportedExpression(node);
@@ -700,7 +705,11 @@ namespace Db4objects.Db4o.NativeQueries
 
 			public override void Visit(FieldReferenceExpression node)
 			{
-				Expression target = node.Target;
+				PushFieldValueForTarget(node, node.Target);
+			}
+
+			private void PushFieldValueForTarget(FieldReferenceExpression node, Expression target)
+			{
 				switch (target.CodeElementType)
 				{
 					case CodeElementType.ArgumentReferenceExpression:
@@ -730,6 +739,10 @@ namespace Db4objects.Db4o.NativeQueries
 					case CodeElementType.FieldReferenceExpression:
 						FieldValue value = ToFieldValue(target);
 						PushFieldValue(value, node.Field);
+						break;
+
+					case CodeElementType.CastExpression:
+						PushFieldValueForTarget(node, ((CastExpression)node.Target).Target);
 						break;
 
 					default:
