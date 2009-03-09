@@ -719,7 +719,6 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool HasIndex()
 		{
-			// alive needs to be checked by all callers: Done
 			return _index != null;
 		}
 
@@ -1070,13 +1069,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_869(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_868(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_869 : IVisitor4
+		private sealed class _IVisitor4_868 : IVisitor4
 		{
-			public _IVisitor4_869(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_868(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1286,13 +1285,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, _handler
 				);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1023
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1022
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1023 : IClosure4
+		private sealed class _IClosure4_1022 : IClosure4
 		{
-			public _IClosure4_1023(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1022(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

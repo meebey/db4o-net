@@ -139,12 +139,13 @@ namespace Db4objects.Db4o.Internal
 
 		private int InternalCopyID(bool flipNegative, bool lenient, int id)
 		{
-			if (flipNegative && id < 0)
+			bool flipped = flipNegative && (id < 0);
+			if (flipped)
 			{
 				id = -id;
 			}
 			int mapped = _services.MappedID(id, lenient);
-			if (flipNegative && id < 0)
+			if (flipped)
 			{
 				mapped = -mapped;
 			}

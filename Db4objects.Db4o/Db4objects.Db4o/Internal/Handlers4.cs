@@ -353,13 +353,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_291
+			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_293
 				(handler, queryingReadContext));
 		}
 
-		private sealed class _IClosure4_291 : IClosure4
+		private sealed class _IClosure4_293 : IClosure4
 		{
-			public _IClosure4_291(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_293(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;
@@ -375,6 +375,12 @@ namespace Db4objects.Db4o.Internal
 			private readonly ITypeHandler4 handler;
 
 			private readonly QueryingReadContext queryingReadContext;
+		}
+
+		public static bool IsIndirectedIndexed(ITypeHandler4 handler)
+		{
+			return (handler is IEmbeddedTypeHandler) && (handler is IVariableLengthTypeHandler
+				) && (handler is IIndexableTypeHandler);
 		}
 	}
 }

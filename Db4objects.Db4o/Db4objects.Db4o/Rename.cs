@@ -32,5 +32,10 @@ namespace Db4objects.Db4o
 			rFrom = aFrom;
 			rTo = aTo;
 		}
+
+		public bool IsField()
+		{
+			return rClass.Length != 0;
+		}
 	}
 }

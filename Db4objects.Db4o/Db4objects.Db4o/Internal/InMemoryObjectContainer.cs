@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		protected static readonly InMemoryObjectContainer.ConstructionMode DeferredOpenMode = 
-			new InMemoryObjectContainer.ConstructionMode();
+		protected static readonly InMemoryObjectContainer.ConstructionMode DeferredOpenMode
+			 = new InMemoryObjectContainer.ConstructionMode();
 
 		protected InMemoryObjectContainer(Config4Impl config, MemoryFile memoryFile, InMemoryObjectContainer.ConstructionMode
 			 ignored) : base(config)

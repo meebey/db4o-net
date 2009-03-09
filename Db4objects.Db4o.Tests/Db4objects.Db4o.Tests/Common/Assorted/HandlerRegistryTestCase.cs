@@ -50,8 +50,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, 0);
 			AssertCorrectedHandlerVersion(typeof(FirstClassObjectHandler), firstClassObjectHandler
 				, 2);
-			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler(null, untypedFieldHandler
-				, 0, null);
+			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler(Container
+				(), untypedFieldHandler, 0, null);
 			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler0), primitiveFieldHandler
 				, 0);
 			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler2), primitiveFieldHandler

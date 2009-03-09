@@ -26,27 +26,33 @@ namespace Db4objects.Db4o.Internal
 			_systemTransaction = systemTransaction;
 		}
 
-		internal virtual void Process(ClassMetadata newYapClass)
+		internal virtual void Process(ClassMetadata newClassMetadata)
 		{
-			if (_pending.Contains(newYapClass))
+			if (_pending.Contains(newClassMetadata))
 			{
 				return;
 			}
-			ClassMetadata ancestor = newYapClass.GetAncestor();
+			ClassMetadata ancestor = newClassMetadata.GetAncestor();
 			if (ancestor != null)
 			{
 				Process(ancestor);
 			}
-			_pending.Add(newYapClass);
-			_members.Add(newYapClass);
+			_pending.Add(newClassMetadata);
+			_members.Add(newClassMetadata);
 			if (_running)
 			{
 				return;
 			}
 			_running = true;
-			CheckInits();
-			_pending = new Collection4();
-			_running = false;
+			try
+			{
+				CheckInits();
+				_pending = new Collection4();
+			}
+			finally
+			{
+				_running = false;
+			}
 		}
 
 		private void CheckMembers()

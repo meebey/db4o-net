@@ -61,7 +61,6 @@ namespace Db4objects.Db4o.Internal
 			return _classMetadata.HasClassIndex();
 		}
 
-		// TODO: Write test case.
 		public virtual void Rename(string newName)
 		{
 			_classMetadata.Rename(newName);

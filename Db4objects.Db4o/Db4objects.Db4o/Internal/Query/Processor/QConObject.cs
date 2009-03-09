@@ -119,7 +119,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override bool CanBeIndexLeaf()
 		{
-			return (i_yapClass != null && i_yapClass.IsPrimitive()) || Evaluator().Identity();
+			return i_object == null || ((i_yapClass != null && i_yapClass.IsSecondClass()) ||
+				 Evaluator().Identity());
 		}
 
 		public override bool CanLoadByIndex()

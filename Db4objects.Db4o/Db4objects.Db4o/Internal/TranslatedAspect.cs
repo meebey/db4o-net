@@ -117,5 +117,25 @@ namespace Db4objects.Db4o.Internal
 		{
 			return Db4objects.Db4o.Internal.Marshall.AspectType.Translator;
 		}
+
+		public bool IsObjectConstructor()
+		{
+			return _translator is IObjectConstructor;
+		}
+
+		public object Construct(ObjectReferenceContext context)
+		{
+			ContextState contextState = context.SaveState();
+			bool fieldHasValue = ContainingClass().SeekToField(context, this);
+			try
+			{
+				return ((IObjectConstructor)_translator).OnInstantiate(context.Container(), fieldHasValue
+					 ? Read(context) : null);
+			}
+			finally
+			{
+				context.RestoreState(contextState);
+			}
+		}
 	}
 }

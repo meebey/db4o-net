@@ -27,24 +27,22 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void Analyze(Transaction trans)
 		{
 			_ref = trans.ReferenceForObject(_obj);
-			if (_ref == null)
-			{
-				IReflectClass claxx = _container.Reflector().ForObject(_obj);
-				if (claxx == null)
-				{
-					NotStorable(_obj, claxx);
-					return;
-				}
-				if (!DetectClassMetadata(trans, claxx))
-				{
-					return;
-				}
-			}
-			else
+			if (_ref != null)
 			{
 				_classMetadata = _ref.ClassMetadata();
+				return;
 			}
-			if (IsPlainObjectOrPrimitive(_classMetadata))
+			IReflectClass claxx = _container.Reflector().ForObject(_obj);
+			if (claxx == null)
+			{
+				NotStorable(_obj, claxx);
+				return;
+			}
+			if (!DetectClassMetadata(trans, claxx))
+			{
+				return;
+			}
+			if (IsPlainObjectOrSecondClass(_classMetadata))
 			{
 				NotStorable(_obj, _classMetadata.ClassReflector());
 			}
@@ -53,19 +51,25 @@ namespace Db4objects.Db4o.Internal
 		private bool DetectClassMetadata(Transaction trans, IReflectClass claxx)
 		{
 			_classMetadata = _container.GetActiveClassMetadata(claxx);
-			if (_classMetadata == null)
+			if (_classMetadata != null)
 			{
-				_classMetadata = _container.ProduceClassMetadata(claxx);
-				if (_classMetadata == null)
+				if (!_classMetadata.IsStorable())
 				{
 					NotStorable(_obj, claxx);
 					return false;
 				}
-				// The following may return a reference if the object is held
-				// in a static variable somewhere ( often: Enums) that gets
-				// stored or associated on initialization of the ClassMetadata.
-				_ref = trans.ReferenceForObject(_obj);
+				return true;
 			}
+			_classMetadata = _container.ProduceClassMetadata(claxx);
+			if (_classMetadata == null || !_classMetadata.IsStorable())
+			{
+				NotStorable(_obj, claxx);
+				return false;
+			}
+			// The following may return a reference if the object is held
+			// in a static variable somewhere ( often: Enums) that gets
+			// stored or associated on initialization of the ClassMetadata.
+			_ref = trans.ReferenceForObject(_obj);
 			return true;
 		}
 
@@ -80,7 +84,7 @@ namespace Db4objects.Db4o.Internal
 			return _notStorable;
 		}
 
-		private bool IsPlainObjectOrPrimitive(Db4objects.Db4o.Internal.ClassMetadata classMetadata
+		private bool IsPlainObjectOrSecondClass(Db4objects.Db4o.Internal.ClassMetadata classMetadata
 			)
 		{
 			return classMetadata.GetID() == Handlers4.UntypedId || classMetadata.IsSecondClass

@@ -61,8 +61,6 @@ namespace Db4objects.Db4o.Internal
 
 		protected Db4objects.Db4o.Internal.Transaction _transaction;
 
-		private bool _instantiating;
-
 		public HandlerRegistry _handlers;
 
 		internal int _replicationCallState;
@@ -99,8 +97,6 @@ namespace Db4objects.Db4o.Internal
 			// used for ClassMetadata and ClassMetadataRepository
 			// may be parent or equal to i_trans
 			// used for Objects
-			// This is a hack for P2Collection
-			// Remove when P2Collection is no longer used.
 			// all the per-YapStream references that we don't
 			// want created in YapobjectCarrier
 			// One of three constants in ReplicationHandler: NONE, OLD, NEW
@@ -115,12 +111,12 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		protected void Open()
 		{
-			WithEnvironment(new _IRunnable_109(this));
+			WithEnvironment(new _IRunnable_105(this));
 		}
 
-		private sealed class _IRunnable_109 : IRunnable
+		private sealed class _IRunnable_105 : IRunnable
 		{
-			public _IRunnable_109(ObjectContainerBase _enclosing)
+			public _IRunnable_105(ObjectContainerBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -532,7 +528,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool CreateClassMetadata(ClassMetadata classMeta, IReflectClass clazz
 			, ClassMetadata superClassMeta)
 		{
-			return classMeta.Init(this, superClassMeta, clazz);
+			return classMeta.Init(superClassMeta);
 		}
 
 		/// <summary>allows special handling for all Db4oType objects.</summary>
@@ -736,27 +732,27 @@ namespace Db4objects.Db4o.Internal
 		private bool CaresAboutDeleting(ClassMetadata yc)
 		{
 			return this._callbacks.CaresAboutDeleting() || yc.HasEventRegistered(SystemTransaction
-				(), EventDispatcher.CanDelete);
+				(), EventDispatchers.CanDelete);
 		}
 
 		private bool CaresAboutDeleted(ClassMetadata yc)
 		{
 			return this._callbacks.CaresAboutDeleted() || yc.HasEventRegistered(SystemTransaction
-				(), EventDispatcher.Delete);
+				(), EventDispatchers.Delete);
 		}
 
 		private bool ObjectCanDelete(Transaction transaction, ClassMetadata yc, object obj
 			)
 		{
 			return Callbacks().ObjectCanDelete(transaction, obj) && yc.DispatchEvent(transaction
-				, obj, EventDispatcher.CanDelete);
+				, obj, EventDispatchers.CanDelete);
 		}
 
 		private void ObjectOnDelete(Transaction transaction, ClassMetadata yc, object obj
 			)
 		{
 			Callbacks().ObjectOnDelete(transaction, obj);
-			yc.DispatchEvent(transaction, obj, EventDispatcher.Delete);
+			yc.DispatchEvent(transaction, obj, EventDispatchers.Delete);
 		}
 
 		public abstract bool Delete4(Transaction ta, ObjectReference yapObject, int a_cascade
@@ -779,7 +775,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_623(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_619(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -801,9 +797,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_623 : IProcedure4
+		private sealed class _IProcedure4_619 : IProcedure4
 		{
-			public _IProcedure4_623(string fieldName, ByRef foundField)
+			public _IProcedure4_619(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -1376,11 +1372,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void Instantiating(bool flag)
-		{
-			_instantiating = flag;
-		}
-
 		internal bool IsActive(Transaction trans, object obj)
 		{
 			lock (_lock)
@@ -1428,11 +1419,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				return _classCollection == null;
 			}
-		}
-
-		public bool IsInstantiating()
-		{
-			return _instantiating;
 		}
 
 		internal virtual bool IsServer()
@@ -1755,14 +1741,6 @@ namespace Db4objects.Db4o.Internal
 			return ActivationDepthProvider().ActivationDepth(depth, ActivationMode.Refresh);
 		}
 
-		public void RefreshClasses()
-		{
-			lock (_lock)
-			{
-				_classCollection.RefreshClasses();
-			}
-		}
-
 		public abstract void ReleaseSemaphore(string name);
 
 		public virtual void FlagAsHandled(ObjectReference @ref)
@@ -1791,7 +1769,7 @@ namespace Db4objects.Db4o.Internal
 			bool renamedOne = false;
 			if (config.Rename() != null)
 			{
-				renamedOne = Rename1(config);
+				renamedOne = ApplyRenames(config);
 			}
 			_classCollection.CheckChanges();
 			if (renamedOne)
@@ -1800,58 +1778,95 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		protected virtual bool Rename1(Config4Impl config)
+		protected virtual bool ApplyRenames(Config4Impl config)
 		{
-			bool renamedOne = false;
+			bool renamed = false;
 			IEnumerator i = config.Rename().GetEnumerator();
 			while (i.MoveNext())
 			{
 				Rename ren = (Rename)i.Current;
-				if (QueryByExample(SystemTransaction(), ren).Count == 0)
+				if (AlreadyApplied(ren))
 				{
-					bool renamed = false;
-					bool isField = ren.rClass.Length > 0;
-					ClassMetadata yapClass = _classCollection.GetClassMetadata(isField ? ren.rClass : 
-						ren.rFrom);
-					if (yapClass != null)
-					{
-						if (isField)
-						{
-							renamed = yapClass.RenameField(ren.rFrom, ren.rTo);
-						}
-						else
-						{
-							ClassMetadata existing = _classCollection.GetClassMetadata(ren.rTo);
-							if (existing == null)
-							{
-								yapClass.SetName(ren.rTo);
-								renamed = true;
-							}
-							else
-							{
-								LogMsg(9, "class " + ren.rTo);
-							}
-						}
-					}
-					if (renamed)
-					{
-						renamedOne = true;
-						SetDirtyInSystemTransaction(yapClass);
-						LogMsg(8, ren.rFrom + " to " + ren.rTo);
-						// delete all that rename from the new name
-						// to allow future backswitching
-						IObjectSet backren = QueryByExample(SystemTransaction(), new Rename(ren.rClass, null
-							, ren.rFrom));
-						while (backren.HasNext())
-						{
-							Delete(SystemTransaction(), backren.Next());
-						}
-						// store the rename, so we only do it once
-						Store(SystemTransaction(), ren);
-					}
+					continue;
+				}
+				if (ApplyRename(ren))
+				{
+					renamed = true;
 				}
 			}
-			return renamedOne;
+			return renamed;
+		}
+
+		private bool ApplyRename(Rename ren)
+		{
+			if (ren.IsField())
+			{
+				return ApplyFieldRename(ren);
+			}
+			return ApplyClassRename(ren);
+		}
+
+		private bool ApplyClassRename(Rename ren)
+		{
+			ClassMetadata classToRename = _classCollection.GetClassMetadata(ren.rFrom);
+			if (classToRename == null)
+			{
+				return false;
+			}
+			ClassMetadata existing = _classCollection.GetClassMetadata(ren.rTo);
+			if (existing != null)
+			{
+				LogMsg(9, "class " + ren.rTo);
+				return false;
+			}
+			classToRename.SetName(ren.rTo);
+			CommitRenameFor(ren, classToRename);
+			return true;
+		}
+
+		private bool ApplyFieldRename(Rename ren)
+		{
+			ClassMetadata parentClass = _classCollection.GetClassMetadata(ren.rClass);
+			if (parentClass == null)
+			{
+				return false;
+			}
+			if (!parentClass.RenameField(ren.rFrom, ren.rTo))
+			{
+				return false;
+			}
+			CommitRenameFor(ren, parentClass);
+			return true;
+		}
+
+		private void CommitRenameFor(Rename rename, ClassMetadata classMetadata)
+		{
+			SetDirtyInSystemTransaction(classMetadata);
+			LogMsg(8, rename.rFrom + " to " + rename.rTo);
+			DeleteInverseRenames(rename);
+			// store the rename, so we only do it once
+			Store(SystemTransaction(), rename);
+		}
+
+		private void DeleteInverseRenames(Rename rename)
+		{
+			// delete all that rename from the new name
+			// to allow future backswitching
+			IObjectSet inverseRenames = QueryInverseRenames(rename);
+			while (inverseRenames.HasNext())
+			{
+				Delete(SystemTransaction(), inverseRenames.Next());
+			}
+		}
+
+		private IObjectSet QueryInverseRenames(Rename ren)
+		{
+			return QueryByExample(SystemTransaction(), Renames.ForInverseQBE(ren));
+		}
+
+		private bool AlreadyApplied(Rename ren)
+		{
+			return QueryByExample(SystemTransaction(), ren).Count != 0;
 		}
 
 		public bool HandledInCurrentTopLevelCall(ObjectReference @ref)
@@ -2028,11 +2043,6 @@ namespace Db4objects.Db4o.Internal
 			if (@ref == null)
 			{
 				ClassMetadata classMetadata = analyzer.ClassMetadata();
-				if (classMetadata.IsSecondClass())
-				{
-					analyzer.NotStorable();
-					return 0;
-				}
 				if (!ObjectCanNew(trans, classMetadata, obj))
 				{
 					return 0;
@@ -2081,7 +2091,7 @@ namespace Db4objects.Db4o.Internal
 		private bool ObjectCanNew(Transaction transaction, ClassMetadata yc, object obj)
 		{
 			return Callbacks().ObjectCanNew(transaction, obj) && yc.DispatchEvent(transaction
-				, obj, EventDispatcher.CanNew);
+				, obj, EventDispatchers.CanNew);
 		}
 
 		public abstract void SetDirtyInSystemTransaction(PersistentBase a_object);
@@ -2547,6 +2557,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
+				CheckClosed();
 				return block.Run();
 			}
 		}

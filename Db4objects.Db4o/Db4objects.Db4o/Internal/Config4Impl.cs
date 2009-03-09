@@ -79,8 +79,19 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
 
-		private static readonly KeySpec DiagnosticKey = new KeySpec(new Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor
-			());
+		private sealed class _IDeferred_77 : KeySpec.IDeferred
+		{
+			public _IDeferred_77()
+			{
+			}
+
+			public object Evaluate()
+			{
+				return new Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor();
+			}
+		}
+
+		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_77());
 
 		private static readonly KeySpec DisableCommitRecoveryKey = new KeySpec(false);
 
@@ -609,10 +620,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void RefreshClasses()
 		{
-			if (i_stream != null)
-			{
-				i_stream.RefreshClasses();
-			}
+			throw new NotImplementedException();
 		}
 
 		internal void Rename(Db4objects.Db4o.Rename a_rename)

@@ -7,6 +7,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
@@ -113,6 +114,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			config.CallConstructors(true);
 			config.Storage = new DefragEncryptedFileTestCase.MockStorage(new FileStorage(), "db4o"
 				);
+			config.ReflectWith(Platform4.ReflectorForType(typeof(DefragEncryptedFileTestCase.Item
+				)));
 			return config;
 		}
 

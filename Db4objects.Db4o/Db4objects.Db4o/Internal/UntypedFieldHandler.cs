@@ -11,7 +11,8 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
-	public class UntypedFieldHandler : ClassMetadata, IBuiltinTypeHandler, IFieldHandler
+	public class UntypedFieldHandler : Db4objects.Db4o.Internal.ClassMetadata, IBuiltinTypeHandler
+		, IFieldHandler
 	{
 		private const int Hashcode = 1003303143;
 
@@ -95,8 +96,8 @@ namespace Db4objects.Db4o.Internal
 			}
 			context.Seek(payLoadOffSet);
 			int classMetadataID = context.ReadInt();
-			ClassMetadata classMetadata = context.Container().ClassMetadataForId(classMetadataID
-				);
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = context.Container().ClassMetadataForId
+				(classMetadataID);
 			if (classMetadata == null)
 			{
 				return null;
@@ -283,7 +284,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override bool Equals(object obj)
 		{
-			return obj is Db4objects.Db4o.Internal.UntypedFieldHandler;
+			return obj is UntypedFieldHandler;
 		}
 
 		public override int GetHashCode()

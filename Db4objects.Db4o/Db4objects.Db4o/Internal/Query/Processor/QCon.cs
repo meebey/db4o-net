@@ -156,7 +156,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
-				if (yc.CustomizedNewInstance())
+				if (yc.HasObjectConstructor())
 				{
 					i_trans.Container()._handlers._diagnosticProcessor.DescendIntoTranslator(yc, a_field
 						);

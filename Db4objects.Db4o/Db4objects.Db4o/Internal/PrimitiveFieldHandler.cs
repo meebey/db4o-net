@@ -14,7 +14,8 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class PrimitiveFieldHandler : ClassMetadata, IFieldHandler, IVersionedTypeHandler
+	public class PrimitiveFieldHandler : Db4objects.Db4o.Internal.ClassMetadata, IFieldHandler
+		, IVersionedTypeHandler
 	{
 		private const int HashcodeForNull = 283636383;
 
@@ -28,7 +29,7 @@ namespace Db4objects.Db4o.Internal
 			_id = handlerID;
 		}
 
-		public PrimitiveFieldHandler() : base(null, null)
+		public PrimitiveFieldHandler(ObjectContainerBase container) : base(container)
 		{
 			_handler = null;
 		}
@@ -167,9 +168,9 @@ namespace Db4objects.Db4o.Internal
 
 		public override ObjectID ReadObjectID(IInternalReadContext context)
 		{
-			if (_handler is ClassMetadata)
+			if (_handler is Db4objects.Db4o.Internal.ClassMetadata)
 			{
-				return ((ClassMetadata)_handler).ReadObjectID(context);
+				return ((Db4objects.Db4o.Internal.ClassMetadata)_handler).ReadObjectID(context);
 			}
 			if (Handlers4.HandlesArray(_handler))
 			{
@@ -229,7 +230,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ITypeHandler4 UnversionedTemplate()
 		{
-			return new Db4objects.Db4o.Internal.PrimitiveFieldHandler(null, null, 0, null);
+			return new Db4objects.Db4o.Internal.PrimitiveFieldHandler(Container(), null, 0, null
+				);
 		}
 
 		public override bool Equals(object obj)

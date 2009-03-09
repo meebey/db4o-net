@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ObjectContainerBase container = transaction.Container();
 			container.Callbacks().ObjectOnNew(transaction, obj);
-			_class.DispatchEvent(transaction, obj, EventDispatcher.New);
+			_class.DispatchEvent(transaction, obj, EventDispatchers.New);
 		}
 
 		public virtual void Deactivate(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
@@ -495,7 +495,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			EndProcessing();
 			container.Callbacks().ObjectOnUpdate(transaction, obj);
-			ClassMetadata().DispatchEvent(transaction, obj, EventDispatcher.Update);
+			ClassMetadata().DispatchEvent(transaction, obj, EventDispatchers.Update);
 		}
 
 		private bool ObjectCanUpdate(Db4objects.Db4o.Internal.Transaction transaction, object
@@ -503,7 +503,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ObjectContainerBase container = transaction.Container();
 			return container.Callbacks().ObjectCanUpdate(transaction, obj) && _class.DispatchEvent
-				(transaction, obj, EventDispatcher.CanUpdate);
+				(transaction, obj, EventDispatchers.CanUpdate);
 		}
 
 		public virtual void Ref_init()

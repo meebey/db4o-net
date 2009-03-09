@@ -10,6 +10,8 @@ namespace Db4objects.Db4o.Internal
 	{
 		private readonly Config4Class _configClass;
 
+		private bool _used;
+
 		private static readonly KeySpec IndexedKey = new KeySpec(TernaryBool.Unspecified);
 
 		protected Config4Field(Config4Class a_class, KeySpecHashtable4 config) : base(config
@@ -41,8 +43,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
-			ClassConfig().Config().Rename(new Db4objects.Db4o.Rename(ClassName(), GetName(), 
-				newName));
+			ClassConfig().Config().Rename(Renames.ForField(ClassName(), GetName(), newName));
 			SetName(newName);
 		}
 
@@ -82,6 +83,16 @@ namespace Db4objects.Db4o.Internal
 		private bool UseExistingIndex(Transaction systemTrans, FieldMetadata yapField)
 		{
 			return yapField.GetIndex(systemTrans) != null;
+		}
+
+		public virtual void Used(bool flag)
+		{
+			_used = flag;
+		}
+
+		public virtual bool Used()
+		{
+			return _used;
 		}
 	}
 }

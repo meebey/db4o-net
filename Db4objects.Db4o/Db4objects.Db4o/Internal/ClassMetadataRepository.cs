@@ -50,6 +50,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				_classMetadataByClass.Put(clazz.ClassReflector(), clazz);
 			}
+			RegisterClassMetadataById(clazz);
+		}
+
+		private void RegisterClassMetadataById(ClassMetadata clazz)
+		{
 			if (clazz.GetID() == 0)
 			{
 				clazz.Write(_systemTransaction);
@@ -70,15 +75,15 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata classMetadata = i.CurrentClass();
 				if (!classMetadata.IsInternal())
 				{
-					classMetadata.ForEachField(new _IProcedure4_60(fieldName, visitor, classMetadata)
+					classMetadata.ForEachField(new _IProcedure4_64(fieldName, visitor, classMetadata)
 						);
 				}
 			}
 		}
 
-		private sealed class _IProcedure4_60 : IProcedure4
+		private sealed class _IProcedure4_64 : IProcedure4
 		{
-			public _IProcedure4_60(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
+			public _IProcedure4_64(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
 				)
 			{
 				this.fieldName = fieldName;
@@ -130,18 +135,25 @@ namespace Db4objects.Db4o.Internal
 		internal bool CreateClassMetadata(ClassMetadata clazz, IReflectClass reflectClazz
 			)
 		{
+			bool result = false;
 			_classMetadataCreationDepth++;
-			IReflectClass parentReflectClazz = reflectClazz.GetSuperclass();
-			ClassMetadata parentClazz = null;
-			if (parentReflectClazz != null && !parentReflectClazz.Equals(Container()._handlers
-				.IclassObject))
+			try
 			{
-				parentClazz = ProduceClassMetadata(parentReflectClazz);
+				IReflectClass parentReflectClazz = reflectClazz.GetSuperclass();
+				ClassMetadata parentClazz = null;
+				if (parentReflectClazz != null && !parentReflectClazz.Equals(Container()._handlers
+					.IclassObject))
+				{
+					parentClazz = ProduceClassMetadata(parentReflectClazz);
+				}
+				result = Container().CreateClassMetadata(clazz, reflectClazz, parentClazz);
 			}
-			bool ret = Container().CreateClassMetadata(clazz, reflectClazz, parentClazz);
-			_classMetadataCreationDepth--;
+			finally
+			{
+				_classMetadataCreationDepth--;
+			}
 			InitClassMetadataOnUp();
-			return ret;
+			return result;
 		}
 
 		private void EnsureAllClassesRead()
@@ -256,44 +268,46 @@ namespace Db4objects.Db4o.Internal
 			{
 				return classMetadata;
 			}
-			classMetadata = (ClassMetadata)_creating.Get(reflectClazz);
-			if (classMetadata != null)
+			ClassMetadata classBeingCreated = (ClassMetadata)_creating.Get(reflectClazz);
+			if (classBeingCreated != null)
 			{
-				return classMetadata;
+				return classBeingCreated;
 			}
-			classMetadata = new ClassMetadata(Container(), reflectClazz);
-			_creating.Put(reflectClazz, classMetadata);
-			if (!CreateClassMetadata(classMetadata, reflectClazz))
+			ClassMetadata newClassMetadata = new ClassMetadata(Container(), reflectClazz);
+			_creating.Put(reflectClazz, newClassMetadata);
+			try
+			{
+				if (!CreateClassMetadata(newClassMetadata, reflectClazz))
+				{
+					return null;
+				}
+				// ObjectContainerBase#createClassMetadata may add the ClassMetadata already,
+				// so we have to check again
+				if (!IsRegistered(reflectClazz))
+				{
+					AddClassMetadata(newClassMetadata);
+					_classInits.Process(newClassMetadata);
+				}
+				else
+				{
+					RegisterClassMetadataById(newClassMetadata);
+					if (newClassMetadata.AspectsAreNull())
+					{
+						_classInits.Process(newClassMetadata);
+					}
+				}
+				Container().SetDirtyInSystemTransaction(this);
+			}
+			finally
 			{
 				_creating.Remove(reflectClazz);
-				return null;
 			}
-			// ObjectContainerBase#createClassMetadata may add the ClassMetadata already,
-			// so we have to check again
-			bool addMembers = false;
-			if (_classMetadataByClass.Get(reflectClazz) == null)
-			{
-				AddClassMetadata(classMetadata);
-				addMembers = true;
-			}
-			int id = classMetadata.GetID();
-			if (id == 0)
-			{
-				classMetadata.Write(Container().SystemTransaction());
-				id = classMetadata.GetID();
-			}
-			if (_classMetadataByID.Get(id) == null)
-			{
-				_classMetadataByID.Put(id, classMetadata);
-				addMembers = true;
-			}
-			if (addMembers || classMetadata.AspectsAreNull())
-			{
-				_classInits.Process(classMetadata);
-			}
-			_creating.Remove(reflectClazz);
-			Container().SetDirtyInSystemTransaction(this);
-			return classMetadata;
+			return newClassMetadata;
+		}
+
+		private bool IsRegistered(IReflectClass reflectClazz)
+		{
+			return _classMetadataByClass.Get(reflectClazz) != null;
 		}
 
 		internal ClassMetadata ClassMetadataForId(int id)
@@ -387,8 +401,8 @@ namespace Db4objects.Db4o.Internal
 			finally
 			{
 				systemTrans.Container().ShowInternalClasses(false);
+				_classMetadataCreationDepth--;
 			}
-			_classMetadataCreationDepth--;
 			InitClassMetadataOnUp();
 		}
 
@@ -408,14 +422,15 @@ namespace Db4objects.Db4o.Internal
 
 		private void InitClassMetadataOnUp()
 		{
-			if (_classMetadataCreationDepth == 0)
+			if (_classMetadataCreationDepth != 0)
 			{
-				ClassMetadata clazz = (ClassMetadata)_initClassMetadataOnUp.Next();
-				while (clazz != null)
-				{
-					clazz.InitOnUp(_systemTransaction);
-					clazz = (ClassMetadata)_initClassMetadataOnUp.Next();
-				}
+				return;
+			}
+			ClassMetadata clazz = (ClassMetadata)_initClassMetadataOnUp.Next();
+			while (clazz != null)
+			{
+				clazz.InitOnUp(_systemTransaction);
+				clazz = (ClassMetadata)_initClassMetadataOnUp.Next();
 			}
 		}
 
@@ -529,17 +544,22 @@ namespace Db4objects.Db4o.Internal
 				return classMetadata;
 			}
 			_classMetadataCreationDepth++;
-			string name = classMetadata.ResolveName(clazz);
-			classMetadata.CreateConfigAndConstructor(_classMetadataByBytes, clazz, name);
-			IReflectClass claxx = classMetadata.ClassReflector();
-			if (claxx != null)
+			try
 			{
-				_classMetadataByClass.Put(claxx, classMetadata);
-				classMetadata.ReadThis();
-				classMetadata.CheckChanges();
-				_initClassMetadataOnUp.Add(classMetadata);
+				classMetadata.CreateConfigAndConstructor(_classMetadataByBytes, clazz);
+				IReflectClass claxx = classMetadata.ClassReflector();
+				if (claxx != null)
+				{
+					_classMetadataByClass.Put(claxx, classMetadata);
+					classMetadata.ReadThis();
+					classMetadata.CheckChanges();
+					_initClassMetadataOnUp.Add(classMetadata);
+				}
 			}
-			_classMetadataCreationDepth--;
+			finally
+			{
+				_classMetadataCreationDepth--;
+			}
 			InitClassMetadataOnUp();
 			return classMetadata;
 		}
@@ -574,7 +594,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void RefreshClass(ClassMetadata clazz)
+		private void RefreshClass(ClassMetadata clazz)
 		{
 			if (_classMetadataByID.Get(clazz.GetID()) == null)
 			{

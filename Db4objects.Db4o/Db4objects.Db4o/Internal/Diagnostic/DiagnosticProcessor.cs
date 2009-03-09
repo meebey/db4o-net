@@ -88,18 +88,19 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 			return _listeners != null;
 		}
 
-		private bool IsDb4oClass(ClassMetadata yc)
+		private bool IsDb4oClass(ClassMetadata classMetadata)
 		{
-			return Platform4.IsDb4oClass(yc.GetName());
+			return classMetadata.IsInternal();
 		}
 
-		public virtual void LoadedFromClassIndex(ClassMetadata yc)
+		public virtual void LoadedFromClassIndex(ClassMetadata classMetadata)
 		{
-			if (IsDb4oClass(yc))
+			if (IsDb4oClass(classMetadata))
 			{
 				return;
 			}
-			OnDiagnostic(new Db4objects.Db4o.Diagnostic.LoadedFromClassIndex(yc.GetName()));
+			OnDiagnostic(new Db4objects.Db4o.Diagnostic.LoadedFromClassIndex(classMetadata.GetName
+				()));
 		}
 
 		public virtual void DescendIntoTranslator(ClassMetadata parent, string fieldName)
@@ -118,6 +119,12 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 		{
 			OnDiagnostic(new Db4objects.Db4o.Diagnostic.NativeQueryOptimizerNotLoaded(reason, 
 				e));
+		}
+
+		public virtual void ObjectFieldDoesNotExist(string className, string fieldName)
+		{
+			OnDiagnostic(new Db4objects.Db4o.Diagnostic.ObjectFieldDoesNotExist(className, fieldName
+				));
 		}
 
 		public virtual void OnDiagnostic(IDiagnostic d)

@@ -649,7 +649,7 @@ namespace Db4objects.Db4o.Internal.CS
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
 		}
 
-		protected override bool Rename1(Config4Impl config)
+		protected override bool ApplyRenames(Config4Impl config)
 		{
 			LogMsg(58, null);
 			return false;
@@ -734,9 +734,9 @@ namespace Db4objects.Db4o.Internal.CS
 			Write(Msg.GetClasses.GetWriter(SystemTransaction()));
 			ByteArrayBuffer bytes = ExpectedByteResponse(Msg.GetClasses);
 			ClassCollection().SetID(bytes.ReadInt());
-			CreateStringIO(bytes.ReadByte());
+			byte stringEncoding = bytes.ReadByte();
+			CreateStringIO(stringEncoding);
 			ClassCollection().Read(SystemTransaction());
-			ClassCollection().RefreshClasses();
 		}
 
 		public override void ReleaseSemaphore(string name)
@@ -765,6 +765,8 @@ namespace Db4objects.Db4o.Internal.CS
 			ReadThis();
 		}
 
+		// FIXME: remove this comments after the build is green
+		//		classCollection().refreshClasses();
 		public sealed override void Rollback1(Transaction trans)
 		{
 			if (_config.BatchMessages())
@@ -813,7 +815,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (_lock)
 			{
-				Commit();
+				if (!_config.IsReadOnly())
+				{
+					Commit();
+				}
 				MsgD msg = Msg.SwitchToFile.GetWriterForString(_transaction, fileName);
 				Write(msg);
 				ExpectedResponse(Msg.Ok);
@@ -828,7 +833,10 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 			lock (_lock)
 			{
-				Commit();
+				if (!_config.IsReadOnly())
+				{
+					Commit();
+				}
 				Write(Msg.SwitchToMainFile);
 				ExpectedResponse(Msg.Ok);
 				// FIXME NSC

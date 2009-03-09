@@ -116,7 +116,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return (Config4Field)exceptionalFields.Get(fieldName);
+			Config4Field config4Field = (Config4Field)exceptionalFields.Get(fieldName);
+			if (config4Field == null)
+			{
+				return null;
+			}
+			config4Field.Used(true);
+			return config4Field;
 		}
 
 		public virtual object DeepClone(object param)
@@ -196,18 +202,6 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(ClassIndexedKey);
 		}
 
-		internal virtual object Instantiate(ObjectContainerBase a_stream, object a_toTranslate
-			)
-		{
-			return ((IObjectConstructor)_config.Get(TranslatorKey)).OnInstantiate(a_stream, a_toTranslate
-				);
-		}
-
-		internal virtual bool Instantiates()
-		{
-			return GetTranslator() is IObjectConstructor;
-		}
-
 		public virtual void MaximumActivationDepth(int depth)
 		{
 			_config.Put(MaximumActivationDepthKey, depth);
@@ -237,7 +231,7 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsTernaryBool(CallConstructorKey);
 		}
 
-		private Hashtable4 ExceptionalFieldsOrNull()
+		internal virtual Hashtable4 ExceptionalFieldsOrNull()
 		{
 			return (Hashtable4)_config.Get(ExceptionalFieldsKey);
 		}
@@ -285,7 +279,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
-			Config().Rename(new Db4objects.Db4o.Rename(string.Empty, GetName(), newName));
+			Config().Rename(Renames.ForClass(GetName(), newName));
 			SetName(newName);
 		}
 

@@ -41,29 +41,23 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestObjectContainerAliveAfterObjectNotStorableException()
 		{
-			ExceptionsOnNotStorableIsDefaultTestCase.Item item = ExceptionsOnNotStorableIsDefaultTestCase.Item
-				.NewItem();
-			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_39(this, item));
+			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_38(this));
 		}
 
-		private sealed class _ICodeBlock_39 : ICodeBlock
+		private sealed class _ICodeBlock_38 : ICodeBlock
 		{
-			public _ICodeBlock_39(ExceptionsOnNotStorableIsDefaultTestCase _enclosing, ExceptionsOnNotStorableIsDefaultTestCase.Item
-				 item)
+			public _ICodeBlock_38(ExceptionsOnNotStorableIsDefaultTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
-				this.item = item;
 			}
 
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Store(item);
+				this._enclosing.Store(ExceptionsOnNotStorableIsDefaultTestCase.Item.NewItem());
 			}
 
 			private readonly ExceptionsOnNotStorableIsDefaultTestCase _enclosing;
-
-			private readonly ExceptionsOnNotStorableIsDefaultTestCase.Item item;
 		}
 	}
 }

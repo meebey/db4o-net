@@ -3,7 +3,6 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Slots;
 using Sharpen;
 
@@ -29,22 +28,15 @@ namespace Db4objects.Db4o.Internal
 
 		private int i_id;
 
-		private IActivationDepth i_instantionDepth;
-
 		private int i_length;
 
 		internal Db4objects.Db4o.Internal.Transaction i_trans;
-
-		private int i_updateDepth = 1;
 
 		public int _payloadOffset;
 
 		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction a_trans, int a_initialBufferSize
 			)
 		{
-			// carries instantiation depth through the reading process
-			// carries updatedepth depth through the update process
-			// and carries instantiation information through the reading process 
 			i_trans = a_trans;
 			i_length = a_initialBufferSize;
 			_buffer = new byte[i_length];
@@ -79,19 +71,9 @@ namespace Db4objects.Db4o.Internal
 			return i_address;
 		}
 
-		public int AddressOffset()
-		{
-			return _addressOffset;
-		}
-
 		public int GetID()
 		{
 			return i_id;
-		}
-
-		public IActivationDepth GetInstantiationDepth()
-		{
-			return i_instantionDepth;
 		}
 
 		public override int Length()
@@ -114,11 +96,6 @@ namespace Db4objects.Db4o.Internal
 			return i_trans;
 		}
 
-		public int GetUpdateDepth()
-		{
-			return i_updateDepth;
-		}
-
 		public byte[] GetWrittenBytes()
 		{
 			byte[] bytes = new byte[_offset];
@@ -126,43 +103,10 @@ namespace Db4objects.Db4o.Internal
 			return bytes;
 		}
 
-		public int PreparePayloadRead()
-		{
-			int newPayLoadOffset = ReadInt();
-			int length = ReadInt();
-			int linkOffSet = _offset;
-			_offset = newPayLoadOffset;
-			_payloadOffset += length;
-			return linkOffSet;
-		}
-
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public void Read()
 		{
 			Container().ReadBytes(_buffer, i_address, _addressOffset, i_length);
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public Db4objects.Db4o.Internal.StatefulBuffer ReadEmbeddedObject()
-		{
-			int id = ReadInt();
-			int length = ReadInt();
-			if (id == 0)
-			{
-				return null;
-			}
-			Db4objects.Db4o.Internal.StatefulBuffer bytes = null;
-			bytes = Container().ReadWriterByAddress(i_trans, id, length);
-			if (bytes != null)
-			{
-				bytes.SetID(id);
-			}
-			if (bytes != null)
-			{
-				bytes.SetUpdateDepth(GetUpdateDepth());
-				bytes.SetInstantiationDepth(GetInstantiationDepth());
-			}
-			return bytes;
 		}
 
 		public Db4objects.Db4o.Internal.StatefulBuffer ReadYapBytes()
@@ -202,32 +146,14 @@ namespace Db4objects.Db4o.Internal
 			i_id = a_id;
 		}
 
-		public void SetInstantiationDepth(IActivationDepth a_depth)
-		{
-			i_instantionDepth = a_depth;
-		}
-
 		public void SetTransaction(Db4objects.Db4o.Internal.Transaction aTrans)
 		{
 			i_trans = aTrans;
 		}
 
-		public void SetUpdateDepth(int a_depth)
-		{
-			i_updateDepth = a_depth;
-		}
-
 		public void SlotDelete()
 		{
 			i_trans.SlotDelete(i_id, Slot());
-		}
-
-		public void Trim4(int a_offset, int a_length)
-		{
-			byte[] temp = new byte[a_length];
-			System.Array.Copy(_buffer, a_offset, temp, 0, a_length);
-			_buffer = temp;
-			i_length = a_length;
 		}
 
 		public void UseSlot(int a_adress)
@@ -265,56 +191,9 @@ namespace Db4objects.Db4o.Internal
 			File().WriteBytes(this, i_address, _addressOffset);
 		}
 
-		public void WriteEmbeddedNull()
-		{
-			WriteInt(0);
-			WriteInt(0);
-		}
-
 		public void WriteEncrypt()
 		{
 			File().WriteEncrypt(this, i_address, _addressOffset);
-		}
-
-		public void WritePayload(Db4objects.Db4o.Internal.StatefulBuffer payLoad, bool topLevel
-			)
-		{
-			CheckMinimumPayLoadOffsetAndWritePointerAndLength(payLoad.Length(), topLevel);
-			System.Array.Copy(payLoad._buffer, 0, _buffer, _payloadOffset, payLoad._buffer.Length
-				);
-			TransferPayLoadAddress(payLoad, _payloadOffset);
-			_payloadOffset += payLoad._buffer.Length;
-		}
-
-		private void CheckMinimumPayLoadOffsetAndWritePointerAndLength(int length, bool alignToBlockSize
-			)
-		{
-			if (_payloadOffset <= _offset + (Const4.IntLength * 2))
-			{
-				_payloadOffset = _offset + (Const4.IntLength * 2);
-			}
-			if (alignToBlockSize)
-			{
-				_payloadOffset = Container().BlockAlignedBytes(_payloadOffset);
-			}
-			WriteInt(_payloadOffset);
-			// TODO: This length is here for historical reasons. 
-			//       It's actually never really needed during reading.
-			//       It's only necessary because array and string used
-			//       to consist of a double pointer in marshaller family 0
-			//       and it was not considered a good idea to change
-			//       their linkLength() values for compatibility reasons
-			//       with marshaller family 0.
-			WriteInt(length);
-		}
-
-		public int ReserveAndPointToPayLoadSlot(int length)
-		{
-			CheckMinimumPayLoadOffsetAndWritePointerAndLength(length, false);
-			int linkOffset = _offset;
-			_offset = _payloadOffset;
-			_payloadOffset += length;
-			return linkOffset;
 		}
 
 		public ByteArrayBuffer ReadPayloadWriter(int offset, int length)
@@ -335,21 +214,9 @@ namespace Db4objects.Db4o.Internal
 			toWriter._addressOffset = _addressOffset;
 		}
 
-		internal void WriteShortString(string a_string)
-		{
-			WriteShortString(i_trans, a_string);
-		}
-
 		public void MoveForward(int length)
 		{
 			_addressOffset += length;
-		}
-
-		public void WriteForward()
-		{
-			Write();
-			_addressOffset += i_length;
-			_offset = 0;
 		}
 
 		public override string ToString()

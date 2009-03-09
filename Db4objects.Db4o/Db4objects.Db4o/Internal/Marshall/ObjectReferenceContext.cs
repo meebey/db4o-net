@@ -36,16 +36,5 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			return (Db4objects.Db4o.Internal.ByteArrayBuffer)Buffer();
 		}
-
-		public virtual Db4objects.Db4o.Internal.StatefulBuffer StatefulBuffer()
-		{
-			Db4objects.Db4o.Internal.StatefulBuffer statefulBuffer = new Db4objects.Db4o.Internal.StatefulBuffer
-				(Transaction(), ByteArrayBuffer().Length());
-			statefulBuffer.SetID(ObjectID());
-			statefulBuffer.SetInstantiationDepth(ActivationDepth());
-			ByteArrayBuffer().CopyTo(statefulBuffer, 0, 0, ByteArrayBuffer().Length());
-			statefulBuffer.Seek(ByteArrayBuffer().Offset());
-			return statefulBuffer;
-		}
 	}
 }

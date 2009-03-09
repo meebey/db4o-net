@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void TestMarshall()
+		public virtual void TestExceptionMarshalling()
 		{
 			ReflectException e = new ReflectException(new ArgumentNullException());
 			SerializedGraph marshalled = Serializer.Marshall(Stream().Container(), e);

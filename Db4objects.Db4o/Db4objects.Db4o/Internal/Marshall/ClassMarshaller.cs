@@ -74,8 +74,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public byte[] ReadName(Transaction trans, ByteArrayBuffer reader)
 		{
-			byte[] name = ReadName(trans.Container().StringIO(), reader);
-			return name;
+			return ReadName(trans.Container().StringIO(), reader);
 		}
 
 		public int ReadMetaClassID(ByteArrayBuffer reader)
@@ -95,13 +94,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			 reader)
 		{
 			clazz.SetAncestor(stream.ClassMetadataForId(reader.ReadInt()));
-			if (clazz.CallConstructor())
-			{
-				// The logic further down checks the ancestor YapClass, whether
-				// or not it is allowed, not to call constructors. The ancestor
-				// YapClass may possibly have not been loaded yet.
-				clazz.CreateConstructor(stream, clazz.ClassReflector(), clazz.GetName(), true);
-			}
+			//        if(clazz.callConstructor()){
+			//            // The logic further down checks the ancestor YapClass, whether
+			//            // or not it is allowed, not to call constructors. The ancestor
+			//            // YapClass may possibly have not been loaded yet.
+			//            clazz.createConstructor(true);
+			//        }
 			clazz.CheckType();
 			ReadIndex(stream, clazz, reader);
 			clazz._aspects = CreateFields(clazz, reader.ReadInt());
@@ -137,13 +135,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 			IntByRef len = new IntByRef(stream.StringIO().ShortLength(clazz.NameToWrite()) + 
 				Const4.ObjectLength + (Const4.IntLength * 2) + (Const4.IdLength));
 			len.value += clazz.Index().OwnLength();
-			clazz.ForEachDeclaredAspect(new _IProcedure4_116(this, len, stream));
+			clazz.ForEachDeclaredAspect(new _IProcedure4_115(this, len, stream));
 			return len.value;
 		}
 
-		private sealed class _IProcedure4_116 : IProcedure4
+		private sealed class _IProcedure4_115 : IProcedure4
 		{
-			public _IProcedure4_116(ClassMarshaller _enclosing, IntByRef len, ObjectContainerBase
+			public _IProcedure4_115(ClassMarshaller _enclosing, IntByRef len, ObjectContainerBase
 				 stream)
 			{
 				this._enclosing = _enclosing;
@@ -181,13 +179,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 				throw new InvalidOperationException();
 			}
 			IntByRef processedAspectCount = new IntByRef(0);
-			classMetadata.ForEachDeclaredAspect(new _IProcedure4_144(this, processedAspectCount
+			classMetadata.ForEachDeclaredAspect(new _IProcedure4_143(this, processedAspectCount
 				, aspectCount, classMetadata, sio, context));
 		}
 
-		private sealed class _IProcedure4_144 : IProcedure4
+		private sealed class _IProcedure4_143 : IProcedure4
 		{
-			public _IProcedure4_144(ClassMarshaller _enclosing, IntByRef processedAspectCount
+			public _IProcedure4_143(ClassMarshaller _enclosing, IntByRef processedAspectCount
 				, int aspectCount, ClassMetadata classMetadata, LatinStringIO sio, DefragmentContextImpl
 				 context)
 			{

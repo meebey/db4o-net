@@ -11,7 +11,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Internal.Encoding;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -461,7 +460,7 @@ namespace Db4objects.Db4o.Defragment
 			public void Apply(object arg)
 			{
 				FieldMetadata curField = (FieldMetadata)arg;
-				if (curField.HasIndex() && (curField.GetHandler() is StringHandler))
+				if (curField.HasIndex() && Handlers4.IsIndirectedIndexed(curField.GetHandler()))
 				{
 					hasFieldIndex.value = true;
 				}

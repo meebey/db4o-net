@@ -7,7 +7,7 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class UntypedFieldHandler2 : Db4objects.Db4o.Internal.UntypedFieldHandler
+	public class UntypedFieldHandler2 : UntypedFieldHandler
 	{
 		public UntypedFieldHandler2(ObjectContainerBase container) : base(container)
 		{

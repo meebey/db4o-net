@@ -60,8 +60,12 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>Returns a copy of the raw data contained in this bin for external processing.
 		/// 	</summary>
-		/// <remarks>Returns a copy of the raw data contained in this bin for external processing.
-		/// 	</remarks>
+		/// <remarks>
+		/// Returns a copy of the raw data contained in this bin for external processing.
+		/// Access to the data is not guarded by synchronisation. If this method is called
+		/// while the MemoryBin is in use, it is possible that the returned byte array is
+		/// not consistent.
+		/// </remarks>
 		public virtual byte[] Data()
 		{
 			byte[] data = new byte[_length];

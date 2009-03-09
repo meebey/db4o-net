@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		{
 			IConfiguration config1 = Db4oFactory.NewConfiguration();
 			config1.ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_44(config1));
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_43(config1));
 			IConfiguration config2 = Db4oFactory.NewConfiguration();
 			IObjectContainer db2 = Db4oFactory.OpenFile(config2, Filename);
 			try
@@ -61,9 +61,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _ICodeBlock_44 : ICodeBlock
+		private sealed class _ICodeBlock_43 : ICodeBlock
 		{
-			public _ICodeBlock_44(IConfiguration config1)
+			public _ICodeBlock_43(IConfiguration config1)
 			{
 				this.config1 = config1;
 			}
@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		public virtual void TestOpenWithStaticConfiguration()
 		{
 			Db4oFactory.Configure().ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_65());
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_64());
 			Db4oFactory.Configure().ReadOnly(false);
 			IObjectContainer db = Db4oFactory.OpenFile(Filename);
 			db.Store(new GlobalVsNonStaticConfigurationTestCase.Data(1));
@@ -92,9 +92,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			db.Close();
 		}
 
-		private sealed class _ICodeBlock_65 : ICodeBlock
+		private sealed class _ICodeBlock_64 : ICodeBlock
 		{
-			public _ICodeBlock_65()
+			public _ICodeBlock_64()
 			{
 			}
 
