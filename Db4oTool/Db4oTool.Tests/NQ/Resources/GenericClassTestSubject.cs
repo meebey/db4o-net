@@ -44,7 +44,7 @@ class GenericClassTestSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 		);
 	}
 	
-	private static void AssertQueryIsOptimized(Action<IObjectContainer> action)
+	private void AssertQueryIsOptimized(Action<IObjectContainer> action)
 	{
 		DiagnosticCollector<NativeQueryNotOptimized> collector = new DiagnosticCollector<NativeQueryNotOptimized>();
 		using (IObjectContainer container = Db4oEmbedded.OpenFile(NewConfiguration(collector), Path.GetTempFileName()))
@@ -52,7 +52,7 @@ class GenericClassTestSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 			action(container);
 		}
 
-		//Assert.AreEqual(0, collector.Diagnostics.Count);
+		Assert.AreEqual(0, collector.Diagnostics.Count);
 	}
 
 	private static IEmbeddedConfiguration NewConfiguration(IDiagnosticListener diagnosticCollector)

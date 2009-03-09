@@ -48,11 +48,10 @@ namespace Db4objects.Db4o.Tests.CLI2.NQ
 			);
 		}
 
-		private static void AssertQueryIsOptimized(CodeBlock action)
+		private void AssertQueryIsOptimized(CodeBlock action)
 		{
 			action();
-			//FIXME: Uncomment the code when FlowAnalisis is fixed (BOX)
-			//Assert.AreEqual(0, _collector.Diagnostics.Count);
+			Assert.AreEqual(0, _collector.Diagnostics.Count);
 		}
 
 		private DiagnosticCollector<NativeQueryNotOptimized> _collector = new DiagnosticCollector<NativeQueryNotOptimized>();
