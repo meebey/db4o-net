@@ -79,7 +79,7 @@ internal class DiagnosticCollector<T> : IDiagnosticListener
 		StringBuilder sb = new StringBuilder();
 		foreach (IDiagnostic diagnostic in _diagnostics)
 		{
-			sb.AppendLine(diagnostic.ToString());
+			sb.Append(diagnostic + "\r\n");
 		}
 
 		return sb.ToString();
