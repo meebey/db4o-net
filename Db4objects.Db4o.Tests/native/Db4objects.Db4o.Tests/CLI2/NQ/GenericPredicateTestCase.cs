@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Diagnostic;
 using Db4oUnit;
@@ -65,13 +66,23 @@ internal class DiagnosticCollector<T> : IDiagnosticListener
 		if (typeof(T) == d.GetType())
 		{
 			_diagnostics.Add(d);
-			Console.WriteLine(d);
 		}
 	}
 
 	public IList<IDiagnostic> Diagnostics
 	{
 		get { return _diagnostics; }
+	}
+
+	public override string ToString()
+	{
+		StringBuilder sb = new StringBuilder();
+		foreach (IDiagnostic diagnostic in _diagnostics)
+		{
+			sb.AppendLine(diagnostic.ToString());
+		}
+
+		return sb.ToString();
 	}
 
 	private readonly IList<IDiagnostic> _diagnostics = new List<IDiagnostic>();
