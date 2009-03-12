@@ -14,22 +14,17 @@ namespace Sharpen.IO
         [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
         static extern int FlushFileBuffers(IntPtr fileHandle);
 #endif
+        public RandomAccessFile(String file, bool readOnly, bool lockFile)
+        {
+            _stream = new FileStream(file, FileMode.OpenOrCreate,
+                readOnly ? FileAccess.Read : FileAccess.ReadWrite,
+                lockFile ? FileShare.None : FileShare.ReadWrite
+            );
+        }
 
         public RandomAccessFile(String file, String fileMode)
+            : this(file, fileMode.Equals("r"), true)
         {
-            try
-            {
-                _stream = new FileStream(file, FileMode.OpenOrCreate,
-                    fileMode.Equals("rw") ? FileAccess.ReadWrite : FileAccess.Read);
-            }
-            catch (IOException x)
-            {
-                if(new File(file).Exists())
-                {
-                    throw new DatabaseFileLockedException(file, x);    
-                }
-                throw new Db4oIOException(x);
-            }
         }
 
         public FileStream Stream
@@ -89,7 +84,7 @@ namespace Sharpen.IO
             }
             catch (System.NotSupportedException e)
             {
-                throw new Db4oIOException(e);
+                throw new IOException("Not supported", e);
             }
         }
     }
