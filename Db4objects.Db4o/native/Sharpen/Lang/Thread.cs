@@ -6,12 +6,7 @@ namespace Sharpen.Lang
 {
 	public class Thread : IRunnable
 	{
-		public const int MinPriority = 1;
-		public const int MaxPriority = 10;
-
 		private IRunnable _target;
-
-		private System.Threading.ThreadPriority _priority;
 
 		private string _name;
 
@@ -34,17 +29,9 @@ namespace Sharpen.Lang
 			this._thread = thread;
 		}
 
-		private static readonly LocalDataStoreSlot _current = System.Threading.Thread.AllocateDataSlot();
-
 		public static Thread CurrentThread()
 		{
-			Thread current = (Thread)System.Threading.Thread.GetData(_current);
-			if (current == null)
-			{
-				current = new Thread(System.Threading.Thread.CurrentThread);
-				System.Threading.Thread.SetData(_current, current);
-			}
-			return current;
+			return new Thread(System.Threading.Thread.CurrentThread);
 		}
 
 		public virtual void Run()
@@ -77,44 +64,6 @@ namespace Sharpen.Lang
 #endif
 		}
 
-		public void SetPriority(int priority)
-		{
-			// java priority is between 1 and 10, ThreadPriority is between 0 and 5
-			if (priority < MinPriority || priority > MaxPriority)
-			{
-				string message = string.Format("Thread priority must be between {0} and {1}", MinPriority, MaxPriority);
-#if !CF
-				throw new ArgumentOutOfRangeException("priority", priority, message);
-#else
-				throw new ArgumentOutOfRangeException(message);
-#endif
-			}
-			// Set priority immediately on the thread if there already is one, otherwise store
-			// to set it when one is created.
-			if (_thread != null)
-			{
-				_thread.Priority = (System.Threading.ThreadPriority)(priority / 2);
-			}
-			else
-			{
-				_priority = (System.Threading.ThreadPriority)(priority / 2);
-			}
-		}
-
-		public void SetPriority(System.Threading.ThreadPriority priority)
-		{
-			// Set priority immediately on the thread if there already is one, otherwise store
-			// to set it when one is created.
-			if (_thread != null)
-			{
-				_thread.Priority = priority;
-			}
-			else
-			{
-				_priority = priority;
-			}
-		}
-
 		public static void Sleep(long milliseconds)
 		{
 			System.Threading.Thread.Sleep((int)milliseconds);
@@ -123,11 +72,6 @@ namespace Sharpen.Lang
 		public void Start()
 		{
 			_thread = new System.Threading.Thread(new System.Threading.ThreadStart(EntryPoint));
-			// Apply priority if previously set
-			if (_priority != null)
-			{
-				_thread.Priority = _priority;
-			}
 			_thread.IsBackground = _isDaemon;
 			if (_name != null)
 			{
@@ -149,6 +93,23 @@ namespace Sharpen.Lang
 		public void SetDaemon(bool isDaemon)
 		{
 			_isDaemon = isDaemon;
+		}
+
+		public override bool Equals(object obj)
+		{
+			Thread other = (obj as Thread);
+			if (other == null)
+				return false;
+			if (other == this)
+				return true;
+			if (_thread == null)
+				return false;
+			return _thread == other._thread;
+		}
+
+		public override int GetHashCode()
+		{
+			return _thread == null ? 37 : _thread.GetHashCode();
 		}
 
 		private void EntryPoint()
