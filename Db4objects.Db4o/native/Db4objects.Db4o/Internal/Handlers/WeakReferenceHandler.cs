@@ -4,20 +4,26 @@ using System;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	internal class WeakReferenceHandler : WeakReference
+	internal class WeakReferenceHandler
 	{
+		private readonly WeakReference _reference;
 		public object ObjectReference;
 
 		internal WeakReferenceHandler(Object queue, Object objectRef, Object obj)
-			: base(obj, false)
 		{
-			this.ObjectReference = objectRef;
+			_reference = new WeakReference(obj, false);
+			ObjectReference = objectRef;
 			((WeakReferenceHandlerQueue)queue).Add(this);
 		}
 
 		public object Get()
 		{
-			return this.Target;
+			return _reference.Target;
+		}
+
+		public bool IsAlive
+		{
+			get { return _reference.IsAlive; }
 		}
 	}
 }

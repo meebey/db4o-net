@@ -7,23 +7,23 @@ namespace Db4objects.Db4o.Internal.Handlers
 {
     internal class WeakReferenceHandlerQueue
 	{
-        private List4 list;
+        private List4 _list;
 
         internal void Add(WeakReferenceHandler reference) {
             lock(this){
-                list = new List4(list, reference);
+                _list = new List4(_list, reference);
             }
         }
 
         internal void Poll(IExtObjectContainer objectContainer) {
             List4 remove = null;
             lock(this){
-                System.Collections.IEnumerator i = new Iterator4Impl(list);
-                list = null;
+                System.Collections.IEnumerator i = new Iterator4Impl(_list);
+                _list = null;
                 while(i.MoveNext()){
 					WeakReferenceHandler refHandler = (WeakReferenceHandler)i.Current;
                     if(refHandler.IsAlive){
-                        list = new List4(list, refHandler);
+                        _list = new List4(_list, refHandler);
                     }else{
                         remove = new List4(remove, refHandler.ObjectReference);
                     }
