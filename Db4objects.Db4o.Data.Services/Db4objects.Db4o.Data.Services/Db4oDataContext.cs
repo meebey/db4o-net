@@ -12,7 +12,7 @@ using System.Reflection;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Linq.Internals;
 
-namespace Db4objects.Db4o.Linq
+namespace Db4objects.Db4o.Data.Services
 {
 	public abstract class Db4oDataContext : IUpdatable
 	{
