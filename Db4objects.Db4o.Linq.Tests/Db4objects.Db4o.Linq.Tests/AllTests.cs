@@ -27,6 +27,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(OrderByTestCase),
 				typeof(ParameterizedWhereTestCase),
 				typeof(PartiallyOptimizedQueryTestCase),
+				typeof(QueryableTestCase),
 				typeof(QueryReuseTestCase),
 				typeof(StringMethodTestCase),
 				typeof(VisualBasicTestCase),
