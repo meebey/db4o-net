@@ -9,7 +9,7 @@ namespace Sharpen.Net
 	{
 		protected NativeSocket _delegate;
 
-#if CF
+#if CF || SILVERLIGHT
 	    private int _soTimeout = 0;
 
         public int SoTimeout
@@ -30,7 +30,7 @@ namespace Sharpen.Net
 
 		public void SetSoTimeout(int timeout)
 		{
-#if !CF
+#if !CF && !SILVERLIGHT
 			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, timeout);
 			_delegate.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, timeout);
 #else

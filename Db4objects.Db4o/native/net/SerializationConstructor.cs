@@ -3,7 +3,7 @@ using System;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
-#if !CF
+#if !CF && !SILVERLIGHT
 	/// <summary>Constructs objects by using System.Runtime.Serialization.FormatterServices.GetUninitializedObject
 	/// and bypasses calls to user contructors this way. Not available on CompactFramework
 	/// </summary>

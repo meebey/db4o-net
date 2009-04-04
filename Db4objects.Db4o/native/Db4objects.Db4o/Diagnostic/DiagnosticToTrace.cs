@@ -19,7 +19,9 @@ namespace Db4objects.Db4o.Diagnostic
         /// <remarks>redirects Diagnostic messages to the Console.</remarks>
         public virtual void OnDiagnostic(Db4objects.Db4o.Diagnostic.IDiagnostic d)
         {
-        	System.Diagnostics.Trace.WriteLine(d.ToString());
+#if !SILVERLIGHT        	
+			System.Diagnostics.Trace.WriteLine(d.ToString());
+#endif
         }
     }
 #endif

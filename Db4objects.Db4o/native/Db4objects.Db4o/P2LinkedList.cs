@@ -1,5 +1,7 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
+#if !SILVERLIGHT
+
 using System;
 using System.Collections;
 using Db4objects.Db4o.Internal;
@@ -13,10 +15,6 @@ namespace Db4objects.Db4o
 		public P1ListElement i_first;
 
 		public P1ListElement i_last;
-
-		public P2LinkedList() : base()
-		{
-		}
 
 		public int Add(Object obj)
 		{
@@ -198,7 +196,7 @@ namespace Db4objects.Db4o
 					CheckActive();
 					bool needUpdate = false;
 					P1ListElement elem = null;
-					P1ListElement previous = null;
+					P1ListElement previous;
 					P1ListElement newElement = new P1ListElement(GetTrans(), null, value);
 					if (index == 0)
 					{
@@ -367,7 +365,6 @@ namespace Db4objects.Db4o
 
 		protected Object Remove4(int idx)
 		{
-			Object ret = null;
 			P1ListElement elem = null;
 			P1ListElement previous = null;
 			if (idx == 0)
@@ -391,7 +388,7 @@ namespace Db4objects.Db4o
 					previous.Update();
 				}
 				CheckRemoved(previous, elem);
-				ret = elem.ActivatedObject(ElementActivationDepth());
+				Object ret = elem.ActivatedObject(ElementActivationDepth());
 				elem.Delete(i_deleteRemoved);
 				return ret;
 			}
@@ -431,3 +428,5 @@ namespace Db4objects.Db4o
 		}
 	}
 }
+
+#endif

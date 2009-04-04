@@ -1,9 +1,9 @@
-/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2009   db4objects Inc.   http://www.db4o.com */
+
+#if !SILVERLIGHT
 
 using System;
 using System.Collections;
-using Sharpen.Lang;
-using Db4objects.Db4o;
 
 namespace Db4objects.Db4o.Config {
 
@@ -38,3 +38,5 @@ namespace Db4objects.Db4o.Config {
         }
     }
 }
+
+#endif

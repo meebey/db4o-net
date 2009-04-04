@@ -10,7 +10,7 @@ namespace Sharpen.IO
     {
         private FileStream _stream;
 
-#if !CF && !MONO
+#if !CF && !MONO && !SILVERLIGHT
         [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
         static extern int FlushFileBuffers(IntPtr fileHandle);
 #endif

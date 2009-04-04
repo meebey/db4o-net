@@ -1,6 +1,7 @@
 /* Copyright (C) 2005   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 
@@ -8,13 +9,12 @@ namespace Sharpen.Lang
 {
 	internal class TypeReferenceParser
 	{
-		TypeReferenceLexer _lexer;
-		Stack _stack;
+		private TypeReferenceLexer _lexer;
+		private readonly Stack<Token> _stack = new Stack<Token>();
 		
 		public TypeReferenceParser(string input)
 		{
 			_lexer = new TypeReferenceLexer(input);
-			_stack = new Stack();
 		}
 
 		public TypeReference Parse()
@@ -145,7 +145,7 @@ namespace Sharpen.Lang
 			return TokenKind.GenericQualifier == t.Kind;
 		}
 
-		public System.Reflection.AssemblyName ParseAssemblyName()
+		public AssemblyName ParseAssemblyName()
 		{
 			Token simpleName = Expect(TokenKind.Id);
 			
@@ -166,7 +166,11 @@ namespace Sharpen.Lang
 			}
 			else
 			{
+#if SILVERLIGHT
+                assemblyName.CultureInfo = CultureInfo.InvariantCulture;
+#else
 				assemblyName.CultureInfo = CultureInfo.CreateSpecificCulture(culture.Value);
+#endif
 			}
 
 			if (!CommaIdEquals()) return assemblyName;

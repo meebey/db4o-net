@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Threading;
 using Sharpen.IO;
 using NativeSocket=System.Net.Sockets.Socket;
 using System.Net.Sockets;
@@ -11,6 +10,7 @@ namespace Sharpen.Net
 {
 	public class Socket : SocketWrapper
 	{	
+#if !SILVERLIGHT
 		IInputStream _in;
 		IOutputStream _out;
 
@@ -127,5 +127,6 @@ namespace Sharpen.Net
 			get { return _socket.UnderlyingSocket;  }
     	}
     }
+#endif
 #endif
 }

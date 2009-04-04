@@ -197,7 +197,7 @@ namespace Db4objects.Db4o.Reflect.Net
 		
 		public virtual IReflectConstructor GetSerializableConstructor()
 		{
-#if !CF
+#if !CF && !SILVERLIGHT
 			return new SerializationConstructor(GetNetType());
 #else
 			return null;

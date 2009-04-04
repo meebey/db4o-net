@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Internal
                 if (_containersToBeShutdown == null)
                 {
 					_containersToBeShutdown = new List<ObjectContainerBase>();
-#if !CF
+#if !CF && !SILVERLIGHT
                 	AppDomain.CurrentDomain.ProcessExit += OnShutDown;
 					AppDomain.CurrentDomain.DomainUnload += OnShutDown;
 #endif
@@ -91,14 +91,16 @@ namespace Db4objects.Db4o.Internal
             return true;
         }
 
+#if !SILVERLIGHT
         internal static IDb4oCollections Collections(Transaction transaction)
         {
             return new P2Collections(transaction);
         }
+#endif
 
         internal static IReflector CreateReflector(Object config)
-        {
-#if USE_FAST_REFLECTOR && !CF
+		{
+#if USE_FAST_REFLECTOR && !CF && !SILVERLIGHT
 			return new Db4objects.Db4o.Internal.Reflect.FastNetReflector();
 #else
 			return new NetReflector();
@@ -107,7 +109,7 @@ namespace Db4objects.Db4o.Internal
 
         public static IReflector ReflectorForType(Type typeInstance)
 		{
-#if USE_FAST_REFLECTOR && !CF
+#if USE_FAST_REFLECTOR && !CF && !SILVERLIGHT
 			return new Db4objects.Db4o.Internal.Reflect.FastNetReflector();
 #else
 			return new NetReflector();
@@ -130,9 +132,9 @@ namespace Db4objects.Db4o.Internal
         }
 
         internal static long DoubleToLong(double a_double)
-        {
-#if CF
-            byte[] bytes = BitConverter.GetBytes(a_double);
+		{
+#if CF || SILVERLIGHT
+			byte[] bytes = BitConverter.GetBytes(a_double);
             return BitConverter.ToInt64(bytes, 0);
 #else
             return BitConverter.DoubleToInt64Bits(a_double);
@@ -289,7 +291,7 @@ namespace Db4objects.Db4o.Internal
             Translate(config, typeof(Type), new TType()); // TODO: unnecessary?
             Translate(config, typeof(Type).GetType(), new TType());
 
-#if !CF
+#if !CF && !SILVERLIGHT
             if (IsMono())
             {
 
@@ -297,15 +299,17 @@ namespace Db4objects.Db4o.Internal
             }
 #endif
 
+#if !SILVERLIGHT
             Translate(config, new ArrayList(), new TList());
             Translate(config, new Hashtable(), new TDictionary());
             Translate(config, new Queue(), new TQueue());
             Translate(config, new Stack(), new TStack());
+#endif
 			Translate(config, CultureInfo.InvariantCulture, new TCultureInfo());
 
             if (!IsCompact())
             {
-                Translate(config, "System.Collections.SortedList, mscorlib", new TDictionary());
+				Translate(config, "System.Collections.SortedList, mscorlib", new TDictionary());
             }
 
             new TypeHandlerConfigurationDotNet(config).Apply();
@@ -313,8 +317,8 @@ namespace Db4objects.Db4o.Internal
         }
 
         public static bool IsCompact()
-        {
-#if CF
+		{
+#if CF || SILVERLIGHT
 			return true;
 #else
             return false;
@@ -420,9 +424,9 @@ namespace Db4objects.Db4o.Internal
         }
 
         internal static double LongToDouble(long l)
-        {
-#if CF
-            byte[] bytes = BitConverter.GetBytes(l);
+		{
+#if CF || SILVERLIGHT
+			byte[] bytes = BitConverter.GetBytes(l);
             return BitConverter.ToDouble(bytes, 0);
 #else
             return BitConverter.Int64BitsToDouble(l);
@@ -430,9 +434,9 @@ namespace Db4objects.Db4o.Internal
         }
 
         internal static void LockFile(string path, object file)
-        {
-#if !CF
-            try
+		{
+#if !CF && !SILVERLIGHT
+			try
             {
                 FileStream stream = ((RandomAccessFile) file).Stream;
                 stream.Lock(0, 1);
@@ -559,8 +563,8 @@ namespace Db4objects.Db4o.Internal
         }
 
         internal static object WrapEvaluation(object evaluation)
-        {
-#if CF
+		{
+#if CF || SILVERLIGHT
 			// FIXME: How to better support EvaluationDelegate on the CompactFramework?
 			return evaluation;
 #else
@@ -581,8 +585,8 @@ namespace Db4objects.Db4o.Internal
     	{
     		return type.IsPointer
     		       || type.IsSubclassOf(typeof(Delegate))
-#if CF
-                   ;
+#if CF || SILVERLIGHT
+;
 #else
     		       || type == typeof(System.Reflection.Pointer);
 #endif

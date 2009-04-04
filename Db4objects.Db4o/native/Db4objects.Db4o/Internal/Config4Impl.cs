@@ -1,5 +1,6 @@
+/* Copyright (C) 2009   db4objects Inc.   http://www.db4o.com */
+
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using Db4objects.Db4o.Config;
 
@@ -18,6 +19,15 @@ namespace Db4objects.Db4o.Internal
 			Assembly db4oAssembly = typeof(IObjectContainer).Assembly;
 			string db4oAssemblySimpleName = db4oAssembly.GetName().Name;
 			return db4oAssembly.FullName.Replace(db4oAssemblySimpleName, "Db4objects.Db4o.CS");
+		}
+
+		private static Type[] IgnoredClasses()
+		{
+#if SILVERLIGHT
+			return new Type[] { typeof(StaticClass), typeof(StaticField) };
+#else
+			return new Type[] { typeof(P1HashElement), typeof(P1ListElement), typeof(P1Object), typeof(P1Collection), typeof(StaticClass), typeof(StaticField) };
+#endif
 		}
 	}
 }

@@ -18,11 +18,13 @@ namespace Db4objects.Db4o.Internal
 
         public override void Apply()
         {
+#if !SILVERLIGHT
             RegisterCollection(typeof(System.Collections.ArrayList));
             RegisterCollection(typeof (System.Collections.CollectionBase));
             RegisterMap(typeof (System.Collections.Hashtable));
-#if ! CF
+#if !CF
             RegisterMap(typeof (System.Collections.DictionaryBase));
+#endif
 #endif
             RegisterGenericTypeHandlers();
 			RegisterBigSetTypeHandler();
@@ -49,9 +51,11 @@ namespace Db4objects.Db4o.Internal
 
 			System.Type[] dictionaryTypes = new Type[] {
 				typeof(Dictionary<,>),
+#if !SILVERLIGHT
 				typeof(SortedList<,>),
 #if !CF
 				typeof(SortedDictionary<,>),
+#endif
 #endif
 			};
             _config.RegisterTypeHandler(new GenericTypeHandlerPredicate(dictionaryTypes), new MapTypeHandler());

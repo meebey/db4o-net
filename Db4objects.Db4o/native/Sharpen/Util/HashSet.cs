@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Sharpen.Util
 {   
@@ -9,7 +10,11 @@ namespace Sharpen.Util
         private readonly static object _object = new object();
 
 		// FIXME: dRS doesn't like using a dictionary here
-		private ArrayList _elements = new ArrayList();
+#if SILVERLIGH
+		private readonly List<object> _elements = new List<object>();
+#else
+		private readonly ArrayList _elements = new ArrayList();
+#endif
 
         public HashSet()
         {
@@ -85,8 +90,18 @@ namespace Sharpen.Util
 
         public void CopyTo(Array array, int index)
         {
-            _elements.CopyTo(array, index);
-        }
+#if SILVERLIGHT
+            object[] objectArray = new object[array.Length];
+            int idx = 0;
+            foreach (var a in array)
+            {
+                objectArray[idx++] = a;
+            }
+            _elements.CopyTo(objectArray, index);
+#else
+			_elements.CopyTo(array, index);
+#endif
+		}
 
         public int Count
         {
@@ -100,7 +115,14 @@ namespace Sharpen.Util
 
         public object SyncRoot
         {
-            get { return _elements.SyncRoot; }
+            get
+            {
+#if SILVERLIGHT
+				throw new InvalidOperationException();
+#else
+            	return _elements.SyncRoot;
+#endif
+            }
         }
 
         public IEnumerator GetEnumerator()

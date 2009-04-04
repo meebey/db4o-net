@@ -1,6 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Db4objects.Db4o.Ext;
 
@@ -108,7 +109,7 @@ namespace Db4objects.Db4o.Reflect.Net
             return false;
         }
 
-        public static void MarkTransient(System.Type attributeType)
+        public static void MarkTransient(Type attributeType)
         {
             MarkTransient(attributeType.FullName);
         }
@@ -117,7 +118,7 @@ namespace Db4objects.Db4o.Reflect.Net
         {
             if (_transientMarkers == null)
             {
-                _transientMarkers = new ArrayList();
+                _transientMarkers = new List<string>();
             }
             else if (_transientMarkers.Contains(attributeName))
             {

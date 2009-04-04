@@ -1,3 +1,7 @@
+/* Copyright (C) 2009   db4objects Inc.   http://www.db4o.com */
+
+#if !SILVERLIGHT
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -291,3 +295,5 @@ namespace Db4objects.Db4o.Collections
         #endregion
     }
 }
+
+#endif

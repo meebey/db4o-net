@@ -10,7 +10,8 @@ namespace Sharpen.Net
 	{
 		public ServerSocket(int port)
 		{
-            try
+#if !SILVERLIGHT
+			try
             {
 				NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Bind(new IPEndPoint(IPAddress.Any, port));
@@ -23,9 +24,10 @@ namespace Sharpen.Net
             {
                 throw new System.IO.IOException(e.Message);
             }
-
+#endif
 		}
 
+#if !SILVERLIGHT
 		public Socket Accept()
 		{
 			return new Socket(_delegate.Accept());
@@ -36,4 +38,5 @@ namespace Sharpen.Net
 			return ((IPEndPoint)_delegate.LocalEndPoint).Port;
 		}
 	}
+#endif
 }

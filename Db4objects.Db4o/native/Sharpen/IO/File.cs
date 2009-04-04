@@ -1,7 +1,7 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Sharpen.IO
@@ -25,14 +25,7 @@ namespace Sharpen.IO
 
 		public File(string dir, string file)
 		{
-			if (dir == null)
-			{
-				_path = file;
-			}
-			else
-			{
-				_path = Path.Combine(dir, file);
-			}
+			_path = dir == null ? file : Path.Combine(dir, file);
 		}
 
 		public virtual bool Delete()
@@ -88,7 +81,7 @@ namespace Sharpen.IO
 
 		public bool IsDirectory()
 		{
-#if CF
+#if CF || SILVERLIGHT
 			return Exists();
 #else
 			return (System.IO.File.GetAttributes(_path) & FileAttributes.Directory) != 0;
@@ -138,7 +131,7 @@ namespace Sharpen.IO
         {
             String[] ss = List();
             if (ss == null) return null;
-            ArrayList v = new ArrayList();
+            List<File> v = new List<File>();
             for (int i = 0; i < ss.Length; i++)
             {
                 if ((filter == null) || filter.Accept(this, ss[i]))
@@ -146,7 +139,7 @@ namespace Sharpen.IO
                     v.Add(new File(ss[i], this));
                 }
             }
-            return (File[])(v.ToArray(typeof(File)));
+            return v.ToArray();
         }
 
 		public override string ToString()

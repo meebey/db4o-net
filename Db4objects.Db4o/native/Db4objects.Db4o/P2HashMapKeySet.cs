@@ -1,9 +1,9 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
+#if !SILVERLIGHT
+
 using System;
 using System.Collections;
-using Sharpen.Lang;
-using Sharpen.Util;
 
 namespace Db4objects.Db4o {
 
@@ -12,7 +12,8 @@ namespace Db4objects.Db4o {
 
         protected P2HashMap i_map;
       
-        internal P2HashMapKeySet(P2HashMap p2hashmap) : base() {
+        internal P2HashMapKeySet(P2HashMap p2hashmap)
+        {
             i_map = p2hashmap;
         }
 
@@ -54,3 +55,5 @@ namespace Db4objects.Db4o {
         }
     }
 }
+
+#endif

@@ -1,5 +1,7 @@
 /* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
 
+#if !SILVERLIGHT
+
 using System;
 using System.Collections;
 using Db4objects.Db4o.Types;
@@ -45,3 +47,5 @@ namespace Db4objects.Db4o
 		}
 	}
 }
+
+#endif

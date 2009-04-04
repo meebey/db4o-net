@@ -98,7 +98,11 @@ namespace Sharpen
 		
 		public static bool EqualsIgnoreCase(string lhs, string rhs) 
 		{
+#if SILVERLIGHT
+			return 0 == string.Compare(lhs, rhs, StringComparison.OrdinalIgnoreCase);
+#else
 			return 0 == string.Compare(lhs, rhs, true);
+#endif
 		}
 
 		public static string Substring(String s, int startIndex)
@@ -118,12 +122,20 @@ namespace Sharpen
 
 		public static byte[] GetBytesForString(string str)
 		{
+#if SILVERLIGHT
+			return System.Text.Encoding.Unicode.GetBytes(str);
+#else
 			return System.Text.Encoding.Default.GetBytes(str);
+#endif
 		}
 
 		public static string GetStringForBytes(byte[] bytes, int index, int length)
 		{
+#if SILVERLIGHT
+			return System.Text.Encoding.Unicode.GetString(bytes, index, length);
+#else
 			return System.Text.Encoding.Default.GetString(bytes, index, length);
+#endif
 		}
 
 		public static string GetStringValueOf(object value) 
@@ -151,7 +163,7 @@ namespace Sharpen
 
 		public static string GetEnvironmentVariable(string variableName, string defaultValue)
 		{
-#if CF
+#if CF || SILVERLIGHT
 			return defaultValue;
 #else
 			string value = Environment.GetEnvironmentVariable(variableName);
