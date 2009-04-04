@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		private void Add(int i)
 		{
+			_hashCode *= 37;
 			_hashCode ^= i;
 		}
 
