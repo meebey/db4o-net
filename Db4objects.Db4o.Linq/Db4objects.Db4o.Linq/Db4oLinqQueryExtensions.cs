@@ -101,5 +101,10 @@ namespace Db4objects.Db4o.Linq
 			if (temp == null) return new UnoptimizedQuery<TRet>(Enumerable.Select(self, selector));
 			return new Db4oQuery<TRet>(temp.QueryFactory);
 		}
+
+		public static IDb4oLinqQueryable<TSource> AsQueryable<TSource>(this IDb4oLinqQuery<TSource> self)
+		{
+			return new Db4oQueryable<TSource>(self);
+		}
 	}
 }

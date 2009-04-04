@@ -21,5 +21,10 @@ namespace Db4objects.Db4o.Linq
 			if (typeof(T) == typeof(object)) return new PlaceHolderQuery<T>(queryFactory);
 			return new Db4oQuery<T>(queryFactory);
 		}
+
+		public static IDb4oLinqQueryable<T> AsQueryable<T>(this ISodaQueryFactory queryFactory)
+		{
+			return queryFactory.Cast<T>().AsQueryable();
+		}
 	}
 }
