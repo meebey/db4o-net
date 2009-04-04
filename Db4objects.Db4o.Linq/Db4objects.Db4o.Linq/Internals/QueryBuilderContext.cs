@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Linq.Internals
 
         internal object ResolveValue(object value)
         {
-            Type type = PopDescendigFieldEnumType();            
+            Type type = PopDescendigFieldEnumType();
             return (type != null) ? Enum.ToObject(type, value) : value;
         }
     }

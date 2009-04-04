@@ -165,7 +165,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 		{
 			Func<Type, Type> mapper;
 			if (!_mappers.TryGetValue(type, out mapper)) mapper = t => t;
-			
+
 			return (a, b) =>
 			{
 				if (a == b) return true;

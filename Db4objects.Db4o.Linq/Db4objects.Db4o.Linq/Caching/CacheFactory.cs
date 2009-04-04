@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Linq.Caching
 	}
 
 	internal class Cache4CachingStrategy<TKey, TValue> : ICache4<TKey, TValue>
-	{	
+	{
 		private readonly ICache4 _cache4;
 
 		public Cache4CachingStrategy(ICache4 cache4)

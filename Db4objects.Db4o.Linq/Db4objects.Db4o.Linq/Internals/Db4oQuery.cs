@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Linq.Internals
 		}
 
 		public Db4oQuery(Db4oQuery<T> parent, IQueryBuilderRecord record)
-		{			
+		{
 			_queryFactory = parent.QueryFactory;
 			_record = new CompositeQueryBuilderRecord(parent.Record, record);
 		}
