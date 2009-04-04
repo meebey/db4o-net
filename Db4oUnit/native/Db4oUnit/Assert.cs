@@ -11,6 +11,11 @@ namespace Db4oUnit
 			Assert.Expect(exception, new DelegateCodeBlock(block));
 		}
 
+		public static void Expect<TException>(CodeBlock block) where TException : Exception
+		{
+			Assert.Expect(typeof(TException), block);
+		}
+
 		private class DelegateCodeBlock : ICodeBlock
 		{
 			private readonly CodeBlock _block;
