@@ -37,6 +37,6 @@ namespace Sharpen.Net
 		{
 			return ((IPEndPoint)_delegate.LocalEndPoint).Port;
 		}
-	}
 #endif
+	}
 }

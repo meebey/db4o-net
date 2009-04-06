@@ -61,7 +61,7 @@ namespace Sharpen.IO
         {
             _stream.Flush();
 
-#if !CF && !MONO
+#if !CF && !MONO && !SILVERLIGHT
             FlushFileBuffers(_stream.SafeFileHandle.DangerousGetHandle());
 #endif
         }

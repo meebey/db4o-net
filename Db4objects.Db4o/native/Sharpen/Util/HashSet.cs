@@ -10,7 +10,7 @@ namespace Sharpen.Util
         private readonly static object _object = new object();
 
 		// FIXME: dRS doesn't like using a dictionary here
-#if SILVERLIGH
+#if SILVERLIGHT
 		private readonly List<object> _elements = new List<object>();
 #else
 		private readonly ArrayList _elements = new ArrayList();

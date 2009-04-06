@@ -385,8 +385,12 @@ namespace Db4objects.Db4o.Internal
                 IObjectTranslator ot = config4class.GetTranslator();
                 if (ot != null)
                 {
-                    return ot is TList || ot is TDictionary || ot is TQueue || ot is TStack;
-                }
+#if SILVERLIGHT
+					return false;
+#else
+					return ot is TList || ot is TDictionary || ot is TQueue || ot is TStack;
+#endif
+				}
             }
             return false;
         }

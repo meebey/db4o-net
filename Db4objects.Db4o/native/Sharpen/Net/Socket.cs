@@ -9,8 +9,13 @@ using System.Net.Sockets;
 namespace Sharpen.Net
 {
 	public class Socket : SocketWrapper
-	{	
-#if !SILVERLIGHT
+	{
+#if SILVERLIGHT
+		public Socket(string hostName, int port)
+		{
+		}
+	}
+#else
 		IInputStream _in;
 		IOutputStream _out;
 
@@ -126,7 +131,7 @@ namespace Sharpen.Net
     	{
 			get { return _socket.UnderlyingSocket;  }
     	}
-    }
-#endif
-#endif
+	}
+#endif // CF
+#endif // SILVERLIGHT
 }

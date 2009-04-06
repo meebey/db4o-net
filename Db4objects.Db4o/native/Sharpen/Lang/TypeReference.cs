@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Sharpen.Lang
 {	
-	public abstract class TypeReference
+	public abstract partial class TypeReference
 	{
 		public static TypeReference FromString(string s)
 		{
@@ -13,7 +13,7 @@ namespace Sharpen.Lang
 			return new TypeReferenceParser(s).Parse();
 		}
 		
-		public static TypeReference FromType(System.Type type)
+		public static TypeReference FromType(Type type)
 		{
 			if (null == type) throw new ArgumentNullException("type");
 			return FromString(type.AssemblyQualifiedName);
@@ -29,7 +29,7 @@ namespace Sharpen.Lang
 			get;
 		}
 
-		public abstract System.Type Resolve();
+		public abstract Type Resolve();
 
 		public abstract void AppendTypeName(StringBuilder builder);
 
@@ -53,7 +53,7 @@ namespace Sharpen.Lang
 
 		protected void AppendUnversionedAssemblyName(StringBuilder builder)
 		{
-			AssemblyName assemblyName = this.AssemblyName;
+			AssemblyName assemblyName = AssemblyName;
 			if (null == assemblyName) return;
 
 			builder.Append(", ");
@@ -125,14 +125,17 @@ namespace Sharpen.Lang
 			_assemblyName = assemblyName;
 		}
 
-		private System.Reflection.Assembly ResolveAssembly()
+		private Assembly ResolveAssembly()
 		{
+#if SILVERLIGHT
+			return RaiseAssemblyResolveEvent(this, _assemblyName.Name);
+#else
 			if (null == _assemblyName.Version)
 			{
 				return LoadUnversionedAssembly(_assemblyName);
 			}
 			
-			Assembly found = null;
+			Assembly found;
 			try
 			{
 				found = Assembly.Load(_assemblyName);
@@ -144,11 +147,12 @@ namespace Sharpen.Lang
 				found = LoadUnversionedAssembly(unversioned);
 			}
 			return found;
+#endif
 		}
 
 		private Assembly LoadUnversionedAssembly(AssemblyName unversioned)
 		{	
-#if CF
+#if CF || SILVERLIGHT
             return Assembly.Load(unversioned);
 #else
 			Assembly found = Assembly.LoadWithPartialName(unversioned.FullName);
@@ -228,10 +232,9 @@ namespace Sharpen.Lang
 		}
 
 
-		private int _rank;
+		private readonly int _rank;
 
-		internal ArrayTypeReference(TypeReference elementType, int rank)
-			: base(elementType)
+		internal ArrayTypeReference(TypeReference elementType, int rank) : base(elementType)
 		{
 			_rank = rank;
 		}
@@ -280,7 +283,7 @@ namespace Sharpen.Lang
 				: baseType;
 		}
 
-		Type[] Resolve(TypeReference[] typeRefs)
+		static Type[] Resolve(TypeReference[] typeRefs)
 		{
 			Type[] types = new Type[typeRefs.Length];
 			for (int i = 0; i < types.Length; ++i)

@@ -22,6 +22,16 @@ namespace Db4objects.Db4o.IO
 			return store.FileExists(uri);
 		}
 
+		public void Delete(string uri)
+		{
+			store.DeleteFile(uri);
+		}
+
+		public void Rename(string oldUri, string newUri)
+		{
+			throw new System.NotImplementedException();
+		}
+
 		#endregion
 	}
 }
