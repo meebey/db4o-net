@@ -10,6 +10,7 @@ namespace Db4objects.Db4o.Linq.Tests
 {
 	class QueryableTestCase : AbstractDb4oLinqTestCase
 	{
+#if !CF_3_5
 		public class Person
 		{
 			public string Name;
@@ -66,5 +67,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				Assert.IsTrue(b);
 			});
 		}
+#endif
 	}
 }
+

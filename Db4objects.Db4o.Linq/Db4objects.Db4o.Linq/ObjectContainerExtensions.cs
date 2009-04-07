@@ -22,9 +22,11 @@ namespace Db4objects.Db4o.Linq
 			return new Db4oQuery<T>(queryFactory);
 		}
 
+#if !CF_3_5
 		public static IDb4oLinqQueryable<T> AsQueryable<T>(this ISodaQueryFactory queryFactory)
 		{
 			return queryFactory.Cast<T>().AsQueryable();
 		}
+#endif
 	}
 }
