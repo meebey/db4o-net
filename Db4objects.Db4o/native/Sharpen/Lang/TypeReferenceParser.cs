@@ -1,6 +1,5 @@
 /* Copyright (C) 2005   db4objects Inc.   http://www.db4o.com */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
@@ -9,7 +8,7 @@ namespace Sharpen.Lang
 {
 	internal class TypeReferenceParser
 	{
-		private TypeReferenceLexer _lexer;
+		private readonly TypeReferenceLexer _lexer;
 		private readonly Stack<Token> _stack = new Stack<Token>();
 		
 		public TypeReferenceParser(string input)
@@ -30,7 +29,7 @@ namespace Sharpen.Lang
 						str.SetAssemblyName(ParseAssemblyName());
 						break;
 					default:
-						UnexpectedToken(token);
+						UnexpectedToken(TokenKind.Comma, token);
 						break;
 				}
 			}
@@ -41,7 +40,7 @@ namespace Sharpen.Lang
 		{
 			TypeReference returnValue = elementType;
 			
-			Token token = null;
+			Token token;
 			while (null != (token = NextToken()))
 			{
 				switch (token.Kind)
@@ -126,18 +125,31 @@ namespace Sharpen.Lang
 				return InternalParseGenericTypeReference(id, argc + count);
 			}
 
-			TypeReference[] args = new TypeReference[argc + count];
-			AssertTokenKind(TokenKind.LBrack, t);
-			for (int i = 0; i < args.Length; ++i)
+			TypeReference[] args = new TypeReference[0];
+			if (!IsOpenGenericTypeDefinition(t))
 			{
-				if (i > 0) Expect(TokenKind.Comma);
-				Expect(TokenKind.LBrack);
-				args[i] = Parse();
+				args = new TypeReference[argc + count];
+				AssertTokenKind(TokenKind.LBrack, t);
+				for (int i = 0; i < args.Length; ++i)
+				{
+					if (i > 0) Expect(TokenKind.Comma);
+					Expect(TokenKind.LBrack);
+					args[i] = Parse();
+					Expect(TokenKind.RBrack);
+				}
 				Expect(TokenKind.RBrack);
 			}
-			Expect(TokenKind.RBrack);
+			else
+			{
+				Push(t);
+			}
 
 			return new GenericTypeReference(id.Value, args);
+		}
+
+		private static bool IsOpenGenericTypeDefinition(Token t)
+		{
+			return t.Kind != TokenKind.LBrack;
 		}
 
 		private static bool IsInnerGenericTypeReference(Token t)
@@ -155,7 +167,7 @@ namespace Sharpen.Lang
 			if (!CommaIdEquals()) return assemblyName;
 
 			Token version = Expect(TokenKind.VersionNumber);
-			assemblyName.Version = new System.Version(version.Value);
+			assemblyName.Version = new Version(version.Value);
 
 			if (!CommaIdEquals()) return assemblyName;
 			
@@ -184,13 +196,13 @@ namespace Sharpen.Lang
 			return assemblyName;
 		}
 
-		byte[] ParsePublicKeyToken(string token)
+		static byte[] ParsePublicKeyToken(string token)
 		{
 			int len = token.Length / 2;
 			byte[] bytes = new byte[len];
 			for (int i = 0; i < len; ++i)
 			{
-				bytes[i] = byte.Parse(token.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber);
+				bytes[i] = byte.Parse(token.Substring(i * 2, 2), NumberStyles.HexNumber);
 			}
 			return bytes;
 		}
@@ -222,13 +234,13 @@ namespace Sharpen.Lang
 		{
 			if (null == actual || actual.Kind != expected)
 			{
-				UnexpectedToken(actual);
+				UnexpectedToken(expected, actual);
 			}
 		}
 
-		private static void UnexpectedToken(Token token)
+		private static void UnexpectedToken(TokenKind expectedKind, Token actual)
 		{
-			throw new ArgumentException(string.Format("Unexpected token: '{0}'", token));
+			throw new ArgumentException(string.Format("Unexpected Token: '{0}' (Expected kind: '{1}')", actual, expectedKind));
 		}
 		
 		private void Push(Token token)
@@ -239,7 +251,7 @@ namespace Sharpen.Lang
 		private Token NextToken()
 		{
 			return _stack.Count > 0
-				? (Token) _stack.Pop()
+				? _stack.Pop()
 				: _lexer.NextToken();
 		}
 
