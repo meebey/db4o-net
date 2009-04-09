@@ -26,11 +26,11 @@ struct ValueTypeSubject
 
 class FieldSetterTestSubject
 {
-    public int intValue = 0;
-    public volatile byte volatileByte = 0;
-    public Tagged refValue = null;
+    public int intValue;
+    public volatile byte volatileByte;
+    public Tagged refValue;
     public ValueTypeSubject valueType;
-    public List<int> intList = null;
+    public List<int> intList;
 }
 
 class TAFieldSetterSubject : ITestCase

@@ -111,7 +111,8 @@ class CustomActivatable : IActivatable
 
     public void Activate(ActivationPurpose purpose)
     {
-        _activator.Activate(purpose);
+		if (null == _activator) return;
+		_activator.Activate(purpose);
     }
 }
 
