@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Db4objects.Db4o.Foundation;
 using Db4oTool.Core;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.TA;
@@ -39,8 +40,8 @@ namespace Db4oTool.TA
             }
             MarkAsInstrumented();
 
-            ProcessTypes(module.Types, MakeActivatable);
-			ProcessTypes(module.Types, NoFiltering, ProcessMethods);
+			ProcessTypes(module.Types, MakeActivatable);
+			ProcessTypes(module.Types, NoFiltering, ProcessType);
 		}
 
         private void CreateTagAttribute()
@@ -185,7 +186,113 @@ namespace Db4oTool.TA
 
 			InstrumentFieldAccesses(method);
 
+			PatchBaseConstructorInvocationOrderIfRequired(method);
+
 			method.Body.Optimize();
+		}
+
+		private static void PatchBaseConstructorInvocationOrderIfRequired(MethodDefinition method)
+		{
+			if (!method.IsConstructor) return;
+			if (!HasFieldAccessBeforeBaseConstructorInvocation(method)) return;
+
+			PatchBaseConstructorInvocationOrder(method);
+		}
+
+		private static void PatchBaseConstructorInvocationOrder(MethodDefinition method)
+		{
+			Instruction ctorInvocation = (Instruction) Iterators.Next(Where(method.Body, IsBaseConstructorInvocation).GetEnumerator());
+			Instruction loadThis = GetLoadThisReferenceFor(ctorInvocation);
+
+			MoveInstructions(loadThis, ctorInvocation, method.Body.Instructions[0], method.Body.CilWorker);
+		}
+
+		private static void MoveInstructions(Instruction start, Instruction end, Instruction insertionPoint, CilWorker worker)
+		{
+			IList<Instruction> toBeMoved = new List<Instruction>();
+			while(start != end.Next)
+			{
+				toBeMoved.Add(start);
+				Instruction next = start.Next;
+				worker.Remove(start);
+				start = next;
+			}
+
+			foreach (Instruction instruction in toBeMoved)
+			{
+				worker.InsertBefore(insertionPoint, instruction);
+			}
+		}
+
+		private static Instruction GetLoadThisReferenceFor(Instruction ctorInvocation)
+		{
+			Instruction current = ctorInvocation.Previous; 
+			while (current != null)
+			{
+				if (IsLoadThis(current)) return current;
+				current = current.Previous;
+			}
+			
+			return null;
+		}
+
+		private static bool HasFieldAccessBeforeBaseConstructorInvocation(MethodDefinition ctor)
+		{
+			bool baseConstructorInvoked = false;
+			foreach (Instruction instruction in BaseConstructorInvocationOrFieldAccesses(ctor))
+			{
+				if (IsBaseConstructorInvocation(instruction))
+				{
+					baseConstructorInvoked = true;
+					continue;
+				}
+
+				if (!baseConstructorInvoked)
+				{
+					return true;	
+				}
+			}
+
+			return false;
+		}
+
+		private static IEnumerable<Instruction> BaseConstructorInvocationOrFieldAccesses(MethodDefinition ctor)
+		{
+			return Where(
+						ctor.Body, 
+						delegate(Instruction instruction)
+						{
+							return IsFieldAccess(instruction) || IsBaseConstructorInvocation(instruction);
+						});
+		}
+
+		private static bool IsBaseConstructorInvocation(Instruction instruction)
+		{
+			return IsCallInstruction(instruction) 
+				&& HasConstructorOperand(instruction);
+		}
+
+		private static bool IsLoadThis(Instruction instruction)
+		{
+			if (instruction.OpCode == OpCodes.Ldarg_0) return true;
+			if (instruction.OpCode == OpCodes.Ldarg )
+			{
+				ParameterReference parameterReference = (ParameterReference) instruction.Operand;
+				return parameterReference.Sequence == 0;
+			}
+
+			return false;
+		}
+
+		private static bool HasConstructorOperand(Instruction instruction)
+		{
+			MethodReference methodReference = (MethodReference) instruction.Operand;
+			return methodReference.Name == ".ctor";
+		}
+
+		private static bool IsCallInstruction(Instruction instruction)
+		{
+			return instruction.OpCode == OpCodes.Call;
 		}
 
 		private bool HasFieldAccesses(MethodDefinition method)
@@ -195,7 +302,6 @@ namespace Db4oTool.TA
 
 		private void InstrumentFieldAccesses(MethodDefinition method)
 		{
-//			CilWorker cil = method.Body.CilWorker;
 			MethodEditor editor = new MethodEditor(method);
 			foreach (Instruction instruction in FieldAccesses(method.Body))
 			{
@@ -204,15 +310,18 @@ namespace Db4oTool.TA
 		}
 
 		private IEnumerable<Instruction> FieldAccesses(MethodBody body)
-		{	
-			Instruction instruction = body.Instructions[0];
-			while (instruction != null)
+		{
+			return Where(body, IsActivatableFieldAccess);
+		}
+
+		private static IEnumerable<Instruction> Where(MethodBody body, Predicate<Instruction> predicate)
+		{
+			for(Instruction instruction = body.Instructions[0]; instruction != null; instruction = instruction.Next)
 			{
-				if (IsActivatableFieldAccess(instruction))
+				if (predicate(instruction))
 				{
 					yield return instruction;
 				}
-				instruction = instruction.Next;
 			}
 		}
 
@@ -341,7 +450,7 @@ namespace Db4oTool.TA
 			return !IsDelegate(fieldType);
 		}
 
-		private bool DeclaredInNonActivatableType(FieldReference field)
+		private bool DeclaredInNonActivatableType(IMemberReference field)
 		{
 			TypeDefinition declaringType = ResolveTypeReference(field.DeclaringType);
 			if (declaringType == null) return true;

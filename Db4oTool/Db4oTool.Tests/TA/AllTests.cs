@@ -28,18 +28,17 @@ namespace Db4oTool.Tests.TA
 	{
 		protected override Type[] TestCases()
 		{
-//			return new Type[]
-//			        {
-//			            typeof(TAInstrumentationTestCase),
-//			        };
+			//return new Type[] { typeof(TAInstrumentedConstructorTestCase), };
 
 			return new Type[]
 				{
 					typeof(TABytecodeChangesTestCase),
-					typeof(TAInstrumentationTestCase),
+					typeof(TACrossAssemblyInstrumentationTestCase),
+					typeof(TAEnsureDb4oReferenceIsAdded),
+					typeof(TAFieldSetterInstrumentationTestCase),
+					typeof(TAInstrumentedConstructorTestCase),
 					typeof(TAInstrumentationAppliedMoreThanOnce),
 					typeof(TANonStorableTypeTestCase),
-					typeof(TAEnsureDb4oReferenceIsAdded),
 					typeof(TAWarningOnSignedAssemblyInstrumentation),
 				};
 		}
