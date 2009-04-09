@@ -1,8 +1,6 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using Db4objects.Db4o.Events;
-using Db4objects.Db4o.Ext;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
@@ -16,17 +14,17 @@ namespace Db4objects.Db4o.Tests.CLI1.Events
 		
 		class EventRecorder
 		{
-			ArrayList _events = new ArrayList();
+			readonly List<string> _events = new List<string>();
 
-			public EventRecorder(IExtObjectContainer container)
+			public EventRecorder(IObjectContainer container)
 			{
 				IEventRegistry registry = EventRegistryFactory.ForObjectContainer(container);
-				registry.Creating += new CancellableObjectEventHandler(OnCreating);
+				registry.Creating += OnCreating;
 			}
 			
 			public string this[int index]
 			{
-				get { return (string)_events[index];  }
+				get { return _events[index];  }
 			}
 
 			void OnCreating(object sender, CancellableObjectEventArgs args)
@@ -43,7 +41,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Events
 
 			Store(new Item());
 
-			Assert.AreEqual(0, Db().Get(typeof(Item)).Count);
+			Assert.AreEqual(0, Db().QueryByExample(typeof(Item)).Count);
 			Assert.AreEqual("Creating", recorder[0]);
 		}
 	}

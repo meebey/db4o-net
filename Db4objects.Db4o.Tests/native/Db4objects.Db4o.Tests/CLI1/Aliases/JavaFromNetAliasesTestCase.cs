@@ -1,11 +1,9 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
-using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit.Extensions.Fixtures;
 
@@ -70,7 +68,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 
         private string[] UpdateAliasedData(IObjectContainer container)
         {
-            ArrayList newNames = new ArrayList();
+            List<string> newNames = new List<string>();
             foreach (IPerson person in QueryAliasedData(container))
             {
                 string newName = person.Name + "*";
@@ -85,7 +83,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
             newNames.Add(newItemName);
 
             container.Commit();
-            return (string[])newNames.ToArray(typeof(string));
+        	return newNames.ToArray();
         }
 
         private void ConfigureAliases(IConfiguration configuration)

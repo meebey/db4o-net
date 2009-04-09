@@ -1,7 +1,7 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
-using System.Collections;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Query;
 using Db4oUnit;
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 	/// </summary>
 	public class OptimizationFailuresTestCase : AbstractDb4oTestCase
 	{
-		ArrayList _failures = new ArrayList();
+		IList<Exception> _failures = new List<Exception>();
 
 		/*
 		public void Store()
@@ -100,7 +100,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			{
 				Db().Query(predicate);
 				Assert.AreEqual(1, _failures.Count,  Join(_failures));
-				Assert.AreEqual("Unsupported expression: " + expression, ((System.Exception)_failures[0]).Message);
+				Assert.AreEqual("Unsupported expression: " + expression, _failures[0].Message);
 			}
 			finally
 			{
@@ -108,10 +108,10 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			}
 		}
 
-		private string Join(IList items)
+		private string Join(IList<Exception> items)
 		{
 			StringWriter writer = new StringWriter();
-			foreach (object item in items)
+			foreach (Exception item in items)
 			{
 				writer.WriteLine(item);
 			}
