@@ -134,14 +134,21 @@ namespace Db4oTool.Tests.Core
 
 		private IEnumerable<ITest> ProduceTestCases(bool debugInfo)
 		{
+			Exception error = null;
 			Assembly[] references = Dependencies;
 			foreach (string resource in Resources)
 			{
-				Exception error;
+				if (null != error)
+				{
+					yield return new FailingTest(resource, error);
+					continue;
+				}
+
 				string assemblyPath = EmitAndInstrumentAssemblyFromResource(resource, references, debugInfo, out error);
 				if (null != error)
 				{
 					yield return new FailingTest(resource, error);
+					error = new Exception("The sibling resource '" + resource + "' has errors.", error);
 					continue;
 				}
 
