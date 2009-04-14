@@ -249,7 +249,7 @@ namespace Db4oTool.TA
 
 				if (!baseConstructorInvoked)
 				{
-					return true;	
+					return true;
 				}
 			}
 
@@ -274,11 +274,15 @@ namespace Db4oTool.TA
 
 		private static bool IsLoadThis(Instruction instruction)
 		{
-			if (instruction.OpCode == OpCodes.Ldarg_0) return true;
-			if (instruction.OpCode == OpCodes.Ldarg )
+			if (instruction.OpCode == OpCodes.Ldarg)
 			{
-				ParameterReference parameterReference = (ParameterReference) instruction.Operand;
+				ParameterReference parameterReference = (ParameterReference)instruction.Operand;
 				return parameterReference.Sequence == 0;
+			}
+			
+			if (instruction.OpCode == OpCodes.Ldarg_0)
+			{
+				throw new InvalidOperationException("MethodBody.Simplify() should have translated 'ldarg_0' to 'ldarg 0'");
 			}
 
 			return false;

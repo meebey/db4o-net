@@ -1,5 +1,6 @@
 ﻿/* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
@@ -80,12 +81,24 @@ namespace Db4oTool.Tests.Core
 		public static ProcessOutput shell(string fname, params string[] args)
 		{
 			Process p = StartProcess(fname, args);
-			ProcessOutput output = new ProcessOutput();
-			output.StdOut = p.StandardOutput.ReadToEnd();
-			output.StdErr = p.StandardError.ReadToEnd();
+
+			StringWriter stdError = new StringWriter();
+			p.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
+			{
+				stdError.Write(e.Data);
+			};
+			
+			StringWriter stdOut = new StringWriter();
+			p.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
+			{
+				stdOut.Write(e.Data);
+			};
+
+			p.BeginErrorReadLine();
+			p.BeginOutputReadLine();
+
 			p.WaitForExit();
-			output.ExitCode = p.ExitCode;
-			return output;
+			return new ProcessOutput(p.ExitCode, stdOut.ToString(), stdError.ToString());
 		}
 
 		public static Process StartProcess(string filename, params string[] args)

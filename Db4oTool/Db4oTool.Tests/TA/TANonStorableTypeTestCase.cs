@@ -12,7 +12,7 @@ namespace Db4oTool.Tests.TA
 
 		protected override string CommandLine
 		{
-			get { return "-ta -v"; }
+			get { return "-ta -vv"; }
 		}
 
 		protected override string EmitAssemblyFromResource(string resource, Assembly[] references)

@@ -17,15 +17,17 @@ class WithConstructorChainAndFieldInitializers
 {
 	public WithConstructorChainAndFieldInitializers(int v)
 	{
+		Assert.AreEqual(0x42, initializedField);
 		value = v + initializedField;
 	}
 
 	public WithConstructorChainAndFieldInitializers() : this(42)
 	{
+		Assert.AreEqual(0x42 + 42, value);
 		value = initializedField;
 	}
 
-	private int value;
+	public int value;
 	private int initializedField = 0x42;
 }
 
@@ -123,6 +125,12 @@ class TAInstrumentedConstructorSubject : ITestCase
 
 		Assert.AreEqual(2, activator.ReadCount);
 		Assert.AreEqual(0, activator.WriteCount);
+	}
+
+	public void TestConstructorChaining()
+	{
+		Assert.AreEqual(0x42 + 1, new WithConstructorChainAndFieldInitializers(1).value);
+		Assert.AreEqual(0x42, new WithConstructorChainAndFieldInitializers().value);
 	}
 
 	private MockActivator ActivatorFor(object p)
