@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
                 if (rhs.GetType() != GetType()) return false;
 
-                return _enum == rhs._enum;
+                return object.Equals(_enum, rhs._enum);
             }
 
             public override string ToString()

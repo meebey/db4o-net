@@ -1,7 +1,8 @@
-﻿using System;
+﻿/* Copyright (C) 2009   db4objects Inc.   http://www.db4o.com */
+
+using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Internal.Collections;
-using Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Typehandlers;

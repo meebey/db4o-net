@@ -1,7 +1,8 @@
-﻿using System;
+﻿/* Copyright (C) 2009   db4objects Inc.   http://www.db4o.com */
+
+using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Collections;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
@@ -10,26 +11,24 @@ using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
-using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 
 
-namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
+namespace Db4objects.Db4o.Typehandlers
 {
-    public class SystemArrayTypeHandler : IFirstClassHandler, IVariableLengthTypeHandler, IEmbeddedTypeHandler
+    public class SystemArrayTypeHandler : ICascadingTypeHandler, IVariableLengthTypeHandler, IValueTypeHandler
     {
-
         public virtual IPreparedComparison PrepareComparison(IContext context, object obj)
         {
-            return readArrayHandler(context).PrepareComparison(context, obj);
+            return ReadArrayHandler(context).PrepareComparison(context, obj);
         }
 
         public virtual void Write(IWriteContext context, object obj)
         {
             Array collection = (Array) obj;
-            ITypeHandler4 elementHandler = DetectElementTypeHandler(Container(context), collection);
-            WriteElementTypeHandlerId(context, elementHandler);
-            new ArrayHandler(elementHandler, false).Write(context, obj);
+            ClassMetadata elementType = DetectElementTypeHandler(Container(context), collection);
+            WriteElementTypeId(context, elementType);
+            new ArrayHandler(elementType.TypeHandler(), false).Write(context, obj);
         }
 
     	public bool CanHold(IReflectClass type)
@@ -39,10 +38,10 @@ namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
 
     	public virtual object Read(IReadContext context)
         {
-            return readArrayHandler(context).Read(context);
+            return ReadArrayHandler(context).Read(context);
         }
 
-        private ArrayHandler readArrayHandler(IContext context)
+        private static ArrayHandler ReadArrayHandler(IContext context)
         {
             ITypeHandler4 handler = ReadElementTypeHandler((IReadBuffer)context, context);
             return new ArrayHandler(handler, false);
@@ -50,16 +49,16 @@ namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
 
         public virtual void Delete(IDeleteContext context)
         {
-            readArrayHandler(context).Delete(context);
+            ReadArrayHandler(context).Delete(context);
         }
 
         public virtual void Defragment(IDefragmentContext context)
         {
             DefragmentElementHandlerId(context);
-            readArrayHandler(context).Defragment(context);
+            ReadArrayHandler(context).Defragment(context);
         }
 
-        public void CascadeActivation(ActivationContext4 context)
+        public void CascadeActivation(IActivationContext context)
         {
             ICollection collection = ((ICollection)context.TargetObject());
             foreach (object item in collection)
@@ -73,10 +72,9 @@ namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
             return this;
         }
 
-
         public virtual void CollectIDs(QueryingReadContext context)
         {
-            readArrayHandler(context).CollectIDs(context);
+            ReadArrayHandler(context).CollectIDs(context);
         }
 
         private static void DefragmentElementHandlerId(IDefragmentContext context)
@@ -86,20 +84,14 @@ namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
             context.Seek(offset);
         }
 
-        private static ITypeHandler4 UntypedObjectHandlerFrom(IContext context)
+        private static ITypeHandler4 OpenTypeHandlerFrom(IContext context)
         {
-            return context.Transaction().Container().Handlers().UntypedObjectHandler();
+            return context.Transaction().Container().Handlers().OpenTypeHandler();
         }
 
-        private static void WriteElementTypeHandlerId(IWriteContext context, ITypeHandler4 elementHandler)
+        private static void WriteElementTypeId(IWriteContext context, ClassMetadata elementType)
         {
-            int id = IsUntypedField(elementHandler) ? 0 : Container(context).Handlers().TypeHandlerID(elementHandler);
-            context.WriteInt(id);
-        }
-
-        private static bool IsUntypedField(ITypeHandler4 elementHandler)
-        {
-            return (elementHandler is UntypedFieldHandler);
+            context.WriteInt(elementType.GetID());
         }
 
         private static ObjectContainerBase Container(IContext context)
@@ -110,27 +102,16 @@ namespace Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers
         private static ITypeHandler4 ReadElementTypeHandler(IReadBuffer buffer, IContext context)
         {
             int elementHandlerId = buffer.ReadInt();
-            if (elementHandlerId == 0) return UntypedObjectHandlerFrom(context);
+            if (elementHandlerId == 0) return OpenTypeHandlerFrom(context);
 
-            ITypeHandler4 elementHandler = (ITypeHandler4)Container(context).FieldHandlerForId(elementHandlerId);
-            return elementHandler ?? UntypedObjectHandlerFrom(context);
+            ITypeHandler4 elementHandler = Container(context).TypeHandlerForClassMetadataID(elementHandlerId);
+            return elementHandler ?? OpenTypeHandlerFrom(context);
         }
 
-        private static ITypeHandler4 DetectElementTypeHandler(ObjectContainerBase container, Array collection)
+        private static ClassMetadata DetectElementTypeHandler(ObjectContainerBase container, Array collection)
         {
             Type elementType = ElementTypeOf(collection);
-            if (IsNullableInstance(elementType))
-            {
-                return container.Handlers().UntypedObjectHandler();
-            }
-
-            ITypeHandler4 elementHandler = (ITypeHandler4)container.FieldHandlerForClass(ReflectClassFor(container, elementType));
-            return elementHandler ?? container.Handlers().UntypedObjectHandler();
-        }
-
-        private static IReflectClass ReflectClassFor(ObjectContainerBase container, Type elementType)
-        {
-            return container.Reflector().ForClass(elementType);
+        	return container.ProduceClassMetadata(container.Reflector().ForClass(elementType));
         }
 
         private static bool IsNullableInstance(Type elementType)

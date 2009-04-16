@@ -3,17 +3,15 @@
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
-using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Typehandlers
 {
-    public class EnumTypeHandler : IEmbeddedTypeHandler, ITypeFamilyTypeHandler
+    public class EnumTypeHandler : IValueTypeHandler, ITypeFamilyTypeHandler, IIndexableTypeHandler
     {
         private class PreparedEnumComparison : IPreparedComparison
         {
@@ -66,7 +64,7 @@ namespace Db4objects.Db4o.Typehandlers
         public object Read(IReadContext context)
         {
             int classId = context.ReadInt();
-            ClassMetadata clazz = Container(context).ClassMetadataForId(classId);
+            ClassMetadata clazz = Container(context).ClassMetadataForID(classId);
 
             Type enumType = NetReflector.ToNative(clazz.ClassReflector());
             long enumValue = context.ReadLong();
@@ -91,12 +89,32 @@ namespace Db4objects.Db4o.Typehandlers
             return true;
         }
 
-        public int LinkLength()
+    	public bool DescendsIntoMembers()
+    	{
+    		return false;
+    	}
+
+    	public int LinkLength()
         {
             return Const4.IdLength + Const4.LongLength;
         }
 
-        private static int ClassMetadataIdFor(IContext context, object obj)
+    	public object ReadIndexEntry(ByteArrayBuffer reader)
+    	{
+    		throw new System.NotImplementedException();
+    	}
+
+    	public void WriteIndexEntry(ByteArrayBuffer writer, object obj)
+    	{
+    		throw new System.NotImplementedException();
+    	}
+
+    	public void DefragIndexEntry(DefragmentContextImpl context)
+    	{
+    		throw new System.NotImplementedException();
+    	}
+
+    	private static int ClassMetadataIdFor(IContext context, object obj)
         {
             IReflectClass claxx = Container(context).Reflector().ForObject(obj);
             ClassMetadata clazz = Container(context).ProduceClassMetadata(claxx);
@@ -116,6 +134,20 @@ namespace Db4objects.Db4o.Typehandlers
             return ((IInternalObjectContainer)context.ObjectContainer()).Container();
         }
 
+    	public object IndexEntryToObject(IContext context, object indexEntry)
+    	{
+    		throw new System.NotImplementedException();
+    	}
+
+    	public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer writer)
+    	{
+    		throw new System.NotImplementedException();
+    	}
+
+    	public object ReadIndexEntry(IObjectIdContext context)
+    	{
+    		throw new System.NotImplementedException();
+    	}
     }
 
     public class EnumTypeHandlerPredicate : ITypeHandlerPredicate

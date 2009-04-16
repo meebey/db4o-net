@@ -1,7 +1,10 @@
 /* Copyright (C) 2007   db4objects Inc.   http://www.db4o.com */
 using System;
+using Db4objects.Db4o.Tests.CLI2.Assorted;
 using Db4objects.Db4o.Tests.Common.Migration;
+using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests
 {
@@ -13,6 +16,7 @@ namespace Db4objects.Db4o.Tests
 			return new AllTests().RunSolo();
 //            return new AllTests().RunClientServer();
 #else
+//			return RunInMemory();
 //			return new AllTests().RunSolo();
 //			return new AllTests().RunClientServer();
 //			return new AllTestsConcurrency().RunConcurrencyAll();
@@ -20,9 +24,15 @@ namespace Db4objects.Db4o.Tests
 		    return new AllTests().RunAll();
 #endif
 		}
+
+		private static int RunInMemory()
+		{
+			return new ConsoleTestRunner(new Db4oTestSuiteBuilder(new Db4oInMemory(), typeof(AllTests))).Run();
+		}
 		
 		protected override Type[] TestCases()
 		{
+//			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.AllTests) };
 			return new Type[]
 				{	
 #if CF_3_5

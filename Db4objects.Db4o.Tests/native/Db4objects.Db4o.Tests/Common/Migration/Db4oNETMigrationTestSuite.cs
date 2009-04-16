@@ -19,6 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
                 TestPlatform.GetStdErr().WriteLine("DISABLED: " + GetType());
                 return new Type[] { };
             }
+
             ArrayList list = new ArrayList();
             list.AddRange(base.TestCases());
 
@@ -29,7 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
                 typeof(DateTimeHandlerUpdateTestCase),
                 typeof(IndexedDateTimeUpdateTestCase),
                 typeof(DecimalHandlerUpdateTestCase),
-                typeof(EnumHandlerUpdateTestCase),
+				typeof(EnumHandlerUpdateTestCase),
                 typeof(GUIDHandlerUpdateTestCase),
                 typeof(HashtableUpdateTestCase),
                 typeof(NestedStructHandlerUpdateTestCase),

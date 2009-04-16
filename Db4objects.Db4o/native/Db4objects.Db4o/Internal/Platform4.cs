@@ -672,8 +672,9 @@ namespace Db4objects.Db4o.Internal
         {
             EnumTypeHandler enumTypeHandler = new EnumTypeHandler();
             container.ConfigImpl().RegisterTypeHandler(new EnumTypeHandlerPredicate(), enumTypeHandler);
-            container.Handlers().RegisterHandlerVersion(enumTypeHandler, 4, new FirstClassObjectHandler());
-            container.Handlers().RegisterHandlerVersion(enumTypeHandler, 0, new FirstClassObjectHandler0());
+			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 7, new StandardReferenceTypeHandler());
+			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 4, new StandardReferenceTypeHandler());
+			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 0, new StandardReferenceTypeHandler0());
 
             DateTimeHandler dateTimeHandler = new DateTimeHandler();
             container.Handlers().RegisterNetTypeHandler(dateTimeHandler);
