@@ -23,11 +23,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static Type[] IgnoredClasses()
 		{
-#if SILVERLIGHT
-			return new Type[] { typeof(StaticClass), typeof(StaticField) };
-#else
-			return new Type[] { typeof(P1HashElement), typeof(P1ListElement), typeof(P1Object), typeof(P1Collection), typeof(StaticClass), typeof(StaticField) };
-#endif
+			return new Type[] { typeof(P1Object), typeof(StaticClass), typeof(StaticField) };
 		}
 	}
 }

@@ -91,13 +91,6 @@ namespace Db4objects.Db4o.Internal
             return true;
         }
 
-#if !SILVERLIGHT
-        internal static IDb4oCollections Collections(Transaction transaction)
-        {
-            return new P2Collections(transaction);
-        }
-#endif
-
         internal static IReflector CreateReflector(Object config)
 		{
 #if USE_FAST_REFLECTOR && !CF && !SILVERLIGHT
