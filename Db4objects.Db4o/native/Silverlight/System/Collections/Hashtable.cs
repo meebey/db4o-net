@@ -14,6 +14,11 @@ namespace System.Collections
 		public Hashtable(int capacity) : base(capacity)
 		{
 		}
+
+		public bool Contains(object key)
+		{
+			return ContainsKey(key);
+		}
 	}
 }
 

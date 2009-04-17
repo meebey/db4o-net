@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o-Silverlight-2008", "Db4objects.Db4o\Db4objects.Db4o-Silverlight-2008.csproj", "{76FFA4C5-6CC6-4C8C-BACF-B1C76AE0CA65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oUnit-Silverlight-2008", "Db4oUnit\Db4oUnit-Silverlight-2008.csproj", "{C74364D8-A04A-4CF9-801D-D1811D49E72A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oUnit.Extensions-Silverlight-2008", "Db4oUnit.Extensions\Db4oUnit.Extensions-Silverlight-2008.csproj", "{13B5E015-9250-4E70-939D-56233D43D8C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,14 @@ Global
 		{76FFA4C5-6CC6-4C8C-BACF-B1C76AE0CA65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76FFA4C5-6CC6-4C8C-BACF-B1C76AE0CA65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76FFA4C5-6CC6-4C8C-BACF-B1C76AE0CA65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C74364D8-A04A-4CF9-801D-D1811D49E72A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C74364D8-A04A-4CF9-801D-D1811D49E72A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C74364D8-A04A-4CF9-801D-D1811D49E72A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C74364D8-A04A-4CF9-801D-D1811D49E72A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13B5E015-9250-4E70-939D-56233D43D8C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13B5E015-9250-4E70-939D-56233D43D8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13B5E015-9250-4E70-939D-56233D43D8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13B5E015-9250-4E70-939D-56233D43D8C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
