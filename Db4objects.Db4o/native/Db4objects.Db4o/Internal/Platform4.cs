@@ -397,7 +397,7 @@ namespace Db4objects.Db4o.Internal
             return socket.IsConnected();
         }
 
-        internal static bool IsValueType(IReflectClass claxx)
+        internal static bool IsStruct(IReflectClass claxx)
         {
             if (claxx == null)
             {

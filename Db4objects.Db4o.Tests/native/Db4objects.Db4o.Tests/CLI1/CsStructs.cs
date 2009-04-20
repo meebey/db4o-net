@@ -43,7 +43,6 @@ namespace Db4objects.Db4o.Tests.CLI1
 			s.foo = 22;
 			s.bar = "jo";
 			r.child.simpleStruct = s;
-
 			item.recursiveStruct = r;
 
 			item.guid = new Guid(GUID);
