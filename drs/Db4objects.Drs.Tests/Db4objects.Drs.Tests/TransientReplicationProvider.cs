@@ -1,23 +1,5 @@
-/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com
+/* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
-This file is part of the db4o open source object database.
-
-db4o is free software; you can redistribute it and/or modify it under
-the terms of version 2 of the GNU General Public License as published
-by the Free Software Foundation and as clarified by db4objects' GPL 
-interpretation policy, available at
-http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
-Suite 350, San Mateo, CA 94403, USA.
-
-db4o is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 using System;
 using System.Collections;
 using Db4objects.Db4o;
@@ -89,7 +71,7 @@ namespace Db4objects.Drs.Tests
 		// --------------------- Interface ReplicationProviderInside ---------------------
 		public virtual void Activate(object @object)
 		{
-			_activatedObjects.Add(@object, @object);
+			_activatedObjects[@object] = @object;
 		}
 
 		public virtual void ClearAllReferences()
@@ -243,7 +225,7 @@ namespace Db4objects.Drs.Tests
 		{
 			Db4oUUID uuid = ProduceReference(obj, null, null).Uuid();
 			_uuidsDeletedSinceLastReplication.Add(uuid);
-			_storedObjects.Remove(obj);
+			Sharpen.Util.Collections.Remove(_storedObjects, obj);
 		}
 
 		public virtual void DeleteAllInstances(Type clazz)
@@ -335,7 +317,7 @@ namespace Db4objects.Drs.Tests
 		{
 			TransientReplicationProvider.MyReplicationReference result = new TransientReplicationProvider.MyReplicationReference
 				(this, obj);
-			_referencesByObject.Add(obj, result);
+			_referencesByObject[obj] = result;
 			return result;
 		}
 
@@ -375,7 +357,7 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void ReplicateDeletion(IReplicationReference reference)
 		{
-			_storedObjects.Remove(reference.Object());
+			Sharpen.Util.Collections.Remove(_storedObjects, reference.Object());
 		}
 
 		private void Store(object obj, Db4oUUID uuid, long version)
@@ -384,8 +366,7 @@ namespace Db4objects.Drs.Tests
 			{
 				throw new Exception();
 			}
-			_storedObjects.Add(obj, new TransientReplicationProvider.ObjectInfo(uuid, version
-				));
+			_storedObjects[obj] = new TransientReplicationProvider.ObjectInfo(uuid, version);
 		}
 
 		public virtual void TransientProviderSpecificStore(object obj)
@@ -571,7 +552,7 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void ReplicateDeletion(Db4oUUID uuid)
 		{
-			_storedObjects.Remove(GetObject(uuid));
+			Sharpen.Util.Collections.Remove(_storedObjects, GetObject(uuid));
 		}
 
 		public virtual bool IsProviderSpecific(object original)
