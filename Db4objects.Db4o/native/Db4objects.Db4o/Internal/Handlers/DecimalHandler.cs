@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
         public override IPreparedComparison InternalPrepareComparison(object obj)
         {
-            return new PreparedComparasionFor<decimal>(((decimal) obj));
+            return new PreparedComparisonFor<decimal>(((decimal) obj));
         }
 	}
 }
