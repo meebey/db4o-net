@@ -18,6 +18,6 @@ using System.Security;
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyDescription("Db4objects.Db4o 7.8.85.12705 (.NET)")]
 
-#if !CF
+#if !CF && !SILVERLIGHT
 [assembly: AllowPartiallyTrustedCallers]
 #endif
