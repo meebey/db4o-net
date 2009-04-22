@@ -30,8 +30,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 				return;
 			}
 			IReadBuffer temp = context.Buffer();
-			ByteArrayBuffer indirectedBuffer = Container(context).BufferByAddress(address, length
-				);
+			ByteArrayBuffer indirectedBuffer = Container(context).DecryptedBufferByAddress(address
+				, length);
 			context.Buffer(indirectedBuffer);
 			runnable.Run();
 			context.Buffer(temp);

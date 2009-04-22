@@ -57,11 +57,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_collector.AddId(id);
 		}
 
-		public virtual void AddPrimitiveObject(object obj)
-		{
-			_collector.Add(obj);
-		}
-
 		public override Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
 			return _objectHeader.ClassMetadata();

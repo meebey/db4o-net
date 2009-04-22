@@ -23,5 +23,23 @@ namespace Db4objects.Db4o.IO
 		/// <summary>returns true if a Bin (file or memory) exists with the passed name.</summary>
 		/// <remarks>returns true if a Bin (file or memory) exists with the passed name.</remarks>
 		bool Exists(string uri);
+
+		/// <summary>Deletes the bin for the given URI from the storage.</summary>
+		/// <remarks>Deletes the bin for the given URI from the storage.</remarks>
+		/// <since>7.9</since>
+		/// <param name="uri">bin URI</param>
+		/// <exception cref="System.IO.IOException">if the bin could not be deleted</exception>
+		void Delete(string uri);
+
+		/// <summary>Renames the bin for the given old URI to the new URI.</summary>
+		/// <remarks>
+		/// Renames the bin for the given old URI to the new URI. If a bin for the new URI
+		/// exists, it will be overwritten.
+		/// </remarks>
+		/// <since>7.9</since>
+		/// <param name="oldUri">URI of the existing bin</param>
+		/// <param name="newUri">future URI of the bin</param>
+		/// <exception cref="System.IO.IOException">if the bin could not be deleted</exception>
+		void Rename(string oldUri, string newUri);
 	}
 }

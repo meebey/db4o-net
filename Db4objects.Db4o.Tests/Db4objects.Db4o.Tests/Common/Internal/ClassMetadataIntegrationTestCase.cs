@@ -53,5 +53,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 			private readonly Collection4 expectedNames;
 		}
+
+		public virtual void TestPrimitiveArrayMetadataIsPrimitiveTypeMetadata()
+		{
+			ClassMetadata byteArrayMetadata = Container().ProduceClassMetadata(ReflectClass(typeof(
+				byte[])));
+			Assert.IsInstanceOf(typeof(PrimitiveTypeMetadata), byteArrayMetadata);
+		}
 	}
 }

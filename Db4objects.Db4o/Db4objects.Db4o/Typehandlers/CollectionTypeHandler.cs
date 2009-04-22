@@ -3,7 +3,6 @@
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -18,7 +17,8 @@ namespace Db4objects.Db4o.Typehandlers
 	/// TypeHandler for Collections.
 	/// On the .NET side, usage is restricted to instances of IList.
 	/// </remarks>
-	public partial class CollectionTypeHandler : ITypeHandler4, IFirstClassHandler, IVariableLengthTypeHandler
+	public partial class CollectionTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler
+		, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
 			)
@@ -32,12 +32,12 @@ namespace Db4objects.Db4o.Typehandlers
 			ICollection collection = (ICollection)obj;
 			ITypeHandler4 elementHandler = DetectElementTypeHandler(Container(context), collection
 				);
-			WriteElementTypeHandlerId(context, elementHandler);
+			WriteElementClassMetadataId(context, elementHandler);
 			WriteElementCount(context, collection);
 			WriteElements(context, collection, elementHandler);
 		}
 
-		public virtual object Read(IReadContext context)
+		public virtual void Activate(IReferenceActivationContext context)
 		{
 			ICollection collection = (ICollection)((UnmarshallingContext)context).PersistentObject
 				();
@@ -49,7 +49,6 @@ namespace Db4objects.Db4o.Typehandlers
 				object element = context.ReadObject(elementHandler);
 				AddToCollection(collection, element);
 			}
-			return collection;
 		}
 
 		private void WriteElementCount(IWriteContext context, ICollection collection)
@@ -97,7 +96,7 @@ namespace Db4objects.Db4o.Typehandlers
 			}
 		}
 
-		public void CascadeActivation(ActivationContext4 context)
+		public void CascadeActivation(IActivationContext context)
 		{
 			IEnumerator all = ((ICollection)context.TargetObject()).GetEnumerator();
 			while (all.MoveNext())
@@ -121,7 +120,7 @@ namespace Db4objects.Db4o.Typehandlers
 			}
 		}
 
-		private void WriteElementTypeHandlerId(IWriteContext context, ITypeHandler4 elementHandler
+		private void WriteElementClassMetadataId(IWriteContext context, ITypeHandler4 elementHandler
 			)
 		{
 			context.WriteInt(0);
@@ -131,13 +130,13 @@ namespace Db4objects.Db4o.Typehandlers
 			)
 		{
 			buffer.ReadInt();
-			return Container(context).Handlers().UntypedObjectHandler();
+			return (ITypeHandler4)Container(context).Handlers().OpenTypeHandler();
 		}
 
 		private ITypeHandler4 DetectElementTypeHandler(IInternalObjectContainer container
 			, ICollection collection)
 		{
-			return container.Handlers().UntypedObjectHandler();
+			return (ITypeHandler4)container.Handlers().OpenTypeHandler();
 		}
 
 		public virtual bool CanHold(IReflectClass type)

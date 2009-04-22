@@ -21,8 +21,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private Db4objects.Db4o.Reflect.Generic.GenericClass _array;
 
-		private bool _isSecondClass;
-
 		private bool _isPrimitive;
 
 		private int _isCollection;
@@ -54,7 +52,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 				return _array;
 			}
 			_array = new GenericArrayClass(_reflector, this, _name, _superclass);
-			_array._isSecondClass = _isSecondClass;
 			return _array;
 		}
 
@@ -69,7 +66,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 			Db4objects.Db4o.Reflect.Generic.GenericClass ret = new Db4objects.Db4o.Reflect.Generic.GenericClass
 				(reflector, _delegate, _name, superClass);
-			ret._isSecondClass = _isSecondClass;
 			GenericField[] fields = new GenericField[_fields.Length];
 			for (int i = 0; i < fields.Length; i++)
 			{
@@ -340,11 +336,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 		internal virtual void SetPrimitive()
 		{
 			_isPrimitive = true;
-		}
-
-		internal virtual void SetSecondClass()
-		{
-			_isSecondClass = true;
 		}
 
 		public override string ToString()

@@ -20,11 +20,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			public IDictionary map;
 		}
 
-		public class FirstClassElement
+		public class ReferenceTypeElement
 		{
 			public string name;
 
-			public FirstClassElement(string name_)
+			public ReferenceTypeElement(string name_)
 			{
 				name = name_;
 			}
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			SimpleMapTestCase.Item item = new SimpleMapTestCase.Item();
 			item.map = new Hashtable();
 			item.map["zero"] = "zero";
-			item.map[new SimpleMapTestCase.FirstClassElement("one")] = "one";
+			item.map[new SimpleMapTestCase.ReferenceTypeElement("one")] = "one";
 			Store(item);
 		}
 
@@ -68,11 +68,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public virtual void TestDeletion()
 		{
-			AssertObjectCount(typeof(SimpleMapTestCase.FirstClassElement), 1);
+			AssertObjectCount(typeof(SimpleMapTestCase.ReferenceTypeElement), 1);
 			SimpleMapTestCase.Item item = (SimpleMapTestCase.Item)RetrieveOnlyInstance(typeof(
 				SimpleMapTestCase.Item));
 			Db().Delete(item);
-			AssertObjectCount(typeof(SimpleMapTestCase.FirstClassElement), 0);
+			AssertObjectCount(typeof(SimpleMapTestCase.ReferenceTypeElement), 0);
 		}
 
 		private void AssertObjectCount(Type clazz, int count)

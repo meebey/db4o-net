@@ -69,16 +69,17 @@ namespace Db4objects.Db4o.Internal.Delete
 
 		public virtual void Delete(ITypeHandler4 handler)
 		{
-			ITypeHandler4 fieldHandler = HandlerRegistry.CorrectHandlerVersion(this, handler);
+			ITypeHandler4 correctHandlerVersion = HandlerRegistry.CorrectHandlerVersion(this, 
+				handler);
 			int preservedCascadeDepth = CascadeDeleteDepth();
 			CascadeDeleteDepth(AdjustedDepth());
-			if (Handlers4.HandleAsObject(fieldHandler))
+			if (Handlers4.HandleAsObject(correctHandlerVersion))
 			{
 				DeleteObject();
 			}
 			else
 			{
-				fieldHandler.Delete(this);
+				correctHandlerVersion.Delete(this);
 			}
 			CascadeDeleteDepth(preservedCascadeDepth);
 		}
@@ -94,7 +95,7 @@ namespace Db4objects.Db4o.Internal.Delete
 
 		private int AdjustedDepth()
 		{
-			if (Platform4.IsValueType(_fieldClass))
+			if (Platform4.IsStruct(_fieldClass))
 			{
 				return 1;
 			}

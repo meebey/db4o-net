@@ -19,11 +19,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			public IList list;
 		}
 
-		public class FirstClassElement
+		public class ReferenceTypeElement
 		{
 			public string name;
 
-			public FirstClassElement(string name_)
+			public ReferenceTypeElement(string name_)
 			{
 				name = name_;
 			}
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			SimpleListTestCase.Item item = new SimpleListTestCase.Item();
 			item.list = new ArrayList();
 			item.list.Add("zero");
-			item.list.Add(new SimpleListTestCase.FirstClassElement("one"));
+			item.list.Add(new SimpleListTestCase.ReferenceTypeElement("one"));
 			Store(item);
 		}
 
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			Assert.AreEqual("zero", item.list[0]);
 		}
 
-		public virtual void TestActivation()
+		public virtual void TestCascadingActivation()
 		{
 			SimpleListTestCase.Item item = (SimpleListTestCase.Item)RetrieveOnlyInstance(typeof(
 				SimpleListTestCase.Item));
@@ -82,11 +82,11 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 
 		public virtual void TestDeletion()
 		{
-			AssertObjectCount(typeof(SimpleListTestCase.FirstClassElement), 1);
+			AssertObjectCount(typeof(SimpleListTestCase.ReferenceTypeElement), 1);
 			SimpleListTestCase.Item item = (SimpleListTestCase.Item)RetrieveOnlyInstance(typeof(
 				SimpleListTestCase.Item));
 			Db().Delete(item);
-			AssertObjectCount(typeof(SimpleListTestCase.FirstClassElement), 0);
+			AssertObjectCount(typeof(SimpleListTestCase.ReferenceTypeElement), 0);
 		}
 
 		private void AssertObjectCount(Type clazz, int count)

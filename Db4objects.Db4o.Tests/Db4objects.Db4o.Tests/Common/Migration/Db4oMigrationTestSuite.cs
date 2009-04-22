@@ -32,8 +32,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			if (true)
 			{
 				// run against specific libraries + the current one
-				string netPath = "db4o.archives/net-2.0/7.2/Db4objects.Db4o.dll";
-				string javaPath = "db4o.archives/java1.2/db4o-7.4.58.11547-java1.2.jar";
+				string javaPath = "db4o.archives/java1.2/db4o-5.7-java1.2.jar";
+				string netPath = "db4o.archives/net-2.0/7.4/Db4objects.Db4o.dll";
 				return new string[] { WorkspaceServices.WorkspacePath(javaPath) };
 			}
 			return Db4oMigrationSuiteBuilder.Current;
@@ -44,13 +44,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			Type[] classes = new Type[] { typeof(BooleanHandlerUpdateTestCase), typeof(ByteHandlerUpdateTestCase
 				), typeof(CascadedDeleteFileFormatUpdateTestCase), typeof(CharHandlerUpdateTestCase
 				), typeof(DateHandlerUpdateTestCase), typeof(DoubleHandlerUpdateTestCase), typeof(
-				FloatHandlerUpdateTestCase), typeof(IntHandlerUpdateTestCase), typeof(InterfaceHandlerUpdateTestCase
-				), typeof(LongHandlerUpdateTestCase), typeof(MultiDimensionalArrayHandlerUpdateTestCase
-				), typeof(NestedArrayUpdateTestCase), typeof(ObjectArrayUpdateTestCase), typeof(
-				QueryingMigrationTestCase), typeof(ShortHandlerUpdateTestCase), typeof(StringHandlerUpdateTestCase
-				), typeof(IxFreespaceMigrationTestCase), typeof(FreespaceManagerMigrationTestCase
-				) };
-			// Order to run freespace tests last is
+				EncryptedFileMigrationTestCase), typeof(FloatHandlerUpdateTestCase), typeof(IntHandlerUpdateTestCase
+				), typeof(InterfaceHandlerUpdateTestCase), typeof(LongHandlerUpdateTestCase), typeof(
+				MultiDimensionalArrayHandlerUpdateTestCase), typeof(NestedArrayUpdateTestCase), 
+				typeof(ObjectArrayUpdateTestCase), typeof(PlainObjectUpdateTestCase), typeof(QueryingMigrationTestCase
+				), typeof(ShortHandlerUpdateTestCase), typeof(StringHandlerUpdateTestCase), typeof(
+				IxFreespaceMigrationTestCase), typeof(FreespaceManagerMigrationTestCase) };
+			// Order to run freespace/Encrypted tests last is
 			// deliberate. Global configuration Db4o.configure()
 			// is changed in the #setUp call and reused.
 			return AddJavaTestCases(classes);

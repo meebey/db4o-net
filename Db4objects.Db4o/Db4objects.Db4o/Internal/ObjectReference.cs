@@ -10,6 +10,7 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Typehandlers;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -102,19 +103,23 @@ namespace Db4objects.Db4o.Internal
 		public virtual void Activate(Db4objects.Db4o.Internal.Transaction ta, object obj, 
 			IActivationDepth depth)
 		{
-			ActivateInternal(ta, obj, depth);
-			ta.Container().ActivatePending(ta);
+			ObjectContainerBase container = ta.Container();
+			ActivateInternal(container.ActivationContextFor(ta, obj, depth));
+			container.ActivatePending(ta);
 		}
 
-		internal virtual void ActivateInternal(Db4objects.Db4o.Internal.Transaction ta, object
-			 obj, IActivationDepth depth)
+		internal virtual void ActivateInternal(IActivationContext context)
 		{
-			if (!depth.RequiresActivation())
+			if (null == context)
+			{
+				throw new ArgumentNullException();
+			}
+			if (!context.Depth().RequiresActivation())
 			{
 				return;
 			}
-			ObjectContainerBase container = ta.Container();
-			if (depth.Mode().IsRefresh())
+			ObjectContainerBase container = context.Container();
+			if (context.Depth().Mode().IsRefresh())
 			{
 				LogActivation(container, "refresh");
 			}
@@ -122,21 +127,18 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (IsActive())
 				{
-					if (obj != null)
-					{
-						_class.ActivateFields(ta, obj, depth);
-						return;
-					}
+					_class.CascadeActivation(context);
+					return;
 				}
 				LogActivation(container, "activate");
 			}
-			ReadForActivation(ta, obj, depth);
+			ReadForActivation(context);
 		}
 
-		private void ReadForActivation(Db4objects.Db4o.Internal.Transaction ta, object obj
-			, IActivationDepth depth)
+		private void ReadForActivation(IActivationContext context)
 		{
-			Read(ta, null, obj, depth, Const4.AddMembersToIdTreeOnly, false);
+			Read(context.Transaction(), null, context.TargetObject(), context.Depth(), Const4
+				.AddMembersToIdTreeOnly, false);
 		}
 
 		private void LogActivation(ObjectContainerBase container, string @event)
@@ -171,7 +173,7 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.Continue);
 			MarshallingContext context = new MarshallingContext(trans, this, updateDepth, true
 				);
-			ClassMetadata().Write(context, GetObject());
+			Handlers4.Write(ClassMetadata().TypeHandler(), context, GetObject());
 			Pointer4 pointer = context.AllocateSlot();
 			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);
 			ObjectContainerBase container = trans.Container();
@@ -206,10 +208,6 @@ namespace Db4objects.Db4o.Internal
 			if (obj == null)
 			{
 				return;
-			}
-			if (obj is IDb4oTypeImpl)
-			{
-				((IDb4oTypeImpl)obj).PreDeactivate();
 			}
 			ObjectContainerBase container = trans.Container();
 			LogActivation(container, "deactivate");
@@ -484,7 +482,7 @@ namespace Db4objects.Db4o.Internal
 				(obj), 0);
 			MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
 				, false);
-			_class.Write(context, obj);
+			Handlers4.Write(_class.TypeHandler(), context, obj);
 			Pointer4 pointer = context.AllocateSlot();
 			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);
 			container.WriteUpdate(transaction, pointer, _class, container._handlers.ArrayType
@@ -498,8 +496,8 @@ namespace Db4objects.Db4o.Internal
 			ClassMetadata().DispatchEvent(transaction, obj, EventDispatchers.Update);
 		}
 
-		private bool ObjectCanUpdate(Db4objects.Db4o.Internal.Transaction transaction, object
-			 obj)
+		protected virtual bool ObjectCanUpdate(Db4objects.Db4o.Internal.Transaction transaction
+			, object obj)
 		{
 			ObjectContainerBase container = transaction.Container();
 			return container.Callbacks().ObjectCanUpdate(transaction, obj) && _class.DispatchEvent

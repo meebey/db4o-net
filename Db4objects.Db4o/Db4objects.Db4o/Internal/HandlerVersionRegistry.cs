@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
@@ -19,7 +18,7 @@ namespace Db4objects.Db4o.Internal
 			_registry = registry;
 		}
 
-		public virtual void Put(IFieldHandler handler, int version, ITypeHandler4 replacement
+		public virtual void Put(ITypeHandler4 handler, int version, ITypeHandler4 replacement
 			)
 		{
 			_versions.Put(new HandlerVersionRegistry.HandlerVersionKey(this, handler, version
@@ -63,11 +62,11 @@ namespace Db4objects.Db4o.Internal
 
 		private class HandlerVersionKey
 		{
-			private readonly IFieldHandler _handler;
+			private readonly ITypeHandler4 _handler;
 
 			private readonly int _version;
 
-			public HandlerVersionKey(HandlerVersionRegistry _enclosing, IFieldHandler handler
+			public HandlerVersionKey(HandlerVersionRegistry _enclosing, ITypeHandler4 handler
 				, int version)
 			{
 				this._enclosing = _enclosing;

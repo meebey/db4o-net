@@ -16,14 +16,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void WriteObject(ITypeHandler4 handler, object obj)
 		{
-			handler.Write(this, obj);
+			Handlers4.Write(handler, this, obj);
 		}
 
 		public virtual void WriteAny(object obj)
 		{
 			ClassMetadata classMetadata = Container().ClassMetadataForObject(obj);
 			WriteInt(classMetadata.GetID());
-			classMetadata.Write(this, obj);
+			Handlers4.Write(classMetadata.TypeHandler(), this, obj);
 		}
 
 		public virtual IReservedBuffer Reserve(int length)

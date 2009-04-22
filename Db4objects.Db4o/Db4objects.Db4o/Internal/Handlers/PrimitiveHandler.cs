@@ -13,8 +13,8 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public abstract class PrimitiveHandler : IIndexableTypeHandler, IBuiltinTypeHandler
-		, IEmbeddedTypeHandler, IQueryableTypeHandler
+	public abstract class PrimitiveHandler : IValueTypeHandler, IIndexableTypeHandler
+		, IBuiltinTypeHandler, IQueryableTypeHandler
 	{
 		protected IReflectClass _classReflector;
 
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual object Coerce(IReflector reflector, IReflectClass claxx, object obj
 			)
 		{
-			return Handlers4.HandlerCanHold(this, reflector, claxx) ? obj : No4.Instance;
+			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.Instance;
 		}
 
 		public abstract object DefaultValue();
@@ -52,12 +52,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return true;
 		}
 
+		public virtual bool DescendsIntoMembers()
+		{
+			return false;
+		}
+
 		public virtual bool CanHold(IReflectClass type)
 		{
 			return type.Equals(ClassReflector()) || type.Equals(PrimitiveClassReflector());
 		}
 
-		protected virtual object PrimitiveNull()
+		public virtual object PrimitiveNull()
 		{
 			if (_primitiveNull == null)
 			{

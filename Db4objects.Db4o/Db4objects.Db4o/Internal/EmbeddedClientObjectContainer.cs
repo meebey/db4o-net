@@ -6,6 +6,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
@@ -51,17 +52,19 @@ namespace Db4objects.Db4o.Internal
 			throw new NotSupportedException();
 		}
 
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="System.NotSupportedException"></exception>
+		public virtual void Backup(IStorage storage, string path)
+		{
+			throw new NotSupportedException();
+		}
+
 		/// <exception cref="Db4objects.Db4o.Ext.InvalidIDException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public virtual void Bind(object obj, long id)
 		{
 			_server.Bind(_transaction, obj, id);
-		}
-
-		[System.ObsoleteAttribute]
-		public virtual IDb4oCollections Collections()
-		{
-			return _server.Collections(_transaction);
 		}
 
 		public virtual Config4Impl ConfigImpl()
@@ -569,9 +572,9 @@ namespace Db4objects.Db4o.Internal
 			return _server.ClassMetadataForName(name);
 		}
 
-		public virtual ClassMetadata ClassMetadataForId(int id)
+		public virtual ClassMetadata ClassMetadataForID(int id)
 		{
-			return _server.ClassMetadataForId(id);
+			return _server.ClassMetadataForID(id);
 		}
 
 		public virtual HandlerRegistry Handlers()

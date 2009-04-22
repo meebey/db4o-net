@@ -16,9 +16,10 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(BlockAwareBinTestSuite), typeof(BlockSizeDependentBinTestCase
-				), typeof(IoAdapterTestSuite), typeof(MemoryBinGrowthTestCase), typeof(MemoryBinIsReusableTestCase
-				), typeof(MemoryIoAdapterTestCase), typeof(RandomAccessFileStorageFactoryTestCase
-				), typeof(StorageTestSuite), typeof(NonFlushingStorageTestCase) };
+				), typeof(IoAdapterTestSuite), typeof(RandomAccessFileFactoryTestCase), typeof(MemoryBinGrowthTestCase
+				), typeof(MemoryBinIsReusableTestCase), typeof(MemoryIoAdapterTestCase), typeof(
+				NonFlushingStorageTestCase), typeof(RandomAccessFileStorageFactoryTestCase), typeof(
+				StorageTestSuite) };
 		}
 	}
 }

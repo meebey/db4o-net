@@ -49,12 +49,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		protected override FieldMetadata FromSpec(RawFieldSpec spec, ObjectContainerBase 
-			stream, FieldMetadata field)
+			stream, ClassMetadata containingClass)
 		{
-			FieldMetadata actualField = base.FromSpec(spec, stream, field);
+			FieldMetadata actualField = base.FromSpec(spec, stream, containingClass);
 			if (spec == null)
 			{
-				return field;
+				return null;
 			}
 			if (spec.IndexID() != 0)
 			{

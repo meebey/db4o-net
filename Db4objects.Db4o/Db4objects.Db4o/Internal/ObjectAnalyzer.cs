@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (IsPlainObjectOrSecondClass(_classMetadata))
+			if (IsValueType(_classMetadata))
 			{
 				NotStorable(_obj, _classMetadata.ClassReflector());
 			}
@@ -84,11 +84,9 @@ namespace Db4objects.Db4o.Internal
 			return _notStorable;
 		}
 
-		private bool IsPlainObjectOrSecondClass(Db4objects.Db4o.Internal.ClassMetadata classMetadata
-			)
+		private bool IsValueType(Db4objects.Db4o.Internal.ClassMetadata classMetadata)
 		{
-			return classMetadata.GetID() == Handlers4.UntypedId || classMetadata.IsSecondClass
-				();
+			return classMetadata.IsValueType();
 		}
 
 		internal virtual Db4objects.Db4o.Internal.ObjectReference ObjectReference()

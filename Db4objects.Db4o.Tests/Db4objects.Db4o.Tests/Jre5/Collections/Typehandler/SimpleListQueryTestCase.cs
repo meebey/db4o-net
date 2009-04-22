@@ -18,22 +18,22 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			public IList list;
 		}
 
-		public class FirstClassElement
+		public class ReferenceTypeElement
 		{
 			public string name;
 
-			public FirstClassElement(string name_)
+			public ReferenceTypeElement(string name_)
 			{
 				name = name_;
 			}
 
 			public override bool Equals(object obj)
 			{
-				if (!(obj is SimpleListQueryTestCase.FirstClassElement))
+				if (!(obj is SimpleListQueryTestCase.ReferenceTypeElement))
 				{
 					return false;
 				}
-				SimpleListQueryTestCase.FirstClassElement other = (SimpleListQueryTestCase.FirstClassElement
+				SimpleListQueryTestCase.ReferenceTypeElement other = (SimpleListQueryTestCase.ReferenceTypeElement
 					)obj;
 				if (name == null)
 				{
@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		}
 
 		internal static readonly object[] Data = new object[] { "one", "two", 1, 2, 42, new 
-			SimpleListQueryTestCase.FirstClassElement("one"), new SimpleListQueryTestCase.FirstClassElement
+			SimpleListQueryTestCase.ReferenceTypeElement("one"), new SimpleListQueryTestCase.ReferenceTypeElement
 			("fortytwo") };
 
 		/// <exception cref="System.Exception"></exception>

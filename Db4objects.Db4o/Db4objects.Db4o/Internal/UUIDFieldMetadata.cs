@@ -79,8 +79,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.RereadOldUuid.LogLength(oldSlot.Address(), oldSlot.Length());
 			}
-			ByteArrayBuffer reader = container.BufferByAddress(oldSlot.Address(), oldSlot.Length
-				());
+			ByteArrayBuffer reader = container.DecryptedBufferByAddress(oldSlot.Address(), oldSlot
+				.Length());
 			if (checkClass)
 			{
 				ClassMetadata realClass = ClassMetadata.ReadClass(container, reader);

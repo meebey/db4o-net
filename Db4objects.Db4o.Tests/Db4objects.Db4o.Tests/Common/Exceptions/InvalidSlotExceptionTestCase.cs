@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
@@ -32,13 +33,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
-			Assert.Expect(typeof(InvalidIDException), typeof(InvalidSlotException), new _ICodeBlock_29
+			Assert.Expect(typeof(InvalidIDException), typeof(InvalidSlotException), new _ICodeBlock_30
 				(this));
 		}
 
-		private sealed class _ICodeBlock_29 : ICodeBlock
+		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _ICodeBlock_29(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_30(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -54,15 +55,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestDbNotClosedOnOutOfMemory()
 		{
-			Type expectedException = IsClientServer() && !IsEmbeddedClientServer() ? typeof(InvalidIDException
+			Type expectedException = IsNetworkingClientServer() || IsInMemory() ? typeof(InvalidIDException
 				) : typeof(OutOfMemoryException);
-			Assert.Expect(expectedException, new _ICodeBlock_39(this));
+			Assert.Expect(expectedException, new _ICodeBlock_42(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_39 : ICodeBlock
+		private sealed class _ICodeBlock_42 : ICodeBlock
 		{
-			public _ICodeBlock_39(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_42(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -74,6 +75,16 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 
 			private readonly InvalidSlotExceptionTestCase _enclosing;
+		}
+
+		private bool IsInMemory()
+		{
+			return Fixture() is Db4oInMemory;
+		}
+
+		private bool IsNetworkingClientServer()
+		{
+			return IsClientServer() && !IsEmbeddedClientServer();
 		}
 
 		public class A

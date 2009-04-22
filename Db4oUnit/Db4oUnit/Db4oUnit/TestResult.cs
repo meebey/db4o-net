@@ -41,7 +41,7 @@ namespace Db4oUnit
 		{
 			get
 			{
-				return _failures.Size == 0;
+				return _failures.Count == 0;
 			}
 		}
 
@@ -62,7 +62,7 @@ namespace Db4oUnit
 					.NewLine);
 				return;
 			}
-			writer.Write("RED (" + _failures.Size + " out of " + _testCount + " tests failed) - "
+			writer.Write("RED (" + _failures.Count + " out of " + _testCount + " tests failed) - "
 				 + ElapsedString() + TestPlatform.NewLine);
 			_failures.Print(writer);
 		}

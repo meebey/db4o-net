@@ -35,5 +35,17 @@ namespace Db4objects.Db4o.IO
 		{
 			return bin;
 		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public virtual void Delete(string uri)
+		{
+			_storage.Delete(uri);
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public virtual void Rename(string oldUri, string newUri)
+		{
+			_storage.Rename(oldUri, newUri);
+		}
 	}
 }

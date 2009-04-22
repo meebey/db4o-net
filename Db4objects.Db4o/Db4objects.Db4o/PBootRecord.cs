@@ -33,18 +33,9 @@ namespace Db4objects.Db4o
 
 		public virtual void Write(LocalObjectContainer file)
 		{
-			SystemData systemData = file.SystemData();
-			i_versionGenerator = systemData.LastTimeStampID();
-			i_db = systemData.Identity();
-			file.ShowInternalClasses(true);
-			try
-			{
-				Store(2);
-			}
-			finally
-			{
-				file.ShowInternalClasses(false);
-			}
 		}
+		// write is still called when storing objects to old
+		// database files (CLI1.ObjectInfoMigration52TestCase
+		// and CLI1.ObjectInfoMigration57)
 	}
 }

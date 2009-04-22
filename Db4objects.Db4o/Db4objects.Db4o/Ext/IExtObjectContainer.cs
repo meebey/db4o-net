@@ -3,10 +3,10 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Replication;
-using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Ext
 {
@@ -74,6 +74,9 @@ namespace Db4objects.Db4o.Ext
 		/// the open ObjectContainer and to the backup.<br /><br />
 		/// While the backup is running, the ObjectContainer should not be closed.<br /><br />
 		/// If a file already exists at the specified path, it will be overwritten.<br /><br />
+		/// The
+		/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+		/// used for backup is the one configured for this container.
 		/// </remarks>
 		/// <param name="path">a fully qualified path</param>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException">db4o database file was closed or failed to open.
@@ -85,6 +88,33 @@ namespace Db4objects.Db4o.Ext
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
 		/// 	</exception>
 		void Backup(string path);
+
+		/// <summary>backs up a database file of an open ObjectContainer.</summary>
+		/// <remarks>
+		/// backs up a database file of an open ObjectContainer.
+		/// <br /><br />While the backup is running, the ObjectContainer can continue to be
+		/// used. Changes that are made while the backup is in progress, will be applied to
+		/// the open ObjectContainer and to the backup.<br /><br />
+		/// While the backup is running, the ObjectContainer should not be closed.<br /><br />
+		/// If a file already exists at the specified path, it will be overwritten.<br /><br />
+		/// This method is intended for cross-storage backups, i.e. backup from an in-memory
+		/// database to a file.
+		/// </remarks>
+		/// <param name="storage">
+		/// the
+		/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+		/// to be used for backup
+		/// </param>
+		/// <param name="path">a fully qualified path</param>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException">db4o database file was closed or failed to open.
+		/// 	</exception>
+		/// <exception cref="System.NotSupportedException">
+		/// is thrown when the operation is not supported in current
+		/// configuration/environment
+		/// </exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		void Backup(IStorage targetStorage, string path);
 
 		/// <summary>binds an object to an internal object ID.</summary>
 		/// <remarks>
@@ -114,27 +144,6 @@ namespace Db4objects.Db4o.Ext
 		/// database IDs.
 		/// </exception>
 		void Bind(object obj, long id);
-
-		/// <summary>
-		/// returns the
-		/// <see cref="Db4objects.Db4o.Types.IDb4oCollections">Db4objects.Db4o.Types.IDb4oCollections
-		/// 	</see>
-		/// interface to create or modify database-aware
-		/// collections for this
-		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
-		/// .<br /><br />
-		/// </summary>
-		/// <returns>
-		/// the
-		/// <see cref="Db4objects.Db4o.Types.IDb4oCollections">Db4objects.Db4o.Types.IDb4oCollections
-		/// 	</see>
-		/// interface for this
-		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
-		/// .
-		/// </returns>
-		[System.ObsoleteAttribute(@"since 7.0. Use of old internal collections is discouraged. Please use  com.db4o.collections.ArrayList4 and com.db4o.collections.ArrayMap4 instead."
-			)]
-		IDb4oCollections Collections();
 
 		/// <summary>returns the Configuration context for this ObjectContainer.</summary>
 		/// <remarks>

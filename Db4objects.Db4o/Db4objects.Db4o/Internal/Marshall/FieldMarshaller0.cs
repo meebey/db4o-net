@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				{
 					len += 1;
 				}
-				if (field.NeedsHandlerId())
+				if (!(field is VirtualFieldMetadata))
 				{
 					len += Const4.IdLength;
 				}
@@ -47,40 +47,40 @@ namespace Db4objects.Db4o.Internal.Marshall
 					return new RawFieldSpec(aspectType, name);
 				}
 			}
-			int handlerID = reader.ReadInt();
+			int fieldTypeID = reader.ReadInt();
 			byte attribs = reader.ReadByte();
-			return new RawFieldSpec(aspectType, name, handlerID, attribs);
+			return new RawFieldSpec(aspectType, name, fieldTypeID, attribs);
 		}
 
-		public sealed override FieldMetadata Read(ObjectContainerBase stream, FieldMetadata
-			 field, ByteArrayBuffer reader)
+		public sealed override FieldMetadata Read(ObjectContainerBase stream, ClassMetadata
+			 containingClass, ByteArrayBuffer reader)
 		{
 			RawFieldSpec spec = ReadSpec(stream, reader);
-			return FromSpec(spec, stream, field);
+			return FromSpec(spec, stream, containingClass);
 		}
 
 		protected virtual FieldMetadata FromSpec(RawFieldSpec spec, ObjectContainerBase stream
-			, FieldMetadata field)
+			, ClassMetadata containingClass)
 		{
 			if (spec == null)
 			{
-				return field;
+				return null;
 			}
 			string name = spec.Name();
-			if (!spec.IsFieldMetadata())
-			{
-				field.Init(field.ContainingClass(), name);
-				return field;
-			}
 			if (spec.IsVirtualField())
 			{
 				return stream._handlers.VirtualFieldByName(name);
 			}
-			field.Init(field.ContainingClass(), name);
-			field.Init(spec.HandlerID(), spec.IsPrimitive(), spec.IsArray(), spec.IsNArray());
-			field.LoadHandlerById(stream);
-			field.Alive();
-			return field;
+			if (spec.IsTranslator())
+			{
+				return new TranslatedAspect(containingClass, name);
+			}
+			if (spec.IsField())
+			{
+				return new FieldMetadata(containingClass, name, spec.FieldTypeID(), spec.IsPrimitive
+					(), spec.IsArray(), spec.IsNArray());
+			}
+			return new FieldMetadata(containingClass, name);
 		}
 
 		public override void Write(Transaction trans, ClassMetadata clazz, ClassAspect aspect
@@ -98,15 +98,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return;
 			}
 			ITypeHandler4 handler = field.GetHandler();
-			if (handler is ClassMetadata)
+			if (handler is StandardReferenceTypeHandler)
 			{
 				// TODO: ensure there is a test case, to make this happen 
-				if (((ClassMetadata)handler).GetID() == 0)
+				if (((StandardReferenceTypeHandler)handler).ClassMetadata().GetID() == 0)
 				{
 					trans.Container().NeedsUpdate(clazz);
 				}
 			}
-			writer.WriteInt(field.HandlerID());
+			writer.WriteInt(field.FieldTypeID());
 			BitMap4 bitmap = new BitMap4(3);
 			bitmap.Set(0, field.IsPrimitive());
 			bitmap.Set(1, Handlers4.HandlesArray(handler));

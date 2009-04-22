@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -40,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public virtual bool SeekToField(ObjectHeaderContext context, FieldMetadata field)
+		public virtual bool SeekToField(ObjectHeaderContext context, ClassAspect aspect)
 		{
 			return false;
 		}
@@ -54,9 +53,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public virtual object Read(IReadContext context)
+		public virtual void Activate(IReferenceActivationContext context)
 		{
-			return null;
 		}
 
 		public virtual void Write(IWriteContext context, object obj)
@@ -79,7 +77,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return null;
 		}
 
-		public virtual void CascadeActivation(ActivationContext4 context)
+		public virtual void CascadeActivation(IActivationContext context)
 		{
 		}
 

@@ -3,7 +3,6 @@
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.Query;
@@ -58,12 +57,12 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.Diagnostic().AddListener(new _IDiagnosticListener_52(this));
+			config.Diagnostic().AddListener(new _IDiagnosticListener_51(this));
 		}
 
-		private sealed class _IDiagnosticListener_52 : IDiagnosticListener
+		private sealed class _IDiagnosticListener_51 : IDiagnosticListener
 		{
-			public _IDiagnosticListener_52(IndexFieldDiagnosticTestCase _enclosing)
+			public _IDiagnosticListener_51(IndexFieldDiagnosticTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -79,12 +78,18 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 			private readonly IndexFieldDiagnosticTestCase _enclosing;
 		}
 
-		public virtual void Test()
+		public virtual void TestNonIndexedFieldQuery()
 		{
 			IQuery query = NewQuery(typeof(IndexFieldDiagnosticTestCase.Car));
 			query.Descend("model").Constrain("BMW");
-			IObjectSet results = query.Execute();
+			query.Execute();
 			Assert.IsTrue(_diagnosticsCalled);
+		}
+
+		public virtual void TestClassQuery()
+		{
+			Db().Query(typeof(IndexFieldDiagnosticTestCase.Car));
+			Assert.IsFalse(_diagnosticsCalled);
 		}
 	}
 }

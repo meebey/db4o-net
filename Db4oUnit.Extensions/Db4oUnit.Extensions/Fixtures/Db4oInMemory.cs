@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
@@ -21,6 +22,19 @@ namespace Db4oUnit.Extensions.Fixtures
 		public Db4oInMemory(IFixtureConfiguration fc) : this()
 		{
 			FixtureConfiguration(fc);
+		}
+
+		public override bool Accept(Type clazz)
+		{
+			if (!base.Accept(clazz))
+			{
+				return false;
+			}
+			if (typeof(IOptOutInMemory).IsAssignableFrom(clazz))
+			{
+				return false;
+			}
+			return true;
 		}
 
 		private MemoryFile _memoryFile;

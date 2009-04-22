@@ -39,9 +39,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected override void Configure(IConfiguration config)
 		{
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(IgnoreFieldsTypeHandlerTestCase.Item2
-				)), new IgnoreFieldsTypeHandler());
+				)), IgnoreFieldsTypeHandler.Instance);
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(IgnoreFieldsTypeHandlerTestCase.Item4
-				)), new IgnoreFieldsTypeHandler());
+				)), IgnoreFieldsTypeHandler.Instance);
 		}
 
 		/// <exception cref="System.Exception"></exception>

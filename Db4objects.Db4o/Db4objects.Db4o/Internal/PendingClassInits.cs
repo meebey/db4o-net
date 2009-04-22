@@ -55,30 +55,25 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void CheckMembers()
+		private void InitializeAspects()
 		{
 			while (_members.HasNext())
 			{
-				ClassMetadata classMetadata = (ClassMetadata)_members.Next();
-				classMetadata.AddMembers(Stream());
+				ClassMetadata classMetadata = ((ClassMetadata)_members.Next());
+				classMetadata.InitializeAspects();
 				_statics.Add(classMetadata);
 			}
 		}
 
-		private ObjectContainerBase Stream()
-		{
-			return _systemTransaction.Container();
-		}
-
 		private void CheckStatics()
 		{
-			CheckMembers();
+			InitializeAspects();
 			while (_statics.HasNext())
 			{
-				ClassMetadata yc = (ClassMetadata)_statics.Next();
-				yc.StoreStaticFieldValues(_systemTransaction, true);
-				_writes.Add(yc);
-				CheckMembers();
+				ClassMetadata classMetadata = ((ClassMetadata)_statics.Next());
+				classMetadata.StoreStaticFieldValues(_systemTransaction, true);
+				_writes.Add(classMetadata);
+				InitializeAspects();
 			}
 		}
 
@@ -87,10 +82,10 @@ namespace Db4objects.Db4o.Internal
 			CheckStatics();
 			while (_writes.HasNext())
 			{
-				ClassMetadata yc = (ClassMetadata)_writes.Next();
-				yc.SetStateDirty();
-				yc.Write(_systemTransaction);
-				_inits.Add(yc);
+				ClassMetadata classMetadata = ((ClassMetadata)_writes.Next());
+				classMetadata.SetStateDirty();
+				classMetadata.Write(_systemTransaction);
+				_inits.Add(classMetadata);
 				CheckStatics();
 			}
 		}
@@ -100,8 +95,8 @@ namespace Db4objects.Db4o.Internal
 			CheckWrites();
 			while (_inits.HasNext())
 			{
-				ClassMetadata yc = (ClassMetadata)_inits.Next();
-				yc.InitConfigOnUp(_systemTransaction);
+				ClassMetadata classMetadata = ((ClassMetadata)_inits.Next());
+				classMetadata.InitConfigOnUp(_systemTransaction);
 				CheckWrites();
 			}
 		}

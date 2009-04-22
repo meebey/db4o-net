@@ -43,8 +43,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				Assert.IsNotNull(_name);
 				Assert.AreEqual(_name, _subItem._name);
 				Assert.AreEqual(_updates, _subItem._updates);
-				Sharpen.Runtime.Out.WriteLine(_updates);
 			}
+			// System.out.println(_updates);
 		}
 
 		public class SubItem

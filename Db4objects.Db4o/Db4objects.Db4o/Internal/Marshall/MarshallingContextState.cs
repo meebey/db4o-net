@@ -7,14 +7,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public class MarshallingContextState
 	{
-		public readonly MarshallingBuffer _buffer;
+		internal readonly MarshallingBuffer _buffer;
 
-		public readonly int _fieldWriteCount;
-
-		public MarshallingContextState(MarshallingBuffer buffer, int fieldWriteCount)
+		public MarshallingContextState(MarshallingBuffer buffer)
 		{
 			_buffer = buffer;
-			_fieldWriteCount = fieldWriteCount;
 		}
 	}
 }

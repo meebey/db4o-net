@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -10,6 +9,7 @@ using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -24,9 +24,17 @@ namespace Db4objects.Db4o.Internal
 
 		private IReflectClass _classReflector;
 
-		internal VirtualFieldMetadata(int handlerID, IBuiltinTypeHandler handler) : base(
-			handlerID, handler)
+		private IBuiltinTypeHandler _handler;
+
+		internal VirtualFieldMetadata(int fieldTypeID, IBuiltinTypeHandler handler) : base
+			(fieldTypeID)
 		{
+			_handler = handler;
+		}
+
+		public override ITypeHandler4 GetHandler()
+		{
+			return _handler;
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
@@ -70,8 +78,7 @@ namespace Db4objects.Db4o.Internal
 		// QBE constraint collection call
 		// There isn't anything useful to do here, since virtual fields
 		// are not on the actual object.
-		public override void Deactivate(Transaction a_trans, object a_onObject, IActivationDepth
-			 a_depth)
+		public override void Deactivate(IActivationContext context)
 		{
 		}
 
@@ -91,12 +98,7 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override bool NeedsHandlerId()
-		{
-			return false;
-		}
-
-		public override void Instantiate(UnmarshallingContext context)
+		public override void Activate(UnmarshallingContext context)
 		{
 			context.ObjectReference().ProduceVirtualAttributes();
 			Instantiate1(context);
@@ -104,14 +106,13 @@ namespace Db4objects.Db4o.Internal
 
 		internal abstract void Instantiate1(ObjectReferenceContext context);
 
-		public override void LoadHandlerById(ObjectContainerBase container)
+		public override void LoadFieldTypeById()
 		{
 		}
 
 		// do nothing
 		public override void Marshall(MarshallingContext context, object obj)
 		{
-			context.DoNotIndirectWrites();
 			Marshall(context.Transaction(), context.Reference(), context, context.IsNew());
 		}
 
@@ -176,7 +177,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			return (IIndexable4)_handler;
+			return (IIndexable4)GetHandler();
 		}
 	}
 }

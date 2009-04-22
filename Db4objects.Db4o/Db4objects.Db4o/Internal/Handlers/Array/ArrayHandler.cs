@@ -2,9 +2,9 @@
 
 using System.Collections;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
@@ -19,8 +19,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 	/// <summary>This is the latest version, the one that should be used.</summary>
 	/// <remarks>This is the latest version, the one that should be used.</remarks>
 	/// <exclude></exclude>
-	public class ArrayHandler : IFirstClassHandler, IComparable4, ITypeHandler4, IVariableLengthTypeHandler
-		, IEmbeddedTypeHandler, IVersionedTypeHandler
+	public class ArrayHandler : ICascadingTypeHandler, IComparable4, IValueTypeHandler
+		, IVariableLengthTypeHandler, IVersionedTypeHandler, IQueryableTypeHandler
 	{
 		private ITypeHandler4 _handler;
 
@@ -45,12 +45,6 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return new ArrayVersionHelper();
 		}
 
-		protected ArrayHandler(Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler template
-			, HandlerRegistry registry, int version) : this(registry.CorrectHandlerVersion(template
-			._handler, version), template._usePrimitiveClassReflector)
-		{
-		}
-
 		protected virtual IReflectArray ArrayReflector(ObjectContainerBase container)
 		{
 			return container.Reflector().Array();
@@ -67,9 +61,9 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return new ReflectArrayIterator(reflectArray, array);
 		}
 
-		public void CascadeActivation(ActivationContext4 context)
+		public void CascadeActivation(IActivationContext context)
 		{
-			if (!Handlers4.IsClassMetadata(_handler))
+			if (!Handlers4.IsCascading(_handler))
 			{
 				return;
 			}
@@ -86,20 +80,15 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return trans.Container();
 		}
 
-		protected virtual IReflectClass ClassReflector(ObjectContainerBase container)
-		{
-			return Handlers4.ClassReflectorForHandler(container.Handlers(), _handler);
-		}
-
 		public virtual void CollectIDs(QueryingReadContext context)
 		{
 			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, _handler);
-			ForEachElement(context, new _IRunnable_80(context, handler));
+			ForEachElement(context, new _IRunnable_71(context, handler));
 		}
 
-		private sealed class _IRunnable_80 : IRunnable
+		private sealed class _IRunnable_71 : IRunnable
 		{
-			public _IRunnable_80(QueryingReadContext context, ITypeHandler4 handler)
+			public _IRunnable_71(QueryingReadContext context, ITypeHandler4 handler)
 			{
 				this.context = context;
 				this.handler = handler;
@@ -119,13 +108,13 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			 elementRunnable)
 		{
 			ArrayInfo info = NewArrayInfo();
-			WithContent(context, new _IRunnable_90(this, context, info, elementRunnable));
+			WithContent(context, new _IRunnable_80(this, context, info, elementRunnable));
 			return info;
 		}
 
-		private sealed class _IRunnable_90 : IRunnable
+		private sealed class _IRunnable_80 : IRunnable
 		{
-			public _IRunnable_90(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
+			public _IRunnable_80(ArrayHandler _enclosing, AbstractBufferContext context, ArrayInfo
 				 info, IRunnable elementRunnable)
 			{
 				this._enclosing = _enclosing;
@@ -198,12 +187,12 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			{
 				return;
 			}
-			ForEachElement((AbstractBufferContext)context, new _IRunnable_137(this, context));
+			ForEachElement((AbstractBufferContext)context, new _IRunnable_127(this, context));
 		}
 
-		private sealed class _IRunnable_137 : IRunnable
+		private sealed class _IRunnable_127 : IRunnable
 		{
-			public _IRunnable_137(ArrayHandler _enclosing, IDeleteContext context)
+			public _IRunnable_127(ArrayHandler _enclosing, IDeleteContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -221,7 +210,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		private bool CascadeDelete(IDeleteContext context)
 		{
-			return context.CascadeDelete() && Handlers4.IsClassMetadata(_handler);
+			// FIXME: ValueType could reference objects, shouldn't they be deleted too?
+			return context.CascadeDelete() && Handlers4.IsCascading(_handler);
 		}
 
 		// FIXME: This code has not been called in any test case when the 
@@ -229,19 +219,15 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 		//        Apparently it only frees slots.
 		//        For now the code simply returns without freeing.
 		/// <param name="classPrimitive"></param>
-		public void DeletePrimitiveEmbedded(StatefulBuffer buffer, PrimitiveFieldHandler 
+		public void DeletePrimitiveEmbedded(StatefulBuffer buffer, PrimitiveTypeMetadata 
 			classPrimitive)
 		{
 			buffer.ReadInt();
 			//int address = a_bytes.readInt();
 			buffer.ReadInt();
-			//int length = a_bytes.readInt();
-			if (true)
-			{
-				return;
-			}
 		}
 
+		//int length = a_bytes.readInt();
 		public override bool Equals(object obj)
 		{
 			if (!(obj is Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler))
@@ -324,28 +310,21 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			info)
 		{
 			int classID = buffer.ReadInt();
-			if (!IsPreVersion0Format(classID))
+			if (IsPreVersion0Format(classID))
+			{
+				throw new UnsupportedOldFormatException();
+			}
+			else
 			{
 				_versionHelper.ReadTypeInfo(trans, buffer, info, classID);
 				ReflectClassFromElementsEntry(Container(trans), info, classID);
 				ReadDimensions(info, buffer);
-			}
-			else
-			{
-				info.ReflectClass(ClassReflector(Container(trans)));
-				DetectDimensionsPreVersion0Format(buffer, info, classID);
 			}
 			if (Debug4.ExceedsMaximumArrayEntries(info.ElementCount(), _usePrimitiveClassReflector
 				))
 			{
 				info.ElementCount(0);
 			}
-		}
-
-		protected virtual void DetectDimensionsPreVersion0Format(IReadBuffer buffer, ArrayInfo
-			 info, int classID)
-		{
-			info.ElementCount(classID);
 		}
 
 		protected virtual void ReadDimensions(ArrayInfo info, IReadBuffer buffer)
@@ -681,6 +660,22 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 		public virtual bool CanHold(IReflectClass type)
 		{
 			return _handler.CanHold(type);
+		}
+
+		public override string ToString()
+		{
+			return "ArrayHandler(isPrimitive=" + _usePrimitiveClassReflector + ", handler=" +
+				 _handler + ")";
+		}
+
+		public virtual bool DescendsIntoMembers()
+		{
+			return true;
+		}
+
+		public virtual bool IsSimple()
+		{
+			return false;
 		}
 	}
 }

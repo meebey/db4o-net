@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.Tests.Common.Interfaces
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(InterfaceTestCase) };
+			return new Type[] { typeof(InterfaceArrayTestCase), typeof(QueryByInterfaceTestCase
+				) };
 		}
 	}
 }

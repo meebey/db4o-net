@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		RawFieldSpec ReadSpec(ObjectContainerBase stream, ByteArrayBuffer reader);
 
-		FieldMetadata Read(ObjectContainerBase stream, FieldMetadata field, ByteArrayBuffer
+		FieldMetadata Read(ObjectContainerBase stream, ClassMetadata clazz, ByteArrayBuffer
 			 reader);
 
 		int MarshalledLength(ObjectContainerBase stream, ClassAspect aspect);

@@ -4,7 +4,9 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -35,6 +37,8 @@ namespace Db4objects.Db4o.Defragment
 		private bool _readOnly = true;
 
 		private int _objectCommitFrequency;
+
+		private IStorage _backupStorage;
 
 		/// <summary>Creates a configuration for a defragmentation run.</summary>
 		/// <remarks>
@@ -194,9 +198,22 @@ namespace Db4objects.Db4o.Defragment
 		/// to be applied
 		/// during the defragment process.
 		/// </param>
+		[System.ObsoleteAttribute(@"since 7.9: use")]
 		public virtual void Db4oConfig(IConfiguration config)
 		{
 			_config = config;
+		}
+
+		/// <param name="config">
+		/// The db4o
+		/// <see cref="Db4objects.Db4o.Config.IEmbeddedConfiguration">IEmbeddedConfiguration</see>
+		/// to be applied
+		/// during the defragment process.
+		/// </param>
+		/// <since>7.9</since>
+		public virtual void Db4oConfig(IEmbeddedConfiguration config)
+		{
+			_config = ((EmbeddedConfigurationImpl)config).Legacy();
 		}
 
 		public virtual int ObjectCommitFrequency()
@@ -266,6 +283,20 @@ namespace Db4objects.Db4o.Defragment
 		public virtual IConfiguration ClonedDb4oConfig()
 		{
 			return (IConfiguration)((Config4Impl)Db4oConfig()).DeepClone(null);
+		}
+
+		public virtual void BackupStorage(IStorage backupStorage)
+		{
+			_backupStorage = backupStorage;
+		}
+
+		public virtual IStorage BackupStorage()
+		{
+			if (_backupStorage != null)
+			{
+				return _backupStorage;
+			}
+			return _config.Storage;
 		}
 	}
 }

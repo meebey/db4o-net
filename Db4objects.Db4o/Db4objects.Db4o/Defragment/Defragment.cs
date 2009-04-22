@@ -6,7 +6,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
@@ -144,18 +144,20 @@ namespace Db4objects.Db4o.Defragment
 		/// 	</exception>
 		public static void Defrag(DefragmentConfig config, IDefragmentListener listener)
 		{
-			EnsureFileExists(config.OrigPath());
-			Sharpen.IO.File backupFile = new Sharpen.IO.File(config.BackupPath());
-			if (backupFile.Exists())
+			IStorage storage = config.Db4oConfig().Storage;
+			EnsureFileExists(storage, config.OrigPath());
+			IStorage backupStorage = config.BackupStorage();
+			if (backupStorage.Exists(config.BackupPath()))
 			{
 				if (!config.ForceBackupDelete())
 				{
 					throw new IOException("Could not use '" + config.BackupPath() + "' as backup path - file exists."
 						);
 				}
-				backupFile.Delete();
 			}
-			System.IO.File.Move(config.OrigPath(), config.BackupPath());
+			// Always delete, because !exists can indicate length == 0
+			backupStorage.Delete(config.BackupPath());
+			MoveToBackup(config);
 			if (config.FileNeedsUpgrade())
 			{
 				UpgradeFile(config);
@@ -196,22 +198,68 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		private static void EnsureFileExists(string origPath)
+		private static void MoveToBackup(DefragmentConfig config)
 		{
-			Sharpen.IO.File file = new Sharpen.IO.File(origPath);
-			if (!file.Exists() || file.Length() == 0)
+			IStorage origStorage = config.Db4oConfig().Storage;
+			if (origStorage == config.BackupStorage())
 			{
-				throw new IOException("Source database file '" + origPath + "' does not exist or is empty."
-					);
+				origStorage.Rename(config.OrigPath(), config.BackupPath());
+				return;
+			}
+			CopyBin(origStorage, config.BackupStorage(), config.OrigPath(), config.BackupPath
+				());
+			origStorage.Delete(config.OrigPath());
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		private static void CopyBin(IStorage sourceStorage, IStorage targetStorage, string
+			 sourcePath, string targetPath)
+		{
+			IBin origBin = sourceStorage.Open(new BinConfiguration(sourcePath, true, 0, true)
+				);
+			try
+			{
+				IBin backupBin = targetStorage.Open(new BinConfiguration(targetPath, true, origBin
+					.Length(), false));
+				try
+				{
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+					int pos = 0;
+					while ((bytesRead = origBin.Read(pos, buffer, buffer.Length)) >= 0)
+					{
+						backupBin.Write(pos, buffer, bytesRead);
+						pos += bytesRead;
+					}
+				}
+				finally
+				{
+					backupBin.Close();
+				}
+			}
+			finally
+			{
+				origBin.Close();
+			}
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		private static void EnsureFileExists(IStorage storage, string origPath)
+		{
+			if (!storage.Exists(origPath))
+			{
+				throw new IOException("Source database file '" + origPath + "' does not exist.");
 			}
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
 		private static void UpgradeFile(DefragmentConfig config)
 		{
-			File4.Copy(config.BackupPath(), config.TempPath());
+			CopyBin(config.BackupStorage(), config.BackupStorage(), config.BackupPath(), config
+				.TempPath());
 			IConfiguration db4oConfig = (IConfiguration)((Config4Impl)config.Db4oConfig()).DeepClone
 				(null);
+			db4oConfig.Storage = config.BackupStorage();
 			db4oConfig.AllowVersionUpdates(true);
 			IObjectContainer db = Db4oFactory.OpenFile(db4oConfig, config.TempPath());
 			db.Close();
@@ -223,14 +271,14 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.HasMoreIds())
 			{
 				int origID = unindexedIDs.NextId();
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_176(), 
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_211(), 
 					true);
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_176 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_211 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_176()
+			public _ISlotCopyHandler_211()
 			{
 			}
 
@@ -346,12 +394,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForYapClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_269(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_304(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_269 : IVisitor4
+		private sealed class _IVisitor4_304 : IVisitor4
 		{
-			public _IVisitor4_269(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_304(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

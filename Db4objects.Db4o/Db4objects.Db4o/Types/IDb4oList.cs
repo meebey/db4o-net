@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Types
 	/// MyClass myObject = new MyClass();<br />
 	/// myObject.myList = objectContainer.ext().collections().newLinkedList();
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Collections">Db4objects.Db4o.Ext.IExtObjectContainer.Collections
+	/// <seealso cref="com.db4o.ext.ExtObjectContainer#collections">com.db4o.ext.ExtObjectContainer#collections
 	/// 	</seealso>
 	[System.ObsoleteAttribute(@"since 7.0")]
 	public interface IDb4oList : IDb4oCollection, IList

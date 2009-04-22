@@ -321,14 +321,9 @@ namespace Db4objects.Db4o.Internal
 			return config;
 		}
 
-		[System.ObsoleteAttribute(@"using deprecated api")]
 		private bool IsIgnoredClass(string className)
 		{
-			Type[] ignore = new Type[] { typeof(P1HashElement), typeof(P1ListElement), typeof(
-				P1Object), typeof(P1Collection), typeof(StaticClass), typeof(StaticField) };
-			// XXX You may need the following for indexing tests. 
-			//                        P2HashMap.class,
-			//                        P2LinkedList.class,
+			Type[] ignore = IgnoredClasses();
 			for (int i = 0; i < ignore.Length; i++)
 			{
 				if (ignore[i].FullName.Equals(className))

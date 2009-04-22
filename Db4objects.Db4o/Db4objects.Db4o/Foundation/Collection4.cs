@@ -175,6 +175,20 @@ namespace Db4objects.Db4o.Foundation
 			return null;
 		}
 
+		private List4 FindByIdentity(object obj)
+		{
+			List4 current = _first;
+			while (current != null)
+			{
+				if (current._element == obj)
+				{
+					return current;
+				}
+				current = current._next;
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// returns the first object found in the Collections that equals() the
 		/// passed object
@@ -309,6 +323,15 @@ namespace Db4objects.Db4o.Foundation
 		public virtual void Replace(object oldObject, object newObject)
 		{
 			List4 list = Find(oldObject);
+			if (list != null)
+			{
+				list._element = newObject;
+			}
+		}
+
+		public virtual void ReplaceByIdentity(object oldObject, object newObject)
+		{
+			List4 list = FindByIdentity(oldObject);
 			if (list != null)
 			{
 				list._element = newObject;

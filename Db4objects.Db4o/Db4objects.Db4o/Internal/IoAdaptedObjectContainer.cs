@@ -79,16 +79,18 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public override void Backup(string path)
+		public override void Backup(IStorage targetStorage, string path)
 		{
-			WithEnvironment(new _IRunnable_71(this, path));
+			WithEnvironment(new _IRunnable_71(this, targetStorage, path));
 		}
 
 		private sealed class _IRunnable_71 : IRunnable
 		{
-			public _IRunnable_71(IoAdaptedObjectContainer _enclosing, string path)
+			public _IRunnable_71(IoAdaptedObjectContainer _enclosing, IStorage targetStorage, 
+				string path)
 			{
 				this._enclosing = _enclosing;
+				this.targetStorage = targetStorage;
 				this.path = path;
 			}
 
@@ -101,8 +103,8 @@ namespace Db4objects.Db4o.Internal
 					{
 						throw new BackupInProgressException();
 					}
-					this._enclosing._backupFile = new BlockAwareBin(this._enclosing.ConfigImpl().Storage
-						.Open(new BinConfiguration(path, true, this._enclosing._file.Length(), false)));
+					this._enclosing._backupFile = new BlockAwareBin(targetStorage.Open(new BinConfiguration
+						(path, true, this._enclosing._file.Length(), false)));
 				}
 				long pos = 0;
 				byte[] buffer = new byte[8192];
@@ -130,6 +132,8 @@ namespace Db4objects.Db4o.Internal
 			}
 
 			private readonly IoAdaptedObjectContainer _enclosing;
+
+			private readonly IStorage targetStorage;
 
 			private readonly string path;
 		}
@@ -203,35 +207,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			EnsureLastSlotWritten();
 			base.Commit1(trans);
-		}
-
-		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
-			 newAddressOffset, int length)
-		{
-			if (Debug4.xbytes && Deploy.overwrite)
-			{
-				CheckXBytes(newAddress, newAddressOffset, length);
-			}
-			try
-			{
-				if (_backupFile == null)
-				{
-					_file.BlockCopy(oldAddress, oldAddressOffset, newAddress, newAddressOffset, length
-						);
-					return;
-				}
-				byte[] copyBytes = new byte[length];
-				_file.BlockRead(oldAddress, oldAddressOffset, copyBytes);
-				_file.BlockWrite(newAddress, newAddressOffset, copyBytes);
-				if (_backupFile != null)
-				{
-					_backupFile.BlockWrite(newAddress, newAddressOffset, copyBytes);
-				}
-			}
-			catch (Exception e)
-			{
-				Exceptions4.ThrowRuntimeException(16, e);
-			}
 		}
 
 		private void CheckXBytes(int newAddress, int newAddressOffset, int length)

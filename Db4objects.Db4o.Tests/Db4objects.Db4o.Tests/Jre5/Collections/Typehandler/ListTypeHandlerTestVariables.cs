@@ -33,18 +33,18 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			(new object[] { 0, 1 }, 2, int.MaxValue);
 
 		public static readonly ListTypeHandlerTestElementsSpec ObjectElementsSpec = new ListTypeHandlerTestElementsSpec
-			(new object[] { new ListTypeHandlerTestVariables.FirstClassElement(0), new ListTypeHandlerTestVariables.FirstClassElement
-			(1) }, new ListTypeHandlerTestVariables.FirstClassElement(2), null);
+			(new object[] { new ListTypeHandlerTestVariables.ReferenceElement(0), new ListTypeHandlerTestVariables.ReferenceElement
+			(1) }, new ListTypeHandlerTestVariables.ReferenceElement(2), null);
 
 		private ListTypeHandlerTestVariables()
 		{
 		}
 
-		public class FirstClassElement
+		public class ReferenceElement
 		{
 			public int _id;
 
-			public FirstClassElement(int id)
+			public ReferenceElement(int id)
 			{
 				_id = id;
 			}
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				{
 					return false;
 				}
-				ListTypeHandlerTestVariables.FirstClassElement other = (ListTypeHandlerTestVariables.FirstClassElement
+				ListTypeHandlerTestVariables.ReferenceElement other = (ListTypeHandlerTestVariables.ReferenceElement
 					)obj;
 				return _id == other._id;
 			}
@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		{
 			private class Item
 			{
-				public IList _list = new NamedArrayList();
+				public ArrayList _list = new NamedArrayList();
 			}
 
 			public override object NewItem()

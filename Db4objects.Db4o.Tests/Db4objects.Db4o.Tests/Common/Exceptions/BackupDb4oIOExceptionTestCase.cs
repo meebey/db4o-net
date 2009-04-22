@@ -1,13 +1,14 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class BackupDb4oIOExceptionTestCase : Db4oIOExceptionTestCaseBase
+	public class BackupDb4oIOExceptionTestCase : Db4oIOExceptionTestCaseBase, IOptOutInMemory
 	{
 		public static void Main(string[] args)
 		{
@@ -32,12 +33,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestBackup()
 		{
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_28(this));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_31(this));
 		}
 
-		private sealed class _ICodeBlock_28 : ICodeBlock
+		private sealed class _ICodeBlock_31 : ICodeBlock
 		{
-			public _ICodeBlock_28(BackupDb4oIOExceptionTestCase _enclosing)
+			public _ICodeBlock_31(BackupDb4oIOExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

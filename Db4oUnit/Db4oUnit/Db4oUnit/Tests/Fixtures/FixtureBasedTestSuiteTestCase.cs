@@ -173,7 +173,7 @@ namespace Db4oUnit.Tests.Fixtures
 		{
 			TestResult result = new TestResult();
 			new TestRunner(suite).Run(result);
-			if (result.Failures.Size > 0)
+			if (result.Failures.Count > 0)
 			{
 				Assert.Fail(Iterators.ToString(result.Failures));
 			}

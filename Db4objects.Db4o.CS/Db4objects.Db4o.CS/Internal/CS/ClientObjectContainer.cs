@@ -8,6 +8,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
@@ -68,9 +69,9 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly ClassInfoHelper _classInfoHelper = new ClassInfoHelper();
 
-		private sealed class _IMessageListener_71 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_72 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_71()
+			public _IMessageListener_72()
 			{
 			}
 
@@ -82,7 +83,7 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_71
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_72
 			();
 
 		public interface IMessageListener
@@ -153,7 +154,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		/// <exception cref="System.NotSupportedException"></exception>
-		public override void Backup(string path)
+		public override void Backup(IStorage targetStorage, string path)
 		{
 			throw new NotSupportedException();
 		}
@@ -492,13 +493,13 @@ namespace Db4objects.Db4o.Internal.CS
 			return i_socket != null;
 		}
 
-		public override ClassMetadata ClassMetadataForId(int clazzId)
+		public override ClassMetadata ClassMetadataForID(int clazzId)
 		{
 			if (clazzId == 0)
 			{
 				return null;
 			}
-			ClassMetadata yc = base.ClassMetadataForId(clazzId);
+			ClassMetadata yc = base.ClassMetadataForID(clazzId);
 			if (yc != null)
 			{
 				return yc;
@@ -822,8 +823,7 @@ namespace Db4objects.Db4o.Internal.CS
 				MsgD msg = Msg.SwitchToFile.GetWriterForString(_transaction, fileName);
 				Write(msg);
 				ExpectedResponse(Msg.Ok);
-				// FIXME NSC
-				ReReadAll(Db4oFactory.CloneConfiguration());
+				ReReadAll((IConfiguration)_config.DeepClone(_config));
 				switchedToFile = fileName;
 			}
 		}
@@ -839,8 +839,7 @@ namespace Db4objects.Db4o.Internal.CS
 				}
 				Write(Msg.SwitchToMainFile);
 				ExpectedResponse(Msg.Ok);
-				// FIXME NSC
-				ReReadAll(Db4oFactory.CloneConfiguration());
+				ReReadAll((IConfiguration)_config.DeepClone(_config));
 				switchedToFile = null;
 			}
 		}
@@ -980,8 +979,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public virtual void WriteBlobTo(Transaction trans, BlobImpl blob, Sharpen.IO.File
-			 file)
+		public virtual void WriteBlobTo(Transaction trans, BlobImpl blob)
 		{
 			MsgBlob msg = (MsgBlob)Msg.ReadBlob.GetWriterForInt(trans, (int)GetID(blob));
 			msg._blob = blob;
@@ -989,8 +987,7 @@ namespace Db4objects.Db4o.Internal.CS
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public virtual void ReadBlobFrom(Transaction trans, BlobImpl blob, Sharpen.IO.File
-			 file)
+		public virtual void ReadBlobFrom(Transaction trans, BlobImpl blob)
 		{
 			MsgBlob msg = null;
 			lock (Lock())

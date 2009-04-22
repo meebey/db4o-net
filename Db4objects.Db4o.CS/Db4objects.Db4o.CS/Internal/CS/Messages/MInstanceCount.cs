@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			MsgD writer = null;
 			lock (StreamLock())
 			{
-				ClassMetadata clazz = File().ClassMetadataForId(ReadInt());
+				ClassMetadata clazz = File().ClassMetadataForID(ReadInt());
 				writer = Msg.InstanceCount.GetWriterForInt(Transaction(), clazz.IndexEntryCount(Transaction
 					()));
 			}

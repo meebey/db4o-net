@@ -11,7 +11,6 @@ using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Typehandlers;
-using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
@@ -22,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			new StringBufferHandlerTestCase().RunAll();
 		}
 
-		public class Item : ISecondClass
+		public class Item
 		{
 			public StringBuilder buffer;
 
@@ -41,12 +40,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			config.ExceptionsOnNotStorable(true);
 			config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(StringBuilder
 				)), new StringBufferHandler());
-			config.Diagnostic().AddListener(new _IDiagnosticListener_37());
+			config.Diagnostic().AddListener(new _IDiagnosticListener_36());
 		}
 
-		private sealed class _IDiagnosticListener_37 : IDiagnosticListener
+		private sealed class _IDiagnosticListener_36 : IDiagnosticListener
 		{
-			public _IDiagnosticListener_37()
+			public _IDiagnosticListener_36()
 			{
 			}
 
@@ -73,12 +72,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void TestTopLevelStore()
 		{
-			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_56(this));
+			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_55(this));
 		}
 
-		private sealed class _ICodeBlock_56 : ICodeBlock
+		private sealed class _ICodeBlock_55 : ICodeBlock
 		{
-			public _ICodeBlock_56(StringBufferHandlerTestCase _enclosing)
+			public _ICodeBlock_55(StringBufferHandlerTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -127,12 +126,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		//$NON-NLS-1$
 		public virtual void TestStoringStringBufferDirectly()
 		{
-			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_90(this));
+			Assert.Expect(typeof(ObjectNotStorableException), new _ICodeBlock_89(this));
 		}
 
-		private sealed class _ICodeBlock_90 : ICodeBlock
+		private sealed class _ICodeBlock_89 : ICodeBlock
 		{
-			public _ICodeBlock_90(StringBufferHandlerTestCase _enclosing)
+			public _ICodeBlock_89(StringBufferHandlerTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

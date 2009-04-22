@@ -31,17 +31,13 @@ namespace Db4objects.Db4o.Internal
 
 		private string _name;
 
-		private bool _isArray;
+		protected bool _isArray;
 
 		private bool _isNArray;
 
 		private bool _isPrimitive;
 
 		private IReflectField _reflectField;
-
-		internal ITypeHandler4 _handler;
-
-		protected int _handlerID;
 
 		private FieldMetadataState _state = FieldMetadataState.NotLoaded;
 
@@ -53,24 +49,16 @@ namespace Db4objects.Db4o.Internal
 
 		private BTree _index;
 
+		protected ClassMetadata _fieldType;
+
+		protected int _fieldTypeID;
+
 		internal static readonly Db4objects.Db4o.Internal.FieldMetadata[] EmptyArray = new 
 			Db4objects.Db4o.Internal.FieldMetadata[0];
 
 		public FieldMetadata(ClassMetadata classMetadata)
 		{
 			_containingClass = classMetadata;
-		}
-
-		internal FieldMetadata(ClassMetadata containingClass, IObjectTranslator translator
-			) : this(containingClass)
-		{
-			// for TranslatedFieldMetadata only
-			Init(containingClass, translator.GetType().FullName);
-			_state = FieldMetadataState.Available;
-			ObjectContainerBase stream = Container();
-			IReflectClass claxx = stream.Reflector().ForClass(TranslatorStoredClass(translator
-				));
-			_handler = FieldHandlerForClass(stream, claxx);
 		}
 
 		protected Type TranslatorStoredClass(IObjectTranslator translator)
@@ -85,28 +73,41 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal FieldMetadata(ClassMetadata containingClass, IReflectField field, ITypeHandler4
-			 handler, int handlerID) : this(containingClass)
+		internal FieldMetadata(ClassMetadata containingClass, IReflectField field, ClassMetadata
+			 fieldType) : this(containingClass)
 		{
-			Init(containingClass, field.GetName());
+			Init(field.GetName());
 			_reflectField = field;
-			_handler = handler;
-			_handlerID = handlerID;
+			_fieldType = fieldType;
+			_fieldTypeID = fieldType.GetID();
 			// TODO: beautify !!!  possibly pull up isPrimitive to ReflectField
-			bool isPrimitive = false;
-			if (field is GenericField)
-			{
-				isPrimitive = ((GenericField)field).IsPrimitive();
-			}
+			bool isPrimitive = field is GenericField ? ((GenericField)field).IsPrimitive() : 
+				false;
 			Configure(field.GetFieldType(), isPrimitive);
 			CheckDb4oType();
+			SetAvailable();
+		}
+
+		protected virtual void SetAvailable()
+		{
 			_state = FieldMetadataState.Available;
 		}
 
-		protected FieldMetadata(int handlerID, ITypeHandler4 handler)
+		protected FieldMetadata(int fieldTypeID)
 		{
-			_handlerID = handlerID;
-			_handler = handler;
+			_fieldTypeID = fieldTypeID;
+		}
+
+		public FieldMetadata(ClassMetadata containingClass, string name, int fieldTypeID, 
+			bool primitive, bool isArray, bool isNArray) : this(containingClass)
+		{
+			Init(name, fieldTypeID, primitive, isArray, isNArray);
+		}
+
+		public FieldMetadata(ClassMetadata containingClass, string name) : this(containingClass
+			)
+		{
+			Init(name);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
@@ -170,7 +171,7 @@ namespace Db4objects.Db4o.Internal
 		public object ReadIndexEntry(IObjectIdContext context)
 		{
 			IIndexableTypeHandler indexableTypeHandler = (IIndexableTypeHandler)HandlerRegistry
-				.CorrectHandlerVersion(context, _handler);
+				.CorrectHandlerVersion(context, GetHandler());
 			return indexableTypeHandler.ReadIndexEntry(context);
 		}
 
@@ -196,39 +197,39 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_state == FieldMetadataState.NotLoaded)
 			{
-				if (_handler == null)
-				{
-					// this may happen if the local ClassMetadataRepository
-					// has not been updated from the server and presumably 
-					// in some refactoring cases. 
-					// We try to heal the problem by re-reading the class.
-					// This could be dangerous, if the class type of a field
-					// has been modified.
-					// TODO: add class refactoring features
-					_handler = DetectHandlerForField();
-					CheckHandlerID();
-				}
-				CheckCorrectHandlerForField();
-				// TODO: This part is not quite correct.
-				// We are using the old array information read from file to wrap.
-				// If a schema evolution changes an array to a different variable,
-				// we are in trouble here.
-				_handler = WrapHandlerToArrays(_handler);
-				if (_handler == null || _reflectField == null)
-				{
-					_state = FieldMetadataState.Unavailable;
-					_reflectField = null;
-				}
-				else
-				{
-					if (!Updating())
-					{
-						_state = FieldMetadataState.Available;
-						CheckDb4oType();
-					}
-				}
+				return Load();
 			}
 			return _state == FieldMetadataState.Available;
+		}
+
+		private bool Load()
+		{
+			if (_fieldType == null)
+			{
+				// this may happen if the local ClassMetadataRepository
+				// has not been updated from the server and presumably 
+				// in some refactoring cases. 
+				// We try to heal the problem by re-reading the class.
+				// This could be dangerous, if the class type of a field
+				// has been modified.
+				// TODO: add class refactoring features
+				_fieldType = DetectFieldType();
+				CheckFieldTypeID();
+			}
+			CheckCorrectTypeForField();
+			if (_fieldType == null || _reflectField == null)
+			{
+				_state = FieldMetadataState.Unavailable;
+				_reflectField = null;
+				return false;
+			}
+			if (Updating())
+			{
+				return false;
+			}
+			SetAvailable();
+			CheckDb4oType();
+			return true;
 		}
 
 		public virtual bool Updating()
@@ -236,19 +237,19 @@ namespace Db4objects.Db4o.Internal
 			return _state == FieldMetadataState.Updating;
 		}
 
-		private void CheckHandlerID()
+		private void CheckFieldTypeID()
 		{
-			int id = Container().Handlers().TypeHandlerID(_handler);
-			if (_handlerID == 0)
+			int id = _fieldType != null ? _fieldType.GetID() : 0;
+			if (_fieldTypeID == 0)
 			{
-				_handlerID = id;
+				_fieldTypeID = id;
 				return;
 			}
-			if (id > 0 && id != _handlerID)
+			if (id > 0 && id != _fieldTypeID)
 			{
 				// wrong type, refactoring, field should be turned off
 				// TODO: it would be cool to log something here
-				_handler = null;
+				_fieldType = null;
 			}
 		}
 
@@ -269,7 +270,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return !_isPrimitive;
 			}
-			return Handlers4.HandlerCanHold(_handler, Reflector(), claxx);
+			return Handlers4.HandlerCanHold(GetHandler(), claxx);
 		}
 
 		public virtual GenericReflector Reflector()
@@ -289,9 +290,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				return _isPrimitive ? No4.Instance : obj;
 			}
-			if (_handler is PrimitiveHandler)
+			if (GetHandler() is PrimitiveHandler)
 			{
-				return ((PrimitiveHandler)_handler).Coerce(Reflector(), claxx, obj);
+				return ((PrimitiveHandler)GetHandler()).Coerce(Reflector(), claxx, obj);
 			}
 			if (!CanHold(claxx))
 			{
@@ -302,66 +303,61 @@ namespace Db4objects.Db4o.Internal
 
 		public bool CanLoadByIndex()
 		{
-			return Handlers4.CanLoadFieldByIndex(_handler);
+			return Handlers4.CanLoadFieldByIndex(GetHandler());
 		}
 
-		public sealed override void CascadeActivation(Transaction trans, object onObject, 
-			IActivationDepth depth)
+		public sealed override void CascadeActivation(IActivationContext context)
 		{
 			if (!Alive())
 			{
 				return;
 			}
-			if (!Handlers4.IsFirstClass(_handler))
-			{
-				return;
-			}
-			object cascadeTo = CascadingTarget(trans, depth, onObject);
+			object cascadeTo = CascadingTarget(context);
 			if (cascadeTo == null)
 			{
 				return;
 			}
-			EnsureObjectIsActive(trans, cascadeTo, depth);
-			ActivationContext4 context = new ActivationContext4(trans, cascadeTo, depth);
-			Handlers4.CascadeActivation(context, _handler);
+			IActivationContext cascadeContext = context.ForObject(cascadeTo);
+			EnsureObjectIsActive(cascadeContext);
+			Handlers4.CascadeActivation(cascadeContext, cascadeContext.ClassMetadata().TypeHandler
+				());
 		}
 
-		private void EnsureObjectIsActive(Transaction trans, object cascadeTo, IActivationDepth
-			 depth)
+		private void EnsureObjectIsActive(IActivationContext context)
 		{
-			if (!depth.Mode().IsActivate())
+			if (!context.Depth().Mode().IsActivate())
 			{
 				return;
 			}
-			if (Handlers4.IsEmbedded(_handler))
+			if (Handlers4.IsValueType(GetHandler()))
 			{
 				return;
 			}
-			ObjectContainerBase container = trans.Container();
-			ClassMetadata classMetadata = container.ClassMetadataForObject(cascadeTo);
+			ObjectContainerBase container = context.Container();
+			ClassMetadata classMetadata = container.ClassMetadataForObject(context.TargetObject
+				());
 			if (classMetadata == null || classMetadata.IsPrimitive())
 			{
 				return;
 			}
-			if (container.IsActive(cascadeTo))
+			if (container.IsActive(context.TargetObject()))
 			{
 				return;
 			}
-			container.StillToActivate(trans, cascadeTo, depth.Descend(classMetadata));
+			container.StillToActivate(context.Descend());
 		}
 
-		protected virtual object CascadingTarget(Transaction trans, IActivationDepth depth
-			, object onObject)
+		protected object CascadingTarget(IActivationContext context)
 		{
-			if (depth.Mode().IsDeactivate())
+			if (context.Depth().Mode().IsDeactivate())
 			{
 				if (null == _reflectField)
 				{
 					return null;
 				}
-				return FieldAccessor().Get(_reflectField, onObject);
+				return FieldAccessor().Get(_reflectField, context.TargetObject());
 			}
-			return GetOrCreate(trans, onObject);
+			return GetOrCreate(context.Transaction(), context.TargetObject());
 		}
 
 		private void CheckDb4oType()
@@ -391,7 +387,7 @@ namespace Db4objects.Db4o.Internal
 					{
 						if (_isPrimitive)
 						{
-							if (Handlers4.IsPrimitive(_handler))
+							if (Handlers4.IsPrimitive(GetHandler()))
 							{
 								object nullValue = _reflectField.GetFieldType().NullValue();
 								if (obj.Equals(nullValue))
@@ -423,7 +419,8 @@ namespace Db4objects.Db4o.Internal
 				IncrementOffset(context.Buffer());
 				return;
 			}
-			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, _handler);
+			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
+				());
 			Handlers4.CollectIdsInternal(context, handler, LinkLength());
 		}
 
@@ -435,7 +432,6 @@ namespace Db4objects.Db4o.Internal
 				IReflectArray reflectArray = Reflector().Array();
 				_isNArray = reflectArray.IsNDimensional(clazz);
 				_isPrimitive = reflectArray.GetComponentType(clazz).IsPrimitive();
-				_handler = WrapHandlerToArrays(_handler);
 			}
 			else
 			{
@@ -443,7 +439,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private ITypeHandler4 WrapHandlerToArrays(ITypeHandler4 handler)
+		protected ITypeHandler4 WrapHandlerToArrays(ITypeHandler4 handler)
 		{
 			if (handler == null)
 			{
@@ -466,8 +462,7 @@ namespace Db4objects.Db4o.Internal
 			return _isPrimitive;
 		}
 
-		public override void Deactivate(Transaction trans, object onObject, IActivationDepth
-			 depth)
+		public override void Deactivate(IActivationContext context)
 		{
 			if (!Alive())
 			{
@@ -479,17 +474,17 @@ namespace Db4objects.Db4o.Internal
 				if (!isEnumClass)
 				{
 					object nullValue = _reflectField.GetFieldType().NullValue();
-					FieldAccessor().Set(_reflectField, onObject, nullValue);
+					FieldAccessor().Set(_reflectField, context.TargetObject(), nullValue);
 				}
 				return;
 			}
-			if (depth.RequiresActivation())
+			if (context.Depth().RequiresActivation())
 			{
-				CascadeActivation(trans, onObject, depth);
+				CascadeActivation(context);
 			}
 			if (!isEnumClass)
 			{
-				FieldAccessor().Set(_reflectField, onObject, null);
+				FieldAccessor().Set(_reflectField, context.TargetObject(), null);
 			}
 		}
 
@@ -517,8 +512,8 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, _handler, new _IClosure4_435(this
-					, childContext));
+				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_434
+					(this, childContext));
 			}
 			catch (CorruptionException exc)
 			{
@@ -526,9 +521,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_435 : IClosure4
+		private sealed class _IClosure4_434 : IClosure4
 		{
-			public _IClosure4_435(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_434(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -536,7 +531,7 @@ namespace Db4objects.Db4o.Internal
 
 			public object Run()
 			{
-				childContext.Delete(this._enclosing._handler);
+				childContext.Delete(this._enclosing.GetHandler());
 				return null;
 			}
 
@@ -569,8 +564,8 @@ namespace Db4objects.Db4o.Internal
 				)obj;
 			other.Alive();
 			Alive();
-			return other._isPrimitive == _isPrimitive && ((_handler == null && other._handler
-				 == null) || other._handler.Equals(_handler)) && other._name.Equals(_name);
+			return other._isPrimitive == _isPrimitive && other._fieldType == _fieldType && other
+				._name.Equals(_name);
 		}
 
 		public override int GetHashCode()
@@ -627,36 +622,26 @@ namespace Db4objects.Db4o.Internal
 			return _name;
 		}
 
-		public ClassMetadata HandlerClassMetadata(ObjectContainerBase container)
+		public ClassMetadata FieldType()
 		{
 			// alive needs to be checked by all callers: Done
-			ITypeHandler4 handler = BaseTypeHandler();
-			if (Handlers4.HandlesSimple(handler))
-			{
-				return container._handlers.ClassMetadataForId(HandlerID());
-			}
-			if (handler is ClassMetadata)
-			{
-				return (ClassMetadata)handler;
-			}
-			return container.ClassMetadataForReflectClass(_reflectField.GetFieldType());
-		}
-
-		private ITypeHandler4 BaseTypeHandler()
-		{
-			return Handlers4.BaseTypeHandler(_handler);
+			return _fieldType;
 		}
 
 		public virtual ITypeHandler4 GetHandler()
 		{
+			if (_fieldType == null)
+			{
+				return null;
+			}
 			// alive needs to be checked by all callers: Done
-			return _handler;
+			return WrapHandlerToArrays(_fieldType.TypeHandler());
 		}
 
-		public virtual int HandlerID()
+		public virtual int FieldTypeID()
 		{
 			// alive needs to be checked by all callers: Done
-			return _handlerID;
+			return _fieldTypeID;
 		}
 
 		/// <param name="trans"></param>
@@ -722,47 +707,54 @@ namespace Db4objects.Db4o.Internal
 			return _index != null;
 		}
 
-		public void Init(ClassMetadata containingClass, string name)
+		public void Init(string name)
 		{
-			_containingClass = containingClass;
 			_name = name;
-			InitIndex(containingClass, name);
+			InitConfiguration(name);
 		}
 
-		internal void InitIndex(ClassMetadata containingClass, string name)
+		internal void InitConfiguration(string name)
 		{
-			if (containingClass.Config() == null)
+			Config4Class containingClassConfig = _containingClass.Config();
+			if (containingClassConfig == null)
 			{
 				return;
 			}
-			_config = containingClass.Config().ConfigField(name);
+			_config = containingClassConfig.ConfigField(name);
 			if (Debug4.configureAllFields && _config == null)
 			{
-				_config = (Config4Field)containingClass.Config().ObjectField(_name);
+				_config = (Config4Field)containingClassConfig.ObjectField(_name);
 			}
 		}
 
-		public virtual void Init(int handlerID, bool isPrimitive, bool isArray, bool isNArray
-			)
+		public virtual void Init(string name, int fieldTypeID, bool isPrimitive, bool isArray
+			, bool isNArray)
 		{
-			_handlerID = handlerID;
+			_fieldTypeID = fieldTypeID;
 			_isPrimitive = isPrimitive;
 			_isArray = isArray;
 			_isNArray = isNArray;
+			Init(name);
+			LoadFieldTypeById();
+			Alive();
 		}
 
 		private bool _initialized = false;
 
 		internal void InitConfigOnUp(Transaction trans)
 		{
-			if (_config != null && !_initialized)
+			if (_initialized)
 			{
-				_initialized = true;
+				return;
+			}
+			_initialized = true;
+			if (_config != null)
+			{
 				_config.InitOnUp(trans, this);
 			}
 		}
 
-		public override void Instantiate(UnmarshallingContext context)
+		public override void Activate(UnmarshallingContext context)
 		{
 			if (!CheckAlive(context))
 			{
@@ -783,7 +775,7 @@ namespace Db4objects.Db4o.Internal
 			int savedOffset = context.Offset();
 			try
 			{
-				object toSet = context.Read(_handler);
+				object toSet = context.Read(GetHandler());
 				if (toSet != null)
 				{
 					Set(context.PersistentObject(), toSet);
@@ -836,15 +828,15 @@ namespace Db4objects.Db4o.Internal
 
 		private int CalculateLinkLength()
 		{
-			return Handlers4.CalculateLinkLength(_handler);
+			return Handlers4.CalculateLinkLength(GetHandler());
 		}
 
-		public virtual void LoadHandlerById(ObjectContainerBase container)
+		public virtual void LoadFieldTypeById()
 		{
-			_handler = (ITypeHandler4)container.FieldHandlerForId(_handlerID);
+			_fieldType = Container().ClassMetadataForID(_fieldTypeID);
 		}
 
-		private ITypeHandler4 DetectHandlerForField()
+		private ClassMetadata DetectFieldType()
 		{
 			IReflectClass claxx = _containingClass.ClassReflector();
 			if (claxx == null)
@@ -856,33 +848,46 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return FieldHandlerForClass(Container(), _reflectField.GetFieldType());
+			return Handlers4.ErasedFieldType(Container(), _reflectField.GetFieldType());
 		}
 
-		private ITypeHandler4 FieldHandlerForClass(ObjectContainerBase container, IReflectClass
-			 fieldType)
+		protected virtual ITypeHandler4 TypeHandlerForClass(ObjectContainerBase container
+			, IReflectClass fieldType)
 		{
 			container.ShowInternalClasses(true);
-			ITypeHandler4 handlerForClass = (ITypeHandler4)container.FieldHandlerForClass(Handlers4
-				.BaseType(fieldType));
-			container.ShowInternalClasses(false);
-			return handlerForClass;
+			try
+			{
+				return container.TypeHandlerForClass(Handlers4.BaseType(fieldType));
+			}
+			finally
+			{
+				container.ShowInternalClasses(false);
+			}
 		}
 
-		private void CheckCorrectHandlerForField()
+		private void CheckCorrectTypeForField()
 		{
-			ITypeHandler4 handler = DetectHandlerForField();
-			if (handler == null)
+			ClassMetadata currentFieldType = DetectFieldType();
+			if (currentFieldType == null)
 			{
 				_reflectField = null;
 				_state = FieldMetadataState.Unavailable;
 				return;
 			}
-			if (!handler.Equals(_handler))
+			if (currentFieldType == _fieldType)
 			{
-				// FIXME: COR-547 Diagnostics here please.
-				_state = FieldMetadataState.Updating;
+				return;
 			}
+			// special case when migrating from type handler ids
+			// to class metadata ids which caused
+			// any interface metadata id to be mapped to UNTYPED_ID
+			if (Handlers4.IsUntyped(currentFieldType.TypeHandler()) && Handlers4.IsUntyped(_fieldType
+				.TypeHandler()))
+			{
+				return;
+			}
+			// FIXME: COR-547 Diagnostics here please.
+			_state = FieldMetadataState.Updating;
 		}
 
 		private int AdjustUpdateDepthForCascade(object obj, int updateDepth)
@@ -915,15 +920,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				context.UpdateDepth(AdjustUpdateDepthForCascade(obj, updateDepth));
 			}
-			if (Handlers4.UseDedicatedSlot(context, _handler))
-			{
-				context.WriteObject(_handler, obj);
-			}
-			else
-			{
-				context.CreateIndirectionWithinSlot(_handler);
-				_handler.Write(context, obj);
-			}
+			context.WriteObjectWithCurrentState(GetHandler(), obj);
 			context.UpdateDepth(updateDepth);
 			if (HasIndex())
 			{
@@ -936,11 +933,6 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		public virtual bool NeedsHandlerId()
-		{
-			return true;
-		}
-
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
 			)
 		{
@@ -948,7 +940,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return _handler.PrepareComparison(context, obj);
+			return Handlers4.PrepareComparisonFor(GetHandler(), context, obj);
 		}
 
 		public virtual Db4objects.Db4o.Internal.Query.Processor.QField QField(Transaction
@@ -970,12 +962,12 @@ namespace Db4objects.Db4o.Internal
 				IncrementOffset(context);
 				return null;
 			}
-			return context.Read(_handler);
+			return context.Read(GetHandler());
 		}
 
 		private bool CanReadFromSlot(IAspectVersionContext context)
 		{
-			if (!Enabled(context))
+			if (!IsEnabledOn(context))
 			{
 				return false;
 			}
@@ -986,23 +978,12 @@ namespace Db4objects.Db4o.Internal
 			return _state != FieldMetadataState.NotLoaded;
 		}
 
-		/// <summary>never called but keep for Rickie</summary>
-		public virtual void RefreshActivated()
-		{
-			_state = FieldMetadataState.Available;
-			Refresh();
-		}
-
 		internal virtual void Refresh()
 		{
-			ITypeHandler4 handler = DetectHandlerForField();
-			if (handler != null)
+			ClassMetadata newFieldType = DetectFieldType();
+			if (newFieldType != null && newFieldType.Equals(_fieldType))
 			{
-				handler = WrapHandlerToArrays(handler);
-				if (handler.Equals(_handler))
-				{
-					return;
-				}
+				return;
 			}
 			_reflectField = null;
 			_state = FieldMetadataState.Unavailable;
@@ -1041,7 +1022,8 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual bool SupportsIndex()
 		{
-			return Alive() && (_handler is IIndexable4) && (!Handlers4.IsUntyped(_handler));
+			return Alive() && (GetHandler() is IIndexable4) && (!Handlers4.IsUntyped(GetHandler
+				()));
 		}
 
 		public void TraverseValues(IVisitor4 userVisitor)
@@ -1069,13 +1051,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_868(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_855(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_868 : IVisitor4
+		private sealed class _IVisitor4_855 : IVisitor4
 		{
-			public _IVisitor4_868(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_855(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1086,7 +1068,7 @@ namespace Db4objects.Db4o.Internal
 			public void Visit(object obj)
 			{
 				FieldIndexKey key = (FieldIndexKey)obj;
-				userVisitor.Visit(((IIndexableTypeHandler)this._enclosing._handler).IndexEntryToObject
+				userVisitor.Visit(((IIndexableTypeHandler)this._enclosing.GetHandler()).IndexEntryToObject
 					(context, key.Value()));
 			}
 
@@ -1154,7 +1136,7 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			IReflectClass indexType = _reflectField.IndexType();
-			ITypeHandler4 classHandler = FieldHandlerForClass(stream, indexType);
+			ITypeHandler4 classHandler = TypeHandlerForClass(stream, indexType);
 			if (!(classHandler is IIndexable4))
 			{
 				return null;
@@ -1182,7 +1164,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			AssertHasIndex();
 			object transActionalValue = Handlers4.WrapWithTransactionContext(transaction, value
-				, _handler);
+				, GetHandler());
 			BTreeNodeSearchResult lowerBound = SearchLowerBound(transaction, transActionalValue
 				);
 			BTreeNodeSearchResult upperBound = SearchUpperBound(transaction, transActionalValue
@@ -1247,13 +1229,13 @@ namespace Db4objects.Db4o.Internal
 			ClassMetadata classMetadata = oh.ClassMetadata();
 			if (classMetadata == null)
 			{
-				return null;
+				return DefaultValueForFieldType();
 			}
 			ObjectIdContextImpl context = new ObjectIdContextImpl(writer.Transaction(), writer
 				, oh, writer.GetID());
 			if (!classMetadata.SeekToField(context, this))
 			{
-				return null;
+				return DefaultValueForFieldType();
 			}
 			try
 			{
@@ -1263,6 +1245,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new FieldIndexException(exc, this);
 			}
+		}
+
+		private object DefaultValueForFieldType()
+		{
+			ITypeHandler4 handler = _fieldType.TypeHandler();
+			return (handler is PrimitiveHandler) ? ((PrimitiveHandler)handler).PrimitiveNull(
+				) : null;
 		}
 
 		public virtual void DropIndex(Transaction systemTrans)
@@ -1283,15 +1272,15 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
-			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, _handler
-				);
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1022
+			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
+				());
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1016
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1022 : IClosure4
+		private sealed class _IClosure4_1016 : IClosure4
 		{
-			public _IClosure4_1022(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1016(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

@@ -24,30 +24,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			ConfigureForTest(config);
 		}
 
-		private string DatabasePath
+		private void Deconfigure()
 		{
-			get
-			{
-				return Path.Combine(GetTempPath(), "test/db4oVersions");
-			}
+			IConfiguration config = Db4oFactory.Configure();
+			config.AllowVersionUpdates(false);
+			DeconfigureForTest(config);
 		}
 
-		protected virtual string FileName()
-		{
-			_db4oVersion = Db4oVersion.Name;
-			return FileName(_db4oVersion);
-		}
-
-		protected virtual string FileName(string versionName)
-		{
-			return OldVersionFileName(versionName) + ".yap";
-		}
-
-		protected virtual string OldVersionFileName(string versionName)
-		{
-			return Path.Combine(DatabasePath, FileNamePrefix() + versionName.Replace(' ', '_'
-				));
-		}
+		private byte _db4oHeaderVersion;
 
 		public virtual void CreateDatabase()
 		{
@@ -69,24 +53,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			// for configuration methods they don't know yet. Ignore,
 			// but tell the implementor:
 			// System.out.println("Exception in configureForStore for " + versionName + " in " + getClass().getName());
-			CreateDatabase(FileName(versionName));
-		}
-
-		private void CreateDatabase(string file)
-		{
-			System.IO.Directory.CreateDirectory(DatabasePath);
-			if (System.IO.File.Exists(file))
-			{
-				File4.Delete(file);
-			}
-			IExtObjectContainer objectContainer = Db4oFactory.OpenFile(file).Ext();
 			try
 			{
-				Store(objectContainer);
+				CreateDatabase(FileName(versionName));
 			}
 			finally
 			{
-				objectContainer.Close();
+				DeconfigureForStore(config);
 			}
 		}
 
@@ -111,12 +84,16 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual void Test(string versionName)
 		{
 			_db4oVersion = versionName;
+			if (!IsApplicableForDb4oVersion())
+			{
+				return;
+			}
 			string testFileName = FileName(versionName);
 			if (System.IO.File.Exists(testFileName))
 			{
 				//		    System.out.println("Check database: " + testFileName);
 				InvestigateFileHeaderVersion(testFileName);
-				RunDefrag(testFileName);
+				//			runDefrag(testFileName);
 				CheckDatabaseFile(testFileName);
 				// Twice, to ensure everything is fine after opening, converting and closing.
 				CheckDatabaseFile(testFileName);
@@ -135,6 +112,91 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		// FIXME: The following fails the CC build since not all files are there on .NET.
 		//        Change back when we have all files.
 		// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
+		/// <summary>Can be overriden to disable the test for specific db4o versions.</summary>
+		/// <remarks>Can be overriden to disable the test for specific db4o versions.</remarks>
+		protected virtual bool IsApplicableForDb4oVersion()
+		{
+			return true;
+		}
+
+		private void CheckDatabaseFile(string testFile)
+		{
+			WithDatabase(testFile, new _IFunction4_127(this));
+		}
+
+		private sealed class _IFunction4_127 : IFunction4
+		{
+			public _IFunction4_127(FormatMigrationTestCaseBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object objectContainer)
+			{
+				this._enclosing.AssertObjectsAreReadable((IExtObjectContainer)objectContainer);
+				return null;
+			}
+
+			private readonly FormatMigrationTestCaseBase _enclosing;
+		}
+
+		private void CheckUpdatedDatabaseFile(string testFile)
+		{
+			WithDatabase(testFile, new _IFunction4_136(this));
+		}
+
+		private sealed class _IFunction4_136 : IFunction4
+		{
+			public _IFunction4_136(FormatMigrationTestCaseBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object objectContainer)
+			{
+				this._enclosing.AssertObjectsAreUpdated((IExtObjectContainer)objectContainer);
+				return null;
+			}
+
+			private readonly FormatMigrationTestCaseBase _enclosing;
+		}
+
+		private void CreateDatabase(string file)
+		{
+			if (!IsApplicableForDb4oVersion())
+			{
+				return;
+			}
+			System.IO.Directory.CreateDirectory(DatabasePath);
+			if (System.IO.File.Exists(file))
+			{
+				File4.Delete(file);
+			}
+			IExtObjectContainer objectContainer = Db4oFactory.OpenFile(file).Ext();
+			try
+			{
+				Store(objectContainer);
+			}
+			finally
+			{
+				objectContainer.Close();
+			}
+		}
+
+		private string DatabasePath
+		{
+			get
+			{
+				return Path.Combine(GetTempPath(), "test/db4oVersions");
+			}
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		private void InvestigateFileHeaderVersion(string testFile)
+		{
+			_db4oHeaderVersion = VersionServices.FileHeaderVersion(testFile);
+		}
+
 		/// <exception cref="System.IO.IOException"></exception>
 		private void RunDefrag(string testFileName)
 		{
@@ -162,38 +224,17 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
-		}
-
-		// do nothing
-		private void CheckDatabaseFile(string testFile)
-		{
-			WithDatabase(testFile, new _IFunction4_160(this));
-		}
-
-		private sealed class _IFunction4_160 : IFunction4
-		{
-			public _IFunction4_160(FormatMigrationTestCaseBase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public object Apply(object objectContainer)
-			{
-				this._enclosing.AssertObjectsAreReadable((IExtObjectContainer)objectContainer);
-				return null;
-			}
-
-			private readonly FormatMigrationTestCaseBase _enclosing;
+			Deconfigure();
 		}
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_169(this));
+			WithDatabase(testFile, new _IFunction4_197(this));
 		}
 
-		private sealed class _IFunction4_169 : IFunction4
+		private sealed class _IFunction4_197 : IFunction4
 		{
-			public _IFunction4_169(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_197(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -201,27 +242,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			public object Apply(object objectContainer)
 			{
 				this._enclosing.Update((IExtObjectContainer)objectContainer);
-				return null;
-			}
-
-			private readonly FormatMigrationTestCaseBase _enclosing;
-		}
-
-		private void CheckUpdatedDatabaseFile(string testFile)
-		{
-			WithDatabase(testFile, new _IFunction4_179(this));
-		}
-
-		private sealed class _IFunction4_179 : IFunction4
-		{
-			public _IFunction4_179(FormatMigrationTestCaseBase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public object Apply(object objectContainer)
-			{
-				this._enclosing.AssertObjectsAreUpdated((IExtObjectContainer)objectContainer);
 				return null;
 			}
 
@@ -242,20 +262,28 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			}
 		}
 
-		/// <exception cref="System.IO.IOException"></exception>
-		private void InvestigateFileHeaderVersion(string testFile)
+		protected abstract void AssertObjectsAreReadable(IExtObjectContainer objectContainer
+			);
+
+		protected virtual void AssertObjectsAreUpdated(IExtObjectContainer objectContainer
+			)
 		{
-			_db4oHeaderVersion = VersionServices.FileHeaderVersion(testFile);
 		}
 
-		protected virtual int Db4oMinorVersion()
+		// Override to check updates also
+		protected virtual void ConfigureForStore(IConfiguration config)
 		{
-			if (_db4oVersion != null)
-			{
-				return System.Convert.ToInt32(Sharpen.Runtime.Substring(_db4oVersion, 2, 3));
-			}
-			return System.Convert.ToInt32(Sharpen.Runtime.Substring(Db4oFactory.Version(), 7, 
-				8));
+		}
+
+		// Override for special storage configuration.
+		protected virtual void ConfigureForTest(IConfiguration config)
+		{
+		}
+
+		// Override for special testing configuration.
+		protected virtual byte Db4oHeaderVersion()
+		{
+			return _db4oHeaderVersion;
 		}
 
 		protected virtual int Db4oMajorVersion()
@@ -268,25 +296,52 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				6));
 		}
 
-		private byte _db4oHeaderVersion;
-
-		protected virtual string[] VersionNames()
+		protected virtual int Db4oMinorVersion()
 		{
-			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
+			if (_db4oVersion != null)
+			{
+				return System.Convert.ToInt32(Sharpen.Runtime.Substring(_db4oVersion, 2, 3));
+			}
+			return System.Convert.ToInt32(Sharpen.Runtime.Substring(Db4oFactory.Version(), 7, 
+				8));
 		}
 
+		/// <summary>override and return true for database updates that produce changed class metadata
+		/// 	</summary>
+		protected virtual bool DefragmentInReadWriteMode()
+		{
+			return false;
+		}
+
+		protected virtual string FileName()
+		{
+			_db4oVersion = Db4oVersion.Name;
+			return FileName(_db4oVersion);
+		}
+
+		protected virtual string FileName(string versionName)
+		{
+			return OldVersionFileName(versionName) + ".yap";
+		}
+
+		protected virtual void DeconfigureForStore(IConfiguration config)
+		{
+		}
+
+		// Override for special storage deconfiguration.
+		protected virtual void DeconfigureForTest(IConfiguration config)
+		{
+		}
+
+		// Override for special storage deconfiguration.
 		protected abstract string FileNamePrefix();
 
-		protected virtual void ConfigureForTest(IConfiguration config)
+		protected virtual string OldVersionFileName(string versionName)
 		{
+			return Path.Combine(DatabasePath, FileNamePrefix() + versionName.Replace(' ', '_'
+				));
 		}
 
-		// Override for special testing configuration.
-		protected virtual void ConfigureForStore(IConfiguration config)
-		{
-		}
-
-		// Override for special storage configuration.
 		protected abstract void Store(IExtObjectContainer objectContainer);
 
 		protected virtual void StoreObject(IExtObjectContainer objectContainer, object obj
@@ -297,30 +352,14 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			objectContainer.Set(obj);
 		}
 
-		protected abstract void AssertObjectsAreReadable(IExtObjectContainer objectContainer
-			);
-
-		protected virtual byte Db4oHeaderVersion()
-		{
-			return _db4oHeaderVersion;
-		}
-
 		protected virtual void Update(IExtObjectContainer objectContainer)
 		{
 		}
 
 		// Override to do updates also
-		protected virtual void AssertObjectsAreUpdated(IExtObjectContainer objectContainer
-			)
+		protected virtual string[] VersionNames()
 		{
-		}
-
-		// Override to check updates also
-		/// <summary>override and return true for database updates that produce changed class metadata
-		/// 	</summary>
-		protected virtual bool DefragmentInReadWriteMode()
-		{
-			return false;
+			return new string[] { Sharpen.Runtime.Substring(Db4oFactory.Version(), 5) };
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public abstract int MarshalledLength(ObjectContainerBase arg1, ClassAspect arg2);
 
-		public abstract FieldMetadata Read(ObjectContainerBase arg1, FieldMetadata arg2, 
+		public abstract FieldMetadata Read(ObjectContainerBase arg1, ClassMetadata arg2, 
 			ByteArrayBuffer arg3);
 
 		public abstract void Write(Transaction arg1, ClassMetadata arg2, ClassAspect arg3

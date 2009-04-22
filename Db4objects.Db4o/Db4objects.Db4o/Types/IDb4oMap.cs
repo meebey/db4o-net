@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Types
 	/// MyClass myObject = new MyClass();<br />
 	/// myObject.myMap = objectContainer.ext().collections().newHashMap();
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Collections">Db4objects.Db4o.Ext.IExtObjectContainer.Collections
+	/// <seealso cref="com.db4o.ext.ExtObjectContainer#collections">com.db4o.ext.ExtObjectContainer#collections
 	/// 	</seealso>
 	[System.ObsoleteAttribute(@"since 7.0")]
 	public interface IDb4oMap : IDb4oCollection, IDictionary

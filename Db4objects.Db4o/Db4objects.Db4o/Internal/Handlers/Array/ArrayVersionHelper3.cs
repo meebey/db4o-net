@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 				}
 			}
 			classID = -classID;
-			ClassMetadata classMetadata = container.ClassMetadataForId(classID);
+			ClassMetadata classMetadata = container.ClassMetadataForID(classID);
 			if (classMetadata != null)
 			{
 				return ClassReflector(container.Reflector(), classMetadata, info.Primitive());

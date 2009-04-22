@@ -21,8 +21,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				), typeof(DeleteStringInUntypedFieldTestCase), typeof(DoubleHandlerTestCase), typeof(
 				FloatHandlerTestCase), typeof(IgnoreFieldsTypeHandlerTestCase), typeof(IntHandlerTestCase
 				), typeof(LongHandlerTestCase), typeof(MultiDimensionalArrayHandlerTestCase), typeof(
-				MultidimensionalArrayIterator4TestCase), typeof(SecondClassTestCase), typeof(StringBufferHandlerTestCase
-				), typeof(StringHandlerTestCase), typeof(ShortHandlerTestCase), typeof(UntypedHandlerTestCase
+				MultidimensionalArrayIterator4TestCase), typeof(StringBufferHandlerTestCase), typeof(
+				StringHandlerTestCase), typeof(ShortHandlerTestCase), typeof(UntypedHandlerTestCase
 				) };
 		}
 	}

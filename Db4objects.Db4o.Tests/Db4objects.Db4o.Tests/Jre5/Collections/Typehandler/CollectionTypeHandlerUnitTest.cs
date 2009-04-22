@@ -85,12 +85,12 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDeletion()
 		{
-			AssertFirstClassElementCount(Elements().Length);
+			AssertReferenceTypeElementCount(Elements().Length);
 			object item = RetrieveOnlyInstance(ItemFactory().ItemClass());
 			Db().Delete(item);
 			Db().Purge();
 			Db4oAssert.PersistedCount(0, ItemFactory().ItemClass());
-			AssertFirstClassElementCount(0);
+			AssertReferenceTypeElementCount(0);
 		}
 
 		public virtual void TestJoin()
@@ -111,18 +111,18 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 			AssertPlainContent(set.Next());
 		}
 
-		protected virtual void AssertFirstClassElementCount(int expected)
+		protected virtual void AssertReferenceTypeElementCount(int expected)
 		{
-			if (!IsFirstClass(ElementClass()))
+			if (!IsReferenceElement(ElementClass()))
 			{
 				return;
 			}
 			Db4oAssert.PersistedCount(expected, ElementClass());
 		}
 
-		private bool IsFirstClass(Type elementClass)
+		private bool IsReferenceElement(Type elementClass)
 		{
-			return typeof(ListTypeHandlerTestVariables.FirstClassElement) == elementClass;
+			return typeof(ListTypeHandlerTestVariables.ReferenceElement) == elementClass;
 		}
 	}
 }

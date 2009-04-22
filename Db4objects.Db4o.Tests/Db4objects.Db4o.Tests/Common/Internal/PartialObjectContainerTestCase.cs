@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Common.Internal;
@@ -9,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Internal;
 namespace Db4objects.Db4o.Tests.Common.Internal
 {
 	/// <exclude></exclude>
-	public class PartialObjectContainerTestCase : AbstractDb4oTestCase, IOptOutTA
+	public class PartialObjectContainerTestCase : AbstractDb4oTestCase, IOptOutTA, IOptOutInMemory
 	{
 		public static void Main(string[] arguments)
 		{

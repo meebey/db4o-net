@@ -16,7 +16,7 @@ namespace Db4oUnit
 			return _failures.GetEnumerator();
 		}
 
-		public virtual int Size
+		public virtual int Count
 		{
 			get
 			{

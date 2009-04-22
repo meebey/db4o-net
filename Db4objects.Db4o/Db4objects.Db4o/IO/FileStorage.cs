@@ -3,6 +3,7 @@
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Sharpen.IO;
@@ -51,14 +52,11 @@ namespace Db4objects.Db4o.IO
 				try
 				{
 					_path = new Sharpen.IO.File(config.Uri()).GetCanonicalPath();
-					_file = new RandomAccessFile(_path, config.ReadOnly() ? "r" : "rw");
+					_file = RandomAccessFileFactory.NewRandomAccessFile(_path, config.ReadOnly(), config
+						.LockFile());
 					if (config.InitialLength() > 0)
 					{
 						Write(config.InitialLength() - 1, new byte[] { 0 }, 1);
-					}
-					if (config.LockFile())
-					{
-						Platform4.LockFile(_path, _file);
 					}
 					ok = true;
 				}
@@ -175,6 +173,18 @@ namespace Db4objects.Db4o.IO
 					throw new Db4oIOException(e);
 				}
 			}
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public virtual void Delete(string uri)
+		{
+			File4.Delete(uri);
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public virtual void Rename(string oldUri, string newUri)
+		{
+			System.IO.File.Move(oldUri, newUri);
 		}
 	}
 }

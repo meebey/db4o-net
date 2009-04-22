@@ -4,11 +4,11 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Replication;
-using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -41,12 +41,6 @@ namespace Db4objects.Db4o.Internal
 		public sealed override void Bind(object obj, long id)
 		{
 			Bind(null, obj, id);
-		}
-
-		[System.ObsoleteAttribute]
-		public override IDb4oCollections Collections()
-		{
-			return Collections(null);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
@@ -214,7 +208,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="System.NotSupportedException"></exception>
-		public abstract override void Backup(string path);
+		public abstract override void Backup(IStorage targetStorage, string path);
 
 		public abstract override Db4oDatabase Identity();
 

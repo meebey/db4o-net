@@ -80,13 +80,18 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void Add(object obj)
 		{
-			int id = Container().GetID(Transaction(), obj);
+			int id = GetID(obj);
 			if (id > 0)
 			{
 				AddId(id);
 				return;
 			}
 			AddObjectWithoutId(obj);
+		}
+
+		private int GetID(object obj)
+		{
+			return Container().GetID(Transaction(), obj);
 		}
 
 		public virtual void ReadId(ITypeHandler4 handler)
@@ -107,10 +112,21 @@ namespace Db4objects.Db4o.Internal.Marshall
 				if (objectID == ObjectID.NotPossible)
 				{
 					Seek(offset);
+					// FIXME: there's no point in activating the object
+					// just find its id
+					// type handlers know how to do it
 					object obj = Read(handler);
 					if (obj != null)
 					{
-						AddObjectWithoutId(obj);
+						int id = (int)GetID(obj);
+						if (id > 0)
+						{
+							AddId(id);
+						}
+						else
+						{
+							AddObjectWithoutId(obj);
+						}
 					}
 				}
 			}

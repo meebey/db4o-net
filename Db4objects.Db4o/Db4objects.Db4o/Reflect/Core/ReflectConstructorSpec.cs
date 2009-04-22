@@ -5,6 +5,16 @@ using Db4objects.Db4o.Reflect.Core;
 
 namespace Db4objects.Db4o.Reflect.Core
 {
+	/// <summary>
+	/// a spec holding a constructor, it's arguments
+	/// and information, if the constructor can instantiate
+	/// objects.
+	/// </summary>
+	/// <remarks>
+	/// a spec holding a constructor, it's arguments
+	/// and information, if the constructor can instantiate
+	/// objects.
+	/// </remarks>
 	public class ReflectConstructorSpec
 	{
 		private IReflectConstructor _constructor;
@@ -33,6 +43,9 @@ namespace Db4objects.Db4o.Reflect.Core
 			_constructor = null;
 		}
 
+		/// <summary>creates a new instance.</summary>
+		/// <remarks>creates a new instance.</remarks>
+		/// <returns>the newly created instance.</returns>
 		public virtual object NewInstance()
 		{
 			if (_constructor == null)
@@ -42,6 +55,14 @@ namespace Db4objects.Db4o.Reflect.Core
 			return _constructor.NewInstance(_args);
 		}
 
+		/// <summary>
+		/// returns true if an instance can be instantiated
+		/// with the constructor, otherwise false.
+		/// </summary>
+		/// <remarks>
+		/// returns true if an instance can be instantiated
+		/// with the constructor, otherwise false.
+		/// </remarks>
 		public virtual TernaryBool CanBeInstantiated()
 		{
 			return _canBeInstantiated;

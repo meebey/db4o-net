@@ -45,6 +45,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			private readonly CascadedDeleteFileFormatUpdateTestCase _enclosing;
 		}
 
+		protected override void DeconfigureForTest(IConfiguration config)
+		{
+			config.Diagnostic().RemoveAllListeners();
+		}
+
 		public class ParentItem
 		{
 			public CascadedDeleteFileFormatUpdateTestCase.ChildItem[] _children;

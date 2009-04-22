@@ -14,7 +14,7 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Collections
 {
 	/// <exclude></exclude>
-	public class BigSetTypeHandler : ITypeHandler4
+	public class BigSetTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler
 	{
 		public virtual void Defragment(IDefragmentContext context)
 		{
@@ -65,14 +65,6 @@ namespace Db4objects.Db4o.Internal.Collections
 			return new BTree(SystemTransaction(context), id, new IDHandler());
 		}
 
-		public virtual object Read(IReadContext context)
-		{
-			IBigSetPersistence bigSet = (IBigSetPersistence)((UnmarshallingContext)context).PersistentObject
-				();
-			bigSet.Read(context);
-			return bigSet;
-		}
-
 		public virtual void Write(IWriteContext context, object obj)
 		{
 			IBigSetPersistence bigSet = (IBigSetPersistence)obj;
@@ -91,6 +83,28 @@ namespace Db4objects.Db4o.Internal.Collections
 			// FIXME: for .net generics we can actually
 			// know
 			return true;
+		}
+
+		public virtual void Activate(IReferenceActivationContext context)
+		{
+			IBigSetPersistence bigSet = (IBigSetPersistence)context.PersistentObject();
+			bigSet.Read(context);
+		}
+
+		public virtual void CascadeActivation(IActivationContext context)
+		{
+		}
+
+		// TODO Auto-generated method stub
+		public virtual void CollectIDs(QueryingReadContext context)
+		{
+		}
+
+		// TODO Auto-generated method stub
+		public virtual ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
+		{
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

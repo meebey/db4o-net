@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			int classID = reader.ReadInt();
 			_marshallerFamily = ReadMarshallerFamily(reader, classID);
 			classID = NormalizeID(classID);
-			_classMetadata = (yc != null ? yc : stream.ClassMetadataForId(classID));
+			_classMetadata = (yc != null ? yc : stream.ClassMetadataForID(classID));
 			// This check has been added to cope with defragment in debug mode: SlotDefragment#setIdentity()
 			// will trigger calling this constructor with a source db yap class and a target db stream,
 			// thus _yapClass==null. There may be a better solution, since this call is just meant to

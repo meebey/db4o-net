@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
@@ -42,8 +41,7 @@ namespace Db4objects.Db4o.Internal
 
 		public const int AnyArrayNId = 13;
 
-		public static bool HandlerCanHold(ITypeHandler4 handler, IReflector reflector, IReflectClass
-			 claxx)
+		public static bool HandlerCanHold(ITypeHandler4 handler, IReflectClass claxx)
 		{
 			return handler.CanHold(claxx);
 		}
@@ -70,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 
 		public static bool HandlesClass(ITypeHandler4 handler)
 		{
-			return BaseTypeHandler(handler) is IFirstClassHandler;
+			return BaseTypeHandler(handler) is ICascadingTypeHandler;
 		}
 
 		public static IReflectClass PrimitiveClassReflector(ITypeHandler4 handler, IReflector
@@ -90,9 +88,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ((ArrayHandler)handler).DelegateTypeHandler();
 			}
-			if (handler is PrimitiveFieldHandler)
+			if (handler is PrimitiveTypeMetadata)
 			{
-				return ((PrimitiveFieldHandler)handler).TypeHandler();
+				return ((PrimitiveTypeMetadata)handler).TypeHandler();
 			}
 			return handler;
 		}
@@ -112,35 +110,42 @@ namespace Db4objects.Db4o.Internal
 
 		public static bool IsClassAware(ITypeHandler4 typeHandler)
 		{
-			return typeHandler is IBuiltinTypeHandler || typeHandler is ClassMetadata || typeHandler
-				 is PlainObjectHandler;
+			return typeHandler is IBuiltinTypeHandler || typeHandler is StandardReferenceTypeHandler;
 		}
 
-		public static int CalculateLinkLength(ITypeHandler4 _handler)
+		public static int CalculateLinkLength(ITypeHandler4 handler)
 		{
-			if (_handler == null)
+			if (handler == null)
 			{
 				// must be ClassMetadata
 				return Const4.IdLength;
 			}
-			if (_handler is ITypeFamilyTypeHandler)
+			if (handler is ITypeFamilyTypeHandler)
 			{
-				return ((ITypeFamilyTypeHandler)_handler).LinkLength();
+				return ((ITypeFamilyTypeHandler)handler).LinkLength();
 			}
-			if (_handler is PersistentBase)
+			if (handler is PersistentBase)
 			{
-				return ((PersistentBase)_handler).LinkLength();
+				return ((PersistentBase)handler).LinkLength();
 			}
-			if (_handler is PrimitiveHandler)
+			if (handler is PrimitiveHandler)
 			{
-				return ((PrimitiveHandler)_handler).LinkLength();
+				return ((PrimitiveHandler)handler).LinkLength();
 			}
-			if (_handler is IVariableLengthTypeHandler)
+			if (handler is IVariableLengthTypeHandler)
 			{
-				if (_handler is IEmbeddedTypeHandler)
+				if (IsValueType(handler))
 				{
 					return Const4.IndirectionLength;
 				}
+				return Const4.IdLength;
+			}
+			if (IsUntyped(handler))
+			{
+				return Const4.IdLength;
+			}
+			if (handler is StandardReferenceTypeHandler)
+			{
 				return Const4.IdLength;
 			}
 			// TODO: For custom handlers there will have to be a way 
@@ -151,41 +156,22 @@ namespace Db4objects.Db4o.Internal
 			//            marshall the default value and check.
 			//        (3) Add a way to test the custom handler when it
 			//            is installed and remember the length there. 
-			throw new NotImplementedException();
+			throw new NotImplementedException("Unknown type handler type: " + handler);
 		}
 
-		public static IReflectClass ClassReflectorForHandler(HandlerRegistry handlerRegistry
-			, ITypeHandler4 handler)
+		public static bool HoldsValueType(ITypeHandler4 handler)
 		{
-			if (handler is IBuiltinTypeHandler)
-			{
-				return ((IBuiltinTypeHandler)handler).ClassReflector();
-			}
-			if (handler is ClassMetadata)
-			{
-				return ((ClassMetadata)handler).ClassReflector();
-			}
-			return handlerRegistry.ClassReflectorForHandler(handler);
+			return IsValueType(BaseTypeHandler(handler));
 		}
 
-		public static bool HoldsEmbedded(ITypeHandler4 handler)
+		public static bool IsValueType(ITypeHandler4 handler)
 		{
-			return IsEmbedded(BaseTypeHandler(handler));
+			return !(handler is IReferenceTypeHandler);
 		}
 
-		public static bool IsClassMetadata(ITypeHandler4 handler)
+		public static bool IsCascading(ITypeHandler4 handler)
 		{
-			return handler is ClassMetadata;
-		}
-
-		public static bool IsEmbedded(ITypeHandler4 handler)
-		{
-			return handler is IEmbeddedTypeHandler;
-		}
-
-		public static bool IsFirstClass(ITypeHandler4 handler)
-		{
-			return handler is IFirstClassHandler;
+			return handler is ICascadingTypeHandler;
 		}
 
 		public static bool IsPrimitive(ITypeHandler4 handler)
@@ -195,7 +181,7 @@ namespace Db4objects.Db4o.Internal
 
 		public static bool IsUntyped(ITypeHandler4 handler)
 		{
-			return handler is UntypedFieldHandler;
+			return handler is OpenTypeHandler;
 		}
 
 		public static bool IsVariableLength(ITypeHandler4 handler)
@@ -216,26 +202,21 @@ namespace Db4objects.Db4o.Internal
 		public static void CollectIDs(QueryingReadContext context, ITypeHandler4 typeHandler
 			)
 		{
-			if (typeHandler is IFirstClassHandler)
+			if (typeHandler is ICascadingTypeHandler)
 			{
-				((IFirstClassHandler)typeHandler).CollectIDs(context);
+				((ICascadingTypeHandler)typeHandler).CollectIDs(context);
 			}
 		}
 
 		public static bool UseDedicatedSlot(IContext context, ITypeHandler4 handler)
 		{
-			if (handler is IEmbeddedTypeHandler)
+			if (IsValueType(handler))
 			{
 				return false;
 			}
-			if (handler is UntypedFieldHandler)
+			if (IsUntyped(handler))
 			{
 				return false;
-			}
-			if (handler is ClassMetadata)
-			{
-				return UseDedicatedSlot(context, ((ClassMetadata)handler).DelegateTypeHandler(context
-					));
 			}
 			return true;
 		}
@@ -243,13 +224,13 @@ namespace Db4objects.Db4o.Internal
 		public static ITypeHandler4 ArrayElementHandler(ITypeHandler4 handler, QueryingReadContext
 			 queryingReadContext)
 		{
-			if (!(handler is IFirstClassHandler))
+			if (!(handler is ICascadingTypeHandler))
 			{
 				return null;
 			}
-			IFirstClassHandler firstClassHandler = (IFirstClassHandler)HandlerRegistry.CorrectHandlerVersion
+			ICascadingTypeHandler cascadingHandler = (ICascadingTypeHandler)HandlerRegistry.CorrectHandlerVersion
 				(queryingReadContext, handler);
-			return HandlerRegistry.CorrectHandlerVersion(queryingReadContext, firstClassHandler
+			return HandlerRegistry.CorrectHandlerVersion(queryingReadContext, cascadingHandler
 				.ReadCandidateHandler(queryingReadContext));
 		}
 
@@ -264,51 +245,48 @@ namespace Db4objects.Db4o.Internal
 
 		public static bool HandleAsObject(ITypeHandler4 typeHandler)
 		{
-			if (IsEmbedded(typeHandler))
+			if (IsValueType(typeHandler))
 			{
 				return false;
 			}
-			if (typeHandler is UntypedFieldHandler)
+			if (IsUntyped(typeHandler))
 			{
 				return false;
 			}
 			return true;
 		}
 
-		public static void CascadeActivation(ActivationContext4 context, ITypeHandler4 handler
+		public static void CascadeActivation(IActivationContext context, ITypeHandler4 handler
 			)
 		{
-			if (!(handler is IFirstClassHandler))
+			if (!(handler is ICascadingTypeHandler))
 			{
 				return;
 			}
-			((IFirstClassHandler)handler).CascadeActivation(context);
+			((ICascadingTypeHandler)handler).CascadeActivation(context);
 		}
 
-		public static bool HandlesPrimitiveArray(ITypeHandler4 classMetadata)
+		public static bool HandlesPrimitiveArray(ITypeHandler4 typeHandler)
 		{
-			return classMetadata is PrimitiveFieldHandler && ((PrimitiveFieldHandler)classMetadata
-				).IsArray();
+			return typeHandler is ArrayHandler;
 		}
 
+		//	    	&& isPrimitive(((ArrayHandler)typeHandler).delegateTypeHandler());
 		public static bool HasClassIndex(ITypeHandler4 typeHandler)
 		{
-			if (typeHandler is ClassMetadata)
+			if (typeHandler is StandardReferenceTypeHandler)
 			{
-				return ((ClassMetadata)typeHandler).HasClassIndex();
+				return ((StandardReferenceTypeHandler)typeHandler).ClassMetadata().HasClassIndex(
+					);
 			}
 			return false;
 		}
 
 		public static bool CanLoadFieldByIndex(ITypeHandler4 handler)
 		{
-			if (handler is ClassMetadata)
+			if (handler is IQueryableTypeHandler)
 			{
-				ClassMetadata yc = (ClassMetadata)handler;
-				if (yc.IsArray())
-				{
-					return false;
-				}
+				return !((IQueryableTypeHandler)handler).DescendsIntoMembers();
 			}
 			return true;
 		}
@@ -316,23 +294,23 @@ namespace Db4objects.Db4o.Internal
 		public static object WrapWithTransactionContext(Transaction transaction, object value
 			, ITypeHandler4 handler)
 		{
-			if (handler is ClassMetadata)
+			if (IsValueType(handler))
 			{
-				value = ((ClassMetadata)handler).WrapWithTransactionContext(transaction, value);
+				return value;
 			}
-			return value;
+			return transaction.Wrap(value);
 		}
 
 		public static void CollectIdsInternal(CollectIdContext context, ITypeHandler4 handler
 			, int linkLength)
 		{
-			if (!(IsFirstClass(handler)))
+			if (!(IsCascading(handler)))
 			{
 				IReadBuffer buffer = context.Buffer();
 				buffer.Seek(buffer.Offset() + linkLength);
 				return;
 			}
-			if (handler.GetType() == typeof(ClassMetadata))
+			if (handler is StandardReferenceTypeHandler)
 			{
 				context.AddId();
 				return;
@@ -353,13 +331,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_293
+			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_276
 				(handler, queryingReadContext));
 		}
 
-		private sealed class _IClosure4_293 : IClosure4
+		private sealed class _IClosure4_276 : IClosure4
 		{
-			public _IClosure4_293(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_276(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;
@@ -368,7 +346,7 @@ namespace Db4objects.Db4o.Internal
 
 			public object Run()
 			{
-				((IFirstClassHandler)handler).CollectIDs(queryingReadContext);
+				((ICascadingTypeHandler)handler).CollectIDs(queryingReadContext);
 				return null;
 			}
 
@@ -379,8 +357,60 @@ namespace Db4objects.Db4o.Internal
 
 		public static bool IsIndirectedIndexed(ITypeHandler4 handler)
 		{
-			return (handler is IEmbeddedTypeHandler) && (handler is IVariableLengthTypeHandler
-				) && (handler is IIndexableTypeHandler);
+			return IsValueType(handler) && (handler is IVariableLengthTypeHandler) && (handler
+				 is IIndexableTypeHandler);
+		}
+
+		public static IPreparedComparison PrepareComparisonFor(ITypeHandler4 handler, IContext
+			 context, object obj)
+		{
+			if (!(handler is IComparable4))
+			{
+				return null;
+			}
+			return ((IComparable4)handler).PrepareComparison(context, obj);
+		}
+
+		public static IReflectClass PrimitiveClassReflector(ClassMetadata classMetadata, 
+			IReflector reflector)
+		{
+			if (classMetadata is PrimitiveTypeMetadata)
+			{
+				return PrimitiveClassReflector(((PrimitiveTypeMetadata)classMetadata).TypeHandler
+					(), reflector);
+			}
+			return null;
+		}
+
+		public static void Activate(UnmarshallingContext context, ITypeHandler4 handler)
+		{
+			if (handler is IReferenceTypeHandler)
+			{
+				((IReferenceTypeHandler)handler).Activate(context);
+			}
+		}
+
+		public static void Write(ITypeHandler4 handler, IWriteContext context, object obj
+			)
+		{
+			handler.Write(context, obj);
+		}
+
+		public static object ReadValueType(IReadContext context, ITypeHandler4 handler)
+		{
+			return ((IValueTypeHandler)handler).Read(context);
+		}
+
+		public static bool IsStandaloneTypeHandler(ITypeHandler4 customTypeHandler)
+		{
+			return IsValueType(customTypeHandler) || customTypeHandler is OpenTypeHandler;
+		}
+
+		public static ClassMetadata ErasedFieldType(ObjectContainerBase container, IReflectClass
+			 fieldType)
+		{
+			return fieldType.IsInterface() ? container.ClassMetadataForID(UntypedId) : container
+				.ProduceClassMetadata(BaseType(fieldType));
 		}
 	}
 }

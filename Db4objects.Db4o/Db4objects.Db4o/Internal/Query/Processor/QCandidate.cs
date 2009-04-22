@@ -256,14 +256,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					ITypeHandler4 handler = _yapField.GetHandler();
 					if (Handlers4.IsUntyped(handler))
 					{
-						handler = candidate.ReadYapClass();
+						ClassMetadata classMetadata = candidate.ReadYapClass();
+						if (classMetadata != null)
+						{
+							handler = classMetadata.TypeHandler();
+						}
 					}
 					if (handler == null)
 					{
 						return false;
 					}
-					if (!Handlers4.HandlerCanHold(handler, Container().Reflector(), a_candidates.i_yapClass
-						.ClassReflector()))
+					if (!Handlers4.HandlerCanHold(handler, a_candidates.i_yapClass.ClassReflector()))
 					{
 						return false;
 					}
@@ -346,21 +349,21 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QCandidate _enclosing;
 		}
 
-		private void ReadArrayCandidates(ITypeHandler4 fieldHandler, IReadBuffer buffer, 
-			ITypeHandler4 arrayElementHandler, QCandidates candidates)
+		private void ReadArrayCandidates(ITypeHandler4 typeHandler, IReadBuffer buffer, ITypeHandler4
+			 arrayElementHandler, QCandidates candidates)
 		{
-			if (!Handlers4.IsFirstClass(arrayElementHandler))
+			if (!Handlers4.IsCascading(arrayElementHandler))
 			{
 				return;
 			}
 			SlotFormat slotFormat = SlotFormat.ForHandlerVersion(_handlerVersion);
-			slotFormat.DoWithSlotIndirection(buffer, fieldHandler, new _IClosure4_326(this, arrayElementHandler
+			slotFormat.DoWithSlotIndirection(buffer, typeHandler, new _IClosure4_329(this, arrayElementHandler
 				, buffer, candidates));
 		}
 
-		private sealed class _IClosure4_326 : IClosure4
+		private sealed class _IClosure4_329 : IClosure4
 		{
-			public _IClosure4_326(QCandidate _enclosing, ITypeHandler4 arrayElementHandler, IReadBuffer
+			public _IClosure4_329(QCandidate _enclosing, ITypeHandler4 arrayElementHandler, IReadBuffer
 				 buffer, QCandidates candidates)
 			{
 				this._enclosing = _enclosing;
@@ -388,9 +391,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					context = new QueryingReadContext(this._enclosing.Transaction(), candidates, this
 						._enclosing._handlerVersion, buffer, 0);
-					((IFirstClassHandler)arrayElementHandler).CollectIDs(context);
+					((ICascadingTypeHandler)arrayElementHandler).CollectIDs(context);
 				}
-				Tree.Traverse(context.Ids(), new _IVisitor4_344(candidates));
+				Tree.Traverse(context.Ids(), new _IVisitor4_347(candidates));
 				IEnumerator i = context.ObjectsWithoutId();
 				while (i.MoveNext())
 				{
@@ -401,9 +404,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return null;
 			}
 
-			private sealed class _IVisitor4_344 : IVisitor4
+			private sealed class _IVisitor4_347 : IVisitor4
 			{
-				public _IVisitor4_344(QCandidates candidates)
+				public _IVisitor4_347(QCandidates candidates)
 				{
 					this.candidates = candidates;
 				}

@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			{
 				return null;
 			}
-			ClassMetadata classMetadata = container.ClassMetadataForId(classID);
+			ClassMetadata classMetadata = container.ClassMetadataForID(classID);
 			if (classMetadata == null)
 			{
 				return null;

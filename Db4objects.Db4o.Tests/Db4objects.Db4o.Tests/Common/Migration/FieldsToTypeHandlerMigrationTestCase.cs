@@ -9,7 +9,6 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -37,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		internal FieldsToTypeHandlerMigrationTestCase.ItemTypeHandler _typeHandler;
 
-		public class ItemTypeHandler : ITypeHandler4, IFirstClassHandler, IVariableLengthTypeHandler
+		public class ItemTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler, IVariableLengthTypeHandler
 		{
 			private int _writeCalls;
 
@@ -60,13 +59,12 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				throw new NotImplementedException();
 			}
 
-			public virtual object Read(IReadContext context)
+			public virtual void Activate(IReferenceActivationContext context)
 			{
 				_readCalls++;
 				FieldsToTypeHandlerMigrationTestCase.Item item = (FieldsToTypeHandlerMigrationTestCase.Item
 					)((UnmarshallingContext)context).PersistentObject();
 				item._id = context.ReadInt() - 42;
-				return item;
 			}
 
 			public virtual void Write(IWriteContext context, object obj)
@@ -83,7 +81,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				throw new NotImplementedException();
 			}
 
-			public virtual void CascadeActivation(ActivationContext4 context)
+			public virtual void CascadeActivation(IActivationContext context)
 			{
 				throw new NotImplementedException();
 			}

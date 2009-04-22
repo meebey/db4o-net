@@ -237,17 +237,35 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// 	</seealso>
 		public virtual IReflectClass ForName(string className)
 		{
-			IReflectClass clazz = _repository.LookupByName(className);
-			if (clazz != null)
+			return ((IReflectClass)WithLock(new _IClosure4_211(this, className)));
+		}
+
+		private sealed class _IClosure4_211 : IClosure4
+		{
+			public _IClosure4_211(GenericReflector _enclosing, string className)
 			{
-				return clazz;
+				this._enclosing = _enclosing;
+				this.className = className;
 			}
-			clazz = _delegate.ForName(className);
-			if (clazz != null)
+
+			public object Run()
 			{
-				return EnsureDelegate(clazz);
+				IReflectClass clazz = this._enclosing._repository.LookupByName(className);
+				if (clazz != null)
+				{
+					return clazz;
+				}
+				clazz = this._enclosing._delegate.ForName(className);
+				if (clazz != null)
+				{
+					return this._enclosing.EnsureDelegate(clazz);
+				}
+				return this._enclosing._repository.ForName(className);
 			}
-			return _repository.ForName(className);
+
+			private readonly GenericReflector _enclosing;
+
+			private readonly string className;
 		}
 
 		/// <summary>Returns a ReflectClass instance for the specified class object</summary>
@@ -339,14 +357,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_307(collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_311(collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_307 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_311 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_307(IReflectClass collectionClass)
+			public _IReflectClassPredicate_311(IReflectClass collectionClass)
 			{
 				this.collectionClass = collectionClass;
 			}
@@ -380,18 +398,54 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <param name="clazz">class</param>
 		public virtual void Register(Db4objects.Db4o.Reflect.Generic.GenericClass clazz)
 		{
-			string name = clazz.GetName();
-			if (_repository.LookupByName(name) == null)
+			WithLock(new _IClosure4_342(this, clazz));
+		}
+
+		private sealed class _IClosure4_342 : IClosure4
+		{
+			public _IClosure4_342(GenericReflector _enclosing, Db4objects.Db4o.Reflect.Generic.GenericClass
+				 clazz)
 			{
-				_repository.Register(clazz);
+				this._enclosing = _enclosing;
+				this.clazz = clazz;
 			}
+
+			public object Run()
+			{
+				string name = clazz.GetName();
+				if (this._enclosing._repository.LookupByName(name) == null)
+				{
+					this._enclosing._repository.Register(clazz);
+				}
+				return null;
+			}
+
+			private readonly GenericReflector _enclosing;
+
+			private readonly Db4objects.Db4o.Reflect.Generic.GenericClass clazz;
 		}
 
 		/// <summary>Returns an array of classes known to the reflector</summary>
 		/// <returns>an array of classes known to the reflector</returns>
 		public virtual IReflectClass[] KnownClasses()
 		{
-			return new KnownClassesCollector(_stream, _repository).Collect();
+			return ((IReflectClass[])WithLock(new _IClosure4_358(this)));
+		}
+
+		private sealed class _IClosure4_358 : IClosure4
+		{
+			public _IClosure4_358(GenericReflector _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Run()
+			{
+				return new KnownClassesCollector(this._enclosing._stream, this._enclosing._repository
+					).Collect();
+			}
+
+			private readonly GenericReflector _enclosing;
 		}
 
 		/// <summary>Registers primitive class</summary>
@@ -401,36 +455,63 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public virtual void RegisterPrimitiveClass(int id, string name, IGenericConverter
 			 converter)
 		{
-			Db4objects.Db4o.Reflect.Generic.GenericClass existing = (Db4objects.Db4o.Reflect.Generic.GenericClass
-				)_repository.LookupByID(id);
-			if (existing != null)
+			WithLock(new _IClosure4_372(this, id, converter, name));
+		}
+
+		private sealed class _IClosure4_372 : IClosure4
+		{
+			public _IClosure4_372(GenericReflector _enclosing, int id, IGenericConverter converter
+				, string name)
 			{
-				if (null != converter)
+				this._enclosing = _enclosing;
+				this.id = id;
+				this.converter = converter;
+				this.name = name;
+			}
+
+			public object Run()
+			{
+				Db4objects.Db4o.Reflect.Generic.GenericClass existing = (Db4objects.Db4o.Reflect.Generic.GenericClass
+					)this._enclosing._repository.LookupByID(id);
+				if (existing != null)
 				{
-					existing.SetSecondClass();
+					if (null != converter)
+					{
+					}
+					else
+					{
+						//						existing.setSecondClass();
+						existing.SetConverter(null);
+					}
+					return null;
+				}
+				IReflectClass clazz = this._enclosing._delegate.ForName(name);
+				Db4objects.Db4o.Reflect.Generic.GenericClass claxx = null;
+				if (clazz != null)
+				{
+					claxx = this._enclosing.EnsureDelegate(clazz);
 				}
 				else
 				{
-					existing.SetConverter(null);
+					claxx = new Db4objects.Db4o.Reflect.Generic.GenericClass(this._enclosing, null, name
+						, null);
+					this._enclosing.Register(claxx);
+					claxx.InitFields(new GenericField[] { new GenericField(null, null, true) });
+					claxx.SetConverter(converter);
 				}
-				return;
+				//			    claxx.setSecondClass();
+				claxx.SetPrimitive();
+				this._enclosing._repository.Register(id, claxx);
+				return null;
 			}
-			IReflectClass clazz = _delegate.ForName(name);
-			Db4objects.Db4o.Reflect.Generic.GenericClass claxx = null;
-			if (clazz != null)
-			{
-				claxx = EnsureDelegate(clazz);
-			}
-			else
-			{
-				claxx = new Db4objects.Db4o.Reflect.Generic.GenericClass(this, null, name, null);
-				Register(claxx);
-				claxx.InitFields(new GenericField[] { new GenericField(null, null, true) });
-				claxx.SetConverter(converter);
-			}
-			claxx.SetSecondClass();
-			claxx.SetPrimitive();
-			_repository.Register(id, claxx);
+
+			private readonly GenericReflector _enclosing;
+
+			private readonly int id;
+
+			private readonly IGenericConverter converter;
+
+			private readonly string name;
 		}
 
 		/// <summary>method stub: generic reflector does not have a parent</summary>
@@ -445,6 +526,15 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				_delegate.Configuration(config);
 			}
+		}
+
+		private object WithLock(IClosure4 block)
+		{
+			if (_stream == null || _stream.IsClosed())
+			{
+				return block.Run();
+			}
+			return _stream.SyncExec(block);
 		}
 	}
 }

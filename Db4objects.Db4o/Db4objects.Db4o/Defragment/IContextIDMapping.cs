@@ -32,6 +32,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <summary>Prepares the mapping for use.</summary>
 		/// <remarks>Prepares the mapping for use.</remarks>
+		/// <exception cref="System.IO.IOException"></exception>
 		void Open();
 
 		/// <summary>Shuts down the mapping after use.</summary>

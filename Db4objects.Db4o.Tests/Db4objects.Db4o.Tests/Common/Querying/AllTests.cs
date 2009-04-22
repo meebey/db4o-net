@@ -20,10 +20,10 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				CascadeOnDelete), typeof(CascadeOnDeleteHierarchyTestCase), typeof(CascadeOnUpdate
 				), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase), typeof(DescendIndexQueryTestCase
 				), typeof(IdListQueryResultTestCase), typeof(IndexedJoinQueriesTestCase), typeof(
-				IndexOnParentFieldTestCase), typeof(IndexedQueriesTestCase), typeof(LazyQueryResultTestCase
-				), typeof(MultiFieldIndexQueryTestCase), typeof(NullConstraintQueryTestCase), typeof(
-				ObjectSetTestCase), typeof(OrderedQueryTestCase), typeof(QueryByExampleTestCase)
-				, typeof(QueryingVersionFieldTestCase) };
+				IndexOnParentFieldTestCase), typeof(IndexedQueriesTestCase), typeof(InvalidFieldNameConstraintTestCase
+				), typeof(LazyQueryResultTestCase), typeof(MultiFieldIndexQueryTestCase), typeof(
+				NullConstraintQueryTestCase), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase
+				), typeof(QueryByExampleTestCase), typeof(QueryingVersionFieldTestCase) };
 		}
 	}
 }

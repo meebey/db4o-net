@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// 	</remarks>
 	/// <exclude></exclude>
 	public class UnmarshallingContext : ObjectReferenceContext, IHandlerVersionContext
-		, IFirstClassReadContext
+		, IReferenceActivationContext
 	{
 		private object _object;
 

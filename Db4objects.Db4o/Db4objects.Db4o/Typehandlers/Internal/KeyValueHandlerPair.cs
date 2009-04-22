@@ -4,6 +4,7 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Typehandlers.Internal
 {
+	/// <exclude></exclude>
 	public class KeyValueHandlerPair
 	{
 		public readonly ITypeHandler4 _keyHandler;

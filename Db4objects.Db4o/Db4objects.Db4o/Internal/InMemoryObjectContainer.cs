@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Sharpen;
 
@@ -14,6 +15,8 @@ namespace Db4objects.Db4o.Internal
 		private bool _closed = false;
 
 		private readonly MemoryFile _memoryFile;
+
+		private int _capacity = 0;
 
 		private int _length = 0;
 
@@ -56,13 +59,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				_length = bytes.Length;
+				_length = _capacity = bytes.Length;
 				ReadThis();
 			}
 		}
 
 		/// <exception cref="System.NotSupportedException"></exception>
-		public override void Backup(string path)
+		public override void Backup(IStorage targetStorage, string path)
 		{
 			throw new NotSupportedException();
 		}
@@ -86,8 +89,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!_closed)
 			{
-				byte[] temp = new byte[_length];
-				System.Array.Copy(_memoryFile.GetBytes(), 0, temp, 0, _length);
+				byte[] temp = new byte[_capacity];
+				System.Array.Copy(_memoryFile.GetBytes(), 0, temp, 0, _capacity);
 				_memoryFile.SetBytes(temp);
 			}
 			_closed = true;
@@ -99,16 +102,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing
-		public override void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
-			 newAddressOffset, int length)
-		{
-			int fullNewAddress = newAddress + newAddressOffset;
-			EnsureMemoryFileSize(fullNewAddress + length);
-			byte[] bytes = _memoryFile.GetBytes();
-			System.Array.Copy(bytes, oldAddress + oldAddressOffset, bytes, fullNewAddress, length
-				);
-		}
-
 		public override long FileLength()
 		{
 			return _length;
@@ -158,18 +151,19 @@ namespace Db4objects.Db4o.Internal
 			int length = buffer.Length();
 			EnsureMemoryFileSize(fullAddress + length);
 			System.Array.Copy(buffer._buffer, 0, _memoryFile.GetBytes(), fullAddress, length);
+			_length = Math.Max(_length, fullAddress + length + 1);
 		}
 
 		private void EnsureMemoryFileSize(int last)
 		{
-			if (last < _length)
+			if (last < _capacity)
 			{
 				return;
 			}
 			byte[] bytes = _memoryFile.GetBytes();
 			if (last < bytes.Length)
 			{
-				_length = last;
+				_capacity = last;
 				return;
 			}
 			int increment = _memoryFile.GetIncrementSizeBy();
@@ -180,7 +174,7 @@ namespace Db4objects.Db4o.Internal
 			byte[] newBytes = new byte[bytes.Length + increment];
 			System.Array.Copy(bytes, 0, newBytes, 0, bytes.Length);
 			_memoryFile.SetBytes(newBytes);
-			_length = newBytes.Length;
+			_capacity = newBytes.Length;
 		}
 
 		public override void OverwriteDeletedBytes(int a_address, int a_length)

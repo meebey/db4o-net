@@ -4,9 +4,9 @@ using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
+using Db4objects.Db4o.Internal.Handlers.Versions;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Assorted;
 using Db4objects.Db4o.Typehandlers;
@@ -31,43 +31,36 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestCorrectHandlerVersion()
 		{
-			UntypedFieldHandler untypedFieldHandler = new UntypedFieldHandler(Container());
-			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
-				-1);
-			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler0), untypedFieldHandler, 
-				0);
-			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler2), untypedFieldHandler, 
-				1);
-			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler2), untypedFieldHandler, 
-				2);
-			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler), untypedFieldHandler, HandlerRegistry
+			OpenTypeHandler openTypeHandler = new OpenTypeHandler(Container());
+			AssertCorrectedHandlerVersion(typeof(OpenTypeHandler0), openTypeHandler, -1);
+			AssertCorrectedHandlerVersion(typeof(OpenTypeHandler0), openTypeHandler, 0);
+			AssertCorrectedHandlerVersion(typeof(OpenTypeHandler2), openTypeHandler, 1);
+			AssertCorrectedHandlerVersion(typeof(OpenTypeHandler2), openTypeHandler, 2);
+			AssertCorrectedHandlerVersion(typeof(OpenTypeHandler), openTypeHandler, HandlerRegistry
 				.HandlerVersion);
-			AssertCorrectedHandlerVersion(typeof(UntypedFieldHandler), untypedFieldHandler, HandlerRegistry
+			AssertCorrectedHandlerVersion(typeof(OpenTypeHandler), openTypeHandler, HandlerRegistry
 				.HandlerVersion + 1);
-			FirstClassObjectHandler firstClassObjectHandler = new FirstClassObjectHandler(ItemClassMetadata
-				());
-			AssertCorrectedHandlerVersion(typeof(FirstClassObjectHandler0), firstClassObjectHandler
+			StandardReferenceTypeHandler stdReferenceHandler = new StandardReferenceTypeHandler
+				(ItemClassMetadata());
+			AssertCorrectedHandlerVersion(typeof(StandardReferenceTypeHandler0), stdReferenceHandler
 				, 0);
-			AssertCorrectedHandlerVersion(typeof(FirstClassObjectHandler), firstClassObjectHandler
+			AssertCorrectedHandlerVersion(typeof(StandardReferenceTypeHandler), stdReferenceHandler
 				, 2);
-			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler(Container
-				(), untypedFieldHandler, 0, null);
-			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler0), primitiveFieldHandler
-				, 0);
-			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler2), primitiveFieldHandler
-				, 1);
-			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler2), primitiveFieldHandler
-				, 2);
-			AssertPrimitiveFieldHandlerDelegate(typeof(UntypedFieldHandler), primitiveFieldHandler
-				, HandlerRegistry.HandlerVersion);
-			ArrayHandler arrayHandler = new ArrayHandler(untypedFieldHandler, false);
+			PrimitiveTypeMetadata primitiveMetadata = new PrimitiveTypeMetadata(Container(), 
+				openTypeHandler, 0, null);
+			AssertPrimitiveHandlerDelegate(typeof(OpenTypeHandler0), primitiveMetadata, 0);
+			AssertPrimitiveHandlerDelegate(typeof(OpenTypeHandler2), primitiveMetadata, 1);
+			AssertPrimitiveHandlerDelegate(typeof(OpenTypeHandler2), primitiveMetadata, 2);
+			AssertPrimitiveHandlerDelegate(typeof(OpenTypeHandler), primitiveMetadata, HandlerRegistry
+				.HandlerVersion);
+			ArrayHandler arrayHandler = new ArrayHandler(openTypeHandler, false);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler0), arrayHandler, 0);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler1), arrayHandler, 1);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler3), arrayHandler, 2);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler3), arrayHandler, 3);
 			AssertCorrectedHandlerVersion(typeof(ArrayHandler), arrayHandler, HandlerRegistry
 				.HandlerVersion);
-			ArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler(untypedFieldHandler
+			ArrayHandler multidimensionalArrayHandler = new MultidimensionalArrayHandler(openTypeHandler
 				, false);
 			AssertCorrectedHandlerVersion(typeof(MultidimensionalArrayHandler0), multidimensionalArrayHandler
 				, 0);
@@ -81,13 +74,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				, HandlerRegistry.HandlerVersion);
 		}
 
-		private void AssertPrimitiveFieldHandlerDelegate(Type fieldHandlerClass, PrimitiveFieldHandler
-			 primitiveFieldHandler, int version)
+		private void AssertPrimitiveHandlerDelegate(Type expectedClass, PrimitiveTypeMetadata
+			 primitiveMetadata, int version)
 		{
-			PrimitiveFieldHandler primitiveFieldHandler0 = (PrimitiveFieldHandler)CorrectHandlerVersion
-				(primitiveFieldHandler, version);
-			Assert.AreSame(fieldHandlerClass, primitiveFieldHandler0.DelegateTypeHandler(null
-				).GetType());
+			ITypeHandler4 correctTypeHandler = (ITypeHandler4)CorrectHandlerVersion(primitiveMetadata
+				.TypeHandler(), version);
+			Assert.AreSame(expectedClass, correctTypeHandler.GetType());
 		}
 
 		private ClassMetadata ItemClassMetadata()
@@ -108,17 +100,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			return Handlers().CorrectHandlerVersion(typeHandler, version);
 		}
 
-		public virtual void TestInterfaceHandlerIsSameAsObjectHandler()
-		{
-			Assert.AreSame(HandlerForClass(typeof(object)), HandlerForClass(typeof(HandlerRegistryTestCase.IFooInterface
-				)));
-		}
-
-		private ITypeHandler4 HandlerForClass(Type clazz)
-		{
-			return (ITypeHandler4)Container().FieldHandlerForClass(ReflectClass(clazz));
-		}
-
 		private HandlerRegistry Handlers()
 		{
 			return Stream().Handlers();
@@ -126,50 +107,26 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestTypeHandlerForID()
 		{
-			AssertTypeHandlerClass(Handlers4.IntId, typeof(IntHandler));
-			AssertTypeHandlerClass(Handlers4.UntypedId, typeof(PlainObjectHandler));
+			AssertTypeHandler(typeof(IntHandler), Handlers4.IntId);
+			AssertTypeHandler(typeof(OpenTypeHandler), Handlers4.UntypedId);
+			AssertTypeHandler(typeof(IntHandler), Handlers4.IntId);
+			AssertTypeHandler(typeof(ArrayHandler), Handlers4.AnyArrayId);
+			AssertTypeHandler(typeof(MultidimensionalArrayHandler), Handlers4.AnyArrayNId);
 		}
 
-		private void AssertTypeHandlerClass(int id, Type clazz)
+		private void AssertTypeHandler(Type expectedHandlerClass, int classMetadataID)
 		{
-			ITypeHandler4 typeHandler = Handlers().TypeHandlerForID(id);
-			Assert.IsInstanceOf(clazz, typeHandler);
-		}
-
-		public virtual void TestTypeHandlerID()
-		{
-			AssertTypeHandlerID(Handlers4.IntId, IntegerClassReflector());
-			AssertTypeHandlerID(Handlers4.UntypedId, ObjectClassReflector());
-		}
-
-		private void AssertTypeHandlerID(int handlerID, IReflectClass integerClassReflector
-			)
-		{
-			ITypeHandler4 typeHandler = Handlers().TypeHandlerForClass(integerClassReflector);
-			int id = Handlers().TypeHandlerID(typeHandler);
-			Assert.AreEqual(handlerID, id);
+			ITypeHandler4 handler = Container().ClassMetadataForID(classMetadataID).TypeHandler
+				();
+			Assert.IsInstanceOf(expectedHandlerClass, handler);
 		}
 
 		public virtual void TestTypeHandlerForClass()
 		{
 			Assert.IsInstanceOf(typeof(IntHandler), Handlers().TypeHandlerForClass(IntegerClassReflector
 				()));
-			Assert.IsInstanceOf(typeof(PlainObjectHandler), Handlers().TypeHandlerForClass(ObjectClassReflector
+			Assert.IsInstanceOf(typeof(OpenTypeHandler), Handlers().TypeHandlerForClass(ObjectClassReflector
 				()));
-		}
-
-		public virtual void TestFieldHandlerForID()
-		{
-			AssertFieldHandler(Handlers4.IntId, typeof(IntHandler));
-			AssertFieldHandler(Handlers4.AnyArrayId, typeof(UntypedArrayFieldHandler));
-			AssertFieldHandler(Handlers4.AnyArrayNId, typeof(UntypedMultidimensionalArrayFieldHandler
-				));
-		}
-
-		private void AssertFieldHandler(int handlerID, Type fieldHandlerClass)
-		{
-			IFieldHandler fieldHandler = Handlers().FieldHandlerForId(handlerID);
-			Assert.IsInstanceOf(fieldHandlerClass, fieldHandler);
 		}
 
 		public virtual void TestClassForID()

@@ -86,9 +86,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Close()
 		{
-			WriteAccessTime(true);
 			lock (_timerLock)
 			{
+				WriteAccessTime(true);
 				_closed = true;
 			}
 		}

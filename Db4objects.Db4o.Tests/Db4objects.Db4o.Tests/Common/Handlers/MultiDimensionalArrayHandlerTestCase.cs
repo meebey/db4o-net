@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private ArrayHandler ArrayHandler(Type clazz, bool isPrimitive)
 		{
-			ITypeHandler4 typeHandler = (ITypeHandler4)Container().FieldHandlerForClass(Reflector
+			ITypeHandler4 typeHandler = (ITypeHandler4)Container().TypeHandlerForClass(Reflector
 				().ForClass(clazz));
 			return new MultidimensionalArrayHandler(typeHandler, isPrimitive);
 		}

@@ -170,16 +170,12 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// tuning feature only: reserves a number of bytes in database files.
 		/// <br /><br />The global setting is used for the creation of new database
-		/// files. Continous calls on an ObjectContainer Configuration context
-		/// (see
-		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Configure">Db4objects.Db4o.Ext.IExtObjectContainer.Configure
-		/// 	</see>
-		/// ) will
-		/// continually allocate space.
-		/// <br /><br />The allocation of a fixed number of bytes at one time
-		/// makes it more likely that the database will be stored in one
-		/// chunk on the mass storage. Less read/write head movement can result
-		/// in improved performance.<br /><br />
+		/// files.
+		/// <br /><br />Without this setting, storage space will be allocated
+		/// continuously as required. However, allocation of a fixed number
+		/// of bytes at one time makes it more likely that the database will be
+		/// stored in one chunk on the mass storage. Less read/write head movement
+		/// can result in improved performance.<br /><br />
 		/// <b>Note:</b><br /> Allocated space will be lost on abnormal termination
 		/// of the database engine (hardware crash, VM crash). A Defragment run
 		/// will recover the lost space. For the best possible performance, this

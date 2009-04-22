@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal.Activation
 		private int DescendDepth(ClassMetadata metadata)
 		{
 			int depth = ConfiguredActivationDepth(metadata) - 1;
-			if (metadata.IsValueType())
+			if (Platform4.IsStruct(metadata.ClassReflector()))
 			{
 				// 	We also have to instantiate structs completely every time.
 				return Math.Max(1, depth);

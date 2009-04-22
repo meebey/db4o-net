@@ -116,6 +116,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				);
 			config.ReflectWith(Platform4.ReflectorForType(typeof(DefragEncryptedFileTestCase.Item
 				)));
+			config.Password("encrypted");
+			config.Encrypt(true);
 			return config;
 		}
 

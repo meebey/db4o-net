@@ -118,9 +118,10 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
+		/// <exception cref="System.IO.IOException"></exception>
 		public override void Open()
 		{
-			_mappingDb = DefragmentServicesImpl.FreshYapFile(_fileName, 1);
+			_mappingDb = DefragmentServicesImpl.FreshTempFile(_fileName, 1);
 			IIndexable4 handler = new MappedIDPairHandler();
 			_idTree = (_treeSpec == null ? new BTree(Trans(), 0, handler) : new BTree(Trans()
 				, 0, handler, _treeSpec.NodeSize()));

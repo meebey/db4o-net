@@ -73,12 +73,6 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			info.ElementCount(ElementCount(dim));
 		}
 
-		protected override void DetectDimensionsPreVersion0Format(IReadBuffer buffer, ArrayInfo
-			 info, int classID)
-		{
-			ReadDimensions(info, buffer, classID);
-		}
-
 		protected override void ReadElements(IReadContext context, ArrayInfo info, object
 			 array)
 		{

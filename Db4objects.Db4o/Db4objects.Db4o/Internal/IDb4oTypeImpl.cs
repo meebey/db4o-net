@@ -9,16 +9,10 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IDb4oTypeImpl : ITransactionAware
 	{
-		bool CanBind();
-
 		object CreateDefault(Transaction trans);
 
 		bool HasClassIndex();
 
 		void SetObjectReference(ObjectReference @ref);
-
-		object StoredTo(Transaction trans);
-
-		void PreDeactivate();
 	}
 }

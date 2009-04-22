@@ -69,8 +69,12 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			LocalObjectContainer file = trans.File();
 			Db4oDatabase identity = Debug4.staticIdentity ? Db4oDatabase.StaticIdentity : (Db4oDatabase
 				)file.GetByID(trans, identityID);
-			file.Activate(trans, identity, new FixedActivationDepth(2));
-			_systemData.Identity(identity);
+			if (null != identity)
+			{
+				// TODO: what?
+				file.Activate(trans, identity, new FixedActivationDepth(2));
+				_systemData.Identity(identity);
+			}
 		}
 	}
 }

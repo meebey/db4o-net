@@ -44,8 +44,8 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void IgnoreFieldsOn(Type clazz)
 		{
-			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), new IgnoreFieldsTypeHandler
-				());
+			_config.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(clazz), IgnoreFieldsTypeHandler
+				.Instance);
 		}
 
 		private void RegisterListTypeHandlerFor(Type clazz)

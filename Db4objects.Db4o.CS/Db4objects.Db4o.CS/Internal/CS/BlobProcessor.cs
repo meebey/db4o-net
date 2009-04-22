@@ -20,7 +20,6 @@ namespace Db4objects.Db4o.Internal.CS
 		internal BlobProcessor(ClientObjectContainer aStream)
 		{
 			stream = aStream;
-			SetPriority(MinPriority);
 		}
 
 		internal virtual void Add(MsgBlob msg)

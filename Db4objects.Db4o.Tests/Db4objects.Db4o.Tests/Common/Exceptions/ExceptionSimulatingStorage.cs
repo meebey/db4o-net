@@ -16,16 +16,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		{
 		}
 
-		public virtual void Delete(string path)
+		public override void Delete(string path)
 		{
 			if (exception)
 			{
 				return;
 			}
-			else
-			{
-				_delegate.Delete(path);
-			}
+			_delegate.Delete(path);
 		}
 
 		public override bool Exists(string path)

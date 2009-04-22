@@ -121,9 +121,6 @@ namespace Db4objects.Db4o.Internal
 			return _systemData.ConverterVersion();
 		}
 
-		public abstract void Copy(int oldAddress, int oldAddressOffset, int newAddress, int
-			 newAddressOffset, int length);
-
 		public override long CurrentVersion()
 		{
 			return _timeStampIdGenerator.LastTimeStampId();
@@ -176,12 +173,6 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata yc = yo.ClassMetadata();
 				// FIXME: What if obj is null here ?
 				yc.Delete(reader, obj);
-				// The following will not work with this approach.
-				// Free blocks are identified in the Transaction by their ID.
-				// TODO: Add a second tree specifically to free pointers.
-				//			if(SecondClass.class.isAssignableFrom(yc.getJavaClass())){
-				//				ta.freePointer(id);
-				//			}
 				return true;
 			}
 			return false;
@@ -233,14 +224,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _IVisitor4_218(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_208(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _IVisitor4_218 : IVisitor4
+		private sealed class _IVisitor4_208 : IVisitor4
 		{
-			public _IVisitor4_218(LocalObjectContainer _enclosing)
+			public _IVisitor4_208(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -274,23 +265,33 @@ namespace Db4objects.Db4o.Internal
 			return queryResult;
 		}
 
-		public int GetPointerSlot()
+		public virtual int GetPointerSlot()
 		{
 			int id = GetSlot(Const4.PointerLength).Address();
-			// write a zero pointer first
-			// to prevent delete interaction trouble
-			((LocalTransaction)SystemTransaction()).WriteZeroPointer(id);
-			// We have to make sure that object IDs do not collide
-			// with built-in type IDs.
-			if (_handlers.IsSystemHandler(id))
+			if (!IsValidPointer(id))
 			{
 				return GetPointerSlot();
 			}
+			// write a zero pointer first
+			// to prevent delete interaction trouble
+			WriteZeroPointer(id);
 			if (DTrace.enabled)
 			{
 				DTrace.GetPointerSlot.Log(id);
 			}
 			return id;
+		}
+
+		protected virtual bool IsValidPointer(int id)
+		{
+			// We have to make sure that object IDs do not collide
+			// with built-in type IDs.
+			return !_handlers.IsSystemHandler(id);
+		}
+
+		private void WriteZeroPointer(int id)
+		{
+			((LocalTransaction)SystemTransaction()).WriteZeroPointer(id);
 		}
 
 		public virtual Slot GetSlot(int length)
@@ -706,15 +707,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_619(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_617(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_619 : IVisitor4
+		private sealed class _IVisitor4_617 : IVisitor4
 		{
-			public _IVisitor4_619(Hashtable4 semaphores)
+			public _IVisitor4_617(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -956,13 +957,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_817(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_815(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_817 : IVisitor4
+		private sealed class _IVisitor4_815 : IVisitor4
 		{
-			public _IVisitor4_817(IntArrayList ids)
+			public _IVisitor4_815(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

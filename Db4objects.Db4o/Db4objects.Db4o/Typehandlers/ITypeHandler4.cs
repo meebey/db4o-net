@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
-using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
@@ -20,12 +19,8 @@ namespace Db4objects.Db4o.Typehandlers
 	/// 	</see>
 	/// 
 	/// </seealso>
-	public interface ITypeHandler4 : IFieldHandler, IComparable4
+	public interface ITypeHandler4
 	{
-		// 	TODO: Not all TypeHandlers can implement Comparable4.
-		// Consider to change the hierarchy, not to extend Comparable4
-		// and to have callers check, if Comparable4 is implemented by 
-		// a TypeHandler.
 		/// <summary>gets called when an object gets deleted.</summary>
 		/// <remarks>gets called when an object gets deleted.</remarks>
 		/// <param name="context"></param>
@@ -38,18 +33,18 @@ namespace Db4objects.Db4o.Typehandlers
 		/// <param name="context"></param>
 		void Defragment(IDefragmentContext context);
 
-		/// <summary>gets called when an object is read from the database.</summary>
-		/// <remarks>gets called when an object is read from the database.</remarks>
-		/// <param name="context"></param>
-		/// <returns>the instantiated object</returns>
-		object Read(IReadContext context);
-
 		/// <summary>gets called when an object is to be written to the database.</summary>
 		/// <remarks>gets called when an object is to be written to the database.</remarks>
 		/// <param name="context"></param>
 		/// <param name="obj">the object</param>
 		void Write(IWriteContext context, object obj);
 
+		/// <summary>
+		/// gets called to check whether a TypeHandler can hold
+		/// a specific type
+		/// </summary>
+		/// <param name="type">the type</param>
+		/// <returns>true, if this Typehandler can hold a type</returns>
 		bool CanHold(IReflectClass type);
 	}
 }

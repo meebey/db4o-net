@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using System.Collections;
+using System.IO;
 using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
@@ -17,7 +18,7 @@ namespace Db4objects.Db4o.IO
 	/// </summary>
 	public class MemoryStorage : IStorage
 	{
-		private readonly IDictionary _storages = new Hashtable();
+		private readonly IDictionary _bins = new Hashtable();
 
 		private readonly IGrowthStrategy _growthStrategy;
 
@@ -40,7 +41,7 @@ namespace Db4objects.Db4o.IO
 		/// </remarks>
 		public virtual bool Exists(string uri)
 		{
-			return _storages.Contains(uri);
+			return _bins.Contains(uri);
 		}
 
 		/// <summary>opens a MemoryBin for the given URI (name can be freely chosen).</summary>
@@ -56,14 +57,14 @@ namespace Db4objects.Db4o.IO
 		/// <remarks>Returns the memory bin for the given URI for external use.</remarks>
 		public virtual MemoryBin Bin(string uri)
 		{
-			return ((MemoryBin)_storages[uri]);
+			return ((MemoryBin)_bins[uri]);
 		}
 
 		/// <summary>Registers the given bin for this storage with the given URI.</summary>
 		/// <remarks>Registers the given bin for this storage with the given URI.</remarks>
 		public virtual void Bin(string uri, MemoryBin bin)
 		{
-			_storages[uri] = bin;
+			_bins[uri] = bin;
 		}
 
 		private IBin ProduceStorage(BinConfiguration config)
@@ -75,8 +76,25 @@ namespace Db4objects.Db4o.IO
 			}
 			MemoryBin newStorage = new MemoryBin(new byte[(int)config.InitialLength()], _growthStrategy
 				);
-			_storages[config.Uri()] = newStorage;
+			_bins[config.Uri()] = newStorage;
 			return newStorage;
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public virtual void Delete(string uri)
+		{
+			Sharpen.Util.Collections.Remove(_bins, uri);
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public virtual void Rename(string oldUri, string newUri)
+		{
+			MemoryBin bin = ((MemoryBin)Sharpen.Util.Collections.Remove(_bins, oldUri));
+			if (bin == null)
+			{
+				throw new IOException("Bin not found: " + oldUri);
+			}
+			_bins[newUri] = bin;
 		}
 	}
 }

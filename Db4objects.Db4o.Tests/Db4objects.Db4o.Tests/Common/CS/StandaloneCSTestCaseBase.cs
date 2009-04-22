@@ -23,11 +23,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void Test()
 		{
-			IConfiguration config = Db4oFactory.Configure();
-			Configure(config);
 			string fileName = DatabaseFile();
 			File4.Delete(fileName);
-			IObjectServer server = Db4oFactory.OpenServer(fileName, -1);
+			IObjectServer server = Db4oFactory.OpenServer(CreateConfiguration(), fileName, -1
+				);
 			_port = server.Ext().Port();
 			try
 			{
@@ -41,17 +40,23 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
+		private IConfiguration CreateConfiguration()
+		{
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			Configure(config);
+			return config;
+		}
+
 		/// <exception cref="System.Exception"></exception>
 		protected virtual void WithClient(IContainerBlock block)
 		{
 			ContainerServices.WithContainer(OpenClient(), block);
 		}
 
-		[System.ObsoleteAttribute(@"using deprecated api")]
 		protected virtual ClientObjectContainer OpenClient()
 		{
-			return (ClientObjectContainer)Db4oFactory.OpenClient("localhost", _port, "db4o", 
-				"db4o");
+			return (ClientObjectContainer)Db4oFactory.OpenClient(CreateConfiguration(), "localhost"
+				, _port, "db4o", "db4o");
 		}
 
 		protected virtual int Port()

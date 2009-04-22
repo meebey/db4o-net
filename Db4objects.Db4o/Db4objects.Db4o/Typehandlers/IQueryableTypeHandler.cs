@@ -11,5 +11,7 @@ namespace Db4objects.Db4o.Typehandlers
 		/// <remarks>Returns true if the types handled by this type handler can not refer to other objects.
 		/// 	</remarks>
 		bool IsSimple();
+
+		bool DescendsIntoMembers();
 	}
 }

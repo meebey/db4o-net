@@ -22,6 +22,7 @@ namespace Db4objects.Db4o.Internal
 	/// </remarks>
 	/// <moveto>com.db4o.internal.blobs</moveto>
 	/// <exclude></exclude>
+	#if !SILVERLIGHT
 	public class BlobImpl : IBlob, System.ICloneable, IDb4oTypeImpl
 	{
 		public const int CopybufferLength = 4096;
@@ -51,11 +52,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual int AdjustReadDepth(int depth)
 		{
 			return 1;
-		}
-
-		public virtual bool CanBind()
-		{
-			return true;
 		}
 
 		private string CheckExt(Sharpen.IO.File file)
@@ -145,7 +141,7 @@ namespace Db4objects.Db4o.Internal
 			if (i_stream.IsClient())
 			{
 				i_file = file;
-				((IBlobTransport)i_stream).ReadBlobFrom(i_trans, this, file);
+				((IBlobTransport)i_stream).ReadBlobFrom(i_trans, this);
 			}
 			else
 			{
@@ -178,11 +174,6 @@ namespace Db4objects.Db4o.Internal
 			i_status = Status.Completed;
 		}
 
-		public virtual void PreDeactivate()
-		{
-		}
-
-		// do nothing
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual Sharpen.IO.File ServerFile(string promptName, bool writeToServer)
 		{
@@ -282,17 +273,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				i_file = file;
 				i_status = Status.Queued;
-				((IBlobTransport)i_stream).WriteBlobTo(i_trans, this, file);
+				((IBlobTransport)i_stream).WriteBlobTo(i_trans, this);
 			}
 			else
 			{
 				WriteLocal(file);
 			}
-		}
-
-		public virtual object StoredTo(Transaction a_trans)
-		{
-			return this;
 		}
 
 		public virtual void SetObjectReference(ObjectReference a_yapObject)
@@ -330,4 +316,5 @@ namespace Db4objects.Db4o.Internal
 			return MemberwiseClone();
 		}
 	}
+	#endif // !SILVERLIGHT
 }

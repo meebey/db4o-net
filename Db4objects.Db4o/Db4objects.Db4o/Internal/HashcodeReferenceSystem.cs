@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System.Text;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -113,6 +114,39 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			_hashCodeTree.Hc_traverse(visitor);
+		}
+
+		public override string ToString()
+		{
+			BooleanByRef found = new BooleanByRef();
+			StringBuilder str = new StringBuilder("HashcodeReferenceSystem {");
+			TraverseReferences(new _IVisitor4_116(found, str));
+			str.Append("}");
+			return str.ToString();
+		}
+
+		private sealed class _IVisitor4_116 : IVisitor4
+		{
+			public _IVisitor4_116(BooleanByRef found, StringBuilder str)
+			{
+				this.found = found;
+				this.str = str;
+			}
+
+			public void Visit(object obj)
+			{
+				if (found.value)
+				{
+					str.Append(", ");
+				}
+				ObjectReference @ref = (ObjectReference)obj;
+				str.Append(@ref.GetID());
+				found.value = true;
+			}
+
+			private readonly BooleanByRef found;
+
+			private readonly StringBuilder str;
 		}
 	}
 }

@@ -29,7 +29,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			new CustomTypeHandlerTestCase().RunSolo();
 		}
 
-		private sealed class CustomItemTypeHandler : ITypeHandler4, IVariableLengthTypeHandler
+		private sealed class CustomItemTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler
+			, IVariableLengthTypeHandler
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
@@ -63,21 +64,20 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				}
 			}
 
-			public object Read(IReadContext context)
+			public void Activate(IReferenceActivationContext context)
 			{
 				CustomTypeHandlerTestCase.Item item = (CustomTypeHandlerTestCase.Item)((UnmarshallingContext
 					)context).PersistentObject();
 				int elementCount = context.ReadInt();
 				if (elementCount == -1)
 				{
-					return item;
+					return;
 				}
 				item.numbers = new int[elementCount];
 				for (int i = 0; i < item.numbers.Length; i++)
 				{
 					item.numbers[i] = context.ReadInt();
 				}
-				return item;
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -94,6 +94,19 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				return ReflectClasses.AreEqual(typeof(CustomTypeHandlerTestCase.Item), type);
 			}
 
+			public void CascadeActivation(IActivationContext context)
+			{
+			}
+
+			public void CollectIDs(QueryingReadContext context)
+			{
+			}
+
+			public ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
+			{
+				return null;
+			}
+
 			internal CustomItemTypeHandler(CustomTypeHandlerTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
@@ -102,16 +115,17 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			private readonly CustomTypeHandlerTestCase _enclosing;
 		}
 
-		private sealed class CustomItemGrandChildTypeHandler : ITypeHandler4, IVariableLengthTypeHandler
+		private sealed class CustomItemGrandChildTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler
+			, IVariableLengthTypeHandler
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				return new _IPreparedComparison_83();
+				return new _IPreparedComparison_92();
 			}
 
-			private sealed class _IPreparedComparison_83 : IPreparedComparison
+			private sealed class _IPreparedComparison_92 : IPreparedComparison
 			{
-				public _IPreparedComparison_83()
+				public _IPreparedComparison_92()
 				{
 				}
 
@@ -129,17 +143,16 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				context.WriteInt(100);
 			}
 
-			public object Read(IReadContext context)
+			public void Activate(IReferenceActivationContext context)
 			{
 				CustomTypeHandlerTestCase.ItemGrandChild item = (CustomTypeHandlerTestCase.ItemGrandChild
-					)((IFirstClassReadContext)context).PersistentObject();
+					)((IReferenceActivationContext)context).PersistentObject();
 				item.age = context.ReadInt();
 				int check = context.ReadInt();
 				if (check != 100)
 				{
 					throw new InvalidOperationException();
 				}
-				return item;
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -155,6 +168,22 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 				return ReflectClasses.AreEqual(typeof(CustomTypeHandlerTestCase.ItemGrandChild), 
 					type);
+			}
+
+			public void CascadeActivation(IActivationContext context)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public void CollectIDs(QueryingReadContext context)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public ITypeHandler4 ReadCandidateHandler(QueryingReadContext context)
+			{
+				// TODO Auto-generated method stub
+				return null;
 			}
 
 			internal CustomItemGrandChildTypeHandler(CustomTypeHandlerTestCase _enclosing)
@@ -281,13 +310,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			GenericReflector reflector = ((Config4Impl)config).Reflector();
 			IReflectClass itemClass = reflector.ForClass(clazz);
-			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_215(itemClass);
+			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_238(itemClass);
 			config.RegisterTypeHandler(predicate, typeHandler);
 		}
 
-		private sealed class _ITypeHandlerPredicate_215 : ITypeHandlerPredicate
+		private sealed class _ITypeHandlerPredicate_238 : ITypeHandlerPredicate
 		{
-			public _ITypeHandlerPredicate_215(IReflectClass itemClass)
+			public _ITypeHandlerPredicate_238(IReflectClass itemClass)
 			{
 				this.itemClass = itemClass;
 			}

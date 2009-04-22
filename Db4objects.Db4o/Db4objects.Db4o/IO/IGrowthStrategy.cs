@@ -6,8 +6,15 @@ namespace Db4objects.Db4o.IO
 	/// <remarks>Strategy for file/byte array growth.</remarks>
 	public interface IGrowthStrategy
 	{
-		/// <param name="curSize">The current size of the entity</param>
-		/// <returns>The new size of the entity, must be bigger than curSize</returns>
+		/// <summary>
+		/// returns the incremented size after the growth
+		/// strategy has been applied
+		/// </summary>
+		/// <param name="curSize">the original size</param>
+		/// <returns>
+		/// the new size, after the growth strategy has been
+		/// applied, must be bigger than curSize
+		/// </returns>
 		long NewSize(long curSize);
 	}
 }

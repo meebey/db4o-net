@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Reflect.Generic
 			{
 				return;
 			}
-			if (IsSecondClass(clazz))
+			if (IsValueType(clazz))
 			{
 				return;
 			}
@@ -96,10 +96,10 @@ namespace Db4objects.Db4o.Internal.Reflect.Generic
 			return _container._handlers.IclassInternal.IsAssignableFrom(clazz);
 		}
 
-		private bool IsSecondClass(IReflectClass clazz)
+		private bool IsValueType(IReflectClass clazz)
 		{
 			ClassMetadata clazzMeta = _container.ClassMetadataForReflectClass(clazz);
-			return clazzMeta != null && clazzMeta.IsSecondClass();
+			return clazzMeta != null && clazzMeta.IsValueType();
 		}
 	}
 }

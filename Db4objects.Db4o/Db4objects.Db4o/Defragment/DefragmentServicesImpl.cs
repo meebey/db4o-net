@@ -2,10 +2,10 @@
 
 using System.Collections;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -15,7 +15,6 @@ using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Typehandlers;
-using Sharpen.IO;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -37,9 +36,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_38 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_37 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_38()
+			public _DbSelector_37()
 			{
 			}
 
@@ -49,12 +48,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_38
+		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_37
 			();
 
-		private sealed class _DbSelector_44 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_43 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_44()
+			public _DbSelector_43()
 			{
 			}
 
@@ -64,10 +63,8 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_44
+		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_43
 			();
-
-		private const long ClasscollectionPointerAddress = 2 + 2 * Const4.IntLength;
 
 		public readonly LocalObjectContainer _sourceDb;
 
@@ -83,6 +80,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private DefragmentConfig _defragConfig;
 
+		/// <exception cref="System.IO.IOException"></exception>
 		public DefragmentServicesImpl(DefragmentConfig defragConfig, IDefragmentListener 
 			listener)
 		{
@@ -90,7 +88,7 @@ namespace Db4objects.Db4o.Defragment
 			Config4Impl originalConfig = (Config4Impl)defragConfig.Db4oConfig();
 			Config4Impl sourceConfig = (Config4Impl)originalConfig.DeepClone(null);
 			sourceConfig.WeakReferences(false);
-			IStorage storage = sourceConfig.Storage;
+			IStorage storage = defragConfig.BackupStorage();
 			if (defragConfig.ReadOnly())
 			{
 				storage = new NonFlushingStorage(storage);
@@ -100,22 +98,27 @@ namespace Db4objects.Db4o.Defragment
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
 			_sourceDb.ShowInternalClasses(true);
-			_targetDb = FreshYapFile(defragConfig);
+			_targetDb = FreshTargetFile(defragConfig);
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
 			_defragConfig = defragConfig;
 		}
 
-		internal static LocalObjectContainer FreshYapFile(string fileName, int blockSize)
+		/// <exception cref="System.IO.IOException"></exception>
+		internal static LocalObjectContainer FreshTempFile(string fileName, int blockSize
+			)
 		{
-			File4.Delete(fileName);
-			return (LocalObjectContainer)Db4oFactory.OpenFile(DefragmentConfig.VanillaDb4oConfig
-				(blockSize), fileName).Ext();
+			FileStorage storage = new FileStorage();
+			storage.Delete(fileName);
+			IConfiguration db4oConfig = DefragmentConfig.VanillaDb4oConfig(blockSize);
+			db4oConfig.Storage = storage;
+			return (LocalObjectContainer)Db4oFactory.OpenFile(db4oConfig, fileName).Ext();
 		}
 
-		internal static LocalObjectContainer FreshYapFile(DefragmentConfig config)
+		/// <exception cref="System.IO.IOException"></exception>
+		internal static LocalObjectContainer FreshTargetFile(DefragmentConfig config)
 		{
-			File4.Delete(config.OrigPath());
+			config.Db4oConfig().Storage.Delete(config.OrigPath());
 			return (LocalObjectContainer)Db4oFactory.OpenFile(config.ClonedDb4oConfig(), config
 				.OrigPath()).Ext();
 		}
@@ -202,7 +205,7 @@ namespace Db4objects.Db4o.Defragment
 		public virtual ByteArrayBuffer BufferByAddress(DefragmentServicesImpl.DbSelector 
 			selector, int address, int length)
 		{
-			return selector.Db(this).BufferByAddress(address, length);
+			return selector.Db(this).DecryptedBufferByAddress(address, length);
 		}
 
 		/// <exception cref="System.ArgumentException"></exception>
@@ -254,30 +257,12 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual ITypeHandler4 SourceHandler(int id)
 		{
-			return _sourceDb.TypeHandlerForId(id);
+			return _sourceDb.TypeHandlerForClassMetadataID(id);
 		}
 
 		public virtual int SourceClassCollectionID()
 		{
 			return _sourceDb.ClassCollection().GetID();
-		}
-
-		/// <exception cref="System.IO.IOException"></exception>
-		public static void TargetClassCollectionID(string file, int id)
-		{
-			RandomAccessFile raf = new RandomAccessFile(file, "rw");
-			try
-			{
-				ByteArrayBuffer reader = new ByteArrayBuffer(Const4.IntLength);
-				raf.Seek(ClasscollectionPointerAddress);
-				reader._offset = 0;
-				reader.WriteInt(id);
-				raf.Write(reader._buffer);
-			}
-			finally
-			{
-				raf.Close();
-			}
 		}
 
 		private Hashtable4 _classIndices = new Hashtable4(16);
@@ -318,12 +303,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_239(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_224(this, collector));
 		}
 
-		private sealed class _IVisitor4_239 : IVisitor4
+		private sealed class _IVisitor4_224 : IVisitor4
 		{
-			public _IVisitor4_239(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_224(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -405,7 +390,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual ClassMetadata ClassMetadataForId(int id)
 		{
-			return _sourceDb.ClassMetadataForId(id);
+			return _sourceDb.ClassMetadataForID(id);
 		}
 
 		public virtual void RegisterUnindexed(int id)
@@ -425,7 +410,8 @@ namespace Db4objects.Db4o.Defragment
 
 		private Slot ReadPointer(DefragmentServicesImpl.DbSelector selector, int id)
 		{
-			ByteArrayBuffer reader = BufferByAddress(selector, id, Const4.PointerLength);
+			ByteArrayBuffer reader = selector.Db(this).RawBufferByAddress(id, Const4.PointerLength
+				);
 			int address = reader.ReadInt();
 			int length = reader.ReadInt();
 			return new Slot(address, length);
@@ -443,16 +429,16 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata curClazz = clazz;
 			while (!hasFieldIndex.value && curClazz != null)
 			{
-				curClazz.ForEachDeclaredField(new _IProcedure4_335(hasFieldIndex));
+				curClazz.ForEachDeclaredField(new _IProcedure4_320(hasFieldIndex));
 				curClazz = curClazz.GetAncestor();
 			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_335 : IProcedure4
+		private sealed class _IProcedure4_320 : IProcedure4
 		{
-			public _IProcedure4_335(BooleanByRef hasFieldIndex)
+			public _IProcedure4_320(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}

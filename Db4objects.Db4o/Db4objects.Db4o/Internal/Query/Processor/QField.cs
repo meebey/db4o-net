@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_yapField != null)
 			{
-				return i_yapField.HandlerClassMetadata(i_trans.Container());
+				return i_yapField.FieldType();
 			}
 			return null;
 		}
@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_yapClassID != 0)
 			{
-				ClassMetadata yc = a_trans.Container().ClassMetadataForId(i_yapClassID);
+				ClassMetadata yc = a_trans.Container().ClassMetadataForID(i_yapClassID);
 				i_yapField = (FieldMetadata)yc._aspects[_fieldHandle];
 			}
 		}

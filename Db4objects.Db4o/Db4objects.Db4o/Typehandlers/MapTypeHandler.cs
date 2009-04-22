@@ -3,7 +3,6 @@
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -16,7 +15,7 @@ namespace Db4objects.Db4o.Typehandlers
 {
 	/// <summary>Typehandler for classes that implement java.util.Map.</summary>
 	/// <remarks>Typehandler for classes that implement java.util.Map.</remarks>
-	public class MapTypeHandler : ITypeHandler4, IFirstClassHandler, IVariableLengthTypeHandler
+	public class MapTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
 			)
@@ -30,12 +29,12 @@ namespace Db4objects.Db4o.Typehandlers
 			IDictionary map = (IDictionary)obj;
 			KeyValueHandlerPair handlers = DetectKeyValueTypeHandlers(Container(context), map
 				);
-			WriteTypeHandlerIds(context, handlers);
+			WriteClassMetadataIds(context, handlers);
 			WriteElementCount(context, map);
 			WriteElements(context, map, handlers);
 		}
 
-		public virtual object Read(IReadContext context)
+		public virtual void Activate(IReferenceActivationContext context)
 		{
 			UnmarshallingContext unmarshallingContext = (UnmarshallingContext)context;
 			IDictionary map = (IDictionary)unmarshallingContext.PersistentObject();
@@ -51,7 +50,6 @@ namespace Db4objects.Db4o.Typehandlers
 					map[key] = value;
 				}
 			}
-			return map;
 		}
 
 		private void WriteElementCount(IWriteContext context, IDictionary map)
@@ -103,7 +101,7 @@ namespace Db4objects.Db4o.Typehandlers
 			}
 		}
 
-		public void CascadeActivation(ActivationContext4 context)
+		public void CascadeActivation(IActivationContext context)
 		{
 			IDictionary map = (IDictionary)context.TargetObject();
 			IEnumerator keys = (map).Keys.GetEnumerator();
@@ -131,7 +129,7 @@ namespace Db4objects.Db4o.Typehandlers
 			}
 		}
 
-		private void WriteTypeHandlerIds(IWriteContext context, KeyValueHandlerPair handlers
+		private void WriteClassMetadataIds(IWriteContext context, KeyValueHandlerPair handlers
 			)
 		{
 			context.WriteInt(0);
@@ -143,7 +141,7 @@ namespace Db4objects.Db4o.Typehandlers
 		{
 			buffer.ReadInt();
 			buffer.ReadInt();
-			ITypeHandler4 untypedHandler = Container(context).Handlers().UntypedObjectHandler
+			ITypeHandler4 untypedHandler = (ITypeHandler4)Container(context).Handlers().OpenTypeHandler
 				();
 			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
 		}
@@ -151,7 +149,8 @@ namespace Db4objects.Db4o.Typehandlers
 		private KeyValueHandlerPair DetectKeyValueTypeHandlers(IInternalObjectContainer container
 			, IDictionary map)
 		{
-			ITypeHandler4 untypedHandler = container.Handlers().UntypedObjectHandler();
+			ITypeHandler4 untypedHandler = (ITypeHandler4)container.Handlers().OpenTypeHandler
+				();
 			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
 		}
 

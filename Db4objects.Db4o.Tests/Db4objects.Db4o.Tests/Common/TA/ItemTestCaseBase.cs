@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 					continue;
 				}
 				IReflectClass type = field.GetFieldType();
-				if (Container().ClassMetadataForReflectClass(type).IsSecondClass())
+				if (Container().ClassMetadataForReflectClass(type).IsValueType())
 				{
 					continue;
 				}

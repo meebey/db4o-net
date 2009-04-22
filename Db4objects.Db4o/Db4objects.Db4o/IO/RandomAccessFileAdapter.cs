@@ -30,15 +30,12 @@ namespace Db4objects.Db4o.IO
 			try
 			{
 				_path = new Sharpen.IO.File(path).GetCanonicalPath();
-				_delegate = new RandomAccessFile(_path, readOnly ? "r" : "rw");
+				_delegate = RandomAccessFileFactory.NewRandomAccessFile(_path, readOnly, lockFile
+					);
 				if (initialLength > 0)
 				{
 					_delegate.Seek(initialLength - 1);
 					_delegate.Write(new byte[] { 0 });
-				}
-				if (lockFile)
-				{
-					Platform4.LockFile(_path, _delegate);
 				}
 				ok = true;
 			}

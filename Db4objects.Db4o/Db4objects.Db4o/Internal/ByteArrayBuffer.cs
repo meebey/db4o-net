@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return trans.Container().BufferByAddress(address, length);
+			return trans.Container().DecryptedBufferByAddress(address, length);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

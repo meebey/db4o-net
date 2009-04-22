@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal
 			, ITypeHandler4 typeHandler, object obj)
 		{
 			_arrayHandler = arrayHandler;
-			_preparedComparison = typeHandler.PrepareComparison(context, obj);
+			_preparedComparison = Handlers4.PrepareComparisonFor(typeHandler, context, obj);
 			_container = context.Transaction().Container();
 		}
 

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -251,13 +252,22 @@ namespace Db4objects.Db4o.Internal
 
 		internal ClassMetadata ClassMetadataForReflectClass(IReflectClass reflectClazz)
 		{
-			ClassMetadata clazz = (ClassMetadata)_classMetadataByClass.Get(reflectClazz);
-			if (clazz != null)
+			ClassMetadata cached = (ClassMetadata)_classMetadataByClass.Get(reflectClazz);
+			if (cached != null)
 			{
-				return clazz;
+				return cached;
 			}
-			clazz = (ClassMetadata)_classMetadataByBytes.Remove(GetNameBytes(reflectClazz.GetName
-				()));
+			return ReadClassMetadata(reflectClazz);
+		}
+
+		private ClassMetadata ReadClassMetadata(IReflectClass reflectClazz)
+		{
+			ClassMetadata clazz = (ClassMetadata)_classMetadataByBytes.Remove(GetNameBytes(reflectClazz
+				.GetName()));
+			if (clazz == null)
+			{
+				return null;
+			}
 			return ReadClassMetadata(clazz, reflectClazz);
 		}
 
@@ -312,7 +322,12 @@ namespace Db4objects.Db4o.Internal
 
 		internal ClassMetadata ClassMetadataForId(int id)
 		{
-			return ReadClassMetadata((ClassMetadata)_classMetadataByID.Get(id), null);
+			ClassMetadata classMetadata = (ClassMetadata)_classMetadataByID.Get(id);
+			if (null == classMetadata)
+			{
+				return null;
+			}
+			return ReadClassMetadata(classMetadata, null);
 		}
 
 		public int ClassMetadataIdForName(string name)
@@ -537,7 +552,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (classMetadata == null)
 			{
-				return null;
+				throw new ArgumentNullException();
 			}
 			if (!classMetadata.StateUnread())
 			{

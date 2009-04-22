@@ -10,8 +10,8 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public interface IFieldAwareTypeHandler : ITypeHandler4, IVersionedTypeHandler, IFirstClassHandler
-		, IVirtualAttributeHandler
+	public interface IFieldAwareTypeHandler : IReferenceTypeHandler, IVersionedTypeHandler
+		, ICascadingTypeHandler, IVirtualAttributeHandler
 	{
 		void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot);
 
@@ -23,6 +23,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		void ClassMetadata(Db4objects.Db4o.Internal.ClassMetadata classMetadata);
 
-		bool SeekToField(ObjectHeaderContext context, FieldMetadata field);
+		bool SeekToField(ObjectHeaderContext context, ClassAspect aspect);
 	}
 }

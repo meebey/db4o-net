@@ -60,13 +60,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void Test()
 		{
-			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _ICodeBlock_55
+			Assert.Expect(typeof(ReflectException), typeof(ItemException), new _ICodeBlock_54
 				(this));
 		}
 
-		private sealed class _ICodeBlock_55 : ICodeBlock
+		private sealed class _ICodeBlock_54 : ICodeBlock
 		{
-			public _ICodeBlock_55(ActivationExceptionBubblesUpTestCase _enclosing)
+			public _ICodeBlock_54(ActivationExceptionBubblesUpTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

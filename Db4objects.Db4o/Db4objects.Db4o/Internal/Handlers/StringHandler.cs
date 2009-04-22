@@ -15,8 +15,8 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	/// <exclude></exclude>
-	public class StringHandler : IIndexableTypeHandler, IBuiltinTypeHandler, IVariableLengthTypeHandler
-		, IQueryableTypeHandler, IEmbeddedTypeHandler
+	public class StringHandler : IValueTypeHandler, IIndexableTypeHandler, IBuiltinTypeHandler
+		, IVariableLengthTypeHandler, IQueryableTypeHandler
 	{
 		private IReflectClass _classReflector;
 
@@ -41,6 +41,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return true;
 		}
 
+		public virtual bool DescendsIntoMembers()
+		{
+			return false;
+		}
+
 		public virtual bool CanHold(IReflectClass type)
 		{
 			return type.Equals(ClassReflector());
@@ -51,8 +56,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (indexEntry is Slot)
 			{
 				Slot slot = (Slot)indexEntry;
-				indexEntry = context.Transaction().Container().BufferByAddress(slot.Address(), slot
-					.Length());
+				indexEntry = context.Transaction().Container().DecryptedBufferByAddress(slot.Address
+					(), slot.Length());
 			}
 			return ReadStringNoDebug(context, (IReadBuffer)indexEntry);
 		}
@@ -131,7 +136,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public void WriteShort(Transaction trans, string str, ByteArrayBuffer buffer)
 		{
-			trans.Container().Handlers().StringIO().WriteLengthAndString(buffer, str);
+			StringIo(trans.Container()).WriteLengthAndString(buffer, str);
 		}
 
 		internal virtual ByteArrayBuffer Val(object obj, IContext context)
@@ -148,7 +153,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (obj is Slot)
 			{
 				Slot s = (Slot)obj;
-				return oc.BufferByAddress(s.Address(), s.Length());
+				return oc.DecryptedBufferByAddress(s.Address(), s.Length());
 			}
 			return null;
 		}
@@ -265,12 +270,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_236(this, context, sourceBuffer);
+			return new _IPreparedComparison_238(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_236 : IPreparedComparison
+		private sealed class _IPreparedComparison_238 : IPreparedComparison
 		{
-			public _IPreparedComparison_236(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_238(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

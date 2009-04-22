@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Typehandlers;
@@ -15,8 +14,15 @@ namespace Db4objects.Db4o.Internal
 	{
 		public readonly ITypeHandler4 _typeHandler;
 
-		public TypeHandlerAspect(ITypeHandler4 typeHandler)
+		private readonly ClassMetadata _ownerMetadata;
+
+		public TypeHandlerAspect(ClassMetadata classMetadata, ITypeHandler4 typeHandler)
 		{
+			if (Handlers4.IsValueType(typeHandler))
+			{
+				throw new InvalidOperationException();
+			}
+			_ownerMetadata = classMetadata;
 			_typeHandler = typeHandler;
 		}
 
@@ -45,31 +51,29 @@ namespace Db4objects.Db4o.Internal
 			return _typeHandler.GetType().FullName;
 		}
 
-		public override void CascadeActivation(Transaction trans, object obj, IActivationDepth
-			 depth)
+		public override void CascadeActivation(IActivationContext context)
 		{
-			if (!Handlers4.IsFirstClass(_typeHandler))
+			if (!Handlers4.IsCascading(_typeHandler))
 			{
 				return;
 			}
-			ActivationContext4 context = new ActivationContext4(trans, obj, depth);
 			Handlers4.CascadeActivation(context, _typeHandler);
 		}
 
 		public override void CollectIDs(CollectIdContext context)
 		{
-			if (!Handlers4.IsFirstClass(_typeHandler))
+			if (!Handlers4.IsCascading(_typeHandler))
 			{
 				IncrementOffset(context);
 				return;
 			}
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_55(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_58(this, context
 				));
 		}
 
-		private sealed class _IClosure4_55 : IClosure4
+		private sealed class _IClosure4_58 : IClosure4
 		{
-			public _IClosure4_55(TypeHandlerAspect _enclosing, CollectIdContext context)
+			public _IClosure4_58(TypeHandlerAspect _enclosing, CollectIdContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -79,7 +83,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 					(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-				((IFirstClassHandler)this._enclosing._typeHandler).CollectIDs(queryingReadContext
+				((ICascadingTypeHandler)this._enclosing._typeHandler).CollectIDs(queryingReadContext
 					);
 				return null;
 			}
@@ -91,13 +95,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_65(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_68(this, context
 				));
 		}
 
-		private sealed class _IClosure4_65 : IClosure4
+		private sealed class _IClosure4_68 : IClosure4
 		{
-			public _IClosure4_65(TypeHandlerAspect _enclosing, IDefragmentContext context)
+			public _IClosure4_68(TypeHandlerAspect _enclosing, IDefragmentContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -122,7 +126,26 @@ namespace Db4objects.Db4o.Internal
 		public override void Marshall(MarshallingContext context, object obj)
 		{
 			context.CreateIndirectionWithinSlot();
-			_typeHandler.Write(context, obj);
+			if (IsNotHandlingConcreteType(context))
+			{
+				_typeHandler.Write(context, obj);
+				return;
+			}
+			if (_typeHandler is IInstantiatingTypeHandler)
+			{
+				IInstantiatingTypeHandler instantiating = (IInstantiatingTypeHandler)_typeHandler;
+				instantiating.WriteInstantiation(context, obj);
+				instantiating.Write(context, obj);
+			}
+			else
+			{
+				_typeHandler.Write(context, obj);
+			}
+		}
+
+		private bool IsNotHandlingConcreteType(MarshallingContext context)
+		{
+			return context.ClassMetadata() != _ownerMetadata;
 		}
 
 		public override Db4objects.Db4o.Internal.Marshall.AspectType AspectType()
@@ -130,58 +153,44 @@ namespace Db4objects.Db4o.Internal
 			return Db4objects.Db4o.Internal.Marshall.AspectType.Typehandler;
 		}
 
-		public override void Instantiate(UnmarshallingContext context)
+		public override void Activate(UnmarshallingContext context)
 		{
 			if (!CheckEnabled(context))
 			{
 				return;
 			}
-			object oldObject = context.PersistentObject();
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_92(this, context
-				, oldObject));
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_110(this, context
+				));
 		}
 
-		private sealed class _IClosure4_92 : IClosure4
+		private sealed class _IClosure4_110 : IClosure4
 		{
-			public _IClosure4_92(TypeHandlerAspect _enclosing, UnmarshallingContext context, 
-				object oldObject)
+			public _IClosure4_110(TypeHandlerAspect _enclosing, UnmarshallingContext context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
-				this.oldObject = oldObject;
 			}
 
 			public object Run()
 			{
-				object readObject = this._enclosing._typeHandler.Read(context);
-				if (readObject != null && oldObject != readObject)
-				{
-					if (!Handlers4.IsEmbedded(this._enclosing._typeHandler))
-					{
-						throw new InvalidOperationException("First class handler can only return the object in the context."
-							);
-					}
-					context.PersistentObject(readObject);
-				}
+				Handlers4.Activate(context, this._enclosing._typeHandler);
 				return null;
 			}
 
 			private readonly TypeHandlerAspect _enclosing;
 
 			private readonly UnmarshallingContext context;
-
-			private readonly object oldObject;
 		}
 
 		public override void Delete(DeleteContextImpl context, bool isUpdate)
 		{
-			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_107(this, context
+			context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_119(this, context
 				));
 		}
 
-		private sealed class _IClosure4_107 : IClosure4
+		private sealed class _IClosure4_119 : IClosure4
 		{
-			public _IClosure4_107(TypeHandlerAspect _enclosing, DeleteContextImpl context)
+			public _IClosure4_119(TypeHandlerAspect _enclosing, DeleteContextImpl context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
@@ -198,10 +207,9 @@ namespace Db4objects.Db4o.Internal
 			private readonly DeleteContextImpl context;
 		}
 
-		public override void Deactivate(Transaction trans, object obj, IActivationDepth depth
-			)
+		public override void Deactivate(IActivationContext context)
 		{
-			CascadeActivation(trans, obj, depth);
+			CascadeActivation(context);
 		}
 
 		public override bool CanBeDisabled()

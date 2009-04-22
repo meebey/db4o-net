@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				ClassMetadata classMetadata = yapClassId == 0 ? null : stream.ClassMetadataForId(
+				ClassMetadata classMetadata = yapClassId == 0 ? null : stream.ClassMetadataForID(
 					yapClassId);
 				int id = _payLoad.GetID();
 				stream.PrefetchedIDConsumed(id);

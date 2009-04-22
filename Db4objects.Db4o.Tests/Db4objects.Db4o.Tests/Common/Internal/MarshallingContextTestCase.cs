@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingContextTestCase.StringItem writtenItem = new MarshallingContextTestCase.StringItem
 				("one");
 			MarshallingContextTestCase.StringItem readItem = (MarshallingContextTestCase.StringItem
-				)WriteRead(writtenItem);
+				)WriteAndRead(writtenItem);
 			Assert.AreEqual(writtenItem._name, readItem._name);
 		}
 
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingContextTestCase.StringIntItem writtenItem = new MarshallingContextTestCase.StringIntItem
 				("one", 777);
 			MarshallingContextTestCase.StringIntItem readItem = (MarshallingContextTestCase.StringIntItem
-				)WriteRead(writtenItem);
+				)WriteAndRead(writtenItem);
 			Assert.AreEqual(writtenItem._name, readItem._name);
 			Assert.AreEqual(writtenItem._int, readItem._int);
 		}
@@ -80,13 +80,13 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			MarshallingContextTestCase.StringIntBooleanItem writtenItem = new MarshallingContextTestCase.StringIntBooleanItem
 				("one", 777, true);
 			MarshallingContextTestCase.StringIntBooleanItem readItem = (MarshallingContextTestCase.StringIntBooleanItem
-				)WriteRead(writtenItem);
+				)WriteAndRead(writtenItem);
 			Assert.AreEqual(writtenItem._name, readItem._name);
 			Assert.AreEqual(writtenItem._int, readItem._int);
 			Assert.AreEqual(writtenItem._bool, readItem._bool);
 		}
 
-		private object WriteRead(object obj)
+		private object WriteAndRead(object obj)
 		{
 			int imaginativeID = 500;
 			ObjectReference @ref = new ObjectReference(ClassMetadataForObject(obj), imaginativeID
@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			@ref.SetObject(obj);
 			MarshallingContext marshallingContext = new MarshallingContext(Trans(), @ref, int.MaxValue
 				, true);
-			@ref.ClassMetadata().Write(marshallingContext, obj);
+			Handlers4.Write(@ref.ClassMetadata().TypeHandler(), marshallingContext, obj);
 			Pointer4 pointer = marshallingContext.AllocateSlot();
 			ByteArrayBuffer buffer = marshallingContext.ToWriteBuffer(pointer);
 			buffer.Seek(0);

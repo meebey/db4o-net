@@ -1,12 +1,13 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Diagnostic;
 using Db4objects.Db4o.Internal.Encoding;
-using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
+using Db4objects.Db4o.Internal.Handlers.Versions;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Reflect;
@@ -25,26 +26,22 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		public const byte HandlerVersion = (byte)7;
+		public const byte HandlerVersion = (byte)8;
 
 		private readonly ObjectContainerBase _container;
 
 		private static readonly IDb4oTypeImpl[] _db4oTypes = new IDb4oTypeImpl[] { new BlobImpl
 			() };
 
-		private ClassMetadata _untypedArrayHandler;
+		private ITypeHandler4 _openArrayHandler;
 
-		private ClassMetadata _untypedMultiDimensionalArrayHandler;
+		private ITypeHandler4 _openMultiDimensionalArrayHandler;
 
-		private IFieldHandler _untypedFieldHandler;
+		private ITypeHandler4 _openTypeHandler;
 
 		public StringHandler _stringHandler;
 
 		private Hashtable4 _mapIdToTypeInfo = NewHashtable();
-
-		private Hashtable4 _mapFieldHandlerToId = NewHashtable();
-
-		private Hashtable4 _mapTypeHandlerToId = NewHashtable();
 
 		private Hashtable4 _mapReflectorToClassMetadata = NewHashtable();
 
@@ -53,11 +50,7 @@ namespace Db4objects.Db4o.Internal
 		private readonly VirtualFieldMetadata[] _virtualFields = new VirtualFieldMetadata
 			[2];
 
-		private readonly Hashtable4 _mapReflectorToFieldHandler = NewHashtable();
-
 		private readonly Hashtable4 _mapReflectorToTypeHandler = NewHashtable();
-
-		private readonly Hashtable4 _mapFieldHandlerToReflector = NewHashtable();
 
 		private SharedIndexedFields _indexes;
 
@@ -97,12 +90,15 @@ namespace Db4objects.Db4o.Internal
 
 		internal IReflectClass IclassTransientclass;
 
+		private PrimitiveTypeMetadata _untypedArrayMetadata;
+
+		private PrimitiveTypeMetadata _untypedMultiDimensionalMetadata;
+
 		internal HandlerRegistry(ObjectContainerBase container, byte stringEncoding, GenericReflector
 			 reflector)
 		{
 			// this is the master container and not valid
 			// for TransportObjectContainer
-			// see comment in classReflectorForHandler
 			_handlerVersions = new HandlerVersionRegistry(this);
 			_stringIO = BuiltInStringEncoding.StringIoForEncoding(stringEncoding, container.ConfigImpl
 				().StringEncoding());
@@ -122,16 +118,16 @@ namespace Db4objects.Db4o.Internal
 
 		private void InitArrayHandlers()
 		{
-			ITypeHandler4 handler = (ITypeHandler4)FieldHandlerForId(Handlers4.UntypedId);
-			_untypedArrayHandler = new PrimitiveFieldHandler(Container(), new ArrayHandler(handler
+			ITypeHandler4 elementHandler = OpenTypeHandler();
+			_untypedArrayMetadata = new PrimitiveTypeMetadata(Container(), new ArrayHandler(elementHandler
 				, false), Handlers4.AnyArrayId, IclassObject);
-			MapTypeInfo(Handlers4.AnyArrayId, _untypedArrayHandler, new UntypedArrayFieldHandler
-				(), _untypedArrayHandler, null);
-			_untypedMultiDimensionalArrayHandler = new PrimitiveFieldHandler(Container(), new 
-				MultidimensionalArrayHandler(handler, false), Handlers4.AnyArrayNId, IclassObject
+			_openArrayHandler = _untypedArrayMetadata.TypeHandler();
+			MapTypeInfo(Handlers4.AnyArrayId, _untypedArrayMetadata, null);
+			_untypedMultiDimensionalMetadata = new PrimitiveTypeMetadata(Container(), new MultidimensionalArrayHandler
+				(elementHandler, false), Handlers4.AnyArrayNId, IclassObject);
+			_openMultiDimensionalArrayHandler = _untypedMultiDimensionalMetadata.TypeHandler(
 				);
-			MapTypeInfo(Handlers4.AnyArrayNId, _untypedMultiDimensionalArrayHandler, new UntypedMultidimensionalArrayFieldHandler
-				(), _untypedMultiDimensionalArrayHandler, null);
+			MapTypeInfo(Handlers4.AnyArrayNId, _untypedMultiDimensionalMetadata, null);
 		}
 
 		private void RegisterPlatformTypes()
@@ -190,24 +186,19 @@ namespace Db4objects.Db4o.Internal
 
 		private void RegisterUntypedHandlers()
 		{
-			int id = Handlers4.UntypedId;
-			_untypedFieldHandler = new Db4objects.Db4o.Internal.UntypedFieldHandler(Container
-				());
-			PrimitiveFieldHandler classMetadata = new PrimitiveFieldHandler(Container(), (ITypeHandler4
-				)_untypedFieldHandler, id, IclassObject);
-			Map(id, classMetadata, _untypedFieldHandler, new PlainObjectHandler(), IclassObject
-				);
-			RegisterHandlerVersion(_untypedFieldHandler, 0, new UntypedFieldHandler0(Container
-				()));
-			RegisterHandlerVersion(_untypedFieldHandler, 2, new UntypedFieldHandler2(Container
-				()));
+			_openTypeHandler = new Db4objects.Db4o.Internal.OpenTypeHandler(Container());
+			PrimitiveTypeMetadata classMetadata = new ObjectTypeMetadata(Container(), _openTypeHandler
+				, Handlers4.UntypedId, IclassObject);
+			Map(Handlers4.UntypedId, classMetadata, IclassObject);
+			RegisterHandlerVersion(_openTypeHandler, 0, new OpenTypeHandler0(Container()));
+			RegisterHandlerVersion(_openTypeHandler, 2, new OpenTypeHandler2(Container()));
+			RegisterHandlerVersion(_openTypeHandler, 7, new OpenTypeHandler7(Container()));
 		}
 
 		private void RegisterCompositeHandlerVersions()
 		{
-			FirstClassObjectHandler firstClassObjectHandler = new FirstClassObjectHandler();
-			RegisterHandlerVersion(firstClassObjectHandler, 0, new FirstClassObjectHandler0()
-				);
+			RegisterHandlerVersion(new StandardReferenceTypeHandler(), 0, new StandardReferenceTypeHandler0
+				());
 			ArrayHandler arrayHandler = new ArrayHandler();
 			RegisterHandlerVersion(arrayHandler, 0, new ArrayHandler0());
 			RegisterHandlerVersion(arrayHandler, 1, new ArrayHandler1());
@@ -219,14 +210,8 @@ namespace Db4objects.Db4o.Internal
 				());
 			RegisterHandlerVersion(multidimensionalArrayHandler, 3, new MultidimensionalArrayHandler3
 				());
-			PrimitiveFieldHandler primitiveFieldHandler = new PrimitiveFieldHandler(Container
-				());
-			RegisterHandlerVersion(primitiveFieldHandler, 0, primitiveFieldHandler);
-			// same handler, but making sure versions get cascaded
-			RegisterHandlerVersion(primitiveFieldHandler, 2, primitiveFieldHandler);
 		}
 
-		// same handler, but making sure versions get cascaded
 		private void RegisterBuiltinHandler(int id, IBuiltinTypeHandler handler)
 		{
 			RegisterBuiltinHandler(id, handler, true, null, null);
@@ -245,64 +230,56 @@ namespace Db4objects.Db4o.Internal
 				_reflector.RegisterPrimitiveClass(id, primitiveName, converter);
 			}
 			IReflectClass classReflector = typeHandler.ClassReflector();
-			PrimitiveFieldHandler classMetadata = new PrimitiveFieldHandler(Container(), typeHandler
+			PrimitiveTypeMetadata classMetadata = new PrimitiveTypeMetadata(Container(), typeHandler
 				, id, classReflector);
-			Map(id, classMetadata, typeHandler, typeHandler, classReflector);
+			Map(id, classMetadata, classReflector);
 			if (typeHandler is PrimitiveHandler)
 			{
 				IReflectClass primitiveClassReflector = ((PrimitiveHandler)typeHandler).PrimitiveClassReflector
 					();
 				if (primitiveClassReflector != null)
 				{
-					MapPrimitive(0, classMetadata, typeHandler, typeHandler, primitiveClassReflector);
+					MapPrimitive(0, classMetadata, primitiveClassReflector);
 				}
 			}
 		}
 
-		private void Map(int id, PrimitiveFieldHandler classMetadata, IFieldHandler fieldHandler
-			, ITypeHandler4 typeHandler, IReflectClass classReflector)
+		private void Map(int id, PrimitiveTypeMetadata classMetadata, IReflectClass classReflector
+			)
 		{
 			// TODO: remove when _mapIdToClassMetadata is gone 
-			MapTypeInfo(id, classMetadata, fieldHandler, typeHandler, classReflector);
-			MapPrimitive(id, classMetadata, fieldHandler, typeHandler, classReflector);
+			MapTypeInfo(id, classMetadata, classReflector);
+			MapPrimitive(id, classMetadata, classReflector);
 			if (id > _highestBuiltinTypeID)
 			{
 				_highestBuiltinTypeID = id;
 			}
 		}
 
-		private void MapTypeInfo(int id, ClassMetadata classMetadata, IFieldHandler fieldHandler
-			, ITypeHandler4 typeHandler, IReflectClass classReflector)
+		private void MapTypeInfo(int id, ClassMetadata classMetadata, IReflectClass classReflector
+			)
 		{
-			_mapIdToTypeInfo.Put(id, new TypeInfo(classMetadata, fieldHandler, typeHandler, classReflector
+			_mapIdToTypeInfo.Put(id, new HandlerRegistry.TypeInfo(classMetadata, classReflector
 				));
 		}
 
-		private void MapPrimitive(int id, ClassMetadata classMetadata, IFieldHandler fieldHandler
-			, ITypeHandler4 typeHandler, IReflectClass classReflector)
+		private void MapPrimitive(int id, ClassMetadata classMetadata, IReflectClass classReflector
+			)
 		{
-			_mapFieldHandlerToReflector.Put(fieldHandler, classReflector);
-			MapFieldHandler(classReflector, fieldHandler);
-			_mapReflectorToTypeHandler.Put(classReflector, typeHandler);
+			MapClassToTypeHandler(classReflector, classMetadata.TypeHandler());
 			if (classReflector != null)
 			{
 				_mapReflectorToClassMetadata.Put(classReflector, classMetadata);
 			}
-			if (id != 0)
-			{
-				int wrappedID = id;
-				_mapFieldHandlerToId.Put(fieldHandler, wrappedID);
-				_mapTypeHandlerToId.Put(typeHandler, wrappedID);
-			}
 		}
 
-		public void MapFieldHandler(IReflectClass classReflector, IFieldHandler fieldHandler
+		private void MapClassToTypeHandler(IReflectClass classReflector, ITypeHandler4 typeHandler
 			)
 		{
-			_mapReflectorToFieldHandler.Put(classReflector, fieldHandler);
+			_mapReflectorToTypeHandler.Put(classReflector, typeHandler);
 		}
 
-		public void RegisterHandlerVersion(IFieldHandler handler, int version, ITypeHandler4
+		public void RegisterHandlerVersion(ITypeHandler4 handler, int version, ITypeHandler4
 			 replacement)
 		{
 			if (replacement is IBuiltinTypeHandler)
@@ -324,7 +301,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return Db4objects.Db4o.Internal.ArrayType.None;
 			}
-			if (Reflector().Array().IsNDimensional(claxx))
+			if (IsNDimensional(claxx))
 			{
 				return Db4objects.Db4o.Internal.ArrayType.MultidimensionalArray;
 			}
@@ -383,7 +360,7 @@ namespace Db4objects.Db4o.Internal
 
 		public IReflectClass ClassForID(int id)
 		{
-			TypeInfo typeInfo = TypeInfoForID(id);
+			HandlerRegistry.TypeInfo typeInfo = TypeInfoForID(id);
 			if (typeInfo == null)
 			{
 				return null;
@@ -391,44 +368,9 @@ namespace Db4objects.Db4o.Internal
 			return typeInfo.classReflector;
 		}
 
-		public ITypeHandler4 TypeHandlerForID(int id)
+		private HandlerRegistry.TypeInfo TypeInfoForID(int id)
 		{
-			TypeInfo typeInfo = TypeInfoForID(id);
-			if (typeInfo == null)
-			{
-				return null;
-			}
-			return typeInfo.typeHandler;
-		}
-
-		private TypeInfo TypeInfoForID(int id)
-		{
-			return (TypeInfo)_mapIdToTypeInfo.Get(id);
-		}
-
-		public int TypeHandlerID(IFieldHandler handler)
-		{
-			if (handler is ClassMetadata)
-			{
-				return ((ClassMetadata)handler).GetID();
-			}
-			object idAsInt = _mapTypeHandlerToId.Get(handler);
-			if (idAsInt == null)
-			{
-				return 0;
-			}
-			return ((int)idAsInt);
-		}
-
-		public int FieldHandlerIdForFieldHandler(IFieldHandler fieldHandler)
-		{
-			object wrappedIdObj = _mapFieldHandlerToId.Get(fieldHandler);
-			if (wrappedIdObj != null)
-			{
-				int wrappedId = (int)wrappedIdObj;
-				return wrappedId;
-			}
-			return 0;
+			return (HandlerRegistry.TypeInfo)_mapIdToTypeInfo.Get(id);
 		}
 
 		private void InitClassReflectors(GenericReflector reflector)
@@ -477,57 +419,12 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassMetadata ClassMetadataForId(int id)
 		{
-			TypeInfo typeInfo = TypeInfoForID(id);
+			HandlerRegistry.TypeInfo typeInfo = TypeInfoForID(id);
 			if (typeInfo == null)
 			{
 				return null;
 			}
 			return typeInfo.classMetadata;
-		}
-
-		public IFieldHandler FieldHandlerForId(int id)
-		{
-			TypeInfo typeInfo = TypeInfoForID(id);
-			if (typeInfo == null)
-			{
-				return null;
-			}
-			return typeInfo.fieldHandler;
-		}
-
-		public IFieldHandler FieldHandlerForClass(IReflectClass clazz)
-		{
-			// TODO: maybe need special handling for arrays here?
-			if (clazz == null)
-			{
-				return null;
-			}
-			if (clazz.IsInterface())
-			{
-				return UntypedFieldHandler();
-			}
-			if (clazz.IsArray())
-			{
-				if (Reflector().Array().IsNDimensional(clazz))
-				{
-					return _untypedMultiDimensionalArrayHandler;
-				}
-				return _untypedArrayHandler;
-			}
-			IFieldHandler fieldHandler = (IFieldHandler)_mapReflectorToFieldHandler.Get(clazz
-				);
-			if (fieldHandler != null)
-			{
-				return fieldHandler;
-			}
-			ITypeHandler4 configuredHandler = Container().ConfigImpl().TypeHandlerForClass(clazz
-				, Db4objects.Db4o.Internal.HandlerRegistry.HandlerVersion);
-			if (configuredHandler != null && Handlers4.IsEmbedded(configuredHandler))
-			{
-				MapFieldHandler(clazz, configuredHandler);
-				return configuredHandler;
-			}
-			return null;
 		}
 
 		internal ClassMetadata ClassMetadataForClass(IReflectClass clazz)
@@ -538,32 +435,32 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (clazz.IsArray())
 			{
-				return (ClassMetadata)UntypedArrayHandler(clazz);
+				return IsNDimensional(clazz) ? _untypedMultiDimensionalMetadata : _untypedArrayMetadata;
 			}
 			return (ClassMetadata)_mapReflectorToClassMetadata.Get(clazz);
 		}
 
-		public IFieldHandler UntypedFieldHandler()
+		public ITypeHandler4 OpenTypeHandler()
 		{
-			return _untypedFieldHandler;
+			return _openTypeHandler;
 		}
 
-		public ITypeHandler4 UntypedObjectHandler()
-		{
-			return (ITypeHandler4)UntypedFieldHandler();
-		}
-
-		public ITypeHandler4 UntypedArrayHandler(IReflectClass clazz)
+		public ITypeHandler4 OpenArrayHandler(IReflectClass clazz)
 		{
 			if (clazz.IsArray())
 			{
-				if (Reflector().Array().IsNDimensional(clazz))
+				if (IsNDimensional(clazz))
 				{
-					return _untypedMultiDimensionalArrayHandler;
+					return _openMultiDimensionalArrayHandler;
 				}
-				return _untypedArrayHandler;
+				return _openArrayHandler;
 			}
 			return null;
+		}
+
+		private bool IsNDimensional(IReflectClass clazz)
+		{
+			return Reflector().Array().IsNDimensional(clazz);
 		}
 
 		public ITypeHandler4 TypeHandlerForClass(IReflectClass clazz)
@@ -572,36 +469,31 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return (ITypeHandler4)_mapReflectorToTypeHandler.Get(clazz);
-		}
-
-		public IReflectClass ClassReflectorForHandler(ITypeHandler4 handler)
-		{
-			// This method never gets called from test cases so far.
-			// It is written for the usecase of custom Typehandlers and
-			// it is only required for arrays.
-			// The methodology is highly problematic since it implies that 
-			// one Typehandler can only be used for one ReflectClass.
-			return (IReflectClass)_mapFieldHandlerToReflector.Get(handler);
-		}
-
-		public bool IsSecondClass(object a_object)
-		{
-			if (a_object != null)
+			if (clazz.IsArray())
 			{
-				IReflectClass claxx = Reflector().ForObject(a_object);
-				if (_mapReflectorToFieldHandler.Get(claxx) != null)
+				if (IsNDimensional(clazz))
 				{
-					return true;
+					return _openMultiDimensionalArrayHandler;
 				}
-				return Platform4.IsValueType(claxx);
+				return _openArrayHandler;
 			}
-			return false;
+			ITypeHandler4 cachedTypeHandler = (ITypeHandler4)_mapReflectorToTypeHandler.Get(clazz
+				);
+			if (cachedTypeHandler != null)
+			{
+				return cachedTypeHandler;
+			}
+			ITypeHandler4 configuredTypeHandler = ConfiguredTypeHandler(clazz);
+			if (Handlers4.IsValueType(configuredTypeHandler))
+			{
+				return configuredTypeHandler;
+			}
+			return null;
 		}
 
 		public bool IsSystemHandler(int id)
 		{
-			return id <= _highestBuiltinTypeID;
+			return id > 0 && id <= _highestBuiltinTypeID;
 		}
 
 		public VirtualFieldMetadata VirtualFieldByName(string name)
@@ -648,11 +540,16 @@ namespace Db4objects.Db4o.Internal
 
 		public ITypeHandler4 ConfiguredTypeHandler(IReflectClass claxx)
 		{
+			object cachedHandler = _mapReflectorToTypeHandler.Get(claxx);
+			if (null != cachedHandler)
+			{
+				return (ITypeHandler4)cachedHandler;
+			}
 			ITypeHandler4 typeHandler = Container().ConfigImpl().TypeHandlerForClass(claxx, HandlerVersion
 				);
-			if (Handlers4.IsEmbedded(typeHandler))
+			if (Handlers4.IsValueType(typeHandler))
 			{
-				_mapReflectorToTypeHandler.Put(claxx, typeHandler);
+				MapClassToTypeHandler(claxx, typeHandler);
 			}
 			return typeHandler;
 		}
@@ -673,6 +570,30 @@ namespace Db4objects.Db4o.Internal
 		{
 			return IclassTransientclass.IsAssignableFrom(claxx) || Platform4.IsTransient(claxx
 				);
+		}
+
+		public void TreatAsOpenType(Type clazz)
+		{
+			MapClassToTypeHandler(ReflectClassFor(clazz), OpenTypeHandler());
+		}
+
+		private IReflectClass ReflectClassFor(Type clazz)
+		{
+			return Container().Reflector().ForClass(clazz);
+		}
+
+		private class TypeInfo
+		{
+			public ClassMetadata classMetadata;
+
+			public IReflectClass classReflector;
+
+			public TypeInfo(ClassMetadata classMetadata_, IReflectClass classReflector_)
+			{
+				// TODO: remove when no longer needed in HandlerRegistry
+				classMetadata = classMetadata_;
+				classReflector = classReflector_;
+			}
 		}
 	}
 }

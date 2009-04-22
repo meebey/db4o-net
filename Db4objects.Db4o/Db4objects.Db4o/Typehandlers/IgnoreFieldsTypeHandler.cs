@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -12,8 +11,14 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Typehandlers
 {
 	/// <summary>Typehandler that ignores all fields on a class</summary>
-	public class IgnoreFieldsTypeHandler : ITypeHandler4, IFirstClassHandler
+	public class IgnoreFieldsTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler
 	{
+		public static readonly ITypeHandler4 Instance = new IgnoreFieldsTypeHandler();
+
+		private IgnoreFieldsTypeHandler()
+		{
+		}
+
 		public virtual void Defragment(IDefragmentContext context)
 		{
 		}
@@ -25,23 +30,21 @@ namespace Db4objects.Db4o.Typehandlers
 		}
 
 		// do nothing
-		public virtual object Read(IReadContext context)
+		public virtual void Activate(IReferenceActivationContext context)
 		{
-			return null;
 		}
 
 		public virtual void Write(IWriteContext context, object obj)
 		{
 		}
 
-		// do nothing
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
 			)
 		{
 			return null;
 		}
 
-		public virtual void CascadeActivation(ActivationContext4 context)
+		public virtual void CascadeActivation(IActivationContext context)
 		{
 		}
 

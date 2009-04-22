@@ -24,6 +24,7 @@ namespace Db4objects.Db4o.Collections
 	/// </seealso>
 	/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable
 	/// </seealso>
+	#if !SILVERLIGHT
 	public partial class ArrayList4<E>
 	{
 		private E[] elements;
@@ -274,4 +275,5 @@ namespace Db4objects.Db4o.Collections
 			Activate(ActivationPurpose.Write);
 		}
 	}
+	#endif // !SILVERLIGHT
 }

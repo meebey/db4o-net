@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal
 
 		ClassMetadata ClassMetadataForName(string name);
 
-		ClassMetadata ClassMetadataForId(int id);
+		ClassMetadata ClassMetadataForID(int id);
 
 		HandlerRegistry Handlers();
 

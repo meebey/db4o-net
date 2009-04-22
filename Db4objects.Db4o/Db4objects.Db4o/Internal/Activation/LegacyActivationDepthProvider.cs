@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		private Config4Impl ConfigImpl(ClassMetadata classMetadata)
 		{
-			return classMetadata.Stream().ConfigImpl();
+			return classMetadata.Container().ConfigImpl();
 		}
 	}
 }

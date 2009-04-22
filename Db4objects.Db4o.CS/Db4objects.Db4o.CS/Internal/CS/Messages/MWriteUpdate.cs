@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				ClassMetadata classMetadata = stream.ClassMetadataForId(yapClassId);
+				ClassMetadata classMetadata = stream.ClassMetadataForID(yapClassId);
 				int id = _payLoad.GetID();
 				Transaction().WriteUpdateAdjustIndexes(id, classMetadata, arrayType, 0);
 				Transaction().DontDelete(id);

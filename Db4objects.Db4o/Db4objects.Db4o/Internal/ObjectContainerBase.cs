@@ -6,11 +6,11 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Encoding;
-using Db4objects.Db4o.Internal.Fieldhandlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query;
@@ -111,12 +111,12 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		protected void Open()
 		{
-			WithEnvironment(new _IRunnable_105(this));
+			WithEnvironment(new _IRunnable_104(this));
 		}
 
-		private sealed class _IRunnable_105 : IRunnable
+		private sealed class _IRunnable_104 : IRunnable
 		{
-			public _IRunnable_105(ObjectContainerBase _enclosing)
+			public _IRunnable_104(ObjectContainerBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -136,6 +136,9 @@ namespace Db4objects.Db4o.Internal
 					}
 					finally
 					{
+						//				} catch (Exception e) {
+						//					e.printStackTrace();
+						//					throw new Db4oException(e);
 						if (!ok)
 						{
 							this._enclosing.ShutdownObjectContainer();
@@ -198,7 +201,7 @@ namespace Db4objects.Db4o.Internal
 				BeginTopLevelCall();
 				try
 				{
-					StillToActivate(trans, obj, depth);
+					StillToActivate(ActivationContextFor(trans, obj, depth));
 					ActivatePending(trans);
 					CompleteTopLevelCall();
 				}
@@ -245,10 +248,23 @@ namespace Db4objects.Db4o.Internal
 					}
 					else
 					{
-						@ref.ActivateInternal(ta, obj, item.depth);
+						@ref.ActivateInternal(ActivationContextFor(ta, obj, item.depth));
 					}
 				}
 			}
+		}
+
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		public virtual void Backup(string path)
+		{
+			Backup(ConfigImpl().Storage, path);
+		}
+
+		public virtual ActivationContext4 ActivationContextFor(Transaction ta, object obj
+			, IActivationDepth depth)
+		{
+			return new ActivationContext4(ta, obj, depth);
 		}
 
 		/// <exception cref="System.ArgumentNullException"></exception>
@@ -303,7 +319,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ClassMetadata ClassMetadataForObject(object obj)
 		{
-			return ClassMetadataForReflectClass(ReflectorForObject(obj));
+			return ProduceClassMetadata(ReflectorForObject(obj));
 		}
 
 		public abstract byte BlockSize();
@@ -446,15 +462,6 @@ namespace Db4objects.Db4o.Internal
 		protected abstract void CloseSystemTransaction();
 
 		protected abstract void ShutdownDataStorage();
-
-		[System.ObsoleteAttribute]
-		public virtual IDb4oCollections Collections(Transaction trans)
-		{
-			lock (_lock)
-			{
-				return Platform4.Collections(CheckTransaction(trans));
-			}
-		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -658,7 +665,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			if (obj is ISecondClass)
+			if (obj is Entry)
 			{
 				if (!FlagForDelete(@ref))
 				{
@@ -775,7 +782,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_619(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_621(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -797,9 +804,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_619 : IProcedure4
+		private sealed class _IProcedure4_621 : IProcedure4
 		{
-			public _IProcedure4_619(string fieldName, ByRef foundField)
+			public _IProcedure4_621(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -1151,6 +1158,10 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassMetadata ClassMetadataForReflectClass(IReflectClass claxx)
 		{
+			if (null == claxx)
+			{
+				throw new ArgumentNullException();
+			}
 			if (HideClassForExternalUse(claxx))
 			{
 				return null;
@@ -1163,33 +1174,14 @@ namespace Db4objects.Db4o.Internal
 			return _classCollection.ClassMetadataForReflectClass(claxx);
 		}
 
-		public ITypeHandler4 TypeHandlerForReflectClass(IReflectClass claxx)
-		{
-			if (HideClassForExternalUse(claxx))
-			{
-				return null;
-			}
-			if (Platform4.IsTransient(claxx))
-			{
-				return null;
-			}
-			ITypeHandler4 typeHandler = _handlers.TypeHandlerForClass(claxx);
-			if (Handlers4.IsClassAware(typeHandler))
-			{
-				return typeHandler;
-			}
-			ClassMetadata classMetadata = _classCollection.ProduceClassMetadata(claxx);
-			if (classMetadata == null)
-			{
-				return null;
-			}
-			return classMetadata;
-		}
-
 		// TODO: Some ReflectClass implementations could hold a 
 		// reference to ClassMetadata to improve lookup performance here.
 		public virtual ClassMetadata ProduceClassMetadata(IReflectClass claxx)
 		{
+			if (null == claxx)
+			{
+				throw new ArgumentNullException();
+			}
 			if (HideClassForExternalUse(claxx))
 			{
 				return null;
@@ -1229,10 +1221,6 @@ namespace Db4objects.Db4o.Internal
 
 		private bool HideClassForExternalUse(IReflectClass claxx)
 		{
-			if (claxx == null)
-			{
-				return true;
-			}
 			if ((!ShowInternalClasses()) && _handlers.IclassInternal.IsAssignableFrom(claxx))
 			{
 				return true;
@@ -1247,10 +1235,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual ClassMetadata ClassMetadataForName(string name)
 		{
-			return ClassMetadataForId(ClassMetadataIdForName(name));
+			return ClassMetadataForID(ClassMetadataIdForName(name));
 		}
 
-		public virtual ClassMetadata ClassMetadataForId(int id)
+		public virtual ClassMetadata ClassMetadataForID(int id)
 		{
 			if (DTrace.enabled)
 			{
@@ -1453,49 +1441,31 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual IFieldHandler FieldHandlerForId(int id)
-		{
-			if (id < 1)
-			{
-				return null;
-			}
-			if (_handlers.IsSystemHandler(id))
-			{
-				return _handlers.FieldHandlerForId(id);
-			}
-			return ClassMetadataForId(id);
-		}
-
-		public virtual IFieldHandler FieldHandlerForClass(IReflectClass claxx)
+		public virtual ITypeHandler4 TypeHandlerForClass(IReflectClass claxx)
 		{
 			if (HideClassForExternalUse(claxx))
 			{
 				return null;
 			}
-			IFieldHandler fieldHandler = _handlers.FieldHandlerForClass(claxx);
-			if (fieldHandler != null)
+			ITypeHandler4 typeHandler = _handlers.TypeHandlerForClass(claxx);
+			if (typeHandler != null)
 			{
-				return fieldHandler;
+				return typeHandler;
 			}
-			return _classCollection.ProduceClassMetadata(claxx);
+			return _classCollection.ProduceClassMetadata(claxx).TypeHandler();
 		}
 
-		public virtual ITypeHandler4 TypeHandlerForId(int id)
+		public virtual ITypeHandler4 TypeHandlerForClassMetadataID(int id)
 		{
 			if (id < 1)
 			{
 				return null;
 			}
-			if (_handlers.IsSystemHandler(id))
-			{
-				return _handlers.TypeHandlerForID(id);
-			}
-			ClassMetadata classMetadata = ClassMetadataForId(id);
+			ClassMetadata classMetadata = ClassMetadataForID(id);
 			if (classMetadata == null)
 			{
 				return null;
 			}
-			// TODO: consider to return classMetadata
 			return classMetadata.TypeHandler();
 		}
 
@@ -1676,12 +1646,18 @@ namespace Db4objects.Db4o.Internal
 			length);
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public ByteArrayBuffer BufferByAddress(int address, int length)
+		public ByteArrayBuffer DecryptedBufferByAddress(int address, int length)
+		{
+			ByteArrayBuffer reader = RawBufferByAddress(address, length);
+			_handlers.Decrypt(reader);
+			return reader;
+		}
+
+		public virtual ByteArrayBuffer RawBufferByAddress(int address, int length)
 		{
 			CheckAddress(address);
 			ByteArrayBuffer reader = new ByteArrayBuffer(length);
 			ReadBytes(reader._buffer, address, length);
-			_handlers.Decrypt(reader);
 			return reader;
 		}
 
@@ -2029,10 +2005,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				return 0;
 			}
-			if (obj is IDb4oTypeImpl)
-			{
-				((IDb4oTypeImpl)obj).StoredTo(trans);
-			}
 			ObjectAnalyzer analyzer = new ObjectAnalyzer(this, obj);
 			analyzer.Analyze(trans);
 			if (analyzer.NotStorable())
@@ -2206,33 +2178,33 @@ namespace Db4objects.Db4o.Internal
 			return still;
 		}
 
-		public void StillToActivate(Transaction trans, object obj, IActivationDepth depth
-			)
+		public void StillToActivate(IActivationContext context)
 		{
 			// TODO: We don't want the simple classes to search the hc_tree
 			// Kick them out here.
 			//		if (a_object != null) {
 			//			Class clazz = a_object.getClass();
 			//			if(! clazz.isPrimitive()){
-			if (ProcessedByImmediateActivation(trans, obj, depth))
+			if (ProcessedByImmediateActivation(context))
 			{
 				return;
 			}
-			_stillToActivate = StillTo1(trans, _stillToActivate, obj, depth, false);
+			_stillToActivate = StillTo1(context.Transaction(), _stillToActivate, context.TargetObject
+				(), context.Depth(), false);
 		}
 
-		private bool ProcessedByImmediateActivation(Transaction trans, object obj, IActivationDepth
-			 depth)
+		private bool ProcessedByImmediateActivation(IActivationContext context)
 		{
 			if (!StackIsSmall())
 			{
 				return false;
 			}
-			if (obj == null || !depth.RequiresActivation())
+			if (!context.Depth().RequiresActivation())
 			{
 				return true;
 			}
-			ObjectReference @ref = trans.ReferenceForObject(obj);
+			ObjectReference @ref = context.Transaction().ReferenceForObject(context.TargetObject
+				());
 			if (@ref == null)
 			{
 				return false;
@@ -2245,7 +2217,7 @@ namespace Db4objects.Db4o.Internal
 			_stackDepth++;
 			try
 			{
-				@ref.ActivateInternal(trans, obj, depth);
+				@ref.ActivateInternal(context);
 			}
 			finally
 			{
@@ -2617,11 +2589,9 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void Activate(object arg1);
 
-		public abstract void Backup(string arg1);
+		public abstract void Backup(IStorage arg1, string arg2);
 
 		public abstract void Bind(object arg1, long arg2);
-
-		public abstract IDb4oCollections Collections();
 
 		public abstract void Deactivate(object arg1);
 

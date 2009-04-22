@@ -16,8 +16,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private const int HeaderLength = Const4.LeadingLength + Const4.IdLength + 1 + Const4
 			.IntLength;
 
-		private const int NoIndirection = 3;
-
 		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
 		private readonly ObjectReference _reference;
@@ -31,8 +29,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private readonly MarshallingBuffer _writeBuffer;
 
 		private MarshallingBuffer _currentBuffer;
-
-		private int _fieldWriteCount;
 
 		private ByteArrayBuffer _debugPrepend;
 
@@ -48,7 +44,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			// YapClass ID
 			// Marshaller Version
 			// number of fields
-			// and number above 2 
 			_transaction = trans;
 			_reference = @ref;
 			_nullBitMap = new BitMap4(FieldCount());
@@ -227,28 +222,21 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private void PreWrite()
 		{
-			_fieldWriteCount++;
 		}
 
 		private void PostWrite()
 		{
 		}
 
-		public virtual void CreateChildBuffer(bool transferLastWrite, bool storeLengthInLink
-			)
+		public virtual void CreateChildBuffer(bool storeLengthInLink)
 		{
 			MarshallingBuffer childBuffer = _currentBuffer.AddChild(false, storeLengthInLink);
-			if (transferLastWrite)
-			{
-				_currentBuffer.TransferLastWriteTo(childBuffer, storeLengthInLink);
-			}
 			_currentBuffer.ReserveChildLinkSpace(storeLengthInLink);
 			_currentBuffer = childBuffer;
 		}
 
 		public virtual void BeginSlot()
 		{
-			_fieldWriteCount = 0;
 			_currentBuffer = _writeBuffer;
 		}
 
@@ -277,6 +265,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual void WriteObject(ITypeHandler4 handler, object obj)
 		{
 			MarshallingContextState state = CurrentState();
+			WriteObjectWithCurrentState(handler, obj);
+			RestoreState(state);
+		}
+
+		public virtual void WriteObjectWithCurrentState(ITypeHandler4 handler, object obj
+			)
+		{
 			if (Handlers4.UseDedicatedSlot(this, handler))
 			{
 				WriteObject(obj);
@@ -285,12 +280,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				if (obj == null)
 				{
-					// TODO: This should never happen. All handlers should take care
-					//       of nulls on a higher level, otherwise primitive wrappers
-					//       default to their primitive values.
-					//       Consider to throw an IllegalArgumentException here to
-					//       prevent users from calling with null arguments.
-					WriteNullObject(handler);
+					WriteNullReference(handler);
 				}
 				else
 				{
@@ -298,18 +288,17 @@ namespace Db4objects.Db4o.Internal.Marshall
 					handler.Write(this, obj);
 				}
 			}
-			RestoreState(state);
 		}
 
-		private void WriteNullObject(ITypeHandler4 handler)
+		private void WriteNullReference(ITypeHandler4 handler)
 		{
 			if (IsIndirectedWithinSlot(handler))
 			{
-				DoNotIndirectWrites();
 				WriteNullLink();
 				return;
 			}
-			handler.Write(this, Handlers4.NullRepresentationInUntypedArrays(handler));
+			Handlers4.Write(handler, this, Handlers4.NullRepresentationInUntypedArrays(handler
+				));
 		}
 
 		private void WriteNullLink()
@@ -334,11 +323,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _reference;
 		}
 
-		public virtual void DoNotIndirectWrites()
-		{
-			_fieldWriteCount = NoIndirection;
-		}
-
 		public virtual void CreateIndirectionWithinSlot(ITypeHandler4 handler)
 		{
 			if (IsIndirectedWithinSlot(handler))
@@ -349,8 +333,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void CreateIndirectionWithinSlot()
 		{
-			CreateChildBuffer(false, true);
-			DoNotIndirectWrites();
+			CreateChildBuffer(true);
 		}
 
 		private bool IsIndirectedWithinSlot(ITypeHandler4 handler)
@@ -367,13 +350,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual MarshallingContextState CurrentState()
 		{
-			return new MarshallingContextState(_currentBuffer, _fieldWriteCount);
+			return new MarshallingContextState(_currentBuffer);
 		}
 
 		public virtual void RestoreState(MarshallingContextState state)
 		{
 			_currentBuffer = state._buffer;
-			_fieldWriteCount = state._fieldWriteCount;
 		}
 
 		public virtual IReservedBuffer Reserve(int length)

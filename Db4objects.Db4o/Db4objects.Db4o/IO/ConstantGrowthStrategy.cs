@@ -15,6 +15,12 @@ namespace Db4objects.Db4o.IO
 			_growth = growth;
 		}
 
+		/// <summary>
+		/// returns the incremented size after the growth
+		/// strategy has been applied
+		/// </summary>
+		/// <param name="curSize">the original size</param>
+		/// <returns>the new size</returns>
 		public virtual long NewSize(long curSize)
 		{
 			return curSize + _growth;

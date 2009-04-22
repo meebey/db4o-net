@@ -3,12 +3,12 @@
 namespace Db4objects.Db4o.Foundation
 {
 	/// <summary>
-	/// TODO: rename to Comparable4 as soon we find
-	/// a smart name for the current Comparable4.
+	/// a prepared comparison, to compare multiple objects
+	/// with one single object.
 	/// </summary>
 	/// <remarks>
-	/// TODO: rename to Comparable4 as soon we find
-	/// a smart name for the current Comparable4.
+	/// a prepared comparison, to compare multiple objects
+	/// with one single object.
 	/// </remarks>
 	public interface IPreparedComparison
 	{

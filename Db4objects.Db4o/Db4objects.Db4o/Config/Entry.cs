@@ -2,12 +2,11 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Config
 {
 	/// <exclude></exclude>
-	public class Entry : ICompare, IInternal4, ISecondClass
+	public class Entry : ICompare, IInternal4
 	{
 		public object key;
 

@@ -315,7 +315,7 @@ namespace Db4objects.Db4o.Internal
 
 		public ITypeHandler4 TypeHandlerForId(int id)
 		{
-			return Container().TypeHandlerForId(id);
+			return Container().TypeHandlerForClassMetadataID(id);
 		}
 
 		public int HandlerVersion()

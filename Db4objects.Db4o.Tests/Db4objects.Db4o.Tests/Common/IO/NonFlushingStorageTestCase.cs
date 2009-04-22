@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		{
 			MockBin mock = new MockBin();
 			BinConfiguration binConfig = new BinConfiguration("uri", true, 42L, false);
-			IBin storage = new NonFlushingStorage(new _IStorage_17(mock)).Open(binConfig);
+			IBin storage = new NonFlushingStorage(new _IStorage_19(mock)).Open(binConfig);
 			byte[] buffer = new byte[5];
 			storage.Read(1, buffer, 4);
 			storage.Write(2, buffer, 3);
@@ -28,9 +28,9 @@ namespace Db4objects.Db4o.Tests.Common.IO
 				new MethodCall("close", new object[] {  }) });
 		}
 
-		private sealed class _IStorage_17 : IStorage
+		private sealed class _IStorage_19 : IStorage
 		{
-			public _IStorage_17(MockBin mock)
+			public _IStorage_19(MockBin mock)
 			{
 				this.mock = mock;
 			}
@@ -45,6 +45,18 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			{
 				mock.Record(new MethodCall("open", new object[] { config }));
 				return mock;
+			}
+
+			/// <exception cref="System.IO.IOException"></exception>
+			public void Delete(string uri)
+			{
+				throw new NotImplementedException();
+			}
+
+			/// <exception cref="System.IO.IOException"></exception>
+			public void Rename(string oldUri, string newUri)
+			{
+				throw new NotImplementedException();
 			}
 
 			private readonly MockBin mock;

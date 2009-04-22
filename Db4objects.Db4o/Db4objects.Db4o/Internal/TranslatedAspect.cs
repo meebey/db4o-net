@@ -3,21 +3,76 @@
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal sealed class TranslatedAspect : Db4objects.Db4o.Internal.FieldMetadata
+	public sealed class TranslatedAspect : Db4objects.Db4o.Internal.FieldMetadata
 	{
-		private readonly IObjectTranslator _translator;
+		private IObjectTranslator _translator;
 
-		internal TranslatedAspect(ClassMetadata containingClass, IObjectTranslator translator
-			) : base(containingClass, translator)
+		public TranslatedAspect(ClassMetadata containingClass, string name) : this(containingClass
+			)
+		{
+			Init(name);
+		}
+
+		public TranslatedAspect(ClassMetadata containingClass, IObjectTranslator translator
+			) : this(containingClass)
+		{
+			InitializeTranslator(translator);
+		}
+
+		private TranslatedAspect(ClassMetadata containingClass) : base(containingClass)
+		{
+			SetAvailable();
+		}
+
+		public void InitializeTranslator(IObjectTranslator translator)
 		{
 			_translator = translator;
-			ObjectContainerBase stream = containingClass.Container();
-			Configure(stream.Reflector().ForClass(TranslatorStoredClass(translator)), false);
+			InitializeFieldName();
+			InitializeFieldType();
+		}
+
+		public override bool Alive()
+		{
+			return true;
+		}
+
+		private void InitializeFieldName()
+		{
+			Init(FieldNameFor(_translator));
+		}
+
+		private void InitializeFieldType()
+		{
+			ObjectContainerBase stream = ContainingClass().Container();
+			IReflectClass storedClass = stream.Reflector().ForClass(TranslatorStoredClass(_translator
+				));
+			Configure(storedClass, false);
+			IReflectClass baseType = Handlers4.BaseType(storedClass);
+			stream.ShowInternalClasses(true);
+			try
+			{
+				_fieldType = stream.ProduceClassMetadata(baseType);
+			}
+			finally
+			{
+				stream.ShowInternalClasses(false);
+			}
+			if (null == _fieldType)
+			{
+				throw new InvalidOperationException("Cannot produce class metadata for " + baseType
+					 + "!");
+			}
+		}
+
+		public static string FieldNameFor(IObjectTranslator translator)
+		{
+			return translator.GetType().FullName;
 		}
 
 		public override bool CanUseNullBitmap()
@@ -25,14 +80,13 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override void Deactivate(Transaction trans, object onObject, IActivationDepth
-			 depth)
+		public override void Deactivate(IActivationContext context)
 		{
-			if (depth.RequiresActivation())
+			if (context.Depth().RequiresActivation())
 			{
-				CascadeActivation(trans, onObject, depth);
+				CascadeActivation(context);
 			}
-			SetOn(trans, onObject, null);
+			SetOn(context.Transaction(), context.TargetObject(), null);
 		}
 
 		public override object GetOn(Transaction a_trans, object a_OnObject)
@@ -56,14 +110,17 @@ namespace Db4objects.Db4o.Internal
 			return GetOn(a_trans, a_OnObject);
 		}
 
-		public override void Instantiate(UnmarshallingContext context)
+		public override void Activate(UnmarshallingContext context)
 		{
 			object obj = Read(context);
 			// Activation of members is necessary on purpose here.
 			// Classes like Hashtable need fully activated members
 			// to be able to calculate hashCode()
-			context.Container().Activate(context.Transaction(), obj, context.ActivationDepth(
-				));
+			if (obj != null)
+			{
+				context.Container().Activate(context.Transaction(), obj, context.ActivationDepth(
+					));
+			}
 			SetOn(context.Transaction(), context.PersistentObject(), obj);
 		}
 
@@ -91,7 +148,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override IIndexable4 IndexHandler(ObjectContainerBase stream)
 		{
-			return (IIndexable4)_handler;
+			return (IIndexable4)GetHandler();
 		}
 
 		public override bool Equals(object obj)
@@ -104,7 +161,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			TranslatedAspect other = (TranslatedAspect)obj;
+			Db4objects.Db4o.Internal.TranslatedAspect other = (Db4objects.Db4o.Internal.TranslatedAspect
+				)obj;
 			return _translator.Equals(other._translator);
 		}
 

@@ -440,5 +440,14 @@ namespace Db4objects.Db4o.Internal
 			_delete.Traverse(deleteVisitor);
 			_delete = null;
 		}
+
+		public virtual object Wrap(object value)
+		{
+			if (value is int)
+			{
+				return value;
+			}
+			return new TransactionContext(this, value);
+		}
 	}
 }

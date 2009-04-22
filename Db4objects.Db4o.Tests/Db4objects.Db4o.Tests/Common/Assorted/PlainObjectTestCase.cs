@@ -41,7 +41,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			object plainObject = new object();
 			PlainObjectTestCase.Item item = new PlainObjectTestCase.Item("one", plainObject);
 			Store(item);
-			RetrieveItem("one");
 			Assert.IsTrue(Db().IsStored(item._plainObject));
 			Store(new PlainObjectTestCase.Item("two", plainObject));
 		}
@@ -69,14 +68,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			PlainObjectTestCase.Item itemOne = RetrieveItem("one");
 			object plainObject = itemOne._plainObject;
 			IQuery q = NewQuery(typeof(PlainObjectTestCase.Item));
-			q.Constrain(new _IEvaluation_65(plainObject));
+			q.Constrain(new _IEvaluation_64(plainObject));
 			IObjectSet objectSet = q.Execute();
 			Assert.AreEqual(2, objectSet.Count);
 		}
 
-		private sealed class _IEvaluation_65 : IEvaluation
+		private sealed class _IEvaluation_64 : IEvaluation
 		{
-			public _IEvaluation_65(object plainObject)
+			public _IEvaluation_64(object plainObject)
 			{
 				this.plainObject = plainObject;
 			}

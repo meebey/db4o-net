@@ -2,6 +2,7 @@
 
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Tests.Common.CS;
 
@@ -51,6 +52,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected override void Configure(IConfiguration config)
 		{
+			config.ReflectWith(Platform4.ReflectorForType(typeof(SwitchingToFileWithDifferentClassesTestCase.Data1
+				)));
 		}
 
 		/// <exception cref="System.Exception"></exception>

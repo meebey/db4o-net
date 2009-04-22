@@ -16,14 +16,14 @@ namespace Db4oUnit.Tests
 		{
 			TestResult result = new TestResult();
 			new TestRunner(Iterators.SingletonIterable(new RunsGreen())).Run(result);
-			Assert.IsTrue(result.Failures.Size == 0, "not green");
+			Assert.IsTrue(result.Failures.Count == 0, "not green");
 		}
 
 		public virtual void TestRunsRed()
 		{
 			TestResult result = new TestResult();
 			new TestRunner(Iterators.SingletonIterable(new RunsRed(Exception))).Run(result);
-			Assert.IsTrue(result.Failures.Size == 1, "not red");
+			Assert.IsTrue(result.Failures.Count == 1, "not red");
 		}
 
 		public static void RunTestAndExpect(ITest test, int expFailures)
@@ -42,7 +42,7 @@ namespace Db4oUnit.Tests
 		{
 			TestResult result = new TestResult();
 			new TestRunner(tests).Run(result);
-			if (expFailures != result.Failures.Size)
+			if (expFailures != result.Failures.Count)
 			{
 				Assert.Fail(result.Failures.ToString());
 			}

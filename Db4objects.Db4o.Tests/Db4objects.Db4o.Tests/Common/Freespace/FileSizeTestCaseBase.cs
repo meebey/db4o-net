@@ -10,9 +10,8 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		protected virtual int DatabaseFileSize()
 		{
 			LocalObjectContainer localContainer = Fixture().FileSession();
-			IoAdaptedObjectContainer container = (IoAdaptedObjectContainer)localContainer;
-			container.SyncFiles();
-			long length = new Sharpen.IO.File(container.FileName()).Length();
+			localContainer.SyncFiles();
+			long length = new Sharpen.IO.File(localContainer.FileName()).Length();
 			return (int)length;
 		}
 	}

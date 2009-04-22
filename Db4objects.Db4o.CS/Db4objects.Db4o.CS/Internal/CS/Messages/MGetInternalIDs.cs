@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			{
 				try
 				{
-					ids = Stream().ClassMetadataForId(bytes.ReadInt()).GetIDs(Transaction());
+					ids = Stream().ClassMetadataForID(bytes.ReadInt()).GetIDs(Transaction());
 				}
 				catch (Exception)
 				{

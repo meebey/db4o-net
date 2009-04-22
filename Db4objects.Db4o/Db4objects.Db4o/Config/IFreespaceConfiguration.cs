@@ -10,14 +10,14 @@ namespace Db4objects.Db4o.Config
 	/// <br /><br />All methods should be called before opening database files.
 	/// If db4o is instructed to exchange the system
 	/// (
-	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseIndexSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseIndexSystem
+	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseBTreeSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseBTreeSystem
 	/// 	</see>
 	/// ,
 	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem
 	/// 	</see>
 	/// )
 	/// this will happen on opening the database file.<br /><br />
-	/// By default the index-based system will be used.
+	/// By default the ram based system will be used.
 	/// </remarks>
 	public interface IFreespaceConfiguration
 	{

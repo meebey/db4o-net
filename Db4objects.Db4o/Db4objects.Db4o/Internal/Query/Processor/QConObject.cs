@@ -119,8 +119,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override bool CanBeIndexLeaf()
 		{
-			return i_object == null || ((i_yapClass != null && i_yapClass.IsSecondClass()) ||
-				 Evaluator().Identity());
+			return i_object == null || ((i_yapClass != null && i_yapClass.IsValueType()) || Evaluator
+				().Identity());
 		}
 
 		public override bool CanLoadByIndex()
@@ -191,7 +191,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (i_yapClass != null)
 			{
-				if (!(i_yapClass is PrimitiveFieldHandler))
+				if (!(i_yapClass is PrimitiveTypeMetadata))
 				{
 					if (!i_evaluator.Identity())
 					{
@@ -392,7 +392,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (i_yapClassID != 0)
 				{
-					i_yapClass = trans.Container().ClassMetadataForId(i_yapClassID);
+					i_yapClass = trans.Container().ClassMetadataForID(i_yapClassID);
 				}
 				if (i_field != null)
 				{

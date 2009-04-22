@@ -48,27 +48,37 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		protected override void ConfigureForStore(IConfiguration config)
 		{
-			if (NotApplicableForDb4oVersion())
-			{
-				return;
-			}
 			CommonConfigure(config);
 			config.Freespace().UseIndexSystem();
 		}
 
-		private bool NotApplicableForDb4oVersion()
+		protected override bool IsApplicableForDb4oVersion()
 		{
-			return Db4oMajorVersion() < 5;
+			return Db4oMajorVersion() >= 5;
 		}
 
 		protected override void ConfigureForTest(IConfiguration config)
 		{
-			if (NotApplicableForDb4oVersion())
+			CommonConfigure(config);
+			config.Freespace().UseBTreeSystem();
+		}
+
+		protected override void DeconfigureForStore(IConfiguration config)
+		{
+			if (!IsApplicableForDb4oVersion())
 			{
 				return;
 			}
-			CommonConfigure(config);
-			config.Freespace().UseBTreeSystem();
+			config.Freespace().UseRamSystem();
+		}
+
+		protected override void DeconfigureForTest(IConfiguration config)
+		{
+			if (!IsApplicableForDb4oVersion())
+			{
+				return;
+			}
+			config.Freespace().UseRamSystem();
 		}
 
 		private void CommonConfigure(IConfiguration config)
@@ -89,10 +99,6 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		protected override void AssertObjectsAreReadable(IExtObjectContainer objectContainer
 			)
 		{
-			if (NotApplicableForDb4oVersion())
-			{
-				return;
-			}
 			IObjectSet objectSet = objectContainer.Query(typeof(FreespaceManagerMigrationTestCase.StClass
 				));
 			for (int i = 0; i < 2; i++)
@@ -117,10 +123,6 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		protected override void Store(IExtObjectContainer objectContainer)
 		{
-			if (NotApplicableForDb4oVersion())
-			{
-				return;
-			}
 			for (int i = 0; i < 10; i++)
 			{
 				FreespaceManagerMigrationTestCase.StClass cls = new FreespaceManagerMigrationTestCase.StClass

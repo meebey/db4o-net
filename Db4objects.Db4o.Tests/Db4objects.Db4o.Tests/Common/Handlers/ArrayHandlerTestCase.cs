@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Reflect;
@@ -107,6 +108,22 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				.JaggedWrappers());
 		}
 
+		/// <exception cref="System.Exception"></exception>
+		public virtual void TestArraysHaveNoIdentity()
+		{
+			float[] expected = new float[] { float.MinValue, float.MinValue + 1, 0.0f, float.MaxValue
+				 - 1, float.MaxValue };
+			Store(new ArrayHandlerTestCase.FloatArrayHolder(expected));
+			Store(new ArrayHandlerTestCase.FloatArrayHolder(expected));
+			Reopen();
+			IObjectSet stored = Db().Query(typeof(ArrayHandlerTestCase.FloatArrayHolder));
+			ArrayHandlerTestCase.FloatArrayHolder first = ((ArrayHandlerTestCase.FloatArrayHolder
+				)stored.Next());
+			ArrayHandlerTestCase.FloatArrayHolder second = ((ArrayHandlerTestCase.FloatArrayHolder
+				)stored.Next());
+			Assert.AreNotSame(first._floats, second._floats);
+		}
+
 		public virtual void TestCanHold()
 		{
 			Assert.IsTrue(IntArrayHandler().CanHold(ReflectClass(typeof(int))));
@@ -119,8 +136,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				(new int[0]);
 			Store(intArrayHolder);
 			IReflectClass claxx = Reflector().ForObject(intArrayHolder);
-			ClassMetadata classMetadata = (ClassMetadata)Container().TypeHandlerForReflectClass
-				(claxx);
+			ClassMetadata classMetadata = (ClassMetadata)Container().ProduceClassMetadata(claxx
+				);
 			FieldMetadata fieldMetadata = classMetadata.FieldMetadataForName("_ints");
 			ITypeHandler4 arrayHandler = fieldMetadata.GetHandler();
 			Assert.IsInstanceOf(typeof(ArrayHandler), arrayHandler);

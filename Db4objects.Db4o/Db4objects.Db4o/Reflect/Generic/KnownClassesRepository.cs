@@ -237,8 +237,8 @@ namespace Db4objects.Db4o.Reflect.Generic
 			{
 				return VirtualFieldByName(fieldInfo.Name()).ClassReflector(reflector);
 			}
-			int handlerID = fieldInfo.HandlerID();
-			switch (handlerID)
+			int fieldTypeID = fieldInfo.FieldTypeID();
+			switch (fieldTypeID)
 			{
 				case Handlers4.UntypedId:
 				{
@@ -253,7 +253,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 				default:
 				{
-					IReflectClass fieldClass = ForID(handlerID);
+					IReflectClass fieldClass = ForID(fieldTypeID);
 					if (null != fieldClass)
 					{
 						return NormalizeFieldClass(fieldInfo, fieldClass);

@@ -1,10 +1,10 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
+using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -21,8 +21,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract string GetName();
 
-		public abstract void CascadeActivation(Transaction trans, object obj, IActivationDepth
-			 depth);
+		public abstract void CascadeActivation(IActivationContext context);
 
 		public abstract int LinkLength();
 
@@ -42,7 +41,7 @@ namespace Db4objects.Db4o.Internal
 			_handle = handle;
 		}
 
-		public abstract void Instantiate(UnmarshallingContext context);
+		public abstract void Activate(UnmarshallingContext context);
 
 		public abstract void Delete(DeleteContextImpl context, bool isUpdate);
 
@@ -50,7 +49,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual bool CheckEnabled(IAspectVersionContext context)
 		{
-			if (!Enabled(context))
+			if (!IsEnabledOn(context))
 			{
 				IncrementOffset((IReadBuffer)context);
 				return false;
@@ -70,12 +69,11 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual bool Enabled(IAspectVersionContext context)
+		public bool IsEnabledOn(IAspectVersionContext context)
 		{
 			return _disabledFromAspectCountVersion > context.AspectCount();
 		}
 
-		public abstract void Deactivate(Transaction trans, object obj, IActivationDepth depth
-			);
+		public abstract void Deactivate(IActivationContext context);
 	}
 }

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private readonly string _name;
 
-		private readonly int _handlerID;
+		private readonly int _fieldTypeID;
 
 		private readonly bool _isPrimitive;
 
@@ -23,12 +23,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private int _indexID;
 
-		public RawFieldSpec(AspectType aspectType, string name, int handlerID, byte attribs
+		public RawFieldSpec(AspectType aspectType, string name, int fieldTypeID, byte attribs
 			)
 		{
 			_type = aspectType;
 			_name = name;
-			_handlerID = handlerID;
+			_fieldTypeID = fieldTypeID;
 			BitMap4 bitmap = new BitMap4(attribs);
 			_isPrimitive = bitmap.IsTrue(0);
 			_isArray = bitmap.IsTrue(1);
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			_type = aspectType;
 			_name = name;
-			_handlerID = 0;
+			_fieldTypeID = 0;
 			_isPrimitive = false;
 			_isArray = false;
 			_isNArray = false;
@@ -54,9 +54,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _name;
 		}
 
-		public virtual int HandlerID()
+		public virtual int FieldTypeID()
 		{
-			return _handlerID;
+			return _fieldTypeID;
 		}
 
 		public virtual bool IsPrimitive()
@@ -84,7 +84,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return IsVirtual() && IsField();
 		}
 
-		private bool IsField()
+		public virtual bool IsField()
 		{
 			return _type.IsField();
 		}
@@ -107,6 +107,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual bool IsFieldMetadata()
 		{
 			return _type.IsFieldMetadata();
+		}
+
+		public virtual bool IsTranslator()
+		{
+			return _type.IsTranslator();
 		}
 	}
 }

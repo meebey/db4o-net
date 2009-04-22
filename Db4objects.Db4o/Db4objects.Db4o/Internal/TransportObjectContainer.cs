@@ -66,9 +66,9 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
-		public override ClassMetadata ClassMetadataForId(int id)
+		public override ClassMetadata ClassMetadataForID(int id)
 		{
-			return _parent.ClassMetadataForId(id);
+			return _parent.ClassMetadataForID(id);
 		}
 
 		internal override void ConfigureNewFile()
@@ -134,6 +134,11 @@ namespace Db4objects.Db4o.Internal
 		public override Slot GetSlot(int length)
 		{
 			return AppendBlocks(length);
+		}
+
+		protected override bool IsValidPointer(int id)
+		{
+			return id != 0 && base.IsValidPointer(id);
 		}
 
 		public override Db4oDatabase Identity()

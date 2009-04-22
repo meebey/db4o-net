@@ -48,11 +48,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 			private readonly STInnerClassesTestCase _enclosing;
 		}
 
-		public class FirstClass
+		public class Child
 		{
 			public object childFirst;
 
-			public FirstClass(STInnerClassesTestCase _enclosing, object o)
+			public Child(STInnerClassesTestCase _enclosing, object o)
 			{
 				this._enclosing = _enclosing;
 				this.childFirst = o;
@@ -60,10 +60,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 
 			public override string ToString()
 			{
-				return "First[" + this.childFirst + "]";
+				return "Child[" + this.childFirst + "]";
 			}
 
-			public FirstClass(STInnerClassesTestCase _enclosing)
+			public Child(STInnerClassesTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -71,14 +71,10 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Untypedhierarchy
 			private readonly STInnerClassesTestCase _enclosing;
 		}
 
-		public STInnerClassesTestCase()
-		{
-		}
-
 		public override object[] CreateData()
 		{
-			return new object[] { new STInnerClassesTestCase.Parent(this, new STInnerClassesTestCase.FirstClass
-				(this, "Example")), new STInnerClassesTestCase.Parent(this, new STInnerClassesTestCase.FirstClass
+			return new object[] { new STInnerClassesTestCase.Parent(this, new STInnerClassesTestCase.Child
+				(this, "Example")), new STInnerClassesTestCase.Parent(this, new STInnerClassesTestCase.Child
 				(this, "no Example")) };
 		}
 

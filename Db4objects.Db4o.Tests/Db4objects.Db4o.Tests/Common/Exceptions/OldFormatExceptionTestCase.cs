@@ -3,6 +3,7 @@
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
@@ -35,17 +36,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 					);
 				return;
 			}
-			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(OldFormatExceptionTestCase
-				)));
-			Db4oFactory.Configure().AllowVersionUpdates(false);
 			string oldDatabaseFilePath = OldDatabaseFilePath();
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_43(oldDatabaseFilePath)
-				);
-			Db4oFactory.Configure().AllowVersionUpdates(true);
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_41(this, oldDatabaseFilePath
+				));
 			IObjectContainer container = null;
 			try
 			{
-				container = Db4oFactory.OpenFile(oldDatabaseFilePath);
+				container = Db4oFactory.OpenFile(NewConfiguration(true), oldDatabaseFilePath);
 			}
 			finally
 			{
@@ -56,20 +53,34 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		private sealed class _ICodeBlock_43 : ICodeBlock
+		private sealed class _ICodeBlock_41 : ICodeBlock
 		{
-			public _ICodeBlock_43(string oldDatabaseFilePath)
+			public _ICodeBlock_41(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
+				)
 			{
+				this._enclosing = _enclosing;
 				this.oldDatabaseFilePath = oldDatabaseFilePath;
 			}
 
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenFile(oldDatabaseFilePath);
+				Db4oFactory.OpenFile(this._enclosing.NewConfiguration(false), oldDatabaseFilePath
+					);
 			}
 
+			private readonly OldFormatExceptionTestCase _enclosing;
+
 			private readonly string oldDatabaseFilePath;
+		}
+
+		private IConfiguration NewConfiguration(bool allowVersionUpdates)
+		{
+			IConfiguration config = Db4oFactory.NewConfiguration();
+			config.ReflectWith(Platform4.ReflectorForType(typeof(OldFormatExceptionTestCase))
+				);
+			config.AllowVersionUpdates(allowVersionUpdates);
+			return config;
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
