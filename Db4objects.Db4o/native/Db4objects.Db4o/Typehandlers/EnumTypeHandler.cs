@@ -18,16 +18,17 @@ namespace Db4objects.Db4o.Typehandlers
             private readonly long _enumValue;
             public PreparedEnumComparison(object obj)
             {
-                if (obj is TransactionContext)
+				if (obj is TransactionContext)
                 {
                     obj = ((TransactionContext)obj)._object;
                 }
 
-                if (obj == null) return;
-                _enumValue = Convert.ToInt64(obj);
+				if (obj == null) return;
+
+            	_enumValue = ToLong(obj);
             }
 
-            public int CompareTo(object obj)
+        	public int CompareTo(object obj)
             {
                 if (obj is TransactionContext)
                 {
@@ -36,12 +37,22 @@ namespace Db4objects.Db4o.Typehandlers
 
                 if (obj == null) return 1;
 
-                long other = Convert.ToInt64(obj);
+                long other = ToLong(obj);
                 if (_enumValue == other) return 0;
                 if (_enumValue < other) return -1;
 
                 return 1;
             }
+
+			private static long ToLong(object obj)
+			{
+				if (obj is IndexEntry)
+				{
+					return ((IndexEntry)obj).EnumValue;
+				}
+				
+				return Convert.ToInt64(obj);
+			}
         }
 
         public IPreparedComparison PrepareComparison(IContext context, object obj)
@@ -63,15 +74,13 @@ namespace Db4objects.Db4o.Typehandlers
 
         public object Read(IReadContext context)
         {
-            int classId = context.ReadInt();
-            ClassMetadata clazz = Container(context).ClassMetadataForID(classId);
-
-            Type enumType = NetReflector.ToNative(clazz.ClassReflector());
-            long enumValue = context.ReadLong();
-            return Enum.ToObject(enumType, enumValue); ;
+        	int classId = context.ReadInt();
+			long enumValue = context.ReadLong();
+			
+			return ToEnum(context, classId, enumValue);
         }
 
-        public void Write(IWriteContext context, object obj)
+    	public void Write(IWriteContext context, object obj)
         {
             int classId = ClassMetadataIdFor(context, obj);
 
@@ -99,19 +108,25 @@ namespace Db4objects.Db4o.Typehandlers
             return Const4.IdLength + Const4.LongLength;
         }
 
-    	public object ReadIndexEntry(ByteArrayBuffer reader)
+    	public object ReadIndexEntry(IContext context, ByteArrayBuffer reader)
     	{
-    		throw new System.NotImplementedException();
-    	}
+    		return new IndexEntry(reader.ReadInt(), reader.ReadLong());
+		}
 
-    	public void WriteIndexEntry(ByteArrayBuffer writer, object obj)
+		public void WriteIndexEntry(IContext context, ByteArrayBuffer writer, object obj)
     	{
-    		throw new System.NotImplementedException();
-    	}
+			IndexEntry indexEntry = obj as IndexEntry;
+			if (indexEntry == null)
+			{
+				indexEntry = new IndexEntry(ClassMetadataIdFor(context, obj), Convert.ToInt64(obj));
+			}
+			writer.WriteInt(indexEntry.ClassMetadataId);
+			writer.WriteLong(indexEntry.EnumValue);
+		}
 
     	public void DefragIndexEntry(DefragmentContextImpl context)
     	{
-    		throw new System.NotImplementedException();
+    		context.IncrementOffset(Const4.LongLength);
     	}
 
     	private static int ClassMetadataIdFor(IContext context, object obj)
@@ -136,18 +151,49 @@ namespace Db4objects.Db4o.Typehandlers
 
     	public object IndexEntryToObject(IContext context, object indexEntry)
     	{
-    		throw new System.NotImplementedException();
+    		IndexEntry entry = (IndexEntry) indexEntry;
+    		return ToEnum(context, entry.ClassMetadataId, entry.EnumValue);
     	}
 
-    	public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer writer)
+    	public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer statefulBuffer)
     	{
-    		throw new System.NotImplementedException();
+    		return new IndexEntry(statefulBuffer.ReadInt(), statefulBuffer.ReadLong());
     	}
 
     	public object ReadIndexEntry(IObjectIdContext context)
     	{
-    		throw new System.NotImplementedException();
+    		return new IndexEntry(context.ReadInt(), context.ReadLong());
     	}
+
+		private static object ToEnum(IContext context, int classId, long enumValue)
+		{
+			ClassMetadata clazz = Container(context).ClassMetadataForID(classId);
+
+			Type enumType = NetReflector.ToNative(clazz.ClassReflector());
+			return Enum.ToObject(enumType, enumValue);
+		}
+
+		private class IndexEntry
+		{
+			private readonly long _enumValue;
+			private readonly int _classMetadataId;
+
+			internal IndexEntry(int classMetadataId, long enumValue)
+			{
+				_classMetadataId = classMetadataId;
+				_enumValue = enumValue;
+			}
+
+			internal long EnumValue
+			{
+				get { return _enumValue; }
+			}
+
+			internal int ClassMetadataId
+			{
+				get { return _classMetadataId; }
+			}
+		}
     }
 
     public class EnumTypeHandlerPredicate : ITypeHandlerPredicate

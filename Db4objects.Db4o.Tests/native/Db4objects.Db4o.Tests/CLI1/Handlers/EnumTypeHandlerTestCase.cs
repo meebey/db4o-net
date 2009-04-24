@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Query;
 using Db4oUnit;
@@ -100,6 +102,8 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         {
 			base.Configure(config);
 			config.RegisterTypeHandler(new EnumTypeHandlerPredicate(), new EnumTypeHandler());
+
+			config.ObjectClass(typeof(Item)).ObjectField("_asByte").Indexed(true);
         }
 
         protected override void Store()
@@ -139,16 +143,40 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         public void TestQueryByExample()
         {
-            Item item = new Item(EnumAsByte.Second, 0, 0);
+            Item item = FindItemWithValue(EnumAsByte.Second);
             IObjectSet result = Db().QueryByExample(item);
             Assert.AreEqual(1, result.Count);
             Item itemFound = (Item) result[0];
-            Assert.AreEqual(EnumAsByte.Second, itemFound._asByte);
-            Assert.AreEqual(EnumAsInteger.Second, itemFound._asInteger);
-            Assert.AreEqual(EnumAsLong.Second, itemFound._asLong);
+            AssertItem(item, itemFound);
         }
 
-        public void TestQueryByExampleAll()
+    	private void AssertItem(Item actual, Item template)
+    	{
+    		Item expected = FindItemWithValue(template._asByte);
+    		Assert.AreEqual(expected, actual);
+    	}
+
+    	private static Item FindItemWithValue(EnumAsByte value)
+    	{
+#if CF || SILVERLIGHT
+    		foreach (Item item in _items)
+    		{
+    			if (item._asByte == value)
+    			{
+    				return item;
+    			}
+    		}
+
+    		return null;
+#else
+			return Array.Find(_items, delegate(Item candidate)
+    		                          	{
+    		                          		return candidate._asByte == value;
+    		                          	});
+#endif
+    	}
+
+    	public void TestQueryByExampleAll()
         {
             // Just like in primitives, if enum 0 is used, the 
             // constraint is ignored.
@@ -183,6 +211,34 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 Db().Delete(item._asInteger);
             }
         }
+
+		public void TestIndexingLowLevel()
+		{
+			LocalObjectContainer container = Fixture().FileSession();
+			ClassMetadata classMetadata = container.ClassMetadataForReflectClass(container.Reflector().ForClass(typeof(Item)));
+			FieldMetadata fieldMetadata = classMetadata.FieldMetadataForName("_asByte");
+
+			Assert.IsTrue(fieldMetadata.CanLoadByIndex(), "EnumTypeHandler should be indexable.");
+			BTree index = fieldMetadata.GetIndex(container.SystemTransaction());
+			Assert.IsNotNull(index, "No btree index found for enum field.");
+		}
+
+		public void TestIndexedQuery()
+		{
+			AssertQuery(EnumAsByte.Second);
+			AssertQuery((EnumAsByte) 99);
+		}
+
+    	private void AssertQuery(EnumAsByte constraint)
+    	{
+    		IQuery query = NewQuery();
+    		query.Constrain(typeof (Item));
+    		query.Descend("_asByte").Constrain(constraint);
+
+    		IObjectSet result = query.Execute();
+    		Assert.AreEqual(1, result.Count);
+    		AssertItem(FindItemWithValue(constraint), (Item) result[0]);
+    	}
 
     	private void AssertAsLong()
         {
