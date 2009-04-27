@@ -1,4 +1,6 @@
-﻿namespace Db4objects.Db4o.Tutorial
+﻿using Db4objects.Db4o.CS;
+
+namespace Db4objects.Db4o.Tutorial
 {
     using System;
     using System.IO;
@@ -78,9 +80,9 @@
             if (!CheckSignature(method, typeof(IObjectContainer)))
             {
                 return false;
-            }       
-            
-            IObjectContainer container = Db4oFactory.OpenFile(YapFileName);
+            }
+
+            IObjectContainer container = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
             try
             {
                 method.Invoke(null, new object[] { container });
@@ -98,8 +100,8 @@
             {
                 return false;
             }
-            
-            IObjectServer server = Db4oFactory.OpenServer(YapFileName, 0);
+
+            IObjectServer server = Db4oClientServer.OpenServer(Db4oClientServer.NewServerConfiguration(), YapFileName, 0);
             try
             {                
                 method.Invoke(null, new object[] { server });
@@ -117,8 +119,9 @@
             {
                 return false;
             }
-            
-            IObjectServer server = Db4oFactory.OpenServer(YapFileName, ServerPort);
+
+            IObjectServer server = Db4oClientServer.OpenServer(Db4oClientServer.NewServerConfiguration(), 
+                YapFileName, ServerPort);
             try
             {   
                 server.GrantAccess(ServerUser, ServerPassword);

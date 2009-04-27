@@ -14,8 +14,8 @@ namespace Db4odoc.Tutorial.F1.Chapter5
 		
         public static void Main(string[] args)
         {
-            File.Delete(YapFileName);          
-            IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
+            File.Delete(YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
             try
             {
                 StoreFirstCar(db);

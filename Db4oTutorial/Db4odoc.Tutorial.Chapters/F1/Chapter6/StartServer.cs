@@ -1,12 +1,14 @@
 using System;
 using System.Threading;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4odoc.Tutorial.F1.Chapter6
 {
     /// <summary>
-    /// starts a db4o server with the settings from ServerConfiguration.
+    /// starts a db4o server with the settings from ServerInfo.
     /// This is a typical setup for a long running server.
     /// The Server may be stopped from a remote location by running
     /// StopServer. The StartServer instance is used as a MessageRecipient
@@ -15,7 +17,7 @@ namespace Db4odoc.Tutorial.F1.Chapter6
     /// and that all possible Db4oFactory.Configure() calls to alter the db4o
     /// configuration need to be executed on the client and on the server.
     /// </summary>
-    public class StartServer : ServerConfiguration, IMessageRecipient
+    public class StartServer : ServerInfo, IMessageRecipient
     {
         /// <summary>
         /// setting the value to true denotes that the server should be closed
@@ -24,7 +26,7 @@ namespace Db4odoc.Tutorial.F1.Chapter6
 
         /// <summary>
         /// starts a db4o server using the configuration from
-        /// ServerConfiguration.
+        /// ServerInfo.
         /// </summary>
         public static void Main(string[] arguments)
         {
@@ -39,12 +41,13 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         {
             lock(this)
             {
-                IObjectServer db4oServer = Db4oFactory.OpenServer(FILE, PORT);
-                db4oServer.GrantAccess(USER, PASS);
-                
+                IServerConfiguration config = Db4oClientServer.NewServerConfiguration();
                 // Using the messaging functionality to redirect all
                 // messages to this.processMessage
-                db4oServer.Ext().Configure().ClientServer().SetMessageRecipient(this);
+                config.Networking.MessageRecipient = this;
+                IObjectServer db4oServer = Db4oClientServer.OpenServer(config, FILE, PORT);
+                db4oServer.GrantAccess(USER, PASS);
+                
                 try
                 {
                     if (! stop)

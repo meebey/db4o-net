@@ -1,5 +1,6 @@
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4odoc.Tutorial.F1.Chapter6
@@ -11,7 +12,7 @@ namespace Db4odoc.Tutorial.F1.Chapter6
     /// a message. StartServer will react in it's
     /// processMessage method.
     /// </summary>
-    public class StopServer : ServerConfiguration
+    public class StopServer : ServerInfo
     {
         /// <summary>
         /// stops a db4o Server started with StartServer.
@@ -23,7 +24,8 @@ namespace Db4odoc.Tutorial.F1.Chapter6
             try
             {
                 // connect to the server
-                IObjectContainer = Db4oFactory.OpenClient(HOST, PORT, USER, PASS);
+                IObjectContainer = Db4oClientServer.OpenClient(Db4oClientServer.NewClientConfiguration(),
+                    HOST, PORT, USER, PASS);
             }
             catch (Exception e)
             {

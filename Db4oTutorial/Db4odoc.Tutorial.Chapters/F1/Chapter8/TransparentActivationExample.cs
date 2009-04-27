@@ -16,11 +16,11 @@ namespace Db4odoc.Tutorial.F1.Chapter8
         public static void Main(String[] args)
         {
             File.Delete(YapFileName);
-            IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
                 StoreCarAndSnapshots(db);
                 db.Close();
 
-                db = Db4oFactory.OpenFile(YapFileName);
+                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
                 RetrieveSnapshotsSequentially(db);
                 db.Close();
 
@@ -29,10 +29,6 @@ namespace Db4odoc.Tutorial.F1.Chapter8
                 DemonstrateTransparentActivation();
         }
 
-        public static void SetCascadeOnUpdate()
-        {
-            Db4oFactory.Configure().ObjectClass(typeof (Car)).CascadeOnUpdate(true);
-        }
 
         public static void StoreCarAndSnapshots(IObjectContainer db)
         {
@@ -60,9 +56,9 @@ namespace Db4odoc.Tutorial.F1.Chapter8
 
         public static void RetrieveSnapshotsSequentiallyTA()
         {
-            IConfiguration config = Db4oFactory.NewConfiguration();
-            config.Add(new TransparentActivationSupport());
-            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
+            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Common.Add(new TransparentActivationSupport());
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
             SensorReadout readout = car.History;
@@ -76,9 +72,9 @@ namespace Db4odoc.Tutorial.F1.Chapter8
 
         public static void DemonstrateTransparentActivation()
         {
-            IConfiguration config = Db4oFactory.NewConfiguration();
-            config.Add(new TransparentActivationSupport());
-            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
+            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Common.Add(new TransparentActivationSupport());
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(typeof (Car));
             Car car = (Car) result.Next();
 

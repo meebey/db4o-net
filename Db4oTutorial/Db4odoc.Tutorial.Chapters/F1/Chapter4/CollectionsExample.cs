@@ -16,8 +16,8 @@ namespace Db4odoc.Tutorial.F1.Chapter4
 		
 		public static void Main(string[] args)
 		{
-			File.Delete(YapFileName);            
-			IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
+			File.Delete(YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
 				StoreFirstCar(db);
 				StoreSecondCar(db);
 				RetrieveAllSensorReadout(db);
@@ -151,9 +151,9 @@ namespace Db4odoc.Tutorial.F1.Chapter4
 
 		public static void UpdateCar()
 		{
-            IConfiguration config = Db4oFactory.NewConfiguration();
-            config.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
+            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Common.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
 			IObjectSet result = db.QueryByExample(new Car("BMW", null));
 			Car car = (Car)result.Next();
 			car.Snapshot();
@@ -164,9 +164,9 @@ namespace Db4odoc.Tutorial.F1.Chapter4
         
 		public static void UpdateCollection()
 		{
-            IConfiguration config = Db4oFactory.NewConfiguration();
-            config.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
+            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Common.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
 			IQuery query = db.Query();
 			query.Constrain(typeof(Car));
 			IObjectSet result = query.Descend("_history").Execute();
@@ -187,9 +187,9 @@ namespace Db4odoc.Tutorial.F1.Chapter4
         
 		public static void DeleteAll()
 		{
-            IConfiguration config = Db4oFactory.NewConfiguration();
-            config.ObjectClass(typeof(Car)).CascadeOnDelete(true);
-            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
+            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Common.ObjectClass(typeof(Car)).CascadeOnDelete(true);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
 
 			IObjectSet result = db.QueryByExample(new Car(null, null));
 			foreach (object car in result)

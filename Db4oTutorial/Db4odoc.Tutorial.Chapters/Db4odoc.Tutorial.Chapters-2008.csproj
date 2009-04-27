@@ -178,9 +178,7 @@
     <Compile Include="F1\Chapter6\SensorReadout.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="F1\Chapter6\ServerConfiguration.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="F1\Chapter6\ServerInfo.cs" />
     <Compile Include="F1\Chapter6\StartServer.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -248,6 +246,10 @@
     <ProjectReference Include="..\..\Db4oBench\Db4oBench-2008.csproj">
       <Project>{D8AB00B9-7769-4136-98FA-920F89B12653}</Project>
       <Name>Db4oBench-2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-2008.csproj">
+      <Project>{9FA8178A-3E77-42C5-A252-6690EA9BA257}</Project>
+      <Name>Db4objects.Db4o.CS-2008</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o.Linq\Db4objects.Db4o.Linq-2008.csproj">
       <Project>{23531440-0922-43EB-A483-6592FFC2F093}</Project>

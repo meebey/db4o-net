@@ -15,7 +15,7 @@ namespace Db4odoc.Tutorial.F1.Chapter1
                                "formula1.yap");  
         public static void Main(string[] args)
         {
-            IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
             try
             {
                 StoreFirstPilot(db);

@@ -12,16 +12,16 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         public static void Main(string[] args)
         {
             File.Delete(YapFileName);
-            IObjectContainer db=Db4oFactory.OpenFile(YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
             try
             {
                 StoreCarCommit(db);
                 db.Close();
-                db = Db4oFactory.OpenFile(YapFileName);
+                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
                 ListAllCars(db);
                 StoreCarRollback(db);
                 db.Close();
-                db = Db4oFactory.OpenFile(YapFileName);
+                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
                 ListAllCars(db);
                 CarSnapshotRollback(db);
                 CarSnapshotRollbackRefresh(db);

@@ -14,14 +14,15 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         public static void Main(string[] args)
         {
             File.Delete(YapFileName);
-            IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(),
+                    YapFileName);
                 StoreCar(db);
                 db.Close();
                 TakeManySnapshots();
-                db = Db4oFactory.OpenFile(YapFileName);
+                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(),YapFileName);
                 RetrieveAllSnapshots(db);
                 db.Close();
-                db = Db4oFactory.OpenFile(YapFileName);
+                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
                 RetrieveSnapshotsSequentially(db);
                 RetrieveSnapshotsSequentiallyImproved(db);
                 db.Close();
@@ -38,9 +39,9 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         
         public static void TakeManySnapshots()
         {
-            IConfiguration config = Db4oFactory.NewConfiguration();
-            config.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
+            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Common.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();
             for (int i=0; i<5; i++)
@@ -75,10 +76,10 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         
         public static void RetrieveSnapshotsSequentiallyCascade()
         {
-            IConfiguration config = Db4oFactory.NewConfiguration();
-            config.ObjectClass(typeof(TemperatureSensorReadout))
+            IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+            config.Common.ObjectClass(typeof(TemperatureSensorReadout))
                 .CascadeOnActivate(true);
-            IObjectContainer db = Db4oFactory.OpenFile(config, YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
         
             IObjectSet result = db.QueryByExample(typeof(Car));
             Car car = (Car)result.Next();

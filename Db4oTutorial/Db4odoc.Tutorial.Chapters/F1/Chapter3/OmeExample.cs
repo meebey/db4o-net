@@ -22,7 +22,7 @@ namespace Db4odoc.Tutorial.F1.Chapter3
 
         public static void StorePilots()
         {
-            IObjectContainer db = Db4oFactory.OpenFile(YapFileName);
+            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
             try
             {
                 Pilot pilot1 = new Pilot("Michael Schumacher", 100);

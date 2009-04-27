@@ -99,6 +99,10 @@
       <Name>WeifenLuo.WinFormsUI</Name>
       <HintPath>..\Libs\WeifenLuo.WinFormsUI.dll</HintPath>
     </Reference>
+    <ProjectReference Include="..\..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-2005.csproj">
+      <Project>{3028DD51-034F-495B-8970-2F27BA021B85}</Project>
+      <Name>Db4objects.Db4o.CS-2005</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o\Db4objects.Db4o-2005.csproj">
       <Project>{4FA6645B-E14B-4F18-A2CC-C1925663EFCE}</Project>
       <Name>Db4objects.Db4o-2005</Name>
