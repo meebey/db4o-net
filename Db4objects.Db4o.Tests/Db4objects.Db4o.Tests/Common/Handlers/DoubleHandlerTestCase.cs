@@ -28,9 +28,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			double expected = 1.1;
 			ByteArrayBuffer buffer = new ByteArrayBuffer(_handler.LinkLength());
-			_handler.WriteIndexEntry(buffer, expected);
+			_handler.WriteIndexEntry(Context(), buffer, expected);
 			buffer.Seek(0);
-			object actual = _handler.ReadIndexEntry(buffer);
+			object actual = _handler.ReadIndexEntry(Context(), buffer);
 			Assert.AreEqual(expected, actual);
 		}
 

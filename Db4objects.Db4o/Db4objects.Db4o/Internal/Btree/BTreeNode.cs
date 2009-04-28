@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Marshall;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal.Btree
@@ -95,7 +96,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			 preparedComparison, object obj)
 		{
 			ByteArrayBuffer reader = PrepareRead(trans);
-			Searcher s = Search(preparedComparison, reader);
+			Searcher s = Search(trans, preparedComparison, reader);
 			if (_isLeaf)
 			{
 				PrepareWrite(trans);
@@ -186,7 +187,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			preparedComparison, SearchTarget target)
 		{
 			ByteArrayBuffer reader = PrepareRead(trans);
-			Searcher s = Search(preparedComparison, reader, target);
+			Searcher s = Search(trans, preparedComparison, reader, target);
 			if (!_isLeaf)
 			{
 				return Child(reader, s.Cursor()).SearchLeaf(trans, preparedComparison, target);
@@ -219,7 +220,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			if (index >= 0)
 			{
-				if (!CompareEquals(preparedComparison, reader, index))
+				if (!CompareEquals(preparedComparison, trans, reader, index))
 				{
 					return null;
 				}
@@ -252,14 +253,14 @@ namespace Db4objects.Db4o.Internal.Btree
 			return CreateMatchingSearchResult(trans, reader, index);
 		}
 
-		private bool CompareEquals(IPreparedComparison preparedComparison, ByteArrayBuffer
-			 reader, int index)
+		private bool CompareEquals(IPreparedComparison preparedComparison, Transaction trans
+			, ByteArrayBuffer reader, int index)
 		{
 			if (CanWrite())
 			{
 				return CompareInWriteMode(preparedComparison, index) == 0;
 			}
-			return CompareInReadMode(preparedComparison, reader, index) == 0;
+			return CompareInReadMode(trans, preparedComparison, reader, index) == 0;
 		}
 
 		private BTreeNodeSearchResult CreateMatchingSearchResult(Transaction trans, ByteArrayBuffer
@@ -545,11 +546,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			return -preparedComparison.CompareTo(Key(index));
 		}
 
-		private int CompareInReadMode(IPreparedComparison preparedComparison, ByteArrayBuffer
-			 reader, int index)
+		private int CompareInReadMode(Transaction trans, IPreparedComparison preparedComparison
+			, ByteArrayBuffer reader, int index)
 		{
 			SeekKey(reader, index);
-			return -preparedComparison.CompareTo(KeyHandler().ReadIndexEntry(reader));
+			return -preparedComparison.CompareTo(KeyHandler().ReadIndexEntry(trans.Context(), 
+				reader));
 		}
 
 		public int Count()
@@ -675,7 +677,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				return InternalKey(trans, index);
 			}
 			SeekKey(reader, index);
-			return KeyHandler().ReadIndexEntry(reader);
+			return KeyHandler().ReadIndexEntry(trans.Context(), reader);
 		}
 
 		private object InternalKey(Transaction trans, int index)
@@ -813,7 +815,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			bool isInner = !_isLeaf;
 			for (int i = 0; i < _count; i++)
 			{
-				_keys[i] = KeyHandler().ReadIndexEntry(reader);
+				_keys[i] = KeyHandler().ReadIndexEntry(trans.Context(), reader);
 				if (isInner)
 				{
 					_children[i] = reader.ReadInt();
@@ -969,14 +971,14 @@ namespace Db4objects.Db4o.Internal.Btree
 			CommitOrRollback(trans, false);
 		}
 
-		private Searcher Search(IPreparedComparison preparedComparison, ByteArrayBuffer reader
-			)
+		private Searcher Search(Transaction trans, IPreparedComparison preparedComparison
+			, ByteArrayBuffer reader)
 		{
-			return Search(preparedComparison, reader, SearchTarget.Any);
+			return Search(trans, preparedComparison, reader, SearchTarget.Any);
 		}
 
-		private Searcher Search(IPreparedComparison preparedComparison, ByteArrayBuffer reader
-			, SearchTarget target)
+		private Searcher Search(Transaction trans, IPreparedComparison preparedComparison
+			, ByteArrayBuffer reader, SearchTarget target)
 		{
 			Searcher s = new Searcher(target, _count);
 			if (CanWrite())
@@ -990,7 +992,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				while (s.Incomplete())
 				{
-					s.ResultIs(CompareInReadMode(preparedComparison, reader, s.Cursor()));
+					s.ResultIs(CompareInReadMode(trans, preparedComparison, reader, s.Cursor()));
 				}
 			}
 			return s;
@@ -1239,6 +1241,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			int count = 0;
 			int startOffset = a_writer._offset;
+			IContext context = trans.Context();
 			a_writer.IncrementOffset(CountLeafAnd3LinkLength);
 			if (_isLeaf)
 			{
@@ -1248,7 +1251,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					if (obj != No4.Instance)
 					{
 						count++;
-						KeyHandler().WriteIndexEntry(a_writer, obj);
+						KeyHandler().WriteIndexEntry(context, a_writer, obj);
 					}
 				}
 			}
@@ -1264,14 +1267,14 @@ namespace Db4objects.Db4o.Internal.Btree
 						if (childKey != No4.Instance)
 						{
 							count++;
-							KeyHandler().WriteIndexEntry(a_writer, childKey);
+							KeyHandler().WriteIndexEntry(context, a_writer, childKey);
 							a_writer.WriteIDOf(trans, child);
 						}
 					}
 					else
 					{
 						count++;
-						KeyHandler().WriteIndexEntry(a_writer, Key(i));
+						KeyHandler().WriteIndexEntry(context, a_writer, Key(i));
 						a_writer.WriteIDOf(trans, _children[i]);
 					}
 				}

@@ -55,9 +55,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			ByteArrayBuffer reader = new ByteArrayBuffer(2 * Const4.IntLength);
 			Slot original = new Slot(unchecked((int)(0xdb)), unchecked((int)(0x40)));
-			StringHandler().WriteIndexEntry(reader, original);
+			StringHandler().WriteIndexEntry(Context(), reader, original);
 			reader._offset = 0;
-			Slot retrieved = (Slot)StringHandler().ReadIndexEntry(reader);
+			Slot retrieved = (Slot)StringHandler().ReadIndexEntry(Context(), reader);
 			Assert.AreEqual(original.Address(), retrieved.Address());
 			Assert.AreEqual(original.Length(), retrieved.Length());
 		}

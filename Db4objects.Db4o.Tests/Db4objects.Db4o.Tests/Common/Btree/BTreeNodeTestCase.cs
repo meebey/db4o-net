@@ -2,11 +2,9 @@
 
 using System.Collections;
 using Db4oUnit;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Tests.Common.Btree;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
@@ -99,31 +97,6 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		private IPreparedComparison PrepareComparison(object key)
 		{
 			return _btree.KeyHandler().PrepareComparison(Context(), key);
-		}
-
-		private IContext Context()
-		{
-			return new _IContext_96(this);
-		}
-
-		private sealed class _IContext_96 : IContext
-		{
-			public _IContext_96(BTreeNodeTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public Transaction Transaction()
-			{
-				return this._enclosing.Trans();
-			}
-
-			public IObjectContainer ObjectContainer()
-			{
-				return this._enclosing.Db();
-			}
-
-			private readonly BTreeNodeTestCase _enclosing;
 		}
 	}
 }

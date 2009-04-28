@@ -32,23 +32,24 @@ namespace Db4objects.Db4o.Internal.Mapping
 			return _origHandler.LinkLength() + _mappedHandler.LinkLength();
 		}
 
-		public virtual object ReadIndexEntry(ByteArrayBuffer reader)
+		public virtual object ReadIndexEntry(IContext context, ByteArrayBuffer reader)
 		{
-			int origID = ReadID(reader);
-			int mappedID = ReadID(reader);
+			int origID = ReadID(context, reader);
+			int mappedID = ReadID(context, reader);
 			return new MappedIDPair(origID, mappedID);
 		}
 
-		public virtual void WriteIndexEntry(ByteArrayBuffer reader, object obj)
+		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer reader, object
+			 obj)
 		{
 			MappedIDPair mappedIDs = (MappedIDPair)obj;
-			_origHandler.WriteIndexEntry(reader, mappedIDs.Orig());
-			_mappedHandler.WriteIndexEntry(reader, mappedIDs.Mapped());
+			_origHandler.WriteIndexEntry(context, reader, mappedIDs.Orig());
+			_mappedHandler.WriteIndexEntry(context, reader, mappedIDs.Mapped());
 		}
 
-		private int ReadID(ByteArrayBuffer a_reader)
+		private int ReadID(IContext context, ByteArrayBuffer a_reader)
 		{
-			return ((int)_origHandler.ReadIndexEntry(a_reader));
+			return ((int)_origHandler.ReadIndexEntry(context, a_reader));
 		}
 
 		public virtual IPreparedComparison PrepareComparison(IContext context, object source

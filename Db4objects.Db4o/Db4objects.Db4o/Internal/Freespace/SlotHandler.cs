@@ -23,12 +23,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return Slot.MarshalledLength;
 		}
 
-		public virtual object ReadIndexEntry(ByteArrayBuffer reader)
+		public virtual object ReadIndexEntry(IContext context, ByteArrayBuffer reader)
 		{
 			return new Slot(reader.ReadInt(), reader.ReadInt());
 		}
 
-		public virtual void WriteIndexEntry(ByteArrayBuffer writer, object obj)
+		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer writer, object
+			 obj)
 		{
 			Slot slot = (Slot)obj;
 			writer.WriteInt(slot.Address());

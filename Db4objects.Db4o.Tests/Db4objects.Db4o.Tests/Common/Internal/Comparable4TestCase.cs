@@ -7,7 +7,6 @@ using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Internal;
 
@@ -93,11 +92,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			Assert.IsNotNull(comparable);
 			Assert.AreEqual(0, comparable.CompareTo(null));
 			Assert.IsSmaller(0, comparable.CompareTo(smaller));
-		}
-
-		private IContext Context()
-		{
-			return Stream().Transaction().Context();
 		}
 
 		private object NewInstance(Type clazz)

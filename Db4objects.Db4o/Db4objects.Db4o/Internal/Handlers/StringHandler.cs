@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		/// <summary>This readIndexEntry method reads from the actual index in the file.</summary>
 		/// <remarks>This readIndexEntry method reads from the actual index in the file.</remarks>
-		public virtual object ReadIndexEntry(ByteArrayBuffer reader)
+		public virtual object ReadIndexEntry(IContext context, ByteArrayBuffer reader)
 		{
 			Slot s = new Slot(reader.ReadInt(), reader.ReadInt());
 			if (IsInvalidSlot(s))
@@ -109,7 +109,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return (slot.Address() == 0) && (slot.Length() == 0);
 		}
 
-		public virtual void WriteIndexEntry(ByteArrayBuffer writer, object entry)
+		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer writer, object
+			 entry)
 		{
 			if (entry == null)
 			{

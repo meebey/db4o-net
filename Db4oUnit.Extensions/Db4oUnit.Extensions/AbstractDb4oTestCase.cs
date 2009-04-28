@@ -12,6 +12,7 @@ using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 
@@ -132,13 +133,13 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunSolo(string testLabelSubstring)
 		{
-			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(true), new _IPredicate4_103
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(true), new _IPredicate4_104
 				(testLabelSubstring))).Run();
 		}
 
-		private sealed class _IPredicate4_103 : IPredicate4
+		private sealed class _IPredicate4_104 : IPredicate4
 		{
-			public _IPredicate4_103(string testLabelSubstring)
+			public _IPredicate4_104(string testLabelSubstring)
 			{
 				this.testLabelSubstring = testLabelSubstring;
 			}
@@ -397,12 +398,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_318(oc));
+			Foreach(clazz, new _IVisitor4_319(oc));
 		}
 
-		private sealed class _IVisitor4_318 : IVisitor4
+		private sealed class _IVisitor4_319 : IVisitor4
 		{
-			public _IVisitor4_318(IExtObjectContainer oc)
+			public _IVisitor4_319(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}
@@ -474,6 +475,11 @@ namespace Db4oUnit.Extensions
 		protected virtual IEventRegistry ServerEventRegistry()
 		{
 			return EventRegistryFor(FileSession());
+		}
+
+		protected virtual IContext Context()
+		{
+			return Trans().Context();
 		}
 	}
 }

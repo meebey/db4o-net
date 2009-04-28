@@ -779,16 +779,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.CopyID();
 		}
 
-		public object ReadIndexEntry(ByteArrayBuffer a_reader)
+		public object ReadIndexEntry(IContext context, ByteArrayBuffer a_reader)
 		{
 			return a_reader.ReadInt();
 		}
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
-		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer a_writer
+		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer statefulBuffer
 			)
 		{
-			return ReadIndexEntry(a_writer);
+			return ReadIndexEntry(statefulBuffer.Transaction().Context(), statefulBuffer);
 		}
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
@@ -803,7 +803,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.IdLength;
 		}
 
-		public virtual void WriteIndexEntry(ByteArrayBuffer a_writer, object a_object)
+		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer a_writer, object
+			 a_object)
 		{
 			if (a_object == null)
 			{

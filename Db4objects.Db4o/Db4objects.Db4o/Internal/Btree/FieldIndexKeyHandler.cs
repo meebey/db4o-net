@@ -26,11 +26,11 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _valueHandler.LinkLength() + Const4.IntLength;
 		}
 
-		public virtual object ReadIndexEntry(ByteArrayBuffer a_reader)
+		public virtual object ReadIndexEntry(IContext context, ByteArrayBuffer a_reader)
 		{
 			// TODO: could read int directly here with a_reader.readInt()
-			int parentID = ReadParentID(a_reader);
-			object objPart = _valueHandler.ReadIndexEntry(a_reader);
+			int parentID = ReadParentID(context, a_reader);
+			object objPart = _valueHandler.ReadIndexEntry(context, a_reader);
 			if (parentID < 0)
 			{
 				objPart = null;
@@ -39,12 +39,13 @@ namespace Db4objects.Db4o.Internal.Btree
 			return new FieldIndexKey(parentID, objPart);
 		}
 
-		private int ReadParentID(ByteArrayBuffer a_reader)
+		private int ReadParentID(IContext context, ByteArrayBuffer a_reader)
 		{
-			return ((int)_parentIdHandler.ReadIndexEntry(a_reader));
+			return ((int)_parentIdHandler.ReadIndexEntry(context, a_reader));
 		}
 
-		public virtual void WriteIndexEntry(ByteArrayBuffer writer, object obj)
+		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer writer, object
+			 obj)
 		{
 			FieldIndexKey composite = (FieldIndexKey)obj;
 			int parentID = composite.ParentID();
@@ -54,7 +55,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				parentID = -parentID;
 			}
 			_parentIdHandler.Write(parentID, writer);
-			_valueHandler.WriteIndexEntry(writer, composite.Value());
+			_valueHandler.WriteIndexEntry(context, writer, composite.Value());
 		}
 
 		public virtual IIndexable4 ValueHandler()

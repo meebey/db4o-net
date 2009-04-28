@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		internal abstract object Read1(ByteArrayBuffer reader);
 
-		public virtual object ReadIndexEntry(ByteArrayBuffer buffer)
+		public virtual object ReadIndexEntry(IContext context, ByteArrayBuffer buffer)
 		{
 			try
 			{
@@ -99,10 +99,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 		}
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
-		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer a_writer
+		public object ReadIndexEntryFromObjectSlot(MarshallerFamily mf, StatefulBuffer statefulBuffer
 			)
 		{
-			return Read(mf, a_writer, true);
+			return Read(mf, statefulBuffer, true);
 		}
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
@@ -134,7 +134,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public abstract void Write(object a_object, ByteArrayBuffer a_bytes);
 
-		public virtual void WriteIndexEntry(ByteArrayBuffer a_writer, object a_object)
+		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer a_writer, object
+			 a_object)
 		{
 			if (a_object == null)
 			{

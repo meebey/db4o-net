@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  db4objects Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -9,9 +10,9 @@ namespace Db4objects.Db4o.Internal
 	{
 		int LinkLength();
 
-		object ReadIndexEntry(ByteArrayBuffer reader);
+		object ReadIndexEntry(IContext context, ByteArrayBuffer reader);
 
-		void WriteIndexEntry(ByteArrayBuffer writer, object obj);
+		void WriteIndexEntry(IContext context, ByteArrayBuffer writer, object obj);
 
 		void DefragIndexEntry(DefragmentContextImpl context);
 	}
