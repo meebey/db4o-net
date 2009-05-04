@@ -1,4 +1,4 @@
-/* Copyright (C) 2005   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2005   Versant Inc.   http://www.db4o.com */
 using System;
 using System.Text;
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2005  db4objects Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2005  Versant Inc.  http://www.db4o.com */
 using System.Collections;
 using Db4objects.Db4o.Query;
 using Db4oUnit;

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle ("System.Linq.Expressions.Tests")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("db4objects, Inc.")]
+[assembly: AssemblyCompany ("Versant, Inc.")]
 [assembly: AssemblyProduct ("System.Linq.Expressions.Tests")]
-[assembly: AssemblyCopyright ("Copyright © db4objects, Inc. 2008")]
+[assembly: AssemblyCopyright ("Copyright © Versant, Inc. 2008")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 

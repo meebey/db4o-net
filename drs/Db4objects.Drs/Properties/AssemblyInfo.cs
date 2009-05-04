@@ -7,7 +7,7 @@ the terms of version 2 of the GNU General Public License as published
 by the Free Software Foundation and as clarified by db4objects' GPL 
 interpretation policy, available at
 http://www.db4o.com/about/company/legalpolicies/gplinterpretation/
-Alternatively you can write to db4objects, Inc., 1900 S Norfolk Street,
+Alternatively you can write to Versant, Inc., 1900 S Norfolk Street,
 Suite 350, San Mateo, CA 94403, USA.
 
 db4o is distributed in the hope that it will be useful, but WITHOUT ANY

@@ -1,4 +1,4 @@
-/* Copyright (C) 2004   db4objects Inc.   http://www.db4o.com */
+/* Copyright (C) 2004   Versant Inc.   http://www.db4o.com */
 #if CF_2_0
 namespace System
 {
