@@ -9,34 +9,33 @@ namespace Db4objects.Db4o.Internal.Events
 {
 	internal class EventPlatform
 	{
-		public static void TriggerClassEvent(ClassEventHandler e, ClassMetadata klass)
+		public static void TriggerClassEvent(System.EventHandler<ClassEventArgs> e, ClassMetadata klass)
 		{
+			if (null == e) return;
+
 			Trigger(delegate
-			{
-				if (null == e) return;
+			{	
 				e(klass, new ClassEventArgs(klass));
 			});
 		}
 
-		public static void TriggerQueryEvent(Transaction transaction, QueryEventHandler e, IQuery q)
+		public static void TriggerQueryEvent(Transaction transaction, System.EventHandler<QueryEventArgs> e, IQuery q)
 		{
+			if (null == e) return;
+			
 			Trigger(delegate
 			{
-				if (null == e) return;
 			    e(q, new QueryEventArgs(transaction, q));
 			});
 		}
 
-		public static bool TriggerCancellableObjectEventArgs(Transaction transaction, CancellableObjectEventHandler e, object o)
+		public static bool TriggerCancellableObjectEventArgs(Transaction transaction, System.EventHandler<CancellableObjectEventArgs> e, object o)
 		{
+			if (null == e) return true;
+			
 			bool ret = false;
 			Trigger(delegate
 			{
-				if (null == e)
-			    {
-					ret = true;
-			        return;
-				}
 				
 				CancellableObjectEventArgs coea = new CancellableObjectEventArgs(transaction, o);
 				
@@ -47,21 +46,23 @@ namespace Db4objects.Db4o.Internal.Events
 			return ret;
 		}
 
-		public static void TriggerObjectInfoEvent(Transaction transaction, ObjectInfoEventHandler e, IObjectInfo o)
+		public static void TriggerObjectInfoEvent(Transaction transaction, System.EventHandler<ObjectInfoEventArgs> e, IObjectInfo o)
 		{
+			if (null == e) return;
+				
 			Trigger(delegate
 			{
-				if (null == e) return;
 				
 				e(o, new ObjectInfoEventArgs(transaction, o));
 			});
 		}
 		
-		public static void TriggerCommitEvent(Transaction transaction, CommitEventHandler e, CallbackObjectInfoCollections objectInfoCollections)
+		public static void TriggerCommitEvent(Transaction transaction, System.EventHandler<CommitEventArgs> e, CallbackObjectInfoCollections objectInfoCollections)
 		{
+			if (null == e) return;
+
 			Trigger(delegate
-			{
-				if (null == e) return;
+			{	
 				e(null, new CommitEventArgs(transaction, objectInfoCollections));
 			});
 		
@@ -72,11 +73,12 @@ namespace Db4objects.Db4o.Internal.Events
 			return null != e;
 		}
 
-		public static void TriggerObjectContainerEvent(IObjectContainer container, ObjectContainerEventHandler e)
+		public static void TriggerObjectContainerEvent(IObjectContainer container, System.EventHandler<ObjectContainerEventArgs> e)
 		{
+			if (null == e) return;
+
 			Trigger(delegate
 			{
-				if (null == e) return;
 				e(container, new ObjectContainerEventArgs(container));
 			});
 		}

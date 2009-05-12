@@ -4,7 +4,7 @@ namespace Db4objects.Db4o.Internal.CS
 {
 	class ServerPlatform
 	{
-		internal static void TriggerMessageEvent(MessageEventHandler eventHandler, Db4objects.Db4o.Internal.CS.Messages.Msg message)
+		internal static void TriggerMessageEvent(System.EventHandler<MessageEventArgs> eventHandler, Db4objects.Db4o.Internal.CS.Messages.Msg message)
 		{
 			if (eventHandler == null)
 				return;

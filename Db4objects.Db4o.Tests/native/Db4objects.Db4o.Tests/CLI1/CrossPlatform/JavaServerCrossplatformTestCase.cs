@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 			Assert.AreEqual(persons.Length, createdCount);
 		}
 
-		private void RegisterEvents(ObjectInfoEventHandler createdHandler)
+		private void RegisterEvents(System.EventHandler<ObjectInfoEventArgs> createdHandler)
 		{
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(_client);
 
