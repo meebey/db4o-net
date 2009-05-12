@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 
+using System.Reflection;
 using Db4oTool.Core;
 using Db4oTool.Tests.Core;
 using Db4oUnit;
@@ -28,13 +29,13 @@ namespace Db4oTool.Tests.TA
 {
 	internal abstract class TATestCaseBase : ITestCase
 	{
-		protected AssemblyDefinition GenerateAssembly(string resourceName)
+		protected AssemblyDefinition GenerateAssembly(string resourceName, params Assembly[] references)
 		{
 			return AssemblyFactory.GetAssembly(
 						CompilationServices.EmitAssemblyFromResource(
 							ResourceServices.CompleteResourceName(
 													GetType(),
-													resourceName)));
+													resourceName), references));
 		}
 
 		protected static void InstrumentAssembly(AssemblyDefinition testAssembly)

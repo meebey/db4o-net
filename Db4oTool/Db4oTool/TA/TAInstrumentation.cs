@@ -44,7 +44,34 @@ namespace Db4oTool.TA
 			ProcessTypes(module.Types, NoFiltering, ProcessType);
 		}
 
-        private void CreateTagAttribute()
+		protected override void ProcessType(TypeDefinition type)
+		{
+			EmitWarningForNonPrivateFields(type);
+			base.ProcessType(type);
+		}
+
+		private void EmitWarningForNonPrivateFields(TypeDefinition type)
+		{
+			if (HasNonPrivateFields(type))
+			{
+				_context.TraceWarning("Class '" + type.Name + "' has non-private fields. Make sure that any accessing classes are instrumented.");
+			}
+		}
+
+		private static bool HasNonPrivateFields(TypeDefinition type)
+		{
+			foreach (FieldDefinition field in type.Fields)
+			{
+				if (!field.IsPrivate)
+				{
+					return true;
+				}
+			}
+			
+			return false;
+		}
+
+		private void CreateTagAttribute()
         {
             _instrumentationAttribute = new CustomAttribute(ImportConstructor(typeof(TagAttribute)));
             _instrumentationAttribute.ConstructorParameters.Add(IT_TRANSPARENT_ACTIVATION);

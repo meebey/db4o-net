@@ -29,7 +29,7 @@ using Mono.Cecil;
 
 namespace Db4oTool.Tests.TA
 {
-	class TAWarningOnSignedAssemblyInstrumentation : TATestCaseBase
+	class TAWarningOnSignedAssemblyInstrumentation : TAOutputListenerTestCaseBase
 	{
 		public void TestDelaySign()
 		{
@@ -66,14 +66,7 @@ namespace Db4oTool.Tests.TA
 			}
 
 			Assert.AreEqual(sign, assembly.Name.HasPublicKey);
-
-			TraceListener listener = new TraceListener();
-			Trace.Listeners.Add(listener);
-
-			Db4oTool.Program.Main(new string[] { "-ta", assembly.MainModule.Image.FileInformation.FullName });
-
-			Trace.Listeners.Remove(listener);
-			Assert.AreEqual(sign, listener.Contents.Contains("has been signed"));
+			InstrumentAndAssert(sign, assembly.MainModule.Image.FileInformation.FullName, "has been signed");
 		}
 
 		private static string GenerateKeyToSign()

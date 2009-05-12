@@ -28,8 +28,6 @@ namespace Db4oTool.Tests.TA
 	{
 		protected override Type[] TestCases()
 		{
-			//return new Type[] { typeof(TAInstrumentedConstructorTestCase), };
-
 			return new Type[]
 				{
 					typeof(TABytecodeChangesTestCase),
@@ -39,6 +37,7 @@ namespace Db4oTool.Tests.TA
 					typeof(TAInstrumentedConstructorTestCase),
 					typeof(TAInstrumentationAppliedMoreThanOnce),
 					typeof(TANonStorableTypeTestCase),
+					typeof(TAWarningOnNonPrivateFieldsTestCase),
 					typeof(TAWarningOnSignedAssemblyInstrumentation),
 				};
 		}
