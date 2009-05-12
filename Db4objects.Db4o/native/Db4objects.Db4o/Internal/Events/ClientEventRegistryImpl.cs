@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal.Events
 {
 	partial class ClientEventRegistryImpl
 	{
-		public override event ObjectEventHandler Deleted
+		public override event ObjectInfoEventHandler Deleted
 		{
 			add
 			{

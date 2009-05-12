@@ -47,13 +47,13 @@ namespace Db4objects.Db4o.Internal.Events
 			return ret;
 		}
 
-		public static void TriggerObjectEvent(Transaction transaction, ObjectEventHandler e, object o)
+		public static void TriggerObjectInfoEvent(Transaction transaction, ObjectInfoEventHandler e, IObjectInfo o)
 		{
 			Trigger(delegate
 			{
 				if (null == e) return;
 				
-				e(o, new ObjectEventArgs(transaction, o));
+				e(o, new ObjectInfoEventArgs(transaction, o));
 			});
 		}
 		
