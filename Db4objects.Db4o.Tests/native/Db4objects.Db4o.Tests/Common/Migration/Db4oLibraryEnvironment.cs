@@ -30,14 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			Type type = Type.GetType(_typeName);
 			MethodInfo method =
 				type.GetMethod(_methodName, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
-			try
-			{
-				method.Invoke(Activator.CreateInstance(type), _arguments);
-			}
-			catch (Exception x)
-			{
-				throw new Exception(x.ToString());
-			}
+			method.Invoke(Activator.CreateInstance(type), _arguments);
 		}
     }
 
@@ -171,16 +164,10 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 		}
 
-		private static void CleanStrongName(AssemblyNameDefinition nameDefinition)
-		{
-			nameDefinition.PublicKey = new byte[0];
-			nameDefinition.PublicKeyToken = new byte[0];
-		}
-
 		private static void CleanStrongName(AssemblyNameReference name)
 		{
+			name.HasPublicKey = false;
 			name.Version = new Version();
-			name.PublicKeyToken = new byte[0];
 		}
 #endif
 
