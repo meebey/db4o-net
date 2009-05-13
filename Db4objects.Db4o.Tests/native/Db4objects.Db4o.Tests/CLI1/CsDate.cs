@@ -59,9 +59,9 @@ namespace Db4objects.Db4o.Tests.CLI1
 
         public void TestDeactivation()
         {
-            Item template = new Item(new DateTime(100));
-            Db().Deactivate(template, int.MaxValue);
-            Assert.AreEqual(new DateTime(0), template.dateTime);
+        	Item item = RetrieveOnlyInstance<Item>();
+        	Db().Deactivate(item, int.MaxValue);
+            Assert.AreEqual(new DateTime(0), item.dateTime);
         }
 
         public void TestSODA()

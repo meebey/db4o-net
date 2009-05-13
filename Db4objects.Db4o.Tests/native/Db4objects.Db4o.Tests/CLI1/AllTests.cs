@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					// typeof(CsEvaluationDelegate),  moved to Staging because it fails
 					typeof(CsMarshalByRef),
 					typeof(CsType),
-					typeof(CsStructs),
+					typeof(StructsTestCase),
 					typeof(CsStructsRegression),
 					typeof(CsValueTypesTestCase),
                     typeof(CsSystemArrayTestCase),
