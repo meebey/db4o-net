@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 {
 	class DotnetServerCrossplatformTestCase : CrossplatformTestCaseBase, IMessageRecipient
 	{
-#if !CF
+#if !CF && !SILVERLIGHT
 		public void Test()
 		{
 			foreach (Person p in persons)

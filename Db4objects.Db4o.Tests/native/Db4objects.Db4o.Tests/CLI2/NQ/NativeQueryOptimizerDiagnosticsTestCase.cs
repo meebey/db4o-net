@@ -7,8 +7,8 @@ using Db4oUnit;
 namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 {
     public partial class NativeQueryOptimizerDiagnosticsTestCase
-    {
-#if !CF
+	{
+#if !CF && !SILVERLIGHT
         public void TesteInlineClosureComplexQueryFails()
         {
             _failed = false;
@@ -135,7 +135,7 @@ internal class ListenForNQOptimizerLoadFailures : IDiagnosticListener
             return directory;
         }
 #endif
-    }
+	}
 
     public interface INQTestRunner
     {

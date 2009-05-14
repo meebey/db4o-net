@@ -11,10 +11,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                 typeof(ArrayDictionary4TATestCase),
 				typeof(ArrayDictionary4TransparentPersistenceTestCase),
 
+                typeof(ArrayList4TATestCase), 
+#if !SILVERLIGHT
 				typeof(ArrayList4ActivatableTestCase), 
 				typeof(ArrayList4TestCase), 
-                typeof(ArrayList4TATestCase), 
                 typeof(BindingListTestCase),
+#endif
                 typeof(GenericDictionaryTestCase),
 				typeof(GenericDictionaryTestSuite),
 

@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string javac(string srcFile)
 		{
-#if CF 
+#if CF || SILVERLIGHT 
             return null;
 #else
             Assert.IsTrue(File.Exists(JavaServices.Db4oCoreJarPath()), string.Format("'{0}' not found. Make sure the jar was built before running this test.", JavaServices.Db4oCoreJarPath()));
@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string java(string className, params string[] args)
 		{
-#if CF
+#if CF || SILVERLIGHT 
             return null;
 #else
             return IOServices.Exec(WorkspaceServices.JavaPath(),

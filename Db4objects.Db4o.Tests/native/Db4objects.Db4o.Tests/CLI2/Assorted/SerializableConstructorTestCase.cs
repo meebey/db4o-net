@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Db4objects.Db4o.Collections;
 using Db4oUnit;
@@ -71,7 +72,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 	public abstract class TestObject
 	{ }
 
-	public class TestEmbeddedObjectList<T> : ArrayList4<T> where T : TestObject
+	public class TestEmbeddedObjectList<T> : List<T> where T : TestObject
 	{
 		private readonly TestObject parent;
 

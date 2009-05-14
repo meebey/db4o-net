@@ -1,7 +1,9 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 using System;
+#if !SILVERLIGHT
 using System.Drawing;
 using System.Drawing.Imaging;
+#endif
 using System.IO;
 
 using Db4objects.Db4o.Config;
@@ -13,7 +15,8 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
 	public class ImageTestCase : AbstractDb4oTestCase
 	{
-#if !CF
+#if !CF && !SILVERLIGHT
+
 		public class ImageTranslator : IObjectConstructor
 		{
 			public object OnInstantiate(IObjectContainer container, object obj)

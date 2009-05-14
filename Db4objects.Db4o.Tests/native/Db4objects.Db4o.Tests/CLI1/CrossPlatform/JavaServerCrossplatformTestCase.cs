@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 {
 	class JavaServerCrossplatformTestCase : CrossplatformTestCaseBase
 	{
-#if !CF
+#if !CF && !SILVERLIGHT
 		public void TestQueryOnEmptyDatabaseDoesntThrows()
 		{
 			AssertQuery(

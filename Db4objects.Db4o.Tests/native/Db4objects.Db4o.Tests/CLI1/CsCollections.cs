@@ -10,6 +10,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
     public class CsCollections : AbstractDb4oTestCase
     {
+#if !SILVERLIGHT
         ArrayList arrayList;
         Hashtable hashTable;
         Queue queue;
@@ -97,6 +98,6 @@ namespace Db4objects.Db4o.Tests.CLI1
             Assert.AreEqual(new AtomData("bar"), dict[new AtomData("foo")]);
             Assert.AreEqual("Yoman", dict[4]);
         }
-
+#endif
     }
 }

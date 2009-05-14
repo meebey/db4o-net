@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Util;
-#if !CF
+#if !CF && !SILVERLIGHT
 using Mono.Cecil;
 #endif
 using File=Sharpen.IO.File;
@@ -30,8 +30,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			Type type = Type.GetType(_typeName);
 			MethodInfo method =
 				type.GetMethod(_methodName, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
-			method.Invoke(Activator.CreateInstance(type), _arguments);
-		}
+				method.Invoke(Activator.CreateInstance(type), _arguments);
+			}
     }
 
 	[Serializable]
@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public Db4oLibraryEnvironment(File file, File additionalAssembly)
 		{
 			_targetAssembly = file.GetAbsolutePath();
-#if !CF
+#if !CF && !SILVERLIGHT
 			_domain = CreateDomain(SetUpBaseDirectory());
 			try
 			{
@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 #endif
         }
 
-#if !CF
+#if !CF && !SILVERLIGHT
 		private string SetUpBaseDirectory()
 		{
 			string baseDirectory = BaseDirectory();
@@ -179,7 +179,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private string GetVersion()
 		{
-#if !CF
+#if !CF && !SILVERLIGHT
 			return System.Reflection.Assembly.ReflectionOnlyLoadFrom(_targetAssembly).GetName().Version.ToString();
 #else
 			return System.Reflection.Assembly.LoadFrom(_targetAssembly).GetName().Version.ToString();
@@ -188,14 +188,14 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public void InvokeInstanceMethod(Type type, string methodName, params object[] args)
 		{
-#if !CF
+#if !CF && !SILVERLIGHT
 			_domain.DoCallBack(new CrossAppDomainDelegate(new InvokeInstanceMethod(ReflectPlatform.FullyQualifiedName(type), methodName, args).Execute));
 #endif
-        }
+		}
 
 		public void Dispose()
 		{
-#if !CF
+#if !CF && !SILVERLIGHT
 			AppDomain.Unload(_domain);
 #endif
 		}

@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	{
 		private static string GetTempPath()
 		{
-#if !CF
+#if !CF && !SILVERLIGHT
 			return Environment.GetEnvironmentVariable("TEMP");
 #else
 			return System.IO.Path.GetTempPath();

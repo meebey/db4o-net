@@ -1,7 +1,7 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 namespace Db4objects.Db4o.Tests.Util
 {
-#if !CF
+#if !CF && !SILVERLIGHT
 	using System;
 	using System.CodeDom.Compiler;
 	using System.IO;

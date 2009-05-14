@@ -2,7 +2,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-#if !CF
+#if !CF && !SILVERLIGHT
 	internal class LegacyAdapterEmitter
 	{
 		private string _legacyAssembly;

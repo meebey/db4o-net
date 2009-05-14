@@ -11,19 +11,21 @@ namespace Db4objects.Db4o.Tests.CLI1
 				{
                     typeof(Aliases.AllTests),
 					typeof(CrossPlatform.AllTests),
-                    typeof(EnumTestCase),
-#if !CF
+#if !CF && !SILVERLIGHT
 					typeof(CsAppDomains),
 					typeof(CsAssemblyVersionChange),
 					typeof(CsImage),
 					typeof(ShutdownMultipleContainer),
 #endif
+                    typeof(EnumTestCase),
 					typeof(Events.EventRegistryTestCase),
                     typeof(Handlers.AllTests),
 					typeof(Inside.AllTests),
 					typeof(NativeQueries.AllTests),
 					typeof(Reflect.Net.AllTests),
+#if !SILVERLIGHT
                     typeof(CollectionBaseTestCase),
+#endif
 					typeof(CsCascadeDeleteToStructs),
 					typeof(CsCollections),
 					typeof(CsCustomTransientAttribute),
@@ -32,7 +34,9 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(CsDisposableTestCase),
 					typeof(CsEnum),
 					// typeof(CsEvaluationDelegate),  moved to Staging because it fails
+#if !SILVERLIGHT
 					typeof(CsMarshalByRef),
+#endif
 					typeof(CsType),
 					typeof(StructsTestCase),
 					typeof(CsStructsRegression),

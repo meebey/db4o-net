@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !SILVERLIGHT
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Db4oUnit;
@@ -51,3 +52,4 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
     }
 }
+#endif

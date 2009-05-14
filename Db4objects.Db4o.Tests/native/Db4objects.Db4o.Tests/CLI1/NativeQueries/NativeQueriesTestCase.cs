@@ -5,6 +5,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 {
 	public class NativeQueriesTestCase : AbstractNativeQueriesTestCase
 	{	
+#if !SILVERLIGHT
 		private Data _a;
 		private Data _b;
 		private Data _c1;
@@ -263,6 +264,6 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
             AssertNQResult(new Identity(_a));
             
         }
-
+#endif
 	}
 }

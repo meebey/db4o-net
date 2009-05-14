@@ -89,6 +89,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 	/// </summary>
 	public class StringComparisonTestCase : AbstractNativeQueriesTestCase
 	{
+#if !SILVERLIGHT
 		private NamedThing _robinson;
 		private NamedThing _frisbee;
 		private NamedThing _bee;
@@ -142,5 +143,6 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			AssertNQResult(new NameEquals("ee"));
 			AssertNQResult(new NameEquals("Round"));
 		}
+#endif
 	}
 }

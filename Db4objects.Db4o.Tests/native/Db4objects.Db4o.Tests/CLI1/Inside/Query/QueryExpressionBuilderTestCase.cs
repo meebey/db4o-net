@@ -1,20 +1,25 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
+
+using Db4oUnit;
+
+#if !SILVERLIGHT
 using System;
 using System.Reflection;
 using Db4objects.Db4o.Activation;
+using Db4objects.Db4o.TA;
+using Db4objects.Db4o.Tests.CLI1.NativeQueries;
 using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
-using Db4objects.Db4o.TA;
-using Db4objects.Db4o.Tests.CLI1.NativeQueries;
 using Db4objects.Db4o.NativeQueries;
 using Db4objects.Db4o.Tests.NativeQueries.Mocks;
-using Db4oUnit;
+#endif
 
 namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 {	
 	public class QueryExpressionBuilderTestCase : ITestCase
 	{
+#if !SILVERLIGHT
 		public class Item
 		{
 			public string name;
@@ -166,6 +171,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside.Query
 				new MockFieldRef(name,
 					new MockTypeRef(type)));
 		}
-
+#endif
 	}
 }

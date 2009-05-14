@@ -5,18 +5,18 @@ using System.Runtime.CompilerServices;
 using System.Security;
 
 [assembly: AssemblyTitle("db4o - optional functionality")]
-[assembly: AssemblyCompany("db4objects Inc., San Mateo, CA, USA")]
+[assembly: AssemblyCompany("Versant Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
 [assembly: AssemblyCopyright("db4o 2005 - 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // attributes are automatically set by the build
-[assembly: AssemblyVersion("7.9.92.13047")]
+[assembly: AssemblyVersion("7.10.95.13126")]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
-[assembly: AssemblyDescription("Db4objects.Db4o.Optional 7.9.92.13047 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Db4o.Optional 7.10.95.13126 (.NET)")]
 
-#if !CF
+#if !CF && !SILVERLIGHT
 [assembly: AllowPartiallyTrustedCallers]
 #endif

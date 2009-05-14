@@ -2,14 +2,11 @@
 
 using System;
 using System.IO;
-
-using Db4objects.Db4o;
-
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests
 {
-#if !CF
+#if !CF && !SILVERLIGHT
 	public class ShutdownMultipleContainer : ITestLifeCycle
 	{
 		private static readonly string _firstFile = "first.db4o";

@@ -10,7 +10,9 @@ namespace Db4objects.Db4o.Tests
 		{
 			return new Type[]
 			{
+#if !SILVERLIGHT
 				typeof(Db4objects.Db4o.Tests.Common.Concurrency.AllTests),
+#endif
 				typeof(ConcurrentLazyQueriesTestCase),
 			};
 		}

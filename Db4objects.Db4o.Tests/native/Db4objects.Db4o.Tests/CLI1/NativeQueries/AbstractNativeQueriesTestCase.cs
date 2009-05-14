@@ -1,4 +1,7 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
+#if !SILVERLIGHT
+using Db4oUnit;
+
 using System.Collections;
 using System.Reflection;
 using System.Text;
@@ -8,13 +11,15 @@ using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Optimization;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.NativeQueries;
-using Db4oUnit;
+#endif
+
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 {
 	public class AbstractNativeQueriesTestCase : AbstractDb4oTestCase
 	{
+#if !SILVERLIGHT
 		protected void AssertNQResult(object predicate, params object[] expected)
 		{
 			IObjectSet os = QueryFromPredicate(predicate).Execute();
@@ -40,5 +45,6 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			new SODAQueryBuilder().OptimizeQuery(expression, q, predicate, new Db4objects.Db4o.Instrumentation.Core.DefaultNativeClassFactory(), new CecilReferenceResolver());
 			return q;
 		}
+#endif
 	}
 }

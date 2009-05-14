@@ -9,7 +9,7 @@ using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
-#if !CF
+#if !CF && !SILVERLIGHT
 	public class ADTask : MarshalByRefObject
 	{
 		private String _name;

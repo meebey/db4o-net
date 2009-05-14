@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
     class DictionaryBaseTestCase: AbstractDb4oTestCase
     {
-#if ! CF
+#if !CF && !SILVERLIGHT
         private static string[] DATA = new string[] {"one", "two", "three"};
 
         public class Item

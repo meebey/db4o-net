@@ -46,6 +46,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 
 	public class MultipleAssemblySupportTestCase : AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
 	{	
+#if !SILVERLIGHT 
 		override protected void Store()
 		{
 			Store(new Author(1, "Kurt Vonnegut"));
@@ -126,6 +127,7 @@ public class InnerAuthorNamePredicate : Predicate
 		{
 			Assert.AreEqual(QueryExecutionKind.DynamicallyOptimized, args.ExecutionKind);
 		}
+#endif
 	}
 #endif
 }

@@ -57,9 +57,9 @@ namespace Db4objects.Db4o.Tests.Util
         {
             if (s.StartsWith("\"")) return s;
             return "\"" + s + "\"";
-        }
-		
-#if !CF
+		}
+
+#if !CF && !SILVERLIGHT
 		public static string Exec(string program, params string[] arguments)
 		{
 			return Exec(program, JoinQuotedArgs(arguments));
@@ -90,9 +90,9 @@ namespace Db4objects.Db4o.Tests.Util
 
 #endif
 
-        public static string BuildTempPath(string fname)
+		public static string BuildTempPath(string fname)
 		{
-#if !CF && !MONO
+#if !CF && !MONO && !SILVERLIGHT 
 			return Path.Combine(Environment.GetEnvironmentVariable("TEMP"), fname);
 #else
 			return Path.Combine(Path.GetTempPath(), fname);

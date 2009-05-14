@@ -64,8 +64,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 		IEnumerable<Type> DictionaryTypes()
 		{
 			yield return typeof(Dictionary<,>);
+#if !SILVERLIGHT
 			yield return typeof(SortedList<,>);
-#if !CF
+#endif
+#if !CF && !SILVERLIGHT
 			yield return typeof(SortedDictionary<,>);
 #endif
 		}

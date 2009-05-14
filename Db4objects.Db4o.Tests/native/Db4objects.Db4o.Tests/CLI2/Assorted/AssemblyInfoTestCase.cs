@@ -11,8 +11,10 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 			Type[] assemblyReferences = new Type[]
 				{
 					typeof(Db4oFactory),
+#if !SILVERLIGHT
 					typeof(Db4objects.Db4o.Instrumentation.Api.ITypeEditor),
 					typeof(Db4objects.Db4o.NativeQueries.NQOptimizer),
+#endif
 				};
 			foreach (Type type in assemblyReferences)
 			{

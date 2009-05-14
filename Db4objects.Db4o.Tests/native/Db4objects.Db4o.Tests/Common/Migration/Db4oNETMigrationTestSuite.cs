@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.CLI2.Handlers;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-#if !CF
+#if !CF && !SILVERLIGHT
     class Db4oNETMigrationTestSuite : Db4oMigrationTestSuite
     {
         protected override Type[] TestCases()

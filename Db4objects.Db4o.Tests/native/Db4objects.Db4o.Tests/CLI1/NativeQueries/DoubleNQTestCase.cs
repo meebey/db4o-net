@@ -40,6 +40,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 
 	class DoubleNQTestCase : AbstractNativeQueriesTestCase
 	{
+#if !SILVERLIGHT
 		protected override void Store()
 		{
 			Store(new DoubleItem("foo", 11.5));
@@ -57,5 +58,6 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 			query.Descend("_name").Constrain(name);
 			return query.Execute().Next();
 		}
+#endif
 	}
 }

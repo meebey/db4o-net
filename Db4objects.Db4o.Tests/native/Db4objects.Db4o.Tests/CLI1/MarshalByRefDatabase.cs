@@ -1,4 +1,5 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
+#if !SILVERLIGHT
 using System;
 using Db4objects.Db4o;
 
@@ -42,3 +43,4 @@ namespace Db4objects.Db4o.Tests.CLI1
         }
     }
 }
+#endif

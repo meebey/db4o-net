@@ -110,9 +110,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
         public void CreateDicts()
         {
             nDict1 = new Dictionary<DItem1, string>();
+#if !SILVERLIGHT
             nDict2 = new SortedList<DItem2, string>();
+#endif
             gDict1 = new Dictionary<DItem1, string>();
-#if CF
+#if CF ||  SILVERLIGHT
 			gDict2 = new Dictionary<DItem2, string>();
 #else
             gDict2 = new SortedDictionary<DItem2, string>();

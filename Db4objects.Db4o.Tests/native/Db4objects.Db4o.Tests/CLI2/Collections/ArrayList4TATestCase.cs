@@ -12,6 +12,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
     class ArrayList4TATestCase : TransparentActivationTestCaseBase
     {
+#if !SILVERLIGHT
         private const int SIZE = 50;
 
         protected override void Store()
@@ -147,5 +148,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
                 yield return i.ToString();
             }
         }
+#endif
     }
 }

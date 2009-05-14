@@ -1,3 +1,4 @@
+#if !SILVERLIGHT
 using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4oUnit;
@@ -15,3 +16,4 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 		}
 	}
 }
+#endif

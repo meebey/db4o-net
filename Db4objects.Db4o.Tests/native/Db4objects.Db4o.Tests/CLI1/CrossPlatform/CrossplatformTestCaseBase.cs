@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 {
 	internal abstract class CrossplatformTestCaseBase : ITestLifeCycle
 	{
-#if !CF
+#if !CF && !SILVERLIGHT
 		protected JavaSnippet JavaClientQuery()
 		{
 			return new JavaSnippet(
