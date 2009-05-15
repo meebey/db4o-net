@@ -167,7 +167,9 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		private static void CleanStrongName(AssemblyNameReference name)
 		{
 			name.HasPublicKey = false;
-			name.Version = new Version();
+            name.PublicKeyToken = new byte[0];
+		    name.PublicKey = new byte[0];
+			//name.Version = new Version(0, 0, 0, 0);/**/
 		}
 #endif
 
