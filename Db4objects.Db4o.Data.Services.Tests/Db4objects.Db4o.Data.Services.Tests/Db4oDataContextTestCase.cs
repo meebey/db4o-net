@@ -159,7 +159,7 @@ namespace Db4objects.Db4o.Data.Services.Tests
 			});
 		}
 
-		public void TestResetResource()
+		public void _TestResetResource()
 		{
 			var team = new Team { Name = "db4o" };
 
