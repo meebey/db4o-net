@@ -16,14 +16,7 @@ namespace Db4objects.Db4o.Data.Services
 {
 	public abstract class Db4oDataContext : IUpdatable
 	{
-		enum Change
-		{
-			Store = 1,
-			Delete = 2,
-		}
-
 		IObjectContainer _container;
-		IDictionary<object, Change> _changes = new Dictionary<object, Change>();
 
 		protected IObjectContainer Container
 		{
@@ -31,7 +24,7 @@ namespace Db4objects.Db4o.Data.Services
 			{
 				if (_container == null)
 				{
-					_container = GetContainer();
+					_container = GetServer().OpenClient();
 				}
 				return _container;
 			}
@@ -41,12 +34,12 @@ namespace Db4objects.Db4o.Data.Services
 		{
 		}
 
-		public Db4oDataContext(IObjectContainer container)
+		protected Db4oDataContext(IObjectContainer container)
 		{
 			_container = container;
 		}
 
-		protected virtual IObjectContainer GetContainer()
+		protected virtual IObjectServer GetServer()
 		{
 			throw new NotImplementedException();
 		}
@@ -131,7 +124,7 @@ namespace Db4objects.Db4o.Data.Services
 
 		public void ClearChanges()
 		{
-			_changes.Clear();
+			Container.Rollback();
 		}
 
 		private static Type GetType(string fullname)
@@ -144,19 +137,14 @@ namespace Db4objects.Db4o.Data.Services
 			return null;
 		}
 
-		private void SetChange(object @object, Change change)
-		{
-			_changes[@object] = change;
-		}
-
 		private void Store(object @object)
 		{
-			SetChange(@object, Change.Store);
+			Container.Store(@object);
 		}
 
 		private void Delete(object @object)
 		{
-			SetChange(@object, Change.Delete);
+			Container.Delete(@object);
 		}
 
 		public object CreateResource(string containerName, string fullTypeName)
@@ -245,32 +233,7 @@ namespace Db4objects.Db4o.Data.Services
 
 		public void SaveChanges()
 		{
-			ProcessChanges(_changes);
-			ClearChanges();
 			Container.Commit();
-		}
-
-		private void ProcessChanges(IEnumerable<KeyValuePair<object, Change>> changes)
-		{
-			foreach (var pair in changes)
-			{
-				ProcessChange(pair.Value, pair.Key);
-			}
-		}
-
-		private void ProcessChange(Change change, object @object)
-		{
-			switch (change)
-			{
-				case Change.Delete:
-					Container.Delete(@object);
-					break;
-				case Change.Store:
-					Container.Store(@object);
-					break;
-				default:
-					throw DataServiceException("Unknown change: {0}", change);
-			}
 		}
 
 		public void SetReference(object targetResource, string propertyName, object propertyValue)
