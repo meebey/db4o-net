@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Internals
 {

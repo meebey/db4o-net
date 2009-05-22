@@ -1,4 +1,6 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
+using Db4objects.Db4o.Query;
+
 namespace Db4objects.Db4o
 {
 	/// <summary>the interface to a db4o database, stand-alone or client/server.</summary>
