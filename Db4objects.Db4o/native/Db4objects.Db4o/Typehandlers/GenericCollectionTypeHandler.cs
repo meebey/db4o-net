@@ -170,7 +170,10 @@ namespace Db4objects.Db4o.Typehandlers
 
 		private static Type ElementTypeOf(IEnumerable collection)
 		{
-			return collection.GetType().GetGenericArguments()[0];
+			//TODO: Write a test
+			//TODO: Add support for more levels...
+			Type genericType = collection.GetType().IsGenericType ? collection.GetType() : collection.GetType().BaseType;
+			return genericType.GetGenericArguments()[0];
 		}
 
 		public bool IsSimple()

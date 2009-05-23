@@ -1,4 +1,7 @@
 /* Copyright (C) 2004   Versant Inc.   http://www.db4o.com */
+#if !SILVERLIGHT
+using System;
+
 using System.IO;
 
 namespace Db4objects.Db4o.Foundation.IO
@@ -17,5 +20,11 @@ namespace Db4objects.Db4o.Foundation.IO
         {
             File.Copy(from, to, true);
         }
-    }
+
+		public static long Size(string filePath)
+		{
+			return new System.IO.FileInfo(filePath).Length;
+		}
+	}
 }
+#endif

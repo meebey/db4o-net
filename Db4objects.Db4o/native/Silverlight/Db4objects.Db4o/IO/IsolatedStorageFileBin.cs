@@ -2,22 +2,81 @@
 
 #if SILVERLIGHT
 
+using System;
 using System.IO;
 using System.IO.IsolatedStorage;
 using Db4objects.Db4o.Ext;
+using Sharpen.Util;
 
 namespace Db4objects.Db4o.IO
 {
         class IsolatedStorageFileBin : IBin
 		{
         	private readonly IsolatedStorageFileStream _fileStream;
+        	private string _fullPath;
 
-            internal IsolatedStorageFileBin(BinConfiguration config, IsolatedStorageFile store)
+        	internal IsolatedStorageFileBin(BinConfiguration config, IsolatedStorageFile store)
 			{
-            	_fileStream = new IsolatedStorageFileStream(config.Uri(), FileMode.OpenOrCreate, store);
+				Action cleanUp = Close;
+				try
+				{
+					_fileStream = OpenFile(config, store);
+					cleanUp = () => {};
+				}
+				catch (IsolatedStorageException e)
+				{
+					ThrowMappedException(e, config.Uri(), store);
+				}
+				finally
+				{
+					cleanUp();
+				}				
             }
 
-            #region IBin Members
+        	internal string Path
+        	{
+				get { return _fullPath; }
+        	}
+
+        	private static void ThrowMappedException(Exception e, string path, IsolatedStorageFile store)
+        	{
+        		if (store.FileExists(path))
+        		{
+        			throw new DatabaseFileLockedException(path, e);
+        		}
+        		throw new Db4oIOException(e);
+        	}
+
+        	private IsolatedStorageFileStream OpenFile(BinConfiguration config, IsolatedStorageFile store)
+        	{
+        		_fullPath = config.Uri();
+				IsolatedStorageFileStream stream = new IsolatedStorageFileStream(config.Uri(), FileMode.OpenOrCreate, FileAccessFor(config), FileShareFor(config), store);
+        		Fill(stream, config.InitialLength(), 0);
+
+				return stream;
+        	}
+
+        	private static void Fill(Stream stream, long length, byte value)
+        	{
+        		if (length > 0)
+        		{
+        			byte[] bytes = new byte[length];
+        			Arrays.Fill(bytes, value);
+					stream.Write(bytes, 0, bytes.Length);
+        		}
+        	}
+
+        	private static FileShare FileShareFor(BinConfiguration config)
+        	{
+        		return config.LockFile() ? FileShare.None : FileShare.ReadWrite;
+        	}
+
+        	private static FileAccess FileAccessFor(BinConfiguration config)
+        	{
+        		return config.ReadOnly() ? FileAccess.Read : FileAccess.ReadWrite;
+        	}
+
+        	#region IBin Members
 
             public long Length()
             {
@@ -44,7 +103,7 @@ namespace Db4objects.Db4o.IO
                     Seek(position);
                     _fileStream.Write(bytes, 0, bytesToWrite);
                 }
-                catch (IOException e)
+                catch (NotSupportedException e)
                 {
                     throw new Db4oIOException(e);
                 }
@@ -62,10 +121,14 @@ namespace Db4objects.Db4o.IO
 
             public void Close()
             {
-                _fileStream.Close();
+				if (_fileStream != null)
+				{
+					_fileStream.Close();
+					RaiseOnCloseEvent();
+				}
             }
 
-            #endregion
+	       	#endregion
 
             private void Seek(long position)
             {
@@ -75,7 +138,18 @@ namespace Db4objects.Db4o.IO
                 }
                 _fileStream.Seek(position, SeekOrigin.Begin);
             }
-        }
+
+			private void RaiseOnCloseEvent()
+			{
+				Action<object, EventArgs> onClose = OnClose;
+				if (onClose != null)
+				{
+					onClose(this, EventArgs.Empty);
+				}
+			}
+
+			internal event Action<object, EventArgs> OnClose;
+		}
 }
 
 #endif

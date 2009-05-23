@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 	{
 		public sealed partial class Item
 		{
-#if CF
+#if CF || SILVERLIGHT
 			public Item()
 			{
 			}

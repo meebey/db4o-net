@@ -1,3 +1,8 @@
+/* Copyright (C) 2009 Versant Inc.  http://www.db4o.com */
+
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.IO;
+
 namespace Db4oUnit.Extensions
 {
 	/// <summary>
@@ -9,6 +14,15 @@ namespace Db4oUnit.Extensions
 		protected T RetrieveOnlyInstance<T>()
 		{
 			return (T) RetrieveOnlyInstance(typeof(T));
+		}
+
+		private void Configure(IDb4oFixture fixture) 
+		{
+			IConfiguration config = fixture.Config();
+#if SILVERLIGHT
+			config.Storage = new IsolatedStorageStorage();
+#endif
+			Configure(config);		
 		}
 	}
 }

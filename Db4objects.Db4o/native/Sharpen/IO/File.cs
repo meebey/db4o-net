@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Db4objects.Db4o.IO;
 
 namespace Sharpen.IO
 {
@@ -30,18 +31,25 @@ namespace Sharpen.IO
 
 		public virtual bool Delete()
 		{
+#if SILVERLIGHT
+			return SilverlightIO.Delete(_path);
+#else
 			if (Exists())
 			{
 				System.IO.File.Delete(_path);
 				return !Exists();
 			}
 			return false;
+#endif
 		}
 
 		public bool Exists()
 		{
 #if CF
             string path = RemoveTrailingSlash(_path);
+#elif SILVERLIGHT
+			string path = _path;
+			return SilverlightIO.Exists(path);
 #else
             string path = _path;
 #endif
@@ -65,7 +73,11 @@ namespace Sharpen.IO
 
 		public string GetAbsolutePath()
 		{
+#if SILVERLIGHT
+			return _path;
+#else
 			return Path.GetFullPath(_path);
+#endif
 		}
 
 		public string GetName()
@@ -90,7 +102,11 @@ namespace Sharpen.IO
 
 		public long Length()
 		{
+#if SILVERLIGHT
+			return SilverlightIO.Length(_path);
+#else
 			return new FileInfo(_path).Length;
+#endif
 		}
 
 		public string[] List()

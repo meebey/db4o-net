@@ -20,14 +20,14 @@ namespace Db4objects.Db4o.Internal
         public override void Apply()
         {
 #if !SILVERLIGHT
-            RegisterCollection(typeof(System.Collections.ArrayList));
+			RegisterCollection(typeof(System.Collections.ArrayList));
             RegisterCollection(typeof (System.Collections.CollectionBase));
             RegisterMap(typeof (System.Collections.Hashtable));
 #if !CF
             RegisterMap(typeof (System.Collections.DictionaryBase));
 #endif
 #endif
-            RegisterGenericTypeHandlers();
+			RegisterGenericTypeHandlers();
 			RegisterBigSetTypeHandler();
             RegisterSystemArrayTypeHandler();
         }
@@ -84,6 +84,7 @@ namespace Db4objects.Db4o.Internal
                 {
                     return false;
                 }
+
                 if (!type.IsGenericType)
                 {
                     return false;

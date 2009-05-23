@@ -46,6 +46,9 @@ namespace Db4objects.Db4o.Tests
                     typeof(Db4objects.Db4o.Tests.CLI1.AllTests),
                     typeof(Db4objects.Db4o.Tests.CLI2.AllTests),
                     typeof(Db4objects.Db4o.Tests.SharpenLang.AllTests),
+#if SILVERLIGHT
+                    typeof(Db4objects.Db4o.Tests.Silverlight.AllTests),
+#endif
                     typeof(AllTestsConcurrency),
 				};
 		}

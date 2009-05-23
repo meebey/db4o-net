@@ -92,7 +92,9 @@ namespace Db4objects.Db4o.Tests.Util
 
 		public static string BuildTempPath(string fname)
 		{
-#if !CF && !MONO && !SILVERLIGHT 
+#if SILVERLIGHT
+			return "/temp" + DateTime.Now.Ticks + "/" + fname;
+#elif !CF && !MONO
 			return Path.Combine(Environment.GetEnvironmentVariable("TEMP"), fname);
 #else
 			return Path.Combine(Path.GetTempPath(), fname);

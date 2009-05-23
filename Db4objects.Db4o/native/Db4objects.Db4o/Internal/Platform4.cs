@@ -13,6 +13,7 @@ using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -60,7 +61,7 @@ namespace Db4objects.Db4o.Internal
             }
         }
 
-        internal static void AddShutDownHook(ObjectContainerBase container)
+    	internal static void AddShutDownHook(ObjectContainerBase container)
         {
             lock (_shutdownStreamsLock)
             {
