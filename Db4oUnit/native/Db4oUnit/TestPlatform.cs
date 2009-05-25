@@ -1,6 +1,4 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
-using Db4objects.Db4o.IO;
-
 namespace Db4oUnit
 {
 	using System;
@@ -65,14 +63,5 @@ namespace Db4oUnit
         {
             return new StreamWriter(fname);
         }
-
-		public static IStorage NewPersistentStorage()
-		{
-#if SILVERLIGHT
-			return new IsolatedStorageStorage();
-#else
-			return new FileStorage();
-#endif
-		}
 	}
 }

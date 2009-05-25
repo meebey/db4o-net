@@ -1,6 +1,6 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
-using System;
 using System.Reflection;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Reflect.Net;
 
 namespace Db4oUnit.Extensions
@@ -19,5 +19,14 @@ namespace Db4oUnit.Extensions
 	        if (field.Name.IndexOf("$") != -1) return false;
 	        return true;
 	    }
+
+		public static IStorage NewPersistentStorage()
+		{
+#if SILVERLIGHT
+			return new IsolatedStorageStorage();
+#else
+			return new FileStorage();
+#endif
+		}
 	}
 }
