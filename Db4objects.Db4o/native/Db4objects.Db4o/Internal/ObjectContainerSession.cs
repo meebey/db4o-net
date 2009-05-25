@@ -10,7 +10,7 @@ using Db4objects.Db4o.Query;
 namespace Db4objects.Db4o.Internal
 {
     /// <exclude></exclude>
-    public partial class EmbeddedClientObjectContainer
+    public partial class ObjectContainerSession
     {
         void System.IDisposable.Dispose()
         {
