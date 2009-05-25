@@ -6,7 +6,8 @@
 		{
 			string ns = type.Namespace;
 			int lastDot = ns.LastIndexOf('.');
-			return ns.Substring(0, lastDot) + ".Internal." + ns.Substring(lastDot + 1) + "." + type.Name.Substring(1) + "Impl";
+			string typeName = ns.Substring(0, lastDot) + ".Internal." + ns.Substring(lastDot + 1) + "." + type.Name.Substring(1) + "Impl";
+			return typeName + ", " + type.Assembly.GetName().Name;
 		}
 	}
 }

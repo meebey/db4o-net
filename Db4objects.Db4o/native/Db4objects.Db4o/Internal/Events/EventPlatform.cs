@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Internal.Events
 		{
 			if (null == e) return;
 
-			Trigger(delegate
-			{	
+			WithExceptionHandling(delegate
+			{
 				e(klass, new ClassEventArgs(klass));
 			});
 		}
@@ -22,10 +22,10 @@ namespace Db4objects.Db4o.Internal.Events
 		public static void TriggerQueryEvent(Transaction transaction, System.EventHandler<QueryEventArgs> e, IQuery q)
 		{
 			if (null == e) return;
-			
-			Trigger(delegate
+
+			WithExceptionHandling(delegate
 			{
-			    e(q, new QueryEventArgs(transaction, q));
+				e(q, new QueryEventArgs(transaction, q));
 			});
 		}
 
@@ -85,9 +85,17 @@ namespace Db4objects.Db4o.Internal.Events
 
 		private static void Trigger(RunnableDelegate  runnable)
 		{
-            try
+			WithExceptionHandling(delegate
+			{
+				InCallbackState._inCallback.With(true, new DelegateRunnable(runnable));
+			});
+		}
+
+		private static void WithExceptionHandling(RunnableDelegate runnable)
+		{
+			try
             {
-                InCallbackState._inCallback.With(true, new DelegateRunnable(runnable));
+            	runnable();
             }
             catch (Db4oException)
             {
