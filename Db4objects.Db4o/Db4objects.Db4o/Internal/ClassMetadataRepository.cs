@@ -491,25 +491,31 @@ namespace Db4objects.Db4o.Internal
 			int classCount = buffer.ReadInt();
 			InitTables(classCount);
 			ObjectContainerBase container = Container();
-			int[] ids = new int[classCount];
-			for (int i = 0; i < classCount; ++i)
-			{
-				ids[i] = buffer.ReadInt();
-			}
-			StatefulBuffer[] clazzWriters = container.ReadWritersByIDs(trans, ids);
+			int[] ids = ReadMetadataIds(buffer, classCount);
+			ByteArrayBuffer[] metadataSlots = container.ReadSlotBuffers(trans, ids);
 			for (int i = 0; i < classCount; ++i)
 			{
 				ClassMetadata classMetadata = new ClassMetadata(container, null);
 				classMetadata.SetID(ids[i]);
 				_classes.Add(classMetadata);
 				_classMetadataByID.Put(ids[i], classMetadata);
-				byte[] name = classMetadata.ReadName1(trans, clazzWriters[i]);
+				byte[] name = classMetadata.ReadName1(trans, metadataSlots[i]);
 				if (name != null)
 				{
 					_classMetadataByBytes.Put(name, classMetadata);
 				}
 			}
 			ApplyReadAs();
+		}
+
+		private int[] ReadMetadataIds(ByteArrayBuffer buffer, int classCount)
+		{
+			int[] ids = new int[classCount];
+			for (int i = 0; i < classCount; ++i)
+			{
+				ids[i] = buffer.ReadInt();
+			}
+			return ids;
 		}
 
 		internal Hashtable4 ClassByBytes()

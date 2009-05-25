@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Constraints
 		/// <remarks>internal method, public for implementation reasons.</remarks>
 		public virtual void Apply(IInternalObjectContainer objectContainer)
 		{
-			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new Db4objects.Db4o.Events.CommitEventHandler
+			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
 				(new _IEventListener4_42(this, objectContainer).OnEvent);
 		}
 

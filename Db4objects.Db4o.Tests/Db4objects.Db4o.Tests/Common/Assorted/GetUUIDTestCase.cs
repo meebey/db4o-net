@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void TestGetUUIDInCommittedCallbacks()
 		{
 			Db4oUUID itemUUID = GetItemUUID();
-			ServerEventRegistry().Committed += new Db4objects.Db4o.Events.CommitEventHandler(
-				new _IEventListener4_34(itemUUID).OnEvent);
+			ServerEventRegistry().Committed += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
+				(new _IEventListener4_34(itemUUID).OnEvent);
 			DeleteAll(typeof(GetUUIDTestCase.Item));
 			Db().Commit();
 		}
@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestGetUUIDInCommittingCallbacks()
 		{
-			ServerEventRegistry().Committing += new Db4objects.Db4o.Events.CommitEventHandler
+			ServerEventRegistry().Committing += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
 				(new _IEventListener4_59().OnEvent);
 			DeleteAll(typeof(GetUUIDTestCase.Item));
 			Db().Commit();

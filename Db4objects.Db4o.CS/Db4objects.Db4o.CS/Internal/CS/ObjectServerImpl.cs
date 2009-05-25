@@ -351,7 +351,7 @@ namespace Db4objects.Db4o.Internal.CS
 				CheckClosed();
 				lock (_container.Lock())
 				{
-					return new EmbeddedClientObjectContainer(_container);
+					return new ObjectContainerSession(_container);
 				}
 			}
 		}

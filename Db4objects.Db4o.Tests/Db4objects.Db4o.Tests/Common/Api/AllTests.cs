@@ -6,12 +6,24 @@ using Db4objects.Db4o.Tests.Common.Api;
 
 namespace Db4objects.Db4o.Tests.Common.Api
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
+		public static void Main(string[] args)
+		{
+			new Db4objects.Db4o.Tests.Common.Api.AllTests().RunSolo();
+		}
+
 		protected override Type[] TestCases()
+		{
+			return ComposeWith();
+		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
 		{
 			return new Type[] { typeof(CommonAndLocalConfigurationTestSuite), typeof(Db4oClientServerTestCase
 				), typeof(Db4oEmbeddedTestCase), typeof(StoreAllTestCase) };
 		}
+		#endif // !SILVERLIGHT
 	}
 }

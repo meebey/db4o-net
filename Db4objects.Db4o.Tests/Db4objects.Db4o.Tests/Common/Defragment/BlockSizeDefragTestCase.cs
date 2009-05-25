@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using System.IO;
 using System.Text;
 using Db4oUnit;
 using Db4objects.Db4o;
@@ -10,14 +9,13 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
-	public class BlockSizeDefragTestCase : ITestCase
+	public class BlockSizeDefragTestCase : Db4oTestWithTempFile
 	{
-		private static readonly string FileName = Path.GetTempPath() + "/blocksizedefrag.db4o";
-
 		public class ItemA
 		{
 			public int _id;
@@ -66,7 +64,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		/// <exception cref="System.IO.IOException"></exception>
 		private void AssertBlockSizeDefrag(int blockSize)
 		{
-			string fileName = FileName;
+			string fileName = TempFile();
 			new Sharpen.IO.File(fileName).Delete();
 			CreateDatabase(fileName, blockSize);
 			Defrag(fileName, blockSize);
@@ -76,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void CreateDatabase(string fileName, int blockSize)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(blockSize), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(blockSize), fileName);
 			Collection4 removed = new Collection4();
 			for (int idx = 0; idx < NumItemsPerClass; idx++)
 			{
@@ -113,6 +111,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
+		[System.ObsoleteAttribute(@"using deprecated api")]
 		private void Defrag(string fileName, int blockSize)
 		{
 			DefragmentConfig config = new DefragmentConfig(fileName);
@@ -123,7 +122,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void AssertCanRead(string fileName, int blockSize)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(blockSize), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(blockSize), fileName);
 			AssertResult(db, typeof(BlockSizeDefragTestCase.ItemA));
 			AssertResult(db, typeof(BlockSizeDefragTestCase.ItemB));
 			db.Close();
@@ -139,11 +138,11 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		private IConfiguration Config(int blockSize)
+		private IEmbeddedConfiguration Config(int blockSize)
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.BlockSize(blockSize);
-			config.ReflectWith(Platform4.ReflectorForType(typeof(BlockSizeDefragTestCase.ItemA
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.File.BlockSize = blockSize;
+			config.Common.ReflectWith(Platform4.ReflectorForType(typeof(BlockSizeDefragTestCase.ItemA
 				)));
 			return config;
 		}

@@ -6,12 +6,19 @@ using Db4objects.Db4o.Tests.Common.Reflect.Custom;
 
 namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		protected override Type[] TestCases()
 		{
+			return ComposeWith();
+		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
 			return new Type[] { typeof(CustomReflectorTestCase) };
 		}
+		#endif // !SILVERLIGHT
 
 		public static void Main(string[] args)
 		{

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		protected override void Committed(BTree btree)
 		{
-			btree.NotifyRemoveListener(GetObject());
+			btree.NotifyRemoveListener(new TransactionContext(_transaction, GetObject()));
 		}
 
 		public override string ToString()

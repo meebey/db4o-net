@@ -16,9 +16,9 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 
 		public class Car
 		{
-			private string model;
+			public string model;
 
-			private IList history;
+			public IList history;
 
 			public Car(string model) : this(model, new ArrayList())
 			{

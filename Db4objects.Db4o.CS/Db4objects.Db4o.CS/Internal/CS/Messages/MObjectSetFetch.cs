@@ -3,31 +3,29 @@
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.CS.Objectexchange;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MObjectSetFetch : MObjectSet, IServerSideMessage
+	public class MObjectSetFetch : MObjectSet, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{
 			int queryResultID = ReadInt();
 			int fetchSize = ReadInt();
+			int fetchDepth = ReadInt();
 			MsgD message = null;
 			lock (StreamLock())
 			{
 				IIntIterator4 idIterator = Stub(queryResultID).IdIterator();
-				message = IdList.GetWriterForLength(Transaction(), BufferLength(fetchSize));
-				StatefulBuffer writer = message.PayLoad();
-				writer.WriteIDs(idIterator, fetchSize);
+				ByteArrayBuffer payload = ObjectExchangeStrategyFactory.ForConfig(new ObjectExchangeConfiguration
+					(fetchDepth, fetchSize)).Marshall((LocalTransaction)Transaction(), idIterator, fetchSize
+					);
+				message = IdList.GetWriterForBuffer(Transaction(), payload);
 			}
 			Write(message);
 			return true;
-		}
-
-		private int BufferLength(int fetchSize)
-		{
-			return Const4.IntLength * (fetchSize + 1);
 		}
 	}
 }

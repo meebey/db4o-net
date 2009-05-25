@@ -8,7 +8,6 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Fieldindex;
-using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
 
@@ -18,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 	{
 		public static void Main(string[] args)
 		{
-			new FieldIndexProcessorTestCase().RunSolo();
+			new FieldIndexProcessorTestCase().RunAll();
 		}
 
 		protected override void Configure(IConfiguration config)
@@ -329,11 +328,6 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		private FieldIndexProcessorResult ExecuteProcessor(IQuery query)
 		{
 			return CreateProcessor(query).Run();
-		}
-
-		private Transaction TransactionFromQuery(IQuery query)
-		{
-			return ((QQuery)query).GetTransaction();
 		}
 
 		private BTree Btree()

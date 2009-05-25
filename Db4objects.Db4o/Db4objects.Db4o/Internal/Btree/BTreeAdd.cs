@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		protected virtual object RolledBack(BTree btree)
 		{
-			btree.NotifyRemoveListener(GetObject());
+			btree.NotifyRemoveListener(new TransactionContext(_transaction, GetObject()));
 			return No4.Instance;
 		}
 

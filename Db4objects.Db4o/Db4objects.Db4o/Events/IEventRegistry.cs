@@ -2,24 +2,6 @@
 
 namespace Db4objects.Db4o.Events
 {
-	public delegate void QueryEventHandler(object sender, Db4objects.Db4o.Events.QueryEventArgs
-		 args);
-
-	public delegate void CancellableObjectEventHandler(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
-		 args);
-
-	public delegate void ObjectEventHandler(object sender, Db4objects.Db4o.Events.ObjectEventArgs
-		 args);
-
-	public delegate void CommitEventHandler(object sender, Db4objects.Db4o.Events.CommitEventArgs
-		 args);
-
-	public delegate void ClassEventHandler(object sender, Db4objects.Db4o.Events.ClassEventArgs
-		 args);
-
-	public delegate void ObjectContainerEventHandler(object sender, Db4objects.Db4o.Events.ObjectContainerEventArgs
-		 args);
-
 	/// <summary>
 	/// Provides a way to register event handlers for specific <see cref="IObjectContainer">IObjectContainer</see> events.<br/>
 	/// EventRegistry methods represent events available for registering callbacks.
@@ -27,7 +9,7 @@ namespace Db4objects.Db4o.Events
 	/// <code>EventRegistry registry =  EventRegistryFactory.ForObjectContainer(container);</code>
 	/// A new callback can be registered for an event with the following code:
 	/// <code>
-	/// private static void OnCreated(object sender, ObjectEventArgs args)
+	/// private static void OnCreated(object sender, ObjectInfoEventArgs args)
 	/// {
 	/// Object obj = args.Object;
 	/// if (obj is Pilot)
@@ -35,7 +17,7 @@ namespace Db4objects.Db4o.Events
 	/// Console.WriteLine(obj.ToString());
 	/// }
 	/// }
-	/// registry.Created+=new ObjectEventHandler(OnCreated);
+	/// registry.Created+=new System.EventHandler&lt;ObjectInfoEventArgs&gt;(OnCreated);
 	/// </code>
 	/// <seealso cref="EventRegistryFactory">EventRegistryFactory</seealso>
 	/// </summary>
@@ -56,7 +38,7 @@ namespace Db4objects.Db4o.Events
 		/// <returns>event</returns>
 		/// <seealso cref="Db4objects.Db4o.Events.QueryEventArgs">Db4objects.Db4o.Events.QueryEventArgs
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.QueryEventHandler QueryStarted;
+		event System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs> QueryStarted;
 
 		/// <summary>
 		/// This event is fired upon a query end and can be used to gather
@@ -73,7 +55,7 @@ namespace Db4objects.Db4o.Events
 		/// <returns>event</returns>
 		/// <seealso cref="Db4objects.Db4o.Events.QueryEventArgs">Db4objects.Db4o.Events.QueryEventArgs
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.QueryEventHandler QueryFinished;
+		event System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs> QueryFinished;
 
 		/// <summary>This event is fired before an object is saved for the first time.</summary>
 		/// <remarks>
@@ -90,7 +72,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.CancellableObjectEventHandler Creating;
+		event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> Creating;
 
 		/// <summary>This event is fired before an object is activated.</summary>
 		/// <remarks>
@@ -107,7 +89,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Activate">Db4objects.Db4o.IObjectContainer.Activate
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.CancellableObjectEventHandler Activating;
+		event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> Activating;
 
 		/// <summary>This event is fired before an object is updated.</summary>
 		/// <remarks>
@@ -124,7 +106,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.CancellableObjectEventHandler Updating;
+		event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> Updating;
 
 		/// <summary>This event is fired before an object is deleted.</summary>
 		/// <remarks>
@@ -144,7 +126,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Delete">Db4objects.Db4o.IObjectContainer.Delete
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.CancellableObjectEventHandler Deleting;
+		event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> Deleting;
 
 		/// <summary>This event is fired before an object is deactivated.</summary>
 		/// <remarks>
@@ -161,31 +143,31 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Deactivate">Db4objects.Db4o.IObjectContainer.Deactivate
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.CancellableObjectEventHandler Deactivating;
+		event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> Deactivating;
 
 		/// <summary>This event is fired after an object is activated.</summary>
 		/// <remarks>
 		/// This event is fired after an object is activated.
 		/// The object can be obtained from the
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <see cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</see>
 		/// event parameter. <br /><br />
 		/// The event can be used to trigger some post-activation
 		/// functionality.
 		/// </remarks>
 		/// <returns>event</returns>
-		/// <seealso cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <seealso cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Activate">Db4objects.Db4o.IObjectContainer.Activate
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.ObjectEventHandler Activated;
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> Activated;
 
 		/// <summary>This event is fired after an object is created (saved for the first time).
 		/// 	</summary>
 		/// <remarks>
 		/// This event is fired after an object is created (saved for the first time).
 		/// The object can be obtained from the
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <see cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</see>
 		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-creation
@@ -196,30 +178,30 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.ObjectEventHandler Created;
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> Created;
 
 		/// <summary>This event is fired after an object is updated.</summary>
 		/// <remarks>
 		/// This event is fired after an object is updated.
 		/// The object can be obtained from the
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <see cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</see>
 		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-update
 		/// functionality.
 		/// </remarks>
 		/// <returns>event</returns>
-		/// <seealso cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <seealso cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.ObjectEventHandler Updated;
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> Updated;
 
 		/// <summary>This event is fired after an object is deleted.</summary>
 		/// <remarks>
 		/// This event is fired after an object is deleted.
 		/// The object can be obtained from the
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <see cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</see>
 		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-deletion
@@ -232,13 +214,13 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Delete">Db4objects.Db4o.IObjectContainer.Delete
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.ObjectEventHandler Deleted;
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> Deleted;
 
 		/// <summary>This event is fired after an object is deactivated.</summary>
 		/// <remarks>
 		/// This event is fired after an object is deactivated.
 		/// The object can be obtained from the
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <see cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</see>
 		/// event parameter.<br /><br />
 		/// The event can be used to trigger some post-deactivation
@@ -249,7 +231,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Delete">Db4objects.Db4o.IObjectContainer.Delete
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.ObjectEventHandler Deactivated;
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> Deactivated;
 
 		/// <summary>This event is fired just before a transaction is committed.</summary>
 		/// <remarks>
@@ -267,7 +249,7 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Commit">Db4objects.Db4o.IObjectContainer.Commit
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.CommitEventHandler Committing;
+		event System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs> Committing;
 
 		/// <summary>This event is fired after a transaction has been committed.</summary>
 		/// <remarks>
@@ -284,20 +266,20 @@ namespace Db4objects.Db4o.Events
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Commit">Db4objects.Db4o.IObjectContainer.Commit
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.CommitEventHandler Committed;
+		event System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs> Committed;
 
 		/// <summary>This event is fired when a persistent object is instantiated.</summary>
 		/// <remarks>
 		/// This event is fired when a persistent object is instantiated.
 		/// The object can be obtained from the
-		/// <see cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <see cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</see>
 		/// event parameter.
 		/// </remarks>
 		/// <returns>event</returns>
-		/// <seealso cref="Db4objects.Db4o.Events.ObjectEventArgs">Db4objects.Db4o.Events.ObjectEventArgs
+		/// <seealso cref="Db4objects.Db4o.Events.ObjectInfoEventArgs">Db4objects.Db4o.Events.ObjectInfoEventArgs
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.ObjectEventHandler Instantiated;
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> Instantiated;
 
 		/// <summary>This event is fired when a new class is registered with metadata.</summary>
 		/// <remarks>
@@ -310,7 +292,7 @@ namespace Db4objects.Db4o.Events
 		/// <returns>event</returns>
 		/// <seealso cref="Db4objects.Db4o.Events.ClassEventArgs">Db4objects.Db4o.Events.ClassEventArgs
 		/// 	</seealso>
-		event Db4objects.Db4o.Events.ClassEventHandler ClassRegistered;
+		event System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs> ClassRegistered;
 
 		/// <summary>
 		/// This event is fired when the
@@ -320,6 +302,6 @@ namespace Db4objects.Db4o.Events
 		/// called.
 		/// </summary>
 		/// <returns>event</returns>
-		event Db4objects.Db4o.Events.ObjectContainerEventHandler Closing;
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs> Closing;
 	}
 }

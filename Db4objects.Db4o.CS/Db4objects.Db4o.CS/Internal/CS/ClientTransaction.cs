@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS
 {
-	internal sealed class ClientTransaction : Transaction
+	public sealed class ClientTransaction : Transaction
 	{
 		private readonly ClientObjectContainer i_client;
 
@@ -94,6 +94,7 @@ namespace Db4objects.Db4o.Internal.CS
 			int messageLength = Const4.LongLength + Const4.IntLength + a_signature.Length;
 			MsgD message = Msg.ObjectByUuid.GetWriterForLength(this, messageLength);
 			message.WriteLong(a_uuid);
+			message.WriteInt(a_signature.Length);
 			message.WriteBytes(a_signature);
 			i_client.Write(message);
 			message = (MsgD)i_client.ExpectedResponse(Msg.ObjectByUuid);
@@ -107,14 +108,14 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override void ProcessDeletes()
 		{
-			IVisitor4 deleteVisitor = new _IVisitor4_84(this);
+			IVisitor4 deleteVisitor = new _IVisitor4_85(this);
 			TraverseDelete(deleteVisitor);
 			i_client.WriteBatchedMessage(Msg.ProcessDeletes);
 		}
 
-		private sealed class _IVisitor4_84 : IVisitor4
+		private sealed class _IVisitor4_85 : IVisitor4
 		{
-			public _IVisitor4_84(ClientTransaction _enclosing)
+			public _IVisitor4_85(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

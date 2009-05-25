@@ -299,7 +299,8 @@ namespace Db4objects.Db4o.Defragment
 				, config.OrigPath());
 			try
 			{
-				Db4oDatabase identity = (Db4oDatabase)targetDB.GetByID(targetIdentityID);
+				Db4oDatabase identity = (Db4oDatabase)targetDB.GetByID(targetDB.SystemTransaction
+					(), targetIdentityID);
 				targetDB.SetIdentity(identity);
 				targetDB.SystemData().UuidIndexId(targetUuidIndexID);
 			}

@@ -20,7 +20,7 @@ using Db4objects.Db4o.Types;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public partial class EmbeddedClientObjectContainer : IInternalObjectContainer, ITransientClass
+	public partial class ObjectContainerSession : IInternalObjectContainer, ITransientClass
 		, IObjectContainerSpec
 	{
 		protected readonly LocalObjectContainer _server;
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _closed = false;
 
-		public EmbeddedClientObjectContainer(LocalObjectContainer server, Db4objects.Db4o.Internal.Transaction
+		public ObjectContainerSession(LocalObjectContainer server, Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
 			_server = server;
@@ -37,9 +37,8 @@ namespace Db4objects.Db4o.Internal
 			_transaction.SetOutSideRepresentation(this);
 		}
 
-		public EmbeddedClientObjectContainer(LocalObjectContainer server) : this(server, 
-			server.NewTransaction(server.SystemTransaction(), server.CreateReferenceSystem()
-			))
+		public ObjectContainerSession(LocalObjectContainer server) : this(server, server.
+			NewTransaction(server.SystemTransaction(), server.CreateReferenceSystem()))
 		{
 		}
 

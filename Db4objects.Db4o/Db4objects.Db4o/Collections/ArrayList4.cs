@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
@@ -24,7 +25,6 @@ namespace Db4objects.Db4o.Collections
 	/// </seealso>
 	/// <seealso cref="Db4objects.Db4o.TA.IActivatable">Db4objects.Db4o.TA.IActivatable
 	/// </seealso>
-	#if !SILVERLIGHT
 	public partial class ArrayList4<E>
 	{
 		private E[] elements;
@@ -275,5 +275,5 @@ namespace Db4objects.Db4o.Collections
 			Activate(ActivationPurpose.Write);
 		}
 	}
-	#endif // !SILVERLIGHT
 }
+#endif // !SILVERLIGHT

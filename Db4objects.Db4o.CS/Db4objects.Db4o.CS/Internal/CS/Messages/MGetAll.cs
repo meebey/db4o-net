@@ -3,18 +3,22 @@
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.CS.Objectexchange;
 using Db4objects.Db4o.Internal.Query.Result;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MGetAll : MsgQuery, IServerSideMessage
+	public sealed class MGetAll : MsgQuery, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{
 			QueryEvaluationMode evaluationMode = QueryEvaluationMode.FromInt(ReadInt());
+			int prefetchDepth = ReadInt();
+			int prefetchCount = ReadInt();
 			lock (StreamLock())
 			{
-				WriteQueryResult(GetAll(evaluationMode), evaluationMode);
+				WriteQueryResult(GetAll(evaluationMode), evaluationMode, new ObjectExchangeConfiguration
+					(prefetchDepth, prefetchCount));
 			}
 			return true;
 		}

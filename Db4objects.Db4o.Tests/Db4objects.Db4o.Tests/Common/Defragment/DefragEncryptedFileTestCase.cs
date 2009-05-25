@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -8,6 +7,7 @@ using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
@@ -25,28 +25,21 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 	/// below the MockBin and reads open times there directly.
 	/// The times are then inconsistent with the written times.
 	/// </remarks>
-	public class DefragEncryptedFileTestCase : ITestLifeCycle
+	public class DefragEncryptedFileTestCase : Db4oTestWithTempFile
 	{
-		private static readonly string Original = Path.GetTempFileName();
-
-		private static readonly string Defgared = Original + ".bk";
+		private static string Defgared;
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
+		public override void SetUp()
 		{
-			Cleanup();
+			Defgared = TempFile() + ".bk";
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
+		public override void TearDown()
 		{
-			Cleanup();
-		}
-
-		private void Cleanup()
-		{
-			File4.Delete(Original);
 			File4.Delete(Defgared);
+			base.TearDown();
 		}
 
 		public static void Main(string[] args)
@@ -59,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			Prepare();
 			VerifyDB();
-			DefragmentConfig config = new DefragmentConfig(Original, Defgared);
+			DefragmentConfig config = new DefragmentConfig(TempFile(), Defgared);
 			config.ForceBackupDelete(true);
 			//config.storedClassFilter(new AvailableClassFilter());
 			config.Db4oConfig(GetConfiguration());
@@ -69,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private void Prepare()
 		{
-			Sharpen.IO.File file = new Sharpen.IO.File(Original);
+			Sharpen.IO.File file = new Sharpen.IO.File(TempFile());
 			if (file.Exists())
 			{
 				file.Delete();
@@ -102,22 +95,21 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private IObjectContainer OpenDB()
 		{
-			IConfiguration db4oConfig = GetConfiguration();
-			IObjectContainer testDB = Db4oFactory.OpenFile(db4oConfig, Original);
-			return testDB;
+			return Db4oEmbedded.OpenFile(GetConfiguration(), TempFile());
 		}
 
-		private IConfiguration GetConfiguration()
+		private IEmbeddedConfiguration GetConfiguration()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ActivationDepth(int.MaxValue);
-			config.CallConstructors(true);
-			config.Storage = new DefragEncryptedFileTestCase.MockStorage(new FileStorage(), "db4o"
-				);
-			config.ReflectWith(Platform4.ReflectorForType(typeof(DefragEncryptedFileTestCase.Item
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.Common.ActivationDepth = int.MaxValue;
+			config.Common.CallConstructors = true;
+			config.File.Storage = new DefragEncryptedFileTestCase.MockStorage(config.File.Storage
+				, "db4o");
+			config.Common.ReflectWith(Platform4.ReflectorForType(typeof(DefragEncryptedFileTestCase.Item
 				)));
-			config.Password("encrypted");
-			config.Encrypt(true);
+			Db4oFactory.Configure().Password("encrypted");
+			Db4oFactory.Configure().Encrypt(true);
+			//TODO: CHECK ENCRYPTION
 			return config;
 		}
 

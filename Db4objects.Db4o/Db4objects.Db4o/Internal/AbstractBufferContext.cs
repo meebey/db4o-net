@@ -91,11 +91,6 @@ namespace Db4objects.Db4o.Internal
 			return _buffer.ReadBitMap(bitCount);
 		}
 
-		public virtual void SeekCurrentInt()
-		{
-			Seek(ReadInt());
-		}
-
 		public virtual Db4objects.Db4o.Internal.Marshall.SlotFormat SlotFormat()
 		{
 			return Db4objects.Db4o.Internal.Marshall.SlotFormat.ForHandlerVersion(HandlerVersion

@@ -1,30 +1,26 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Refactor;
 
 namespace Db4objects.Db4o.Tests.Common.Refactor
 {
-	public abstract class AccessFieldTestCaseBase
+	public abstract class AccessFieldTestCaseBase : Db4oTestWithTempFile
 	{
-		private readonly string DatabasePath = Path.GetTempFileName();
-
 		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
+		public override void SetUp()
 		{
-			DeleteFile();
-			WithDatabase(new _IDatabaseAction_16(this));
+			WithDatabase(new _IDatabaseAction_14(this));
 		}
 
-		private sealed class _IDatabaseAction_16 : AccessFieldTestCaseBase.IDatabaseAction
+		private sealed class _IDatabaseAction_14 : AccessFieldTestCaseBase.IDatabaseAction
 		{
-			public _IDatabaseAction_16(AccessFieldTestCaseBase _enclosing)
+			public _IDatabaseAction_14(AccessFieldTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -37,22 +33,16 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			private readonly AccessFieldTestCaseBase _enclosing;
 		}
 
-		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
-		{
-			DeleteFile();
-		}
-
 		protected virtual void RenameClass(Type origClazz, string targetName)
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ObjectClass(origClazz).Rename(targetName);
-			WithDatabase(config, new _IDatabaseAction_30());
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.Common.ObjectClass(origClazz).Rename(targetName);
+			WithDatabase(config, new _IDatabaseAction_24());
 		}
 
-		private sealed class _IDatabaseAction_30 : AccessFieldTestCaseBase.IDatabaseAction
+		private sealed class _IDatabaseAction_24 : AccessFieldTestCaseBase.IDatabaseAction
 		{
-			public _IDatabaseAction_30()
+			public _IDatabaseAction_24()
 			{
 			}
 
@@ -67,13 +57,13 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 		protected virtual void AssertField(Type targetClazz, string fieldName, Type fieldType
 			, object fieldValue)
 		{
-			WithDatabase(new _IDatabaseAction_41(targetClazz, fieldName, fieldType, fieldValue
+			WithDatabase(new _IDatabaseAction_35(targetClazz, fieldName, fieldType, fieldValue
 				));
 		}
 
-		private sealed class _IDatabaseAction_41 : AccessFieldTestCaseBase.IDatabaseAction
+		private sealed class _IDatabaseAction_35 : AccessFieldTestCaseBase.IDatabaseAction
 		{
-			public _IDatabaseAction_41(Type targetClazz, string fieldName, Type fieldType, object
+			public _IDatabaseAction_35(Type targetClazz, string fieldName, Type fieldType, object
 				 fieldValue)
 			{
 				this.targetClazz = targetClazz;
@@ -102,11 +92,6 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 			private readonly object fieldValue;
 		}
 
-		private void DeleteFile()
-		{
-			File4.Delete(DatabasePath);
-		}
-
 		private interface IDatabaseAction
 		{
 			void RunWith(IObjectContainer db);
@@ -114,13 +99,13 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 
 		private void WithDatabase(AccessFieldTestCaseBase.IDatabaseAction action)
 		{
-			WithDatabase(Db4oFactory.NewConfiguration(), action);
+			WithDatabase(NewConfiguration(), action);
 		}
 
-		private void WithDatabase(IConfiguration config, AccessFieldTestCaseBase.IDatabaseAction
+		private void WithDatabase(IEmbeddedConfiguration config, AccessFieldTestCaseBase.IDatabaseAction
 			 action)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(config, DatabasePath);
+			IObjectContainer db = Db4oEmbedded.OpenFile(config, TempFile());
 			try
 			{
 				action.RunWith(db);

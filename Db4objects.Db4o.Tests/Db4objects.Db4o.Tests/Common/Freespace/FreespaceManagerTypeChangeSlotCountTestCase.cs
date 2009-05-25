@@ -1,20 +1,19 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public class FreespaceManagerTypeChangeSlotCountTestCase : ITestCase
+	public class FreespaceManagerTypeChangeSlotCountTestCase : TestWithTempFile
 	{
 		private const int Size = 10000;
 
@@ -22,17 +21,9 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private IClosure4 _currentConfig;
 
-		private string _fileName;
-
 		public static void Main(string[] args)
 		{
 			new ConsoleTestRunner(typeof(FreespaceManagerTypeChangeSlotCountTestCase)).Run();
-		}
-
-		public FreespaceManagerTypeChangeSlotCountTestCase()
-		{
-			_fileName = Path.GetTempFileName();
-			File4.Delete(_fileName);
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -82,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		private void Open()
 		{
 			_container = (LocalObjectContainer)Db4oFactory.OpenFile(((IConfiguration)_currentConfig
-				.Run()), _fileName);
+				.Run()), TempFile());
 		}
 
 		private void CreateFreeSpace()
@@ -101,12 +92,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void ConfigureBTreeManager()
 		{
-			_currentConfig = new _IClosure4_90();
+			_currentConfig = new _IClosure4_83();
 		}
 
-		private sealed class _IClosure4_90 : IClosure4
+		private sealed class _IClosure4_83 : IClosure4
 		{
-			public _IClosure4_90()
+			public _IClosure4_83()
 			{
 			}
 
@@ -128,12 +119,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void ConfigureRamManager()
 		{
-			_currentConfig = new _IClosure4_105();
+			_currentConfig = new _IClosure4_98();
 		}
 
-		private sealed class _IClosure4_105 : IClosure4
+		private sealed class _IClosure4_98 : IClosure4
 		{
-			public _IClosure4_105()
+			public _IClosure4_98()
 			{
 			}
 
@@ -148,13 +139,13 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		private IList GetSlots(IFreespaceManager freespaceManager)
 		{
 			IList retVal = new ArrayList();
-			freespaceManager.Traverse(new _IVisitor4_114(retVal));
+			freespaceManager.Traverse(new _IVisitor4_107(retVal));
 			return retVal;
 		}
 
-		private sealed class _IVisitor4_114 : IVisitor4
+		private sealed class _IVisitor4_107 : IVisitor4
 		{
-			public _IVisitor4_114(IList retVal)
+			public _IVisitor4_107(IList retVal)
 			{
 				this.retVal = retVal;
 			}

@@ -5,6 +5,6 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public interface IProcedure4
 	{
-		void Apply(object arg);
+		void Apply(object value);
 	}
 }

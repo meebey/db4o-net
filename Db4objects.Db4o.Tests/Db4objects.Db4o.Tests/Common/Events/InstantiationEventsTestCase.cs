@@ -18,8 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		public virtual void TestInstantiationEvents()
 		{
 			EventsTestCaseBase.EventLog instantiatedLog = new EventsTestCaseBase.EventLog();
-			EventRegistry().Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_IEventListener4_19(this, instantiatedLog).OnEvent);
+			EventRegistry().Instantiated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_19(this, instantiatedLog).OnEvent);
 			RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			Assert.IsFalse(instantiatedLog.xing);
 			Assert.IsTrue(instantiatedLog.xed);
@@ -34,7 +34,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this.instantiatedLog = instantiatedLog;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				this._enclosing.AssertClientTransaction(args);
 				instantiatedLog.xed = true;

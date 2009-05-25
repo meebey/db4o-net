@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System;
 using Db4objects.Db4o.Instrumentation.Api;
 
@@ -59,3 +60,4 @@ namespace Db4objects.Db4o.Tests.NativeQueries.Mocks
 		}
 	}
 }
+#endif // !SILVERLIGHT

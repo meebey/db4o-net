@@ -1,17 +1,14 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
-using Db4oUnit;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Tests.Common.Api;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class IoAdapterTestUnitBase : ITestLifeCycle
+	public class IoAdapterTestUnitBase : TestWithTempFile
 	{
-		private readonly string _filename = Path.GetTempFileName();
-
 		protected IoAdapter _adapter;
 
 		public IoAdapterTestUnitBase() : base()
@@ -19,9 +16,8 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
+		public override void SetUp()
 		{
-			DeleteTestFile();
 			Open(false);
 		}
 
@@ -31,14 +27,14 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			{
 				throw new InvalidOperationException();
 			}
-			_adapter = Factory().Open(_filename, false, 0, readOnly);
+			_adapter = Factory().Open(TempFile(), false, 0, readOnly);
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
+		public override void TearDown()
 		{
 			Close();
-			DeleteTestFile();
+			base.TearDown();
 		}
 
 		protected virtual void Close()
@@ -53,12 +49,6 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		private IoAdapter Factory()
 		{
 			return ((IoAdapter)SubjectFixtureProvider.Value());
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		private void DeleteTestFile()
-		{
-			new Sharpen.IO.File(_filename).Delete();
 		}
 	}
 }

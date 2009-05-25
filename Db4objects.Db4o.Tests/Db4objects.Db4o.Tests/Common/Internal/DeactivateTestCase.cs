@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
-			Db().Set(new DeactivateTestCase.Item(this, "foo", new DeactivateTestCase.Item(this
-				, "bar", null)));
+			Db().Set(new DeactivateTestCase.Item("foo", new DeactivateTestCase.Item("bar", null
+				)));
 		}
 
 		public virtual void Test()
@@ -43,15 +43,11 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 			public string _name;
 
-			public Item(DeactivateTestCase _enclosing, string name, DeactivateTestCase.Item child
-				)
+			public Item(string name, DeactivateTestCase.Item child)
 			{
-				this._enclosing = _enclosing;
-				this._name = name;
-				this._child = child;
+				_name = name;
+				_child = child;
 			}
-
-			private readonly DeactivateTestCase _enclosing;
 		}
 	}
 }

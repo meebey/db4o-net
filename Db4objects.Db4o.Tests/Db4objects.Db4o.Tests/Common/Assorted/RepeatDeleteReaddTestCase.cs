@@ -2,20 +2,23 @@
 
 using System;
 using System.Collections;
-using System.IO;
 using System.Text;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class RepeatDeleteReaddTestCase : ITestCase
+	public class RepeatDeleteReaddTestCase : Db4oTestWithTempFile
 	{
-		private static readonly string FileName = Path.GetTempPath() + "/readddelete.db4o";
+		public static void Main(string[] args)
+		{
+			new ConsoleTestRunner(typeof(RepeatDeleteReaddTestCase)).Run();
+		}
 
 		public class ItemA
 		{
@@ -65,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="System.IO.IOException"></exception>
 		private void AssertRun()
 		{
-			string fileName = FileName;
+			string fileName = TempFile();
 			new Sharpen.IO.File(fileName).Delete();
 			CreateDatabase(fileName);
 			AssertCanRead(fileName);
@@ -74,7 +77,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void CreateDatabase(string fileName)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(), fileName);
 			Collection4 removed = new Collection4();
 			for (int idx = 0; idx < NumItemsPerClass; idx++)
 			{
@@ -114,7 +117,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private void AssertCanRead(string fileName)
 		{
-			IObjectContainer db = Db4oFactory.OpenFile(Config(), fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(Config(), fileName);
 			AssertResults(db);
 			db.Close();
 		}
@@ -135,10 +138,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
-		private IConfiguration Config()
+		private IEmbeddedConfiguration Config()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ReflectWith(Platform4.ReflectorForType(typeof(RepeatDeleteReaddTestCase.ItemA
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.Common.ReflectWith(Platform4.ReflectorForType(typeof(RepeatDeleteReaddTestCase.ItemA
 				)));
 			return config;
 		}

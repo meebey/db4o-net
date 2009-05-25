@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Config;
 
 namespace Db4objects.Db4o.Tests.Common.Config
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -15,11 +15,18 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ConfigurationItemTestCase), typeof(ConfigurationReuseTestSuite
-				), typeof(CustomStringEncodingTestCase), typeof(GlobalVsNonStaticConfigurationTestCase
-				), typeof(LatinStringEncodingTestCase), typeof(ObjectTranslatorTestCase), typeof(
-				UnicodeStringEncodingTestCase), typeof(UTF8StringEncodingTestCase), typeof(VersionNumbersTestCase
-				) };
+			return ComposeTests(new Type[] { typeof(ConfigurationItemTestCase), typeof(CustomStringEncodingTestCase
+				), typeof(GlobalVsNonStaticConfigurationTestCase), typeof(LatinStringEncodingTestCase
+				), typeof(ObjectTranslatorTestCase), typeof(UnicodeStringEncodingTestCase), typeof(
+				UTF8StringEncodingTestCase), typeof(VersionNumbersTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(ConfigurationReuseTestSuite) };
+		}
+		#endif // !SILVERLIGHT
+		// Uses Client/Server
 	}
 }

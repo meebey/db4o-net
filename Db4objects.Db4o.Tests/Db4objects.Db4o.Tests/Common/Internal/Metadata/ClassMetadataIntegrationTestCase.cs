@@ -4,9 +4,9 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Tests.Common.Internal;
+using Db4objects.Db4o.Tests.Common.Internal.Metadata;
 
-namespace Db4objects.Db4o.Tests.Common.Internal
+namespace Db4objects.Db4o.Tests.Common.Internal.Metadata
 {
 	public class ClassMetadataIntegrationTestCase : AbstractDb4oTestCase
 	{

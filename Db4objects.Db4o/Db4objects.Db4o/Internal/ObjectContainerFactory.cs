@@ -9,12 +9,13 @@ namespace Db4objects.Db4o.Internal
 	public class ObjectContainerFactory
 	{
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
-		public static IObjectContainer OpenObjectContainer(IConfiguration config, string 
-			databaseFileName)
+		public static IEmbeddedObjectContainer OpenObjectContainer(IConfiguration config, 
+			string databaseFileName)
 		{
 			Config4Impl.AssertIsNotTainted(config);
 			EmitDebugInfo();
-			IObjectContainer oc = new IoAdaptedObjectContainer(config, databaseFileName);
+			IEmbeddedObjectContainer oc = new IoAdaptedObjectContainer(config, databaseFileName
+				);
 			Db4objects.Db4o.Internal.Messages.LogMsg(config, 5, databaseFileName);
 			return oc;
 		}

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System;
 using System.IO;
 using Db4oUnit;
@@ -34,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(42, legacy.ActivationDepth());
 				Assert.AreEqual(42, common.ActivationDepth);
 				// TODO: assert
-				common.Add(new _IConfigurationItem_36());
+				common.Add(new _IConfigurationItem_39());
 				TypeAlias alias = new TypeAlias("foo", "bar");
 				common.AddAlias(alias);
 				Assert.AreEqual("bar", legacy.ResolveAliasStoredName("foo"));
@@ -84,7 +85,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				TextWriter outStream = Sharpen.Runtime.Out;
 				common.OutStream = outStream;
 				Assert.AreEqual(outStream, legacy.OutStream());
-				IStringEncoding stringEncoding = new _IStringEncoding_110();
+				IStringEncoding stringEncoding = new _IStringEncoding_113();
 				common.StringEncoding = stringEncoding;
 				Assert.AreEqual(stringEncoding, legacy.StringEncoding());
 				common.TestConstructors = false;
@@ -99,9 +100,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(1024, legacy.WeakReferenceCollectionInterval());
 			}
 
-			private sealed class _IConfigurationItem_36 : IConfigurationItem
+			private sealed class _IConfigurationItem_39 : IConfigurationItem
 			{
-				public _IConfigurationItem_36()
+				public _IConfigurationItem_39()
 				{
 				}
 
@@ -114,9 +115,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				}
 			}
 
-			private sealed class _IStringEncoding_110 : IStringEncoding
+			private sealed class _IStringEncoding_113 : IStringEncoding
 			{
-				public _IStringEncoding_110()
+				public _IStringEncoding_113()
 				{
 				}
 
@@ -134,12 +135,12 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			// TODO: test registerTypeHandler()
 			private DiagnosticBase DummyDiagnostic()
 			{
-				return new _DiagnosticBase_140();
+				return new _DiagnosticBase_143();
 			}
 
-			private sealed class _DiagnosticBase_140 : DiagnosticBase
+			private sealed class _DiagnosticBase_143 : DiagnosticBase
 			{
-				public _DiagnosticBase_140()
+				public _DiagnosticBase_143()
 				{
 				}
 
@@ -234,3 +235,4 @@ namespace Db4objects.Db4o.Tests.Common.Api
 		}
 	}
 }
+#endif // !SILVERLIGHT

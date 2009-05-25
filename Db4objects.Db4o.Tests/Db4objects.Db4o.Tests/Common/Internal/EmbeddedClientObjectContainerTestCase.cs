@@ -1,31 +1,28 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Internal
 {
-	public class EmbeddedClientObjectContainerTestCase : ITestLifeCycle
+	public class EmbeddedClientObjectContainerTestCase : Db4oTestWithTempFile
 	{
 		private static readonly string FieldName = "_name";
 
-		private static readonly string Filename = Path.GetTempFileName();
-
 		private LocalObjectContainer _server;
 
-		protected EmbeddedClientObjectContainer _client1;
+		protected IExtObjectContainer _client1;
 
-		protected EmbeddedClientObjectContainer _client2;
+		protected IExtObjectContainer _client2;
 
 		private static readonly string OriginalName = "original";
 
@@ -55,6 +52,17 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			}
 		}
 
+		public virtual void TestReferenceSystemIsolation()
+		{
+			EmbeddedClientObjectContainerTestCase.Item item = new EmbeddedClientObjectContainerTestCase.Item
+				("one");
+			_client1.Store(item);
+			_client1.Commit();
+			EmbeddedClientObjectContainerTestCase.Item client2Item = RetrieveItemFromClient2(
+				);
+			Assert.AreNotSame(item, client2Item);
+		}
+
 		public virtual void TestSetAndCommitIsolation()
 		{
 			EmbeddedClientObjectContainerTestCase.Item item = new EmbeddedClientObjectContainerTestCase.Item
@@ -81,12 +89,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestBackup()
 		{
-			Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_77(this));
+			Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_83(this));
 		}
 
-		private sealed class _ICodeBlock_77 : ICodeBlock
+		private sealed class _ICodeBlock_83 : ICodeBlock
 		{
-			public _ICodeBlock_77(EmbeddedClientObjectContainerTestCase _enclosing)
+			public _ICodeBlock_83(EmbeddedClientObjectContainerTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -119,21 +127,20 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			BooleanByRef closed = new BooleanByRef();
 			// FIXME: Sharpen doesn't understand the null parameter (the third one), we had to add a cast
 			//        to get sharpen to run through.
-			Transaction trans = new _LocalTransaction_102(closed, _server, _server.SystemTransaction
+			Transaction trans = new _LocalTransaction_108(closed, _server, _server.SystemTransaction
 				(), (TransactionalReferenceSystem)null);
-			EmbeddedClientObjectContainer client = new EmbeddedClientObjectContainer(_server, 
-				trans);
+			ObjectContainerSession client = new ObjectContainerSession(_server, trans);
 			// FIXME: close needs to unregister reference system
 			//        also for crashed clients 
 			client.Close();
 			Assert.IsTrue(closed.value);
 		}
 
-		private sealed class _LocalTransaction_102 : LocalTransaction
+		private sealed class _LocalTransaction_108 : LocalTransaction
 		{
-			public _LocalTransaction_102(BooleanByRef closed, LocalObjectContainer baseArg1, 
-				Transaction baseArg2, TransactionalReferenceSystem baseArg3) : base(baseArg1, baseArg2
-				, baseArg3)
+			public _LocalTransaction_108(BooleanByRef closed, ObjectContainerBase baseArg1, Transaction
+				 baseArg2, TransactionalReferenceSystem baseArg3) : base(baseArg1, baseArg2, baseArg3
+				)
 			{
 				this.closed = closed;
 			}
@@ -306,19 +313,20 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			storedItem._name = ChangedName;
 			_client1.Store(storedItem);
 			EmbeddedClientObjectContainerTestCase.Item peekedItem = (EmbeddedClientObjectContainerTestCase.Item
-				)_client1.PeekPersisted(storedItem, 2, true);
+				)((EmbeddedClientObjectContainerTestCase.Item)_client1.PeekPersisted(storedItem, 
+				2, true));
 			Assert.IsNotNull(peekedItem);
 			Assert.AreNotSame(peekedItem, storedItem);
 			Assert.AreEqual(OriginalName, peekedItem._name);
-			peekedItem = (EmbeddedClientObjectContainerTestCase.Item)_client1.PeekPersisted(storedItem
-				, 2, false);
+			peekedItem = (EmbeddedClientObjectContainerTestCase.Item)((EmbeddedClientObjectContainerTestCase.Item
+				)_client1.PeekPersisted(storedItem, 2, false));
 			Assert.IsNotNull(peekedItem);
 			Assert.AreNotSame(peekedItem, storedItem);
 			Assert.AreEqual(ChangedName, peekedItem._name);
 			EmbeddedClientObjectContainerTestCase.Item retrievedItem = RetrieveItemFromClient2
 				();
-			peekedItem = (EmbeddedClientObjectContainerTestCase.Item)_client2.PeekPersisted(retrievedItem
-				, 2, false);
+			peekedItem = (EmbeddedClientObjectContainerTestCase.Item)((EmbeddedClientObjectContainerTestCase.Item
+				)_client2.PeekPersisted(retrievedItem, 2, false));
 			Assert.IsNotNull(peekedItem);
 			Assert.AreNotSame(peekedItem, retrievedItem);
 			Assert.AreEqual(OriginalName, peekedItem._name);
@@ -424,7 +432,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			Assert.IsGreater(1, _client1.Version());
 		}
 
-		private void AssertItemCount(EmbeddedClientObjectContainer client, int count)
+		private void AssertItemCount(IExtObjectContainer client, int count)
 		{
 			IQuery query = client.Query();
 			query.Constrain(typeof(EmbeddedClientObjectContainerTestCase.Item));
@@ -453,26 +461,23 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
+		public override void SetUp()
 		{
-			File4.Delete(Filename);
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ObjectClass(typeof(EmbeddedClientObjectContainerTestCase.Item)).GenerateUUIDs
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.Common.ObjectClass(typeof(EmbeddedClientObjectContainerTestCase.Item)).GenerateUUIDs
 				(true);
-			// ExtObjectServer server = Db4o.openServer(config, FILENAME, 0);
-			// EmbeddedClientObjectContainer container = server.openClient();
-			_server = (LocalObjectContainer)Db4oFactory.OpenFile(config, Filename);
-			_client1 = new EmbeddedClientObjectContainer(_server);
-			_client2 = new EmbeddedClientObjectContainer(_server);
+			_server = (LocalObjectContainer)Db4oEmbedded.OpenFile(config, TempFile());
+			_client1 = new ObjectContainerSession(_server);
+			_client2 = new ObjectContainerSession(_server);
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
+		public override void TearDown()
 		{
 			_client1.Close();
 			_client2.Close();
 			_server.Close();
-			File4.Delete(Filename);
+			base.TearDown();
 		}
 	}
 }

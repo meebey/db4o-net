@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MGetClasses : MsgD, IServerSideMessage
+	public sealed class MGetClasses : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{

@@ -9,6 +9,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 {
 	public class StorageTest : TestWithTempFile
 	{
+		#if !SILVERLIGHT
 		public virtual void TestInitialLength()
 		{
 			Storage().Open(new BinConfiguration(TempFile(), false, 1000, false)).Close();
@@ -22,6 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 				bin.Close();
 			}
 		}
+		#endif // !SILVERLIGHT
 
 		private IStorage Storage()
 		{

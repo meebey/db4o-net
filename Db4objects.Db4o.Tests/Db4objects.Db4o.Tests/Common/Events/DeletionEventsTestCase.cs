@@ -24,10 +24,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				return;
 			}
 			EventsTestCaseBase.EventLog deletionLog = new EventsTestCaseBase.EventLog();
-			ServerEventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+			ServerEventRegistry().Deleting += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 				(new _IEventListener4_25(this, deletionLog).OnEvent);
-			ServerEventRegistry().Deleted += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_IEventListener4_31(this, deletionLog).OnEvent);
+			ServerEventRegistry().Deleted += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_31(this, deletionLog).OnEvent);
 			Db().Delete(((EventsTestCaseBase.Item)RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item
 				))));
 			Db().Commit();
@@ -65,7 +65,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this.deletionLog = deletionLog;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				deletionLog.xed = true;
 				this._enclosing.AssertItemIsActive(args);

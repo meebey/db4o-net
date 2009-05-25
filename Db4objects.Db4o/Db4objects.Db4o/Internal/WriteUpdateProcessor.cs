@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool HandledAsReAdd(Slot slot)
 		{
-			if (slot != null && slot.Address() > 0)
+			if (slot != null && !slot.IsNull())
 			{
 				return false;
 			}

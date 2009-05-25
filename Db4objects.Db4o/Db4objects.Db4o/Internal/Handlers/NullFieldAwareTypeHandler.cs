@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		public virtual void CollectIDs(CollectIdContext context, string fieldName)
+		public virtual void CollectIDs(CollectIdContext context, IPredicate4 predicate)
 		{
 		}
 

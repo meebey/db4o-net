@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			new SerializerTestCase().RunAll();
 		}
 
+		#if !SILVERLIGHT
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestExceptionMarshalling()
 		{
@@ -22,5 +23,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			SerializedGraph marshalled = Serializer.Marshall(Stream().Container(), e);
 			Assert.IsTrue(marshalled.Length() > 0);
 		}
+		#endif // !SILVERLIGHT
 	}
 }

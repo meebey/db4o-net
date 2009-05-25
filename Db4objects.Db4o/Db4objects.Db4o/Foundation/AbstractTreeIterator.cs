@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return false;
 			}
-			if (PushPreceding(current._subsequent))
+			if (PushPreceding(((Tree)current._subsequent)))
 			{
 				return true;
 			}
@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Foundation
 				{
 					return false;
 				}
-				if (current == parent._preceding)
+				if (current == ((Tree)parent._preceding))
 				{
 					return true;
 				}
@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Foundation
 			while (node != null)
 			{
 				_stack.Push(node);
-				node = node._preceding;
+				node = ((Tree)node._preceding);
 			}
 			return true;
 		}

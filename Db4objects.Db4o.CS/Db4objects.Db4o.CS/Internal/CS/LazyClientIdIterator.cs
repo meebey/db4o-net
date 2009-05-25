@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 
 namespace Db4objects.Db4o.Internal.CS
@@ -70,11 +70,12 @@ namespace Db4objects.Db4o.Internal.CS
 			_current = -1;
 		}
 
-		public virtual void LoadFromIdReader(ByteArrayBuffer reader, int count)
+		public virtual void LoadFromIdReader(IEnumerator ids)
 		{
-			for (int i = 0; i < count; i++)
+			int count = 0;
+			while (ids.MoveNext())
 			{
-				_ids[i] = reader.ReadInt();
+				_ids[count++] = ((int)ids.Current);
 			}
 			if (count > 0)
 			{

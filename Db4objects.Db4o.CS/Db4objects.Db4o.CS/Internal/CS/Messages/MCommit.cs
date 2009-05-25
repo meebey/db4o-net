@@ -1,35 +1,35 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
+using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MCommit : Msg, IServerSideMessage
+	public sealed class MCommit : Msg, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{
+			CallbackObjectInfoCollections committedInfo = null;
+			LocalTransaction serverTransaction = ServerTransaction();
+			IServerMessageDispatcher dispatcher = ServerMessageDispatcher();
+			lock (StreamLock())
+			{
+				serverTransaction.Commit(dispatcher);
+				committedInfo = dispatcher.CommittedInfo();
+			}
+			Write(Msg.Ok);
 			try
 			{
-				CallbackObjectInfoCollections committedInfo = null;
-				LocalTransaction serverTransaction = ServerTransaction();
-				IServerMessageDispatcher dispatcher = ServerMessageDispatcher();
-				lock (StreamLock())
-				{
-					serverTransaction.Commit(dispatcher);
-					committedInfo = dispatcher.CommittedInfo();
-				}
-				Write(Msg.Ok);
 				if (committedInfo != null)
 				{
 					AddCommittedInfoMsg(committedInfo, serverTransaction);
 				}
 			}
-			catch (Db4oException e)
+			catch (Exception exc)
 			{
-				WriteException(e);
+				Sharpen.Runtime.PrintStackTrace(exc);
 			}
 			return true;
 		}

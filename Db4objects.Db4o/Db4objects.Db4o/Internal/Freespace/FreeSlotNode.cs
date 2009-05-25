@@ -57,7 +57,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			if (cmp > 0)
 			{
-				a_in._preceding = RemoveGreaterOrEqual((FreeSlotNode)a_in._preceding, a_finder);
+				a_in._preceding = RemoveGreaterOrEqual((FreeSlotNode)((Tree)a_in._preceding), a_finder
+					);
 				if (a_finder._object != null)
 				{
 					a_in._size--;
@@ -66,7 +67,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 				a_finder._object = a_in;
 				return a_in.Remove();
 			}
-			a_in._subsequent = RemoveGreaterOrEqual((FreeSlotNode)a_in._subsequent, a_finder);
+			a_in._subsequent = RemoveGreaterOrEqual((FreeSlotNode)((Tree)a_in._subsequent), a_finder
+				);
 			if (a_finder._object != null)
 			{
 				a_in._size--;

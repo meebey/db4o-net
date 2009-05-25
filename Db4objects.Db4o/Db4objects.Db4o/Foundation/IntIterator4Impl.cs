@@ -6,7 +6,7 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class IntIterator4Impl : IIntIterator4
+	public class IntIterator4Impl : IFixedSizeIntIterator4
 	{
 		private readonly int _count;
 
@@ -52,6 +52,11 @@ namespace Db4objects.Db4o.Foundation
 		public virtual void Reset()
 		{
 			_current = -1;
+		}
+
+		public virtual int Size()
+		{
+			return _count;
 		}
 	}
 }

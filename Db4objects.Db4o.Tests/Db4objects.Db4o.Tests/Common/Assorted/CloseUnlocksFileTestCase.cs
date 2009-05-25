@@ -1,24 +1,28 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Tests.Common.Api;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class CloseUnlocksFileTestCase : ITestCase
+	public class CloseUnlocksFileTestCase : Db4oTestWithTempFile
 	{
-		private static readonly string File = Path.GetTempFileName();
-
+		[System.ObsoleteAttribute]
 		public virtual void Test()
 		{
-			File4.Delete(File);
-			Assert.IsFalse(System.IO.File.Exists(File));
-			IObjectContainer oc = Db4oFactory.OpenFile(Db4oFactory.NewConfiguration(), File);
+			File4.Delete(TempFile());
+			Assert.IsFalse(Exists(TempFile()));
+			IObjectContainer oc = Db4oEmbedded.OpenFile(NewConfiguration(), TempFile());
 			oc.Close();
-			File4.Delete(File);
-			Assert.IsFalse(System.IO.File.Exists(File));
+			File4.Delete(TempFile());
+			Assert.IsFalse(Exists(TempFile()));
+		}
+
+		private bool Exists(string fileName)
+		{
+			return new Sharpen.IO.File(fileName).Exists();
 		}
 	}
 }

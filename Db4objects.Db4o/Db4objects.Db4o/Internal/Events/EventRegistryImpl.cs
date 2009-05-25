@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Events;
@@ -14,39 +15,44 @@ namespace Db4objects.Db4o.Internal.Events
 	{
 		private readonly IInternalObjectContainer _container;
 
-		protected Db4objects.Db4o.Events.QueryEventHandler _queryStarted;
+		protected System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs> _queryStarted;
 
-		protected Db4objects.Db4o.Events.QueryEventHandler _queryFinished;
+		protected System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs> _queryFinished;
 
-		protected Db4objects.Db4o.Events.CancellableObjectEventHandler _creating;
+		protected System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> 
+			_creating;
 
-		protected Db4objects.Db4o.Events.CancellableObjectEventHandler _activating;
+		protected System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> 
+			_activating;
 
-		protected Db4objects.Db4o.Events.CancellableObjectEventHandler _updating;
+		protected System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> 
+			_updating;
 
-		protected Db4objects.Db4o.Events.CancellableObjectEventHandler _deleting;
+		protected System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> 
+			_deleting;
 
-		protected Db4objects.Db4o.Events.CancellableObjectEventHandler _deactivating;
+		protected System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs> 
+			_deactivating;
 
-		protected Db4objects.Db4o.Events.ObjectEventHandler _created;
+		protected System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> _created;
 
-		protected Db4objects.Db4o.Events.ObjectEventHandler _activated;
+		protected System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> _activated;
 
-		protected Db4objects.Db4o.Events.ObjectEventHandler _updated;
+		protected System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> _updated;
 
-		protected Db4objects.Db4o.Events.ObjectEventHandler _deleted;
+		protected System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> _deleted;
 
-		protected Db4objects.Db4o.Events.ObjectEventHandler _deactivated;
+		protected System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> _deactivated;
 
-		protected Db4objects.Db4o.Events.CommitEventHandler _committing;
+		protected System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs> _committing;
 
-		protected Db4objects.Db4o.Events.CommitEventHandler _committed;
+		protected System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs> _committed;
 
-		protected Db4objects.Db4o.Events.ObjectEventHandler _instantiated;
+		protected System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs> _instantiated;
 
-		protected Db4objects.Db4o.Events.ClassEventHandler _classRegistered;
+		protected System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs> _classRegistered;
 
-		protected Db4objects.Db4o.Events.ObjectContainerEventHandler _closing;
+		protected System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs> _closing;
 
 		public EventRegistryImpl(IInternalObjectContainer container)
 		{
@@ -94,24 +100,24 @@ namespace Db4objects.Db4o.Internal.Events
 				, obj);
 		}
 
-		public virtual void ObjectOnActivate(Transaction transaction, object obj)
+		public virtual void ObjectOnActivate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectEvent(transaction, _activated, obj);
+			EventPlatform.TriggerObjectInfoEvent(transaction, _activated, obj);
 		}
 
-		public virtual void ObjectOnNew(Transaction transaction, object obj)
+		public virtual void ObjectOnNew(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectEvent(transaction, _created, obj);
+			EventPlatform.TriggerObjectInfoEvent(transaction, _created, obj);
 		}
 
-		public virtual void ObjectOnUpdate(Transaction transaction, object obj)
+		public virtual void ObjectOnUpdate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectEvent(transaction, _updated, obj);
+			EventPlatform.TriggerObjectInfoEvent(transaction, _updated, obj);
 		}
 
-		public virtual void ObjectOnDelete(Transaction transaction, object obj)
+		public virtual void ObjectOnDelete(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectEvent(transaction, _deleted, obj);
+			EventPlatform.TriggerObjectInfoEvent(transaction, _deleted, obj);
 		}
 
 		public virtual void ClassOnRegistered(ClassMetadata clazz)
@@ -119,14 +125,14 @@ namespace Db4objects.Db4o.Internal.Events
 			EventPlatform.TriggerClassEvent(_classRegistered, clazz);
 		}
 
-		public virtual void ObjectOnDeactivate(Transaction transaction, object obj)
+		public virtual void ObjectOnDeactivate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectEvent(transaction, _deactivated, obj);
+			EventPlatform.TriggerObjectInfoEvent(transaction, _deactivated, obj);
 		}
 
-		public virtual void ObjectOnInstantiate(Transaction transaction, object obj)
+		public virtual void ObjectOnInstantiate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectEvent(transaction, _instantiated, obj);
+			EventPlatform.TriggerObjectInfoEvent(transaction, _instantiated, obj);
 		}
 
 		public virtual void CommitOnStarted(Transaction transaction, CallbackObjectInfoCollections
@@ -146,242 +152,256 @@ namespace Db4objects.Db4o.Internal.Events
 			EventPlatform.TriggerObjectContainerEvent(container, _closing);
 		}
 
-		public virtual event Db4objects.Db4o.Events.QueryEventHandler QueryFinished
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs> QueryFinished
 		{
 			add
 			{
-				_queryFinished = (Db4objects.Db4o.Events.QueryEventHandler)System.Delegate.Combine
+				_queryFinished = (System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>)System.Delegate.Combine
 					(_queryFinished, value);
 			}
 			remove
 			{
-				_queryFinished = (Db4objects.Db4o.Events.QueryEventHandler)System.Delegate.Remove
+				_queryFinished = (System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>)System.Delegate.Remove
 					(_queryFinished, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.QueryEventHandler QueryStarted
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs> QueryStarted
 		{
 			add
 			{
-				_queryStarted = (Db4objects.Db4o.Events.QueryEventHandler)System.Delegate.Combine
+				_queryStarted = (System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>)System.Delegate.Combine
 					(_queryStarted, value);
 			}
 			remove
 			{
-				_queryStarted = (Db4objects.Db4o.Events.QueryEventHandler)System.Delegate.Remove(
-					_queryStarted, value);
+				_queryStarted = (System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>)System.Delegate.Remove
+					(_queryStarted, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.CancellableObjectEventHandler Creating
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+			 Creating
 		{
 			add
 			{
-				_creating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Combine
-					(_creating, value);
+				_creating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Combine(_creating, value);
 			}
 			remove
 			{
-				_creating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Remove
-					(_creating, value);
+				_creating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Remove(_creating, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.CancellableObjectEventHandler Activating
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+			 Activating
 		{
 			add
 			{
-				_activating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Combine
-					(_activating, value);
+				_activating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Combine(_activating, value);
 			}
 			remove
 			{
-				_activating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Remove
-					(_activating, value);
+				_activating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Remove(_activating, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.CancellableObjectEventHandler Updating
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+			 Updating
 		{
 			add
 			{
-				_updating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Combine
-					(_updating, value);
+				_updating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Combine(_updating, value);
 			}
 			remove
 			{
-				_updating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Remove
-					(_updating, value);
+				_updating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Remove(_updating, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.CancellableObjectEventHandler Deleting
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+			 Deleting
 		{
 			add
 			{
-				_deleting = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Combine
-					(_deleting, value);
+				_deleting = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Combine(_deleting, value);
 			}
 			remove
 			{
-				_deleting = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Remove
-					(_deleting, value);
+				_deleting = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Remove(_deleting, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.CancellableObjectEventHandler Deactivating
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+			 Deactivating
 		{
 			add
 			{
-				_deactivating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Combine
-					(_deactivating, value);
+				_deactivating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Combine(_deactivating, value);
 			}
 			remove
 			{
-				_deactivating = (Db4objects.Db4o.Events.CancellableObjectEventHandler)System.Delegate.Remove
-					(_deactivating, value);
+				_deactivating = (System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+					)System.Delegate.Remove(_deactivating, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ObjectEventHandler Created
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+			 Created
 		{
 			add
 			{
-				_created = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Combine(_created
-					, value);
+				_created = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Combine
+					(_created, value);
 			}
 			remove
 			{
-				_created = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove(_created
-					, value);
+				_created = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Remove
+					(_created, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ObjectEventHandler Activated
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+			 Activated
 		{
 			add
 			{
-				_activated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Combine(_activated
-					, value);
+				_activated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Combine
+					(_activated, value);
 			}
 			remove
 			{
-				_activated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove(_activated
-					, value);
+				_activated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Remove
+					(_activated, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ObjectEventHandler Updated
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+			 Updated
 		{
 			add
 			{
-				_updated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Combine(_updated
-					, value);
+				_updated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Combine
+					(_updated, value);
 			}
 			remove
 			{
-				_updated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove(_updated
-					, value);
+				_updated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Remove
+					(_updated, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ObjectEventHandler Deleted
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+			 Deleted
 		{
 			add
 			{
-				_deleted = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Combine(_deleted
-					, value);
+				_deleted = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Combine
+					(_deleted, value);
 			}
 			remove
 			{
-				_deleted = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove(_deleted
-					, value);
+				_deleted = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Remove
+					(_deleted, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ObjectEventHandler Deactivated
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+			 Deactivated
 		{
 			add
 			{
-				_deactivated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Combine
+				_deactivated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Combine
 					(_deactivated, value);
 			}
 			remove
 			{
-				_deactivated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove(
-					_deactivated, value);
+				_deactivated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)System.Delegate.Remove
+					(_deactivated, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.CommitEventHandler Committing
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs> 
+			Committing
 		{
 			add
 			{
-				_committing = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Combine(
-					_committing, value);
+				_committing = (System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>)System.Delegate.Combine
+					(_committing, value);
 			}
 			remove
 			{
-				_committing = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Remove(_committing
-					, value);
+				_committing = (System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>)System.Delegate.Remove
+					(_committing, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.CommitEventHandler Committed
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs> 
+			Committed
 		{
 			add
 			{
-				_committed = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Combine(_committed
-					, value);
+				_committed = (System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>)System.Delegate.Combine
+					(_committed, value);
 				OnCommittedListener();
 			}
 			remove
 			{
-				_committed = (Db4objects.Db4o.Events.CommitEventHandler)System.Delegate.Remove(_committed
-					, value);
+				_committed = (System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>)System.Delegate.Remove
+					(_committed, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ClassEventHandler ClassRegistered
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs> ClassRegistered
 		{
 			add
 			{
-				_classRegistered = (Db4objects.Db4o.Events.ClassEventHandler)System.Delegate.Combine
+				_classRegistered = (System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs>)System.Delegate.Combine
 					(_classRegistered, value);
 			}
 			remove
 			{
-				_classRegistered = (Db4objects.Db4o.Events.ClassEventHandler)System.Delegate.Remove
+				_classRegistered = (System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs>)System.Delegate.Remove
 					(_classRegistered, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ObjectEventHandler Instantiated
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+			 Instantiated
 		{
 			add
 			{
-				_instantiated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Combine
-					(_instantiated, value);
+				_instantiated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)
+					System.Delegate.Combine(_instantiated, value);
 			}
 			remove
 			{
-				_instantiated = (Db4objects.Db4o.Events.ObjectEventHandler)System.Delegate.Remove
-					(_instantiated, value);
+				_instantiated = (System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>)
+					System.Delegate.Remove(_instantiated, value);
 			}
 		}
 
-		public virtual event Db4objects.Db4o.Events.ObjectContainerEventHandler Closing
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>
+			 Closing
 		{
 			add
 			{
-				_closing = (Db4objects.Db4o.Events.ObjectContainerEventHandler)System.Delegate.Combine
-					(_closing, value);
+				_closing = (System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>)
+					System.Delegate.Combine(_closing, value);
 			}
 			remove
 			{
-				_closing = (Db4objects.Db4o.Events.ObjectContainerEventHandler)System.Delegate.Remove
-					(_closing, value);
+				_closing = (System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>)
+					System.Delegate.Remove(_closing, value);
 			}
 		}
 

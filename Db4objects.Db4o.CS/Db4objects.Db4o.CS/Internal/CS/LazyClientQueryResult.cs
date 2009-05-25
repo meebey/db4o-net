@@ -81,9 +81,9 @@ namespace Db4objects.Db4o.Internal.CS
 				));
 		}
 
-		public override void LoadFromIdReader(ByteArrayBuffer reader)
+		public override void LoadFromIdReader(IEnumerator reader)
 		{
-			_iterator.LoadFromIdReader(reader, reader.ReadInt());
+			_iterator.LoadFromIdReader(reader);
 		}
 
 		public virtual void Reset()
@@ -94,9 +94,9 @@ namespace Db4objects.Db4o.Internal.CS
 		public virtual void FetchIDs(int batchSize)
 		{
 			_client.Write(Msg.ObjectsetFetch.GetWriterForInts(_transaction, new int[] { _queryResultID
-				, batchSize }));
+				, batchSize, _client.PrefetchDepth() }));
 			ByteArrayBuffer reader = _client.ExpectedByteResponse(Msg.IdList);
-			LoadFromIdReader(reader);
+			LoadFromIdReader(_client.IdIteratorFor(_transaction, reader));
 		}
 	}
 }

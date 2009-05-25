@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
@@ -73,7 +72,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_collector.AddId(id);
 		}
 
-		public virtual Tree Ids()
+		public virtual TreeInt Ids()
 		{
 			return _collector.Ids();
 		}

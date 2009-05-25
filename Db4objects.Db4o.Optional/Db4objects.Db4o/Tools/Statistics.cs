@@ -109,7 +109,7 @@ namespace Db4objects.Db4o.Tools
 			}
 			PrintHeader("CLASSES");
 			Sharpen.Runtime.Out.WriteLine("Number of objects per class:");
-			Tree.ByRef ids = new Tree.ByRef(new TreeInt(0));
+			ByRef ids = ByRef.NewInstance(new TreeInt(0));
 			if (internalClasses.Length > 0)
 			{
 				Tree all = new Statistics.TreeStringObject(internalClasses[0].GetName(), internalClasses
@@ -133,8 +133,8 @@ namespace Db4objects.Db4o.Tools
 				Sharpen.Runtime.Out.WriteLine("Classes without public constructors: " + noConstructor
 					.Size());
 			}
-			Sharpen.Runtime.Out.WriteLine("Total number of objects: " + (ids.value.Size() - 1
-				));
+			Sharpen.Runtime.Out.WriteLine("Total number of objects: " + (((Tree)ids.value).Size
+				() - 1));
 		}
 
 		private sealed class _IVisitor4_81 : IVisitor4
@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Tools
 
 		private sealed class _IVisitor4_108 : IVisitor4
 		{
-			public _IVisitor4_108(Tree.ByRef ids)
+			public _IVisitor4_108(ByRef ids)
 			{
 				this.ids = ids;
 			}
@@ -174,15 +174,15 @@ namespace Db4objects.Db4o.Tools
 				long[] newIDs = ((IStoredClass)node._object).GetIDs();
 				for (int j = 0; j < newIDs.Length; j++)
 				{
-					if (ids.value.Find(new TreeInt((int)newIDs[j])) == null)
+					if (((Tree)ids.value).Find(new TreeInt((int)newIDs[j])) == null)
 					{
-						ids.value = ids.value.Add(new TreeInt((int)newIDs[j]));
+						ids.value = ((Tree)ids.value).Add(new TreeInt((int)newIDs[j]));
 					}
 				}
 				Sharpen.Runtime.Out.WriteLine(node._key + ": " + newIDs.Length);
 			}
 
-			private readonly Tree.ByRef ids;
+			private readonly ByRef ids;
 		}
 
 		private void PrintHeader(string str)

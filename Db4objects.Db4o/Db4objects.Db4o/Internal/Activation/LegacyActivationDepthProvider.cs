@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Activation
 		{
 			if (mode.IsPrefetch())
 			{
-				return new LegacyActivationDepth(classMetadata.PrefetchActivationDepth(), mode);
+				return new LegacyActivationDepth(1, mode);
 			}
 			int globalLegacyActivationDepth = ConfigImpl(classMetadata).ActivationDepth();
 			Config4Class config = classMetadata.ConfigOrAncestorConfig();

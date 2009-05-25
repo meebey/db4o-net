@@ -2,11 +2,12 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.IO;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class AllTests : ReflectionTestSuite
+	public class AllTests : ComposibleReflectionTestSuite
 	{
 		public static void Main(string[] arguments)
 		{
@@ -15,11 +16,18 @@ namespace Db4objects.Db4o.Tests.Common.IO
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(BlockAwareBinTestSuite), typeof(BlockSizeDependentBinTestCase
-				), typeof(IoAdapterTestSuite), typeof(RandomAccessFileFactoryTestCase), typeof(MemoryBinGrowthTestCase
+			return ComposeTests(new Type[] { typeof(BlockAwareBinTestSuite), typeof(MemoryBinGrowthTestCase
 				), typeof(MemoryBinIsReusableTestCase), typeof(MemoryIoAdapterTestCase), typeof(
 				NonFlushingStorageTestCase), typeof(RandomAccessFileStorageFactoryTestCase), typeof(
-				StorageTestSuite) };
+				StorageTestSuite) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(BlockSizeDependentBinTestCase), typeof(IoAdapterTestSuite
+				), typeof(RandomAccessFileFactoryTestCase) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

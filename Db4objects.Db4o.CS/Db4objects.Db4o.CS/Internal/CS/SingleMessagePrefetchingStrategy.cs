@@ -1,9 +1,9 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
-using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS
 {
@@ -19,13 +19,11 @@ namespace Db4objects.Db4o.Internal.CS
 		{
 		}
 
-		public virtual int PrefetchObjects(ClientObjectContainer container, IIntIterator4
-			 ids, object[] prefetched, int prefetchCount)
+		public virtual int PrefetchObjects(ClientObjectContainer container, Transaction trans
+			, IIntIterator4 ids, object[] prefetched, int prefetchCount)
 		{
 			int count = 0;
-			int toGet = 0;
-			int[] idsToGet = new int[prefetchCount];
-			int[] position = new int[prefetchCount];
+			IList idsToGet = new ArrayList();
 			while (count < prefetchCount)
 			{
 				if (!ids.MoveNext())
@@ -35,50 +33,50 @@ namespace Db4objects.Db4o.Internal.CS
 				int id = ids.CurrentInt();
 				if (id > 0)
 				{
-					object obj = container.Transaction().ObjectForIdFromCache(id);
+					object obj = trans.ObjectForIdFromCache(id);
 					if (obj != null)
 					{
 						prefetched[count] = obj;
 					}
 					else
 					{
-						idsToGet[toGet] = id;
-						position[toGet] = count;
-						toGet++;
+						idsToGet.Add(Pair.Of(id, count));
 					}
 					count++;
 				}
 			}
-			if (toGet > 0)
+			if (idsToGet.Count > 0)
 			{
-				Transaction trans = container.Transaction();
-				MsgD msg = Msg.ReadMultipleObjects.GetWriterForIntArray(trans, idsToGet, toGet);
-				container.Write(msg);
-				MsgD response = (MsgD)container.ExpectedResponse(Msg.ReadMultipleObjects);
-				int embeddedMessageCount = response.ReadInt();
-				for (int i = 0; i < embeddedMessageCount; i++)
+				ByteArrayBuffer[] buffers = container.ReadObjectSlots(trans, IdArrayFor(idsToGet)
+					);
+				for (int i = 0; i < buffers.Length; i++)
 				{
-					MsgObject mso = (MsgObject)Msg.ObjectToClient.PublicClone();
-					mso.SetTransaction(trans);
-					mso.PayLoad(response.PayLoad().ReadYapBytes());
-					if (mso.PayLoad() != null)
+					Pair pair = ((Pair)idsToGet[i]);
+					int id = (((int)pair.first));
+					int position = (((int)pair.second));
+					object obj = trans.ObjectForIdFromCache(id);
+					if (obj != null)
 					{
-						mso.PayLoad().IncrementOffset(Const4.MessageLength);
-						StatefulBuffer reader = mso.Unmarshall(Const4.MessageLength);
-						object obj = trans.ObjectForIdFromCache(idsToGet[i]);
-						if (obj != null)
-						{
-							prefetched[position[i]] = obj;
-						}
-						else
-						{
-							prefetched[position[i]] = new ObjectReference(idsToGet[i]).ReadPrefetch(trans, reader
-								);
-						}
+						prefetched[position] = obj;
+					}
+					else
+					{
+						prefetched[position] = new ObjectReference(id).ReadPrefetch(trans, buffers[i], Const4
+							.AddToIdTree);
 					}
 				}
 			}
 			return count;
+		}
+
+		private int[] IdArrayFor(IList idsToGet)
+		{
+			int[] idArray = new int[idsToGet.Count];
+			for (int i = 0; i < idArray.Length; ++i)
+			{
+				idArray[i] = (((int)((Pair)idsToGet[i]).first));
+			}
+			return idArray;
 		}
 	}
 }

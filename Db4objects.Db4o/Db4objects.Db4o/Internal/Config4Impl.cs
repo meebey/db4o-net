@@ -147,6 +147,8 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchObjectCountKey = new KeySpec(10);
 
+		private static readonly KeySpec PrefetchDepthKey = new KeySpec(0);
+
 		private static readonly KeySpec ReadAsKey = new KeySpec(new Hashtable4(16));
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
@@ -1242,6 +1244,16 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ArgumentException("Configuration already used.");
 			}
+		}
+
+		public void PrefetchDepth(int prefetchDepth)
+		{
+			_config.Put(PrefetchDepthKey, prefetchDepth);
+		}
+
+		public int PrefetchDepth()
+		{
+			return _config.GetAsInt(PrefetchDepthKey);
 		}
 	}
 }

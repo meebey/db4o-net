@@ -18,12 +18,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
-			QueryByInterface.Ferrari f430 = new QueryByInterface.Ferrari(this, "F430");
-			QueryByInterface.Ferrari f450 = new QueryByInterface.Ferrari(this, "F450");
+			QueryByInterface.Ferrari f430 = new QueryByInterface.Ferrari("F430");
+			QueryByInterface.Ferrari f450 = new QueryByInterface.Ferrari("F450");
 			Store(f430);
 			Store(f450);
-			QueryByInterface.Bmw serie5 = new QueryByInterface.Bmw(this, "Serie 5");
-			QueryByInterface.Bmw serie7 = new QueryByInterface.Bmw(this, "Serie 7");
+			QueryByInterface.Bmw serie5 = new QueryByInterface.Bmw("Serie 5");
+			QueryByInterface.Bmw serie7 = new QueryByInterface.Bmw("Serie 7");
 			Store(serie5);
 			Store(serie7);
 		}
@@ -47,36 +47,30 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			public string name;
 
-			public Ferrari(QueryByInterface _enclosing, string n)
+			public Ferrari(string n)
 			{
-				this._enclosing = _enclosing;
-				this.name = n;
+				name = n;
 			}
 
 			public override string ToString()
 			{
-				return "Ferrari " + this.name;
+				return "Ferrari " + name;
 			}
-
-			private readonly QueryByInterface _enclosing;
 		}
 
 		public class Bmw : QueryByInterface.ICar
 		{
 			public string name;
 
-			public Bmw(QueryByInterface _enclosing, string n)
+			public Bmw(string n)
 			{
-				this._enclosing = _enclosing;
-				this.name = n;
+				name = n;
 			}
 
 			public override string ToString()
 			{
-				return "BMW " + this.name;
+				return "BMW " + name;
 			}
-
-			private readonly QueryByInterface _enclosing;
 		}
 	}
 }

@@ -8,6 +8,7 @@ using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.Events;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS
@@ -39,6 +40,8 @@ namespace Db4objects.Db4o.Internal.CS
 		private readonly object _lock = new object();
 
 		private readonly object _mainLock;
+
+		private System.EventHandler<MessageEventArgs> _messageReceived;
 
 		/// <exception cref="System.Exception"></exception>
 		internal ServerMessageDispatcherImpl(ObjectServerImpl server, ClientTransactionHandle
@@ -192,6 +195,7 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				return true;
 			}
+			TriggerMessageReceived(message);
 			if (!_loggedin && !Msg.Login.Equals(message))
 			{
 				return true;
@@ -200,9 +204,41 @@ namespace Db4objects.Db4o.Internal.CS
 			// Checking aliveness just makes the issue less likely to occur. Naive synchronization against main lock is prohibitive.        
 			if (IsMessageDispatcherAlive())
 			{
-				return ((IServerSideMessage)message).ProcessAtServer();
+				try
+				{
+					return ((IServerSideMessage)message).ProcessAtServer();
+				}
+				catch (OutOfMemoryException oome)
+				{
+					WriteException(message, new InternalServerError(oome));
+					return true;
+				}
+				catch (Exception exc)
+				{
+					WriteException(message, exc);
+					return true;
+				}
 			}
 			return false;
+		}
+
+		private void WriteException(Msg message, Exception exc)
+		{
+			if (!(message is IMessageWithResponse))
+			{
+				Sharpen.Runtime.PrintStackTrace(exc);
+				return;
+			}
+			if (!(exc is Exception))
+			{
+				exc = new Db4oException(exc);
+			}
+			message.WriteException((Exception)exc);
+		}
+
+		private void TriggerMessageReceived(Msg message)
+		{
+			ServerPlatform.TriggerMessageEvent(_messageReceived, message);
 		}
 
 		public ObjectServerImpl Server()
@@ -337,6 +373,21 @@ namespace Db4objects.Db4o.Internal.CS
 		public Db4objects.Db4o.Internal.CS.ClassInfoHelper ClassInfoHelper()
 		{
 			return Server().ClassInfoHelper();
+		}
+
+		/// <summary>EventArgs =&gt; MessageEventArgs</summary>
+		public event System.EventHandler<MessageEventArgs> MessageReceived
+		{
+			add
+			{
+				_messageReceived = (System.EventHandler<MessageEventArgs>)System.Delegate.Combine
+					(_messageReceived, value);
+			}
+			remove
+			{
+				_messageReceived = (System.EventHandler<MessageEventArgs>)System.Delegate.Remove(
+					_messageReceived, value);
+			}
 		}
 	}
 }

@@ -18,10 +18,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		public virtual void TestActivationEvents()
 		{
 			EventsTestCaseBase.EventLog activationLog = new EventsTestCaseBase.EventLog();
-			EventRegistry().Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+			EventRegistry().Activating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 				(new _IEventListener4_19(this, activationLog).OnEvent);
-			EventRegistry().Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_25
-				(this, activationLog).OnEvent);
+			EventRegistry().Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_25(this, activationLog).OnEvent);
 			RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item));
 			Assert.IsTrue(activationLog.xing);
 			Assert.IsTrue(activationLog.xed);
@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
 				 args)
 			{
-				this._enclosing.AssertClientTransaction(args);
+				this._enclosing.AssertClientTransaction(((CancellableObjectEventArgs)args));
 				activationLog.xing = true;
 			}
 
@@ -57,9 +57,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this.activationLog = activationLog;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
-				this._enclosing.AssertClientTransaction(args);
+				this._enclosing.AssertClientTransaction(((ObjectInfoEventArgs)args));
 				activationLog.xed = true;
 			}
 

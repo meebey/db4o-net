@@ -14,6 +14,7 @@ using Db4objects.Db4o.Tests.Util;
 namespace Db4objects.Db4o.Tests.Common.Handlers
 {
 	public abstract partial class FormatMigrationTestCaseBase : ITestLifeCycle, IOptOutNoFileSystemData
+		, IOptOutCS
 	{
 		private string _db4oVersion;
 

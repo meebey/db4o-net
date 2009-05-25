@@ -1,13 +1,11 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
@@ -15,13 +13,19 @@ using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Migration;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-	public class FieldsToTypeHandlerMigrationTestCase : ITestLifeCycle
+	public class FieldsToTypeHandlerMigrationTestCase : Db4oTestWithTempFile
 	{
+		public static void Main(string[] args)
+		{
+			new ConsoleTestRunner(typeof(FieldsToTypeHandlerMigrationTestCase)).Run();
+		}
+
 		public class Item
 		{
 			public Item(int id)
@@ -31,8 +35,6 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 			public int _id;
 		}
-
-		private string _fileName;
 
 		internal FieldsToTypeHandlerMigrationTestCase.ItemTypeHandler _typeHandler;
 
@@ -111,19 +113,6 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				_writeCalls = 0;
 				_readCalls = 0;
 			}
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
-		{
-			_fileName = Path.GetTempFileName();
-			File4.Delete(_fileName);
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
-		{
-			File4.Delete(_fileName);
 		}
 
 		public virtual void TestMigration()
@@ -238,14 +227,13 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			{
 				_typeHandler.Reset();
 			}
-			IConfiguration configuration = Db4oFactory.NewConfiguration();
+			IEmbeddedConfiguration configuration = NewConfiguration();
 			if (_typeHandler != null)
 			{
-				configuration.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(FieldsToTypeHandlerMigrationTestCase.Item
-					)), _typeHandler);
+				configuration.Common.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(
+					FieldsToTypeHandlerMigrationTestCase.Item)), _typeHandler);
 			}
-			IObjectContainer db = Db4oFactory.OpenFile(configuration, _fileName);
-			return db;
+			return Db4oEmbedded.OpenFile(configuration, TempFile());
 		}
 
 		public virtual void Defragment(IDefragmentContext context)

@@ -1,16 +1,17 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Config;
 
 namespace Db4objects.Db4o.Tests.Common.Config
 {
-	public class ConfigurationItemTestCase : ITestCase
+	public class ConfigurationItemTestCase : Db4oTestWithTempFile
 	{
 		internal sealed class ConfigurationItemStub : IConfigurationItem
 		{
@@ -43,21 +44,22 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public virtual void Test()
 		{
-			IConfiguration configuration = Db4oFactory.NewConfiguration();
+			IEmbeddedConfiguration configuration = NewConfiguration();
 			ConfigurationItemTestCase.ConfigurationItemStub item = new ConfigurationItemTestCase.ConfigurationItemStub
 				();
-			configuration.Add(item);
-			Assert.AreSame(configuration, item.PreparedConfiguration());
+			configuration.Common.Add(item);
+			Assert.AreSame(LegacyConfigFor(configuration), item.PreparedConfiguration());
 			Assert.IsNull(item.AppliedContainer());
-			File4.Delete(DatabaseFile());
-			IObjectContainer container = Db4oFactory.OpenFile(configuration, DatabaseFile());
+			File4.Delete(TempFile());
+			IObjectContainer container = Db4oEmbedded.OpenFile(configuration, TempFile());
 			container.Close();
 			Assert.AreSame(container, item.AppliedContainer());
 		}
 
-		private string DatabaseFile()
+		private IConfiguration LegacyConfigFor(IEmbeddedConfiguration configuration)
 		{
-			return Path.Combine(Path.GetTempPath(), GetType().FullName);
+			EmbeddedConfigurationImpl configImpl = (EmbeddedConfigurationImpl)configuration;
+			return configImpl.Legacy();
 		}
 	}
 }

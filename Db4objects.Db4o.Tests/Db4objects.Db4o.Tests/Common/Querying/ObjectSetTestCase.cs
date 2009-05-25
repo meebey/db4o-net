@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 			Transaction trans1 = NewTransaction();
 			Transaction trans2 = NewTransaction();
-			IObjectSet os = QueryItems(trans1);
 			DeleteItemAndCommit(trans2, "foo");
+			IObjectSet os = QueryItems(trans1);
 			AssertItems(new string[] { "bar", "baz" }, os);
 		}
 

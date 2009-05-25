@@ -45,5 +45,7 @@ namespace Db4objects.Db4o.Internal.CS
 		CallbackObjectInfoCollections CommittedInfo();
 
 		Db4objects.Db4o.Internal.CS.ClassInfoHelper ClassInfoHelper();
+
+		event System.EventHandler<MessageEventArgs> MessageReceived;
 	}
 }

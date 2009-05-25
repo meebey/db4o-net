@@ -84,6 +84,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected virtual int[] MapToObjectIds(IQuery itemQuery, int[] foos)
 		{
+			Transaction trans = TransactionFromQuery(itemQuery);
 			int[] lookingFor = IntArrays4.Clone(foos);
 			int[] objectIds = new int[foos.Length];
 			IObjectSet set = itemQuery.Execute();
@@ -95,7 +96,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 					if (lookingFor[i] == item.GetFoo())
 					{
 						lookingFor[i] = -1;
-						objectIds[i] = (int)Db().GetID(item);
+						objectIds[i] = (int)((ObjectContainerBase)Db()).GetID(trans, item);
 						break;
 					}
 				}
@@ -134,13 +135,13 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			ExpectingVisitor visitor = ExpectingVisitor.CreateExpectingVisitor(expectedValues
 				);
-			treeInt.Traverse(new _IVisitor4_116(visitor));
+			treeInt.Traverse(new _IVisitor4_117(visitor));
 			visitor.AssertExpectations();
 		}
 
-		private sealed class _IVisitor4_116 : IVisitor4
+		private sealed class _IVisitor4_117 : IVisitor4
 		{
-			public _IVisitor4_116(ExpectingVisitor visitor)
+			public _IVisitor4_117(ExpectingVisitor visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -151,6 +152,11 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 
 			private readonly ExpectingVisitor visitor;
+		}
+
+		protected virtual Transaction TransactionFromQuery(IQuery query)
+		{
+			return ((QQuery)query).GetTransaction();
 		}
 	}
 }

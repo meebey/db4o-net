@@ -67,8 +67,8 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		private sealed class _MappingIterator_56 : MappingIterator
 		{
-			public _MappingIterator_56(AbstractQueryResult _enclosing, IIntIterator4 baseArg1
-				) : base(baseArg1)
+			public _MappingIterator_56(AbstractQueryResult _enclosing, IEnumerator baseArg1) : 
+				base(baseArg1)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -177,8 +177,8 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			throw new NotImplementedException();
 		}
 
-		/// <param name="r"></param>
-		public virtual void LoadFromIdReader(ByteArrayBuffer r)
+		/// <param name="ids"></param>
+		public virtual void LoadFromIdReader(IEnumerator ids)
 		{
 			throw new NotImplementedException();
 		}

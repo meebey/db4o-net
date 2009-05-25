@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public static object My(Type service)
 		{
-			IEnvironment environment = ((IEnvironment)_current.Value);
+			IEnvironment environment = Current();
 			if (null == environment)
 			{
 				throw new InvalidOperationException();
@@ -22,30 +22,123 @@ namespace Db4objects.Db4o.Foundation
 			return environment.Provide(service);
 		}
 
+		private static IEnvironment Current()
+		{
+			return ((IEnvironment)_current.Value);
+		}
+
 		public static void RunWith(IEnvironment environment, IRunnable runnable)
 		{
 			_current.With(environment, runnable);
 		}
 
-		public static IEnvironment NewConventionBasedEnvironment()
+		public static IEnvironment NewClosedEnvironment(object[] bindings)
 		{
-			return new Environments.ConventionBasedEnvironment();
+			return new _IEnvironment_31(bindings);
 		}
 
-		private sealed class ConventionBasedEnvironment : IEnvironment
+		private sealed class _IEnvironment_31 : IEnvironment
 		{
-			private readonly IDictionary _bindings = new Hashtable();
+			public _IEnvironment_31(object[] bindings)
+			{
+				this.bindings = bindings;
+			}
 
 			public object Provide(Type service)
 			{
-				object existing = _bindings[service];
+				for (int bindingIndex = 0; bindingIndex < bindings.Length; ++bindingIndex)
+				{
+					object binding = bindings[bindingIndex];
+					if (service.IsInstanceOfType(binding))
+					{
+						return (object)binding;
+					}
+				}
+				return null;
+			}
+
+			private readonly object[] bindings;
+		}
+
+		public static IEnvironment NewCachingEnvironmentFor(IEnvironment environment)
+		{
+			return new _IEnvironment_47(environment);
+		}
+
+		private sealed class _IEnvironment_47 : IEnvironment
+		{
+			public _IEnvironment_47(IEnvironment environment)
+			{
+				this.environment = environment;
+				this._bindings = new Hashtable();
+			}
+
+			private readonly IDictionary _bindings;
+
+			public object Provide(Type service)
+			{
+				object existing = this._bindings[service];
 				if (null != existing)
 				{
 					return (object)existing;
 				}
-				object binding = Resolve(service);
-				_bindings[service] = binding;
+				object binding = environment.Provide(service);
+				if (null == binding)
+				{
+					return null;
+				}
+				this._bindings[service] = binding;
 				return binding;
+			}
+
+			private readonly IEnvironment environment;
+		}
+
+		public static IEnvironment NewConventionBasedEnvironment(object[] bindings)
+		{
+			return NewCachingEnvironmentFor(Compose(new IEnvironment[] { NewClosedEnvironment
+				(bindings), new Environments.ConventionBasedEnvironment() }));
+		}
+
+		public static IEnvironment NewConventionBasedEnvironment()
+		{
+			return NewCachingEnvironmentFor(new Environments.ConventionBasedEnvironment());
+		}
+
+		public static IEnvironment Compose(IEnvironment[] environments)
+		{
+			return new _IEnvironment_74(environments);
+		}
+
+		private sealed class _IEnvironment_74 : IEnvironment
+		{
+			public _IEnvironment_74(IEnvironment[] environments)
+			{
+				this.environments = environments;
+			}
+
+			public object Provide(Type service)
+			{
+				for (int eIndex = 0; eIndex < environments.Length; ++eIndex)
+				{
+					IEnvironment e = environments[eIndex];
+					object binding = e.Provide(service);
+					if (null != binding)
+					{
+						return binding;
+					}
+				}
+				return null;
+			}
+
+			private readonly IEnvironment[] environments;
+		}
+
+		private sealed class ConventionBasedEnvironment : IEnvironment
+		{
+			public object Provide(Type service)
+			{
+				return Resolve(service);
 			}
 
 			/// <summary>

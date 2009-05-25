@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public virtual bool IsDeleted()
 		{
-			return IsSetPointer() && (_newSlot.Address() == 0);
+			return IsSetPointer() && _newSlot.IsNull();
 		}
 
 		public virtual bool IsNew()

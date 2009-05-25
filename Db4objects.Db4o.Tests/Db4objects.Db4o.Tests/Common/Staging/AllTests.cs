@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Staging;
 
 namespace Db4objects.Db4o.Tests.Common.Staging
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -15,10 +15,17 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ActivateDepthTestCase), typeof(ClientServerPingTestCase
-				), typeof(InterfaceQueryTestCase), typeof(LazyQueryDeleteTestCase), typeof(PingTestCase
-				), typeof(SODAClassTypeDescend), typeof(StoredClassUnknownClassQueryTestCase) };
+			return ComposeTests(new Type[] { typeof(ActivateDepthTestCase), typeof(InterfaceQueryTestCase
+				), typeof(LazyQueryDeleteTestCase), typeof(SODAClassTypeDescend), typeof(StoredClassUnknownClassQueryTestCase
+				) });
 		}
+
 		// COR-1131
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(ClientServerPingTestCase), typeof(PingTestCase) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

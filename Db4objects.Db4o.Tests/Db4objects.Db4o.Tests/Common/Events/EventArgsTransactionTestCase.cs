@@ -20,8 +20,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			IEventRegistry factory = EventRegistryFactory.ForObjectContainer(Db());
 			BooleanByRef called = new BooleanByRef();
 			ObjectByRef foundTrans = new ObjectByRef();
-			factory.Creating += new Db4objects.Db4o.Events.CancellableObjectEventHandler(new 
-				_IEventListener4_20(called, foundTrans).OnEvent);
+			factory.Creating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+				(new _IEventListener4_20(called, foundTrans).OnEvent);
 			Db().Store(new EventArgsTransactionTestCase.Item());
 			Db().Commit();
 			Assert.IsTrue(called.value);

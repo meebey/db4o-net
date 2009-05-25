@@ -77,18 +77,18 @@ namespace Db4objects.Db4o.Internal
 			int cmp = _key - a_key;
 			if (cmp < 0)
 			{
-				if (_subsequent != null)
+				if (((Tree)_subsequent) != null)
 				{
-					return ((Db4objects.Db4o.Internal.TreeInt)_subsequent).Find(a_key);
+					return ((Db4objects.Db4o.Internal.TreeInt)((Tree)_subsequent)).Find(a_key);
 				}
 			}
 			else
 			{
 				if (cmp > 0)
 				{
-					if (_preceding != null)
+					if (((Tree)_preceding) != null)
 					{
-						return ((Db4objects.Db4o.Internal.TreeInt)_preceding).Find(a_key);
+						return ((Db4objects.Db4o.Internal.TreeInt)((Tree)_preceding)).Find(a_key);
 					}
 				}
 				else
@@ -155,10 +155,10 @@ namespace Db4objects.Db4o.Internal
 		internal virtual QCandidate ToQCandidate(QCandidates candidates)
 		{
 			QCandidate qc = new QCandidate(candidates, null, _key);
-			qc._preceding = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)_preceding, candidates
-				);
-			qc._subsequent = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)_subsequent, candidates
-				);
+			qc._preceding = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)((Tree)_preceding)
+				, candidates);
+			qc._subsequent = ToQCandidate((Db4objects.Db4o.Internal.TreeInt)((Tree)_subsequent
+				), candidates);
 			qc._size = _size;
 			return qc;
 		}

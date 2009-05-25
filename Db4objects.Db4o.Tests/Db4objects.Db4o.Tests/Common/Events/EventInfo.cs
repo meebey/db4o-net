@@ -6,10 +6,17 @@ namespace Db4objects.Db4o.Tests.Common.Events
 {
 	internal class EventInfo
 	{
-		public EventInfo(string eventFirerName, IProcedure4 eventListenerSetter)
+		public EventInfo(string eventFirerName, IProcedure4 eventListenerSetter) : this(eventFirerName
+			, true, eventListenerSetter)
+		{
+		}
+
+		public EventInfo(string eventFirerName, bool isClientServerEvent, IProcedure4 eventListenerSetter
+			)
 		{
 			_listenerSetter = eventListenerSetter;
 			_eventFirerName = eventFirerName;
+			_isClientServerEvent = isClientServerEvent;
 		}
 
 		public virtual IProcedure4 ListenerSetter()
@@ -22,8 +29,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			return _eventFirerName;
 		}
 
+		public virtual bool IsClientServerEvent()
+		{
+			return _isClientServerEvent;
+		}
+
 		private readonly IProcedure4 _listenerSetter;
 
 		private readonly string _eventFirerName;
+
+		private readonly bool _isClientServerEvent;
 	}
 }

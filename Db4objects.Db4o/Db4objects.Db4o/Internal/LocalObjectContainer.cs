@@ -20,6 +20,7 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public abstract class LocalObjectContainer : ExternalObjectContainer, IInternalObjectContainer
+		, IEmbeddedObjectContainer
 	{
 		private const int DefaultFreespaceId = 0;
 
@@ -152,14 +153,13 @@ namespace Db4objects.Db4o.Internal
 			return new HybridQueryResult(trans, mode);
 		}
 
-		public sealed override bool Delete4(Transaction ta, ObjectReference yo, int a_cascade
-			, bool userCall)
+		public sealed override bool Delete4(Transaction ta, ObjectReference yo, object obj
+			, int a_cascade, bool userCall)
 		{
 			int id = yo.GetID();
 			StatefulBuffer reader = ReadWriterByID(ta, id);
 			if (reader != null)
 			{
-				object obj = yo.GetObject();
 				if (obj != null)
 				{
 					if ((!ShowInternalClasses()) && Const4.ClassInternal.IsAssignableFrom(obj.GetType
@@ -171,7 +171,6 @@ namespace Db4objects.Db4o.Internal
 				reader.SetCascadeDeletes(a_cascade);
 				reader.SlotDelete();
 				ClassMetadata yc = yo.ClassMetadata();
-				// FIXME: What if obj is null here ?
 				yc.Delete(reader, obj);
 				return true;
 			}
@@ -184,7 +183,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Free(Slot slot)
 		{
-			if (slot.Address() == 0)
+			if (slot.IsNull())
 			{
 				return;
 			}
@@ -224,14 +223,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _IVisitor4_208(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_204(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _IVisitor4_208 : IVisitor4
+		private sealed class _IVisitor4_204 : IVisitor4
 		{
-			public _IVisitor4_208(LocalObjectContainer _enclosing)
+			public _IVisitor4_204(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -494,9 +493,9 @@ namespace Db4objects.Db4o.Internal
 			return ReadWriterByID(a_ta, a_id, false);
 		}
 
-		public override StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] ids)
+		public override ByteArrayBuffer[] ReadSlotBuffers(Transaction a_ta, int[] ids)
 		{
-			StatefulBuffer[] yapWriters = new StatefulBuffer[ids.Length];
+			ByteArrayBuffer[] yapWriters = new ByteArrayBuffer[ids.Length];
 			for (int i = 0; i < ids.Length; ++i)
 			{
 				if (ids[i] == 0)
@@ -505,7 +504,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					yapWriters[i] = (StatefulBuffer)ReadReaderOrWriterByID(a_ta, ids[i], false);
+					yapWriters[i] = ReadReaderOrWriterByID(a_ta, ids[i], true);
 				}
 			}
 			return yapWriters;
@@ -544,6 +543,14 @@ namespace Db4objects.Db4o.Internal
 			return ReadReaderOrWriterBySlot(a_ta, a_id, useReader, slot);
 		}
 
+		public virtual ByteArrayBuffer ReadSlotBuffer(Slot slot)
+		{
+			ByteArrayBuffer reader = new ByteArrayBuffer(slot.Length());
+			reader.ReadEncrypt(this, slot.Address());
+			reader.Skip(0);
+			return reader;
+		}
+
 		internal virtual ByteArrayBuffer ReadReaderOrWriterBySlot(Transaction a_ta, int a_id
 			, bool useReader, Slot slot)
 		{
@@ -551,7 +558,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			if (slot.Address() == 0)
+			if (slot.IsNull())
 			{
 				return null;
 			}
@@ -707,15 +714,15 @@ namespace Db4objects.Db4o.Internal
 				Hashtable4 semaphores = i_semaphores;
 				lock (semaphores)
 				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_617(semaphores), ta);
+					semaphores.ForEachKeyForIdentity(new _IVisitor4_619(semaphores), ta);
 					Sharpen.Runtime.NotifyAll(semaphores);
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_617 : IVisitor4
+		private sealed class _IVisitor4_619 : IVisitor4
 		{
-			public _IVisitor4_617(Hashtable4 semaphores)
+			public _IVisitor4_619(Hashtable4 semaphores)
 			{
 				this.semaphores = semaphores;
 			}
@@ -957,13 +964,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_815(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_817(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_815 : IVisitor4
+		private sealed class _IVisitor4_817 : IVisitor4
 		{
-			public _IVisitor4_815(IntArrayList ids)
+			public _IVisitor4_817(IntArrayList ids)
 			{
 				this.ids = ids;
 			}
@@ -976,7 +983,7 @@ namespace Db4objects.Db4o.Internal
 			private readonly IntArrayList ids;
 		}
 
-		public override IQueryResult ClassOnlyQuery(Transaction trans, ClassMetadata clazz
+		public override IQueryResult ClassOnlyQuery(QQueryBase query, ClassMetadata clazz
 			)
 		{
 			if (!clazz.HasClassIndex())
@@ -987,7 +994,7 @@ namespace Db4objects.Db4o.Internal
 				//       processing needs to take place?
 				return null;
 			}
-			AbstractQueryResult queryResult = NewQueryResult(trans);
+			AbstractQueryResult queryResult = NewQueryResult(query.GetTransaction());
 			queryResult.LoadFromClassIndex(clazz);
 			return queryResult;
 		}
@@ -1015,6 +1022,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				return clazz.IndexEntryCount(trans);
 			}
+		}
+
+		public virtual IObjectContainer OpenSession()
+		{
+			return new ObjectContainerSession(this);
 		}
 	}
 }

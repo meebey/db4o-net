@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return HeaderAttributes().IsNull(fieldIndex);
 		}
 
-		public sealed override int HandlerVersion()
+		public override int HandlerVersion()
 		{
 			return _objectHeader.HandlerVersion();
 		}

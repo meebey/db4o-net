@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MReadSlot : MsgD, IServerSideMessage
+	public sealed class MReadSlot : MsgD, IMessageWithResponse
 	{
 		public sealed override ByteArrayBuffer GetByteLoad()
 		{

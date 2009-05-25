@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			IExtObjectContainer container = Db();
 			LocalObjectContainer session = FileSession();
 			Collection4 actual = new Collection4();
-			EventRegistry().Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler
+			EventRegistry().Closing += new System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>
 				(new _IEventListener4_20(actual).OnEvent);
 			Fixture().Close();
 			if (IsEmbeddedClientServer())

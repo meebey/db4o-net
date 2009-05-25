@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
 using Sharpen;
@@ -230,26 +229,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				SetID(Const4.IgnoreId);
 			}
-		}
-
-		public void WriteIDs(IIntIterator4 idIterator, int maxCount)
-		{
-			int savedOffset = _offset;
-			WriteInt(0);
-			int actualCount = 0;
-			while (idIterator.MoveNext())
-			{
-				WriteInt(idIterator.CurrentInt());
-				actualCount++;
-				if (actualCount >= maxCount)
-				{
-					break;
-				}
-			}
-			int secondSavedOffset = _offset;
-			_offset = savedOffset;
-			WriteInt(actualCount);
-			_offset = secondSavedOffset;
 		}
 
 		public Db4objects.Db4o.Internal.Slots.Slot Slot()

@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Header;
 
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -15,8 +15,15 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(OldHeaderTest), typeof(ConfigurationSettingsTestCase), 
-				typeof(IdentityTestCase), typeof(SimpleTimeStampIdTestCase) };
+			return ComposeTests(new Type[] { typeof(ConfigurationSettingsTestCase), typeof(IdentityTestCase
+				), typeof(SimpleTimeStampIdTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(OldHeaderTest) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

@@ -220,18 +220,62 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			int savedOffSet = context.Offset();
-			ITypeHandler4 typeHandler = ReadTypeHandler(context, payloadOffset);
-			if (typeHandler == null)
+			try
+			{
+				ITypeHandler4 typeHandler = ReadTypeHandler(context, payloadOffset);
+				if (typeHandler == null)
+				{
+					return;
+				}
+				SeekSecondaryOffset(context, typeHandler);
+				if (IsPlainObject(typeHandler))
+				{
+					readContext.Collector().AddId(readContext.ReadInt());
+					return;
+				}
+				CollectIdContext collectIdContext = new _CollectIdContext_190(readContext, readContext
+					.Transaction(), readContext.Collector(), null, readContext.Buffer());
+				Handlers4.CollectIdsInternal(collectIdContext, context.Container().Handlers().CorrectHandlerVersion
+					(typeHandler, context.HandlerVersion()), 0, false);
+			}
+			finally
 			{
 				context.Seek(savedOffSet);
-				return;
 			}
-			SeekSecondaryOffset(context, typeHandler);
-			CollectIdContext collectIdContext = new CollectIdContext(readContext.Transaction(
-				), readContext.Collector(), null, readContext.Buffer());
-			Handlers4.CollectIdsInternal(collectIdContext, context.Container().Handlers().CorrectHandlerVersion
-				(typeHandler, context.HandlerVersion()), 0);
-			context.Seek(savedOffSet);
+		}
+
+		private sealed class _CollectIdContext_190 : CollectIdContext
+		{
+			public _CollectIdContext_190(QueryingReadContext readContext, Transaction baseArg1
+				, IdObjectCollector baseArg2, ObjectHeader baseArg3, IReadBuffer baseArg4) : base
+				(baseArg1, baseArg2, baseArg3, baseArg4)
+			{
+				this.readContext = readContext;
+			}
+
+			public override int HandlerVersion()
+			{
+				return readContext.HandlerVersion();
+			}
+
+			public override SlotFormat SlotFormat()
+			{
+				return new _SlotFormatCurrent_196();
+			}
+
+			private sealed class _SlotFormatCurrent_196 : SlotFormatCurrent
+			{
+				public _SlotFormatCurrent_196()
+				{
+				}
+
+				public override bool IsIndirectedWithinSlot(ITypeHandler4 handler)
+				{
+					return false;
+				}
+			}
+
+			private readonly QueryingReadContext readContext;
 		}
 
 		public virtual ITypeHandler4 ReadTypeHandlerRestoreOffset(IInternalReadContext context

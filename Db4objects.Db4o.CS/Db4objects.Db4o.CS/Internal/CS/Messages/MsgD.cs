@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System.Collections;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.CS.Messages;
@@ -41,6 +43,13 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 			return msg;
 		}
 
+		public MsgD GetWriterForBuffer(Transaction trans, ByteArrayBuffer buffer)
+		{
+			MsgD writer = GetWriterForLength(trans, buffer.Length());
+			writer.WriteBytes(buffer._buffer);
+			return writer;
+		}
+
 		public MsgD GetWriterForLength(Transaction trans, int length)
 		{
 			MsgD message = (MsgD)PublicClone();
@@ -76,11 +85,18 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public MsgD GetWriterForIntArray(Transaction a_trans, int[] ints, int length)
 		{
-			MsgD message = GetWriterForLength(a_trans, Const4.IntLength * (length + 1));
+			return GetWriterForIntSequence(a_trans, length, IntIterators.ForInts(ints, length
+				));
+		}
+
+		public virtual MsgD GetWriterForIntSequence(Transaction trans, int length, IEnumerator
+			 iterator)
+		{
+			MsgD message = GetWriterForLength(trans, Const4.IntLength * (length + 1));
 			message.WriteInt(length);
-			for (int i = 0; i < length; i++)
+			while (iterator.MoveNext())
 			{
-				message.WriteInt(ints[i]);
+				message.WriteInt(((int)iterator.Current));
 			}
 			return message;
 		}
@@ -181,7 +197,6 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public void WriteBytes(byte[] aBytes)
 		{
-			WriteInt(aBytes.Length);
 			_payLoad.Append(aBytes);
 		}
 

@@ -14,7 +14,7 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class IoAdaptedObjectContainer : LocalObjectContainer
+	public class IoAdaptedObjectContainer : LocalObjectContainer, IEmbeddedObjectContainer
 	{
 		private readonly string _fileName;
 

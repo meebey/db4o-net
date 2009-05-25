@@ -26,15 +26,21 @@ namespace Db4objects.Db4o.Config
 		/// <param name="prefetchIDCount">The number of IDs to be prefetched</param>
 		void PrefetchIDCount(int prefetchIDCount);
 
-		/// <summary>Sets the number of objects to be prefetched for an ObjectSet in C/S mode.
-		/// 	</summary>
+		/// <summary>Sets the number of objects to be prefetched for an ObjectSet.</summary>
 		/// <remarks>
-		/// Sets the number of objects to be prefetched for an ObjectSet in C/S mode.
-		/// This setting should be used on the server side. In embedded mode this setting
-		/// has no effect.
+		/// Sets the number of objects to be prefetched for an ObjectSet.
+		/// This setting should be used on the server side.
 		/// </remarks>
 		/// <param name="prefetchObjectCount">The number of objects to be prefetched</param>
 		void PrefetchObjectCount(int prefetchObjectCount);
+
+		/// <summary>Sets the depth to which prefetched objects are activated.</summary>
+		/// <remarks>
+		/// Sets the depth to which prefetched objects are activated.
+		/// This setting should be used on the client side.
+		/// </remarks>
+		/// <param name="prefetchDepth"></param>
+		void PrefetchDepth(int prefetchDepth);
 
 		/// <summary>sets the MessageRecipient to receive Client Server messages.</summary>
 		/// <remarks>

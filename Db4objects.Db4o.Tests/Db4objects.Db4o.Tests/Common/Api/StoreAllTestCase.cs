@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -67,7 +68,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			}
 			ClientObjectContainer clientObjectContainer = (ClientObjectContainer)Container();
 			ArrayList messages = new ArrayList();
-			ClientObjectContainer.IMessageListener listener = new _IMessageListener_62(messages
+			ClientObjectContainer.IMessageListener listener = new _IMessageListener_65(messages
 				);
 			Db().Store(new StoreAllTestCase.Item(0));
 			// class creation
@@ -77,9 +78,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			Assert.AreEqual(1, messages.Count);
 		}
 
-		private sealed class _IMessageListener_62 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_65 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_62(ArrayList messages)
+			public _IMessageListener_65(ArrayList messages)
 			{
 				this.messages = messages;
 			}
@@ -100,3 +101,4 @@ namespace Db4objects.Db4o.Tests.Common.Api
 		}
 	}
 }
+#endif // !SILVERLIGHT

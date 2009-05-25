@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MGetThreadID : Msg, IServerSideMessage
+	public class MGetThreadID : Msg, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{

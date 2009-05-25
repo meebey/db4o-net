@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 0
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Activated += new Db4objects.Db4o.Events.ObjectEventHandler
+				((IEventRegistry)eventRegistry).Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 					(new _IEventListener4_16().OnEvent);
 			}
 
@@ -32,7 +32,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 				}
 
-				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+					)
 				{
 					throw new NotImplementedException();
 				}
@@ -48,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 1
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+				((IEventRegistry)eventRegistry).Activating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 					(new _IEventListener4_25().OnEvent);
 			}
 
@@ -75,7 +76,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 2
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Deleted += new Db4objects.Db4o.Events.ObjectEventHandler
+				((IEventRegistry)eventRegistry).Deleted += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 					(new _IEventListener4_34().OnEvent);
 			}
 
@@ -85,7 +86,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 				}
 
-				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+					)
 				{
 					throw new NotImplementedException();
 				}
@@ -101,7 +103,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 3
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+				((IEventRegistry)eventRegistry).Deleting += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 					(new _IEventListener4_44().OnEvent);
 			}
 
@@ -128,7 +130,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 4
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Committing += new Db4objects.Db4o.Events.CommitEventHandler
+				((IEventRegistry)eventRegistry).Committing += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
 					(new _IEventListener4_53().OnEvent);
 			}
 
@@ -161,7 +163,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 5
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Committed += new Db4objects.Db4o.Events.CommitEventHandler
+				((IEventRegistry)eventRegistry).Committed += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
 					(new _IEventListener4_67().OnEvent);
 			}
 
@@ -194,7 +196,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 6
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Creating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+				((IEventRegistry)eventRegistry).Creating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 					(new _IEventListener4_81().OnEvent);
 			}
 
@@ -221,7 +223,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 7
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Created += new Db4objects.Db4o.Events.ObjectEventHandler
+				((IEventRegistry)eventRegistry).Created += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 					(new _IEventListener4_91().OnEvent);
 			}
 
@@ -231,7 +233,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 				}
 
-				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+					)
 				{
 					throw new NotImplementedException();
 				}
@@ -247,7 +250,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 8
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler
+				((IEventRegistry)eventRegistry).Instantiated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 					(new _IEventListener4_100().OnEvent);
 			}
 
@@ -257,7 +260,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 				}
 
-				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+					)
 				{
 					throw new NotImplementedException();
 				}
@@ -273,7 +277,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 9
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Updating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+				((IEventRegistry)eventRegistry).Updating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 					(new _IEventListener4_109().OnEvent);
 			}
 
@@ -300,7 +304,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 10
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
+				((IEventRegistry)eventRegistry).Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 					(new _IEventListener4_118().OnEvent);
 			}
 
@@ -310,7 +314,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 				}
 
-				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+					)
 				{
 					throw new NotImplementedException();
 				}
@@ -326,7 +331,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 11
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).QueryStarted += new Db4objects.Db4o.Events.QueryEventHandler
+				((IEventRegistry)eventRegistry).QueryStarted += new System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>
 					(new _IEventListener4_128().OnEvent);
 			}
 
@@ -352,7 +357,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			// 12
 			public void Apply(object eventRegistry)
 			{
-				((IEventRegistry)eventRegistry).QueryFinished += new Db4objects.Db4o.Events.QueryEventHandler
+				((IEventRegistry)eventRegistry).QueryFinished += new System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>
 					(new _IEventListener4_137().OnEvent);
 			}
 
@@ -371,12 +376,13 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		internal static readonly IFixtureProvider EventProvider = new SimpleFixtureProvider
 			(EventSelector, new EventInfo[] { new EventInfo("query", new _IProcedure4_14()), 
-			new EventInfo("query", new _IProcedure4_23()), new EventInfo("delete", new _IProcedure4_32
-			()), new EventInfo("delete", new _IProcedure4_42()), new EventInfo("insert", new 
-			_IProcedure4_51()), new EventInfo("insert", new _IProcedure4_65()), new EventInfo
-			("insert", new _IProcedure4_79()), new EventInfo("insert", new _IProcedure4_89()
-			), new EventInfo("query", new _IProcedure4_98()), new EventInfo("update", new _IProcedure4_107
-			()), new EventInfo("update", new _IProcedure4_116()), new EventInfo("query", new 
-			_IProcedure4_126()), new EventInfo("query", new _IProcedure4_135()) });
+			new EventInfo("query", new _IProcedure4_23()), new EventInfo("delete", false, new 
+			_IProcedure4_32()), new EventInfo("delete", false, new _IProcedure4_42()), new EventInfo
+			("insert", false, new _IProcedure4_51()), new EventInfo("insert", false, new _IProcedure4_65
+			()), new EventInfo("insert", new _IProcedure4_79()), new EventInfo("insert", new 
+			_IProcedure4_89()), new EventInfo("query", new _IProcedure4_98()), new EventInfo
+			("update", new _IProcedure4_107()), new EventInfo("update", new _IProcedure4_116
+			()), new EventInfo("query", new _IProcedure4_126()), new EventInfo("query", new 
+			_IProcedure4_135()) });
 	}
 }

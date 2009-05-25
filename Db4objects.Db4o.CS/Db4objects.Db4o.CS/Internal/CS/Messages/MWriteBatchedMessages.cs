@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MWriteBatchedMessages : MsgD, IServerSideMessage
+	public class MWriteBatchedMessages : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{

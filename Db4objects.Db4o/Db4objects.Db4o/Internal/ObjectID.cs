@@ -9,13 +9,49 @@ namespace Db4objects.Db4o.Internal
 	{
 		public readonly int _id;
 
-		public static readonly Db4objects.Db4o.Internal.ObjectID IsNull = new Db4objects.Db4o.Internal.ObjectID
+		private sealed class _ObjectID_15 : Db4objects.Db4o.Internal.ObjectID
+		{
+			public _ObjectID_15(int baseArg1) : base(baseArg1)
+			{
+			}
+
+			public override string ToString()
+			{
+				return "ObjectID.IS_NULL";
+			}
+		}
+
+		public static readonly Db4objects.Db4o.Internal.ObjectID IsNull = new _ObjectID_15
 			(-1);
 
-		public static readonly Db4objects.Db4o.Internal.ObjectID NotPossible = new Db4objects.Db4o.Internal.ObjectID
+		private sealed class _ObjectID_21 : Db4objects.Db4o.Internal.ObjectID
+		{
+			public _ObjectID_21(int baseArg1) : base(baseArg1)
+			{
+			}
+
+			public override string ToString()
+			{
+				return "ObjectID.NOT_POSSIBLE";
+			}
+		}
+
+		public static readonly Db4objects.Db4o.Internal.ObjectID NotPossible = new _ObjectID_21
 			(-2);
 
-		public static readonly Db4objects.Db4o.Internal.ObjectID Ignore = new Db4objects.Db4o.Internal.ObjectID
+		private sealed class _ObjectID_27 : Db4objects.Db4o.Internal.ObjectID
+		{
+			public _ObjectID_27(int baseArg1) : base(baseArg1)
+			{
+			}
+
+			public override string ToString()
+			{
+				return "ObjectID.IGNORE";
+			}
+		}
+
+		public static readonly Db4objects.Db4o.Internal.ObjectID Ignore = new _ObjectID_27
 			(-3);
 
 		public ObjectID(int id)
@@ -34,6 +70,11 @@ namespace Db4objects.Db4o.Internal
 			int id = context.ReadInt();
 			return id == 0 ? Db4objects.Db4o.Internal.ObjectID.IsNull : new Db4objects.Db4o.Internal.ObjectID
 				(id);
+		}
+
+		public override string ToString()
+		{
+			return "ObjectID(" + _id + ")";
 		}
 	}
 }

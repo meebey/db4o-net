@@ -1,17 +1,17 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
-	public class TranslatedDefragTestCase : ITestLifeCycle
+	public class TranslatedDefragTestCase : Db4oTestWithTempFile
 	{
 		private static readonly string TranslatedName = "A";
 
@@ -50,8 +50,6 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		private static readonly string Filename = Path.GetTempFileName();
-
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void TestDefragWithTranslator()
 		{
@@ -75,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		/// <exception cref="System.IO.IOException"></exception>
 		private void Defragment(bool registerTranslator)
 		{
-			DefragmentConfig defragConfig = new DefragmentConfig(Filename);
+			DefragmentConfig defragConfig = new DefragmentConfig(TempFile());
 			defragConfig.Db4oConfig(Config(registerTranslator));
 			defragConfig.ForceBackupDelete(true);
 			Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig);
@@ -101,37 +99,20 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		private IObjectContainer OpenDatabase()
 		{
-			return Db4oFactory.OpenFile(Config(true), Filename);
+			return Db4oEmbedded.OpenFile(Config(true), TempFile());
 		}
 
-		private IConfiguration Config(bool registerTranslator)
+		private IEmbeddedConfiguration Config(bool registerTranslator)
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ReflectWith(Platform4.ReflectorForType(typeof(TranslatedDefragTestCase.Translated
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.Common.ReflectWith(Platform4.ReflectorForType(typeof(TranslatedDefragTestCase.Translated
 				)));
 			if (registerTranslator)
 			{
-				config.ObjectClass(typeof(TranslatedDefragTestCase.Translated)).Translate(new TranslatedDefragTestCase.TranslatedTranslator
-					());
+				config.Common.ObjectClass(typeof(TranslatedDefragTestCase.Translated)).Translate(
+					new TranslatedDefragTestCase.TranslatedTranslator());
 			}
 			return config;
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
-		{
-			DeleteDatabaseFile();
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
-		{
-			DeleteDatabaseFile();
-		}
-
-		private void DeleteDatabaseFile()
-		{
-			new Sharpen.IO.File(Filename).Delete();
 		}
 	}
 }

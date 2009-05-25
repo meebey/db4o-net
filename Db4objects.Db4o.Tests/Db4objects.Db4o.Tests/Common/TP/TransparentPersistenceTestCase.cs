@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		private Collection4 CommitCapturingUpdatedObjects(IExtObjectContainer container)
 		{
 			Collection4 updated = new Collection4();
-			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
+			EventRegistryFor(container).Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 				(new _IEventListener4_107(updated).OnEvent);
 			container.Commit();
 			return updated;
@@ -132,7 +132,8 @@ namespace Db4objects.Db4o.Tests.Common.TP
 				this.updated = updated;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				ObjectEventArgs objectArgs = (ObjectEventArgs)args;
 				updated.Add(objectArgs.Object);

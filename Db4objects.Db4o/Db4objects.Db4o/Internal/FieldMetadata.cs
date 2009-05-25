@@ -421,7 +421,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
 				());
-			Handlers4.CollectIdsInternal(context, handler, LinkLength());
+			Handlers4.CollectIdsInternal(context, handler, LinkLength(), true);
 		}
 
 		internal virtual void Configure(IReflectClass clazz, bool isPrimitive)

@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MSetSemaphore : MsgD, IServerSideMessage
+	public sealed class MSetSemaphore : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{

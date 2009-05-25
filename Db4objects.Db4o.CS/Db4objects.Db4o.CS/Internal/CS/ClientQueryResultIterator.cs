@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.Query.Result;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS
 {
@@ -83,10 +84,27 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private void Prefetch()
 		{
-			EnsureObjectCacheAllocated(PrefetchCount());
-			_remainingObjects = _prefetchingStrategy.PrefetchObjects(Stream(), _ids, _prefetchedObjects
-				, PrefetchCount());
-			_prefetchRight = _remainingObjects;
+			_client.Stream().WithEnvironment(new _IRunnable_67(this));
+		}
+
+		private sealed class _IRunnable_67 : IRunnable
+		{
+			public _IRunnable_67(ClientQueryResultIterator _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				this._enclosing.EnsureObjectCacheAllocated(this._enclosing.PrefetchCount());
+				this._enclosing._remainingObjects = Db4objects.Db4o.Internal.CS.ClientQueryResultIterator
+					._prefetchingStrategy.PrefetchObjects(this._enclosing.Stream(), this._enclosing.
+					_client.Transaction(), this._enclosing._ids, this._enclosing._prefetchedObjects, 
+					this._enclosing.PrefetchCount());
+				this._enclosing._prefetchRight = this._enclosing._remainingObjects;
+			}
+
+			private readonly ClientQueryResultIterator _enclosing;
 		}
 
 		private int PrefetchCount()

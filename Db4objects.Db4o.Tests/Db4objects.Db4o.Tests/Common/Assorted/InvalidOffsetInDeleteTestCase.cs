@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class InvalidOffsetInDeleteTestCase : TestWithTempFile, IDiagnosticListener
+	public class InvalidOffsetInDeleteTestCase : Db4oTestWithTempFile, IDiagnosticListener
 	{
 		public class Item : InvalidOffsetInDeleteTestCase.Parent
 		{
@@ -24,18 +24,18 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void Test()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
+			IEmbeddedConfiguration config = NewConfiguration();
 			Configure(config);
-			IObjectContainer objectContainer = Db4oFactory.OpenFile(config, TempFile());
+			IObjectContainer objectContainer = Db4oEmbedded.OpenFile(config, TempFile());
 			InvalidOffsetInDeleteTestCase.Item item = new InvalidOffsetInDeleteTestCase.Item(
 				);
 			item._itemName = "item";
 			item._parentName = "parent";
 			objectContainer.Store(item);
 			objectContainer.Close();
-			config = Db4oFactory.NewConfiguration();
+			config = NewConfiguration();
 			Configure(config);
-			objectContainer = Db4oFactory.OpenFile(config, TempFile());
+			objectContainer = Db4oEmbedded.OpenFile(config, TempFile());
 			IQuery query = objectContainer.Query();
 			query.Constrain(typeof(InvalidOffsetInDeleteTestCase.Item));
 			IObjectSet objectSet = query.Execute();
@@ -44,15 +44,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			objectContainer.Close();
 		}
 
-		private void Configure(IConfiguration config)
+		private void Configure(IEmbeddedConfiguration config)
 		{
-			config.Diagnostic().AddListener(this);
-			config.GenerateVersionNumbers(ConfigScope.Globally);
-			config.GenerateUUIDs(ConfigScope.Globally);
-			config.ObjectClass(typeof(InvalidOffsetInDeleteTestCase.Item)).ObjectField("_itemName"
-				).Indexed(true);
-			config.ObjectClass(typeof(InvalidOffsetInDeleteTestCase.Parent)).ObjectField("_parentName"
-				).Indexed(true);
+			config.Common.Diagnostic.AddListener(this);
+			config.File.GenerateVersionNumbers = ConfigScope.Globally;
+			config.File.GenerateUUIDs = ConfigScope.Globally;
+			config.Common.ObjectClass(typeof(InvalidOffsetInDeleteTestCase.Item)).ObjectField
+				("_itemName").Indexed(true);
+			config.Common.ObjectClass(typeof(InvalidOffsetInDeleteTestCase.Parent)).ObjectField
+				("_parentName").Indexed(true);
 		}
 
 		public virtual void OnDiagnostic(IDiagnostic d)

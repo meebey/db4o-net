@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Collections
 	{
 		public virtual void Apply(IInternalObjectContainer db)
 		{
-			EventRegistry(db).Updating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+			EventRegistry(db).Updating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 				(new _IEventListener4_19().OnEvent);
 		}
 

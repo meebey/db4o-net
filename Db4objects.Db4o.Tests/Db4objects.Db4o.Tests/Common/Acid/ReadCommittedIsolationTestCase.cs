@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System;
 using System.Collections;
 using Db4oUnit;
@@ -130,13 +131,13 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		private void RegisterPushedUpdates(IExtObjectContainer client)
 		{
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(client);
-			eventRegistry.Committed += new Db4objects.Db4o.Events.CommitEventHandler(new _IEventListener4_117
-				(this, client).OnEvent);
+			eventRegistry.Committed += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
+				(new _IEventListener4_120(this, client).OnEvent);
 		}
 
-		private sealed class _IEventListener4_117
+		private sealed class _IEventListener4_120
 		{
-			public _IEventListener4_117(ReadCommittedIsolationTestCase _enclosing, IExtObjectContainer
+			public _IEventListener4_120(ReadCommittedIsolationTestCase _enclosing, IExtObjectContainer
 				 client)
 			{
 				this._enclosing = _enclosing;
@@ -175,3 +176,4 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		}
 	}
 }
+#endif // !SILVERLIGHT

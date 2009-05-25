@@ -8,20 +8,6 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public abstract class Tree : IShallowClone, IDeepClone
 	{
-		public sealed class ByRef
-		{
-			public ByRef()
-			{
-			}
-
-			public ByRef(Tree initialValue)
-			{
-				value = initialValue;
-			}
-
-			public Tree value;
-		}
-
 		public Tree _preceding;
 
 		public int _size = 1;
@@ -213,8 +199,8 @@ namespace Db4objects.Db4o.Foundation
 			}
 			Tree newNode = (Tree)a_tree.DeepClone(a_param);
 			newNode._size = a_tree._size;
-			newNode._preceding = Tree.DeepClone(a_tree._preceding, a_param);
-			newNode._subsequent = Tree.DeepClone(a_tree._subsequent, a_param);
+			newNode._preceding = Tree.DeepClone(((Tree)a_tree._preceding), a_param);
+			newNode._subsequent = Tree.DeepClone(((Tree)a_tree._subsequent), a_param);
 			return newNode;
 		}
 
@@ -295,14 +281,14 @@ namespace Db4objects.Db4o.Foundation
 			// the highest node in the hierarchy !!!
 			if (cmp > 0)
 			{
-				Tree node = FindGreaterOrEqual(a_in._preceding, a_finder);
+				Tree node = FindGreaterOrEqual(((Tree)a_in._preceding), a_finder);
 				if (node != null)
 				{
 					return node;
 				}
 				return a_in;
 			}
-			return FindGreaterOrEqual(a_in._subsequent, a_finder);
+			return FindGreaterOrEqual(((Tree)a_in._subsequent), a_finder);
 		}
 
 		public static Tree FindSmaller(Tree a_in, Tree a_node)
@@ -314,14 +300,14 @@ namespace Db4objects.Db4o.Foundation
 			int cmp = a_in.Compare(a_node);
 			if (cmp < 0)
 			{
-				Tree node = FindSmaller(a_in._subsequent, a_node);
+				Tree node = FindSmaller(((Tree)a_in._subsequent), a_node);
 				if (node != null)
 				{
 					return node;
 				}
 				return a_in;
 			}
-			return FindSmaller(a_in._preceding, a_node);
+			return FindSmaller(((Tree)a_in._preceding), a_node);
 		}
 
 		public Tree First()
@@ -464,16 +450,16 @@ namespace Db4objects.Db4o.Foundation
 		public Tree RotateLeft()
 		{
 			Tree tree = _subsequent;
-			_subsequent = tree._preceding;
+			_subsequent = ((Tree)tree._preceding);
 			CalculateSize();
 			tree._preceding = this;
-			if (tree._subsequent == null)
+			if (((Tree)tree._subsequent) == null)
 			{
 				tree.SetSizeOwnPlus(this);
 			}
 			else
 			{
-				tree.SetSizeOwnPlus(this, tree._subsequent);
+				tree.SetSizeOwnPlus(this, ((Tree)tree._subsequent));
 			}
 			return tree;
 		}
@@ -481,16 +467,16 @@ namespace Db4objects.Db4o.Foundation
 		public Tree RotateRight()
 		{
 			Tree tree = _preceding;
-			_preceding = tree._subsequent;
+			_preceding = ((Tree)tree._subsequent);
 			CalculateSize();
 			tree._subsequent = this;
-			if (tree._preceding == null)
+			if (((Tree)tree._preceding) == null)
 			{
 				tree.SetSizeOwnPlus(this);
 			}
 			else
 			{
-				tree.SetSizeOwnPlus(this, tree._preceding);
+				tree.SetSizeOwnPlus(this, ((Tree)tree._preceding));
 			}
 			return tree;
 		}

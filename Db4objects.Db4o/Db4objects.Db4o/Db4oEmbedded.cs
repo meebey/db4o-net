@@ -87,8 +87,8 @@ namespace Db4objects.Db4o
 		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"> database was configured as read-only.
 		/// </exception>
-		public static IObjectContainer OpenFile(IEmbeddedConfiguration config, string databaseFileName
-			)
+		public static IEmbeddedObjectContainer OpenFile(IEmbeddedConfiguration config, string
+			 databaseFileName)
 		{
 			if (null == config)
 			{

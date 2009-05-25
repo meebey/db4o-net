@@ -106,16 +106,16 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			IEventRegistry deletionEventRegistry = EventRegistryFactory.ForObjectContainer(deletionEventSource
 				);
 			// No dedicated IncrementListener class due to sharpen event semantics
-			deletionEventRegistry.Deleted += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_IEventListener4_98(this).OnEvent);
-			eventRegistry.Activated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_103
-				(this).OnEvent);
-			eventRegistry.Committed += new Db4objects.Db4o.Events.CommitEventHandler(new _IEventListener4_108
-				(this).OnEvent);
-			eventRegistry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_113
-				(this).OnEvent);
-			eventRegistry.Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_118
-				(this).OnEvent);
+			deletionEventRegistry.Deleted += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_98(this).OnEvent);
+			eventRegistry.Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_103(this).OnEvent);
+			eventRegistry.Committed += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
+				(new _IEventListener4_108(this).OnEvent);
+			eventRegistry.Created += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_113(this).OnEvent);
+			eventRegistry.Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_118(this).OnEvent);
 		}
 
 		private sealed class _IEventListener4_98
@@ -125,7 +125,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				EventCountTestCase.Increment(this._enclosing._deleted);
 			}
@@ -140,7 +141,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				EventCountTestCase.Increment(this._enclosing._activated);
 			}
@@ -170,7 +172,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				EventCountTestCase.Increment(this._enclosing._created);
 			}
@@ -185,7 +188,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				this._enclosing = _enclosing;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				EventCountTestCase.Increment(this._enclosing._updated);
 			}

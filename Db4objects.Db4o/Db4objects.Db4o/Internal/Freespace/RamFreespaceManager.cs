@@ -71,11 +71,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public override void Free(Slot slot)
 		{
 			int address = slot.Address();
-			int length = slot.Length();
 			if (address <= 0)
 			{
 				throw new ArgumentException();
 			}
+			int length = slot.Length();
 			if (DTrace.enabled)
 			{
 				DTrace.FreespacemanagerRamFree.LogLength(address, length);
@@ -181,17 +181,17 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			FreeSlotNode.sizeLimit = BlockedDiscardLimit();
 			_freeBySize = new TreeReader(reader, new FreeSlotNode(0), true).Read();
-			Tree.ByRef addressTree = new Tree.ByRef();
+			ByRef addressTree = ByRef.NewInstance();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _IVisitor4_168(addressTree));
+				_freeBySize.Traverse(new _IVisitor4_167(addressTree));
 			}
-			_freeByAddress = addressTree.value;
+			_freeByAddress = ((Tree)addressTree.value);
 		}
 
-		private sealed class _IVisitor4_168 : IVisitor4
+		private sealed class _IVisitor4_167 : IVisitor4
 		{
-			public _IVisitor4_168(Tree.ByRef addressTree)
+			public _IVisitor4_167(ByRef addressTree)
 			{
 				this.addressTree = addressTree;
 			}
@@ -199,15 +199,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 			public void Visit(object a_object)
 			{
 				FreeSlotNode node = ((FreeSlotNode)a_object)._peer;
-				addressTree.value = Tree.Add(addressTree.value, node);
+				addressTree.value = Tree.Add(((Tree)addressTree.value), node);
 			}
 
-			private readonly Tree.ByRef addressTree;
+			private readonly ByRef addressTree;
 		}
 
 		internal virtual void Read(Slot slot)
 		{
-			if (slot.Address() == 0)
+			if (slot.IsNull())
 			{
 				return;
 			}
@@ -279,12 +279,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _IVisitor4_241(visitor));
+			_freeByAddress.Traverse(new _IVisitor4_240(visitor));
 		}
 
-		private sealed class _IVisitor4_241 : IVisitor4
+		private sealed class _IVisitor4_240 : IVisitor4
 		{
-			public _IVisitor4_241(IVisitor4 visitor)
+			public _IVisitor4_240(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}

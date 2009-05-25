@@ -1,11 +1,11 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o
 {
 	/// <exclude></exclude>
-	#if !SILVERLIGHT
 	public interface IBlobTransport
 	{
 		/// <exception cref="System.IO.IOException"></exception>
@@ -16,5 +16,5 @@ namespace Db4objects.Db4o
 
 		void DeleteBlobFile(Transaction trans, BlobImpl blob);
 	}
-	#endif // !SILVERLIGHT
 }
+#endif // !SILVERLIGHT

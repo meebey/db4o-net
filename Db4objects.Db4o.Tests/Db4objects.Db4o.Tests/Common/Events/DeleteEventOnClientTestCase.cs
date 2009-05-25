@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.EventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+				this._enclosing.EventRegistry().Deleting += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 					(new _IEventListener4_19().OnEvent);
 			}
 
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.EventRegistry().Deleted += new Db4objects.Db4o.Events.ObjectEventHandler
+				this._enclosing.EventRegistry().Deleted += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 					(new _IEventListener4_32().OnEvent);
 			}
 
@@ -82,7 +82,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 				}
 
-				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+				public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+					)
 				{
 				}
 			}

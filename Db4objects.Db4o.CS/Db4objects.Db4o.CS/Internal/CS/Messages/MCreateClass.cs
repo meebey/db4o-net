@@ -7,7 +7,7 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MCreateClass : MsgD, IServerSideMessage
+	public sealed class MCreateClass : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{

@@ -180,7 +180,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 									qcon.RemoveNot();
 								}
 								candidates.Evaluate();
-								Tree.ByRef pending = new Tree.ByRef();
+								ByRef pending = ByRef.NewInstance();
 								bool[] innerRes = new bool[] { isNot };
 								candidates.Traverse(new _IVisitor4_176(innerRes, isNot, pending));
 								// Collect all pending subresults.
@@ -209,9 +209,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								// In case we had pending subresults, we
 								// need to communicate
 								// them up to our root.
-								if (pending.value != null)
+								if (((Tree)pending.value) != null)
 								{
-									pending.value.Traverse(new _IVisitor4_245(this));
+									((Tree)pending.value).Traverse(new _IVisitor4_245(this));
 								}
 								if (!innerRes[0])
 								{
@@ -278,7 +278,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private sealed class _IVisitor4_176 : IVisitor4
 		{
-			public _IVisitor4_176(bool[] innerRes, bool isNot, Tree.ByRef pending)
+			public _IVisitor4_176(bool[] innerRes, bool isNot, ByRef pending)
 			{
 				this.innerRes = innerRes;
 				this.isNot = isNot;
@@ -301,7 +301,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 			private sealed class _IVisitor4_189 : IVisitor4
 			{
-				public _IVisitor4_189(Tree.ByRef pending)
+				public _IVisitor4_189(ByRef pending)
 				{
 					this.pending = pending;
 				}
@@ -310,7 +310,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					QPending newPending = ((QPending)a_object).InternalClonePayload();
 					newPending.ChangeConstraint();
-					QPending oldPending = (QPending)Tree.Find(pending.value, newPending);
+					QPending oldPending = (QPending)Tree.Find(((Tree)pending.value), newPending);
 					if (oldPending != null)
 					{
 						if (oldPending._result != newPending._result)
@@ -320,18 +320,18 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					else
 					{
-						pending.value = Tree.Add(pending.value, newPending);
+						pending.value = Tree.Add(((Tree)pending.value), newPending);
 					}
 				}
 
-				private readonly Tree.ByRef pending;
+				private readonly ByRef pending;
 			}
 
 			private readonly bool[] innerRes;
 
 			private readonly bool isNot;
 
-			private readonly Tree.ByRef pending;
+			private readonly ByRef pending;
 		}
 
 		private sealed class _IVisitor4_245 : IVisitor4

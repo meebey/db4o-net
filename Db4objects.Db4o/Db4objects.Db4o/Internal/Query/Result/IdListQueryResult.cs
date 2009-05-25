@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
@@ -148,7 +149,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		public override void LoadFromClassIndexes(ClassMetadataIterator iter)
 		{
 			// duplicates because of inheritance hierarchies
-			Tree.ByRef duplicates = new Tree.ByRef();
+			ByRef duplicates = new ByRef();
 			while (iter.MoveNext())
 			{
 				ClassMetadata yapClass = iter.CurrentClass();
@@ -166,7 +167,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		private sealed class _IVisitor4_115 : IVisitor4
 		{
-			public _IVisitor4_115(IdListQueryResult _enclosing, Tree.ByRef duplicates)
+			public _IVisitor4_115(IdListQueryResult _enclosing, ByRef duplicates)
 			{
 				this._enclosing = _enclosing;
 				this.duplicates = duplicates;
@@ -176,7 +177,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			{
 				int id = ((int)obj);
 				TreeInt newNode = new TreeInt(id);
-				duplicates.value = Tree.Add(duplicates.value, newNode);
+				duplicates.value = Tree.Add(((Tree)duplicates.value), newNode);
 				if (newNode.Size() != 0)
 				{
 					this._enclosing.Add(id);
@@ -185,15 +186,14 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 			private readonly IdListQueryResult _enclosing;
 
-			private readonly Tree.ByRef duplicates;
+			private readonly ByRef duplicates;
 		}
 
-		public override void LoadFromIdReader(ByteArrayBuffer reader)
+		public override void LoadFromIdReader(IEnumerator ids)
 		{
-			int size = reader.ReadInt();
-			for (int i = 0; i < size; i++)
+			while (ids.MoveNext())
 			{
-				Add(reader.ReadInt());
+				Add(((int)ids.Current));
 			}
 		}
 

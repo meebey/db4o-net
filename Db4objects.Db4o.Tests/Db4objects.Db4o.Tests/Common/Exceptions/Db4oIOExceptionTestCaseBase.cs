@@ -3,6 +3,7 @@
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
@@ -10,22 +11,43 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
 	public class Db4oIOExceptionTestCaseBase : AbstractDb4oTestCase, IOptOutCS, IOptOutTA
 	{
+		private ExceptionSimulatingStorage _storage;
+
 		protected override void Configure(IConfiguration config)
 		{
 			config.LockDatabaseFile(false);
-			config.Storage = new ExceptionSimulatingStorage(new FileStorage());
+			_storage = new ExceptionSimulatingStorage(new FileStorage(), new _IExceptionFactory_19
+				());
+			config.Storage = _storage;
+		}
+
+		private sealed class _IExceptionFactory_19 : IExceptionFactory
+		{
+			public _IExceptionFactory_19()
+			{
+			}
+
+			public void ThrowException()
+			{
+				throw new Db4oIOException();
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupBeforeStore()
 		{
-			ExceptionSimulatingStorage.exception = false;
+			TriggerException(false);
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oTearDownBeforeClean()
 		{
-			ExceptionSimulatingStorage.exception = false;
+			TriggerException(false);
+		}
+
+		protected virtual void TriggerException(bool value)
+		{
+			_storage.TriggerException(value);
 		}
 	}
 }

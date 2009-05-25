@@ -117,8 +117,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (handler == null)
 			{
-				// must be ClassMetadata
-				return Const4.IdLength;
+				throw new ArgumentNullException();
 			}
 			if (handler is ITypeFamilyTypeHandler)
 			{
@@ -302,7 +301,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public static void CollectIdsInternal(CollectIdContext context, ITypeHandler4 handler
-			, int linkLength)
+			, int linkLength, bool doWithSlotIndirection)
 		{
 			if (!(IsCascading(handler)))
 			{
@@ -331,13 +330,22 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			slotFormat.DoWithSlotIndirection(queryingReadContext, handler, new _IClosure4_276
-				(handler, queryingReadContext));
+			IClosure4 collectIDsFromQueryingContext = new _IClosure4_275(handler, queryingReadContext
+				);
+			if (doWithSlotIndirection)
+			{
+				slotFormat.DoWithSlotIndirection(queryingReadContext, handler, collectIDsFromQueryingContext
+					);
+			}
+			else
+			{
+				collectIDsFromQueryingContext.Run();
+			}
 		}
 
-		private sealed class _IClosure4_276 : IClosure4
+		private sealed class _IClosure4_275 : IClosure4
 		{
-			public _IClosure4_276(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_275(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;

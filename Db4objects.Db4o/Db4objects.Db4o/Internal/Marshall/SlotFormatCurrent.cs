@@ -16,6 +16,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public override bool IsIndirectedWithinSlot(ITypeHandler4 handler)
 		{
+			if (Handlers4.IsUntyped(handler))
+			{
+				return false;
+			}
 			return Handlers4.IsVariableLength(handler) && Handlers4.IsValueType(handler);
 		}
 	}

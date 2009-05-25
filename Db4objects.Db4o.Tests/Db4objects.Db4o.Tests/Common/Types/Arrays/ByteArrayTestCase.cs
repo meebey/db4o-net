@@ -59,13 +59,13 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 
 		internal const int ArrayLength = 1024;
 
-		#if !CF
+		#if !CF && !SILVERLIGHT
 		protected override void Configure(IConfiguration config)
 		{
 			config.ObjectClass(typeof(ByteArrayTestCase.SerializableByteArrayHolder)).Translate
 				(new TSerializable());
 		}
-		#endif // !CF
+		#endif // !CF && !SILVERLIGHT
 
 		protected override void Store()
 		{
@@ -76,22 +76,22 @@ namespace Db4objects.Db4o.Tests.Common.Types.Arrays
 			}
 		}
 
-		#if !CF
+		#if !CF && !SILVERLIGHT
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestByteArrayHolder()
 		{
 			TimeQueryLoop("raw byte array", typeof(ByteArrayTestCase.ByteArrayHolder));
 		}
-		#endif // !CF
+		#endif // !CF && !SILVERLIGHT
 
-		#if !CF
+		#if !CF && !SILVERLIGHT
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestSerializableByteArrayHolder()
 		{
 			TimeQueryLoop("TSerializable", typeof(ByteArrayTestCase.SerializableByteArrayHolder
 				));
 		}
-		#endif // !CF
+		#endif // !CF && !SILVERLIGHT
 
 		/// <exception cref="System.Exception"></exception>
 		private void TimeQueryLoop(string label, Type clazz)

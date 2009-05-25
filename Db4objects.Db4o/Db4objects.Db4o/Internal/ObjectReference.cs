@@ -193,7 +193,7 @@ namespace Db4objects.Db4o.Internal
 			 obj)
 		{
 			ObjectContainerBase container = transaction.Container();
-			container.Callbacks().ObjectOnNew(transaction, obj);
+			container.Callbacks().ObjectOnNew(transaction, this);
 			_class.DispatchEvent(transaction, obj, EventDispatchers.New);
 		}
 
@@ -212,7 +212,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase container = trans.Container();
 			LogActivation(container, "deactivate");
 			SetStateDeactivated();
-			_class.Deactivate(trans, obj, depth);
+			_class.Deactivate(trans, this, depth);
 		}
 
 		public override byte GetIdentifier()
@@ -281,6 +281,14 @@ namespace Db4objects.Db4o.Internal
 		public virtual void ClassMetadata(Db4objects.Db4o.Internal.ClassMetadata classMetadata
 			)
 		{
+			if (_class == classMetadata)
+			{
+				return;
+			}
+			if (_class != null)
+			{
+				throw new InvalidOperationException("Object types aren't supposed to change!");
+			}
 			_class = classMetadata;
 		}
 
@@ -311,7 +319,7 @@ namespace Db4objects.Db4o.Internal
 			return Read(trans, null, null, instantiationDepth, addToIDTree, checkIDTree);
 		}
 
-		public object Read(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer buffer
+		public object Read(Db4objects.Db4o.Internal.Transaction trans, ByteArrayBuffer buffer
 			, object obj, IActivationDepth instantiationDepth, int addToIDTree, bool checkIDTree
 			)
 		{
@@ -322,11 +330,13 @@ namespace Db4objects.Db4o.Internal
 			return context.Read();
 		}
 
-		public object ReadPrefetch(Db4objects.Db4o.Internal.Transaction trans, StatefulBuffer
-			 buffer)
+		public virtual object ReadPrefetch(Db4objects.Db4o.Internal.Transaction trans, ByteArrayBuffer
+			 buffer, int addToIDTree)
 		{
-			return new UnmarshallingContext(trans, buffer, this, Const4.AddToIdTree, false).ReadPrefetch
-				();
+			UnmarshallingContext context = new UnmarshallingContext(trans, buffer, this, addToIDTree
+				, false);
+			context.ActivationDepth(new FixedActivationDepth(1, ActivationMode.Prefetch));
+			return context.Read();
 		}
 
 		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, 
@@ -462,10 +472,6 @@ namespace Db4objects.Db4o.Internal
 			// preventing recursive
 			if (!BeginProcessing())
 			{
-				if ((((bool)InCallbackState._inCallback.Value)))
-				{
-					throw new InvalidOperationException("Objects must not be updated in callback");
-				}
 				return;
 			}
 			object obj = GetObject();
@@ -492,7 +498,7 @@ namespace Db4objects.Db4o.Internal
 				SetStateClean();
 			}
 			EndProcessing();
-			container.Callbacks().ObjectOnUpdate(transaction, obj);
+			container.Callbacks().ObjectOnUpdate(transaction, this);
 			ClassMetadata().DispatchEvent(transaction, obj, EventDispatchers.Update);
 		}
 
@@ -1015,7 +1021,7 @@ namespace Db4objects.Db4o.Internal
 				int id = GetID();
 				string str = "ObjectReference\nID=" + id;
 				object obj = GetObject();
-				if (_class != null)
+				if (obj == null && _class != null)
 				{
 					ObjectContainerBase container = _class.Container();
 					if (container != null && id > 0)

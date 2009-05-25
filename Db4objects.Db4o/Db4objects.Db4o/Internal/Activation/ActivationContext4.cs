@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			{
 				// FIXME: [TA] do we really need to check for isValueType here?
 				Db4objects.Db4o.Internal.ClassMetadata classMetadata = context.ClassMetadata();
-				if (Platform4.IsStruct(classMetadata.ClassReflector()))
+				if (classMetadata.IsStruct())
 				{
 					classMetadata.CascadeActivation(context);
 				}

@@ -46,7 +46,7 @@ namespace Db4oUnit.Extensions
 		//       method should be replaced with    isEmbeddedClientServer() 
 		protected virtual bool IsMTOC()
 		{
-			return Fixture().Db() is EmbeddedClientObjectContainer;
+			return Fixture().Db() is ObjectContainerSession;
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -60,7 +60,7 @@ namespace Db4oUnit.Extensions
 		{
 			IDb4oFixture _fixture = Fixture();
 			_fixture.Clean();
-			Configure(_fixture.Config());
+			Configure(_fixture);
 			_fixture.Open(GetType());
 			Db4oSetupBeforeStore();
 			Store();
@@ -133,13 +133,13 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunSolo(string testLabelSubstring)
 		{
-			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(true), new _IPredicate4_104
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(true), new _IPredicate4_112
 				(testLabelSubstring))).Run();
 		}
 
-		private sealed class _IPredicate4_104 : IPredicate4
+		private sealed class _IPredicate4_112 : IPredicate4
 		{
-			public _IPredicate4_104(string testLabelSubstring)
+			public _IPredicate4_112(string testLabelSubstring)
 			{
 				this.testLabelSubstring = testLabelSubstring;
 			}
@@ -382,8 +382,6 @@ namespace Db4oUnit.Extensions
 
 		protected virtual void Foreach(Type clazz, IVisitor4 visitor)
 		{
-			IExtObjectContainer oc = Db();
-			oc.Deactivate(clazz, int.MaxValue);
 			IObjectSet set = NewQuery(clazz).Execute();
 			while (set.HasNext())
 			{
@@ -398,12 +396,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_319(oc));
+			Foreach(clazz, new _IVisitor4_325(oc));
 		}
 
-		private sealed class _IVisitor4_319 : IVisitor4
+		private sealed class _IVisitor4_325 : IVisitor4
 		{
-			public _IVisitor4_319(IExtObjectContainer oc)
+			public _IVisitor4_325(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

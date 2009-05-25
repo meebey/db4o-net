@@ -9,7 +9,7 @@ using Sharpen.IO;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MReadBlob : MsgBlob, IServerSideMessage
+	public class MReadBlob : MsgBlob, IMessageWithResponse
 	{
 		/// <exception cref="System.IO.IOException"></exception>
 		public override void ProcessClient(ISocket4 sock)

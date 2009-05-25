@@ -41,5 +41,11 @@ namespace Db4objects.Db4o.IO
 		{
 			return _readOnly;
 		}
+
+		public override string ToString()
+		{
+			return "BinConfiguration(Uri: " + _uri + ", Locked: " + _lockFile + ", ReadOnly: "
+				 + _readOnly + ")";
+		}
 	}
 }

@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MPrefetchIDs : MsgD, IServerSideMessage
+	public sealed class MPrefetchIDs : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{

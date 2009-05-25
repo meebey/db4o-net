@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Caching;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -13,6 +14,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Internal.CS.Messages;
+using Db4objects.Db4o.Internal.CS.Objectexchange;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -20,6 +22,7 @@ using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.CS
 {
@@ -69,9 +72,9 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private readonly ClassInfoHelper _classInfoHelper = new ClassInfoHelper();
 
-		private sealed class _IMessageListener_72 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_74 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_72()
+			public _IMessageListener_74()
 			{
 			}
 
@@ -83,8 +86,10 @@ namespace Db4objects.Db4o.Internal.CS
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_72
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_74
 			();
+
+		private bool _refreshing = false;
 
 		public interface IMessageListener
 		{
@@ -349,8 +354,8 @@ namespace Db4objects.Db4o.Internal.CS
 			return ((MsgD)ExpectedResponse(Msg.IdList)).ReadLong();
 		}
 
-		public sealed override bool Delete4(Transaction ta, ObjectReference yo, int a_cascade
-			, bool userCall)
+		public sealed override bool Delete4(Transaction ta, ObjectReference yo, object obj
+			, int a_cascade, bool userCall)
 		{
 			MsgD msg = Msg.Delete.GetWriterForInts(_transaction, new int[] { yo.GetID(), userCall
 				 ? 1 : 0 });
@@ -403,7 +408,8 @@ namespace Db4objects.Db4o.Internal.CS
 		public override AbstractQueryResult QueryAllObjects(Transaction trans)
 		{
 			int mode = Config().QueryEvaluationMode().AsInt();
-			MsgD msg = Msg.GetAll.GetWriterForInt(trans, mode);
+			MsgD msg = Msg.GetAll.GetWriterForInts(trans, new int[] { mode, PrefetchDepth(), 
+				PrefetchCount() });
 			Write(msg);
 			return ReadQueryResult(trans);
 		}
@@ -676,36 +682,121 @@ namespace Db4objects.Db4o.Internal.CS
 			return bytes;
 		}
 
-		public sealed override StatefulBuffer[] ReadWritersByIDs(Transaction a_ta, int[] 
-			ids)
+		protected override void RefreshInternal(Transaction trans, object obj, int depth)
 		{
-			MsgD msg = Msg.ReadMultipleObjects.GetWriterForIntArray(a_ta, ids, ids.Length);
-			Write(msg);
-			MsgD response = (MsgD)ExpectedResponse(Msg.ReadMultipleObjects);
-			int count = response.ReadInt();
-			StatefulBuffer[] yapWriters = new StatefulBuffer[count];
-			for (int i = 0; i < count; i++)
+			_refreshing = true;
+			try
 			{
-				MsgObject mso = (MsgObject)Msg.ObjectToClient.PublicClone();
-				mso.SetTransaction(a_ta);
-				mso.PayLoad(response.PayLoad().ReadYapBytes());
-				if (mso.PayLoad() != null)
-				{
-					mso.PayLoad().IncrementOffset(Const4.MessageLength);
-					yapWriters[i] = mso.Unmarshall(Const4.MessageLength);
-					yapWriters[i].SetTransaction(a_ta);
-				}
+				base.RefreshInternal(trans, obj, depth);
 			}
-			return yapWriters;
+			finally
+			{
+				_refreshing = false;
+			}
 		}
 
-		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id, 
-			bool lastCommitted)
+		public sealed override ByteArrayBuffer[] ReadSlotBuffers(Transaction transaction, 
+			int[] ids)
 		{
-			MsgD msg = Msg.ReadReaderById.GetWriterForInts(a_ta, new int[] { a_id, lastCommitted
-				 ? 1 : 0 });
-			Write(msg);
-			return ((MReadBytes)ExpectedResponse(Msg.ReadBytes)).Unmarshall();
+			return ReadSlotBuffers(transaction, ids, 1);
+		}
+
+		public ByteArrayBuffer[] ReadObjectSlots(Transaction transaction, int[] ids)
+		{
+			int prefetchDepth = Config().PrefetchDepth();
+			return ReadSlotBuffers(transaction, ids, prefetchDepth);
+		}
+
+		private ByteArrayBuffer[] ReadSlotBuffers(Transaction transaction, int[] ids, int
+			 prefetchDepth)
+		{
+			IDictionary buffers = new Hashtable(ids.Length);
+			WithEnvironment(new _IRunnable_570(this, transaction, ids, buffers, prefetchDepth
+				));
+			return PackSlotBuffers(ids, buffers);
+		}
+
+		private sealed class _IRunnable_570 : IRunnable
+		{
+			public _IRunnable_570(ClientObjectContainer _enclosing, Transaction transaction, 
+				int[] ids, IDictionary buffers, int prefetchDepth)
+			{
+				this._enclosing = _enclosing;
+				this.transaction = transaction;
+				this.ids = ids;
+				this.buffers = buffers;
+				this.prefetchDepth = prefetchDepth;
+			}
+
+			public void Run()
+			{
+				ArrayList cacheMisses = this._enclosing.PopulateSlotBuffersFromCache(transaction, 
+					ids, buffers);
+				this._enclosing.FetchMissingSlotBuffers(transaction, cacheMisses, buffers, prefetchDepth
+					);
+			}
+
+			private readonly ClientObjectContainer _enclosing;
+
+			private readonly Transaction transaction;
+
+			private readonly int[] ids;
+
+			private readonly IDictionary buffers;
+
+			private readonly int prefetchDepth;
+		}
+
+		public sealed override ByteArrayBuffer ReadReaderByID(Transaction transaction, int
+			 id, bool lastCommitted)
+		{
+			ByRef result = ByRef.NewInstance();
+			WithEnvironment(new _IRunnable_583(this, lastCommitted, result, transaction, id));
+			return ((ByteArrayBuffer)result.value);
+		}
+
+		private sealed class _IRunnable_583 : IRunnable
+		{
+			public _IRunnable_583(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
+				 result, Transaction transaction, int id)
+			{
+				this._enclosing = _enclosing;
+				this.lastCommitted = lastCommitted;
+				this.result = result;
+				this.transaction = transaction;
+				this.id = id;
+			}
+
+			public void Run()
+			{
+				if (lastCommitted || this._enclosing._refreshing)
+				{
+					result.value = this._enclosing.FetchSlotBuffer(transaction, id, lastCommitted);
+					return;
+				}
+				IClientSlotCache slotCache = ((IClientSlotCache)Environments.My(typeof(IClientSlotCache
+					)));
+				ByteArrayBuffer cached = slotCache.Get(transaction, id);
+				if (cached != null)
+				{
+					result.value = cached;
+					return;
+				}
+				ByteArrayBuffer slot = this._enclosing.FetchSlotBuffer(transaction, id, lastCommitted
+					);
+				slotCache.Add(transaction, id, slot);
+				result.value = slot;
+			}
+
+			private readonly ClientObjectContainer _enclosing;
+
+			private readonly bool lastCommitted;
+
+			private readonly ByRef result;
+
+			private readonly Transaction transaction;
+
+			private readonly int id;
 		}
 
 		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
@@ -715,19 +806,59 @@ namespace Db4objects.Db4o.Internal.CS
 
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
-			AbstractQueryResult queryResult = null;
-			ByteArrayBuffer reader = ExpectedByteResponse(Msg.QueryResult);
-			int queryResultID = reader.ReadInt();
-			if (queryResultID > 0)
+			ByRef result = ByRef.NewInstance();
+			WithEnvironment(new _IRunnable_613(this, trans, result));
+			return ((AbstractQueryResult)result.value);
+		}
+
+		private sealed class _IRunnable_613 : IRunnable
+		{
+			public _IRunnable_613(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+				result)
 			{
-				queryResult = new LazyClientQueryResult(trans, this, queryResultID);
+				this._enclosing = _enclosing;
+				this.trans = trans;
+				this.result = result;
 			}
-			else
+
+			public void Run()
 			{
-				queryResult = new ClientQueryResult(trans);
+				ByteArrayBuffer reader = this._enclosing.ExpectedByteResponse(Msg.QueryResult);
+				int queryResultID = reader.ReadInt();
+				AbstractQueryResult queryResult = this._enclosing.QueryResultFor(trans, queryResultID
+					);
+				queryResult.LoadFromIdReader(this._enclosing.IdIteratorFor(trans, reader));
+				result.value = queryResult;
 			}
-			queryResult.LoadFromIdReader(reader);
-			return queryResult;
+
+			private readonly ClientObjectContainer _enclosing;
+
+			private readonly Transaction trans;
+
+			private readonly ByRef result;
+		}
+
+		public virtual IFixedSizeIntIterator4 IdIteratorFor(Transaction trans, ByteArrayBuffer
+			 reader)
+		{
+			return IdIteratorFor(ObjectExchangeStrategy(), trans, reader);
+		}
+
+		private IFixedSizeIntIterator4 IdIteratorFor(IObjectExchangeStrategy strategy, Transaction
+			 trans, ByteArrayBuffer reader)
+		{
+			return strategy.Unmarshall((ClientTransaction)trans, reader);
+		}
+
+		private IObjectExchangeStrategy ObjectExchangeStrategy()
+		{
+			return ObjectExchangeStrategyFactory.ForConfig(DefaultObjectExchangeConfiguration
+				());
+		}
+
+		private ObjectExchangeConfiguration DefaultObjectExchangeConfiguration()
+		{
+			return new ObjectExchangeConfiguration(PrefetchDepth(), PrefetchCount());
 		}
 
 		internal virtual void ReadThis()
@@ -1010,21 +1141,63 @@ namespace Db4objects.Db4o.Internal.CS
 
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
-			MsgD msg = Msg.GetInternalIds.GetWriterForInt(trans, clazz.GetID());
+			MsgD msg = Msg.GetInternalIds.GetWriterForInts(trans, new int[] { clazz.GetID(), 
+				PrefetchDepth(), PrefetchCount() });
 			Write(msg);
-			ByteArrayBuffer reader = ExpectedByteResponse(Msg.IdList);
-			int size = reader.ReadInt();
-			long[] ids = new long[size];
-			for (int i = 0; i < size; i++)
+			ByRef result = ByRef.NewInstance();
+			WithEnvironment(new _IRunnable_874(this, trans, result));
+			return ((long[])result.value);
+		}
+
+		private sealed class _IRunnable_874 : IRunnable
+		{
+			public _IRunnable_874(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+				result)
 			{
-				ids[i] = reader.ReadInt();
+				this._enclosing = _enclosing;
+				this.trans = trans;
+				this.result = result;
+			}
+
+			public void Run()
+			{
+				ByteArrayBuffer reader = this._enclosing.ExpectedByteResponse(Msg.IdList);
+				IFixedSizeIntIterator4 idIterator = this._enclosing.IdIteratorFor(trans, reader);
+				result.value = this._enclosing.ToLongArray(idIterator);
+			}
+
+			private readonly ClientObjectContainer _enclosing;
+
+			private readonly Transaction trans;
+
+			private readonly ByRef result;
+		}
+
+		private long[] ToLongArray(IFixedSizeIntIterator4 idIterator)
+		{
+			long[] ids = new long[idIterator.Size()];
+			int i = 0;
+			while (idIterator.MoveNext())
+			{
+				ids[i++] = ((int)idIterator.Current);
 			}
 			return ids;
 		}
 
-		public override IQueryResult ClassOnlyQuery(Transaction trans, ClassMetadata clazz
+		internal virtual int PrefetchDepth()
+		{
+			return _config.PrefetchDepth();
+		}
+
+		internal virtual int PrefetchCount()
+		{
+			return _config.PrefetchObjectCount();
+		}
+
+		public override IQueryResult ClassOnlyQuery(QQueryBase query, ClassMetadata clazz
 			)
 		{
+			Transaction trans = query.GetTransaction();
 			long[] ids = clazz.GetIDs(trans);
 			ClientQueryResult resClient = new ClientQueryResult(trans, ids.Length);
 			for (int i = 0; i < ids.Length; i++)
@@ -1037,7 +1210,7 @@ namespace Db4objects.Db4o.Internal.CS
 		public override IQueryResult ExecuteQuery(QQuery query)
 		{
 			Transaction trans = query.GetTransaction();
-			query.EvaluationMode(Config().QueryEvaluationMode());
+			query.CaptureQueryResultConfig();
 			query.Marshall();
 			MsgD msg = Msg.QueryExecute.GetWriter(Serializer.Marshall(trans, query));
 			Write(msg);
@@ -1170,6 +1343,100 @@ namespace Db4objects.Db4o.Internal.CS
 			{
 				_config.BatchMessages(configuredBatchMessages);
 			}
+		}
+
+		private void SendReadMultipleObjectsMessage(MReadMultipleObjects message, Transaction
+			 transaction, int prefetchDepth, IList idsToRead)
+		{
+			MsgD msg = message.GetWriterForLength(transaction, Const4.IntLength + Const4.IntLength
+				 + Const4.IdLength * idsToRead.Count);
+			msg.WriteInt(prefetchDepth);
+			msg.WriteInt(idsToRead.Count);
+			for (IEnumerator idIter = idsToRead.GetEnumerator(); idIter.MoveNext(); )
+			{
+				int id = ((int)idIter.Current);
+				msg.WriteInt(id);
+			}
+			Write(msg);
+		}
+
+		private AbstractQueryResult QueryResultFor(Transaction trans, int queryResultID)
+		{
+			if (queryResultID > 0)
+			{
+				return new LazyClientQueryResult(trans, this, queryResultID);
+			}
+			return new ClientQueryResult(trans);
+		}
+
+		private void FetchMissingSlotBuffers(Transaction transaction, ArrayList missing, 
+			IDictionary buffers, int prefetchDepth)
+		{
+			if (missing.Count == 0)
+			{
+				return;
+			}
+			int safePrefetchDepth = Math.Max(1, prefetchDepth);
+			IClientSlotCache slotCache = ((IClientSlotCache)Environments.My(typeof(IClientSlotCache
+				)));
+			SendReadMultipleObjectsMessage(Msg.ReadMultipleObjects, transaction, safePrefetchDepth
+				, missing);
+			MsgD response = (MsgD)ExpectedResponse(Msg.ReadMultipleObjects);
+			IFixedSizeIntIterator4 requestedIds = IdIteratorFor(ObjectExchangeStrategyFactory
+				.ForConfig(new ObjectExchangeConfiguration(safePrefetchDepth, missing.Count)), transaction
+				, response.PayLoad());
+			while (requestedIds.MoveNext())
+			{
+				int id = requestedIds.CurrentInt();
+				ByteArrayBuffer slot = slotCache.Get(transaction, id);
+				if (slot == null)
+				{
+					throw new InvalidOperationException();
+				}
+				buffers[id] = slot;
+			}
+		}
+
+		private ByteArrayBuffer[] PackSlotBuffers(int[] ids, IDictionary buffers)
+		{
+			ByteArrayBuffer[] returnValue = new ByteArrayBuffer[buffers.Count];
+			for (int i = 0; i < ids.Length; ++i)
+			{
+				returnValue[i] = ((ByteArrayBuffer)buffers[ids[i]]);
+			}
+			return returnValue;
+		}
+
+		private ArrayList PopulateSlotBuffersFromCache(Transaction transaction, int[] ids
+			, IDictionary buffers)
+		{
+			ArrayList missing = new ArrayList();
+			for (int idIndex = 0; idIndex < ids.Length; ++idIndex)
+			{
+				int id = ids[idIndex];
+				ByteArrayBuffer slot = ((IClientSlotCache)Environments.My(typeof(IClientSlotCache
+					))).Get(transaction, id);
+				if (null == slot)
+				{
+					missing.Add(id);
+				}
+				else
+				{
+					buffers[id] = slot;
+				}
+			}
+			return missing;
+		}
+
+		private ByteArrayBuffer FetchSlotBuffer(Transaction transaction, int id, bool lastCommitted
+			)
+		{
+			MsgD msg = Msg.ReadReaderById.GetWriterForInts(transaction, new int[] { id, lastCommitted
+				 ? 1 : 0 });
+			Write(msg);
+			ByteArrayBuffer buffer = ((MReadBytes)ExpectedResponse(Msg.ReadBytes)).Unmarshall
+				();
+			return buffer;
 		}
 	}
 }

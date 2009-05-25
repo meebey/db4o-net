@@ -8,7 +8,7 @@ using Db4objects.Db4o.Reflect.Generic;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MClassMeta : MsgObject, IServerSideMessage
+	public class MClassMeta : MsgObject, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{

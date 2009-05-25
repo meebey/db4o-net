@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MLogin : MsgD, IServerSideMessage
+	public class MLogin : MsgD, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{

@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4oUnit.Extensions;
+
 namespace Db4oUnit.Extensions.Fixtures
 {
 	/// <summary>
@@ -11,7 +13,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	/// excluded from running against specific fixtures. Concrete marker interfaces
 	/// for specific fixtures should extend OptOutFromTestFixture.
 	/// </remarks>
-	public interface IOptOutFromTestFixture
+	public interface IOptOutFromTestFixture : IDb4oTestCase
 	{
 	}
 }

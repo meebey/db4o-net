@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Backup;
 
 namespace Db4objects.Db4o.Tests.Common.Backup
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -15,8 +15,15 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(BackupFromMemoryBinIsAccessibleThroughStorageTestCase)
-				, typeof(BackupMemoryToFileTestCase), typeof(BackupStressTestCase) };
+			return ComposeTests(new Type[] { typeof(BackupFromMemoryBinIsAccessibleThroughStorageTestCase
+				), typeof(BackupMemoryToFileTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(BackupStressTestCase) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IIntIterator4 IntIterator()
 		{
-			return new IntIterator4Impl(i_content, i_count);
+			return IntIterators.ForInts(i_content, i_count);
 		}
 
 		public virtual IEnumerator GetEnumerator()

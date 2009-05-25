@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Activate(item, 3);
 			}
 
@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Close();
 			}
 
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Commit();
 			}
 
@@ -118,7 +118,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Delete(item);
 			}
 
@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().QueryByExample(typeof(Db4oIOExceptionTestCase.Item));
 			}
 
@@ -168,7 +168,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				IObjectSet os = this._enclosing.Db().QueryByExample(null);
 				while (os.HasNext())
 				{
@@ -196,7 +196,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Query(typeof(Db4oIOExceptionTestCase.Item));
 			}
 
@@ -220,7 +220,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Rollback();
 			}
 
@@ -243,7 +243,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Store(new Db4oIOExceptionTestCase.Item(3));
 			}
 
@@ -273,7 +273,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().GetByUUID(uuid);
 			}
 

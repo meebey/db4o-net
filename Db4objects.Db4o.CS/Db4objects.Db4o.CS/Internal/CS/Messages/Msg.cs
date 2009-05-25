@@ -165,6 +165,9 @@ namespace Db4objects.Db4o.Internal.CS.Messages
 
 		public static readonly MInstanceCount InstanceCount = new MInstanceCount();
 
+		public static readonly MRequestException RequestException = new MRequestException
+			();
+
 		internal Msg()
 		{
 			_msgID = _messageIdGenerator++;

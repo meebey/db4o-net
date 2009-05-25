@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public class MInstanceCount : MsgD, IServerSideMessage
+	public class MInstanceCount : MsgD, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{

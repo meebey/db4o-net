@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			}
 			if (mode.IsPrefetch())
 			{
-				return new FixedActivationDepth(classMetadata.PrefetchActivationDepth(), mode);
+				return new FixedActivationDepth(1, mode);
 			}
 			return new DescendingActivationDepth(this, mode);
 		}
@@ -59,8 +59,8 @@ namespace Db4objects.Db4o.Internal.Activation
 		private void FlushOnQueryStarted(IInternalObjectContainer container)
 		{
 			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(container);
-			registry.QueryStarted += new Db4objects.Db4o.Events.QueryEventHandler(new _IEventListener4_45
-				(this).OnEvent);
+			registry.QueryStarted += new System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>
+				(new _IEventListener4_45(this).OnEvent);
 		}
 
 		private sealed class _IEventListener4_45
@@ -92,9 +92,9 @@ namespace Db4objects.Db4o.Internal.Activation
 			ObjectsModifiedIn(transaction).Add(@object);
 		}
 
-		private sealed class _TransactionLocal_67 : TransactionLocal
+		private sealed class _TransactionLocal_65 : TransactionLocal
 		{
-			public _TransactionLocal_67(TransparentActivationDepthProviderImpl _enclosing)
+			public _TransactionLocal_65(TransparentActivationDepthProviderImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -104,14 +104,14 @@ namespace Db4objects.Db4o.Internal.Activation
 				TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction objectsModifiedInTransaction
 					 = new TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction(transaction
 					);
-				transaction.AddTransactionListener(new _ITransactionListener_71(this, objectsModifiedInTransaction
+				transaction.AddTransactionListener(new _ITransactionListener_69(this, objectsModifiedInTransaction
 					));
 				return objectsModifiedInTransaction;
 			}
 
-			private sealed class _ITransactionListener_71 : ITransactionListener
+			private sealed class _ITransactionListener_69 : ITransactionListener
 			{
-				public _ITransactionListener_71(_TransactionLocal_67 _enclosing, TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction
+				public _ITransactionListener_69(_TransactionLocal_65 _enclosing, TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction
 					 objectsModifiedInTransaction)
 				{
 					this._enclosing = _enclosing;
@@ -129,7 +129,7 @@ namespace Db4objects.Db4o.Internal.Activation
 					objectsModifiedInTransaction.Flush();
 				}
 
-				private readonly _TransactionLocal_67 _enclosing;
+				private readonly _TransactionLocal_65 _enclosing;
 
 				private readonly TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction
 					 objectsModifiedInTransaction;
@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		public TransparentActivationDepthProviderImpl()
 		{
-			_objectsModifiedInTransaction = new _TransactionLocal_67(this);
+			_objectsModifiedInTransaction = new _TransactionLocal_65(this);
 		}
 	}
 }

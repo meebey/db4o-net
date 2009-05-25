@@ -21,39 +21,49 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			RunTest(new CallbackTestCase.PublicCallback());
 		}
 
+		#if !SILVERLIGHT
 		public virtual void TestPrivateCallback()
 		{
 			RunTest(new CallbackTestCase.PrivateCallback());
 		}
+		#endif // !SILVERLIGHT
 
+		#if !SILVERLIGHT
 		public virtual void TestPackageCallback()
 		{
 			RunTest(new CallbackTestCase.PackageCallback());
 		}
+		#endif // !SILVERLIGHT
 
 		public virtual void TestInheritedPublicCallback()
 		{
 			RunTest(new CallbackTestCase.InheritedPublicCallback());
 		}
 
+		#if !SILVERLIGHT
+		/// <seealso>testPrivateCallback()</seealso>
 		public virtual void TestInheritedPrivateCallback()
 		{
 			RunTest(new CallbackTestCase.InheritedPrivateCallback());
 		}
+		#endif // !SILVERLIGHT
 
+		#if !SILVERLIGHT
+		/// <seealso>testPackageCallback()</seealso>
 		public virtual void TestInheritedPackageCallback()
 		{
 			RunTest(new CallbackTestCase.InheritedPackageCallback());
 		}
+		#endif // !SILVERLIGHT
 
 		public virtual void TestThrowingCallback()
 		{
-			Assert.Expect(typeof(Exception), new _ICodeBlock_52(this));
+			Assert.Expect(typeof(Exception), new _ICodeBlock_58(this));
 		}
 
-		private sealed class _ICodeBlock_52 : ICodeBlock
+		private sealed class _ICodeBlock_58 : ICodeBlock
 		{
-			public _ICodeBlock_52(CallbackTestCase _enclosing)
+			public _ICodeBlock_58(CallbackTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

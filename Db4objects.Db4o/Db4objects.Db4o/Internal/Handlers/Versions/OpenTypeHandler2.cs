@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 		{
 			if (Handlers4.HandlesPrimitiveArray(typeHandler))
 			{
-				buffer.SeekCurrentInt();
+				buffer.Seek(buffer.ReadInt());
 			}
 		}
 	}

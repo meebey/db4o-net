@@ -2,22 +2,16 @@
 
 using System;
 using Db4oUnit.Fixtures;
-using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.IO;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class StorageTestSuite : FixtureTestSuiteDescription
+	public partial class StorageTestSuite : FixtureTestSuiteDescription
 	{
-		public StorageTestSuite()
+		public override Type[] TestUnits()
 		{
-			{
-				FixtureProviders(new IFixtureProvider[] { new EnvironmentProvider(), new SubjectFixtureProvider
-					(new object[] { new FileStorage(), new MemoryStorage(), new CachingStorage(new FileStorage
-					()), new IoAdapterStorage(new RandomAccessFileAdapter()) }) });
-				TestUnits(new Type[] { typeof(BinTest), typeof(ReadOnlyBinTest), typeof(StorageTest
-					) });
-			}
+			return new Type[] { typeof(BinTest), typeof(ReadOnlyBinTest), typeof(StorageTest)
+				 };
 		}
 		//	combinationToRun(2);
 	}

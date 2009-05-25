@@ -104,5 +104,10 @@ namespace Db4objects.Db4o.Internal.Slots
 			return new Db4objects.Db4o.Internal.Slots.Slot(Address(), _length + slot.Length()
 				);
 		}
+
+		public virtual bool IsNull()
+		{
+			return Address() == 0 || Length() == 0;
+		}
 	}
 }

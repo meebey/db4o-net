@@ -86,7 +86,8 @@ namespace Db4objects.Db4o.CS
 		/// </summary>
 		public static IClientConfiguration NewClientConfiguration()
 		{
-			return new ClientConfigurationImpl(NewLegacyConfig());
+			Config4Impl legacy = NewLegacyConfig();
+			return new ClientConfigurationImpl((Config4Impl)legacy);
 		}
 
 		private static Config4Impl NewLegacyConfig()

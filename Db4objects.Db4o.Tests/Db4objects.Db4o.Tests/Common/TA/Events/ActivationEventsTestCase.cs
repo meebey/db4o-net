@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 
 		private void AddCancelNonActivatableListener()
 		{
-			EventRegistry().Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+			EventRegistry().Activating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 				(new _IEventListener4_79().OnEvent);
 		}
 
@@ -117,7 +117,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Events
 
 		private void AddCancelAnyListener()
 		{
-			EventRegistry().Activating += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+			EventRegistry().Activating += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 				(new _IEventListener4_90().OnEvent);
 		}
 

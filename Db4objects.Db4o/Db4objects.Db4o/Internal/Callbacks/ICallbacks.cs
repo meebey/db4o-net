@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 
@@ -18,17 +19,17 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		bool ObjectCanDeactivate(Transaction transaction, object obj);
 
-		void ObjectOnActivate(Transaction transaction, object obj);
+		void ObjectOnActivate(Transaction transaction, IObjectInfo obj);
 
-		void ObjectOnNew(Transaction transaction, object obj);
+		void ObjectOnNew(Transaction transaction, IObjectInfo obj);
 
-		void ObjectOnUpdate(Transaction transaction, object obj);
+		void ObjectOnUpdate(Transaction transaction, IObjectInfo obj);
 
-		void ObjectOnDelete(Transaction transaction, object obj);
+		void ObjectOnDelete(Transaction transaction, IObjectInfo obj);
 
-		void ObjectOnDeactivate(Transaction transaction, object obj);
+		void ObjectOnDeactivate(Transaction transaction, IObjectInfo obj);
 
-		void ObjectOnInstantiate(Transaction transaction, object obj);
+		void ObjectOnInstantiate(Transaction transaction, IObjectInfo obj);
 
 		void QueryOnStarted(Transaction transaction, IQuery query);
 

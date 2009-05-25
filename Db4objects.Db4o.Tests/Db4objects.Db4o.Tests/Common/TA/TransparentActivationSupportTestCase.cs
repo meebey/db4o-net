@@ -28,21 +28,14 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		{
 			public void Update()
 			{
-				this.Activate(ActivationPurpose.Write);
+				Activate(ActivationPurpose.Write);
 			}
-
-			internal Item(TransparentActivationSupportTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			private readonly TransparentActivationSupportTestCase _enclosing;
 		}
 
 		public virtual void TestTransparentActivationDoesNotImplyTransparentUpdate()
 		{
 			TransparentActivationSupportTestCase.Item item = new TransparentActivationSupportTestCase.Item
-				(this);
+				();
 			Db().Store(item);
 			Db().Commit();
 			item.Update();
@@ -53,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		private Collection4 CommitCapturingUpdatedObjects(IExtObjectContainer container)
 		{
 			Collection4 updated = new Collection4();
-			EventRegistryFor(container).Updated += new Db4objects.Db4o.Events.ObjectEventHandler
+			EventRegistryFor(container).Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
 				(new _IEventListener4_54(updated).OnEvent);
 			container.Commit();
 			return updated;
@@ -66,7 +59,8 @@ namespace Db4objects.Db4o.Tests.Common.TA
 				this.updated = updated;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				ObjectEventArgs objectArgs = (ObjectEventArgs)args;
 				updated.Add(objectArgs.Object);

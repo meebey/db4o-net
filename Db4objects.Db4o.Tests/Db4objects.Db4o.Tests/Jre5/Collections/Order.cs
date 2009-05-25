@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Tests.Common.TA;
@@ -35,3 +36,4 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 		}
 	}
 }
+#endif // !SILVERLIGHT

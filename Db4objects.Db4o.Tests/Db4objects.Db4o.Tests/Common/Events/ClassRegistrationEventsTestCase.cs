@@ -25,8 +25,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			ClassRegistrationEventsTestCase.EventFlag eventFlag = new ClassRegistrationEventsTestCase.EventFlag
 				();
 			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(Db());
-			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_23
-				(eventFlag).OnEvent);
+			registry.ClassRegistered += new System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs>
+				(new _IEventListener4_23(eventFlag).OnEvent);
 			Store(new ClassRegistrationEventsTestCase.Data());
 			Assert.IsTrue(eventFlag.eventOccurred);
 		}

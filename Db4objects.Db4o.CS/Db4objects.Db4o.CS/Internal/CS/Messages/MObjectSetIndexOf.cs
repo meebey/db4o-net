@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.Query.Result;
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MObjectSetIndexOf : MObjectSet, IServerSideMessage
+	public class MObjectSetIndexOf : MObjectSet, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{

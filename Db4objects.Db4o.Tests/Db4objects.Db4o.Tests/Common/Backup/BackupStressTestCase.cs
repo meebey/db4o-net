@@ -1,25 +1,22 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Backup;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Backup
 {
-	public class BackupStressTestCase : IDb4oTestCase, ITestLifeCycle
+	public class BackupStressTestCase : Db4oTestWithTempFile
 	{
 		private static bool verbose = false;
 
 		private static bool runOnOldJDK = false;
-
-		private static readonly string File = Path.GetTempFileName();
 
 		private const int Iterations = 5;
 
@@ -52,18 +49,6 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 			{
 				stressTest.TearDown();
 			}
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
-		{
-			DeleteFile(File);
-		}
-
-		/// <exception cref="System.IO.IOException"></exception>
-		public virtual void TearDown()
-		{
-			DeleteFile(File);
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -116,14 +101,14 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 
 		private Thread StartBackupThread()
 		{
-			Thread thread = new Thread(new _IRunnable_102(this));
+			Thread thread = new Thread(new _IRunnable_91(this));
 			thread.Start();
 			return thread;
 		}
 
-		private sealed class _IRunnable_102 : IRunnable
+		private sealed class _IRunnable_91 : IRunnable
 		{
-			public _IRunnable_102(BackupStressTestCase _enclosing)
+			public _IRunnable_91(BackupStressTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -146,8 +131,7 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 
 		private void OpenDatabase()
 		{
-			DeleteFile(File);
-			_objectContainer = Db4oFactory.OpenFile(Config(), File);
+			_objectContainer = Db4oEmbedded.OpenFile(Config(), TempFile());
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -168,7 +152,7 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 			for (int i = 1; i < _backups; i++)
 			{
 				Stdout("Backup " + i);
-				IObjectContainer container = Db4oFactory.OpenFile(Config(), BackupFile(i));
+				IObjectContainer container = Db4oEmbedded.OpenFile(Config(), BackupFile(i));
 				try
 				{
 					Stdout("Open successful");
@@ -217,7 +201,7 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 
 		private string BackupFile(int count)
 		{
-			return File + count;
+			return TempFile() + count;
 		}
 
 		private void Stdout(string @string)
@@ -228,12 +212,12 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 			}
 		}
 
-		private IConfiguration Config()
+		private IEmbeddedConfiguration Config()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration").Indexed(true
-				);
-			config.ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem)));
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.Common.ObjectClass(typeof(BackupStressItem)).ObjectField("_iteration").Indexed
+				(true);
+			config.Common.ReflectWith(Platform4.ReflectorForType(typeof(BackupStressItem)));
 			return config;
 		}
 	}

@@ -11,16 +11,18 @@ namespace Db4objects.Db4o.Events
 	/// 	</seealso>
 	/// <seealso cref="Db4objects.Db4o.Events.ICancellableEventArgs">Db4objects.Db4o.Events.ICancellableEventArgs
 	/// 	</seealso>
-	public class CancellableObjectEventArgs : Db4objects.Db4o.Events.ObjectEventArgs, 
-		ICancellableEventArgs
+	public class CancellableObjectEventArgs : ObjectEventArgs, ICancellableEventArgs
 	{
 		private bool _cancelled;
+
+		private object _object;
 
 		/// <summary>Creates a new instance for the specified object.</summary>
 		/// <remarks>Creates a new instance for the specified object.</remarks>
 		public CancellableObjectEventArgs(Transaction transaction, object obj) : base(transaction
-			, obj)
+			)
 		{
+			_object = obj;
 		}
 
 		/// <seealso cref="Db4objects.Db4o.Events.ICancellableEventArgs.Cancel">Db4objects.Db4o.Events.ICancellableEventArgs.Cancel
@@ -37,6 +39,14 @@ namespace Db4objects.Db4o.Events
 			get
 			{
 				return _cancelled;
+			}
+		}
+
+		public override object Object
+		{
+			get
+			{
+				return _object;
 			}
 		}
 	}

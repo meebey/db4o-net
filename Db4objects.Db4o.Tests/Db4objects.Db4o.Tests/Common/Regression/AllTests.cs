@@ -6,13 +6,20 @@ using Db4objects.Db4o.Tests.Common.Regression;
 
 namespace Db4objects.Db4o.Tests.Common.Regression
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(Case1207TestCase), typeof(COR57TestCase), typeof(COR234TestCase
-				), typeof(SetRollbackTestCase) };
+			return ComposeTests(new Type[] { typeof(Case1207TestCase), typeof(COR57TestCase), 
+				typeof(SetRollbackTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(COR234TestCase) };
+		}
+		#endif // !SILVERLIGHT
 
 		public static void Main(string[] args)
 		{

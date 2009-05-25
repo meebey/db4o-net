@@ -1,24 +1,23 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Migration;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-	public class TranslatorToTypehandlerMigrationTestCase : ITestLifeCycle
+	public class TranslatorToTypehandlerMigrationTestCase : Db4oTestWithTempFile
 	{
 		public class Item
 		{
@@ -29,8 +28,6 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 			public int _id;
 		}
-
-		private string _fileName;
 
 		internal TranslatorToTypehandlerMigrationTestCase.ItemTranslator _translator;
 
@@ -159,17 +156,9 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
+		public override void SetUp()
 		{
-			_fileName = Path.GetTempFileName();
-			File4.Delete(_fileName);
 			_translator = new TranslatorToTypehandlerMigrationTestCase.ItemTranslator();
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
-		{
-			File4.Delete(_fileName);
 		}
 
 		public virtual void TestMigration()
@@ -289,18 +278,18 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			{
 				_typeHandler.Reset();
 			}
-			IConfiguration configuration = Db4oFactory.NewConfiguration();
+			IEmbeddedConfiguration configuration = NewConfiguration();
 			if (_translator != null)
 			{
-				configuration.ObjectClass(typeof(TranslatorToTypehandlerMigrationTestCase.Item)).
-					Translate(_translator);
+				configuration.Common.ObjectClass(typeof(TranslatorToTypehandlerMigrationTestCase.Item
+					)).Translate(_translator);
 			}
 			if (_typeHandler != null)
 			{
-				configuration.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(TranslatorToTypehandlerMigrationTestCase.Item
-					)), _typeHandler);
+				configuration.Common.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(
+					TranslatorToTypehandlerMigrationTestCase.Item)), _typeHandler);
 			}
-			IObjectContainer db = Db4oFactory.OpenFile(configuration, _fileName);
+			IObjectContainer db = Db4oEmbedded.OpenFile(configuration, TempFile());
 			return db;
 		}
 

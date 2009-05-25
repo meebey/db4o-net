@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Events
@@ -9,25 +8,19 @@ namespace Db4objects.Db4o.Events
 	/// <remarks>Arguments for object related events.</remarks>
 	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
 	/// 	</seealso>
-	public class ObjectEventArgs : TransactionalEventArgs
+	public abstract class ObjectEventArgs : Db4objects.Db4o.Events.TransactionalEventArgs
 	{
-		private object _obj;
-
 		/// <summary>Creates a new instance for the specified object.</summary>
 		/// <remarks>Creates a new instance for the specified object.</remarks>
-		public ObjectEventArgs(Transaction transaction, object obj) : base(transaction)
+		protected ObjectEventArgs(Transaction transaction) : base(transaction)
 		{
-			_obj = obj;
 		}
 
 		/// <summary>The object that triggered this event.</summary>
 		/// <remarks>The object that triggered this event.</remarks>
-		public virtual object Object
+		public abstract object Object
 		{
-			get
-			{
-				return _obj;
-			}
+			get;
 		}
 	}
 }

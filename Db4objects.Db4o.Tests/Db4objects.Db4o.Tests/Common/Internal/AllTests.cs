@@ -15,11 +15,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ClassMetadataIntegrationTestCase), typeof(ClassMetadataTypeHandlerIntegrationTestCase
-				), typeof(Comparable4TestCase), typeof(DeactivateTestCase), typeof(EmbeddedClientObjectContainerTestCase
-				), typeof(EventDispatchersTestCase), typeof(InternalObjectContainerAPITestCase), 
-				typeof(MarshallerFamilyTestCase), typeof(MarshallingBufferTestCase), typeof(MarshallingContextTestCase
-				), typeof(PartialObjectContainerTestCase), typeof(Platform4TestCase), typeof(SerializerTestCase
+			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.Internal.Metadata.AllTests
+				), typeof(ClassMetadataTypeHandlerIntegrationTestCase), typeof(Comparable4TestCase
+				), typeof(DeactivateTestCase), typeof(EmbeddedClientObjectContainerTestCase), typeof(
+				EventDispatchersTestCase), typeof(InternalObjectContainerAPITestCase), typeof(MarshallerFamilyTestCase
+				), typeof(MarshallingBufferTestCase), typeof(MarshallingContextTestCase), typeof(
+				PartialObjectContainerTestCase), typeof(Platform4TestCase), typeof(SerializerTestCase
 				), typeof(TransactionLocalTestCase), typeof(TransactionTestCase) };
 		}
 	}

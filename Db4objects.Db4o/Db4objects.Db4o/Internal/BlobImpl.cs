@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
@@ -22,7 +23,6 @@ namespace Db4objects.Db4o.Internal
 	/// </remarks>
 	/// <moveto>com.db4o.internal.blobs</moveto>
 	/// <exclude></exclude>
-	#if !SILVERLIGHT
 	public class BlobImpl : IBlob, System.ICloneable, IDb4oTypeImpl
 	{
 		public const int CopybufferLength = 4096;
@@ -316,5 +316,5 @@ namespace Db4objects.Db4o.Internal
 			return MemberwiseClone();
 		}
 	}
-	#endif // !SILVERLIGHT
 }
+#endif // !SILVERLIGHT

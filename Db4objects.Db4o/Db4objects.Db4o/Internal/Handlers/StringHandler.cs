@@ -106,7 +106,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private bool IsInvalidSlot(Slot slot)
 		{
-			return (slot.Address() == 0) && (slot.Length() == 0);
+			return slot.IsNull();
 		}
 
 		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer writer, object

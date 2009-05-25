@@ -26,12 +26,12 @@ namespace Db4objects.Db4o.Tests.Common.Api
 
 		public virtual void TestOpenFileWithNullConfiguration()
 		{
-			Assert.Expect(typeof(ArgumentNullException), new _ICodeBlock_21(this));
+			Assert.Expect(typeof(ArgumentNullException), new _ICodeBlock_23(this));
 		}
 
-		private sealed class _ICodeBlock_21 : ICodeBlock
+		private sealed class _ICodeBlock_23 : ICodeBlock
 		{
-			public _ICodeBlock_21(Db4oEmbeddedTestCase _enclosing)
+			public _ICodeBlock_23(Db4oEmbeddedTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

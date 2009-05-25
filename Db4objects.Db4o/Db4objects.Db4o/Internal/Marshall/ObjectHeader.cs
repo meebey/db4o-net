@@ -26,10 +26,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
-		public ObjectHeader(StatefulBuffer writer) : this(writer.Container(), writer)
-		{
-		}
-
 		public ObjectHeader(ObjectContainerBase stream, Db4objects.Db4o.Internal.ClassMetadata
 			 yc, IReadWriteBuffer reader)
 		{

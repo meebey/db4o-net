@@ -931,7 +931,8 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void CancelAdding(Transaction trans, int index)
 		{
-			_btree.NotifyRemoveListener(KeyPatch(index).GetObject());
+			_btree.NotifyRemoveListener(new TransactionContext(trans, KeyPatch(index).GetObject
+				()));
 			if (FreeIfEmpty(trans, _count - 1))
 			{
 				SizeDecrement(trans);

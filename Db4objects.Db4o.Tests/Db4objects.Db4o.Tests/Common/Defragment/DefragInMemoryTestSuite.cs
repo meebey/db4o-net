@@ -1,16 +1,16 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.IO;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
@@ -23,13 +23,10 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 			private readonly IStorage _storage;
 
-			public readonly string _path;
-
-			public StorageSpec(string label, IStorage storage, string path)
+			public StorageSpec(string label, IStorage storage)
 			{
 				_label = label;
 				_storage = storage;
-				_path = path;
 			}
 
 			public virtual IStorage Storage(IStorage storage)
@@ -48,12 +45,10 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public override IFixtureProvider[] FixtureProviders()
 		{
-			string tempFilePath = Path.GetTempFileName();
-			File4.Delete(tempFilePath);
 			return new IFixtureProvider[] { new SimpleFixtureProvider(StorageSpecFixture, new 
 				DefragInMemoryTestSuite.StorageSpec[] { new DefragInMemoryTestSuite.StorageSpec(
-				"memory", null, "backup"), new DefragInMemoryTestSuite.StorageSpec("file", new FileStorage
-				(), tempFilePath) }) };
+				"memory", null), new DefragInMemoryTestSuite.StorageSpec("file", Db4oUnitPlatform
+				.NewPersistentStorage()) }) };
 		}
 
 		public override Type[] TestUnits()
@@ -61,11 +56,15 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return new Type[] { typeof(DefragInMemoryTestSuite.DefragInMemoryTestUnit) };
 		}
 
-		public class DefragInMemoryTestUnit : ITestLifeCycle
+		public class DefragInMemoryTestUnit : TestWithTempFile
 		{
 			public class Item
 			{
 				public int _id;
+
+				public Item()
+				{
+				}
 
 				public Item(int id)
 				{
@@ -100,8 +99,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 			private long BackupLength()
 			{
-				IBin backupBin = BackupStorage().Open(new BinConfiguration(BackupPath(), true, 0, 
-					true));
+				IBin backupBin = BackupStorage().Open(new BinConfiguration(TempFile(), true, 0, true
+					));
 				long backupLength = backupBin.Length();
 				backupBin.Close();
 				return backupLength;
@@ -109,16 +108,11 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 			private DefragmentConfig DefragmentConfig(MemoryStorage storage)
 			{
-				DefragmentConfig defragConfig = new DefragmentConfig(Uri, BackupPath(), new TreeIDMapping
+				DefragmentConfig defragConfig = new DefragmentConfig(Uri, TempFile(), new TreeIDMapping
 					());
 				defragConfig.Db4oConfig(Config(storage));
 				defragConfig.BackupStorage(BackupStorage());
 				return defragConfig;
-			}
-
-			private string BackupPath()
-			{
-				return ((DefragInMemoryTestSuite.StorageSpec)StorageSpecFixture.Value)._path;
 			}
 
 			private IStorage BackupStorage()
@@ -175,15 +169,16 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 
 			/// <exception cref="System.Exception"></exception>
-			public virtual void SetUp()
+			public override void SetUp()
 			{
 				_memoryStorage = new MemoryStorage();
 			}
 
 			/// <exception cref="System.Exception"></exception>
-			public virtual void TearDown()
+			public override void TearDown()
 			{
-				BackupStorage().Delete(BackupPath());
+				BackupStorage().Delete(TempFile());
+				base.TearDown();
 			}
 		}
 	}

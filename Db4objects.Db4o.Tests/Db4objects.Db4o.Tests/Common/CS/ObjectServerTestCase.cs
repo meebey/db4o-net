@@ -1,32 +1,33 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System.IO;
+#if !SILVERLIGHT
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Tests.Common.Api;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class ObjectServerTestCase : ITestLifeCycle
+	public class ObjectServerTestCase : TestWithTempFile
 	{
 		private IExtObjectServer server;
 
 		private string fileName;
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
+		public override void SetUp()
 		{
-			fileName = Path.GetTempFileName();
+			fileName = TempFile();
 			server = Db4oFactory.OpenServer(Db4oFactory.NewConfiguration(), fileName, -1).Ext
 				();
 			server.GrantAccess(Credentials(), Credentials());
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
+		public override void TearDown()
 		{
 			server.Close();
-			new Sharpen.IO.File(fileName).Delete();
+			base.TearDown();
 		}
 
 		public virtual void TestClientCount()
@@ -61,3 +62,4 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		}
 	}
 }
+#endif // !SILVERLIGHT

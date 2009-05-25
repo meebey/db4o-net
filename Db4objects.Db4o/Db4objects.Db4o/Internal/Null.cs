@@ -11,6 +11,10 @@ namespace Db4objects.Db4o.Internal
 	{
 		public static readonly Null Instance = new Null();
 
+		private Null()
+		{
+		}
+
 		public virtual int CompareTo(object a_obj)
 		{
 			if (a_obj == null)
@@ -44,12 +48,12 @@ namespace Db4objects.Db4o.Internal
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj_
 			)
 		{
-			return new _IPreparedComparison_40();
+			return new _IPreparedComparison_43();
 		}
 
-		private sealed class _IPreparedComparison_40 : IPreparedComparison
+		private sealed class _IPreparedComparison_43 : IPreparedComparison
 		{
-			public _IPreparedComparison_40()
+			public _IPreparedComparison_43()
 			{
 			}
 

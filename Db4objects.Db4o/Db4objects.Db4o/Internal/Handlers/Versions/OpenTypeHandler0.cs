@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 					id);
 				if (reader != null)
 				{
-					ObjectHeader oh = new ObjectHeader(reader);
+					ObjectHeader oh = new ObjectHeader(context.Container(), reader);
 					try
 					{
 						if (oh.ClassMetadata() != null)

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Query;
@@ -42,27 +43,27 @@ namespace Db4objects.Db4o.Internal.Callbacks
 			return true;
 		}
 
-		public virtual void ObjectOnNew(Transaction transaction, object obj)
+		public virtual void ObjectOnNew(Transaction transaction, IObjectInfo obj)
 		{
 		}
 
-		public virtual void ObjectOnActivate(Transaction transaction, object obj)
+		public virtual void ObjectOnActivate(Transaction transaction, IObjectInfo obj)
 		{
 		}
 
-		public virtual void ObjectOnUpdate(Transaction transaction, object obj)
+		public virtual void ObjectOnUpdate(Transaction transaction, IObjectInfo obj)
 		{
 		}
 
-		public virtual void ObjectOnDelete(Transaction transaction, object obj)
+		public virtual void ObjectOnDelete(Transaction transaction, IObjectInfo obj)
 		{
 		}
 
-		public virtual void ObjectOnDeactivate(Transaction transaction, object obj)
+		public virtual void ObjectOnDeactivate(Transaction transaction, IObjectInfo obj)
 		{
 		}
 
-		public virtual void ObjectOnInstantiate(Transaction transaction, object obj)
+		public virtual void ObjectOnInstantiate(Transaction transaction, IObjectInfo obj)
 		{
 		}
 

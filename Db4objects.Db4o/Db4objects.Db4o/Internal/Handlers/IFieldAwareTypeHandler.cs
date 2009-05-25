@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
@@ -15,7 +16,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot);
 
-		void CollectIDs(CollectIdContext context, string fieldName);
+		void CollectIDs(CollectIdContext context, IPredicate4 predicate);
 
 		void DeleteMembers(DeleteContextImpl deleteContext, bool isUpdate);
 

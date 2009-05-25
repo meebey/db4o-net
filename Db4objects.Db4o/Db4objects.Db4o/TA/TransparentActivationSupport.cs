@@ -54,16 +54,16 @@ namespace Db4objects.Db4o.TA
 				();
 			SetActivationDepthProvider(container, provider);
 			IEventRegistry registry = EventRegistryFor(container);
-			registry.Instantiated += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_44
-				(this).OnEvent);
-			registry.Created += new Db4objects.Db4o.Events.ObjectEventHandler(new _IEventListener4_49
-				(this).OnEvent);
-			registry.Closing += new Db4objects.Db4o.Events.ObjectContainerEventHandler(new _IEventListener4_55
-				(this).OnEvent);
+			registry.Instantiated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_44(this).OnEvent);
+			registry.Created += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_49(this).OnEvent);
+			registry.Closing += new System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>
+				(new _IEventListener4_55(this).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
-			registry.ClassRegistered += new Db4objects.Db4o.Events.ClassEventHandler(new _IEventListener4_66
-				(processor).OnEvent);
+			registry.ClassRegistered += new System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs>
+				(new _IEventListener4_66(processor).OnEvent);
 		}
 
 		private sealed class _IEventListener4_44
@@ -73,7 +73,8 @@ namespace Db4objects.Db4o.TA
 				this._enclosing = _enclosing;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				this._enclosing.BindActivatableToActivator((ObjectEventArgs)args);
 			}
@@ -88,7 +89,8 @@ namespace Db4objects.Db4o.TA
 				this._enclosing = _enclosing;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				this._enclosing.BindActivatableToActivator((ObjectEventArgs)args);
 			}
@@ -235,7 +237,7 @@ namespace Db4objects.Db4o.TA
 
 		private bool IsEmbeddedClient(IObjectContainer objectContainer)
 		{
-			return objectContainer is EmbeddedClientObjectContainer;
+			return objectContainer is ObjectContainerSession;
 		}
 
 		private sealed class TADiagnosticProcessor

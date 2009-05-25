@@ -15,13 +15,16 @@ namespace Db4objects.Db4o.Events
 	/// 	</seealso>
 	public class QueryEventArgs : ObjectEventArgs
 	{
+		private IQuery _query;
+
 		/// <summary>
 		/// Creates a new instance for the specified
 		/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 		/// instance.
 		/// </summary>
-		public QueryEventArgs(Transaction transaction, IQuery q) : base(transaction, q)
+		public QueryEventArgs(Transaction transaction, IQuery q) : base(transaction)
 		{
+			_query = q;
 		}
 
 		/// <summary>
@@ -33,7 +36,15 @@ namespace Db4objects.Db4o.Events
 		{
 			get
 			{
-				return (IQuery)Object;
+				return _query;
+			}
+		}
+
+		public override object Object
+		{
+			get
+			{
+				return _query;
 			}
 		}
 	}

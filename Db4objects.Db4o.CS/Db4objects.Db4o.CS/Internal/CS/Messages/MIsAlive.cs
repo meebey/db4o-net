@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MIsAlive : Msg, IServerSideMessage
+	public class MIsAlive : Msg, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{

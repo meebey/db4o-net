@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Ext;
@@ -61,3 +62,4 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		}
 	}
 }
+#endif // !SILVERLIGHT

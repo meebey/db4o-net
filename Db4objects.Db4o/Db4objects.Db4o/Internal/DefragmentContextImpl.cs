@@ -390,11 +390,6 @@ namespace Db4objects.Db4o.Internal
 			_source.IncrementOffset(bytes.Length);
 		}
 
-		public void SeekCurrentInt()
-		{
-			Seek(ReadInt());
-		}
-
 		public IReadBuffer Buffer()
 		{
 			return _source;

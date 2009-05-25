@@ -1,21 +1,19 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System.IO;
+#if !SILVERLIGHT
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Internal.CS;
+using Db4objects.Db4o.Tests.Common.Api;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class IsAliveTestCase : ITestLifeCycle
+	public class IsAliveTestCase : TestWithTempFile
 	{
 		private static readonly string Username = "db4o";
 
 		private static readonly string Password = "db4o";
-
-		private string filePath;
 
 		public virtual void TestIsAlive()
 		{
@@ -37,19 +35,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			client.Close();
 		}
 
-		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
-		{
-			filePath = Path.GetTempFileName();
-			File4.Delete(filePath);
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
-		{
-			File4.Delete(filePath);
-		}
-
 		private IConfiguration Config()
 		{
 			return Db4oFactory.NewConfiguration();
@@ -57,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private IObjectServer OpenServer()
 		{
-			IObjectServer server = Db4oFactory.OpenServer(Config(), filePath, -1);
+			IObjectServer server = Db4oFactory.OpenServer(Config(), TempFile(), -1);
 			server.GrantAccess(Username, Password);
 			return server;
 		}
@@ -70,3 +55,4 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		}
 	}
 }
+#endif // !SILVERLIGHT

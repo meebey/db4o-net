@@ -1,27 +1,64 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class SystemInfoTestCase : AbstractDb4oTestCase
+	public class SystemInfoTestCase : Db4oTestWithTempFile, IOptOutNoFileSystemData
 	{
+		private IObjectContainer _db;
+
 		public class Item
 		{
 		}
 
 		public static void Main(string[] arguments)
 		{
-			new SystemInfoTestCase().RunSolo();
+			new ConsoleTestRunner(typeof(SystemInfoTestCase)).Run();
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		public override void SetUp()
+		{
+			_db = Db4oEmbedded.OpenFile(NewConfiguration(), TempFile());
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		public override void TearDown()
+		{
+			Close();
+			base.TearDown();
+		}
+
+		private void Close()
+		{
+			if (_db != null)
+			{
+				_db.Close();
+				_db = null;
+			}
 		}
 
 		public virtual void TestDefaultFreespaceInfo()
 		{
 			AssertFreespaceInfo(FileSession().SystemInfo());
+		}
+
+		private LocalObjectContainer FileSession()
+		{
+			return (LocalObjectContainer)Db();
+		}
+
+		private IExtObjectContainer Db()
+		{
+			return _db.Ext();
 		}
 
 		private void AssertFreespaceInfo(ISystemInfo info)
@@ -38,15 +75,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestTotalSize()
 		{
-			if (Fixture() is AbstractFileBasedDb4oFixture)
-			{
-				// assuming YapFile only
-				AbstractFileBasedDb4oFixture fixture = (AbstractFileBasedDb4oFixture)Fixture();
-				Sharpen.IO.File f = new Sharpen.IO.File(fixture.GetAbsolutePath());
-				long expectedSize = f.Length();
-				long actual = Db().SystemInfo().TotalSize();
-				Assert.AreEqual(expectedSize, actual);
-			}
+			long actual = Db().SystemInfo().TotalSize();
+			Close();
+			long expectedSize = File4.Size(TempFile());
+			Assert.AreEqual(expectedSize, actual);
 		}
 	}
 }

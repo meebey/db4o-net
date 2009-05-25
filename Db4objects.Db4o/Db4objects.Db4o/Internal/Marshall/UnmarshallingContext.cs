@@ -38,16 +38,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual object Read()
 		{
-			return ReadInternal(false);
-		}
-
-		public virtual object ReadPrefetch()
-		{
-			return ReadInternal(true);
-		}
-
-		private object ReadInternal(bool doAdjustActivationDepthForPrefetch)
-		{
 			if (!BeginProcessing())
 			{
 				return _object;
@@ -66,7 +56,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return _object;
 			}
 			_reference.ClassMetadata(classMetadata);
-			AdjustActivationDepth(doAdjustActivationDepthForPrefetch);
+			AdjustActivationDepth();
 			if (_checkIDTree)
 			{
 				object objectInCacheFromClassCreation = Transaction().ObjectForIdFromCache(ObjectID
@@ -99,25 +89,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			throw new InvalidSlotException("id: " + ObjectID());
 		}
 
-		private void AdjustActivationDepth(bool doAdjustActivationDepthForPrefetch)
+		private void AdjustActivationDepth()
 		{
-			if (doAdjustActivationDepthForPrefetch)
+			if (UnknownActivationDepth.Instance == _activationDepth)
 			{
-				AdjustActivationDepthForPrefetch();
+				_activationDepth = Container().DefaultActivationDepth(ClassMetadata());
 			}
-			else
-			{
-				if (UnknownActivationDepth.Instance == _activationDepth)
-				{
-					_activationDepth = Container().DefaultActivationDepth(ClassMetadata());
-				}
-			}
-		}
-
-		private void AdjustActivationDepthForPrefetch()
-		{
-			ActivationDepth(ActivationDepthProvider().ActivationDepthFor(ClassMetadata(), ActivationMode
-				.Prefetch));
 		}
 
 		private IActivationDepthProvider ActivationDepthProvider()

@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MVersion : Msg, IServerSideMessage
+	public class MVersion : Msg, IMessageWithResponse
 	{
 		public virtual bool ProcessAtServer()
 		{

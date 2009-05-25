@@ -44,6 +44,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		[System.NonSerialized]
 		private QueryEvaluationMode _evaluationMode;
 
+		public int _prefetchDepth;
+
+		public int _prefetchCount;
+
 		public int _evaluationModeAsInt;
 
 		public IQueryComparator _comparator;
@@ -63,6 +67,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_trans = a_trans;
 			i_parent = a_parent;
 			i_field = a_field;
+		}
+
+		public virtual void CaptureQueryResultConfig()
+		{
+			Config4Impl config = _trans.Container().Config();
+			_evaluationMode = config.QueryEvaluationMode();
+			_prefetchDepth = config.PrefetchDepth();
+			_prefetchCount = config.PrefetchObjectCount();
 		}
 
 		internal virtual void AddConstraint(QCon a_constraint)
@@ -145,7 +157,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (i_constraints.Size() == 0)
 			{
-				_trans.Container().ClassCollection().IterateTopLevelClasses(new _IVisitor4_126(this
+				_trans.Container().ClassCollection().IterateTopLevelClasses(new _IVisitor4_137(this
 					));
 			}
 			IEnumerator i = IterateConstraints();
@@ -157,9 +169,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return null;
 		}
 
-		private sealed class _IVisitor4_126 : IVisitor4
+		private sealed class _IVisitor4_137 : IVisitor4
 		{
-			public _IVisitor4_126(QQueryBase _enclosing)
+			public _IVisitor4_137(QQueryBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -314,7 +326,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				// Let's see how this works out. We may need to join networks.
 				run.value = 0;
 				// prevent a double run of this code
-				Stream().ClassCollection().AttachQueryNode(fieldName, new _IVisitor4_262(this));
+				Stream().ClassCollection().AttachQueryNode(fieldName, new _IVisitor4_273(this));
 			}
 			CheckConstraintsEvaluationMode();
 			BooleanByRef foundClass = new BooleanByRef(false);
@@ -329,9 +341,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return foundClass.value;
 		}
 
-		private sealed class _IVisitor4_262 : IVisitor4
+		private sealed class _IVisitor4_273 : IVisitor4
 		{
-			public _IVisitor4_262(QQueryBase _enclosing)
+			public _IVisitor4_273(QQueryBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 				this.untypedFieldConstraintCollected = false;
@@ -430,7 +442,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return null;
 			}
-			IQueryResult queryResult = Stream().ClassOnlyQuery(_trans, clazz);
+			IQueryResult queryResult = Stream().ClassOnlyQuery(this, clazz);
 			if (queryResult == null)
 			{
 				return null;
@@ -487,7 +499,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			QQueryBase.CreateCandidateCollectionResult r = CreateCandidateCollection();
 			Collection4 executionPath = ExecutionPath(r);
 			IEnumerator candidateCollection = new Iterator4Impl(r.candidateCollection);
-			MappingIterator executeCandidates = new _MappingIterator_421(executionPath, candidateCollection
+			MappingIterator executeCandidates = new _MappingIterator_432(executionPath, candidateCollection
 				);
 			CompositeIterator4 resultingIDs = new CompositeIterator4(executeCandidates);
 			if (!r.checkDuplicates)
@@ -497,9 +509,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return CheckDuplicates(resultingIDs);
 		}
 
-		private sealed class _MappingIterator_421 : MappingIterator
+		private sealed class _MappingIterator_432 : MappingIterator
 		{
-			public _MappingIterator_421(Collection4 executionPath, IEnumerator baseArg1) : base
+			public _MappingIterator_432(Collection4 executionPath, IEnumerator baseArg1) : base
 				(baseArg1)
 			{
 				this.executionPath = executionPath;
@@ -515,12 +527,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private IEnumerator CheckDuplicates(CompositeIterator4 executeAllCandidates)
 		{
-			return Iterators.Filter(executeAllCandidates, new _IPredicate4_437());
+			return Iterators.Filter(executeAllCandidates, new _IPredicate4_448());
 		}
 
-		private sealed class _IPredicate4_437 : IPredicate4
+		private sealed class _IPredicate4_448 : IPredicate4
 		{
-			public _IPredicate4_437()
+			public _IPredicate4_448()
 			{
 				this.ids = new TreeInt(0);
 			}
@@ -587,16 +599,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					else
 					{
-						candidates.Traverse(new _IVisitor4_501(this, executionPath, stream, result));
+						candidates.Traverse(new _IVisitor4_512(this, executionPath, stream, result));
 					}
 				}
 			}
 			Sort(result);
 		}
 
-		private sealed class _IVisitor4_501 : IVisitor4
+		private sealed class _IVisitor4_512 : IVisitor4
 		{
-			public _IVisitor4_501(QQueryBase _enclosing, Collection4 executionPath, ObjectContainerBase
+			public _IVisitor4_512(QQueryBase _enclosing, Collection4 executionPath, ObjectContainerBase
 				 stream, IdListQueryResult result)
 			{
 				this._enclosing = _enclosing;
@@ -619,20 +631,20 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						string fieldName = (string)(itPath.Current);
 						if (ids != null)
 						{
-							ids.Traverse(new _IVisitor4_512(this, stream, fieldName, idsNew));
+							ids.Traverse(new _IVisitor4_523(this, stream, fieldName, idsNew));
 						}
 						ids = (TreeInt)idsNew.value;
 					}
 					if (ids != null)
 					{
-						ids.Traverse(new _IVisitor4_529(result));
+						ids.Traverse(new _IVisitor4_540(result));
 					}
 				}
 			}
 
-			private sealed class _IVisitor4_512 : IVisitor4
+			private sealed class _IVisitor4_523 : IVisitor4
 			{
-				public _IVisitor4_512(_IVisitor4_501 _enclosing, ObjectContainerBase stream, string
+				public _IVisitor4_523(_IVisitor4_512 _enclosing, ObjectContainerBase stream, string
 					 fieldName, ObjectByRef idsNew)
 				{
 					this._enclosing = _enclosing;
@@ -656,7 +668,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 
-				private readonly _IVisitor4_501 _enclosing;
+				private readonly _IVisitor4_512 _enclosing;
 
 				private readonly ObjectContainerBase stream;
 
@@ -665,9 +677,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				private readonly ObjectByRef idsNew;
 			}
 
-			private sealed class _IVisitor4_529 : IVisitor4
+			private sealed class _IVisitor4_540 : IVisitor4
 			{
-				public _IVisitor4_529(IdListQueryResult result)
+				public _IVisitor4_540(IdListQueryResult result)
 				{
 					this.result = result;
 				}
@@ -939,12 +951,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool HasOrJoins()
 		{
-			return ForEachConstraintRecursively(new _IFunction4_746());
+			return ForEachConstraintRecursively(new _IFunction4_757());
 		}
 
-		private sealed class _IFunction4_746 : IFunction4
+		private sealed class _IFunction4_757 : IFunction4
 		{
-			public _IFunction4_746()
+			public _IFunction4_757()
 			{
 			}
 
@@ -966,12 +978,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void RemoveJoins()
 		{
-			ForEachConstraintRecursively(new _IFunction4_762());
+			ForEachConstraintRecursively(new _IFunction4_773());
 		}
 
-		private sealed class _IFunction4_762 : IFunction4
+		private sealed class _IFunction4_773 : IFunction4
 		{
-			public _IFunction4_762()
+			public _IFunction4_773()
 			{
 			}
 
@@ -1011,6 +1023,16 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 			}
 			return false;
+		}
+
+		public virtual int PrefetchDepth()
+		{
+			return _prefetchDepth;
+		}
+
+		public virtual int PrefetchCount()
+		{
+			return _prefetchCount;
 		}
 
 		public override string ToString()

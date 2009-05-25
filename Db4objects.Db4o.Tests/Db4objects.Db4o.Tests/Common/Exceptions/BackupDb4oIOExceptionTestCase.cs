@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				ExceptionSimulatingStorage.exception = true;
+				this._enclosing.TriggerException(true);
 				this._enclosing.Db().Backup(BackupDb4oIOExceptionTestCase.BackupFile);
 			}
 

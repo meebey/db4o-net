@@ -1,24 +1,28 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class ExceptionSimulatingStorage : Db4objects.Db4o.IO.StorageDecorator
+	public class ExceptionSimulatingStorage : StorageDecorator
 	{
 		private IoAdapter _delegate = new RandomAccessFileAdapter();
 
-		public static bool exception = false;
+		private readonly IExceptionFactory _exceptionFactory;
 
-		public ExceptionSimulatingStorage(IStorage storage) : base(storage)
+		private readonly BooleanByRef _triggersException = new BooleanByRef(false);
+
+		public ExceptionSimulatingStorage(IStorage storage, IExceptionFactory exceptionFactory
+			) : base(storage)
 		{
+			_exceptionFactory = exceptionFactory;
 		}
 
 		public override void Delete(string path)
 		{
-			if (exception)
+			if (TriggersException())
 			{
 				return;
 			}
@@ -27,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public override bool Exists(string path)
 		{
-			if (exception)
+			if (TriggersException())
 			{
 				return false;
 			}
@@ -39,21 +43,40 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		protected override IBin Decorate(IBin bin)
 		{
-			return new ExceptionSimulatingStorage.ExceptionSimulatingBin(bin);
+			return new ExceptionSimulatingStorage.ExceptionSimulatingBin(bin, _exceptionFactory
+				, _triggersException);
 		}
 
-		internal class ExceptionSimulatingBin : Db4objects.Db4o.IO.BinDecorator
+		public virtual void TriggerException(bool exception)
 		{
-			public ExceptionSimulatingBin(IBin bin) : base(bin)
+			this._triggersException.value = exception;
+		}
+
+		public virtual bool TriggersException()
+		{
+			return this._triggersException.value;
+		}
+
+		internal class ExceptionSimulatingBin : BinDecorator
+		{
+			private readonly IExceptionFactory _exceptionFactory;
+
+			private readonly BooleanByRef _triggersException;
+
+			public ExceptionSimulatingBin(IBin bin, IExceptionFactory exceptionFactory, BooleanByRef
+				 triggersException) : base(bin)
 			{
+				_exceptionFactory = exceptionFactory;
+				_triggersException = triggersException;
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override int Read(long pos, byte[] bytes, int length)
 			{
-				if (exception)
+				if (TriggersException())
 				{
-					throw new Db4oIOException();
+					_exceptionFactory.ThrowException();
+					return 0;
 				}
 				else
 				{
@@ -64,9 +87,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Sync()
 			{
-				if (exception)
+				if (TriggersException())
 				{
-					throw new Db4oIOException();
+					_exceptionFactory.ThrowException();
 				}
 				else
 				{
@@ -77,9 +100,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Write(long pos, byte[] buffer, int length)
 			{
-				if (exception)
+				if (TriggersException())
 				{
-					throw new Db4oIOException();
+					_exceptionFactory.ThrowException();
 				}
 				else
 				{
@@ -90,9 +113,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Close()
 			{
-				if (exception)
+				if (TriggersException())
 				{
-					throw new Db4oIOException();
+					_exceptionFactory.ThrowException();
 				}
 				else
 				{
@@ -103,14 +126,20 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override long Length()
 			{
-				if (exception)
+				if (TriggersException())
 				{
-					throw new Db4oIOException();
+					_exceptionFactory.ThrowException();
+					return 0;
 				}
 				else
 				{
 					return _bin.Length();
 				}
+			}
+
+			private bool TriggersException()
+			{
+				return _triggersException.value;
 			}
 		}
 	}

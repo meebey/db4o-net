@@ -9,10 +9,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 	/// <exclude></exclude>
 	public class Path4TestCase : ITestCase
 	{
+		#if !SILVERLIGHT
 		public virtual void TestGetTempFileName()
 		{
 			string tempFileName = Path.GetTempFileName();
 			Assert.IsTrue(System.IO.File.Exists(tempFileName));
 		}
+		#endif // !SILVERLIGHT
 	}
 }

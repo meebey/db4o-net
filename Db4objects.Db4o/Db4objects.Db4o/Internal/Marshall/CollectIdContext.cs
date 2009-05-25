@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
@@ -62,7 +61,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _objectHeader.ClassMetadata();
 		}
 
-		public virtual Tree Ids()
+		public virtual TreeInt Ids()
 		{
 			return _collector.Ids();
 		}

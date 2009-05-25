@@ -1,33 +1,20 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System.IO;
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Config;
 
 namespace Db4objects.Db4o.Tests.Common.Config
 {
-	public class GlobalVsNonStaticConfigurationTestCase : IDb4oTestCase, ITestLifeCycle
+	public class GlobalVsNonStaticConfigurationTestCase : Db4oTestWithTempFile
 	{
 		public static void Main(string[] args)
 		{
 			new ConsoleTestRunner(typeof(GlobalVsNonStaticConfigurationTestCase)).Run();
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void SetUp()
-		{
-			new Sharpen.IO.File(Filename).Delete();
-		}
-
-		/// <exception cref="System.Exception"></exception>
-		public virtual void TearDown()
-		{
-			new Sharpen.IO.File(Filename).Delete();
 		}
 
 		public class Data
@@ -40,15 +27,14 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private static readonly string Filename = Path.GetTempFileName();
-
 		public virtual void TestOpenWithNonStaticConfiguration()
 		{
-			IConfiguration config1 = Db4oFactory.NewConfiguration();
-			config1.ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_43(config1));
-			IConfiguration config2 = Db4oFactory.NewConfiguration();
-			IObjectContainer db2 = Db4oFactory.OpenFile(config2, Filename);
+			IEmbeddedConfiguration config1 = NewConfiguration();
+			config1.File.ReadOnly = true;
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_30(this, config1
+				));
+			IEmbeddedConfiguration config2 = NewConfiguration();
+			IObjectContainer db2 = Db4oEmbedded.OpenFile(config2, TempFile());
 			try
 			{
 				db2.Store(new GlobalVsNonStaticConfigurationTestCase.Data(2));
@@ -61,60 +47,69 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _ICodeBlock_43 : ICodeBlock
+		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _ICodeBlock_43(IConfiguration config1)
+			public _ICodeBlock_30(GlobalVsNonStaticConfigurationTestCase _enclosing, IEmbeddedConfiguration
+				 config1)
 			{
+				this._enclosing = _enclosing;
 				this.config1 = config1;
 			}
 
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenFile(config1, GlobalVsNonStaticConfigurationTestCase.Filename);
+				Db4oEmbedded.OpenFile(config1, this._enclosing.TempFile());
 			}
 
-			private readonly IConfiguration config1;
+			private readonly GlobalVsNonStaticConfigurationTestCase _enclosing;
+
+			private readonly IEmbeddedConfiguration config1;
 		}
 
+		#if !SILVERLIGHT
 		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void TestOpenWithStaticConfiguration()
 		{
 			Db4oFactory.Configure().ReadOnly(true);
-			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_64());
+			Assert.Expect(typeof(DatabaseReadOnlyException), new _ICodeBlock_53(this));
 			Db4oFactory.Configure().ReadOnly(false);
-			IObjectContainer db = Db4oFactory.OpenFile(Filename);
+			IObjectContainer db = Db4oFactory.OpenFile(TempFile());
 			db.Store(new GlobalVsNonStaticConfigurationTestCase.Data(1));
 			db.Close();
-			db = Db4oFactory.OpenFile(Filename);
+			db = Db4oFactory.OpenFile(TempFile());
 			Assert.AreEqual(1, db.Query(typeof(GlobalVsNonStaticConfigurationTestCase.Data)).
 				Count);
 			db.Close();
 		}
+		#endif // !SILVERLIGHT
 
-		private sealed class _ICodeBlock_64 : ICodeBlock
+		private sealed class _ICodeBlock_53 : ICodeBlock
 		{
-			public _ICodeBlock_64()
+			public _ICodeBlock_53(GlobalVsNonStaticConfigurationTestCase _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenFile(GlobalVsNonStaticConfigurationTestCase.Filename);
+				Db4oFactory.OpenFile(this._enclosing.TempFile());
 			}
+
+			private readonly GlobalVsNonStaticConfigurationTestCase _enclosing;
 		}
 
 		public virtual void TestIndependentObjectConfigs()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			IObjectClass objectConfig = config.ObjectClass(typeof(GlobalVsNonStaticConfigurationTestCase.Data
+			IEmbeddedConfiguration config = NewConfiguration();
+			IObjectClass objectConfig = config.Common.ObjectClass(typeof(GlobalVsNonStaticConfigurationTestCase.Data
 				));
 			objectConfig.Translate(new TNull());
-			IConfiguration otherConfig = Db4oFactory.NewConfiguration();
+			IEmbeddedConfiguration otherConfig = NewConfiguration();
 			Assert.AreNotSame(config, otherConfig);
-			Config4Class otherObjectConfig = (Config4Class)otherConfig.ObjectClass(typeof(GlobalVsNonStaticConfigurationTestCase.Data
-				));
+			Config4Class otherObjectConfig = (Config4Class)otherConfig.Common.ObjectClass(typeof(
+				GlobalVsNonStaticConfigurationTestCase.Data));
 			Assert.AreNotSame(objectConfig, otherObjectConfig);
 			Assert.IsNull(otherObjectConfig.GetTranslator());
 		}

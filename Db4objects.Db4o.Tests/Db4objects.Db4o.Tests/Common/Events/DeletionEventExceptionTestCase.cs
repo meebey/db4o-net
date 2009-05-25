@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		public virtual void TestDeletionEvents()
 		{
-			ServerEventRegistry().Deleting += new Db4objects.Db4o.Events.CancellableObjectEventHandler
+			ServerEventRegistry().Deleting += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
 				(new _IEventListener4_22().OnEvent);
 			object item = ((EventsTestCaseBase.Item)RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item
 				)));

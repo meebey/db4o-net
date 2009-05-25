@@ -4,7 +4,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
-	public sealed class MTaIsDeleted : MsgD, IServerSideMessage
+	public sealed class MTaIsDeleted : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{

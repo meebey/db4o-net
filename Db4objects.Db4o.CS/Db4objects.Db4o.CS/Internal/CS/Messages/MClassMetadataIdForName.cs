@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <exclude></exclude>
-	public class MClassMetadataIdForName : MsgD, IServerSideMessage
+	public class MClassMetadataIdForName : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{

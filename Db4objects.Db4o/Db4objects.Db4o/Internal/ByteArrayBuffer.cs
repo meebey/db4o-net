@@ -19,10 +19,10 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public ByteArrayBuffer(int a_length)
+		public ByteArrayBuffer(int length)
 		{
 			// for coding convenience, we allow objects to grab into the buffer
-			_buffer = new byte[a_length];
+			_buffer = new byte[length];
 		}
 
 		public ByteArrayBuffer(byte[] buffer)
@@ -266,11 +266,6 @@ namespace Db4objects.Db4o.Internal
 			return _offset;
 		}
 
-		public virtual void SeekCurrentInt()
-		{
-			Seek(ReadInt());
-		}
-
 		public virtual void EnsureSize(int size)
 		{
 			if (size == _buffer.Length)
@@ -278,6 +273,11 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			_buffer = new byte[size];
+		}
+
+		public virtual void Skip(int length)
+		{
+			Seek(_offset + length);
 		}
 	}
 }

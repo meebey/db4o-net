@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.CS.Messages;
 namespace Db4objects.Db4o.Internal.CS.Messages
 {
 	/// <summary>get the classname for an internal ID</summary>
-	public sealed class MClassNameForID : MsgD, IServerSideMessage
+	public sealed class MClassNameForID : MsgD, IMessageWithResponse
 	{
 		public bool ProcessAtServer()
 		{
