@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal
 		private static IClientServerFactory DefaultClientServerFactory()
 		{
 			Assembly csAssembly = Assembly.Load(ClientServerAssemblyName());
-			return (IClientServerFactory) Activator.CreateInstance(csAssembly.GetType("Db4objects.Db4o.Internal.CS.Config.ClientServerFactoryImpl"));
+			return (IClientServerFactory) Activator.CreateInstance(csAssembly.GetType("Db4objects.Db4o.CS.Internal.Config.ClientServerFactoryImpl"));
 		}
 
 		private static string ClientServerAssemblyName()
