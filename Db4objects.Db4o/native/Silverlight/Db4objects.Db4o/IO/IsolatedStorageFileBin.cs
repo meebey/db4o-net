@@ -50,10 +50,16 @@ namespace Db4objects.Db4o.IO
         	private IsolatedStorageFileStream OpenFile(BinConfiguration config, IsolatedStorageFile store)
         	{
         		_fullPath = config.Uri();
-				IsolatedStorageFileStream stream = new IsolatedStorageFileStream(config.Uri(), FileMode.OpenOrCreate, FileAccessFor(config), FileShareFor(config), store);
+        		string path = config.Uri();
+        		IsolatedStorageFileStream stream = new IsolatedStorageFileStream(path, FileModeFor(store, path), FileAccessFor(config), FileShareFor(config), store);
         		Fill(stream, config.InitialLength(), 0);
 
 				return stream;
+        	}
+
+        	private static FileMode FileModeFor(IsolatedStorageFile store, string path)
+        	{
+        		return store.FileExists(path) ? FileMode.Open : FileMode.CreateNew;
         	}
 
         	private static void Fill(Stream stream, long length, byte value)
