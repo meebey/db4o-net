@@ -66,6 +66,7 @@
     <Compile Include="Db4objects.Db4o.Silverlight.TestStart\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Db4objects.Db4o.Silverlight.TestStart\SilverlightTestListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

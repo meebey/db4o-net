@@ -68,7 +68,7 @@
 <body>
 	<div style="border-style: groove; border-width: medium; background-color: #FFFFCC; position: fixed; top: 40px; right: 40px; font-family: Verdana; width: 100px; height: 80px;"> 
 		Total: <div id="Total">0</div>
-		Erros: <div id="Errors">0</div>
+		Errors: <div id="Errors">0</div>
 	</div>
 	
     <!-- Runtime errors from Silverlight will be displayed here.
@@ -100,11 +100,7 @@
 		var errorCount = 0;
 		var testCount = 0;
 		var currentId = 0;
-
-		function Button1_onclick() {
-			append("Sei la eu...");
-		}
-
+		
 		function updateTestInfo() {
 			errors.innerHTML = errorCount + "";
 			total.innerHTML = testCount + "";
@@ -113,7 +109,7 @@
 		function newTest(message) {
 			testCount++;
 			updateTestInfo();
-			return appendInternal(message, "normal");
+			return appendInternal(testCount + ") " + message, "normal");
 		}
 
 		function append(message) {
@@ -130,16 +126,13 @@
 			return appendInternal(exception, "failure");
 		}
 
-		function appendTestsResult(testCount, errorCount, elapsedTimeInSeconds) {
+		function appendTestsResult(elapsedTimeInSeconds) {
 			return appendInternal(
 					testResultMessageFor(testCount, errorCount, elapsedTimeInSeconds),
 					classFor(errorCount));
 		}
 
 		function testResultMessageFor(testCount, errorCount, elapsedTimeInSeconds) {
-			//Mais um commentário
-			//return statusMessageFor(errorCount) + ": " + successfullCount(testCount, errorCount) + "/" + testCount + " in " + elapsedTimeInSeconds + " seconds";
-
 			var msg = testCount + " tests";
 			if (errorCount > 0) {
 				msg = errorCount + " tests failed out of " + testCount;
