@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			get
 			{
 				return CommonCode + @"
+
 namespace Db4objects.Db4o.Config
 {
    	public interface IConfiguration
@@ -62,6 +63,11 @@ namespace Db4objects.Db4o
         {
             return null;
         }
+
+		public static string Version()
+		{
+			return com.db4o.Db4o.Version();
+		}
 	}
 
 	class ObjectContainerAdapter : IExtObjectContainer
@@ -124,6 +130,7 @@ namespace Db4objects.Db4o
 			get
 			{
 				return CommonCode + @"
+
 namespace Db4objects.Db4o
 {
 	using Db4objects.Db4o.Ext;
@@ -133,6 +140,11 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenFile(string fname)
 		{
 			return new ObjectContainerAdapter(com.db4o.Db4o.openFile(fname));
+		}
+
+		public static string Version()
+		{
+			return com.db4o.Db4o.version();
 		}
 	}
 
@@ -182,6 +194,14 @@ namespace Db4objects.Db4o.Ext
 	}
 }
 
+namespace Db4objects.Db4o.Foundation
+{
+	public interface IFunction4
+	{
+		object Apply(object value);
+	}
+}
+
 namespace Db4objects.Db4o
 {
 	using Db4objects.Db4o.Ext;
@@ -221,6 +241,11 @@ namespace Sharpen
 		public static string Substring(string s, int startIndex, int endIndex)
 		{
 			return s.Substring(startIndex, endIndex - startIndex);
+		}
+
+		public static string Substring(string s, int startIndex)
+		{
+			return s.Substring(startIndex);
 		}
     }
 }
