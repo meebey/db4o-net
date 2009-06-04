@@ -1,14 +1,7 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Db4objects.Db4o;
-using Db4objects.Db4o.Linq;
-
-using Db4oUnit;
-using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
@@ -18,18 +11,29 @@ namespace Db4objects.Db4o.Linq.Tests
 		{
 			public string Name;
 			public int Age;
+			public bool IsFriend;
 
 			public override bool Equals(object obj)
 			{
 				Person p = obj as Person;
 				if (p == null) return false;
 
-				return p.Name == this.Name && p.Age == this.Age;
+				return p.Name == Name && p.Age == Age && (p.IsFriend == IsFriend);
 			}
 
 			public override int GetHashCode()
 			{
-				return this.Age ^ this.Name.GetHashCode();
+				return Age ^ Name.GetHashCode() ^ IsFriend.GetHashCode();
+			}
+
+			public bool	GetIsFriend()
+			{
+				return IsFriend;
+			}
+
+			public Person Self()
+			{
+				return this;
 			}
 		}
 
@@ -43,6 +47,7 @@ namespace Db4objects.Db4o.Linq.Tests
 		public class Thing
 		{
 			public Kind Kind;
+			public Person Owner;
 
 			public override bool Equals(object obj)
 			{
@@ -54,24 +59,48 @@ namespace Db4objects.Db4o.Linq.Tests
 
 			public override int GetHashCode()
 			{
-				return this.Kind.GetHashCode();
+				return Kind.GetHashCode();
 			}
+		}
+
+		protected IEnumerable<Person> People()
+		{
+			return new[]
+					{
+						new Person {Name = "jb", Age = 24, IsFriend = true},
+						new Person {Name = "ana", Age = 20, IsFriend = false},
+						new Person {Name = "reg", Age = 25, IsFriend = false},
+						new Person {Name = "ro", Age = 32, IsFriend = false},
+						new Person {Name = "jb", Age = 7, IsFriend = true},
+						new Person {Name = "jb", Age = 28, IsFriend = true},
+						new Person {Name = "jb", Age = 34, IsFriend = true}
+					};
+			
+		}
+
+		protected IEnumerable<Thing> Things(IList<Person> people)
+		{
+			return new []
+			       	{ 
+						new Thing { Kind = Kind.Plane, Owner = people[0] },
+						new Thing { Kind = Kind.Car, Owner = people[1] },
+						new Thing { Kind = Kind.Plane, Owner = people[2] },
+						new Thing { Kind = Kind.Other, Owner = people[3] }
+					};
 		}
 
 		protected override void Store()
 		{
-			Store(new Person { Name = "jb", Age = 24 });
-			Store(new Person { Name = "ana", Age = 20 });
-			Store(new Person { Name = "reg", Age = 25 });
-			Store(new Person { Name = "ro", Age = 32 });
-			Store(new Person { Name = "jb", Age = 7 });
-			Store(new Person { Name = "jb", Age = 28 });
-			Store(new Person { Name = "jb", Age = 34 });
+			List<Person> people = People().ToList();
+			foreach (var person in people)
+			{
+				Store(person);
+			}
 
-			Store(new Thing { Kind = Kind.Plane });
-			Store(new Thing { Kind = Kind.Car });
-			Store(new Thing { Kind = Kind.Plane });
-			Store(new Thing { Kind = Kind.Other });
+			foreach (var thing in Things(people))
+			{
+				Store(thing);	
+			}
 		}
 
 		public void TestEqualsInWhere()
@@ -83,13 +112,7 @@ namespace Db4objects.Db4o.Linq.Tests
 							  where p.Name == "jb"
 							  select p;
 
-					AssertSet(new[]
-						{
-							new Person { Name = "jb", Age = 24 },
-							new Person { Name = "jb", Age = 7 },
-							new Person { Name = "jb", Age = 28 },
-							new Person { Name = "jb", Age = 34 },
-						}, jbs);
+					AssertSet(People().Where(p => p.Name == "jb"), jbs);
 				});
 		}
 
@@ -119,13 +142,7 @@ namespace Db4objects.Db4o.Linq.Tests
 							  where "jb" == p.Name
 							  select p;
 
-					AssertSet(new[]
-						{
-							new Person { Name = "jb", Age = 24 },
-							new Person { Name = "jb", Age = 7 },
-							new Person { Name = "jb", Age = 28 },
-							new Person { Name = "jb", Age = 34 },
-						}, jbs);
+					AssertSet(People().Where(p => p.Name == "jb"), jbs);
 				});
 		}
 
@@ -138,26 +155,30 @@ namespace Db4objects.Db4o.Linq.Tests
 								 where p.Age < 25
 								 select p;
 
-					AssertSet(new[]
-						{
-							new Person { Name = "jb", Age = 24 },
-							new Person { Name = "ana", Age = 20 },
-							new Person { Name = "jb", Age = 7 }
-						}, youngs);
+					AssertSet(People().Where(p => p.Age < 25), youngs);
 				});
 		}
 
 		public void TestSimpleAnd()
 		{
-			AssertQuery("(Person(((Name == 'jb') and (Age > 10)) and (Age < 30)))",
-				delegate
-				{
-					var ages = from Person p in Db()
-							   where p.Name == "jb" && p.Age > 10 && p.Age < 30
-							   select p.Age;
+			AssertQuery(from Person p1 in Db()
+			            where p1.Name == "jb" && p1.Age > 10 && p1.Age < 30
+			            select p1.Age, 
+						
+						"(Person(((Name == 'jb') and (Age > 10)) and (Age < 30)))", 
+						
+						new[] { 24, 28 });
+		}
 
-					AssertSet(new[] { 24, 28 }, ages);
-				});
+		public void _TestSimpleAndOnMultipleDescend()
+		{
+			AssertQuery(from Thing t in Db()
+						where t.Owner.Name == "jb" && t.Owner.Age > 10 && t.Owner.Age < 30
+						select t.Owner.Age,
+
+						"(Person(((Name == 'jb') and (Age > 10)) and (Age < 30)))",
+
+						new[] { 24 });
 		}
 
 		public void TestSimpleOr()
@@ -170,6 +191,50 @@ namespace Db4objects.Db4o.Linq.Tests
 							   select p.Age;
 
 					AssertSet(new[] { 7, 32, 34 }, ages);
+				});
+		}
+
+		//TODO: Add support
+		public void _TestNotMethodCall()
+		{
+			AssertQuery("(Person(IsFriend == False))",
+				delegate
+				{
+					var notFriends = from Person p in Db()
+									 where !p.GetIsFriend()
+									 select p;
+
+					AssertSet(
+						People().Where(p => !p.GetIsFriend()),
+						notFriends);
+				});
+		}
+
+		//TODO: Add support
+		public void _TestNotMethodCallChain()
+		{
+			AssertQuery(from Thing t in Db()
+						where !t.Owner.GetIsFriend()
+						select t,
+
+						"(Thing(Owner(IsFriend == False)))",
+
+						Things(People().ToList()).Where(t => !t.Owner.GetIsFriend()).ToArray());
+
+		}
+
+		public void TestNotBoolean()
+		{
+			AssertQuery("(Person(IsFriend == False))",
+				delegate
+				{
+					var notFriends = from Person p in Db()
+									 where !p.IsFriend
+									 select p;
+
+					AssertSet(
+						People().Where(p => !p.IsFriend),
+						notFriends);
 				});
 		}
 

@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 				return;
 			}
 
-			CannotOptimize(m);
+			AnalyseMethod(Recorder, m.Method);
 		}
 
 		private static bool IsStringMethod(MethodInfo method)
@@ -121,7 +121,8 @@ namespace Db4objects.Db4o.Linq.Expressions
 				ProcessConditionalExpression(b);
 				return;
 			}
-			else if (IsComparisonExpression(b))
+			
+			if (IsComparisonExpression(b))
 			{
 				ProcessPredicateExpression(b);
 				return;
@@ -135,10 +136,18 @@ namespace Db4objects.Db4o.Linq.Expressions
 			if (u.NodeType == ExpressionType.Not)
 			{
 				Visit(u.Operand);
+
+				if (u.Operand.NodeType == ExpressionType.MemberAccess)
+				{
+					Recorder.Add(ctx => ctx.PushConstraint(ctx.CurrentQuery.Constrain(false)));
+					return;
+				}
+
 				RecordConstraintApplication(c => c.Not());
 				return;
 			}
-			else if (u.NodeType == ExpressionType.Convert)
+			
+			if (u.NodeType == ExpressionType.Convert)
 			{
 				Visit(u.Operand);
 				return;
@@ -162,7 +171,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 					break;
 			}
 		}
-
+	
 		private void ProcessPredicateExpression(BinaryExpression b)
 		{
 			if (ParameterReferenceOnLeftSide(b))

@@ -68,5 +68,16 @@ namespace Db4objects.Db4o.Linq.Tests
 				_registry.QueryStarted -= OnQueryStarted;
 			}
 		}
+
+		protected void AssertQuery<T>(IDb4oLinqQuery<T> query, string expectedQuery, T[] expectedSet)
+		{
+			using (var recorder = new QueryStringRecorder(Db()))
+			{
+				List<T> actualSet = query.ToList();
+
+				Assert.AreEqual(expectedQuery, recorder.QueryString);
+				AssertSet(expectedSet, actualSet);
+			}
+		}
 	}
 }

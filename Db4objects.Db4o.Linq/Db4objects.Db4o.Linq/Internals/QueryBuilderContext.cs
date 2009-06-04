@@ -8,9 +8,9 @@ namespace Db4objects.Db4o.Linq.Internals
 {
 	internal class QueryBuilderContext
 	{
-		private IQuery _root;
-		private IQuery _query;
-		private Stack<IConstraint> _constraints = new Stack<IConstraint>();
+		private readonly IQuery _root;
+		private IQuery _currentQuery;
+		private readonly Stack<IConstraint> _constraints = new Stack<IConstraint>();
         private Type _descendigFieldEnum;
 
 		public IQuery RootQuery
@@ -20,18 +20,18 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		public IQuery CurrentQuery
 		{
-			get { return _query; }
+			get { return _currentQuery; }
 		}
 
 		public QueryBuilderContext(IQuery root)
 		{
 			_root = root;
-			_query = _root;
+			_currentQuery = _root;
 		}
 
-		public void PushQuery(IQuery query)
+		public void DescendInto(IQuery query)
 		{
-			_query = query;
+			_currentQuery = query;
 		}
 
         internal void PushDescendigFieldEnumType(Type descendigFieldEnum)
@@ -67,5 +67,5 @@ namespace Db4objects.Db4o.Linq.Internals
             Type type = PopDescendigFieldEnumType();
             return (type != null) ? Enum.ToObject(type, value) : value;
         }
-    }
+	}
 }

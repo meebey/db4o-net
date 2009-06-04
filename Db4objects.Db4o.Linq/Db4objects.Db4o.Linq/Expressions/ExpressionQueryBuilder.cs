@@ -86,10 +86,11 @@ namespace Db4objects.Db4o.Linq.Expressions
 		{
 			if (IsFieldAccessExpression(m))
 			{
-				_recorder.Add(ctx => ctx.PushQuery(ctx.RootQuery.Descend(m.Member.Name)));
+				_recorder.Add(ctx => ctx.DescendInto(ctx.RootQuery.Descend(m.Member.Name)));
 				return;
 			}
-			else if (IsPropertyAccessExpression(m))
+			
+			if (IsPropertyAccessExpression(m))
 			{
 				AnalyseMethod(_recorder, GetGetMethod(m));
 				return;
