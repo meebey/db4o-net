@@ -4,12 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Db4objects.Db4o;
-using Db4objects.Db4o.Linq;
-
-using Db4oUnit;
-using Db4oUnit.Extensions;
-
 namespace Db4objects.Db4o.Linq.Tests
 {
 	public class OrderByTestCase : AbstractDb4oLinqTestCase
@@ -18,6 +12,7 @@ namespace Db4objects.Db4o.Linq.Tests
 		{
 			public string Name;
 			public int Age;
+			public Person Parent;
 
 			public int UnoptimizableAgeProperty
 			{
@@ -54,17 +49,27 @@ namespace Db4objects.Db4o.Linq.Tests
 				Person p = obj as Person;
 				if (p == null) return false;
 
-				return p.Name == this.Name && p.Age == this.Age;
+				return p.Name == Name && p.Age == Age;
 			}
 
 			public override int GetHashCode()
 			{
-				return this.Age ^ this.Name.GetHashCode();
+				return Age ^ Name.GetHashCode();
 			}
 
 			public override string ToString()
 			{
 				return "Person(" + Name + ", " + Age + ")";
+			}
+
+			public int GetAge()
+			{
+				return Age;
+			}
+
+			public string GetName()
+			{
+				return Name;
 			}
 		}
 
@@ -172,6 +177,17 @@ namespace Db4objects.Db4o.Linq.Tests
 						orderby p.OptimizableAgeProperty ascending,
 							p.OptimizableNameProperty descending
 						select p;
+
+			AssertOrderByNameDescAgeAsc(query);
+		}
+
+		public void TestSimpleOrderByAscendingThenDescendingMethods()
+		{
+			var query = from Person p in Db()
+						orderby p.GetAge() ascending,
+							p.GetName() descending
+						select p;
+
 			AssertOrderByNameDescAgeAsc(query);
 		}
 
@@ -190,18 +206,17 @@ namespace Db4objects.Db4o.Linq.Tests
 		}
 
 		private void AssertOrderByNameDescAgeAsc(string expectedQuery, IDb4oLinqQuery<Person> query)
-		{	
-			AssertQuery(expectedQuery,
-				delegate
-				{	
-					AssertSequence(new[]
-						{
-							new Person { Name = "jb", Age = 7 },
-							new Person { Name = "jb", Age = 24 },
-							new Person { Name = "ana", Age = 24 },
-							new Person { Name = "ro", Age = 25 },
-							new Person { Name = "reg", Age = 25 }
-						}, query);
+		{
+			AssertQuery(
+				query, 
+				expectedQuery, 
+				new[]
+				{
+					new Person {Name = "jb", Age = 7},
+					new Person {Name = "jb", Age = 24},
+					new Person {Name = "ana", Age = 24},
+					new Person {Name = "ro", Age = 25},
+					new Person {Name = "reg", Age = 25}
 				});
 		}
 
@@ -223,6 +238,21 @@ namespace Db4objects.Db4o.Linq.Tests
 							new Person { Name = "jb", Age = 7 },
 						}, jbs);
 				});
+		}
+
+		public void TestOrderByDescendingThenAscendingOnCompositeFieldAccess()
+		{
+			AssertQueryTranslation(
+				from Person p in Db()
+				orderby p.Parent.Age descending, p.Parent.Name ascending
+				select p,
+				
+				"(Person(orderby Parent.Name asc)(orderby Parent.Age desc))");
+		}
+
+		private void AssertQueryTranslation<T>(IEnumerable<T> query, string expectedRepresentation)
+		{
+			AssertQuery(expectedRepresentation, () => query.ToList());
 		}
 	}
 }

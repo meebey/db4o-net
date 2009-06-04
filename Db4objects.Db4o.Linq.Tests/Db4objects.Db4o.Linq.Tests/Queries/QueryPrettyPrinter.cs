@@ -2,9 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -13,19 +12,19 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 {
 	internal class QueryPrettyPrinter
 	{
-		private StringBuilder _builder = new StringBuilder();
-		private StringBuilder _orderBy = new StringBuilder();
-		private HashSet<QConJoin> _visitedJoins = new HashSet<QConJoin>();
+		private readonly StringBuilder _builder = new StringBuilder();
+		private readonly StringBuilder _orderBy = new StringBuilder();
+		private readonly HashSet<QConJoin> _visitedJoins = new HashSet<QConJoin>();
 
 		public QueryPrettyPrinter(IQuery query)
 		{
-			foreach (var constraint in query.Constraints().ToArray())
-				Visit(constraint);
+			VisitAll(query.Constraints().ToArray());
 		}
 
 		private void Visit(IConstraint constraint)
 		{
-			switch (constraint.GetType().Name)
+			var constrainType = constraint.GetType().Name;
+			switch (constrainType)
 			{
 				case "QConClass":
 					Visit(constraint as QConClass);
@@ -39,7 +38,10 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 				case "QConPath":
 					Visit(constraint as QConPath);
 					break;
-			}
+				
+				default:
+					throw new ArgumentException(constrainType);
+			 }
 		}
 
 		protected virtual void Visit(QConClass klass)
@@ -72,16 +74,81 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		protected virtual void Visit(QConPath path)
 		{
-			PrintOrderBy(path);
+			if (HasOrder(path))
+			{
+				PrintOrderBy(path);
+				return;
+			}
+
+			if (IsOrderByPath(path))
+			{
+				VisitAllChildrenOf(path);
+				return;
+			}
+
+			PrintDescend(path);
+		}
+
+		private static bool IsOrderByPath(QConPath path)
+		{
+			return Iterators.Iterable(path.IterateChildren()).Cast<QCon>().All(IsOrderByElement);
+		}
+
+		private static bool IsOrderByElement(QCon candidate)
+		{
+			if (HasOrder(candidate))
+				return true;
+			
+			var path = candidate as QConPath;
+			if (path != null)
+				return IsOrderByPath(path);
+
+			return false;
+		}
+
+		private static bool HasOrder(QCon path)
+		{
+			return path.i_orderID != 0;
+		}
+
+		private void PrintDescend(QConPath path)
+		{
+			_builder.AppendFormat("({0}", path.GetField().i_name);
+
+			VisitAllChildrenOf(path);
+
+			_builder.Append(")");
+		}
+
+		private void VisitAllChildrenOf(QCon path)
+		{
+			VisitAll(Iterators.Iterable(path.IterateChildren()).Cast<IConstraint>());
+		}
+
+		private void VisitAll(IEnumerable<IConstraint> constraints)
+		{
+			foreach (var constraint in constraints)
+			{
+				Visit(constraint);
+			}
 		}
 
 		private void PrintOrderBy(QConObject path)
 		{
-			if (path.i_orderID == 0) return;
-
 			_orderBy.AppendFormat("(orderby {0} {1})",
-				path.i_field.i_name,
+				PathFor(path),
 				OrderIdToString(path.i_orderID));
+		}
+
+		private static string PathFor(QConObject path)
+		{
+			var fieldName = path.i_field.i_name;
+
+			QConPath parentField = path.Parent() as QConPath;
+			if (parentField != null)
+				return PathFor(parentField) + "." + fieldName;
+			
+			return fieldName;
 		}
 
 		private static string OrderIdToString(int order)
@@ -132,11 +199,15 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		private void PrintQConObject(QConObject obj)
 		{
-			PrintOrderBy(obj);
+			if (HasOrder(obj))
+			{
+				PrintOrderBy(obj);
+			}
+			
 			_builder.AppendFormat("({0} {1} {2})",
-				obj.GetField().i_name,
-				EvaluatorToString(obj.i_evaluator),
-				ValueToString(obj.i_object));
+				                      obj.GetField().i_name,
+				                      EvaluatorToString(obj.i_evaluator),
+				                      ValueToString(obj.i_object));
 		}
 
 		private static string EvaluatorToString(QE evaluator)
@@ -196,7 +267,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		public override string ToString()
 		{
-			return _builder.ToString() + _orderBy.ToString();
+			return _builder.ToString() + _orderBy;
 		}
 	}
 }

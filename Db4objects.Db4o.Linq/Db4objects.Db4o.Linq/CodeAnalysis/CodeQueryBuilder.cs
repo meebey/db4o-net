@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
             _recorder.Add(
                 ctx =>
                     {
-                        ctx.DescendInto(ctx.RootQuery.Descend(node.Field.Name));
+                        ctx.Descend(node.Field.Name);
                         ctx.PushDescendigFieldEnumType(descendingEnumType);
                     });
 		}

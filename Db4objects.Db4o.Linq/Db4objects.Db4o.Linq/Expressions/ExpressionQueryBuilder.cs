@@ -7,7 +7,6 @@ using System.Reflection;
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Linq.CodeAnalysis;
 using Db4objects.Db4o.Linq.Internals;
-using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
@@ -24,7 +23,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 		{
 		}
 
-		public IQueryBuilderRecord Process(Expression expression)
+		public virtual IQueryBuilderRecord Process(LambdaExpression expression)
 		{
 			return ProcessExpression(SubtreeEvaluator.Evaluate(Normalize(expression)));
 		}
@@ -53,16 +52,22 @@ namespace Db4objects.Db4o.Linq.Expressions
 			return expression.NodeType == ExpressionType.Parameter;
 		}
 
-		protected static bool IsParameterReference(Expression expression)
+		protected static bool StartsWithParameterReference(Expression expression)
 		{
+			if (IsParameter(expression))
+				return true;
+
 			var unary = expression as UnaryExpression;
-			if (unary != null) return IsParameterReference(unary.Operand);
+			if (unary != null)
+				return StartsWithParameterReference(unary.Operand);
 
 			var me = expression as MemberExpression;
-			if (me != null) return IsParameter(me.Expression);
+			if (me != null)
+				return StartsWithParameterReference(me.Expression);
 
 			var call = expression as MethodCallExpression;
-			if (call != null && call.Object != null) return IsParameter(call.Object);
+			if (call != null && call.Object != null)
+				return StartsWithParameterReference(call.Object);
 
 			return false;
 		}
@@ -84,9 +89,10 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected void ProcessMemberAccess(MemberExpression m)
 		{
+			Visit(m.Expression);
 			if (IsFieldAccessExpression(m))
 			{
-				_recorder.Add(ctx => ctx.DescendInto(ctx.RootQuery.Descend(m.Member.Name)));
+				_recorder.Add(ctx => ctx.Descend(m.Member.Name));
 				return;
 			}
 			
@@ -101,14 +107,9 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected void AnalyseMethod(QueryBuilderRecorder recorder, MethodInfo method)
 		{
-			AnalyseMethod(recorder, method, new object[0]);
-		}
-
-		protected void AnalyseMethod(QueryBuilderRecorder recorder, MethodInfo method, object[] parameters)
-		{
 			try
 			{
-				MethodAnalyser.FromMethod(method, parameters).AugmentQuery(recorder);
+				MethodAnalyser.FromMethod(method).AugmentQuery(recorder);
 			}
 			catch (Exception e)
 			{

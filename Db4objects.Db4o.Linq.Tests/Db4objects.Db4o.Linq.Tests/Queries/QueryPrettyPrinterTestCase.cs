@@ -1,9 +1,5 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
-using System.Text;
-
-using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
 
 using Db4oUnit;
@@ -17,7 +13,25 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 		{
 			public int Age;
 			public string Name;
+			public Person Parent;
 		}
+
+		public void TestDoubleDescending()
+		{
+			var query = CreateQuery();
+			query.Constrain(typeof(Person));
+			query.Descend("Parent").Descend("Age").Constrain(60).Greater();
+			AssertQueryString("(Person(Parent(Age > 60)))", query);
+		}
+
+		public void TestAndDoubleDescending()
+		{
+			var query = CreateQuery();
+			query.Constrain(typeof(Person));
+			query.Descend("Parent").Descend("Age").Constrain(60).Greater().And(query.Descend("Parent").Descend("Name").Constrain("jb"));
+			AssertQueryString("(Person(Parent((Name == 'jb') and (Age > 60))))", query);
+		}
+
 
 		public void TestConstrainOnType()
 		{

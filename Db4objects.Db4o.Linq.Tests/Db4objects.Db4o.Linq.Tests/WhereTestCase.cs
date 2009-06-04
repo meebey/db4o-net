@@ -54,12 +54,17 @@ namespace Db4objects.Db4o.Linq.Tests
 				Thing t = obj as Thing;
 				if (t == null) return false;
 
-				return t.Kind == this.Kind;
+				return t.Kind == Kind;
 			}
 
 			public override int GetHashCode()
 			{
 				return Kind.GetHashCode();
+			}
+
+			public Person GetOwner()
+			{
+				return Owner;		
 			}
 		}
 
@@ -170,13 +175,13 @@ namespace Db4objects.Db4o.Linq.Tests
 						new[] { 24, 28 });
 		}
 
-		public void _TestSimpleAndOnMultipleDescend()
+		public void TestSimpleAndOnMultipleDescend()
 		{
 			AssertQuery(from Thing t in Db()
 						where t.Owner.Name == "jb" && t.Owner.Age > 10 && t.Owner.Age < 30
 						select t.Owner.Age,
 
-						"(Person(((Name == 'jb') and (Age > 10)) and (Age < 30)))",
+						@"(Thing(Owner(((Name == 'jb') and (Age > 10)) and (Age < 30))))",
 
 						new[] { 24 });
 		}
@@ -194,8 +199,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				});
 		}
 
-		//TODO: Add support
-		public void _TestNotMethodCall()
+		public void TestNotMethodCall()
 		{
 			AssertQuery("(Person(IsFriend == False))",
 				delegate
@@ -210,11 +214,22 @@ namespace Db4objects.Db4o.Linq.Tests
 				});
 		}
 
-		//TODO: Add support
-		public void _TestNotMethodCallChain()
+		public void TestNotMethodCallOnProperty()
 		{
 			AssertQuery(from Thing t in Db()
 						where !t.Owner.GetIsFriend()
+						select t,
+
+						"(Thing(Owner(IsFriend == False)))",
+
+						Things(People().ToList()).Where(t => !t.Owner.GetIsFriend()).ToArray());
+
+		}
+
+		public void TestNotMethodCallChain()
+		{
+			AssertQuery(from Thing t in Db()
+						where !t.GetOwner().GetIsFriend()
 						select t,
 
 						"(Thing(Owner(IsFriend == False)))",

@@ -35,18 +35,22 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		protected override void Store()
 		{
-			var people = new[] 
-			{
-				new Person { Name = "Malkovitch", Age = 24 },
-				new Person { Name = "Malkovitch", Age = 20 },
-				new Person { Name = "Malkovitch", Age = 25 },
-				new Person { Name = "Malkovitch", Age = 32 },
-				new Person { Name = "Malkovitch", Age = 7 },
-			};
-			foreach (var person in people)
+			foreach (var person in People())
 			{
 				Store(person);
 			}
+		}
+
+		private Person[] People()
+		{
+			return new[] 
+			       	{
+			       		new Person { Name = "Malkovitch", Age = 24 },
+			       		new Person { Name = "Malkovitch", Age = 20 },
+			       		new Person { Name = "Malkovitch", Age = 25 },
+			       		new Person { Name = "Malkovitch", Age = 32 },
+			       		new Person { Name = "Malkovitch", Age = 7 },
+			       	};
 		}
 
 		public void TestWhereComposition()
@@ -55,32 +59,24 @@ namespace Db4objects.Db4o.Linq.Tests
 						 where p.Age > 18
 						 select p;
 
-			var johns = from p in adults
+			AssertQuery(
+						from p in adults
 						where p.Age < 30
-						select p;
+						select p,
+						
+						"(Person(Age < 30)(Age > 18))",
 
-			AssertQuery("(Person(Age < 30)(Age > 18))",
-				delegate
-				{
-					AssertSet(new[]
-						{
-							new Person { Name = "Malkovitch", Age = 24 },
-							new Person { Name = "Malkovitch", Age = 20 },
-							new Person { Name = "Malkovitch", Age = 25 }
-						}, johns);
-				});
+						from p in People()
+						where p.Age < 30 && p.Age > 18
+						select p);
 
-			AssertQuery("(Person(Age > 18))",
-				delegate
-				{
-					AssertSet(new[]
-					{
-						new Person { Name = "Malkovitch", Age = 24 },
-						new Person { Name = "Malkovitch", Age = 20 },
-						new Person { Name = "Malkovitch", Age = 25 },
-						new Person { Name = "Malkovitch", Age = 32 },
-					}, adults);
-				});
+			AssertQuery(
+				adults,
+				"(Person(Age > 18))",
+				
+				from p in People()
+				where p.Age > 18
+				select p);
 		}
 
 		public void TestOrderedWhereComposition()

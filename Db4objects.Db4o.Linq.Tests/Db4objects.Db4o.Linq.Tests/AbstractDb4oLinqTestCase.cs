@@ -6,6 +6,7 @@ using System.Linq;
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.Query;
 
@@ -18,13 +19,14 @@ namespace Db4objects.Db4o.Linq.Tests
 {
 	public abstract class AbstractDb4oLinqTestCase : AbstractDb4oTestCase
 	{
-		public static void AssertSet<T>(IEnumerable<T> expected, IEnumerable<T> candidate)
+		public static void AssertSet<T>(IEnumerable<T> expected, IEnumerable<T> actual)
 		{
-			var ex = new HashSet<T>(expected);
-			var d = new HashSet<T>(candidate);
+			var expectedSet = new HashSet<T>(expected);
+			var actualSet = new HashSet<T>(actual);
 
-			Assert.AreEqual(ex.Count, d.Count);
-			Assert.IsTrue(ex.SetEquals(d));
+			var message = string.Format("Expected {0}, got {1}", Iterators.ToString(expectedSet), Iterators.ToString(actualSet));
+			Assert.AreEqual(expectedSet.Count, actualSet.Count, message);
+			Assert.IsTrue(expectedSet.SetEquals(actualSet), message);
 		}
 
 		public static void AssertSequence<T>(IEnumerable<T> expected, IEnumerable<T> candidate)
@@ -69,7 +71,7 @@ namespace Db4objects.Db4o.Linq.Tests
 			}
 		}
 
-		protected void AssertQuery<T>(IDb4oLinqQuery<T> query, string expectedQuery, T[] expectedSet)
+		protected void AssertQuery<T>(IDb4oLinqQuery<T> query, string expectedQuery, IEnumerable<T> expectedSet)
 		{
 			using (var recorder = new QueryStringRecorder(Db()))
 			{

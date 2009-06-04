@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		private static bool IsIListMethod(MethodInfo method)
 		{
-			return method.DeclaringType == typeof (IList);
+			return method.DeclaringType == typeof(IList);
 		}
 
 		private void ProcessIListMethod(MethodCallExpression call)
@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 				ProcessConditionalExpression(b);
 				return;
 			}
-			
+
 			if (IsComparisonExpression(b))
 			{
 				ProcessPredicateExpression(b);
@@ -133,11 +133,13 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected override void VisitUnary(UnaryExpression u)
 		{
+			var operand = u.Operand;
 			if (u.NodeType == ExpressionType.Not)
 			{
-				Visit(u.Operand);
+				Visit(operand);
 
-				if (u.Operand.NodeType == ExpressionType.MemberAccess)
+				if (operand.NodeType == ExpressionType.MemberAccess 
+					|| IsCallToNonPrimitiveMethod(operand))
 				{
 					Recorder.Add(ctx => ctx.PushConstraint(ctx.CurrentQuery.Constrain(false)));
 					return;
@@ -146,20 +148,34 @@ namespace Db4objects.Db4o.Linq.Expressions
 				RecordConstraintApplication(c => c.Not());
 				return;
 			}
-			
+
 			if (u.NodeType == ExpressionType.Convert)
 			{
-				Visit(u.Operand);
+				Visit(operand);
 				return;
 			}
 
 			CannotOptimize(u);
 		}
 
+		private static bool IsCallToNonPrimitiveMethod(Expression operand)
+		{
+			if (operand.NodeType != ExpressionType.Call) return false;
+
+			if (IsPrimitiveMethod((MethodCallExpression) operand)) return false;
+
+			return true;
+		}
+
+		private static bool IsPrimitiveMethod(MethodCallExpression expression)
+		{
+			return IsStringMethod(expression.Method) || IsIListMethod(expression.Method);
+		}
+
 		private void ProcessConditionalExpression(BinaryExpression b)
 		{
-			Visit(b.Left);
-			Visit(b.Right);
+			VisitPreservingQuery(b.Left);
+			VisitPreservingQuery(b.Right);
 
 			switch (b.NodeType)
 			{
@@ -171,7 +187,20 @@ namespace Db4objects.Db4o.Linq.Expressions
 					break;
 			}
 		}
-	
+
+		private delegate void Block();
+		private void VisitPreservingQuery(Expression expression)
+		{
+			PreservingQuery(() => Visit(expression));
+		}
+
+		private void PreservingQuery(Block block)
+		{
+			Recorder.Add(ctx => ctx.SaveQuery());
+			block();
+			Recorder.Add(ctx => ctx.RestoreQuery());
+		}
+
 		private void ProcessPredicateExpression(BinaryExpression b)
 		{
 			if (ParameterReferenceOnLeftSide(b))
@@ -190,7 +219,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected override void VisitMemberAccess(MemberExpression m)
 		{
-			if (!IsParameterReference(m)) CannotOptimize(m);
+			if (!StartsWithParameterReference(m)) CannotOptimize(m);
 
 			ProcessMemberAccess(m);
 		}
@@ -203,8 +232,8 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		static bool ParameterReferenceOnLeftSide(BinaryExpression b)
 		{
-			if (IsParameterReference(b.Left)) return true;
-			if (IsParameterReference(b.Right)) return false;
+			if (StartsWithParameterReference(b.Left)) return true;
+			if (StartsWithParameterReference(b.Right)) return false;
 
 			CannotOptimize(b);
 			return false;

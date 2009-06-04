@@ -91,11 +91,16 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 			var variable = assign.Target as VariableReferenceExpression;
 
 			if (variable == null) CannotOptimize(assign);
-			if (_variables.ContainsKey(GetVariableIndex(variable))) CannotOptimize(assign.Expression);
+			if (HasBeenAlreadyAssignedTo(variable)) CannotOptimize(assign.Expression);
 
 			_variables.Add(GetVariableIndex(variable), assign.Expression);
 
 			return block.Next;
+		}
+
+		private bool HasBeenAlreadyAssignedTo(VariableReferenceExpression variable)
+		{
+			return _variables.ContainsKey(GetVariableIndex(variable));
 		}
 
 		private ActionBlock OnReturn(ReturnActionBlock block)
@@ -104,9 +109,9 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 			VariableReferenceExpression variable = expression as VariableReferenceExpression;
 
 			_queryExpression =
-				variable == null ?
-					expression :
-					_variables[GetVariableIndex(variable)];
+				variable != null
+					? _variables[GetVariableIndex(variable)]
+					: expression;
 
 			return null;
 		}

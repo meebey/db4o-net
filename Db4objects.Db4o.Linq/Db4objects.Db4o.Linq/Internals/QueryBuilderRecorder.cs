@@ -53,7 +53,10 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		override public void Playback(QueryBuilderContext context)
 		{
+			context.SaveQuery();
 			_first.Playback(context);
+			context.RestoreQuery();
+
 			_second.Playback(context);
 		}
 	}
@@ -82,6 +85,11 @@ namespace Db4objects.Db4o.Linq.Internals
 
 		public QueryBuilderRecorder()
 		{
+		}
+
+		public QueryBuilderRecorder(IQueryBuilderRecord record)
+		{
+			_last = record;
 		}
 
 		public IQueryBuilderRecord Record
