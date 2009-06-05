@@ -10,8 +10,10 @@ using File = Sharpen.IO.File;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-
-	class CrossDomainRef<T> : MarshalByRefObject
+	class CrossDomainRef<T> 
+#if !SILVERLIGHT
+		: MarshalByRefObject
+#endif
 	{
 		private T _value;
 
@@ -21,7 +23,6 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			set { _value = value; }
 		}
 	}
-
 	[Serializable]
 	class MethodInvoker
 	{
