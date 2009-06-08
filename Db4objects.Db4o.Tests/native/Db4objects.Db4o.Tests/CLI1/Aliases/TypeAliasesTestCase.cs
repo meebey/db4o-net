@@ -1,6 +1,7 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 using System;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.Aliases
@@ -31,15 +32,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 					GetTypeName(typeof(Person2))));
 			}
 	
-		    private string GetTypeName(Type type)
+		    private static string GetTypeName(Type type)
 		    {
-		        return type.FullName + ", " + CurrentAssemblyName;
+		        return ReflectPlatform.FullyQualifiedName(type);
 		    }
-	
-	        private string CurrentAssemblyName
-	        {
-	            get { return GetType().Assembly.GetName().Name; }
-	        }
 		}
 	}
 }
