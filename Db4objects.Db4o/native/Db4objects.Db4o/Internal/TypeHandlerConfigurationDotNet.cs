@@ -40,14 +40,13 @@ namespace Db4objects.Db4o.Internal
     	private void RegisterGenericTypeHandlers()
         {
 			GenericCollectionTypeHandler collectionHandler = new GenericCollectionTypeHandler();
-        	RegisterGenericTypeHandler(typeof(List<>), collectionHandler);
-			RegisterGenericTypeHandler(typeof(LinkedList<>), collectionHandler);
-			RegisterGenericTypeHandler(typeof(Stack<>), collectionHandler);
-			RegisterGenericTypeHandler(typeof(Queue<>), collectionHandler);
-#if NET_3_5 && ! CF
-            RegisterGenericTypeHandler(typeof(HashSet<>), collectionHandler);
-            _config.Reflector().RegisterCollection(new GenericCollectionTypePredicate(typeof(HashSet<>)));
+    		collectionHandler.Register(delegate(Type type) 
+			{
+				RegisterGenericTypeHandler(type, collectionHandler);
+    		});
 
+#if NET_3_5 && ! CF
+			_config.Reflector().RegisterCollection(new GenericCollectionTypePredicate(typeof(HashSet<>)));
 #endif 
 
 			System.Type[] dictionaryTypes = new Type[] {

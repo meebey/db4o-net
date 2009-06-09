@@ -2,10 +2,10 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Collections;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
@@ -14,7 +14,6 @@ using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Typehandlers
 {
-
 	public class GenericCollectionTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler, IVariableLengthTypeHandler, IQueryableTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj)
@@ -170,10 +169,28 @@ namespace Db4objects.Db4o.Typehandlers
 
 		private static Type ElementTypeOf(IEnumerable collection)
 		{
-			//TODO: Write a test
-			//TODO: Add support for more levels...
-			Type genericType = collection.GetType().IsGenericType ? collection.GetType() : collection.GetType().BaseType;
-			return genericType.GetGenericArguments()[0];
+			Type genericCollectionType = GenericCollectionTypeFor(collection.GetType());
+			return genericCollectionType.GetGenericArguments()[0];
+		}
+
+		private static Type GenericCollectionTypeFor(Type type)
+		{
+            if (type == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (IsGenericCollectionType(type))
+			{
+				return type;
+			}
+
+			return GenericCollectionTypeFor(type.BaseType);
+		}
+
+		private static bool IsGenericCollectionType(Type type)
+		{
+			return type.IsGenericType && Array.IndexOf(_supportedCollections, type.GetGenericTypeDefinition()) >= 0;
 		}
 
 		public bool IsSimple()
@@ -185,6 +202,25 @@ namespace Db4objects.Db4o.Typehandlers
 		{
 			return true;
 		}
+
+		public void Register(Action<Type> registrationAction)
+		{
+			foreach (Type collectionType in _supportedCollections)
+			{
+				registrationAction(collectionType);
+			}
+		}
+
+		private static readonly Type[] _supportedCollections = new Type[]
+												{
+													typeof(List<>),
+													typeof(LinkedList<>),
+													typeof(Stack<>),
+													typeof(Queue<>),
+#if NET_3_5 && ! CF
+													typeof(HashSet<>),
+#endif
+												};
 	}
 
 }
