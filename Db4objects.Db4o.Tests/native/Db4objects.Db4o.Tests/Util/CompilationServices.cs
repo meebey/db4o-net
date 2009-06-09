@@ -92,6 +92,7 @@ namespace Db4objects.Db4o.Tests.Util
 				CompilerParameters parameters = CreateDefaultCompilerParameters();
 				parameters.IncludeDebugInformation = false;
 				parameters.OutputAssembly = assemblyFName;
+				parameters.GenerateExecutable = ".exe" == Path.GetExtension(assemblyFName).ToLower();
 				parameters.ReferencedAssemblies.AddRange(references);
 
 				ICodeCompiler compiler = provider.CreateCompiler();
