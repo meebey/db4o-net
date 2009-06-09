@@ -73,12 +73,17 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		protected void AssertQuery<T>(IDb4oLinqQuery<T> query, string expectedQuery, IEnumerable<T> expectedSet)
 		{
+			AssertQuery(query, expectedQuery, actualSet => AssertSet(expectedSet, actualSet));
+		}
+		
+		protected void AssertQuery<T>(IDb4oLinqQuery<T> query, string expectedQuery, Action<IEnumerable<T>> expectation)
+		{
 			using (var recorder = new QueryStringRecorder(Db()))
 			{
 				List<T> actualSet = query.ToList();
 
 				Assert.AreEqual(expectedQuery, recorder.QueryString);
-				AssertSet(expectedSet, actualSet);
+				expectation(actualSet);
 			}
 		}
 	}

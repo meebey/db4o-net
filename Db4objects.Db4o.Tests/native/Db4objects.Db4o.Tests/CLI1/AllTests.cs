@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(Inside.AllTests),
 					typeof(NativeQueries.AllTests),
 					typeof(Reflect.Net.AllTests),
+					typeof(Soda.AllTests),
 #if !SILVERLIGHT
                     typeof(CollectionBaseTestCase),
 #endif
