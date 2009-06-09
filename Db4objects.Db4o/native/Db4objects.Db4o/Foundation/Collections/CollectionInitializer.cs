@@ -20,15 +20,15 @@ namespace Db4objects.Db4o.Foundation.Collections
 
 	public sealed class CollectionInitializer
 	{
-		private static readonly Dictionary<Type, Type> initializerByType = new Dictionary<Type, Type>();
+		private static readonly Dictionary<Type, Type> _initializerByType = new Dictionary<Type, Type>();
 
 		static CollectionInitializer()
 		{
-			initializerByType[typeof (ICollection<>)] = typeof (CollectionInitializerImpl<>);
-			initializerByType[typeof(Stack<>)] = typeof(StackInitializer<>);
-			initializerByType[typeof(Queue<>)] = typeof(QueueInitializer<>);
+			_initializerByType[typeof (ICollection<>)] = typeof (CollectionInitializerImpl<>);
+			_initializerByType[typeof(Stack<>)] = typeof(StackInitializer<>);
+			_initializerByType[typeof(Queue<>)] = typeof(QueueInitializer<>);
 #if NET_3_5 && ! CF
-		    initializerByType[typeof (HashSet<>)] = typeof (HashSetInitializer<>);
+		    _initializerByType[typeof (HashSet<>)] = typeof (HashSetInitializer<>);
 #endif
 		}
 
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Foundation.Collections
 			Type containerType = GenericContainerTypeFor(destination);
 			if (containerType != null)
 			{
-				return GetInitializer(destination, initializerByType[containerType]);
+				return GetInitializer(destination, _initializerByType[containerType]);
 			}
 
 			throw new ArgumentException("Unknown collection: " + destination);
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Foundation.Collections
 		private static Type GenericContainerTypeFor(object destination)
 		{
 			Type containerType = destination.GetType().GetGenericTypeDefinition();
-			while (containerType != null && !initializerByType.ContainsKey(containerType))
+			while (containerType != null && !_initializerByType.ContainsKey(containerType))
 			{
 				foreach (Type interfaceType in containerType.GetInterfaces())
 				{
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Foundation.Collections
 					}
 
 					Type genericInterfaceType = interfaceType.GetGenericTypeDefinition();
-					if (initializerByType.ContainsKey(genericInterfaceType))
+					if (_initializerByType.ContainsKey(genericInterfaceType))
 					{
 						return genericInterfaceType;
 					}
