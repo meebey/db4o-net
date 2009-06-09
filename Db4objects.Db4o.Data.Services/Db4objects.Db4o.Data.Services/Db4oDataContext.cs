@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Data.Services
 			{
 				if (_container == null)
 				{
-					_container = GetServer().OpenClient();
+					_container = GetDataSource().OpenSession();
 				}
 				return _container;
 			}
@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Data.Services
 			_container = container;
 		}
 
-		protected virtual IObjectServer GetServer()
+		protected virtual IEmbeddedObjectContainer GetDataSource()
 		{
 			throw new NotImplementedException();
 		}
