@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Linq.Tests
 			public string Name;
 			public int Age;
 			public Person Parent;
-			public DateTimeOffset BirthDate;
+			public Guid Id;
 
 			public int UnoptimizableAgeProperty
 			{
@@ -50,12 +50,12 @@ namespace Db4objects.Db4o.Linq.Tests
 				Person p = obj as Person;
 				if (p == null) return false;
 
-				return p.Name == Name && p.Age == Age && p.BirthDate == BirthDate;
+				return p.Name == Name && p.Age == Age && p.Id == Id;
 			}
 
 			public override int GetHashCode()
 			{
-				return Age ^ Name.GetHashCode() ^ BirthDate.GetHashCode();
+				return Age ^ Name.GetHashCode() ^ Id.GetHashCode();
 			}
 
 			public override string ToString()
@@ -85,25 +85,30 @@ namespace Db4objects.Db4o.Linq.Tests
 		private static Person[] People()
 		{
 			return new[] {
-			             	new Person { Name = "jb", Age = 24 , BirthDate =  new DateTime(2009, 01, 01)},
-			             	new Person { Name = "ana", Age = 24, BirthDate =  new DateTime(2009, 02, 01) },
-			             	new Person { Name = "reg", Age = 25, BirthDate =  new DateTime(2009, 03, 01) },
-			             	new Person { Name = "ro", Age = 25, BirthDate =  new DateTime(2009, 04, 01) },
-			             	new Person { Name = "jb", Age = 7, BirthDate =  new DateTime(2009, 05, 01) }
+			             	new Person { Name = "jb", Age = 24 , Id =  NewGuid(1) },
+			             	new Person { Name = "ana", Age = 24, Id =  NewGuid(2) },
+			             	new Person { Name = "reg", Age = 25, Id =  NewGuid(3)},
+			             	new Person { Name = "ro", Age = 25, Id =  NewGuid(4) },
+			             	new Person { Name = "jb", Age = 7, Id =  NewGuid(5) }
 			             };
+		}
+
+		private static Guid NewGuid(byte value)
+		{
+			return new Guid(value, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		}
 
 		public void TestOrderByValueType()
 		{
 			AssertQuerySequence(
 				from Person p in Db()
-				orderby p.BirthDate
+				orderby p.Id
 				select p,
 
-				"(Person(orderby BirthDate asc))",
+				"(Person(orderby Id asc))",
 				
 				from p in People()
-				orderby p.BirthDate
+				orderby p.Id
 				select p);
 		}
 
