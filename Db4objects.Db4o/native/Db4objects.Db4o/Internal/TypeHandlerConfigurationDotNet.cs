@@ -39,10 +39,10 @@ namespace Db4objects.Db4o.Internal
 
     	private void RegisterGenericTypeHandlers()
         {
-			GenericCollectionTypeHandler collectionHandler = new GenericCollectionTypeHandler();
-    		collectionHandler.Register(delegate(Type type) 
+			GenericCollectionTypeHandler handler = new GenericCollectionTypeHandler();
+    		handler.RegisterSupportedTypesWith(delegate(Type type) 
 			{
-				RegisterGenericTypeHandler(type, collectionHandler);
+				RegisterGenericTypeHandler(type, handler);
     		});
 
 #if NET_3_5 && ! CF

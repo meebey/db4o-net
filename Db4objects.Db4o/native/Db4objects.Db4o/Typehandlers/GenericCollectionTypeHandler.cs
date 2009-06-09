@@ -203,7 +203,7 @@ namespace Db4objects.Db4o.Typehandlers
 			return true;
 		}
 
-		public void Register(Action<Type> registrationAction)
+		public void RegisterSupportedTypesWith(Action<Type> registrationAction)
 		{
 			foreach (Type collectionType in _supportedCollections)
 			{
