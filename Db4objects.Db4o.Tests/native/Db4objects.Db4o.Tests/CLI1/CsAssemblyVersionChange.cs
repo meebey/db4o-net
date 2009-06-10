@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.CLI1
     /// </summary>
     public class CsAssemblyVersionChange : ITestCase
     {
-        const string TestAssemblyName = "test.exe";
+        const string TestAssemblyName = "test.dll";
 
         protected static readonly string DataFile = Path.Combine(Path.GetTempPath(), "test.yap");
 
