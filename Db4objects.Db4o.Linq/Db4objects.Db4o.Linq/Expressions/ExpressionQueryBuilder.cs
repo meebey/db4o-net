@@ -19,16 +19,12 @@ namespace Db4objects.Db4o.Linq.Expressions
 			get { return _recorder; }
 		}
 
-		public ExpressionQueryBuilder()
-		{
-		}
-
 		public virtual IQueryBuilderRecord Process(LambdaExpression expression)
 		{
 			return ProcessExpression(SubtreeEvaluator.Evaluate(Normalize(expression)));
 		}
 
-		private Expression Normalize(Expression expression)
+		private static Expression Normalize(Expression expression)
 		{
 			return new ExpressionTreeNormalizer().Normalize(expression);
 		}
