@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using Db4objects.Db4o.Query;
-
 namespace Db4objects.Db4o.Linq.Expressions
 {
 	public class SubtreeEvaluator : ExpressionTransformer
