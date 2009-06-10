@@ -6,14 +6,14 @@ namespace Db4oUnit
 
 	public partial class Assert
 	{
-		public static void Expect(System.Type exception, CodeBlock block)
+		public static Exception Expect(System.Type exception, CodeBlock block)
 		{
-			Assert.Expect(exception, new DelegateCodeBlock(block));
+			return Assert.Expect(exception, new DelegateCodeBlock(block));
 		}
 
-		public static void Expect<TException>(CodeBlock block) where TException : Exception
+		public static Exception Expect<TException>(CodeBlock block) where TException : Exception
 		{
-			Assert.Expect(typeof(TException), block);
+			return Assert.Expect(typeof(TException), block);
 		}
 
 		private class DelegateCodeBlock : ICodeBlock
