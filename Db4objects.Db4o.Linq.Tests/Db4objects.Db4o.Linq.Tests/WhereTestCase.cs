@@ -238,6 +238,76 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		}
 
+		public void TestSimpleBoolean()
+		{
+			AssertQuery(
+				from Person p in Db()
+				where p.IsFriend
+				select p,
+				
+				"(Person(IsFriend == True))",
+				
+				from p in People()
+				where p.IsFriend
+				select p);	
+		}
+
+		public void TestSimpleLocigalWithBooleanToTheRight()
+		{
+			AssertQuery(
+				from Person p in Db()
+				where p.Name == "jb" && p.IsFriend
+				select p,
+
+				"(Person((Name == 'jb') and (IsFriend == True)))",
+
+				from p in People()
+				where p.Name == "jb" && p.IsFriend
+				select p);
+		}
+
+		public void TestSimpleLocigalWithBooleanToTheLeft()
+		{
+			AssertQuery(
+				from Person p in Db()
+				where p.IsFriend && p.Name == "jb"
+				select p,
+
+				"(Person((IsFriend == True) and (Name == 'jb')))",
+
+				from p in People()
+				where p.IsFriend && p.Name == "jb"
+				select p);
+		}
+
+		public void TestFullBooleanToTheLeft()
+		{
+			AssertQuery(
+				from Person p in Db()
+				where true == p.IsFriend
+				select p,
+
+				"(Person(IsFriend == True))",
+
+				from p in People()
+				where true == p.IsFriend
+				select p);
+		}
+
+		public void TestFullBooleanToTheRight()
+		{
+			AssertQuery(
+				from Person p in Db()
+				where p.IsFriend == true
+				select p,
+
+				"(Person(IsFriend == True))",
+
+				from p in People()
+				where p.IsFriend == true
+				select p);
+		}
+
 		public void TestNotBoolean()
 		{
 			AssertQuery("(Person(IsFriend == False))",

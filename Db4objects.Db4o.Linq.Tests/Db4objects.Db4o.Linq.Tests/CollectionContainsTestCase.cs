@@ -1,16 +1,9 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using Db4objects.Db4o;
-using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.Linq.Internals;
-
-using Db4oUnit;
-using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
@@ -71,14 +64,26 @@ namespace Db4objects.Db4o.Linq.Tests
 			}
 		}
 
+		public static ArrayListPerson[] PeopleWithArrayList()
+		{
+			return new[]
+			       	{
+			       		new ArrayListPerson {Names = {"Biro", "Biro"}},
+			       		new ArrayListPerson {Names = {"Luna"}},
+			       		new ArrayListPerson {Names = {"Loustic"}},
+			       		new ArrayListPerson {Names = {"Loupiot"}},
+			       		new ArrayListPerson {Names = {"Biro", "Miro"}},
+			       		new ArrayListPerson {Names = {"Tounage"}}
+			       	};
+		}
+
+
 		protected override void Store()
 		{
-			Store(new ArrayListPerson { Names = { "Biro", "Biro" } });
-			Store(new ArrayListPerson { Names = { "Luna" } });
-			Store(new ArrayListPerson { Names = { "Loustic" } });
-			Store(new ArrayListPerson { Names = { "Loupiot" } });
-			Store(new ArrayListPerson { Names = { "Biro", "Miro" } });
-			Store(new ArrayListPerson { Names = { "Tounage" } });
+			foreach (var person in PeopleWithArrayList())
+			{
+				Store(person);
+			}
 
 			Store(new ArrayPerson { Names = new [] { "Biro", "Biro" } });
 			Store(new ArrayPerson { Names = new [] { "Luna" } });
@@ -104,20 +109,33 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		public void TestLinqQueryOnArrayListContains()
 		{
-			AssertQuery("(ArrayListPerson(Names contains 'Biro'))",
-				delegate
-				{
-					var biros = from ArrayListPerson p in Db()
-								where p.Names.Contains("Biro")
-								select p;
+			AssertQuery(
+				from ArrayListPerson p in Db()
+				where p.Names.Contains("Biro")
+				select p,
+			
+				"(ArrayListPerson(Names contains 'Biro'))",
 
-					AssertSet(new[]
-						{
-							new ArrayListPerson { Names = { "Biro", "Biro" } },
-							new ArrayListPerson { Names = { "Biro", "Miro" } },
-						}, biros);
-				});
+				from ArrayListPerson p in PeopleWithArrayList()
+				where p.Names.Contains("Biro")
+				select p);
 		}
+
+		public void TestLinqQueryOnArrayListNotContains()
+		{
+			AssertQuery(
+				from ArrayListPerson p in Db()
+				where !p.Names.Contains("Biro")
+				select p,
+
+				"(ArrayListPerson(Names not 'Biro'))",
+
+				from ArrayListPerson p in PeopleWithArrayList()
+				where !p.Names.Contains("Biro")
+				select p);
+		}
+
+
 
 		public void _TestQueryOnArrayContains()
 		{

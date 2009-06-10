@@ -137,14 +137,6 @@ namespace Db4objects.Db4o.Linq.Expressions
 			if (u.NodeType == ExpressionType.Not)
 			{
 				Visit(operand);
-
-				if (operand.NodeType == ExpressionType.MemberAccess 
-					|| IsCallToNonPrimitiveMethod(operand))
-				{
-					Recorder.Add(ctx => ctx.PushConstraint(ctx.CurrentQuery.Constrain(false)));
-					return;
-				}
-
 				RecordConstraintApplication(c => c.Not());
 				return;
 			}
@@ -156,20 +148,6 @@ namespace Db4objects.Db4o.Linq.Expressions
 			}
 
 			CannotOptimize(u);
-		}
-
-		private static bool IsCallToNonPrimitiveMethod(Expression operand)
-		{
-			if (operand.NodeType != ExpressionType.Call) return false;
-
-			if (IsPrimitiveMethod((MethodCallExpression) operand)) return false;
-
-			return true;
-		}
-
-		private static bool IsPrimitiveMethod(MethodCallExpression expression)
-		{
-			return IsStringMethod(expression.Method) || IsIListMethod(expression.Method);
 		}
 
 		private void ProcessConditionalExpression(BinaryExpression b)
