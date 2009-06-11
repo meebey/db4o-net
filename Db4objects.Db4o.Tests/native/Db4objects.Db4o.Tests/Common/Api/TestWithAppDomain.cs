@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Api
 {
-#if !CF
+#if !CF && !SILVERLIGHT
 	public class TestWithAppDomain : TestWithTempFile
 	{
 		protected AppDomain _domain;

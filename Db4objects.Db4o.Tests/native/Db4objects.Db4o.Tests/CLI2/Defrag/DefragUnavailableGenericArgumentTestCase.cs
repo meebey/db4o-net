@@ -8,7 +8,7 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI2.Defrag
 {
-#if !CF
+#if !CF && !SILVERLIGHT
 	public class DefragUnavailableGenericArgumentTestCase : TestWithAppDomain
 	{
 		private const string DataGeneratorCode =

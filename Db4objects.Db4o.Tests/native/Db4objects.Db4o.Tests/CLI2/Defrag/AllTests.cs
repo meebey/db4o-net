@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Defrag
 		{
 			return new Type[]
 			       {
-#if !CF
+#if !CF && !SILVERLIGHT
 			       	typeof(DefragUnavailableGenericArgumentTestCase)
 #endif
 			       };
