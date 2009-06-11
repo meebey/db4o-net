@@ -9,14 +9,13 @@ using System.Data.Services;
 using System.Linq;
 using System.Reflection;
 
-using Db4objects.Db4o;
-using Db4objects.Db4o.Linq.Internals;
-
 namespace Db4objects.Db4o.Data.Services
 {
 	public abstract class Db4oDataContext : IUpdatable
 	{
-		IObjectContainer _container;
+		private IObjectContainer _container;
+
+		private HashSet<object> ChangeSet = new HashSet<object>();
 
 		protected IObjectContainer Container
 		{
@@ -24,25 +23,17 @@ namespace Db4objects.Db4o.Data.Services
 			{
 				if (_container == null)
 				{
-					_container = GetDataSource().OpenSession();
+					_container = OpenSession();
 				}
 				return _container;
 			}
 		}
 
-		public Db4oDataContext()
-		{
-		}
-
-		protected Db4oDataContext(IObjectContainer container)
-		{
-			_container = container;
-		}
-
-		protected virtual IEmbeddedObjectContainer GetDataSource()
-		{
-			throw new NotImplementedException();
-		}
+		/// <summary>
+		/// Returns a new db4o session to service the current request.
+		/// </summary>
+		/// <returns></returns>
+		protected abstract IObjectContainer OpenSession();
 
 		public void AddReferenceToCollection(object targetResource, string propertyName, object resourceToBeAdded)
 		{
@@ -62,7 +53,7 @@ namespace Db4objects.Db4o.Data.Services
 				throw DataServiceException("Can not interact with collection {0} on {1}", propertyName, target);
 			}
 
-			Store (target);
+			ChangeSet.Add(target);
 		}
 
 		private static bool TryApplyProcessors(object target, object @object, IEnumerable<Func<object, object, bool>> processors)
@@ -124,6 +115,7 @@ namespace Db4objects.Db4o.Data.Services
 
 		public void ClearChanges()
 		{
+			ChangeSet.Clear();
 			Container.Rollback();
 		}
 
@@ -137,11 +129,6 @@ namespace Db4objects.Db4o.Data.Services
 			return null;
 		}
 
-		private void Store(object @object)
-		{
-			Container.Store(@object);
-		}
-
 		private void Delete(object @object)
 		{
 			Container.Delete(@object);
@@ -149,9 +136,7 @@ namespace Db4objects.Db4o.Data.Services
 
 		public object CreateResource(string containerName, string fullTypeName)
 		{
-			object @object = CreateInstance(fullTypeName);
-			Store (@object);
-			return @object;
+			return CreateInstance(fullTypeName);
 		}
 
 		private static object CreateInstance(string fullname)
@@ -233,6 +218,9 @@ namespace Db4objects.Db4o.Data.Services
 
 		public void SaveChanges()
 		{
+			foreach (var o in ChangeSet)
+				Container.Store(o);
+			ChangeSet.Clear();
 			Container.Commit();
 		}
 
@@ -245,7 +233,7 @@ namespace Db4objects.Db4o.Data.Services
 		{
 			GetProperty(targetResource, propertyName, property => {
 				property.SetValue(targetResource, propertyValue, null);
-				Store(targetResource);
+				ChangeSet.Add(targetResource);
 			});
 		}
 	}

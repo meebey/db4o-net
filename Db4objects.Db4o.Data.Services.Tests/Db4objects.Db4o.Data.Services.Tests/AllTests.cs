@@ -9,13 +9,14 @@ namespace Db4objects.Db4o.Data.Services.Tests
 	{
 		public static int Main(string[] args)
 		{
-			var res = new AllTests().RunSolo();
-			return res;
+			return new AllTests().RunSolo();
 		}
 
 		protected override Type[] TestCases()
 		{
-			return new []{
+			return new []
+			{
+				typeof(Integration.AllTests),
 				typeof(Db4oDataContextTestCase),
 			};
 		}

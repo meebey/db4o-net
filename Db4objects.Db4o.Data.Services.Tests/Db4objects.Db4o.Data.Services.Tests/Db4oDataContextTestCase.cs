@@ -5,16 +5,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Services;
 using System.Linq;
-
-using Db4objects.Db4o;
 using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.Linq.Tests;
-using Db4objects.Db4o.Data.Services;
-
 using Db4oUnit;
-using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Data.Services.Tests
 {
@@ -47,8 +43,16 @@ namespace Db4objects.Db4o.Data.Services.Tests
 
 		public class ManagementDataContext : Db4oDataContext
 		{
-			public ManagementDataContext(IObjectContainer container) : base(container)
+			private IObjectContainer _session;
+
+			public ManagementDataContext(IObjectContainer session)
 			{
+				_session = session;
+			}
+
+			protected override IObjectContainer OpenSession()
+			{
+				return _session;
 			}
 
 			public IQueryable<Person> Hackers
@@ -85,7 +89,7 @@ namespace Db4objects.Db4o.Data.Services.Tests
 
 		private ManagementDataContext CreateContext()
 		{
-			return new ManagementDataContext(Db());
+			return new ManagementDataContext((IEmbeddedObjectContainer) Db());
 		}
 
 		private void WithContext(Action<ManagementDataContext> action)
