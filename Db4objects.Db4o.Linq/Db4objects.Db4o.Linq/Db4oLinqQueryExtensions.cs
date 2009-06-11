@@ -97,9 +97,10 @@ namespace Db4objects.Db4o.Linq
 
 		public static IDb4oLinqQuery<TRet> Select<TSource, TRet>(this IDb4oLinqQuery<TSource> self, Func<TSource, TRet> selector)
 		{
-			var temp = self as PlaceHolderQuery<TSource>;
-			if (temp == null) return new UnoptimizedQuery<TRet>(Enumerable.Select(self, selector));
-			return new Db4oQuery<TRet>(temp.QueryFactory);
+			var placeHolderQuery = self as PlaceHolderQuery<TSource>;
+			if (placeHolderQuery != null)
+				return new Db4oQuery<TRet>(placeHolderQuery.QueryFactory);
+			return new UnoptimizedQuery<TRet>(Enumerable.Select(self, selector));
 		}
 #if !CF_3_5
 		public static IDb4oLinqQueryable<TSource> AsQueryable<TSource>(this IDb4oLinqQuery<TSource> self)
