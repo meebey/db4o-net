@@ -2,6 +2,7 @@ using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
+using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {

@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Db4objects.Db4o.Tests.Util
+namespace Db4oUnit.Extensions.Util
 {
-	class IOServices
+	public class IOServices
 	{
 		public static string FindParentDirectory(string path)
 		{

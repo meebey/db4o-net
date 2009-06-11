@@ -6,6 +6,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit.Extensions.Fixtures;
+using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI1.Aliases
 {

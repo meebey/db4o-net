@@ -4,6 +4,7 @@ using System.Reflection;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Util;
 #if !CF && !SILVERLIGHT
+using Db4oUnit.Extensions.Util;
 using Mono.Cecil;
 #endif
 using File = Sharpen.IO.File;
