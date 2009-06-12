@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Data.Services
 	{
 		private IObjectContainer _container;
 
-		private HashSet<object> ChangeSet = new HashSet<object>();
+		private HashSet<object> _changeSet = new HashSet<object>();
 
 		protected IObjectContainer Container
 		{
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Data.Services
 				throw DataServiceException("Can not interact with collection {0} on {1}", propertyName, target);
 			}
 
-			ChangeSet.Add(target);
+			_changeSet.Add(target);
 		}
 
 		private static bool TryApplyProcessors(object target, object @object, IEnumerable<Func<object, object, bool>> processors)
@@ -115,7 +115,7 @@ namespace Db4objects.Db4o.Data.Services
 
 		public void ClearChanges()
 		{
-			ChangeSet.Clear();
+			_changeSet.Clear();
 			Container.Rollback();
 		}
 
@@ -218,9 +218,9 @@ namespace Db4objects.Db4o.Data.Services
 
 		public void SaveChanges()
 		{
-			foreach (var o in ChangeSet)
+			foreach (var o in _changeSet)
 				Container.Store(o);
-			ChangeSet.Clear();
+			_changeSet.Clear();
 			Container.Commit();
 		}
 
@@ -233,7 +233,7 @@ namespace Db4objects.Db4o.Data.Services
 		{
 			GetProperty(targetResource, propertyName, property => {
 				property.SetValue(targetResource, propertyValue, null);
-				ChangeSet.Add(targetResource);
+				_changeSet.Add(targetResource);
 			});
 		}
 	}
