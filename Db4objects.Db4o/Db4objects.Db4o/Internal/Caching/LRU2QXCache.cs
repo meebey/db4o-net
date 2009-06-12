@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			_a1out = new CircularBuffer4(_maxSize / 2);
 		}
 
-		public virtual object Produce(object key, IFunction4 producer, IProcedure4 onDiscard
+		public virtual object Produce(object key, IFunction4 producer, IProcedure4 finalizer
 			)
 		{
 			if (key == null)
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			}
 			if (_a1out.Contains(key))
 			{
-				ReclaimFor(key, producer, onDiscard);
+				ReclaimFor(key, producer, finalizer);
 				_am.AddFirst(key);
 				return _slots[key];
 			}
@@ -61,12 +61,12 @@ namespace Db4objects.Db4o.Internal.Caching
 			{
 				return _slots[key];
 			}
-			ReclaimFor(key, producer, onDiscard);
+			ReclaimFor(key, producer, finalizer);
 			_a1in.AddFirst(key);
 			return _slots[key];
 		}
 
-		private void ReclaimFor(object key, IFunction4 producer, IProcedure4 onDiscard)
+		private void ReclaimFor(object key, IFunction4 producer, IProcedure4 finalizer)
 		{
 			if (_slots.Count < _maxSize)
 			{
@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			if (_a1in.Size() > _inSize)
 			{
 				object lastKey = _a1in.RemoveLast();
-				Discard(lastKey, onDiscard);
+				Discard(lastKey, finalizer);
 				if (_a1out.IsFull())
 				{
 					_a1out.RemoveLast();
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			else
 			{
 				object lastKey = _am.RemoveLast();
-				Discard(lastKey, onDiscard);
+				Discard(lastKey, finalizer);
 			}
 			_slots[key] = producer.Apply(key);
 		}
@@ -102,12 +102,12 @@ namespace Db4objects.Db4o.Internal.Caching
 				 + ToString(_a1out) + ")" + " - " + _slots.Count;
 		}
 
-		private void Discard(object key, IProcedure4 onDiscard)
+		private void Discard(object key, IProcedure4 finalizer)
 		{
 			object removed = Sharpen.Util.Collections.Remove(_slots, key);
-			if (onDiscard != null)
+			if (finalizer != null)
 			{
-				onDiscard.Apply(removed);
+				finalizer.Apply(removed);
 			}
 		}
 

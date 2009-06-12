@@ -18,8 +18,6 @@ namespace Db4objects.Db4o.CS.Internal.Caching
 			{
 			}
 
-			// TODO: use Cache4 internally
-			// TODO: ensure slot cache doesn't affect refresh behavior
 			public override object InitialValueFor(Transaction transaction)
 			{
 				return new Hashtable();

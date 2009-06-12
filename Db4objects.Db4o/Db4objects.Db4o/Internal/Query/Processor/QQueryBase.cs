@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual void CaptureQueryResultConfig()
 		{
 			Config4Impl config = _trans.Container().Config();
-			_evaluationMode = config.QueryEvaluationMode();
+			_evaluationMode = config.EvaluationMode();
 			_prefetchDepth = config.PrefetchDepth();
 			_prefetchCount = config.PrefetchObjectCount();
 		}

@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return new Db4oMigrationSuiteBuilder(TestCases(), Libraries()).GetEnumerator();
 		}
 
-		private string[] Libraries()
+		protected virtual string[] Libraries()
 		{
 			if (true)
 			{

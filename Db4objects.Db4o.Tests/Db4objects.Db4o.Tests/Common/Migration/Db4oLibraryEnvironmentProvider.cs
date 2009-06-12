@@ -1,13 +1,13 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
+using System.Collections;
 using Db4objects.Db4o.Tests.Common.Migration;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
 	public class Db4oLibraryEnvironmentProvider
 	{
-		private readonly Hashtable4 _environments = new Hashtable4();
+		private readonly IDictionary _environments = new Hashtable();
 
 		private readonly Sharpen.IO.File _classPath;
 
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private Db4oLibraryEnvironment ExistingEnvironment(string path)
 		{
-			return (Db4oLibraryEnvironment)_environments.Get(path);
+			return ((Db4oLibraryEnvironment)_environments[path]);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -37,8 +37,18 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{
 			Db4oLibraryEnvironment env = new Db4oLibraryEnvironment(new Sharpen.IO.File(path)
 				, _classPath);
-			_environments.Put(path, env);
+			_environments[path] = env;
 			return env;
+		}
+
+		public virtual void DisposeAll()
+		{
+			for (IEnumerator eIter = _environments.Values.GetEnumerator(); eIter.MoveNext(); )
+			{
+				Db4oLibraryEnvironment e = ((Db4oLibraryEnvironment)eIter.Current);
+				e.Dispose();
+			}
+			_environments.Clear();
 		}
 	}
 }

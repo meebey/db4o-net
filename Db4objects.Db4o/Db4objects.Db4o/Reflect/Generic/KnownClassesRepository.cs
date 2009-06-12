@@ -75,8 +75,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 				{
 					return _stream.Handlers().ClassForID(id);
 				}
-				EnsureClassAvailability(id);
-				return LookupByID(id);
+				return EnsureClassAvailability(id);
 			}
 		}
 
@@ -115,13 +114,13 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private void ReadAll()
 		{
-			ForEachClassId(new _IProcedure4_103(this));
-			ForEachClassId(new _IProcedure4_106(this));
+			ForEachClassId(new _IProcedure4_102(this));
+			ForEachClassId(new _IProcedure4_105(this));
 		}
 
-		private sealed class _IProcedure4_103 : IProcedure4
+		private sealed class _IProcedure4_102 : IProcedure4
 		{
-			public _IProcedure4_103(KnownClassesRepository _enclosing)
+			public _IProcedure4_102(KnownClassesRepository _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -134,9 +133,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 			private readonly KnownClassesRepository _enclosing;
 		}
 
-		private sealed class _IProcedure4_106 : IProcedure4
+		private sealed class _IProcedure4_105 : IProcedure4
 		{
-			public _IProcedure4_106(KnownClassesRepository _enclosing)
+			public _IProcedure4_105(KnownClassesRepository _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -213,6 +212,11 @@ namespace Db4objects.Db4o.Reflect.Generic
 				string fieldName = fieldInfo.Name();
 				IReflectClass fieldClass = ReflectClassForFieldSpec(fieldInfo, _stream.Reflector(
 					));
+				if (null == fieldClass && (fieldInfo.IsField() && !fieldInfo.IsVirtual()))
+				{
+					throw new InvalidOperationException("Could not read field type for '" + className
+						 + "." + fieldName + "'");
+				}
 				fields[i] = _builder.CreateField(clazz, fieldName, fieldClass, fieldInfo.IsVirtual
 					(), fieldInfo.IsPrimitive(), fieldInfo.IsArray(), fieldInfo.IsNArray());
 			}

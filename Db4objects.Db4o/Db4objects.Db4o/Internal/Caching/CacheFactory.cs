@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			return new LRU2QXCache(size);
 		}
 
-		public static ICache4 NewLRUCache(int size)
+		public static IPurgeableCache4 NewLRUCache(int size)
 		{
 			return new LRUCache(size);
 		}

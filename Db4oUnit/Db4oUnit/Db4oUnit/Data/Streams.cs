@@ -15,7 +15,7 @@ namespace Db4oUnit.Data
 
 		public static IEnumerable RandomIntegers()
 		{
-			return Series(null, new _IFunction4_15());
+			return Iterators.Series(null, new _IFunction4_15());
 		}
 
 		private sealed class _IFunction4_15 : IFunction4
@@ -32,7 +32,7 @@ namespace Db4oUnit.Data
 
 		public static IEnumerable RandomNaturals(int ceiling)
 		{
-			return Series(null, new _IFunction4_23(ceiling));
+			return Iterators.Series(null, new _IFunction4_23(ceiling));
 		}
 
 		private sealed class _IFunction4_23 : IFunction4
@@ -137,64 +137,6 @@ namespace Db4oUnit.Data
 			{
 				return (char)((int)value);
 			}
-		}
-
-		public static IEnumerable Series(object seed, IFunction4 function)
-		{
-			return new _IEnumerable_83(seed, function);
-		}
-
-		private sealed class _IEnumerable_83 : IEnumerable
-		{
-			public _IEnumerable_83(object seed, IFunction4 function)
-			{
-				this.seed = seed;
-				this.function = function;
-			}
-
-			public IEnumerator GetEnumerator()
-			{
-				return new _IEnumerator_85(seed, function);
-			}
-
-			private sealed class _IEnumerator_85 : IEnumerator
-			{
-				public _IEnumerator_85(object seed, IFunction4 function)
-				{
-					this.seed = seed;
-					this.function = function;
-					this._current = seed;
-				}
-
-				private object _current;
-
-				public object Current
-				{
-					get
-					{
-						return this._current;
-					}
-				}
-
-				public bool MoveNext()
-				{
-					this._current = function.Apply(this._current);
-					return true;
-				}
-
-				public void Reset()
-				{
-					this._current = seed;
-				}
-
-				private readonly object seed;
-
-				private readonly IFunction4 function;
-			}
-
-			private readonly object seed;
-
-			private readonly IFunction4 function;
 		}
 	}
 }

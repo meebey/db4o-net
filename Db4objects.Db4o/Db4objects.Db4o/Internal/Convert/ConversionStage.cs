@@ -44,9 +44,9 @@ namespace Db4objects.Db4o.Internal.Convert
 			return _file;
 		}
 
-		public virtual SystemData SystemData()
+		public virtual int ConverterVersion()
 		{
-			return _file.SystemData();
+			return _file.SystemData().ConverterVersion();
 		}
 
 		public abstract void Accept(Conversion conversion);

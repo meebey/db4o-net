@@ -2,10 +2,10 @@
 
 #if !SILVERLIGHT
 using Db4oUnit;
+using Db4objects.Db4o.CS.Internal;
+using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal.CS;
-using Db4objects.Db4o.Internal.CS.Messages;
 using Db4objects.Db4o.Tests.Common.CS;
 using Db4objects.Db4o.Tests.Common.Staging;
 using Sharpen.Lang;

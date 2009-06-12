@@ -6,7 +6,8 @@ using Db4objects.Db4o.Internal.Caching;
 
 namespace Db4objects.Db4o.Internal.Caching
 {
-	internal class LRUCache : ICache4
+	/// <exclude></exclude>
+	internal class LRUCache : IPurgeableCache4
 	{
 		private readonly IDictionary _slots;
 
@@ -21,21 +22,25 @@ namespace Db4objects.Db4o.Internal.Caching
 			_lru = new CircularBuffer4(size);
 		}
 
-		public virtual object Produce(object key, IFunction4 producer, IProcedure4 onDiscard
+		public virtual object Produce(object key, IFunction4 producer, IProcedure4 finalizer
 			)
 		{
 			object value = _slots[key];
 			if (value == null)
 			{
+				object newValue = producer.Apply(key);
+				if (newValue == null)
+				{
+					return null;
+				}
 				if (_slots.Count >= _maxSize)
 				{
 					object discarded = Sharpen.Util.Collections.Remove(_slots, _lru.RemoveLast());
-					if (null != onDiscard)
+					if (null != finalizer)
 					{
-						onDiscard.Apply(discarded);
+						finalizer.Apply(discarded);
 					}
 				}
-				object newValue = producer.Apply(key);
 				_slots[key] = newValue;
 				_lru.AddFirst(key);
 				return newValue;
@@ -49,6 +54,15 @@ namespace Db4objects.Db4o.Internal.Caching
 		public virtual IEnumerator GetEnumerator()
 		{
 			return _slots.Values.GetEnumerator();
+		}
+
+		public virtual object Purge(object key)
+		{
+			if (!_lru.Remove(key))
+			{
+				return null;
+			}
+			return Sharpen.Util.Collections.Remove(_slots, key);
 		}
 	}
 }

@@ -3,9 +3,9 @@
 #if !SILVERLIGHT
 using System.Collections;
 using Db4oUnit;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Tests.Common.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS

@@ -1,15 +1,17 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 #if !SILVERLIGHT
+using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal.CS.Messages;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.CS;
+using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
@@ -80,20 +82,76 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		public virtual void TestPrefetchingDepth2Behavior()
+		public virtual void TestMaxPrefetchingDepthBehavior()
 		{
-			StoreDepth2Graph();
+			StoreAllAndPurge(new PrefetchConfigurationTestCase.Item[] { new PrefetchConfigurationTestCase.Item
+				(new PrefetchConfigurationTestCase.Item(new PrefetchConfigurationTestCase.Item()
+				)), new PrefetchConfigurationTestCase.Item(new PrefetchConfigurationTestCase.Item
+				(new PrefetchConfigurationTestCase.Item())), new PrefetchConfigurationTestCase.Item
+				(new PrefetchConfigurationTestCase.Item(new PrefetchConfigurationTestCase.Item()
+				)) });
 			Client().Config().PrefetchObjectCount(2);
-			Client().Config().PrefetchDepth(2);
-			IQuery query = QueryForItemsWithChild();
-			// TODO: items to level 3
+			Client().Config().PrefetchDepth(int.MaxValue);
+			IQuery query = Client().Query();
+			query.Constrain(typeof(PrefetchConfigurationTestCase.Item));
+			query.Descend("child").Descend("child").Constrain(null).Not();
 			AssertQueryIterationProtocol(query, Msg.QueryExecute, new PrefetchConfigurationTestCase.Stimulus
 				[] { new PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new 
 				PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new PrefetchConfigurationTestCase.Depth2Stimulus
 				(this, new MsgD[] { Msg.ReadMultipleObjects }) });
 		}
 
-		public virtual void TestDepth2WithPrefetching1()
+		public virtual void TestPrefetchingWithCyclesAscending()
+		{
+			PrefetchConfigurationTestCase.Item a = new PrefetchConfigurationTestCase.Item(1);
+			PrefetchConfigurationTestCase.Item b = new PrefetchConfigurationTestCase.Item(2);
+			PrefetchConfigurationTestCase.Item c = new PrefetchConfigurationTestCase.Item(3);
+			a.child = b;
+			b.child = a;
+			c.child = b;
+			StoreAllAndPurge(new PrefetchConfigurationTestCase.Item[] { a, b, c });
+			Client().Config().PrefetchObjectCount(2);
+			Client().Config().PrefetchDepth(2);
+			IQuery query = QueryForItemsWithChild();
+			query.Descend("order").OrderAscending();
+			AssertQueryIterationProtocol(query, Msg.QueryExecute, new PrefetchConfigurationTestCase.Stimulus
+				[] { new PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new 
+				PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new PrefetchConfigurationTestCase.Depth2Stimulus
+				(this, new MsgD[] { Msg.ReadMultipleObjects }) });
+		}
+
+		public virtual void TestPrefetchingWithCyclesDescending()
+		{
+			PrefetchConfigurationTestCase.Item a = new PrefetchConfigurationTestCase.Item(1);
+			PrefetchConfigurationTestCase.Item b = new PrefetchConfigurationTestCase.Item(2);
+			PrefetchConfigurationTestCase.Item c = new PrefetchConfigurationTestCase.Item(3);
+			a.child = b;
+			b.child = a;
+			c.child = b;
+			StoreAllAndPurge(new PrefetchConfigurationTestCase.Item[] { a, b, c });
+			Client().Config().PrefetchObjectCount(2);
+			Client().Config().PrefetchDepth(2);
+			IQuery query = QueryForItemsWithChild();
+			query.Descend("order").OrderDescending();
+			AssertQueryIterationProtocol(query, Msg.QueryExecute, new PrefetchConfigurationTestCase.Stimulus
+				[] { new PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new 
+				PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new PrefetchConfigurationTestCase.Depth2Stimulus
+				(this, new MsgD[] {  }) });
+		}
+
+		public virtual void TestPrefetchingDepth2Behavior()
+		{
+			StoreDepth2Graph();
+			Client().Config().PrefetchObjectCount(2);
+			Client().Config().PrefetchDepth(2);
+			IQuery query = QueryForItemsWithChild();
+			AssertQueryIterationProtocol(query, Msg.QueryExecute, new PrefetchConfigurationTestCase.Stimulus
+				[] { new PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new 
+				PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] {  }), new PrefetchConfigurationTestCase.Depth2Stimulus
+				(this, new MsgD[] { Msg.ReadMultipleObjects }) });
+		}
+
+		public virtual void TestGraphOfDepth2WithPrefetchDepth1()
 		{
 			StoreDepth2Graph();
 			Client().Config().PrefetchObjectCount(2);
@@ -104,6 +162,71 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				 }), new PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] { Msg.ReadReaderById
 				 }), new PrefetchConfigurationTestCase.Depth2Stimulus(this, new MsgD[] { Msg.ReadMultipleObjects
 				, Msg.ReadReaderById }) });
+		}
+
+		public virtual void TestPrefetchCount1()
+		{
+			StoreAllAndPurge(new PrefetchConfigurationTestCase.Item[] { new PrefetchConfigurationTestCase.Item
+				(), new PrefetchConfigurationTestCase.Item(), new PrefetchConfigurationTestCase.Item
+				() });
+			Client().Config().PrefetchObjectCount(1);
+			Client().Config().PrefetchDepth(1);
+			IQuery query = QueryForItemsWithoutChildren();
+			AssertQueryIterationProtocol(query, Msg.QueryExecute, new PrefetchConfigurationTestCase.Stimulus
+				[] { new PrefetchConfigurationTestCase.Stimulus(new MsgD[] {  }), new PrefetchConfigurationTestCase.Stimulus
+				(new MsgD[] { Msg.ReadMultipleObjects }), new PrefetchConfigurationTestCase.Stimulus
+				(new MsgD[] { Msg.ReadMultipleObjects }) });
+		}
+
+		public virtual void TestPrefetchingAfterDeleteFromOtherClient()
+		{
+			StoreAllAndPurge(new PrefetchConfigurationTestCase.Item[] { new PrefetchConfigurationTestCase.Item
+				(), new PrefetchConfigurationTestCase.Item(), new PrefetchConfigurationTestCase.Item
+				() });
+			Client().Config().PrefetchObjectCount(1);
+			Client().Config().PrefetchDepth(1);
+			IQuery query = QueryForItemsWithoutChildren();
+			IObjectSet result = query.Execute();
+			DeleteAllItemsFromSecondClient();
+			Assert.IsNotNull(((PrefetchConfigurationTestCase.Item)result.Next()));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_211(result));
+		}
+
+		private sealed class _ICodeBlock_211 : ICodeBlock
+		{
+			public _ICodeBlock_211(IObjectSet result)
+			{
+				this.result = result;
+			}
+
+			/// <exception cref="System.Exception"></exception>
+			public void Run()
+			{
+				result.Next();
+			}
+
+			private readonly IObjectSet result;
+		}
+
+		private IQuery QueryForItemsWithoutChildren()
+		{
+			IQuery query = NewQuery(typeof(PrefetchConfigurationTestCase.Item));
+			query.Descend("child").Constrain(null);
+			return query;
+		}
+
+		private void DeleteAllItemsFromSecondClient()
+		{
+			IExtObjectContainer client = OpenNewClient();
+			try
+			{
+				DeleteAll(client, typeof(PrefetchConfigurationTestCase.Item));
+				client.Commit();
+			}
+			finally
+			{
+				client.Close();
+			}
 		}
 
 		private IQuery QueryForItemsWithChild()
@@ -119,8 +242,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			StoreAllAndPurge(new PrefetchConfigurationTestCase.Item[] { new PrefetchConfigurationTestCase.Item
 				(new PrefetchConfigurationTestCase.Item()), new PrefetchConfigurationTestCase.Item
 				(new PrefetchConfigurationTestCase.Item()), new PrefetchConfigurationTestCase.Item
-				(new PrefetchConfigurationTestCase.Item()), new PrefetchConfigurationTestCase.Item
-				() });
+				(new PrefetchConfigurationTestCase.Item()) });
 		}
 
 		private void AssertPrefetchingBehaviorFor(IQuery query, MsgD expectedFirstMessage
@@ -150,7 +272,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				AssertMessages(messages, stimulus.expectedMessagesAfter);
 				messages.Clear();
 			}
-			Assert.IsFalse(result.HasNext());
+			if (result.HasNext())
+			{
+				Assert.Fail("Unexpected item: " + ((PrefetchConfigurationTestCase.Item)result.Next
+					()));
+			}
 			AssertMessages(messages, new MsgD[] {  });
 		}
 
@@ -202,8 +328,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			// ensures classmetadata exists for query objects
 			IQuery query = Client().Query();
 			query.Constrain(typeof(PrefetchConfigurationTestCase.Item));
-			query.Descend("child").Constrain(null).Not();
-			query.Descend("child").Constrain(null);
+			query.Descend("child").Descend("child").Constrain(null).Not();
 			Assert.AreEqual(0, query.Execute().Count);
 		}
 
@@ -217,26 +342,42 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private void StoreAllAndPurge(PrefetchConfigurationTestCase.Item[] items)
 		{
-			for (int itemIndex = 0; itemIndex < items.Length; ++itemIndex)
-			{
-				PrefetchConfigurationTestCase.Item item = items[itemIndex];
-				StoreAndPurge(item);
-			}
+			StoreAll(items);
+			PurgeAll(items);
 			Client().Commit();
 		}
 
-		private void StoreAndPurge(PrefetchConfigurationTestCase.Item item)
+		private void StoreAll(PrefetchConfigurationTestCase.Item[] items)
 		{
-			Client().Store(item);
-			Purge(item);
+			for (int itemIndex = 0; itemIndex < items.Length; ++itemIndex)
+			{
+				PrefetchConfigurationTestCase.Item item = items[itemIndex];
+				Client().Store(item);
+			}
 		}
 
-		private void Purge(PrefetchConfigurationTestCase.Item item)
+		private void PurgeAll(PrefetchConfigurationTestCase.Item[] items)
 		{
-			Client().Purge(item);
-			if (null != item.child)
+			HashSet purged = new HashSet();
+			for (int itemIndex = 0; itemIndex < items.Length; ++itemIndex)
 			{
-				Purge(item.child);
+				PrefetchConfigurationTestCase.Item item = items[itemIndex];
+				Purge(purged, item);
+			}
+		}
+
+		private void Purge(ISet purged, PrefetchConfigurationTestCase.Item item)
+		{
+			if (purged.Contains(item))
+			{
+				return;
+			}
+			purged.Add(item);
+			Client().Purge(item);
+			PrefetchConfigurationTestCase.Item child = item.child;
+			if (null != child)
+			{
+				Purge(purged, child);
 			}
 		}
 
@@ -251,7 +392,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 			}
 
+			public Item(int order)
+			{
+				this.order = order;
+			}
+
 			public PrefetchConfigurationTestCase.Item child;
+
+			public int order;
 		}
 
 		public class RootItem : PrefetchConfigurationTestCase.Item

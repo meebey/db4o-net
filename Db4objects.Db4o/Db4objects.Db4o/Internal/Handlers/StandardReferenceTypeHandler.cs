@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -218,7 +219,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			if (source == null)
 			{
-				return new _IPreparedComparison_148();
+				return Null.Instance;
 			}
 			if (source is int)
 			{
@@ -229,28 +230,37 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				TransactionContext tc = (TransactionContext)source;
 				object obj = tc._object;
-				Transaction transaction = tc._transaction;
-				int id = IdFor(obj, transaction);
+				int id = IdFor(obj, tc._transaction);
 				return new StandardReferenceTypeHandler.PreparedComparisonImpl(id, ReflectClassFor
 					(obj));
+			}
+			return PlatformComparisonFor(source);
+		}
+
+		private IPreparedComparison PlatformComparisonFor(object source)
+		{
+			//TODO: Move the comparable wrapping to a .Net specific StandardStructHandler
+			if (source is IComparable)
+			{
+				return new _IPreparedComparison_169(source);
 			}
 			throw new IllegalComparisonException();
 		}
 
-		private sealed class _IPreparedComparison_148 : IPreparedComparison
+		private sealed class _IPreparedComparison_169 : IPreparedComparison
 		{
-			public _IPreparedComparison_148()
+			public _IPreparedComparison_169(object source)
 			{
+				this.source = source;
 			}
 
 			public int CompareTo(object obj)
 			{
-				if (obj == null)
-				{
-					return 0;
-				}
-				return -1;
+				IComparable self = (IComparable)source;
+				return self.CompareTo(obj);
 			}
+
+			private readonly object source;
 		}
 
 		private IReflectClass ReflectClassFor(object obj)
@@ -449,14 +459,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void CollectIDs(CollectIdContext context, IPredicate4 predicate)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_337
+			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_343
 				(predicate, context);
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_337 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_343 : StandardReferenceTypeHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_337(IPredicate4 predicate, CollectIdContext context
+			public _TraverseAspectCommand_343(IPredicate4 predicate, CollectIdContext context
 				)
 			{
 				this.predicate = predicate;
@@ -516,15 +526,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			BooleanByRef aspectFound = new BooleanByRef(false);
 			CollectIdContext subContext = CollectIdContext.ForID(context.Transaction(), context
 				.Collector(), context.CollectionID());
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_374
+			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_380
 				(this, aspectFound, subContext);
 			TraverseAllAspects(subContext, command);
 			return aspectFound.value;
 		}
 
-		private sealed class _TraverseAspectCommand_374 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_380 : StandardReferenceTypeHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_374(StandardReferenceTypeHandler _enclosing, BooleanByRef
+			public _TraverseAspectCommand_380(StandardReferenceTypeHandler _enclosing, BooleanByRef
 				 aspectFound, CollectIdContext subContext)
 			{
 				this._enclosing = _enclosing;
@@ -586,12 +596,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			int depth = ClassMetadata().AdjustDepthToBorders(2);
 			container.Activate(transaction, obj, container.ActivationDepthProvider().ActivationDepth
 				(depth, ActivationMode.Activate));
-			Platform4.ForEachCollectionElement(obj, new _IVisitor4_415(context));
+			Platform4.ForEachCollectionElement(obj, new _IVisitor4_421(context));
 		}
 
-		private sealed class _IVisitor4_415 : IVisitor4
+		private sealed class _IVisitor4_421 : IVisitor4
 		{
-			public _IVisitor4_415(QueryingReadContext context)
+			public _IVisitor4_421(QueryingReadContext context)
 			{
 				this.context = context;
 			}
@@ -606,14 +616,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void ReadVirtualAttributes(ObjectReferenceContext context)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_423
+			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_429
 				(context);
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_423 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_429 : StandardReferenceTypeHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_423(ObjectReferenceContext context)
+			public _TraverseAspectCommand_429(ObjectReferenceContext context)
 			{
 				this.context = context;
 			}
@@ -639,14 +649,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_438
+			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_444
 				(context, oldSlot);
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_438 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_444 : StandardReferenceTypeHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_438(ObjectIdContextImpl context, Slot oldSlot)
+			public _TraverseAspectCommand_444(ObjectIdContextImpl context, Slot oldSlot)
 			{
 				this.context = context;
 				this.oldSlot = oldSlot;
@@ -680,14 +690,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void DeleteMembers(DeleteContextImpl context, bool isUpdate)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_456
+			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_462
 				(context, isUpdate);
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_456 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_462 : StandardReferenceTypeHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_456(DeleteContextImpl context, bool isUpdate)
+			public _TraverseAspectCommand_462(DeleteContextImpl context, bool isUpdate)
 			{
 				this.context = context;
 				this.isUpdate = isUpdate;
@@ -716,15 +726,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual bool SeekToField(ObjectHeaderContext context, ClassAspect aspect)
 		{
 			BooleanByRef found = new BooleanByRef(false);
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_473
+			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_479
 				(context, aspect, found);
 			TraverseAllAspects(context, command);
 			return found.value;
 		}
 
-		private sealed class _TraverseAspectCommand_473 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _TraverseAspectCommand_479 : StandardReferenceTypeHandler.TraverseAspectCommand
 		{
-			public _TraverseAspectCommand_473(ObjectHeaderContext context, ClassAspect aspect
+			public _TraverseAspectCommand_479(ObjectHeaderContext context, ClassAspect aspect
 				, BooleanByRef found)
 			{
 				this.context = context;

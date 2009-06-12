@@ -1,8 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal;
+using System.Collections;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Convert.Conversions;
 
@@ -13,60 +12,74 @@ namespace Db4objects.Db4o.Internal.Convert
 	{
 		public const int Version = ReindexNetDateTime_7_8.Version;
 
-		private static Converter _converter;
+		public static bool Convert(ConversionStage stage)
+		{
+			if (!NeedsConversion(stage.ConverterVersion()))
+			{
+				return false;
+			}
+			return Instance().RunConversions(stage);
+		}
 
-		private Hashtable4 _conversions;
+		private static Converter _instance;
+
+		private IDictionary _conversions;
+
+		private int _minimumVersion = int.MaxValue;
 
 		private Converter()
 		{
-			_conversions = new Hashtable4();
+			_conversions = new Hashtable();
 			// TODO: There probably will be Java and .NET conversions
 			//       Create Platform4.registerConversions() method ann
 			//       call from here when needed.
 			CommonConversions.Register(this);
 		}
 
-		public static bool Convert(ConversionStage stage)
+		public static Converter Instance()
 		{
-			if (!NeedsConversion(stage.SystemData()))
+			if (_instance == null)
 			{
-				return false;
+				_instance = new Converter();
 			}
-			if (_converter == null)
-			{
-				_converter = new Converter();
-			}
-			return _converter.RunConversions(stage);
+			return _instance;
 		}
 
-		private static bool NeedsConversion(SystemData systemData)
+		public virtual Conversion ConversionFor(int version)
 		{
-			return systemData.ConverterVersion() < Version;
+			return ((Conversion)_conversions[version]);
 		}
 
-		public virtual void Register(int idx, Conversion conversion)
+		private static bool NeedsConversion(int converterVersion)
 		{
-			if (_conversions.Get(idx) != null)
+			return converterVersion < Version;
+		}
+
+		public virtual void Register(int introducedVersion, Conversion conversion)
+		{
+			if (_conversions.Contains(introducedVersion))
 			{
 				throw new InvalidOperationException();
 			}
-			_conversions.Put(idx, conversion);
+			if (introducedVersion < _minimumVersion)
+			{
+				_minimumVersion = introducedVersion;
+			}
+			_conversions[introducedVersion] = conversion;
 		}
 
 		public virtual bool RunConversions(ConversionStage stage)
 		{
-			SystemData systemData = stage.SystemData();
-			if (!NeedsConversion(systemData))
+			int startingVersion = Math.Max(stage.ConverterVersion() + 1, _minimumVersion);
+			for (int version = startingVersion; version <= Version; version++)
 			{
-				return false;
-			}
-			for (int i = systemData.ConverterVersion(); i <= Version; i++)
-			{
-				Conversion conversion = (Conversion)_conversions.Get(i);
-				if (conversion != null)
+				Conversion conversion = ConversionFor(version);
+				if (conversion == null)
 				{
-					stage.Accept(conversion);
+					throw new InvalidOperationException("Could not find a conversion for version " + 
+						version);
 				}
+				stage.Accept(conversion);
 			}
 			return true;
 		}

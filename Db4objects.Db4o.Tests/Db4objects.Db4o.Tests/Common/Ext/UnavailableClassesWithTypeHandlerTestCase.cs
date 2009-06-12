@@ -8,6 +8,7 @@ using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Ext;
 
@@ -25,22 +26,22 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 			public Stack _fieldWithTypeHandler;
 		}
 
-		public static void Main(string[] args)
+		public virtual void TestStoredClasses()
 		{
-			new ConsoleTestRunner(typeof(UnavailableClassesWithTypeHandlerTestCase)).Run();
+			AssertStoredClasses(TempFile());
 		}
 
-		public virtual void TestStoredClassesWithTypeHandler()
+		/// <exception cref="System.Exception"></exception>
+		public override void SetUp()
 		{
+			base.SetUp();
 			Store(TempFile(), new UnavailableClassesWithTypeHandlerTestCase.HolderForClassWithTypeHandler
 				(new Stack()));
-			AssertStoredClasses(TempFile());
 		}
 
 		private void AssertStoredClasses(string databaseFileName)
 		{
-			IObjectContainer db = Db4oEmbedded.OpenFile(ConfigExcludingStack(), databaseFileName
-				);
+			IObjectContainer db = OpenFileExcludingStackClass(databaseFileName);
 			try
 			{
 				Assert.IsGreater(2, db.Ext().StoredClasses().Length);
@@ -49,6 +50,12 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 			{
 				db.Close();
 			}
+		}
+
+		private IEmbeddedObjectContainer OpenFileExcludingStackClass(string databaseFileName
+			)
+		{
+			return Db4oEmbedded.OpenFile(ConfigExcludingStack(), databaseFileName);
 		}
 
 		private void Store(string databaseFileName, object obj)
@@ -67,8 +74,13 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 
 		private IEmbeddedConfiguration ConfigExcludingStack()
 		{
+			return ConfigWith(new ExcludingReflector(new Type[] { typeof(Stack) }));
+		}
+
+		private IEmbeddedConfiguration ConfigWith(IReflector reflector)
+		{
 			IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
-			config.Common.ReflectWith(new ExcludingReflector(new Type[] { typeof(Stack) }));
+			config.Common.ReflectWith(reflector);
 			return config;
 		}
 	}

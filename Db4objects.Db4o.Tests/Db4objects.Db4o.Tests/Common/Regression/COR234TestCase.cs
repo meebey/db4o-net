@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
+using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
@@ -31,12 +32,12 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 			Db4oFactory.Configure().AllowVersionUpdates(false);
 			Db4oFactory.Configure().ReflectWith(Platform4.ReflectorForType(typeof(COR234TestCase
 				)));
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_34(this));
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_35(this));
 		}
 
-		private sealed class _ICodeBlock_34 : ICodeBlock
+		private sealed class _ICodeBlock_35 : ICodeBlock
 		{
-			public _ICodeBlock_34(COR234TestCase _enclosing)
+			public _ICodeBlock_35(COR234TestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

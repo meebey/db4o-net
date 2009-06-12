@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			_slots = new Hashtable(maxSize);
 		}
 
-		public virtual object Produce(object key, IFunction4 producer, IProcedure4 onDiscard
+		public virtual object Produce(object key, IFunction4 producer, IProcedure4 finalizer
 			)
 		{
 			if (key == null)
@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			}
 			if (_slots.Count >= _maxSize)
 			{
-				DiscardPage(onDiscard);
+				DiscardPage(finalizer);
 			}
 			object value = producer.Apply(key);
 			_slots[key] = value;
@@ -59,28 +59,28 @@ namespace Db4objects.Db4o.Internal.Caching
 			return value;
 		}
 
-		private void DiscardPage(IProcedure4 onDiscard)
+		private void DiscardPage(IProcedure4 finalizer)
 		{
 			if (_a1.Size() >= _a1_threshold)
 			{
-				DiscardPageFrom(_a1, onDiscard);
+				DiscardPageFrom(_a1, finalizer);
 			}
 			else
 			{
-				DiscardPageFrom(_am, onDiscard);
+				DiscardPageFrom(_am, finalizer);
 			}
 		}
 
-		private void DiscardPageFrom(CircularBuffer4 list, IProcedure4 onDiscard)
+		private void DiscardPageFrom(CircularBuffer4 list, IProcedure4 finalizer)
 		{
-			Discard(list.RemoveLast(), onDiscard);
+			Discard(list.RemoveLast(), finalizer);
 		}
 
-		private void Discard(object key, IProcedure4 onDiscard)
+		private void Discard(object key, IProcedure4 finalizer)
 		{
-			if (null != onDiscard)
+			if (null != finalizer)
 			{
-				onDiscard.Apply(_slots[key]);
+				finalizer.Apply(_slots[key]);
 			}
 			Sharpen.Util.Collections.Remove(_slots, key);
 		}

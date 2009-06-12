@@ -17,18 +17,41 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			new ConsoleTestRunner(typeof(IteratorsTestCase)).Run();
 		}
 
+		public virtual void TestRange()
+		{
+			Iterator4Assert.AreEqual(new object[] {  }, Iterators.Range(1, 1));
+			Iterator4Assert.AreEqual(new object[] { 1 }, Iterators.Range(1, 2));
+			Iterator4Assert.AreEqual(new object[] { 1, 2 }, Iterators.Range(1, 3));
+			Iterator4Assert.AreEqual(new object[] { -2, -1, 0, 1, 2 }, Iterators.Range(-2, 3)
+				);
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_24());
+		}
+
+		private sealed class _ICodeBlock_24 : ICodeBlock
+		{
+			public _ICodeBlock_24()
+			{
+			}
+
+			/// <exception cref="System.Exception"></exception>
+			public void Run()
+			{
+				Iterators.Range(2, 1);
+			}
+		}
+
 		public virtual void TestIterateSingle()
 		{
 			IEnumerator i = Iterators.SingletonIterator("foo");
 			Assert.IsTrue(i.MoveNext());
 			Assert.AreEqual("foo", i.Current);
 			Assert.IsFalse(i.MoveNext());
-			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_24(i));
+			Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_37(i));
 		}
 
-		private sealed class _ICodeBlock_24 : ICodeBlock
+		private sealed class _ICodeBlock_37 : ICodeBlock
 		{
-			public _ICodeBlock_24(IEnumerator i)
+			public _ICodeBlock_37(IEnumerator i)
 			{
 				this.i = i;
 			}
@@ -63,12 +86,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			string[] expected = new string[] { "[1, 3, 5]", "[1, 3, 6]", "[1, 4, 5]", "[1, 4, 6]"
 				, "[2, 3, 5]", "[2, 3, 6]", "[2, 4, 5]", "[2, 4, 6]" };
 			IEnumerator iterator = Iterators.CrossProduct(source).GetEnumerator();
-			Iterator4Assert.AreEqual(expected, Iterators.Map(iterator, new _IFunction4_62()));
+			Iterator4Assert.AreEqual(expected, Iterators.Map(iterator, new _IFunction4_75()));
 		}
 
-		private sealed class _IFunction4_62 : IFunction4
+		private sealed class _IFunction4_75 : IFunction4
 		{
-			public _IFunction4_62()
+			public _IFunction4_75()
 			{
 			}
 
@@ -100,16 +123,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		public virtual void TestFilter()
 		{
 			AssertFilter(new string[] { "bar", "baz" }, new string[] { "foo", "bar", "baz", "zong"
-				 }, new _IPredicate4_103());
-			AssertFilter(new string[] { "foo", "bar" }, new string[] { "foo", "bar" }, new _IPredicate4_111
+				 }, new _IPredicate4_116());
+			AssertFilter(new string[] { "foo", "bar" }, new string[] { "foo", "bar" }, new _IPredicate4_124
 				());
-			AssertFilter(new string[0], new string[] { "foo", "bar" }, new _IPredicate4_120()
+			AssertFilter(new string[0], new string[] { "foo", "bar" }, new _IPredicate4_133()
 				);
 		}
 
-		private sealed class _IPredicate4_103 : IPredicate4
+		private sealed class _IPredicate4_116 : IPredicate4
 		{
-			public _IPredicate4_103()
+			public _IPredicate4_116()
 			{
 			}
 
@@ -119,9 +142,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private sealed class _IPredicate4_111 : IPredicate4
+		private sealed class _IPredicate4_124 : IPredicate4
 		{
-			public _IPredicate4_111()
+			public _IPredicate4_124()
 			{
 			}
 
@@ -131,9 +154,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private sealed class _IPredicate4_120 : IPredicate4
+		private sealed class _IPredicate4_133 : IPredicate4
 		{
-			public _IPredicate4_120()
+			public _IPredicate4_133()
 			{
 			}
 
@@ -152,7 +175,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			int[] array = new int[] { 1, 2, 3 };
 			Collection4 args = new Collection4();
-			IEnumerator iterator = Iterators.Map(IntArrays4.NewIterator(array), new _IFunction4_136
+			IEnumerator iterator = Iterators.Map(IntArrays4.NewIterator(array), new _IFunction4_149
 				(args));
 			Assert.IsNotNull(iterator);
 			Assert.AreEqual(0, args.Size());
@@ -164,9 +187,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 		}
 
-		private sealed class _IFunction4_136 : IFunction4
+		private sealed class _IFunction4_149 : IFunction4
 		{
-			public _IFunction4_136(Collection4 args)
+			public _IFunction4_149(Collection4 args)
 			{
 				this.args = args;
 			}

@@ -47,14 +47,14 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		{
 			Collection4 updated = new Collection4();
 			EventRegistryFor(container).Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_54(updated).OnEvent);
+				(new _IEventListener4_51(updated).OnEvent);
 			container.Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_54
+		private sealed class _IEventListener4_51
 		{
-			public _IEventListener4_54(Collection4 updated)
+			public _IEventListener4_51(Collection4 updated)
 			{
 				this.updated = updated;
 			}

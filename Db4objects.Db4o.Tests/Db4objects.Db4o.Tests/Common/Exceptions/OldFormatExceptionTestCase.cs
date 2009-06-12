@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
+using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -37,7 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				return;
 			}
 			string oldDatabaseFilePath = OldDatabaseFilePath();
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_41(this, oldDatabaseFilePath
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_42(this, oldDatabaseFilePath
 				));
 			IObjectContainer container = null;
 			try
@@ -53,9 +54,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		private sealed class _ICodeBlock_41 : ICodeBlock
+		private sealed class _ICodeBlock_42 : ICodeBlock
 		{
-			public _ICodeBlock_41(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
+			public _ICodeBlock_42(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
 				)
 			{
 				this._enclosing = _enclosing;

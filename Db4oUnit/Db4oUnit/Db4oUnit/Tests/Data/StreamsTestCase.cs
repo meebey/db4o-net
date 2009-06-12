@@ -2,7 +2,6 @@
 
 using System.Collections;
 using Db4oUnit;
-using Db4oUnit.Data;
 using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Tests.Data
@@ -12,7 +11,7 @@ namespace Db4oUnit.Tests.Data
 		public virtual void TestSeries()
 		{
 			Collection4 calls = new Collection4();
-			IEnumerator series = Streams.Series(string.Empty, new _IFunction4_12(calls)).GetEnumerator
+			IEnumerator series = Iterators.Series(string.Empty, new _IFunction4_11(calls)).GetEnumerator
 				();
 			Assert.IsTrue(series.MoveNext());
 			Assert.IsTrue(series.MoveNext());
@@ -20,9 +19,9 @@ namespace Db4oUnit.Tests.Data
 				));
 		}
 
-		private sealed class _IFunction4_12 : IFunction4
+		private sealed class _IFunction4_11 : IFunction4
 		{
-			public _IFunction4_12(Collection4 calls)
+			public _IFunction4_11(Collection4 calls)
 			{
 				this.calls = calls;
 			}

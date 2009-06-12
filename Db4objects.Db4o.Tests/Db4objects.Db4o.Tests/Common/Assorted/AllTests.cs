@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				), typeof(RollbackDeleteTestCase), typeof(RollbackTestCase), typeof(RollbackUpdateTestCase
 				), typeof(RollbackUpdateCascadeTestCase), typeof(SimplestPossibleNullMemberTestCase
 				), typeof(SimplestPossibleTestCase), typeof(SimplestPossibleParentChildTestCase)
-				, typeof(SystemInfoTestCase), typeof(UnknownReferenceDeactivationTestCase), typeof(
-				UpdateDepthTestCase) });
+				, typeof(SystemInfoTestCase), typeof(TransientCloneTestCase), typeof(UnknownReferenceDeactivationTestCase
+				), typeof(UpdateDepthTestCase) });
 		}
 
 		// FIXME: COR-1060

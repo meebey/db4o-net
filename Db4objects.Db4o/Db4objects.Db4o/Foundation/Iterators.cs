@@ -466,5 +466,138 @@ namespace Db4objects.Db4o.Foundation
 		{
 			return new Collection4(iterator).GetEnumerator();
 		}
+
+		public static IEnumerator Take(int count, IEnumerator iterator)
+		{
+			return new _IEnumerator_295(count, iterator);
+		}
+
+		private sealed class _IEnumerator_295 : IEnumerator
+		{
+			public _IEnumerator_295(int count, IEnumerator iterator)
+			{
+				this.count = count;
+				this.iterator = iterator;
+				this._taken = 0;
+			}
+
+			private int _taken;
+
+			public object Current
+			{
+				get
+				{
+					if (this._taken > count)
+					{
+						throw new InvalidOperationException();
+					}
+					return iterator.Current;
+				}
+			}
+
+			public bool MoveNext()
+			{
+				if (this._taken < count)
+				{
+					if (!iterator.MoveNext())
+					{
+						this._taken = count;
+						return false;
+					}
+					++this._taken;
+					return true;
+				}
+				return false;
+			}
+
+			public void Reset()
+			{
+				throw new NotImplementedException();
+			}
+
+			private readonly int count;
+
+			private readonly IEnumerator iterator;
+		}
+
+		public static IEnumerator Range(int fromInclusive, int toExclusive)
+		{
+			if (toExclusive < fromInclusive)
+			{
+				throw new ArgumentException();
+			}
+			return Take(toExclusive - fromInclusive, Series(fromInclusive - 1, new _IFunction4_329
+				()).GetEnumerator());
+		}
+
+		private sealed class _IFunction4_329 : IFunction4
+		{
+			public _IFunction4_329()
+			{
+			}
+
+			public object Apply(object i)
+			{
+				return (((int)i)) + 1;
+			}
+		}
+
+		public static IEnumerable Series(object seed, IFunction4 function)
+		{
+			return new _IEnumerable_335(seed, function);
+		}
+
+		private sealed class _IEnumerable_335 : IEnumerable
+		{
+			public _IEnumerable_335(object seed, IFunction4 function)
+			{
+				this.seed = seed;
+				this.function = function;
+			}
+
+			public IEnumerator GetEnumerator()
+			{
+				return new _IEnumerator_337(seed, function);
+			}
+
+			private sealed class _IEnumerator_337 : IEnumerator
+			{
+				public _IEnumerator_337(object seed, IFunction4 function)
+				{
+					this.seed = seed;
+					this.function = function;
+					this._current = seed;
+				}
+
+				private object _current;
+
+				public object Current
+				{
+					get
+					{
+						return this._current;
+					}
+				}
+
+				public bool MoveNext()
+				{
+					this._current = function.Apply(this._current);
+					return true;
+				}
+
+				public void Reset()
+				{
+					this._current = seed;
+				}
+
+				private readonly object seed;
+
+				private readonly IFunction4 function;
+			}
+
+			private readonly object seed;
+
+			private readonly IFunction4 function;
+		}
 	}
 }

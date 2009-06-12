@@ -21,9 +21,9 @@ namespace Db4objects.Db4o.Internal.Caching
 		/// <param name="key">the key for the value - must never change - cannot be null</param>
 		/// <param name="producer">will be called if value not yet in the cache - can only be null when the value is found in the cache
 		/// 	</param>
-		/// <param name="onDiscard">will be called if a page needs to be discarded - can be null
+		/// <param name="finalizer">will be called if a page needs to be discarded - can be null
 		/// 	</param>
 		/// <returns>the cached value</returns>
-		object Produce(object key, IFunction4 producer, IProcedure4 onDiscard);
+		object Produce(object key, IFunction4 producer, IProcedure4 finalizer);
 	}
 }

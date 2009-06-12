@@ -3,8 +3,8 @@
 #if !SILVERLIGHT
 using System;
 using System.Collections;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
-using Db4objects.Db4o.Internal.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {

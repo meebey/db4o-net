@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 		}
 	}
 
-	[System.Data.Services.Common.DataServiceKeyAttribute("Email")]
+	[System.Data.Services.Common.DataServiceKey("Email")]
 	public class Contact
 	{
 		public string Email { get; set; }

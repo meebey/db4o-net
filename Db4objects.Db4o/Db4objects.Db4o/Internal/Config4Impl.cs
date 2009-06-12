@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec IsServerKey = new KeySpec(false);
 
-		private static readonly KeySpec QueryEvaluationModeKey = new KeySpec(Db4objects.Db4o.Config.QueryEvaluationMode
+		private static readonly KeySpec QueryEvaluationModeKey = new KeySpec(QueryEvaluationMode
 			.Immediate);
 
 		private static readonly KeySpec LockFileKey = new KeySpec(true);
@@ -1094,15 +1094,14 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		public void EvaluationMode(Db4objects.Db4o.Config.QueryEvaluationMode mode)
+		public void EvaluationMode(QueryEvaluationMode mode)
 		{
 			_config.Put(QueryEvaluationModeKey, mode);
 		}
 
-		public Db4objects.Db4o.Config.QueryEvaluationMode QueryEvaluationMode()
+		public QueryEvaluationMode EvaluationMode()
 		{
-			return (Db4objects.Db4o.Config.QueryEvaluationMode)_config.Get(QueryEvaluationModeKey
-				);
+			return (QueryEvaluationMode)_config.Get(QueryEvaluationModeKey);
 		}
 
 		public void QueryResultIteratorFactory(IQueryResultIteratorFactory factory)

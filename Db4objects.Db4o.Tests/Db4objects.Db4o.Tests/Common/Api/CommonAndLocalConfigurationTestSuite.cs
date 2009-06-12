@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.IsFalse(legacy.OptimizeNativeQueries());
 				Assert.IsFalse(common.OptimizeNativeQueries);
 				common.Queries.EvaluationMode(QueryEvaluationMode.Lazy);
-				Assert.AreEqual(QueryEvaluationMode.Lazy, legacy.QueryEvaluationMode());
+				Assert.AreEqual(QueryEvaluationMode.Lazy, legacy.EvaluationMode());
 				// TODO: test reflectWith()
 				// TODO: test refreshClasses()
 				// TODO: this probably won't sharpen :/

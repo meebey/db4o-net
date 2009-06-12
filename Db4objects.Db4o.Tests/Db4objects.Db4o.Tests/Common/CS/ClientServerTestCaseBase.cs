@@ -2,8 +2,8 @@
 
 #if !SILVERLIGHT
 using Db4oUnit.Extensions;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {

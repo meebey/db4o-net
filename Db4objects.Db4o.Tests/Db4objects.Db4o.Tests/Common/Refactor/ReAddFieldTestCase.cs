@@ -2,13 +2,14 @@
 
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Common.Refactor;
 
 namespace Db4objects.Db4o.Tests.Common.Refactor
 {
-	public class ReAddFieldTestCase : AbstractDb4oTestCase
+	public class ReAddFieldTestCase : AbstractDb4oTestCase, IOptOutDefragSolo
 	{
 		public class Version1
 		{

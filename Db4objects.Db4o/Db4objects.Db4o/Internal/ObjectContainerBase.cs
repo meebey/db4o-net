@@ -623,6 +623,10 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public void Delete(Transaction trans, object obj)
 		{
+			if (null == obj)
+			{
+				throw new ArgumentNullException();
+			}
 			lock (_lock)
 			{
 				trans = CheckTransaction(trans);
@@ -787,7 +791,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_625(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_628(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -809,9 +813,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_625 : IProcedure4
+		private sealed class _IProcedure4_628 : IProcedure4
 		{
-			public _IProcedure4_625(string fieldName, ByRef foundField)
+			public _IProcedure4_628(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -1507,8 +1511,8 @@ namespace Db4objects.Db4o.Internal
 		public abstract int NewUserObject();
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		public object PeekPersisted(Transaction trans, object obj, IActivationDepth depth
-			, bool committed)
+		public virtual object PeekPersisted(Transaction trans, object obj, IActivationDepth
+			 depth, bool committed)
 		{
 			// TODO: peekPersisted is not stack overflow safe, if depth is too high. 
 			lock (_lock)

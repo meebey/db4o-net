@@ -130,5 +130,10 @@ namespace Db4objects.Db4o.Config
 		/// This setting must be issued from the client side.
 		/// </remarks>
 		void EvaluationMode(QueryEvaluationMode mode);
+
+		/// <seealso cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// 	</seealso>
+		/// <returns>the currently configured query evaluation mode</returns>
+		QueryEvaluationMode EvaluationMode();
 	}
 }

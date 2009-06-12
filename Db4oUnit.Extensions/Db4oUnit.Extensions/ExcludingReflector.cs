@@ -20,6 +20,16 @@ namespace Db4oUnit.Extensions
 			}
 		}
 
+		public ExcludingReflector(Collection4 excludedClasses)
+		{
+			_excludedClasses = excludedClasses;
+		}
+
+		public override object DeepClone(object obj)
+		{
+			return new Db4oUnit.Extensions.ExcludingReflector(_excludedClasses);
+		}
+
 		public override IReflectClass ForName(string className)
 		{
 			if (_excludedClasses.Contains(className))

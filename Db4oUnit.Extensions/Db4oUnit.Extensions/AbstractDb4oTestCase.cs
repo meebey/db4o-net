@@ -382,7 +382,13 @@ namespace Db4oUnit.Extensions
 
 		protected virtual void Foreach(Type clazz, IVisitor4 visitor)
 		{
-			IObjectSet set = NewQuery(clazz).Execute();
+			Foreach(Db(), clazz, visitor);
+		}
+
+		protected virtual void Foreach(IExtObjectContainer container, Type clazz, IVisitor4
+			 visitor)
+		{
+			IObjectSet set = NewQuery(container, clazz).Execute();
 			while (set.HasNext())
 			{
 				visitor.Visit(set.Next());
@@ -396,12 +402,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(clazz, new _IVisitor4_325(oc));
+			Foreach(oc, clazz, new _IVisitor4_329(oc));
 		}
 
-		private sealed class _IVisitor4_325 : IVisitor4
+		private sealed class _IVisitor4_329 : IVisitor4
 		{
-			public _IVisitor4_325(IExtObjectContainer oc)
+			public _IVisitor4_329(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

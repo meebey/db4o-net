@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Db().Delete(null);
+				this._enclosing.Db().Delete(new Item());
 			}
 
 			private readonly DatabaseReadonlyExceptionTestCase _enclosing;

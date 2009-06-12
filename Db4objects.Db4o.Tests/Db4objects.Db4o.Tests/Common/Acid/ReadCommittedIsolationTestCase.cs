@@ -7,10 +7,10 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Acid;
 

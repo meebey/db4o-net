@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return new FieldMetadata(containingClass, name, spec.FieldTypeID(), spec.IsPrimitive
 					(), spec.IsArray(), spec.IsNArray());
 			}
-			return new FieldMetadata(containingClass, name);
+			return new UnknownTypeHandlerAspect(containingClass, name);
 		}
 
 		public override void Write(Transaction trans, ClassMetadata clazz, ClassAspect aspect

@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Db().Delete(null);
+				this._enclosing.Db().Delete(new Item());
 			}
 
 			private readonly DatabaseClosedExceptionTestCase _enclosing;
@@ -162,7 +162,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Db().Deactivate(null, 1);
+				this._enclosing.Db().Deactivate(new Item(), 1);
 			}
 
 			private readonly DatabaseClosedExceptionTestCase _enclosing;
@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Db().Activate(null, 1);
+				this._enclosing.Db().Activate(new Item(), 1);
 			}
 
 			private readonly DatabaseClosedExceptionTestCase _enclosing;
@@ -206,7 +206,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing.Db().QueryByExample(null);
+				this._enclosing.Db().QueryByExample(new Item());
 			}
 
 			private readonly DatabaseClosedExceptionTestCase _enclosing;

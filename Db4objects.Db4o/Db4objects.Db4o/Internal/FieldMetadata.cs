@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Internal
 			Init(name, fieldTypeID, primitive, isArray, isNArray);
 		}
 
-		public FieldMetadata(ClassMetadata containingClass, string name) : this(containingClass
+		protected FieldMetadata(ClassMetadata containingClass, string name) : this(containingClass
 			)
 		{
 			Init(name);
@@ -1095,8 +1095,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				sb.Append(_containingClass.GetName());
 				sb.Append(".");
-				sb.Append(GetName());
 			}
+			sb.Append(GetName());
 			return sb.ToString();
 		}
 
@@ -1272,15 +1272,20 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
+			if (!Alive())
+			{
+				throw new InvalidOperationException("Field '" + ToString() + "' cannot be defragmented at this time."
+					);
+			}
 			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
 				());
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1016
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1019
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1016 : IClosure4
+		private sealed class _IClosure4_1019 : IClosure4
 		{
-			public _IClosure4_1016(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1019(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

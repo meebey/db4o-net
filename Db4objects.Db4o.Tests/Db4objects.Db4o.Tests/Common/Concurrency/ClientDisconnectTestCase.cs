@@ -3,8 +3,8 @@
 #if !SILVERLIGHT
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Internal.CS;
 using Db4objects.Db4o.Tests.Common.Concurrency;
 
 namespace Db4objects.Db4o.Tests.Common.Concurrency
