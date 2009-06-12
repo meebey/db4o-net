@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
     	protected override Type[] TestCases()
         {
-			return new Type[] { typeof(EnumHandlerUpdateTestCase), };
+			// return new Type[] { typeof(EnumHandlerUpdateTestCase), };
 
             if (!Directory.Exists(Db4oLibrarian.LibraryPath()))
             {
