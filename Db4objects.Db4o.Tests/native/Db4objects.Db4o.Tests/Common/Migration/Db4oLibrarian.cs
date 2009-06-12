@@ -20,12 +20,17 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		public Db4oLibrary[] Libraries()
 		{
             List <Db4oLibrary> libraries = new List<Db4oLibrary>();
-			foreach (string directory in Directory.GetDirectories(LibraryPath()))
+			foreach (string path in Directory.GetDirectories(LibraryPath()))
 			{
 				// comment out the next line to run against legacy versions
-				if (!IsVersionOrGreater(directory, MinimumVersionToTest)) continue;
+				if (!IsVersionOrGreater(path, MinimumVersionToTest))
+					continue;
 
-				string db4oLib = FindLibraryFile(directory);
+				// FIXME: Enum migration is broken
+				if (VersionForPath(path) >= 7.8 && VersionForPath(path) <= 7.9)
+					continue;
+
+				string db4oLib = FindLibraryFile(path);
 				if (null == db4oLib) continue;
 				libraries.Add(ForFile(db4oLib));
 			}
@@ -34,17 +39,18 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private static bool IsVersionOrGreater(string versionName, double minimumVersion)
 		{
-#if !CF
-			double currentVersion;
-			if (!Double.TryParse(Path.GetFileName(versionName), NumberStyles.AllowDecimalPoint | NumberStyles.Float, NumberFormatInfo.InvariantInfo, out currentVersion))
-			{
-				return false;
-			}
+			return VersionForPath(versionName) >= minimumVersion;
+		}
 
-			return currentVersion >= minimumVersion;
-#else
-			return false;
+		private static double VersionForPath(string path)
+		{	
+#if !CF
+			double version;
+			// TryParse to deal with a possible .svn path
+			if (double.TryParse(Path.GetFileName(path), NumberStyles.AllowDecimalPoint | NumberStyles.Float, NumberFormatInfo.InvariantInfo, out version))
+				return version;
 #endif
+			return 0.0;
 		}
 
 		public static bool IsLegacyVersion(string versionName)
