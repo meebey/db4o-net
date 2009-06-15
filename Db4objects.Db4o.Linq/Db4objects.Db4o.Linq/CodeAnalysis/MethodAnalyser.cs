@@ -13,12 +13,17 @@ using Db4objects.Db4o.Linq.Internals;
 
 namespace Db4objects.Db4o.Linq.CodeAnalysis
 {
-	internal class MethodAnalyser
+	public class MethodAnalyser
 	{
 		private static ICache4<MethodDefinition, ActionFlowGraph> _graphCache =
 			CacheFactory<MethodDefinition, ActionFlowGraph>.For(CacheFactory.New2QXCache(5));
 
 		private readonly Expression _queryExpression;
+
+		public Expression QueryExpression
+		{
+			get { return _queryExpression;  }
+		}
 
 		public bool IsFieldAccess
 		{
@@ -30,13 +35,6 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 			if (graph == null) throw new ArgumentNullException("graph");
 
 			_queryExpression = QueryExpressionFinder.FindIn(graph);
-		}
-
-		public void AugmentQuery(QueryBuilderRecorder recorder)
-		{
-			if (_queryExpression == null) throw new QueryOptimizationException("No query expression");
-
-			_queryExpression.Accept(new CodeQueryBuilder(recorder));
 		}
 
 		public static MethodAnalyser FromMethod(MethodInfo info)

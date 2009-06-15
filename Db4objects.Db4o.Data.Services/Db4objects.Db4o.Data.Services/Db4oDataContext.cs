@@ -13,9 +13,24 @@ namespace Db4objects.Db4o.Data.Services
 {
 	public abstract class Db4oDataContext : IUpdatable
 	{
+		class IdentityEqualityComparer : IEqualityComparer<object>
+		{
+			public static IdentityEqualityComparer Default = new IdentityEqualityComparer();
+
+			public bool Equals(object x, object y)
+			{
+				return x == y;
+			}
+
+			public int GetHashCode(object obj)
+			{
+				return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
+			}
+		}
+
 		private IObjectContainer _container;
 
-		private HashSet<object> _changeSet = new HashSet<object>();
+		private readonly HashSet<object> _changeSet = new HashSet<object>(IdentityEqualityComparer.Default);
 
 		protected IObjectContainer Container
 		{
@@ -53,6 +68,11 @@ namespace Db4objects.Db4o.Data.Services
 				throw DataServiceException("Can not interact with collection {0} on {1}", propertyName, target);
 			}
 
+			AddToChangeSet(target);
+		}
+
+		private void AddToChangeSet(object target)
+		{
 			_changeSet.Add(target);
 		}
 
@@ -164,7 +184,7 @@ namespace Db4objects.Db4o.Data.Services
 			Delete(targetResource);
 		}
 
-		public object GetResource (IQueryable query, string fullTypeName)
+		public virtual object GetResource(IQueryable query, string fullTypeName)
 		{
 			return query.Cast<object>().First();
 		}
@@ -218,10 +238,15 @@ namespace Db4objects.Db4o.Data.Services
 
 		public void SaveChanges()
 		{
+			FlushChangeSet();
+			Container.Commit();
+		}
+
+		private void FlushChangeSet()
+		{
 			foreach (var o in _changeSet)
 				Container.Store(o);
 			_changeSet.Clear();
-			Container.Commit();
 		}
 
 		public void SetReference(object targetResource, string propertyName, object propertyValue)
@@ -233,7 +258,7 @@ namespace Db4objects.Db4o.Data.Services
 		{
 			GetProperty(targetResource, propertyName, property => {
 				property.SetValue(targetResource, propertyValue, null);
-				_changeSet.Add(targetResource);
+				AddToChangeSet(targetResource);
 			});
 		}
 	}

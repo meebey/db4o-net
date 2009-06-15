@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Data.Services;
 using System.Data.Services.Client;
+using System.Data.Services.Common;
 using System.Linq;
+using System.Linq.Expressions;
 using Db4objects.Db4o.Linq;
 using Db4oUnit;
 using Moq;
+using Moq.Language.Flow;
 
 namespace Db4objects.Db4o.Data.Services.Tests.Integration
 {
@@ -12,23 +15,147 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 	{
 		private static readonly Uri ServiceUri = new Uri("http://127.0.0.1:666/integration");
 
+		private MockFactory _mockery = new MockFactory(MockBehavior.Strict)
+		                               {
+		                               	DefaultValue = DefaultValue.Mock
+		                               };
+
+		private readonly Mock<IObjectContainer> _sessionMock;
+		private readonly Mock<IResourceFinder> _resourceFinderMock;
+
+		public DataServiceHostIntegrationTestCase()
+		{
+			_sessionMock = Mock<IObjectContainer>();
+			_resourceFinderMock = _mockery.Create<IResourceFinder>();
+		}
+
+		private Mock<T> Mock<T>() where T : class
+		{
+			return _mockery.Create<T>();
+		}
+
 		public void TestAddObjectSaveChanges()
 		{
 			var contact = new Contact { Email = "a@b.c", Name = "abc" };
+
+			Setup(session => session.Store(It.Is<Contact>(actual => actual.Equals(contact))))
+				.AtMostOnce();
+
+			Setup(session => session.Commit())
+				.AtMostOnce();
+
+			Playback(()=>
+			{
+				var context = new DataServiceContext(ServiceUri);
+				context.AddObject("Contacts", contact);
+				context.SaveChanges();
+			});
+		}
+
+		public void TestUpdateObjectSaveChanges()
+		{
+			var contact = new Contact { Email = "a@b.c", Name = "new name" };
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Contact>>(), typeof(Contact).FullName))
+				.Returns(contact)
+				.AtMostOnce();
+
+			Setup(session => session.Store(It.Is<Contact>(actual => actual == contact)))
+				.AtMostOnce();
+
+			Setup(session => session.Commit())
+				.AtMostOnce();
+
+			Playback(() =>
+			{
+				var context = new DataServiceContext(ServiceUri);
+				context.AttachTo("Contacts", contact);
+				context.UpdateObject(contact);
+				context.SaveChanges();
+			});
+		}
+
+		public void TestDeleteObjectSaveChanges()
+		{
+			var contact = new Contact { Email = "a@b.c", Name = "abc" };
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Contact>>(), null))
+				.Returns(contact)
+				.AtMostOnce();
+
+			Setup(session => session.Delete(It.Is<Contact>(actual => actual == contact)))
+				.AtMostOnce();
+
+			Setup(session => session.Commit())
+				.AtMostOnce();
+
+			Playback(() =>
+			{
+				var context = new DataServiceContext(ServiceUri);
+				context.AttachTo("Contacts", contact);
+				context.DeleteObject(contact);
+				context.SaveChanges();
+			});
+		}
+
+		public void TestAddGraphSaveChanges()
+		{
+			var message = new Message
+			            {
+			            	Id = Guid.NewGuid(),
+			            	Body = "Hi!",
+			            	To = new Contact
+			            	     {
+			            	     	Email = "a@b.c",
+									Name = "abc"
+			            	     }
+			            };
+
+			Setup(session => session.Store(It.Is<Contact>(actual => actual.Equals(message.To))))
+				.AtMostOnce();
+
+			Setup(session => session.Commit())
+				.AtMost(3);
+
+			Setup(session => session.Store(It.Is<Message>(actual => actual.Id == message.Id)))
+				.AtMostOnce();
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Message>>(), null))
+				.Returns(message)
+				.AtMostOnce();
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Contact>>(), null))
+				.Returns(message.To)
+				.AtMostOnce();
+
+			Setup(session => session.Store(It.Is<Message>(actual => actual == message)))
+				.AtMostOnce();
 			
-			var sessionMock = new Mock<IObjectContainer>(MockBehavior.Strict);
-			sessionMock.Setup(session => session.Store(It.Is<Contact>(actual => actual.Equals(contact))))
-				.AtMostOnce();
-			sessionMock.Setup(session => session.Commit())
-				.AtMostOnce();
-
-			IntegrationDataContext.Session = sessionMock.Object;
-
 			var context = new DataServiceContext(ServiceUri);
-			context.AddObject("Contacts", contact);
-			context.SaveChanges();
+			Playback(()=>
+			{
+				context.AddObject("Contacts", message.To);
+				context.AddObject("Messages", message);
+				context.SetLink(message, "To", message.To);
+				context.SaveChanges();
+			});
+		}
 
-			sessionMock.Verify();
+		private ISetup<IObjectContainer> Setup(Expression<Action<IObjectContainer>> expression)
+		{
+			return _sessionMock.Setup(expression);
+		}
+
+		private void Playback(Action action)
+		{
+			IntegrationDataContext.Session = _sessionMock.Object;
+			IntegrationDataContext.ResourceFinder = _resourceFinderMock.Object;
+			action();
+			_mockery.VerifyAll();
 		}
 
 		public void SetUp()
@@ -56,7 +183,30 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 		}
 	}
 
-	[System.Data.Services.Common.DataServiceKey("Email")]
+	[DataServiceKey("Id")]
+	public class Message
+	{
+		public Guid Id { get; set; }
+		public Contact To { get; set; }
+		public string Body { get; set; }
+
+		public override bool Equals(object obj)
+		{
+			Message other = obj as Message;
+			if (null == other)
+				return false;
+			return Id == other.Id
+				&& object.Equals(To, other.To)
+				&& Body == other.Body;
+		}
+
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
+		}
+	}
+
+	[DataServiceKey("Email")]
 	public class Contact
 	{
 		public string Email { get; set; }
@@ -78,18 +228,40 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 		}
 	}
 
+	public interface IResourceFinder
+	{
+		object GetResource(IQueryable queryable, string resourceTypeName);
+	}
+
 	public class IntegrationDataContext : Db4oDataContext
 	{
 		public static IObjectContainer Session;
+
+		public static IResourceFinder ResourceFinder;
 
 		protected override IObjectContainer OpenSession()
 		{
 			return Session;
 		}
 
+		public override object GetResource(IQueryable query, string fullTypeName)
+		{
+			return ResourceFinder.GetResource(query, fullTypeName);
+		}
+
 		public IQueryable<Contact> Contacts
 		{
-			get { return Container.Cast<Contact>().AsQueryable(); }
+			get { return QueryableFor<Contact>(); }
+		}
+
+		public IQueryable<Message> Messages
+		{
+			get { return QueryableFor<Message>(); }
+		}
+
+		private IDb4oLinqQueryable<T> QueryableFor<T>()
+		{
+			return Container.Cast<T>().AsQueryable();
 		}
 	}
 

@@ -1,9 +1,6 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections.Generic;
-
-using Cecil.FlowAnalysis;
 using Cecil.FlowAnalysis.ActionFlow;
 using Cecil.FlowAnalysis.CodeStructure;
 
