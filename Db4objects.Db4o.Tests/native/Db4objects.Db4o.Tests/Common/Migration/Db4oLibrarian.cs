@@ -26,10 +26,6 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				if (!IsVersionOrGreater(path, MinimumVersionToTest))
 					continue;
 
-				// FIXME: Enum migration is broken
-				if (VersionForPath(path) >= 7.8 && VersionForPath(path) <= 7.9)
-					continue;
-
 				string db4oLib = FindLibraryFile(path);
 				if (null == db4oLib) continue;
 				libraries.Add(ForFile(db4oLib));

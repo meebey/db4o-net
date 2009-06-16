@@ -13,10 +13,10 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 #if !CF && !SILVERLIGHT
     class Db4oNETMigrationTestSuite : Db4oMigrationTestSuite
     {
-//		override protected string[] Libraries()
-//		{
-//			return new string[] { AssemblyPathFor("7.8") };
-//		}
+        //override protected string[] Libraries()
+        //{
+        //    return new string[] { AssemblyPathFor("7.9") };
+        //}
 
     	private string AssemblyPathFor(string version)
     	{
@@ -25,8 +25,6 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
     	protected override Type[] TestCases()
         {
-			// return new Type[] { typeof(EnumHandlerUpdateTestCase), };
-
             if (!Directory.Exists(Db4oLibrarian.LibraryPath()))
             {
                 TestPlatform.GetStdErr().WriteLine("DISABLED: " + GetType());

@@ -654,7 +654,12 @@ namespace Db4objects.Db4o.Internal
 
 		internal static bool IsEnum(IReflector genericReflector, IReflectClass iReflectClass)
 		{
-			return GetNetType(iReflectClass).IsEnum;
+		    Type type = GetNetType(iReflectClass);
+            if(type == null)
+            {
+                return false;
+            }
+			return type.IsEnum;
 		}
 
         public static bool UseNativeSerialization() 
@@ -666,7 +671,7 @@ namespace Db4objects.Db4o.Internal
         {
             EnumTypeHandler enumTypeHandler = new EnumTypeHandler();
             container.ConfigImpl().RegisterTypeHandler(new EnumTypeHandlerPredicate(), enumTypeHandler);
-			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 7, new StandardReferenceTypeHandler());
+			// container.Handlers().RegisterHandlerVersion(enumTypeHandler, 7, new StandardReferenceTypeHandler());
 			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 4, new StandardReferenceTypeHandler());
 			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 0, new StandardReferenceTypeHandler0());
 
