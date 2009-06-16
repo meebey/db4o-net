@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 			return _mockery.Create<T>();
 		}
 
-		public void TestAddObjectSaveChanges()
+		public void TestAddObject()
 		{
 			var contact = new Contact { Email = "a@b.c", Name = "abc" };
 
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 			});
 		}
 
-		public void TestUpdateObjectSaveChanges()
+		public void TestUpdateObject()
 		{
 			var contact = new Contact { Email = "a@b.c", Name = "new name" };
 
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 			});
 		}
 
-		public void TestDeleteObjectSaveChanges()
+		public void TestDeleteObject()
 		{
 			var contact = new Contact { Email = "a@b.c", Name = "abc" };
 
@@ -101,7 +101,7 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 			});
 		}
 
-		public void TestAddGraphSaveChanges()
+		public void TestAddObjectGraph()
 		{
 			var message = new Message
 			            {
@@ -134,6 +134,49 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 				context.AddObject("Contacts", message.To);
 				context.AddObject("Messages", message);
 				context.SetLink(message, "To", message.To);
+				context.SaveChanges();
+			});
+		}
+
+		public void TestReferenceUpdate()
+		{
+			var message = new Message
+			{
+				Id = Guid.NewGuid(),
+				Body = "Hi!",
+				To = new Contact
+				{
+					Email = "a@b.c"
+				}
+			};
+
+			var newContact = new Contact
+			{
+				Email = "d@e.f",
+			};
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Message>>(), null))
+				.Returns(message)
+				.AtMostOnce();
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Contact>>(), null))
+				.Returns(newContact)
+				.AtMostOnce();
+
+			Setup(session => session.Store(It.Is<Message>(actual => actual == message && actual.To == newContact)))
+				.AtMostOnce();
+
+			Setup(session => session.Commit())
+				.AtMostOnce();
+
+			var context = new DataServiceContext(ServiceUri);
+			Playback(() =>
+			{
+				context.AttachTo("Contacts", newContact);
+				context.AttachTo("Messages", message);
+				context.SetLink(message, "To", newContact);
 				context.SaveChanges();
 			});
 		}
