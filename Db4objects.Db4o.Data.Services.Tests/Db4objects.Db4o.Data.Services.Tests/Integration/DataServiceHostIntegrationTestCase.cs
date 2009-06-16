@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Services;
 using System.Data.Services.Client;
 using System.Data.Services.Common;
@@ -26,7 +27,7 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 		public DataServiceHostIntegrationTestCase()
 		{
 			_sessionMock = Mock<IObjectContainer>();
-			_resourceFinderMock = _mockery.Create<IResourceFinder>();
+			_resourceFinderMock = Mock<IResourceFinder>();
 		}
 
 		private Mock<T> Mock<T>() where T : class
@@ -117,22 +118,14 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 				.AtMostOnce();
 
 			Setup(session => session.Commit())
-				.AtMost(3);
-
-			Setup(session => session.Store(It.Is<Message>(actual => actual.Id == message.Id)))
-				.AtMostOnce();
-
-			_resourceFinderMock.Setup(
-					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Message>>(), null))
-				.Returns(message)
-				.AtMostOnce();
+				.AtMost(2);
 
 			_resourceFinderMock.Setup(
 					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Contact>>(), null))
 				.Returns(message.To)
 				.AtMostOnce();
 
-			Setup(session => session.Store(It.Is<Message>(actual => actual == message)))
+			Setup(session => session.Store(It.Is<Message>(actual => actual.Equals(message))))
 				.AtMostOnce();
 			
 			var context = new DataServiceContext(ServiceUri);
@@ -141,6 +134,89 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 				context.AddObject("Contacts", message.To);
 				context.AddObject("Messages", message);
 				context.SetLink(message, "To", message.To);
+				context.SaveChanges();
+			});
+		}
+
+		public void TestCollectionAdd()
+		{
+			var message = new Message
+			{
+				Id = Guid.NewGuid(),
+				Body = "Hi!",
+				CC = new List<Contact>()
+			};
+
+			var cc = new Contact
+			         {
+			         	Email = "d@e.f",
+			         	Name = "def"
+			         };
+			
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Message>>(), null))
+				.Returns(message)
+				.AtMostOnce();
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Contact>>(), null))
+				.Returns(cc)
+				.AtMostOnce();
+
+			Setup(session => session.Store(It.Is<Message>(actual => actual == message && actual.CC.First() == cc)))
+				.AtMostOnce();
+
+			Setup(session => session.Commit())
+				.AtMostOnce();
+
+			var context = new DataServiceContext(ServiceUri);
+			Playback(() =>
+			{
+				context.AttachTo("Contacts", cc);
+				context.AttachTo("Messages", message);
+				context.AddLink(message, "CC", cc);
+				context.SaveChanges();
+			});
+		}
+
+		public void TestCollectionDelete()
+		{
+			var cc = new Contact
+			{
+				Email = "d@e.f",
+				Name = "def"
+			};
+
+			var message = new Message
+			{
+				Id = Guid.NewGuid(),
+				CC = new List<Contact> { cc }
+			};
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Message>>(), null))
+				.Returns(message)
+				.AtMostOnce();
+
+			_resourceFinderMock.Setup(
+					resourceFinder => resourceFinder.GetResource(It.IsAny<IQueryable<Contact>>(), null))
+				.Returns(cc)
+				.AtMostOnce();
+
+			Setup(session => session.Store(It.Is<Message>(actual => actual == message && actual.CC.Count == 0)))
+				.AtMostOnce();
+
+			Setup(session => session.Commit())
+				.AtMostOnce();
+
+			var context = new DataServiceContext(ServiceUri);
+			Playback(() =>
+			{
+				context.AttachTo("Contacts", cc);
+				context.AttachTo("Messages", message);
+
+				context.DeleteLink(message, "CC", cc);
+
 				context.SaveChanges();
 			});
 		}
@@ -189,6 +265,7 @@ namespace Db4objects.Db4o.Data.Services.Tests.Integration
 		public Guid Id { get; set; }
 		public Contact To { get; set; }
 		public string Body { get; set; }
+		public List<Contact> CC { get; set; }
 
 		public override bool Equals(object obj)
 		{
