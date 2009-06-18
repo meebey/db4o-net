@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Optional-Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Silverlight.TestStart", "Db4objects.Db4o.Silverlight.TestStart\Db4objects.Db4o.Silverlight.TestStart.csproj", "{A639AD3D-08FB-41D5-A770-B8BE540C369D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.SilverlightTestHost", "Db4objects.Db4o.SilverlightTestHost\Db4objects.Db4o.SilverlightTestHost.csproj", "{2E3829A5-D028-43BC-8ED5-14C0BE7A4A59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{A639AD3D-08FB-41D5-A770-B8BE540C369D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A639AD3D-08FB-41D5-A770-B8BE540C369D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A639AD3D-08FB-41D5-A770-B8BE540C369D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E3829A5-D028-43BC-8ED5-14C0BE7A4A59}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2E3829A5-D028-43BC-8ED5-14C0BE7A4A59}.Debug|Any CPU.Build.0 = Debug|x86
+		{2E3829A5-D028-43BC-8ED5-14C0BE7A4A59}.Release|Any CPU.ActiveCfg = Release|x86
+		{2E3829A5-D028-43BC-8ED5-14C0BE7A4A59}.Release|Any CPU.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
