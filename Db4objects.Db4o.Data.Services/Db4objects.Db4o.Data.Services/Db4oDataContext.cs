@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Data.Services
 			}
 		}
 
-		private IObjectContainer _container;
+		private IObjectContainer _session;
 
 		private readonly HashSet<object> _changeSet = new HashSet<object>(IdentityEqualityComparer.Default);
 
@@ -36,11 +36,11 @@ namespace Db4objects.Db4o.Data.Services
 		{
 			get
 			{
-				if (_container == null)
+				if (_session == null)
 				{
-					_container = OpenSession();
+					_session = OpenSession();
 				}
-				return _container;
+				return _session;
 			}
 		}
 
