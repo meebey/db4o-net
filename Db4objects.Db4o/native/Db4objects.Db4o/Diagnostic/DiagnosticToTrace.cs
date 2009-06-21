@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Diagnostic
     /// <see cref="Db4objects.Db4o.Diagnostic.IDiagnosticListener">Db4objects.Db4o.Diagnostic.IDiagnosticListener
     /// 	</see>
     /// with: <br />
-    /// <code>Db4o.Configure().Diagnostic().AddListener(new DiagnosticToTrace());</code><br />
+    /// <code>commonConfig.Diagnostic.AddListener(new DiagnosticToTrace());</code><br />
     /// </remarks>
     /// <seealso cref="Db4objects.Db4o.Diagnostic.DiagnosticConfiguration">Db4objects.Db4o.Diagnostic.DiagnosticConfiguration
     /// 	</seealso>
