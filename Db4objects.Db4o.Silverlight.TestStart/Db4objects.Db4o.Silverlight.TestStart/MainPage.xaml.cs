@@ -22,11 +22,18 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			{
 				Type[] testCases = new[] { typeof(Tests.Common.AllTests) };
 				new TestRunner(SoloSuite(true, testCases)).Run(new SilverlightTestListener(Dispatcher));
+
+				Complete();
 			}
 			catch(Exception ex)
 			{
 				AppendException(ex);
 			}
+		}
+
+		private void Complete()
+		{
+			Dispatcher.BeginInvoke(() => HtmlPage.Window.Eval("completed();"));
 		}
 
 		private void AppendException(Exception exception)
