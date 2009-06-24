@@ -40,14 +40,7 @@ namespace Db4objects.Db4o.SilverlightTestHost
 				string testResults = silverlightTestHost.Document.GetElementById("result").InnerText;
 
 				ErrorCount = Int32.Parse(ErrorCountFromHtmlPage());
-				if (ErrorCount > 0)
-				{
-					Console.Error.WriteLine(testResults);
-				}
-				else
-				{
-					Console.Out.WriteLine(testResults);
-				}
+				Console.Error.WriteLine(testResults);
 
 				Close();
 			}
