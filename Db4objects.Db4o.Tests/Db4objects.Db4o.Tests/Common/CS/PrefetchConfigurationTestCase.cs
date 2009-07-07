@@ -263,7 +263,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			IList messages = MessageCollector.ForServerDispatcher(ServerDispatcher());
 			IObjectSet result = query.Execute();
-			AssertMessages(messages, new MsgD[] { expectedResultMessage });
+			AssertMessages(messages, new IMessage[] { expectedResultMessage });
 			messages.Clear();
 			for (int stimulusIndex = 0; stimulusIndex < stimuli.Length; ++stimulusIndex)
 			{
@@ -277,7 +277,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				Assert.Fail("Unexpected item: " + ((PrefetchConfigurationTestCase.Item)result.Next
 					()));
 			}
-			AssertMessages(messages, new MsgD[] {  });
+			AssertMessages(messages, new IMessage[] {  });
 		}
 
 		private class Depth2Stimulus : PrefetchConfigurationTestCase.Stimulus
@@ -318,7 +318,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private void AssertMessages(IList actualMessages, MsgD[] expectedMessages)
+		private void AssertMessages(IList actualMessages, IMessage[] expectedMessages)
 		{
 			Iterator4Assert.AreEqual(expectedMessages, Iterators.Iterator(actualMessages));
 		}

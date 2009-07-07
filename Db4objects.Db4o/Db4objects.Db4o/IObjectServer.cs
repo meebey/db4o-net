@@ -29,7 +29,7 @@ namespace Db4objects.Db4o
 	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4o.openServer</seealso>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectServer">ExtObjectServer for extended functionality
 	/// 	</seealso>
-	public interface IObjectServer
+	public interface IObjectServer : System.IDisposable
 	{
 		/// <summary>
 		/// closes the

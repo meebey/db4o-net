@@ -249,19 +249,19 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			IConstraint constr = null;
 			while (i.MoveNext())
 			{
-				ClassMetadata yapClass = (ClassMetadata)i.Current;
-				IReflectClass yapClassClaxx = yapClass.ClassReflector();
-				if (yapClassClaxx != null)
+				ClassMetadata classMetadata = (ClassMetadata)i.Current;
+				IReflectClass classMetadataClaxx = classMetadata.ClassReflector();
+				if (classMetadataClaxx != null)
 				{
-					if (!yapClassClaxx.IsInterface())
+					if (!classMetadataClaxx.IsInterface())
 					{
 						if (constr == null)
 						{
-							constr = Constrain(yapClassClaxx);
+							constr = Constrain(classMetadataClaxx);
 						}
 						else
 						{
-							constr = constr.Or(Constrain(yapClass.ClassReflector()));
+							constr = constr.Or(Constrain(classMetadata.ClassReflector()));
 						}
 					}
 				}
@@ -433,7 +433,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return null;
 			}
 			QConClass clazzconstr = (QConClass)constr;
-			ClassMetadata clazz = clazzconstr.i_yapClass;
+			ClassMetadata clazz = clazzconstr.i_classMetadata;
 			if (clazz == null)
 			{
 				return null;

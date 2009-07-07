@@ -18,9 +18,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public string i_name;
 
 		[System.NonSerialized]
-		internal FieldMetadata i_yapField;
+		internal FieldMetadata _fieldMetadata;
 
-		public int i_yapClassID;
+		public int i_classMetadataID;
 
 		public int _fieldHandle;
 
@@ -28,27 +28,27 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 		}
 
-		public QField(Transaction a_trans, string name, FieldMetadata a_yapField, int a_yapClassID
-			, int a_index)
+		public QField(Transaction a_trans, string name, FieldMetadata fieldMetadata, int 
+			classMetadataID, int a_index)
 		{
 			// C/S only	
 			i_trans = a_trans;
 			i_name = name;
-			i_yapField = a_yapField;
-			i_yapClassID = a_yapClassID;
+			_fieldMetadata = fieldMetadata;
+			i_classMetadataID = classMetadataID;
 			_fieldHandle = a_index;
-			if (i_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				if (!i_yapField.Alive())
+				if (!_fieldMetadata.Alive())
 				{
-					i_yapField = null;
+					_fieldMetadata = null;
 				}
 			}
 		}
 
 		internal virtual bool CanHold(IReflectClass claxx)
 		{
-			return i_yapField == null || i_yapField.CanHold(claxx);
+			return _fieldMetadata == null || _fieldMetadata.CanHold(claxx);
 		}
 
 		internal virtual object Coerce(object a_object)
@@ -71,27 +71,27 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				// TODO: Review this line for NullableArrayHandling 
 				return a_object;
 			}
-			if (i_yapField == null)
+			if (_fieldMetadata == null)
 			{
 				return a_object;
 			}
-			return i_yapField.Coerce(claxx, a_object);
+			return _fieldMetadata.Coerce(claxx, a_object);
 		}
 
 		internal virtual ClassMetadata GetYapClass()
 		{
-			if (i_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				return i_yapField.FieldType();
+				return _fieldMetadata.FieldType();
 			}
 			return null;
 		}
 
 		internal virtual FieldMetadata GetYapField(ClassMetadata yc)
 		{
-			if (i_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				return i_yapField;
+				return _fieldMetadata;
 			}
 			FieldMetadata yf = yc.FieldMetadataForName(i_name);
 			if (yf != null)
@@ -103,30 +103,33 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual FieldMetadata GetYapField()
 		{
-			return i_yapField;
+			return _fieldMetadata;
 		}
 
 		internal virtual bool IsArray()
 		{
-			return i_yapField != null && Handlers4.HandlesArray(i_yapField.GetHandler());
+			return _fieldMetadata != null && Handlers4.HandlesArray(_fieldMetadata.GetHandler
+				());
 		}
 
 		internal virtual bool IsClass()
 		{
-			return i_yapField == null || Handlers4.HandlesClass(i_yapField.GetHandler());
+			return _fieldMetadata == null || Handlers4.HandlesClass(_fieldMetadata.GetHandler
+				());
 		}
 
 		internal virtual bool IsSimple()
 		{
-			return i_yapField != null && Handlers4.HandlesSimple(i_yapField.GetHandler());
+			return _fieldMetadata != null && Handlers4.HandlesSimple(_fieldMetadata.GetHandler
+				());
 		}
 
 		internal virtual IPreparedComparison PrepareComparison(IContext context, object obj
 			)
 		{
-			if (i_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				return i_yapField.PrepareComparison(context, obj);
+				return _fieldMetadata.PrepareComparison(context, obj);
 			}
 			if (obj == null)
 			{
@@ -144,10 +147,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual void Unmarshall(Transaction a_trans)
 		{
-			if (i_yapClassID != 0)
+			if (i_classMetadataID != 0)
 			{
-				ClassMetadata yc = a_trans.Container().ClassMetadataForID(i_yapClassID);
-				i_yapField = (FieldMetadata)yc._aspects[_fieldHandle];
+				ClassMetadata yc = a_trans.Container().ClassMetadataForID(i_classMetadataID);
+				_fieldMetadata = (FieldMetadata)yc._aspects[_fieldHandle];
 			}
 		}
 
@@ -158,9 +161,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override string ToString()
 		{
-			if (i_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				return "QField " + i_yapField.ToString();
+				return "QField " + _fieldMetadata.ToString();
 			}
 			return base.ToString();
 		}

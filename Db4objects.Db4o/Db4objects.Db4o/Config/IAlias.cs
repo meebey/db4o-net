@@ -36,17 +36,17 @@ namespace Db4objects.Db4o.Config
 	/// <br/><br/>
 	/// <code>
 	/// <b>// Creating an Alias for a single class</b><br/>
-	/// Db4oFactory.Configure().AddAlias(<br/>
+	/// ICommonConfiguration.AddAlias(<br/>
 	///   new TypeAlias("Tutorial.Pilot", "Tutorial.Driver"));<br/>
 	/// <br/><br/>
 	/// <b>// Accessing a Java package from a .NET assembly </b><br/>
-	/// Db4oFactory.Configure().AddAlias(<br/>
+	/// ICommonConfiguration.AddAlias(<br/>
 	///   new WildcardAlias(<br/>
 	///     "com.f1.*",<br/>
 	///     "Tutorial.F1.*, Tutorial"));<br/>
 	/// <br/><br/>
 	/// <b>// Using a different local .NET assembly</b><br/>
-	/// Db4o.configure().addAlias(<br/>
+	/// ICommonConfiguration.AddAlias(<br/>
 	///   new WildcardAlias(<br/>
 	///     "Tutorial.F1.*, F1Race",<br/>
 	///     "Tutorial.F1.*, Tutorial"));<br/>

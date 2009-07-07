@@ -6,22 +6,22 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public abstract class AbstractFileBasedDb4oFixture : AbstractSoloDb4oFixture
 	{
-		private readonly Sharpen.IO.File _yap;
+		private readonly Sharpen.IO.File _databaseFile;
 
 		public AbstractFileBasedDb4oFixture(IConfigurationSource configSource, string fileName
 			) : base(configSource)
 		{
-			_yap = new Sharpen.IO.File(fileName);
+			_databaseFile = new Sharpen.IO.File(fileName);
 		}
 
 		public virtual string GetAbsolutePath()
 		{
-			return _yap.GetAbsolutePath();
+			return _databaseFile.GetAbsolutePath();
 		}
 
 		protected override void DoClean()
 		{
-			_yap.Delete();
+			_databaseFile.Delete();
 		}
 	}
 }

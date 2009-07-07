@@ -29,7 +29,7 @@ namespace Db4objects.Db4o
 		{
 		}
 
-		public virtual void SetObjectReference(ObjectReference a_yapObject)
+		public virtual void SetObjectReference(ObjectReference objectReference)
 		{
 		}
 	}

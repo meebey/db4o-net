@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Defragment
 			private readonly DefragmentServicesImpl context;
 		}
 
-		public void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata yapClass
+		public void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata classMetadata
 			, int sourceID)
 		{
 			_collector.CreateIDMapping(context, sourceID, false);

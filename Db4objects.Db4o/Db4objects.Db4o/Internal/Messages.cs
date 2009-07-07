@@ -120,12 +120,12 @@ namespace Db4objects.Db4o.Internal
 			t)
 		{
 			TextWriter ps = ((Config4Impl)SafeConfig(config)).ErrStream();
-			new Message(msg, code, ps);
+			new MessageOutput(msg, code, ps);
 			if (t != null)
 			{
-				new Message(null, 25, ps);
+				new MessageOutput(null, 25, ps);
 				Sharpen.Runtime.PrintStackTrace(t, ps);
-				new Message(null, 26, ps, false);
+				new MessageOutput(null, 26, ps, false);
 			}
 		}
 
@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Internal
 			Config4Impl c4i = (Config4Impl)config;
 			if (c4i.MessageLevel() > Const4.None)
 			{
-				new Message(msg, code, c4i.OutStream());
+				new MessageOutput(msg, code, c4i.OutStream());
 			}
 		}
 	}

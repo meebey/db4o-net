@@ -11,11 +11,13 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Events;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
 {
-	public class ObjectServerImpl : IObjectServer, IExtObjectServer, IRunnable
+	public class ObjectServerImpl : IObjectServerEvents, IObjectServer, IExtObjectServer
+		, IRunnable
 	{
 		private const int StartThreadWaitTimeout = 5000;
 
@@ -49,6 +51,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly Db4objects.Db4o.CS.Internal.ClassInfoHelper _classInfoHelper = new 
 			Db4objects.Db4o.CS.Internal.ClassInfoHelper();
+
+		private System.EventHandler<ClientConnectionEventArgs> _clientConnected;
 
 		public ObjectServerImpl(LocalObjectContainer container, int port, INativeSocketFactory
 			 socketFactory) : this(container, (port < 0 ? 0 : port), port == 0, socketFactory
@@ -169,6 +173,12 @@ namespace Db4objects.Db4o.CS.Internal
 					, _name);
 			}
 			_container.CheckClosed();
+		}
+
+		/// <summary>System.IDisposable.Dispose()</summary>
+		public virtual void Dispose()
+		{
+			Close();
 		}
 
 		public virtual bool Close()
@@ -424,6 +434,7 @@ namespace Db4objects.Db4o.CS.Internal
 						, new ClientTransactionHandle(_transactionPool), _serverSocket.Accept(), NewThreadId
 						(), false, _container.Lock());
 					AddServerMessageDispatcher(messageDispatcher);
+					TriggerClientConnected(messageDispatcher);
 					messageDispatcher.StartDispatcher();
 				}
 				catch (Exception)
@@ -433,6 +444,11 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		//				e.printStackTrace();
+		private void TriggerClientConnected(IServerMessageDispatcher messageDispatcher)
+		{
+			ServerPlatform.TriggerClientConnectionEvent(_clientConnected, messageDispatcher);
+		}
+
 		private void NotifyThreadStarted()
 		{
 			lock (_startupLock)
@@ -519,6 +535,20 @@ namespace Db4objects.Db4o.CS.Internal
 		public virtual Db4objects.Db4o.CS.Internal.ClassInfoHelper ClassInfoHelper()
 		{
 			return _classInfoHelper;
+		}
+
+		public virtual event System.EventHandler<ClientConnectionEventArgs> ClientConnected
+		{
+			add
+			{
+				_clientConnected = (System.EventHandler<ClientConnectionEventArgs>)System.Delegate.Combine
+					(_clientConnected, value);
+			}
+			remove
+			{
+				_clientConnected = (System.EventHandler<ClientConnectionEventArgs>)System.Delegate.Remove
+					(_clientConnected, value);
+			}
 		}
 	}
 }

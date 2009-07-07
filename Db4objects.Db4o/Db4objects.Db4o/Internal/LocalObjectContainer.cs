@@ -499,19 +499,19 @@ namespace Db4objects.Db4o.Internal
 
 		public override ByteArrayBuffer[] ReadSlotBuffers(Transaction a_ta, int[] ids)
 		{
-			ByteArrayBuffer[] yapWriters = new ByteArrayBuffer[ids.Length];
+			ByteArrayBuffer[] buffers = new ByteArrayBuffer[ids.Length];
 			for (int i = 0; i < ids.Length; ++i)
 			{
 				if (ids[i] == 0)
 				{
-					yapWriters[i] = null;
+					buffers[i] = null;
 				}
 				else
 				{
-					yapWriters[i] = ReadReaderOrWriterByID(a_ta, ids[i], true);
+					buffers[i] = ReadReaderOrWriterByID(a_ta, ids[i], true);
 				}
 			}
-			return yapWriters;
+			return buffers;
 		}
 
 		public override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id, bool lastCommitted

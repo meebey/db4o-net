@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 			public void OnEvent(object sender, MessageEventArgs args)
 			{
-				_messages.Add(((MessageEventArgs)args).Message());
+				_messages.Add(((MessageEventArgs)args).Message);
 			}
 
 			private readonly ArrayList _messages;

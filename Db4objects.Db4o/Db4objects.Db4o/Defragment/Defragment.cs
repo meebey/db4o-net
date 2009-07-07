@@ -337,12 +337,12 @@ namespace Db4objects.Db4o.Defragment
 			IStoredClass[] classes = context.StoredClasses(DefragmentServicesImpl.Sourcedb);
 			for (int classIdx = 0; classIdx < classes.Length; classIdx++)
 			{
-				ClassMetadata yapClass = (ClassMetadata)classes[classIdx];
-				if (!config.StoredClassFilter().Accept(yapClass))
+				ClassMetadata classMetadata = (ClassMetadata)classes[classIdx];
+				if (!config.StoredClassFilter().Accept(classMetadata))
 				{
 					continue;
 				}
-				ProcessYapClass(context, yapClass, command);
+				ProcessClass(context, classMetadata, command);
 				command.Flush(context);
 				if (config.ObjectCommitFrequency() > 0)
 				{
@@ -367,15 +367,15 @@ namespace Db4objects.Db4o.Defragment
 		// - investigate.
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
-		private static void ProcessYapClass(DefragmentServicesImpl context, ClassMetadata
-			 curClass, IPassCommand command)
+		private static void ProcessClass(DefragmentServicesImpl context, ClassMetadata curClass
+			, IPassCommand command)
 		{
 			ProcessClassIndex(context, curClass, command);
 			if (!ParentHasIndex(curClass))
 			{
-				ProcessObjectsForYapClass(context, curClass, command);
+				ProcessObjectsForClass(context, curClass, command);
 			}
-			ProcessYapClassAndFieldIndices(context, curClass, command);
+			ProcessClassAndFieldIndices(context, curClass, command);
 		}
 
 		private static bool ParentHasIndex(ClassMetadata curClass)
@@ -392,7 +392,7 @@ namespace Db4objects.Db4o.Defragment
 			return false;
 		}
 
-		private static void ProcessObjectsForYapClass(DefragmentServicesImpl context, ClassMetadata
+		private static void ProcessObjectsForClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
 			context.TraverseAll(curClass, new _IVisitor4_304(command, context, curClass));
@@ -435,8 +435,8 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
-		private static void ProcessYapClassAndFieldIndices(DefragmentServicesImpl context
-			, ClassMetadata curClass, IPassCommand command)
+		private static void ProcessClassAndFieldIndices(DefragmentServicesImpl context, ClassMetadata
+			 curClass, IPassCommand command)
 		{
 			int sourceClassIndexID = 0;
 			int targetClassIndexID = 0;

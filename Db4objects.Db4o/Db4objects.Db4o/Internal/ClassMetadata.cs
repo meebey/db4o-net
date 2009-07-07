@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal
 
 		public ClassAspect[] _aspects;
 
-		private readonly IClassIndexStrategy _index;
+		private IClassIndexStrategy _index;
 
 		private string i_name;
 
@@ -193,9 +193,9 @@ namespace Db4objects.Db4o.Internal
 				this.context = context;
 			}
 
-			public void Apply(object arg)
+			public void Apply(object aspect)
 			{
-				((ClassAspect)arg).CascadeActivation(context);
+				((ClassAspect)aspect).CascadeActivation(context);
 			}
 
 			private readonly IActivationContext context;
@@ -1127,47 +1127,47 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public virtual Db4objects.Db4o.Internal.ClassMetadata GetHigherHierarchy(Db4objects.Db4o.Internal.ClassMetadata
-			 a_yapClass)
+			 a_classMetadata)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yc = GetHigherHierarchy1(a_yapClass);
+			Db4objects.Db4o.Internal.ClassMetadata yc = GetHigherHierarchy1(a_classMetadata);
 			if (yc != null)
 			{
 				return yc;
 			}
-			return a_yapClass.GetHigherHierarchy1(this);
+			return a_classMetadata.GetHigherHierarchy1(this);
 		}
 
 		private Db4objects.Db4o.Internal.ClassMetadata GetHigherHierarchy1(Db4objects.Db4o.Internal.ClassMetadata
-			 a_yapClass)
+			 a_classMetadata)
 		{
-			if (a_yapClass == this)
+			if (a_classMetadata == this)
 			{
 				return this;
 			}
 			if (i_ancestor != null)
 			{
-				return i_ancestor.GetHigherHierarchy1(a_yapClass);
+				return i_ancestor.GetHigherHierarchy1(a_classMetadata);
 			}
 			return null;
 		}
 
 		public virtual Db4objects.Db4o.Internal.ClassMetadata GetHigherOrCommonHierarchy(
-			Db4objects.Db4o.Internal.ClassMetadata a_yapClass)
+			Db4objects.Db4o.Internal.ClassMetadata a_classMetadata)
 		{
-			Db4objects.Db4o.Internal.ClassMetadata yc = GetHigherHierarchy1(a_yapClass);
+			Db4objects.Db4o.Internal.ClassMetadata yc = GetHigherHierarchy1(a_classMetadata);
 			if (yc != null)
 			{
 				return yc;
 			}
 			if (i_ancestor != null)
 			{
-				yc = i_ancestor.GetHigherOrCommonHierarchy(a_yapClass);
+				yc = i_ancestor.GetHigherOrCommonHierarchy(a_classMetadata);
 				if (yc != null)
 				{
 					return yc;
 				}
 			}
-			return a_yapClass.GetHigherHierarchy1(this);
+			return a_classMetadata.GetHigherHierarchy1(this);
 		}
 
 		public override byte GetIdentifier()
@@ -2710,6 +2710,17 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool IsStruct()
 		{
 			return Platform4.IsStruct(ClassReflector());
+		}
+
+		public virtual void DropClassIndex()
+		{
+			if (Container().IsClient())
+			{
+				throw new InvalidOperationException();
+			}
+			_index = CreateIndexStrategy();
+			_index.Initialize(Container());
+			Container().SetDirtyInSystemTransaction(this);
 		}
 	}
 }

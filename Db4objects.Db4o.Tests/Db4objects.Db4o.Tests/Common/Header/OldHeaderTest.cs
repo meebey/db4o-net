@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 
 		private static string DbFilePath()
 		{
-			return WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2.yap");
+			return WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2.db4o");
 		}
 	}
 }

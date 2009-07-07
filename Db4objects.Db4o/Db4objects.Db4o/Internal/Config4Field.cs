@@ -52,24 +52,25 @@ namespace Db4objects.Db4o.Internal
 			PutThreeValued(IndexedKey, flag);
 		}
 
-		public virtual void InitOnUp(Transaction systemTrans, FieldMetadata yapField)
+		public virtual void InitOnUp(Transaction systemTrans, FieldMetadata fieldMetadata
+			)
 		{
 			ObjectContainerBase anyStream = systemTrans.Container();
 			if (!anyStream.MaintainsIndices())
 			{
 				return;
 			}
-			if (!yapField.SupportsIndex())
+			if (!fieldMetadata.SupportsIndex())
 			{
 				Indexed(false);
 			}
 			TernaryBool indexedFlag = _config.GetAsTernaryBool(IndexedKey);
 			if (indexedFlag.DefiniteNo())
 			{
-				yapField.DropIndex(systemTrans);
+				fieldMetadata.DropIndex(systemTrans);
 				return;
 			}
-			if (UseExistingIndex(systemTrans, yapField))
+			if (UseExistingIndex(systemTrans, fieldMetadata))
 			{
 				return;
 			}
@@ -77,12 +78,13 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			yapField.CreateIndex();
+			fieldMetadata.CreateIndex();
 		}
 
-		private bool UseExistingIndex(Transaction systemTrans, FieldMetadata yapField)
+		private bool UseExistingIndex(Transaction systemTrans, FieldMetadata fieldMetadata
+			)
 		{
-			return yapField.GetIndex(systemTrans) != null;
+			return fieldMetadata.GetIndex(systemTrans) != null;
 		}
 
 		public virtual void Used(bool flag)

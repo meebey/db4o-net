@@ -10,12 +10,12 @@ namespace Db4objects.Db4o.Defragment
 	/// <summary>
 	/// Second step in the defragmenting process: Fills in target file pointer slots, copies
 	/// content slots from source to target and triggers ID remapping therein by calling the
-	/// appropriate yap/marshaller defrag() implementations.
+	/// appropriate db4o/marshaller defrag() implementations.
 	/// </summary>
 	/// <remarks>
 	/// Second step in the defragmenting process: Fills in target file pointer slots, copies
 	/// content slots from source to target and triggers ID remapping therein by calling the
-	/// appropriate yap/marshaller defrag() implementations. During the process, the actual address
+	/// appropriate db4o/marshaller defrag() implementations. During the process, the actual address
 	/// mappings for the content slots are registered for use with string indices.
 	/// </remarks>
 	/// <exclude></exclude>
@@ -32,38 +32,38 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
-		public void ProcessClass(DefragmentServicesImpl services, ClassMetadata yapClass, 
-			int id, int classIndexID)
+		public void ProcessClass(DefragmentServicesImpl services, ClassMetadata classMetadata
+			, int id, int classIndexID)
 		{
 			if (services.MappedID(id, -1) == -1)
 			{
 				Sharpen.Runtime.Err.WriteLine("MAPPING NOT FOUND: " + id);
 			}
-			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_35(yapClass
+			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_35(classMetadata
 				, classIndexID));
 		}
 
 		private sealed class _ISlotCopyHandler_35 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_35(ClassMetadata yapClass, int classIndexID)
+			public _ISlotCopyHandler_35(ClassMetadata classMetadata, int classIndexID)
 			{
-				this.yapClass = yapClass;
+				this.classMetadata = classMetadata;
 				this.classIndexID = classIndexID;
 			}
 
 			public void ProcessCopy(DefragmentContextImpl context)
 			{
-				yapClass.DefragClass(context, classIndexID);
+				classMetadata.DefragClass(context, classIndexID);
 			}
 
-			private readonly ClassMetadata yapClass;
+			private readonly ClassMetadata classMetadata;
 
 			private readonly int classIndexID;
 		}
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
-		public void ProcessObjectSlot(DefragmentServicesImpl services, ClassMetadata yapClass
+		public void ProcessObjectSlot(DefragmentServicesImpl services, ClassMetadata classMetadata
 			, int id)
 		{
 			ByteArrayBuffer sourceBuffer = services.SourceBufferByID(id);

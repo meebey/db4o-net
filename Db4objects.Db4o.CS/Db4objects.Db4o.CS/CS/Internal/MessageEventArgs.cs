@@ -7,16 +7,19 @@ namespace Db4objects.Db4o.CS.Internal
 {
 	public class MessageEventArgs : EventArgs
 	{
-		private Msg _message;
+		private IMessage _message;
 
-		public MessageEventArgs(Msg message)
+		public MessageEventArgs(IMessage message)
 		{
 			_message = message;
 		}
 
-		public virtual Msg Message()
+		public virtual IMessage Message
 		{
-			return _message;
+			get
+			{
+				return _message;
+			}
 		}
 	}
 }

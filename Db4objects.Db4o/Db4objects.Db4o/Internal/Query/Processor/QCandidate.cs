@@ -41,9 +41,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private Db4objects.Db4o.Internal.Query.Processor.QCandidate _root;
 
-		internal ClassMetadata _yapClass;
+		internal ClassMetadata _classMetadata;
 
-		internal FieldMetadata _yapField;
+		internal FieldMetadata _fieldMetadata;
 
 		private int _handlerVersion;
 
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			// Possible pending joins on children
 			// The evaluation root to compare all ORs
 			// the YapClass of this object
-			// temporary yapField and member for one field during evaluation
+			// temporary field and member for one field during evaluation
 			// null denotes null object
 			_candidates = qcandidates;
 		}
@@ -90,8 +90,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			qcan._order = _order;
 			qcan._pendingJoins = _pendingJoins;
 			qcan._root = _root;
-			qcan._yapClass = _yapClass;
-			qcan._yapField = _yapField;
+			qcan._classMetadata = _classMetadata;
+			qcan._fieldMetadata = _fieldMetadata;
 			return base.ShallowCloneInternal(qcan);
 		}
 
@@ -107,8 +107,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				_member = ((ICompare)_member).Compare();
 				LocalObjectContainer stream = Container();
-				_yapClass = stream.ClassMetadataForReflectClass(stream.Reflector().ForObject(_member
-					));
+				_classMetadata = stream.ClassMetadataForReflectClass(stream.Reflector().ForObject
+					(_member));
 				_key = stream.GetID(Transaction(), _member);
 				if (_key == 0)
 				{
@@ -142,9 +142,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			if (_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				ITypeHandler4 handler = _yapField.GetHandler();
+				ITypeHandler4 handler = _fieldMetadata.GetHandler();
 				if (handler != null)
 				{
 					QueryingReadContext queryingReadContext = new QueryingReadContext(Transaction(), 
@@ -164,7 +164,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						{
 							QCon qcon = (QCon)i.Current;
 							QField qf = qcon.GetField();
-							if (qf == null || qf.i_name.Equals(_yapField.GetName()))
+							if (qf == null || qf.i_name.Equals(_fieldMetadata.GetName()))
 							{
 								QCon tempParent = qcon.i_parent;
 								qcon.SetParent(null);
@@ -237,11 +237,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
-			if (_yapField == null || _yapField is NullFieldMetadata)
+			if (_fieldMetadata == null || _fieldMetadata is NullFieldMetadata)
 			{
 				return false;
 			}
-			_yapClass.SeekToField(Transaction(), _bytes, _yapField);
+			_classMetadata.SeekToField(Transaction(), _bytes, _fieldMetadata);
 			Db4objects.Db4o.Internal.Query.Processor.QCandidate candidate = ReadSubCandidate(
 				a_candidates);
 			if (candidate == null)
@@ -249,11 +249,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return false;
 			}
 			// fast early check for ClassMetadata
-			if (a_candidates.i_yapClass != null && a_candidates.i_yapClass.IsStrongTyped())
+			if (a_candidates.i_classMetadata != null && a_candidates.i_classMetadata.IsStrongTyped
+				())
 			{
-				if (_yapField != null)
+				if (_fieldMetadata != null)
 				{
-					ITypeHandler4 handler = _yapField.GetHandler();
+					ITypeHandler4 handler = _fieldMetadata.GetHandler();
 					if (Handlers4.IsUntyped(handler))
 					{
 						ClassMetadata classMetadata = candidate.ReadYapClass();
@@ -266,7 +267,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					{
 						return false;
 					}
-					if (!Handlers4.HandlerCanHold(handler, a_candidates.i_yapClass.ClassReflector()))
+					if (!Handlers4.HandlerCanHold(handler, a_candidates.i_classMetadata.ClassReflector
+						()))
 					{
 						return false;
 					}
@@ -479,11 +481,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual IReflectClass ClassReflector()
 		{
 			ReadYapClass();
-			if (_yapClass == null)
+			if (_classMetadata == null)
 			{
 				return null;
 			}
-			return _yapClass.ClassReflector();
+			return _classMetadata.ClassReflector();
 		}
 
 		internal virtual bool FieldIsAvailable()
@@ -579,13 +581,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			, object constraint)
 		{
 			IContext context = container.Transaction().Context();
-			if (_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				return _yapField.PrepareComparison(context, constraint);
+				return _fieldMetadata.PrepareComparison(context, constraint);
 			}
-			if (_yapClass != null)
+			if (_classMetadata != null)
 			{
-				return _yapClass.PrepareComparison(context, constraint);
+				return _classMetadata.PrepareComparison(context, constraint);
 			}
 			IReflector reflector = container.Reflector();
 			ClassMetadata classMetadata = null;
@@ -655,14 +657,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			 candidateCollection)
 		{
 			Read();
-			if (_bytes == null || _yapField == null)
+			if (_bytes == null || _fieldMetadata == null)
 			{
 				return null;
 			}
 			int offset = CurrentOffSet();
 			QueryingReadContext context = NewQueryingReadContext();
-			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, _yapField.
-				GetHandler());
+			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(context, _fieldMetadata
+				.GetHandler());
 			Db4objects.Db4o.Internal.Query.Processor.QCandidate subCandidate = candidateCollection
 				.ReadSubCandidate(context, handler);
 			Seek(offset);
@@ -698,7 +700,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual ClassMetadata ReadYapClass()
 		{
-			if (_yapClass == null)
+			if (_classMetadata == null)
 			{
 				Read();
 				if (_bytes != null)
@@ -706,29 +708,30 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					Seek(0);
 					ObjectContainerBase stream = Container();
 					ObjectHeader objectHeader = new ObjectHeader(stream, _bytes);
-					_yapClass = objectHeader.ClassMetadata();
-					if (_yapClass != null)
+					_classMetadata = objectHeader.ClassMetadata();
+					if (_classMetadata != null)
 					{
-						if (stream._handlers.IclassCompare.IsAssignableFrom(_yapClass.ClassReflector()))
+						if (stream._handlers.IclassCompare.IsAssignableFrom(_classMetadata.ClassReflector
+							()))
 						{
 							ReadThis(false);
 						}
 					}
 				}
 			}
-			return _yapClass;
+			return _classMetadata;
 		}
 
 		public override string ToString()
 		{
 			string str = "QCandidate ";
-			if (_yapClass != null)
+			if (_classMetadata != null)
 			{
-				str += "\n   YapClass " + _yapClass.GetName();
+				str += "\n   YapClass " + _classMetadata.GetName();
 			}
-			if (_yapField != null)
+			if (_fieldMetadata != null)
 			{
-				str += "\n   YapField " + _yapField.GetName();
+				str += "\n   YapField " + _fieldMetadata.GetName();
 			}
 			if (_member != null)
 			{
@@ -751,29 +754,29 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Read();
 			if (_bytes == null)
 			{
-				_yapField = null;
+				_fieldMetadata = null;
 				return;
 			}
 			ReadYapClass();
 			_member = null;
 			if (a_field == null)
 			{
-				_yapField = null;
+				_fieldMetadata = null;
 				return;
 			}
-			if (_yapClass == null)
+			if (_classMetadata == null)
 			{
-				_yapField = null;
+				_fieldMetadata = null;
 				return;
 			}
-			_yapField = a_field.GetYapField(_yapClass);
-			if (_yapField == null)
+			_fieldMetadata = a_field.GetYapField(_classMetadata);
+			if (_fieldMetadata == null)
 			{
 				FieldNotFound();
 				return;
 			}
-			HandlerVersion handlerVersion = _yapClass.SeekToField(Transaction(), _bytes, _yapField
-				);
+			HandlerVersion handlerVersion = _classMetadata.SeekToField(Transaction(), _bytes, 
+				_fieldMetadata);
 			if (handlerVersion == HandlerVersion.Invalid)
 			{
 				FieldNotFound();
@@ -784,15 +787,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void FieldNotFound()
 		{
-			if (_yapClass.HoldsAnyClass())
+			if (_classMetadata.HoldsAnyClass())
 			{
 				// retry finding the field on reading the value 
-				_yapField = null;
+				_fieldMetadata = null;
 			}
 			else
 			{
 				// we can't get a value for the field, comparisons should definitely run against null
-				_yapField = new NullFieldMetadata();
+				_fieldMetadata = new NullFieldMetadata();
 			}
 			_handlerVersion = HandlerRegistry.HandlerVersion;
 		}
@@ -808,14 +811,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (_member == null)
 			{
-				if (_yapField == null)
+				if (_fieldMetadata == null)
 				{
 					ReadThis(a_activate);
 				}
 				else
 				{
 					int offset = CurrentOffSet();
-					_member = _yapField.Read(NewQueryingReadContext());
+					_member = _fieldMetadata.Read(NewQueryingReadContext());
 					Seek(offset);
 					CheckInstanceOfCompare();
 				}

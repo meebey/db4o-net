@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private List4 _constraints;
 
-		internal ClassMetadata i_yapClass;
+		internal ClassMetadata i_classMetadata;
 
 		private QField _field;
 
@@ -53,8 +53,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool _loadedFromClassIndex;
 
-		internal QCandidates(LocalTransaction a_trans, ClassMetadata a_yapClass, QField a_field
-			)
+		internal QCandidates(LocalTransaction a_trans, ClassMetadata a_classMetadata, QField
+			 a_field)
 		{
 			// Transaction necessary as reference to stream
 			// root of the QCandidate tree
@@ -65,25 +65,25 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			// QOrder tree
 			// 
 			i_trans = a_trans;
-			i_yapClass = a_yapClass;
+			i_classMetadata = a_classMetadata;
 			_field = a_field;
-			if (a_field == null || a_field.i_yapField == null || !(a_field.i_yapField.GetHandler
-				() is StandardReferenceTypeHandler))
+			if (a_field == null || a_field._fieldMetadata == null || !(a_field._fieldMetadata
+				.GetHandler() is StandardReferenceTypeHandler))
 			{
 				return;
 			}
-			ClassMetadata yc = ((StandardReferenceTypeHandler)a_field.i_yapField.GetHandler()
-				).ClassMetadata();
-			if (i_yapClass == null)
+			ClassMetadata yc = ((StandardReferenceTypeHandler)a_field._fieldMetadata.GetHandler
+				()).ClassMetadata();
+			if (i_classMetadata == null)
 			{
-				i_yapClass = yc;
+				i_classMetadata = yc;
 			}
 			else
 			{
-				yc = i_yapClass.GetHigherOrCommonHierarchy(yc);
+				yc = i_classMetadata.GetHigherOrCommonHierarchy(yc);
 				if (yc != null)
 				{
-					i_yapClass = yc;
+					i_classMetadata = yc;
 				}
 			}
 		}
@@ -361,11 +361,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return result.IterateIDs();
 			}
-			if (i_yapClass.IsPrimitive())
+			if (i_classMetadata.IsPrimitive())
 			{
 				return Iterators.EmptyIterator;
 			}
-			return BTreeClassIndexStrategy.Iterate(i_yapClass, i_trans);
+			return BTreeClassIndexStrategy.Iterate(i_classMetadata, i_trans);
 		}
 
 		private IEnumerator MapIdsToExecutionPath(IEnumerator singleObjectQueryIterator, 
@@ -417,7 +417,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public int ClassIndexEntryCount()
 		{
-			return i_yapClass.IndexEntryCount(i_trans);
+			return i_classMetadata.IndexEntryCount(i_trans);
 		}
 
 		private FieldIndexProcessorResult ProcessFieldIndexes()
@@ -615,13 +615,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			QCandidates.TreeIntBuilder result = new QCandidates.TreeIntBuilder();
-			IClassIndexStrategy index = i_yapClass.Index();
+			IClassIndexStrategy index = i_classMetadata.Index();
 			index.TraverseAll(i_trans, new _IVisitor4_438(this, result));
 			i_root = result.tree;
 			DiagnosticProcessor dp = i_trans.Container()._handlers._diagnosticProcessor;
 			if (dp.Enabled() && !IsClassOnlyQuery())
 			{
-				dp.LoadedFromClassIndex(i_yapClass);
+				dp.LoadedFromClassIndex(i_classMetadata);
 			}
 			_loadedFromClassIndex = true;
 		}
@@ -681,7 +681,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
-			if (i_yapClass == null || a_constraint.IsNullConstraint())
+			if (i_classMetadata == null || a_constraint.IsNullConstraint())
 			{
 				AddConstraint(a_constraint);
 				return true;
@@ -689,10 +689,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			ClassMetadata yc = a_constraint.GetYapClass();
 			if (yc != null)
 			{
-				yc = i_yapClass.GetHigherOrCommonHierarchy(yc);
+				yc = i_classMetadata.GetHigherOrCommonHierarchy(yc);
 				if (yc != null)
 				{
-					i_yapClass = yc;
+					i_classMetadata = yc;
 					AddConstraint(a_constraint);
 					return true;
 				}
@@ -770,7 +770,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
-			if (i_yapClass == null || constraint.IsNullConstraint())
+			if (i_classMetadata == null || constraint.IsNullConstraint())
 			{
 				return true;
 			}
@@ -779,12 +779,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			classMetadata = i_yapClass.GetHigherOrCommonHierarchy(classMetadata);
+			classMetadata = i_classMetadata.GetHigherOrCommonHierarchy(classMetadata);
 			if (classMetadata == null)
 			{
 				return false;
 			}
-			i_yapClass = classMetadata;
+			i_classMetadata = classMetadata;
 			return true;
 		}
 

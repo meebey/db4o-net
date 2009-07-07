@@ -43,9 +43,9 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public static object Unmarshall(ObjectContainerBase serviceProvider, StatefulBuffer
-			 yapBytes)
+			 buffer)
 		{
-			return Unmarshall(serviceProvider, yapBytes._buffer, yapBytes.GetID());
+			return Unmarshall(serviceProvider, buffer._buffer, buffer.GetID());
 		}
 
 		public static object Unmarshall(ObjectContainerBase serviceProvider, SerializedGraph

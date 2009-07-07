@@ -6,11 +6,11 @@ using Db4objects.Db4o.Config;
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
-	/// a simple Alias for a single Class or Type, using #equals() on
+	/// a simple Alias for a single Class or Type, using equals on
 	/// the names in the resolve method.
 	/// </summary>
 	/// <remarks>
-	/// a simple Alias for a single Class or Type, using #equals() on
+	/// a simple Alias for a single Class or Type, using equals on
 	/// the names in the resolve method.
 	/// <br /><br />See
 	/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>

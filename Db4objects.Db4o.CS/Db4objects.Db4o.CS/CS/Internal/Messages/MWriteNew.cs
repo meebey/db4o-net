@@ -10,13 +10,13 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public bool ProcessAtServer()
 		{
-			int yapClassId = _payLoad.ReadInt();
+			int classMetadataId = _payLoad.ReadInt();
 			LocalObjectContainer stream = (LocalObjectContainer)Stream();
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				ClassMetadata classMetadata = yapClassId == 0 ? null : stream.ClassMetadataForID(
-					yapClassId);
+				ClassMetadata classMetadata = classMetadataId == 0 ? null : stream.ClassMetadataForID
+					(classMetadataId);
 				int id = _payLoad.GetID();
 				stream.PrefetchedIDConsumed(id);
 				Transaction().SlotFreePointerOnRollback(id);

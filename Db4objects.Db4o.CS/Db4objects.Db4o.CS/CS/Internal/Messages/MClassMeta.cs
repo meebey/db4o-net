@@ -18,21 +18,21 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				lock (StreamLock())
 				{
-					ClassInfo classMeta = (ClassInfo)ReadObjectFromPayLoad();
+					ClassInfo classInfo = (ClassInfo)ReadObjectFromPayLoad();
 					ClassInfoHelper classInfoHelper = ServerMessageDispatcher().ClassInfoHelper();
 					GenericClass genericClass = classInfoHelper.ClassMetaToGenericClass(Stream().Reflector
-						(), classMeta);
+						(), classInfo);
 					if (genericClass != null)
 					{
 						Transaction trans = stream.SystemTransaction();
-						ClassMetadata yapClass = stream.ProduceClassMetadata(genericClass);
-						if (yapClass != null)
+						ClassMetadata classMetadata = stream.ProduceClassMetadata(genericClass);
+						if (classMetadata != null)
 						{
 							stream.CheckStillToSet();
-							yapClass.SetStateDirty();
-							yapClass.Write(trans);
+							classMetadata.SetStateDirty();
+							classMetadata.Write(trans);
 							trans.Commit();
-							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, yapClass.GetID());
+							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, classMetadata.GetID());
 							Write(Msg.ObjectToClient.GetWriter(returnBytes));
 							return true;
 						}

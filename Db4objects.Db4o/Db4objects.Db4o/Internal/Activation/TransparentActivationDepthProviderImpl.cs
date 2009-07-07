@@ -60,12 +60,12 @@ namespace Db4objects.Db4o.Internal.Activation
 		{
 			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(container);
 			registry.QueryStarted += new System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs>
-				(new _IEventListener4_45(this).OnEvent);
+				(new _IEventListener4_46(this).OnEvent);
 		}
 
-		private sealed class _IEventListener4_45
+		private sealed class _IEventListener4_46
 		{
-			public _IEventListener4_45(TransparentActivationDepthProviderImpl _enclosing)
+			public _IEventListener4_46(TransparentActivationDepthProviderImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -92,9 +92,18 @@ namespace Db4objects.Db4o.Internal.Activation
 			ObjectsModifiedIn(transaction).Add(@object);
 		}
 
-		private sealed class _TransactionLocal_65 : TransactionLocal
+		public virtual void RemoveModified(object @object, Transaction transaction)
 		{
-			public _TransactionLocal_65(TransparentActivationDepthProviderImpl _enclosing)
+			if (!_transparentPersistenceIsEnabled)
+			{
+				return;
+			}
+			ObjectsModifiedIn(transaction).Remove(@object);
+		}
+
+		private sealed class _TransactionLocal_73 : TransactionLocal
+		{
+			public _TransactionLocal_73(TransparentActivationDepthProviderImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -104,14 +113,14 @@ namespace Db4objects.Db4o.Internal.Activation
 				TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction objectsModifiedInTransaction
 					 = new TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction(transaction
 					);
-				transaction.AddTransactionListener(new _ITransactionListener_69(this, objectsModifiedInTransaction
+				transaction.AddTransactionListener(new _ITransactionListener_77(this, objectsModifiedInTransaction
 					));
 				return objectsModifiedInTransaction;
 			}
 
-			private sealed class _ITransactionListener_69 : ITransactionListener
+			private sealed class _ITransactionListener_77 : ITransactionListener
 			{
-				public _ITransactionListener_69(_TransactionLocal_65 _enclosing, TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction
+				public _ITransactionListener_77(_TransactionLocal_73 _enclosing, TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction
 					 objectsModifiedInTransaction)
 				{
 					this._enclosing = _enclosing;
@@ -129,7 +138,7 @@ namespace Db4objects.Db4o.Internal.Activation
 					objectsModifiedInTransaction.Flush();
 				}
 
-				private readonly _TransactionLocal_65 _enclosing;
+				private readonly _TransactionLocal_73 _enclosing;
 
 				private readonly TransparentActivationDepthProviderImpl.ObjectsModifiedInTransaction
 					 objectsModifiedInTransaction;
@@ -149,6 +158,8 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		private sealed class ObjectsModifiedInTransaction
 		{
+			private readonly IdentitySet4 _removedAfterModified = new IdentitySet4();
+
 			private readonly IdentitySet4 _modified = new IdentitySet4();
 
 			private readonly Transaction _transaction;
@@ -165,6 +176,16 @@ namespace Db4objects.Db4o.Internal.Activation
 					return;
 				}
 				_modified.Add(@object);
+			}
+
+			public void Remove(object @object)
+			{
+				if (!Contains(@object))
+				{
+					return;
+				}
+				_modified.Remove(@object);
+				_removedAfterModified.Add(@object);
 			}
 
 			private bool Contains(object @object)
@@ -196,8 +217,14 @@ namespace Db4objects.Db4o.Internal.Activation
 				{
 					return;
 				}
+				ApplyRollbackStrategy(rollbackStrategy, _modified.ValuesIterator());
+				ApplyRollbackStrategy(rollbackStrategy, _removedAfterModified.ValuesIterator());
+			}
+
+			private void ApplyRollbackStrategy(IRollbackStrategy rollbackStrategy, IEnumerator
+				 values)
+			{
 				IObjectContainer objectContainer = _transaction.ObjectContainer();
-				IEnumerator values = _modified.ValuesIterator();
 				while (values.MoveNext())
 				{
 					rollbackStrategy.Rollback(objectContainer, values.Current);
@@ -207,7 +234,7 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		public TransparentActivationDepthProviderImpl()
 		{
-			_objectsModifiedInTransaction = new _TransactionLocal_65(this);
+			_objectsModifiedInTransaction = new _TransactionLocal_73(this);
 		}
 	}
 }

@@ -97,5 +97,27 @@ namespace Db4objects.Db4o
 			return ObjectContainerFactory.OpenObjectContainer(((ILegacyConfigurationProvider)
 				config).Legacy(), databaseFileName);
 		}
+
+		/// <summary>
+		/// Same as calling
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.OpenFile">Db4objects.Db4o.Db4oEmbedded.OpenFile
+		/// 	</see>
+		/// with a fresh configuration (
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">Db4objects.Db4o.Db4oEmbedded.NewConfiguration
+		/// 	</see>
+		/// ).
+		/// </summary>
+		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
+		/// <seealso cref="Db4objects.Db4o.Db4oEmbedded.OpenFile">Db4objects.Db4o.Db4oEmbedded.OpenFile
+		/// 	</seealso>
+		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.IncompatibleFileFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
+		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
+		public static IEmbeddedObjectContainer OpenFile(string databaseFileName)
+		{
+			return OpenFile(NewConfiguration(), databaseFileName);
+		}
 	}
 }

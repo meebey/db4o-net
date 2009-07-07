@@ -34,8 +34,8 @@ namespace Db4objects.Db4o.Internal.Classindex
 		IEnumerator AllSlotIDs(Transaction trans);
 
 		// FIXME: Why is this never called?
-		void DefragReference(ClassMetadata yapClass, DefragmentContextImpl context, int classIndexID
-			);
+		void DefragReference(ClassMetadata classMetadata, DefragmentContextImpl context, 
+			int classIndexID);
 
 		int Id();
 

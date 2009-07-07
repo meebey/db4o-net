@@ -12,14 +12,14 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class InvalidOffsetInDeleteTestCase : Db4oTestWithTempFile, IDiagnosticListener
 	{
-		public class Item : InvalidOffsetInDeleteTestCase.Parent
-		{
-			public string _itemName;
-		}
-
 		public class Parent
 		{
 			public string _parentName;
+		}
+
+		public class Item : InvalidOffsetInDeleteTestCase.Parent
+		{
+			public string _itemName;
 		}
 
 		public virtual void Test()

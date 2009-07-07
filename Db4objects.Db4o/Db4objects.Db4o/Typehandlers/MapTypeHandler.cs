@@ -13,8 +13,8 @@ using Db4objects.Db4o.Typehandlers.Internal;
 
 namespace Db4objects.Db4o.Typehandlers
 {
-	/// <summary>Typehandler for classes that implement java.util.Map.</summary>
-	/// <remarks>Typehandler for classes that implement java.util.Map.</remarks>
+	/// <summary>Typehandler for classes that implement IDictionary.</summary>
+	/// <remarks>Typehandler for classes that implement IDictionary.</remarks>
 	public class MapTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler, IVariableLengthTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj

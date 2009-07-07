@@ -14,12 +14,11 @@ namespace Db4objects.Db4o.IO
 	/// </summary>
 	/// <remarks>
 	/// CachedIoAdapter is an IOAdapter for random access files, which caches data
-	/// for IO access. Its functionality is similar to OS cache.<br />
-	/// Example:<br />
-	/// <code>delegateAdapter = new RandomAccessFileAdapter();</code><br />
-	/// <code>Db4o.configure().io(new CachedIoAdapter(delegateAdapter));</code><br />
+	/// for IO access. Its functionality is similar to OS cache.<br/>
+	/// Example:<br/>
+	/// <code>delegateAdapter = new RandomAccessFileAdapter();</code><br/>
+	/// <code>config.Io(new CachedIoAdapter(delegateAdapter));</code><br/>
 	/// </remarks>
-	[System.ObsoleteAttribute(@"Use")]
 	public class CachedIoAdapter : IoAdapter
 	{
 		private CachedIoAdapter.Page _head;

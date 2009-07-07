@@ -11,16 +11,16 @@ namespace Db4objects.Db4o.Internal.Classindex
 	/// <exclude></exclude>
 	public abstract class AbstractClassIndexStrategy : IClassIndexStrategy
 	{
-		protected readonly ClassMetadata _yapClass;
+		protected readonly ClassMetadata _classMetadata;
 
-		public AbstractClassIndexStrategy(ClassMetadata yapClass)
+		public AbstractClassIndexStrategy(ClassMetadata classMetadata)
 		{
-			_yapClass = yapClass;
+			_classMetadata = classMetadata;
 		}
 
-		protected virtual int YapClassID()
+		protected virtual int ClassMetadataID()
 		{
-			return _yapClass.GetID();
+			return _classMetadata.GetID();
 		}
 
 		public virtual int OwnLength()

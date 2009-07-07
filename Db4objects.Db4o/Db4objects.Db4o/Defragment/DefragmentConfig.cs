@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Defragment
 		/// </remarks>
 		/// <param name="origPath">
 		/// The path to the file to be defragmented. Must exist and must be
-		/// a valid yap file.
+		/// a valid db4o file.
 		/// </param>
 		public DefragmentConfig(string origPath) : this(origPath, origPath + "." + BackupSuffix
 			)
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Defragment
 		/// </remarks>
 		/// <param name="origPath">
 		/// The path to the file to be defragmented. Must exist and must be
-		/// a valid yap file.
+		/// a valid db4o file.
 		/// </param>
 		/// <param name="backupPath">
 		/// The path to the backup of the original file. No file should
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Defragment
 		/// </remarks>
 		/// <param name="origPath">
 		/// The path to the file to be defragmented. Must exist and must be
-		/// a valid yap file.
+		/// a valid db4o file.
 		/// </param>
 		/// <param name="backupPath">
 		/// The path to the backup of the original file. No file should

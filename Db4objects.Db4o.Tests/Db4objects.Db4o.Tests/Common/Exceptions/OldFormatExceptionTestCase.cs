@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="System.IO.IOException"></exception>
 		protected virtual string OldDatabaseFilePath()
 		{
-			string oldFile = IOServices.BuildTempPath("old_db.yap");
+			string oldFile = IOServices.BuildTempPath("old_db.db4o");
 			File4.Copy(SourceFile(), oldFile);
 			return oldFile;
 		}

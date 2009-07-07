@@ -10,7 +10,7 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oSolo : AbstractFileBasedDb4oFixture
 	{
-		private static readonly string File = "db4oSoloTest.yap";
+		private static readonly string File = "db4oSoloTest.db4o";
 
 		public Db4oSolo() : this(new IndependentConfigurationSource())
 		{

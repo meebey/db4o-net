@@ -152,13 +152,13 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			ByRef duplicates = new ByRef();
 			while (iter.MoveNext())
 			{
-				ClassMetadata yapClass = iter.CurrentClass();
-				if (yapClass.GetName() != null)
+				ClassMetadata classMetadata = iter.CurrentClass();
+				if (classMetadata.GetName() != null)
 				{
-					IReflectClass claxx = yapClass.ClassReflector();
+					IReflectClass claxx = classMetadata.ClassReflector();
 					if (claxx == null || !(Stream()._handlers.IclassInternal.IsAssignableFrom(claxx)))
 					{
-						IClassIndexStrategy index = yapClass.Index();
+						IClassIndexStrategy index = classMetadata.Index();
 						index.TraverseAll(_transaction, new _IVisitor4_115(this, duplicates));
 					}
 				}

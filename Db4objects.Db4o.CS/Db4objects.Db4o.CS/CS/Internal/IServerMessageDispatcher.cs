@@ -8,10 +8,9 @@ using Db4objects.Db4o.Internal;
 namespace Db4objects.Db4o.CS.Internal
 {
 	/// <exclude></exclude>
-	public interface IServerMessageDispatcher : IMessageDispatcher, ICommittedCallbackDispatcher
+	public interface IServerMessageDispatcher : IClientConnection, IMessageDispatcher
+		, ICommittedCallbackDispatcher
 	{
-		string Name();
-
 		void QueryResultFinalized(int queryResultID);
 
 		ISocket4 Socket();
@@ -45,7 +44,5 @@ namespace Db4objects.Db4o.CS.Internal
 		CallbackObjectInfoCollections CommittedInfo();
 
 		Db4objects.Db4o.CS.Internal.ClassInfoHelper ClassInfoHelper();
-
-		event System.EventHandler<MessageEventArgs> MessageReceived;
 	}
 }

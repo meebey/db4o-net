@@ -392,9 +392,9 @@ namespace Db4objects.Db4o.Internal
 			IEnumerator i = new Iterator4Impl(_pendingClassUpdates);
 			while (i.MoveNext())
 			{
-				ClassMetadata yapClass = (ClassMetadata)i.Current;
-				yapClass.SetStateDirty();
-				yapClass.Write(_systemTransaction);
+				ClassMetadata classMetadata = (ClassMetadata)i.Current;
+				classMetadata.SetStateDirty();
+				classMetadata.Write(_systemTransaction);
 			}
 			_pendingClassUpdates = null;
 		}
@@ -627,11 +627,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ArgumentNullException();
 			}
-			lock (_lock)
+			lock (Lock())
 			{
 				trans = CheckTransaction(trans);
 				CheckReadOnly();
 				Delete1(trans, obj, true);
+				UnregisterFromTransparentPersistence(trans, obj);
 				trans.ProcessDeletes();
 			}
 		}
@@ -732,6 +733,17 @@ namespace Db4objects.Db4o.Internal
 			@ref.EndProcessing();
 		}
 
+		private void UnregisterFromTransparentPersistence(Transaction trans, object obj)
+		{
+			if (!(ActivationDepthProvider() is ITransparentActivationDepthProvider))
+			{
+				return;
+			}
+			ITransparentActivationDepthProvider provider = (ITransparentActivationDepthProvider
+				)ActivationDepthProvider();
+			provider.RemoveModified(obj, trans);
+		}
+
 		private void ActivateForDeletionCallback(Transaction trans, ClassMetadata classMetadata
 			, ObjectReference @ref, object obj)
 		{
@@ -791,7 +803,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_628(fieldName, foundField));
+				classMetadata.ForEachField(new _IProcedure4_638(fieldName, foundField));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -813,9 +825,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_628 : IProcedure4
+		private sealed class _IProcedure4_638 : IProcedure4
 		{
-			public _IProcedure4_628(string fieldName, ByRef foundField)
+			public _IProcedure4_638(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -1495,7 +1507,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void Message(string msg)
 		{
-			new Message(this, msg);
+			new MessageOutput(this, msg);
 		}
 
 		public void NeedsUpdate(ClassMetadata classMetadata)

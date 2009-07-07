@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.IO
 	/// Each class that adds functionality to a Bin must
 	/// extend this class to allow db4o to access the
 	/// delegate instance with
-	/// <see cref="#undecorate()">#undecorate()</see>
+	/// <see cref="Db4objects.Db4o.IO.StorageDecorator.Decorate">Db4objects.Db4o.IO.StorageDecorator.Decorate
+	/// 	</see>
 	/// .
 	/// </remarks>
 	public class BinDecorator : IBin

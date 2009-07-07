@@ -15,10 +15,11 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		protected override Type[] TestCases()
 		{
-			return ComposeTests(new Type[] { typeof(ConfigurationItemTestCase), typeof(CustomStringEncodingTestCase
-				), typeof(GlobalVsNonStaticConfigurationTestCase), typeof(LatinStringEncodingTestCase
-				), typeof(ObjectTranslatorTestCase), typeof(UnicodeStringEncodingTestCase), typeof(
-				UTF8StringEncodingTestCase), typeof(VersionNumbersTestCase) });
+			return ComposeTests(new Type[] { typeof(ConfigurationItemTestCase), typeof(Config4ImplTestCase
+				), typeof(CustomStringEncodingTestCase), typeof(GlobalVsNonStaticConfigurationTestCase
+				), typeof(LatinStringEncodingTestCase), typeof(ObjectTranslatorTestCase), typeof(
+				UnicodeStringEncodingTestCase), typeof(UTF8StringEncodingTestCase), typeof(VersionNumbersTestCase
+				) });
 		}
 
 		#if !SILVERLIGHT

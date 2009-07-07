@@ -39,9 +39,9 @@ namespace Db4objects.Db4o.Types
 		/// <remarks>
 		/// creates a new database-aware HashMap.
 		/// <br/><br/>
-		/// This map will call the hashCode() method on the key objects to calculate the
+		/// This map will call the HashCode() method on the key objects to calculate the
 		/// hash value. Since the hash value is stored to the ObjectContainer, key objects
-		/// will have to return the same hashCode() value in every CLR session.
+		/// will have to return the same HashCode() value in every CLR session.
 		/// <br/><br/>
 		/// Usage:<br/>
 		/// - declare an IDictionary variable in your persistent class.<br/>
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Types
 		/// <remarks>
 		/// creates a new database-aware IdentityHashMap.
 		/// <br/><br/>
-		/// Only first class objects already stored to the ObjectContainer (Objects with a db4o ID)
+		/// Only first class objects already stored to the ObjectContainer (objects with a db4o ID)
 		/// can be used as keys for this type of Map. The internal db4o ID will be used as
 		/// the hash value.
 		/// <br/><br/>

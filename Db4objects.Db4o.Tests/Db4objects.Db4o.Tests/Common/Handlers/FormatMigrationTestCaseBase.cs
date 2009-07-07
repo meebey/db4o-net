@@ -322,7 +322,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		protected virtual string FileName(string versionName)
 		{
-			return OldVersionFileName(versionName) + ".yap";
+			return OldVersionFileName(versionName) + ".db4o";
 		}
 
 		protected virtual void DeconfigureForStore(IConfiguration config)

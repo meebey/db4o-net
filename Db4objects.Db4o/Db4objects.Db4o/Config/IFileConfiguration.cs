@@ -145,22 +145,15 @@ namespace Db4objects.Db4o.Config
 		/// <summary>can be used to turn the database file locking thread off.</summary>
 		/// <remarks>
 		/// can be used to turn the database file locking thread off.
-		/// <br /><br />Since Java does not support file locking up to JDK 1.4,
-		/// db4o uses an additional thread per open database file to prohibit
-		/// concurrent access to the same database file by different db4o
-		/// sessions in different VMs.<br /><br />
-		/// To improve performance and to lower ressource consumption, this
-		/// method provides the possibility to prevent the locking thread
-		/// from being started.<br /><br /><b>Caution!</b><br />If database file
+		/// <br/><br/><b>Caution!</b><br/>If database file
 		/// locking is turned off, concurrent write access to the same
-		/// database file from different JVM sessions will <b>corrupt</b> the
-		/// database file immediately.<br /><br /> This method
+		/// database file from different sessions will <b>corrupt</b> the
+		/// database file immediately.<br/><br/> This method
 		/// has no effect on open ObjectContainers. It will only affect how
-		/// ObjectContainers are opened.<br /><br />
-		/// The default setting is <code>true</code>.<br /><br />
-		/// In client-server environment this setting should be used on both client and server.<br /><br />
+		/// ObjectContainers are opened.<br/><br/>
+		/// The default setting is <code>true</code>.<br/><br/>
+		/// In client-server environment this setting should be used on both client and server.<br/><br/>
 		/// </remarks>
-		/// <param name="flag"><code>false</code> to turn database file locking off.</param>
 		bool LockDatabaseFile
 		{
 			set;
@@ -216,13 +209,15 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// turns readOnly mode on and off.
 		/// <br /><br />This method configures the mode in which subsequent calls to
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.OpenFile">Db4objects.Db4o.Db4oEmbedded.OpenFile
+		/// 	</see>
+		/// 
 		/// will open files.
 		/// <br /><br />Readonly mode allows to open an unlimited number of reading
 		/// processes on one database file. It is also convenient
 		/// for deploying db4o database files on CD-ROM.<br /><br />
-		/// In client-server environment this setting should be used on the server side
-		/// in embedded mode and ONLY on client side in networked mode.<br /><br />
+		/// In client-server environment this setting should be used
+		/// ONLY on client side.<br /><br />
 		/// </remarks>
 		/// <param name="flag">
 		/// <code>true</code> for configuring readOnly mode for subsequent

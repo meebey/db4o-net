@@ -56,13 +56,13 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			return ToIdTree().ToIdList();
 		}
 
-		public virtual bool SkipClass(ClassMetadata yapClass)
+		public virtual bool SkipClass(ClassMetadata classMetadata)
 		{
-			if (yapClass.GetName() == null)
+			if (classMetadata.GetName() == null)
 			{
 				return true;
 			}
-			IReflectClass claxx = yapClass.ClassReflector();
+			IReflectClass claxx = classMetadata.ClassReflector();
 			if (Stream()._handlers.IclassInternal.IsAssignableFrom(claxx))
 			{
 				return true;
@@ -86,12 +86,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 			public object Apply(object current)
 			{
-				ClassMetadata yapClass = (ClassMetadata)current;
-				if (this._enclosing.SkipClass(yapClass))
+				ClassMetadata classMetadata = (ClassMetadata)current;
+				if (this._enclosing.SkipClass(classMetadata))
 				{
 					return Iterators.Skip;
 				}
-				return this._enclosing.ClassIndexIterable(yapClass);
+				return this._enclosing.ClassIndexIterable(classMetadata);
 			}
 
 			private readonly AbstractLateQueryResult _enclosing;

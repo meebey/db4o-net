@@ -9,15 +9,15 @@ namespace Db4objects.Db4o.CS.Internal
 {
 	public sealed class ClientTransaction : Transaction
 	{
-		private readonly ClientObjectContainer i_client;
+		private readonly ClientObjectContainer _client;
 
-		protected Tree i_yapObjectsToGc;
+		protected Tree _objectRefrencesToGC;
 
 		internal ClientTransaction(ClientObjectContainer container, Transaction parentTransaction
 			, TransactionalReferenceSystem referenceSystem) : base(container, parentTransaction
 			, referenceSystem)
 		{
-			i_client = container;
+			_client = container;
 		}
 
 		public override void Commit()
@@ -26,27 +26,27 @@ namespace Db4objects.Db4o.CS.Internal
 			ClearAll();
 			if (IsSystemTransaction())
 			{
-				i_client.Write(Msg.CommitSystemtrans);
+				_client.Write(Msg.CommitSystemtrans);
 			}
 			else
 			{
-				i_client.Write(Msg.Commit);
-				i_client.ExpectedResponse(Msg.Ok);
+				_client.Write(Msg.Commit);
+				_client.ExpectedResponse(Msg.Ok);
 			}
 		}
 
 		protected override void Clear()
 		{
-			RemoveYapObjectReferences();
+			RemoveObjectReferences();
 		}
 
-		private void RemoveYapObjectReferences()
+		private void RemoveObjectReferences()
 		{
-			if (i_yapObjectsToGc != null)
+			if (_objectRefrencesToGC != null)
 			{
-				i_yapObjectsToGc.Traverse(new _IVisitor4_37(this));
+				_objectRefrencesToGC.Traverse(new _IVisitor4_37(this));
 			}
-			i_yapObjectsToGc = null;
+			_objectRefrencesToGC = null;
 		}
 
 		private sealed class _IVisitor4_37 : IVisitor4
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.CS.Internal
 				return false;
 			}
 			MsgD msg = Msg.TaDelete.GetWriterForInts(this, new int[] { id, cascade });
-			i_client.WriteBatchedMessage(msg);
+			_client.WriteBatchedMessage(msg);
 			return true;
 		}
 
@@ -83,8 +83,8 @@ namespace Db4objects.Db4o.CS.Internal
 			// transaction.
 			// We need a better strategy for C/S concurrency behaviour.
 			MsgD msg = Msg.TaIsDeleted.GetWriterForInt(this, a_id);
-			i_client.Write(msg);
-			int res = i_client.ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();
+			_client.Write(msg);
+			int res = _client.ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();
 			return res == 1;
 		}
 
@@ -96,8 +96,8 @@ namespace Db4objects.Db4o.CS.Internal
 			message.WriteLong(a_uuid);
 			message.WriteInt(a_signature.Length);
 			message.WriteBytes(a_signature);
-			i_client.Write(message);
-			message = (MsgD)i_client.ExpectedResponse(Msg.ObjectByUuid);
+			_client.Write(message);
+			message = (MsgD)_client.ExpectedResponse(Msg.ObjectByUuid);
 			int id = message.ReadInt();
 			if (id > 0)
 			{
@@ -110,7 +110,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			IVisitor4 deleteVisitor = new _IVisitor4_85(this);
 			TraverseDelete(deleteVisitor);
-			i_client.WriteBatchedMessage(Msg.ProcessDeletes);
+			_client.WriteBatchedMessage(Msg.ProcessDeletes);
 		}
 
 		private sealed class _IVisitor4_85 : IVisitor4
@@ -125,8 +125,8 @@ namespace Db4objects.Db4o.CS.Internal
 				DeleteInfo info = (DeleteInfo)a_object;
 				if (info._reference != null)
 				{
-					this._enclosing.i_yapObjectsToGc = Tree.Add(this._enclosing.i_yapObjectsToGc, new 
-						TreeIntObject(info._key, info._reference));
+					this._enclosing._objectRefrencesToGC = Tree.Add(this._enclosing._objectRefrencesToGC
+						, new TreeIntObject(info._key, info._reference));
 				}
 			}
 
@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public override void Rollback()
 		{
-			i_yapObjectsToGc = null;
+			_objectRefrencesToGC = null;
 			RollBackTransactionListeners();
 			ClearAll();
 		}

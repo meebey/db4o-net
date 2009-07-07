@@ -21,10 +21,10 @@ namespace Db4objects.Db4o.TA
 	/// <remarks>
 	/// Configuration item that enables Transparent Activation Mode for this
 	/// session. TA mode should be switched on explicitly for manual TA implementation:
-	/// <br /><br />
-	/// configuration.add(new TransparentActivationSupport());
+	/// <br/><br/>
+	/// commonConfiguration.Add(new TransparentActivationSupport());
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.TA.TransparentPersistenceSupport"></seealso>
+	/// <seealso cref="Db4objects.Db4o.TA.TransparentPersistenceSupport"/>
 	public class TransparentActivationSupport : IConfigurationItem
 	{
 		// TODO: unbindOnClose should be configurable
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.TA
 		/// 	</seealso>
 		public virtual void Apply(IInternalObjectContainer container)
 		{
-			if (IsTransparentActivationAlreadyEnabled(container))
+			if (IsTransparentActivationEnabledOn(container))
 			{
 				return;
 			}
@@ -137,7 +137,7 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport.TADiagnosticProcessor processor;
 		}
 
-		private bool IsTransparentActivationAlreadyEnabled(IInternalObjectContainer container
+		public static bool IsTransparentActivationEnabledOn(IInternalObjectContainer container
 			)
 		{
 			return ActivationProvider(container) is ITransparentActivationDepthProvider;
@@ -229,7 +229,7 @@ namespace Db4objects.Db4o.TA
 				();
 		}
 
-		protected virtual IActivationDepthProvider ActivationProvider(IInternalObjectContainer
+		protected static IActivationDepthProvider ActivationProvider(IInternalObjectContainer
 			 container)
 		{
 			return container.ConfigImpl().ActivationDepthProvider();

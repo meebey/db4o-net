@@ -2,9 +2,9 @@
 
 namespace Db4objects.Db4o.Internal.Mapping
 {
-	/// <summary>A mapping from yap file source IDs/addresses to target IDs/addresses, used for defragmenting.
+	/// <summary>A mapping from db4o file source IDs/addresses to target IDs/addresses, used for defragmenting.
 	/// 	</summary>
-	/// <remarks>A mapping from yap file source IDs/addresses to target IDs/addresses, used for defragmenting.
+	/// <remarks>A mapping from db4o file source IDs/addresses to target IDs/addresses, used for defragmenting.
 	/// 	</remarks>
 	/// <exclude></exclude>
 	public interface IIDMapping

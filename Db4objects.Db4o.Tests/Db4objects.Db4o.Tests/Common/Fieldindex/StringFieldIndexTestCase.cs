@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestTraverseValues()
 		{
-			IStoredField field = YapField();
+			IStoredField field = StoredField();
 			StringFieldIndexTestCase.ExpectedVisitor visitor = new StringFieldIndexTestCase.ExpectedVisitor
 				(2);
 			field.TraverseValues(visitor);
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			}
 		}
 
-		private IStoredField YapField()
+		private IStoredField StoredField()
 		{
 			return ClassMetadataFor(typeof(StringFieldIndexTestCase.FieldIndexItem)).FieldMetadataForName
 				("_foo");

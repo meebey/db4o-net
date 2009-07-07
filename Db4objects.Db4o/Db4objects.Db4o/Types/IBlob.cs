@@ -43,18 +43,29 @@ namespace Db4objects.Db4o.Types
 		/// <remarks>
 		/// returns the status after the last read- or write-operation.
 		/// <br /><br />The status value returned may be any of the following:<br />
-		/// Status.UNUSED  no data was ever stored to the Blob field.<br />
-		/// Status.AVAILABLE available data was previously stored to the Blob field.<br />
-		/// Status.QUEUED an operation was triggered and is waiting for it's turn in the Blob queue.<br />
-		/// Status.COMPLETED the last operation on this field was completed successfully.<br />
-		/// Status.PROCESSING for internal use only.<br />
-		/// Status.ERROR the last operation failed.<br />
+		/// <see cref="Db4objects.Db4o.Ext.Status.Unused">Db4objects.Db4o.Ext.Status.Unused</see>
+		/// no data was ever stored to the Blob field.<br />
+		/// <see cref="Db4objects.Db4o.Ext.Status.Available">Db4objects.Db4o.Ext.Status.Available
+		/// 	</see>
+		/// available data was previously stored to the Blob field.<br />
+		/// <see cref="Db4objects.Db4o.Ext.Status.Queued">Db4objects.Db4o.Ext.Status.Queued</see>
+		/// an operation was triggered and is waiting for it's turn in the Blob queue.<br />
+		/// <see cref="Db4objects.Db4o.Ext.Status.Completed">Db4objects.Db4o.Ext.Status.Completed
+		/// 	</see>
+		/// the last operation on this field was completed successfully.<br />
+		/// <see cref="Db4objects.Db4o.Ext.Status.Processing">Db4objects.Db4o.Ext.Status.Processing
+		/// 	</see>
+		/// for internal use only.<br />
+		/// <see cref="Db4objects.Db4o.Ext.Status.Error">Db4objects.Db4o.Ext.Status.Error</see>
+		/// the last operation failed.<br />
 		/// or a double between 0 and 1 that signifies the current completion percentage of the currently
-		/// running operation.<br /><br /> the five STATUS constants defined in this interface or a double
+		/// running operation.<br /><br /> the five
+		/// <see cref="Db4objects.Db4o.Ext.Status">Db4objects.Db4o.Ext.Status</see>
+		/// constants defined in this interface or a double
 		/// between 0 and 1 that signifies the completion of the currently running operation.<br /><br />
 		/// </remarks>
 		/// <returns>status - the current status</returns>
-		/// <seealso cref="Db4objects.Db4o.Ext.Status">STATUS constants</seealso>
+		/// <seealso cref="Db4objects.Db4o.Ext.Status">constants</seealso>
 		double GetStatus();
 
 		/// <summary>reads a file into the db4o system and stores it as a blob.</summary>

@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private int Frequency(Config4Impl config)
 		{
-			return Math.Min(config.TimeoutClientSocket(), config.TimeoutServerSocket()) / 2;
+			return Math.Min(config.TimeoutClientSocket(), config.TimeoutServerSocket()) / 4;
 		}
 
 		public virtual void Run()

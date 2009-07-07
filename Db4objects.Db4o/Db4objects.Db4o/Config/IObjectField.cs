@@ -5,18 +5,11 @@ namespace Db4objects.Db4o.Config
 	/// <summary>configuration interface for fields of classes.</summary>
 	/// <remarks>
 	/// configuration interface for fields of classes.
-	/// <br/><br/>
-	/// Use the global Configuration object to configure db4o before opening an
-	/// <see cref="IObjectContainer">IObjectContainer</see>
-	/// .<br/><br/>
-	/// <b>Example:</b><br/>
-	/// <code>
-	/// IConfiguration config = Db4oFactory.Configure();<br/>
-	/// IObjectClass oc = config.ObjectClass("Namespace.ClassName");<br/>
-	/// IObjectField of = oc.ObjectField("fieldName");
-	/// of.Rename("newFieldName");
-	/// of.QueryEvaluation(false);
-	/// 
+	/// <br /><br />
+	/// Use
+	/// <see cref="Db4objects.Db4o.Config.IObjectClass.ObjectField">Db4objects.Db4o.Config.IObjectClass.ObjectField
+	/// 	</see>
+	/// to access this setting.<br /><br />
 	/// </code>
 	/// </remarks>
 	public interface IObjectField
@@ -58,7 +51,7 @@ namespace Db4objects.Db4o.Config
 		/// <b>Caution !</b><br />
 		/// This setting will also trigger deletion of the old member object, on
 		/// calls to
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set"></see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store"></see>
 		/// .
 		/// An example of the behaviour can be found in
 		/// <see cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnDelete">Db4objects.Db4o.Config.IObjectClass.CascadeOnDelete
@@ -84,7 +77,7 @@ namespace Db4objects.Db4o.Config
 		/// Setting cascadeOnUpdate to true will result in the update
 		/// of the object attribute stored in this field if the parent object
 		/// is passed to
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set">Db4objects.Db4o.IObjectContainer.Set
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
 		/// 	</see>
 		/// .
 		/// <br /><br />

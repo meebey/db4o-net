@@ -11,11 +11,11 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 	{
 		public const int Version = 5;
 
-		public virtual void Convert(LocalObjectContainer yapFile, int classIndexId, BTree
+		public virtual void Convert(LocalObjectContainer container, int classIndexId, BTree
 			 bTree)
 		{
-			Transaction trans = yapFile.SystemTransaction();
-			ByteArrayBuffer reader = yapFile.ReadReaderByID(trans, classIndexId);
+			Transaction trans = container.SystemTransaction();
+			ByteArrayBuffer reader = container.ReadReaderByID(trans, classIndexId);
 			if (reader == null)
 			{
 				return;

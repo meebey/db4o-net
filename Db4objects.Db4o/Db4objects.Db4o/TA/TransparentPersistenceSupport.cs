@@ -13,11 +13,11 @@ namespace Db4objects.Db4o.TA
 	/// <remarks>
 	/// Enables Transparent Persistence and Transparent Activation behaviours for
 	/// the current session.
-	/// <br /><br />
-	/// configuration.add(new TransparentPersistenceSupport());
+	/// <br/><br/>
+	/// commonConfiguration.Add(new TransparentPersistenceSupport());
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.TA.TransparentActivationSupport">Db4objects.Db4o.TA.TransparentActivationSupport
-	/// 	</seealso>
+	/// </seealso>
 	public class TransparentPersistenceSupport : TransparentActivationSupport
 	{
 		private readonly IRollbackStrategy _rollbackStrategy;

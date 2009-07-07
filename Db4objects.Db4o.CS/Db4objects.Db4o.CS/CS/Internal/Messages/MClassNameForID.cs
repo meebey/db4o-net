@@ -14,10 +14,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			string name = string.Empty;
 			lock (StreamLock())
 			{
-				ClassMetadata yapClass = Stream().ClassMetadataForID(id);
-				if (yapClass != null)
+				ClassMetadata classMetadata = Stream().ClassMetadataForID(id);
+				if (classMetadata != null)
 				{
-					name = yapClass.GetName();
+					name = classMetadata.GetName();
 				}
 			}
 			Write(Msg.ClassNameForId.GetWriterForString(Transaction(), name));

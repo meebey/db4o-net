@@ -22,9 +22,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public int i_objectID;
 
 		[System.NonSerialized]
-		internal ClassMetadata i_yapClass;
+		internal ClassMetadata i_classMetadata;
 
-		public int i_yapClassID;
+		public int i_classMetadataID;
 
 		public QField i_field;
 
@@ -67,28 +67,29 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				//It seems that we need not result the following field
 				//i_object = null;
 				//i_comparator = Null.INSTANCE;
-				//i_yapClass = null;
+				//i_classMetadata = null;
 				// FIXME: Setting the YapClass to null will prevent index use
 				// If the field is typed we can guess the right one with the
 				// following line. However this does break some SODA test cases.
 				// Revisit!
 				//            if(i_field != null){
-				//                i_yapClass = i_field.getYapClass();
+				//                i_classMetadata = i_field.getYapClass();
 				//            }
-				i_yapClass = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
+				i_classMetadata = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
 					(a_object));
-				if (i_yapClass != null)
+				if (i_classMetadata != null)
 				{
-					i_object = i_yapClass.GetComparableObject(a_object);
+					i_object = i_classMetadata.GetComparableObject(a_object);
 					if (a_object != i_object)
 					{
-						i_attributeProvider = i_yapClass.Config().QueryAttributeProvider();
-						i_yapClass = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
+						i_attributeProvider = i_classMetadata.Config().QueryAttributeProvider();
+						i_classMetadata = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
 							(i_object));
 					}
-					if (i_yapClass != null)
+					if (i_classMetadata != null)
 					{
-						i_yapClass.CollectConstraints(a_trans, this, i_object, new _IVisitor4_83(this));
+						i_classMetadata.CollectConstraints(a_trans, this, i_object, new _IVisitor4_83(this
+							));
 					}
 					else
 					{
@@ -119,8 +120,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override bool CanBeIndexLeaf()
 		{
-			return i_object == null || ((i_yapClass != null && i_yapClass.IsValueType()) || Evaluator
-				().Identity());
+			return i_object == null || ((i_classMetadata != null && i_classMetadata.IsValueType
+				()) || Evaluator().Identity());
 		}
 
 		public override bool CanLoadByIndex()
@@ -129,11 +130,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			if (i_field.i_yapField == null)
+			if (i_field._fieldMetadata == null)
 			{
 				return false;
 			}
-			if (!i_field.i_yapField.HasIndex())
+			if (!i_field._fieldMetadata.HasIndex())
 			{
 				return false;
 			}
@@ -141,7 +142,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			return i_field.i_yapField.CanLoadByIndex();
+			return i_field._fieldMetadata.CanLoadByIndex();
 		}
 
 		internal override bool Evaluate(QCandidate a_candidate)
@@ -189,17 +190,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				DTrace.EvaluateSelf.Log(i_id);
 			}
-			if (i_yapClass != null)
+			if (i_classMetadata != null)
 			{
-				if (!(i_yapClass is PrimitiveTypeMetadata))
+				if (!(i_classMetadata is PrimitiveTypeMetadata))
 				{
 					if (!i_evaluator.Identity())
 					{
 						i_selfComparison = true;
 					}
-					object transactionalObject = i_yapClass.WrapWithTransactionContext(Transaction(), 
-						i_object);
-					_preparedComparison = i_yapClass.PrepareComparison(Context(), transactionalObject
+					object transactionalObject = i_classMetadata.WrapWithTransactionContext(Transaction
+						(), i_object);
+					_preparedComparison = i_classMetadata.PrepareComparison(Context(), transactionalObject
 						);
 				}
 			}
@@ -244,7 +245,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal override ClassMetadata GetYapClass()
 		{
-			return i_yapClass;
+			return i_classMetadata;
 		}
 
 		public override QField GetField()
@@ -308,9 +309,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			base.Marshall();
 			GetObjectID();
-			if (i_yapClass != null)
+			if (i_classMetadata != null)
 			{
-				i_yapClassID = i_yapClass.GetID();
+				i_classMetadataID = i_classMetadata.GetID();
 			}
 		}
 
@@ -390,9 +391,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					_preparedComparison = Null.Instance;
 				}
-				if (i_yapClassID != 0)
+				if (i_classMetadataID != 0)
 				{
-					i_yapClass = trans.Container().ClassMetadataForID(i_yapClassID);
+					i_classMetadata = trans.Container().ClassMetadataForID(i_classMetadataID);
 				}
 				if (i_field != null)
 				{
@@ -419,7 +420,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				ClassMetadata yc = qc.ReadYapClass();
 				if (yc != null)
 				{
-					res = i_evaluator.Not(i_yapClass.GetHigherHierarchy(yc) == i_yapClass);
+					res = i_evaluator.Not(i_classMetadata.GetHigherHierarchy(yc) == i_classMetadata);
 					processed = true;
 				}
 			}
@@ -520,7 +521,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
-				i_yapClass = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
+				i_classMetadata = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
 					(i_object));
 				Identity();
 			}
@@ -528,7 +529,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual bool EvaluationModeAlreadySet()
 		{
-			return i_yapClass != null;
+			return i_classMetadata != null;
 		}
 
 		public override IConstraint Like()

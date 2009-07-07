@@ -13,13 +13,13 @@ namespace Db4objects.Db4o.Defragment
 	{
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
-		void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata yapClass, int
-			 id);
+		void ProcessObjectSlot(DefragmentServicesImpl context, ClassMetadata classMetadata
+			, int id);
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
-		void ProcessClass(DefragmentServicesImpl context, ClassMetadata yapClass, int id, 
-			int classIndexID);
+		void ProcessClass(DefragmentServicesImpl context, ClassMetadata classMetadata, int
+			 id, int classIndexID);
 
 		/// <exception cref="Db4objects.Db4o.CorruptionException"></exception>
 		/// <exception cref="System.IO.IOException"></exception>

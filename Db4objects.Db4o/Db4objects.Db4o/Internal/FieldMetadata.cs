@@ -946,13 +946,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual Db4objects.Db4o.Internal.Query.Processor.QField QField(Transaction
 			 a_trans)
 		{
-			int yapClassID = 0;
+			int classMetadataID = 0;
 			if (_containingClass != null)
 			{
-				yapClassID = _containingClass.GetID();
+				classMetadataID = _containingClass.GetID();
 			}
 			return new Db4objects.Db4o.Internal.Query.Processor.QField(a_trans, _name, this, 
-				yapClassID, _handle);
+				classMetadataID, _handle);
 		}
 
 		public virtual object Read(IInternalReadContext context)
@@ -1192,13 +1192,13 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public virtual bool RebuildIndexForClass(LocalObjectContainer stream, ClassMetadata
-			 yapClass)
+			 classMetadata)
 		{
 			// FIXME: BTree traversal over index here.
-			long[] ids = yapClass.GetIDs();
+			long[] ids = classMetadata.GetIDs();
 			for (int i = 0; i < ids.Length; i++)
 			{
-				RebuildIndexForObject(stream, yapClass, (int)ids[i]);
+				RebuildIndexForObject(stream, classMetadata, (int)ids[i]);
 			}
 			return ids.Length > 0;
 		}

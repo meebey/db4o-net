@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 	{
 		private BTree _btreeIndex;
 
-		public BTreeClassIndexStrategy(ClassMetadata yapClass) : base(yapClass)
+		public BTreeClassIndexStrategy(ClassMetadata classMetadata) : base(classMetadata)
 		{
 		}
 

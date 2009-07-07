@@ -5,7 +5,7 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class KeySpecHashtable4
+	public class KeySpecHashtable4 : IDeepClone
 	{
 		private SynchronizedHashtable4 _delegate;
 

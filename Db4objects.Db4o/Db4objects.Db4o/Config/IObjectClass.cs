@@ -7,16 +7,12 @@ namespace Db4objects.Db4o.Config
 	/// <summary>configuration interface for classes.</summary>
 	/// <remarks>
 	/// configuration interface for classes.
-	/// <br/><br/>
-	/// Use the global Configuration object to configure db4o before opening an
-	/// <see cref="IObjectContainer">IObjectContainer</see>
-	/// .<br/><br/>
-	/// <b>Example:</b><br/>
-	/// <code>
-	/// IConfiguration config = Db4oFactory.Configure();<br/>
-	/// IObjectClass oc = config.ObjectClass("Namespace.ClassName");<br/>
-	/// oc.UpdateDepth(3);<br/>
-	/// oc.MinimumActivationDepth(3);<br/>
+	/// <br /><br />
+	/// Use the global
+	/// <see cref="Db4objects.Db4o.Config.ICommonConfiguration.ObjectClass">Db4objects.Db4o.Config.ICommonConfiguration.ObjectClass
+	/// 	</see>
+	/// to configure
+	/// object class settings.
 	/// </code>
 	/// </remarks>
 	public interface IObjectClass
@@ -28,28 +24,24 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// advises db4o to try instantiating objects of this class with/without
 		/// calling constructors.
-		/// <br /><br />
-		/// Not all JDKs / .NET-environments support this feature. db4o will
+		/// <br/><br/>
+		/// Not all .NET-environments support this feature. db4o will
 		/// attempt, to follow the setting as good as the enviroment supports.
-		/// In doing so, it may call implementation-specific features like
-		/// sun.reflect.ReflectionFactory#newConstructorForSerialization on the
-		/// Sun Java 1.4.x/5 VM (not available on other VMs) and
-		/// FormatterServices.GetUninitializedObject() on
-		/// the .NET framework (not available on CompactFramework).<br /><br />
+		/// <br/><br/>
 		/// This setting may also be set globally for all classes in
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration.CallConstructors">Db4objects.Db4o.Config.IConfiguration.CallConstructors
-		/// 	</see>
-		/// .<br /><br />
+		/// </see>
+		/// .<br/><br/>
 		/// In client-server environment this setting should be used on both
-		/// client and server. <br /><br />
-		/// This setting can be applied to an open object container. <br /><br />
+		/// client and server. <br/><br/>
+		/// This setting can be applied to an open object container. <br/><br/>
 		/// </remarks>
 		/// <param name="flag">
 		/// - specify true, to request calling constructors, specify
 		/// false to request <b>not</b> calling constructors.
 		/// </param>
 		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.CallConstructors">Db4objects.Db4o.Config.IConfiguration.CallConstructors
-		/// 	</seealso>
+		/// </seealso>
 		void CallConstructor(bool flag);
 
 		/// <summary>sets cascaded activation behaviour.</summary>
@@ -77,43 +69,43 @@ namespace Db4objects.Db4o.Config
 		/// <summary>sets cascaded delete behaviour.</summary>
 		/// <remarks>
 		/// sets cascaded delete behaviour.
-		/// <br /><br />
-		/// Setting cascadeOnDelete to true will result in the deletion of
+		/// <br/><br/>
+		/// Setting CascadeOnDelete to true will result in the deletion of
 		/// all member objects of instances of this class, if they are
 		/// passed to
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Delete">Db4objects.Db4o.IObjectContainer.Delete
-		/// 	</see>
+		/// </see>
 		/// .
-		/// <br /><br />
-		/// <b>Caution !</b><br />
+		/// <br/><br/>
+		/// <b>Caution !</b><br/>
 		/// This setting will also trigger deletion of old member objects, on
 		/// calls to
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
-		/// 	</see>
-		/// .<br /><br />
-		/// An example of the behaviour:<br />
+		/// </see>
+		/// .<br/><br/>
+		/// An example of the behaviour:<br/>
 		/// <code>
-		/// ObjectContainer con;<br />
-		/// Bar bar1 = new Bar();<br />
-		/// Bar bar2 = new Bar();<br />
-		/// foo.bar = bar1;<br />
-		/// con.set(foo);  // bar1 is stored as a member of foo<br />
-		/// foo.bar = bar2;<br />
-		/// con.set(foo);  // bar2 is stored as a member of foo
-		/// </code><br />The last statement will <b>also</b> delete bar1 from the
+		/// ObjectContainer con;<br/>
+		/// Bar bar1 = new Bar();<br/>
+		/// Bar bar2 = new Bar();<br/>
+		/// foo.bar = bar1;<br/>
+		/// con.Store(foo);  // bar1 is stored as a member of foo<br/>
+		/// foo.bar = bar2;<br/>
+		/// con.Store(foo);  // bar2 is stored as a member of foo
+		/// </code><br/>The last statement will <b>also</b> delete bar1 from the
 		/// ObjectContainer, no matter how many other stored objects hold references
 		/// to bar1.
-		/// <br /><br />
-		/// The default setting is <b>false</b>.<br /><br />
+		/// <br/><br/>
+		/// The default setting is <b>false</b>.<br/><br/>
 		/// In client-server environment this setting should be used on both
-		/// client and server. <br /><br />
-		/// This setting can be applied to an open object container. <br /><br />
+		/// client and server. <br/><br/>
+		/// This setting can be applied to an open object container. <br/><br/>
 		/// </remarks>
 		/// <param name="flag">whether deletes are to be cascaded to member objects.</param>
 		/// <seealso cref="Db4objects.Db4o.Config.IObjectField.CascadeOnDelete">Db4objects.Db4o.Config.IObjectField.CascadeOnDelete
-		/// 	</seealso>
+		/// </seealso>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Delete">Db4objects.Db4o.IObjectContainer.Delete
-		/// 	</seealso>
+		/// </seealso>
 		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		void CascadeOnDelete(bool flag);
 
@@ -127,7 +119,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
 		/// 	</see>
 		/// .<br /><br />
-		/// The default setting is <b>false</b>.<br /><br />
+		/// The default setting is <b>false</b>. Setting it to true
+		/// may result in serious performance degradation.<br /><br />
 		/// In client-server environment this setting should be used on both
 		/// client and server. <br /><br />
 		/// This setting can be applied to an open object container. <br /><br />
@@ -262,29 +255,28 @@ namespace Db4objects.Db4o.Config
 		/// <summary>turns on storing static field values for this class.</summary>
 		/// <remarks>
 		/// turns on storing static field values for this class.
-		/// <br /><br />By default, static field values of classes are not stored
+		/// <br/><br/>By default, static field values of classes are not stored
 		/// to the database file. By turning the setting on for a specific class
 		/// with this switch, all <b>non-simple-typed</b> static field values of this
 		/// class are stored the first time an object of the class is stored, and
 		/// restored, every time a database file is opened afterwards, <b>after
 		/// class meta information is loaded for this class</b> (which can happen
-		/// by querying for a class or by loading an instance of a class).<br /><br />
+		/// by querying for a class or by loading an instance of a class).<br/><br/>
 		/// To update a static field value, once it is stored, you have to the following
-		/// in this order:<br />
-		/// (1) open the database file you are working agains<br />
-		/// (2) make sure the class metadata is loaded<br />
-		/// <code>objectContainer.query().constrain(Foo.class); // Java</code><br />
-		/// <code>objectContainer.Query().Constrain(typeof(Foo)); // C#</code><br />
-		/// (3) change the static member<br />
-		/// (4) store the static member explicitely<br />
-		/// <code>objectContainer.set(Foo.staticMember); // C#</code>
-		/// <br /><br />The setting will be ignored for simple types.
-		/// <br /><br />Use this setting for constant static object members.
-		/// <br /><br />This option will slow down the process of opening database
+		/// in this order:<br/>
+		/// (1) open the database file you are working agains<br/>
+		/// (2) make sure the class metadata is loaded<br/>
+		/// <code>objectContainer.Query().Constrain(typeof(Foo)); </code><br/>
+		/// (3) change the static member<br/>
+		/// (4) store the static member explicitely<br/>
+		/// <code>objectContainer.Store(Foo.staticMember); </code>
+		/// <br/><br/>The setting will be ignored for simple types.
+		/// <br/><br/>Use this setting for constant static object members.
+		/// <br/><br/>This option will slow down the process of opening database
 		/// files and the stored objects will occupy space in the database file.
-		/// <br /><br />In client-server environment this setting should be used on both
-		/// client and server. <br /><br />
-		/// This setting can NOT be applied to an open object container. <br /><br />
+		/// <br/><br/>In client-server environment this setting should be used on both
+		/// client and server. <br/><br/>
+		/// This setting can NOT be applied to an open object container. <br/><br/>
 		/// </remarks>
 		void PersistStaticFieldValues();
 

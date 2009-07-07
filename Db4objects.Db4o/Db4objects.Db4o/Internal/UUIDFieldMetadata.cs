@@ -129,10 +129,10 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
 		protected override void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
-			 yapClass, int objectId)
+			 classMetadata, int objectId)
 		{
 			UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID(
-				stream, yapClass, ((LocalTransaction)stream.SystemTransaction()).GetCurrentSlotOfID
+				stream, classMetadata, ((LocalTransaction)stream.SystemTransaction()).GetCurrentSlotOfID
 				(objectId), true);
 			if (null == data)
 			{

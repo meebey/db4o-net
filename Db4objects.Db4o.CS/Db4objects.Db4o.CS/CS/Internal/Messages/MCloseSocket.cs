@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					return true;
 				}
 				Transaction().Commit();
-				LogMsg(35, ServerMessageDispatcher().Name());
+				LogMsg(35, ServerMessageDispatcher().Name);
 				ServerMessageDispatcher().CloseConnection();
 			}
 			return true;

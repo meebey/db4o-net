@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 	{
 		public static void Main(string[] args)
 		{
-			new TransparentPersistenceTestCase().RunClientServer();
+			new TransparentPersistenceTestCase().RunAll();
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -66,6 +66,17 @@ namespace Db4objects.Db4o.Tests.Common.TP
 			{
 				client2.Close();
 			}
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		public virtual void TestObjectGoneAfterUpdateAndDeletion()
+		{
+			Item foo = ItemByName("Foo");
+			foo.SetName("Foo*");
+			Db().Delete(foo);
+			Reopen();
+			Assert.IsNull(ItemByName("Foo"));
+			Assert.IsNull(ItemByName("Foo*"));
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -120,14 +131,14 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		{
 			Collection4 updated = new Collection4();
 			EventRegistryFor(container).Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_107(updated).OnEvent);
+				(new _IEventListener4_117(updated).OnEvent);
 			container.Commit();
 			return updated;
 		}
 
-		private sealed class _IEventListener4_107
+		private sealed class _IEventListener4_117
 		{
-			public _IEventListener4_107(Collection4 updated)
+			public _IEventListener4_117(Collection4 updated)
 			{
 				this.updated = updated;
 			}

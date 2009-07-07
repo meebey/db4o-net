@@ -267,24 +267,25 @@ namespace Db4objects.Db4o.Defragment
 
 		private Hashtable4 _classIndices = new Hashtable4(16);
 
-		public virtual int ClassIndexID(ClassMetadata yapClass)
+		public virtual int ClassIndexID(ClassMetadata classMetadata)
 		{
-			return ClassIndex(yapClass).Id();
+			return ClassIndex(classMetadata).Id();
 		}
 
-		public virtual void TraverseAll(ClassMetadata yapClass, IVisitor4 command)
+		public virtual void TraverseAll(ClassMetadata classMetadata, IVisitor4 command)
 		{
-			if (!yapClass.HasClassIndex())
+			if (!classMetadata.HasClassIndex())
 			{
 				return;
 			}
-			yapClass.Index().TraverseAll(Sourcedb.Transaction(this), command);
+			classMetadata.Index().TraverseAll(Sourcedb.Transaction(this), command);
 		}
 
-		public virtual void TraverseAllIndexSlots(ClassMetadata yapClass, IVisitor4 command
-			)
+		public virtual void TraverseAllIndexSlots(ClassMetadata classMetadata, IVisitor4 
+			command)
 		{
-			IEnumerator slotIDIter = yapClass.Index().AllSlotIDs(Sourcedb.Transaction(this));
+			IEnumerator slotIDIter = classMetadata.Index().AllSlotIDs(Sourcedb.Transaction(this
+				));
 			while (slotIDIter.MoveNext())
 			{
 				command.Visit(slotIDIter.Current);
@@ -337,13 +338,14 @@ namespace Db4objects.Db4o.Defragment
 			return identity.GetID(selector.Transaction(this));
 		}
 
-		private IClassIndexStrategy ClassIndex(ClassMetadata yapClass)
+		private IClassIndexStrategy ClassIndex(ClassMetadata classMetadata)
 		{
-			IClassIndexStrategy classIndex = (IClassIndexStrategy)_classIndices.Get(yapClass);
+			IClassIndexStrategy classIndex = (IClassIndexStrategy)_classIndices.Get(classMetadata
+				);
 			if (classIndex == null)
 			{
-				classIndex = new BTreeClassIndexStrategy(yapClass);
-				_classIndices.Put(yapClass, classIndex);
+				classIndex = new BTreeClassIndexStrategy(classMetadata);
+				_classIndices.Put(classMetadata, classIndex);
 				classIndex.Initialize(_targetDb);
 			}
 			return classIndex;

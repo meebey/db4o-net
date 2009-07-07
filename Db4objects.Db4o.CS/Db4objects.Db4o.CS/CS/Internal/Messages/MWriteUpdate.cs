@@ -11,14 +11,14 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public bool ProcessAtServer()
 		{
-			int yapClassId = _payLoad.ReadInt();
+			int classMetadataID = _payLoad.ReadInt();
 			int arrayTypeValue = _payLoad.ReadInt();
 			ArrayType arrayType = ArrayType.ForValue(arrayTypeValue);
 			LocalObjectContainer stream = (LocalObjectContainer)Stream();
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				ClassMetadata classMetadata = stream.ClassMetadataForID(yapClassId);
+				ClassMetadata classMetadata = stream.ClassMetadataForID(classMetadataID);
 				int id = _payLoad.GetID();
 				Transaction().WriteUpdateAdjustIndexes(id, classMetadata, arrayType, 0);
 				Transaction().DontDelete(id);

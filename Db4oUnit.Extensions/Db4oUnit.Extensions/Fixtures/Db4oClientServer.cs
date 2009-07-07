@@ -13,7 +13,7 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oClientServer : AbstractDb4oFixture, IDb4oClientServerFixture
 	{
-		protected static readonly string File = "Db4oClientServer.yap";
+		protected static readonly string File = "Db4oClientServer.db4o";
 
 		public static readonly string Host = "127.0.0.1";
 

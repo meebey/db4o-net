@@ -6,13 +6,11 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Marshall
 {
 	/// <summary>
-	/// this interface is passed to internal class com.db4o.internal.TypeHandler4 during marshalling
+	/// this interface is passed to internal class
+	/// <see cref="com.db4o.internal.TypeHandler4">com.db4o.internal.TypeHandler4</see>
+	/// during marshalling
 	/// and provides methods to marshal objects.
 	/// </summary>
-	/// <remarks>
-	/// this interface is passed to internal class com.db4o.internal.TypeHandler4 during marshalling
-	/// and provides methods to marshal objects.
-	/// </remarks>
 	public interface IWriteContext : IContext, IWriteBuffer
 	{
 		/// <summary>
@@ -34,13 +32,10 @@ namespace Db4objects.Db4o.Marshall
 		void WriteObject(object obj);
 
 		/// <summary>
-		/// writes sub-objects, in cases where the TypeHandler4
+		/// writes sub-objects, in cases where the
+		/// <see cref="com.db4o.internal.TypeHandler4">com.db4o.internal.TypeHandler4</see>
 		/// is known.
 		/// </summary>
-		/// <remarks>
-		/// writes sub-objects, in cases where the TypeHandler4
-		/// is known.
-		/// </remarks>
 		/// <param name="obj">the object to write</param>
 		void WriteObject(ITypeHandler4 handler, object obj);
 

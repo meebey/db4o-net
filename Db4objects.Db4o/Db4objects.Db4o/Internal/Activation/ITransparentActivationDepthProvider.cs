@@ -13,5 +13,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			 withRollbackStrategy);
 
 		void AddModified(object @object, Transaction inTransaction);
+
+		void RemoveModified(object @object, Transaction inTransaction);
 	}
 }

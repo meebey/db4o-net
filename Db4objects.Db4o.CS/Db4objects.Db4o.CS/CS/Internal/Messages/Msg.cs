@@ -10,7 +10,7 @@ using Db4objects.Db4o.Internal;
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	/// <summary>Messages for Client/Server Communication</summary>
-	public abstract class Msg : System.ICloneable
+	public abstract class Msg : System.ICloneable, IMessage
 	{
 		internal static int _messageIdGenerator = 1;
 

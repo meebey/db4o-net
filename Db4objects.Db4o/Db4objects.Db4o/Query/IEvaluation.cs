@@ -26,10 +26,15 @@ namespace Db4objects.Db4o.Query
 	/// <br /><br />Java client/server only:<br />
 	/// db4o first attempts to use Java Serialization to allow to pass final
 	/// variables to the server. Please make sure that all variables that are
-	/// used within the evaluate() method are Serializable. This may include
+	/// used within the
+	/// <see cref="Db4objects.Db4o.Query.IEvaluation.Evaluate">Db4objects.Db4o.Query.IEvaluation.Evaluate
+	/// 	</see>
+	/// method are Serializable. This may include
 	/// the class an anonymous Evaluation object is created in. If db4o is
 	/// not successful at using Serialization, the Evaluation is transported
-	/// to the server in a db4o MemoryFile. In this case final variables can
+	/// to the server in a db4o
+	/// <see cref="Db4objects.Db4o.IO.MemoryBin">Db4objects.Db4o.IO.MemoryBin</see>
+	/// . In this case final variables can
 	/// not be restored.
 	/// </remarks>
 	public interface IEvaluation

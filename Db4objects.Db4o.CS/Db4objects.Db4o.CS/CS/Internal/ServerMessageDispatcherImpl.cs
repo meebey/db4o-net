@@ -236,7 +236,7 @@ namespace Db4objects.Db4o.CS.Internal
 			message.WriteException((Exception)exc);
 		}
 
-		private void TriggerMessageReceived(Msg message)
+		private void TriggerMessageReceived(IMessage message)
 		{
 			ServerPlatform.TriggerMessageEvent(_messageReceived, message);
 		}
@@ -317,9 +317,12 @@ namespace Db4objects.Db4o.CS.Internal
 			return _socket;
 		}
 
-		public string Name()
+		public string Name
 		{
-			return _clientName;
+			get
+			{
+				return _clientName;
+			}
 		}
 
 		public void SetDispatcherName(string name)

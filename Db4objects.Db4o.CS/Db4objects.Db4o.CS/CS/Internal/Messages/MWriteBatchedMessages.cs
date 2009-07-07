@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				for (int i = 0; i < count; i++)
 				{
-					StatefulBuffer writer = _payLoad.ReadYapBytes();
+					StatefulBuffer writer = _payLoad.ReadStatefulBuffer();
 					int messageId = writer.ReadInt();
 					Msg message = Msg.GetMessage(messageId);
 					Msg clonedMessage = message.PublicClone();

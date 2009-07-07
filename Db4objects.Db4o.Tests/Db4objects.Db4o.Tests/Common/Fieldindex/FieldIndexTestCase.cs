@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		public virtual void TestTraverseValues()
 		{
-			IStoredField field = YapField();
+			IStoredField field = StoredField();
 			ExpectingVisitor expectingVisitor = new ExpectingVisitor(IntArrays4.ToObjectArray
 				(Foos));
 			field.TraverseValues(expectingVisitor);
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestAccessingBTree()
 		{
-			BTree bTree = YapField().GetIndex(Trans());
+			BTree bTree = StoredField().GetIndex(Trans());
 			Assert.IsNotNull(bTree);
 			ExpectKeysSearch(bTree, Foos);
 		}
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 			return start.CreateIncludingRange(end);
 		}
 
-		private FieldMetadata YapField()
+		private FieldMetadata StoredField()
 		{
 			return ClassMetadataFor(typeof(FieldIndexItem)).FieldMetadataForName("foo");
 		}

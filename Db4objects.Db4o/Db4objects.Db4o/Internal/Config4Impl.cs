@@ -149,7 +149,21 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchDepthKey = new KeySpec(0);
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new Hashtable4(16));
+		private sealed class _IDeferred_133 : KeySpec.IDeferred
+		{
+			public _IDeferred_133()
+			{
+			}
+
+			// for playing with different strategies of prefetching
+			// object
+			public object Evaluate()
+			{
+				return new Hashtable4(16);
+			}
+		}
+
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_133());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -199,8 +213,6 @@ namespace Db4objects.Db4o.Internal
 
 		private Collection4 _registeredTypeHandlers;
 
-		// for playing with different strategies of prefetching
-		// object
 		//  is null in the global configuration until deepClone is called
 		// The following are very frequently being asked for, so they show up in the profiler. 
 		// Let's keep them out of the Hashtable.
@@ -1006,7 +1018,7 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(PrefetchObjectCountKey);
 		}
 
-		internal Hashtable4 ReadAs()
+		public Hashtable4 ReadAs()
 		{
 			return (Hashtable4)_config.Get(ReadAsKey);
 		}

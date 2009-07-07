@@ -1,86 +1,24 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System.Text;
-using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Marshall;
-using Db4objects.Db4o.Reflect;
-using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
 {
-	public sealed class StringBufferHandler : IValueTypeHandler, IBuiltinTypeHandler, 
-		IVariableLengthTypeHandler, IQueryableTypeHandler
+	public sealed class StringBufferHandler : StringBasedValueTypeHandlerBase
 	{
-		private IReflectClass _classReflector;
-
-		public void Defragment(IDefragmentContext context)
+		public StringBufferHandler() : base(typeof(StringBuilder))
 		{
-			StringHandler(context).Defragment(context);
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public void Delete(IDeleteContext context)
+		protected override object ConvertString(string str)
 		{
-			StringHandler(context).Delete(context);
+			return new StringBuilder(str);
 		}
 
-		public object Read(IReadContext context)
+		protected override string ConvertObject(object obj)
 		{
-			object read = StringHandler(context).Read(context);
-			if (null == read)
-			{
-				return null;
-			}
-			return new StringBuilder((string)read);
-		}
-
-		public void Write(IWriteContext context, object obj)
-		{
-			StringHandler(context).Write(context, obj.ToString());
-		}
-
-		private Db4objects.Db4o.Internal.Handlers.StringHandler StringHandler(IContext context
-			)
-		{
-			return Handlers(context)._stringHandler;
-		}
-
-		private HandlerRegistry Handlers(IContext context)
-		{
-			return ((IInternalObjectContainer)context.ObjectContainer()).Handlers();
-		}
-
-		public IPreparedComparison PrepareComparison(IContext context, object obj)
-		{
-			return StringHandler(context).PrepareComparison(context, obj);
-		}
-
-		public IReflectClass ClassReflector()
-		{
-			return _classReflector;
-		}
-
-		public void RegisterReflector(IReflector reflector)
-		{
-			_classReflector = reflector.ForClass(typeof(StringBuilder));
-		}
-
-		public bool IsSimple()
-		{
-			return true;
-		}
-
-		public bool DescendsIntoMembers()
-		{
-			return false;
-		}
-
-		public bool CanHold(IReflectClass type)
-		{
-			return type.Equals(ClassReflector());
+			return ((StringBuilder)obj).ToString();
 		}
 	}
 }

@@ -185,15 +185,15 @@ namespace Db4objects.Db4o.Internal.Slots
 			return change;
 		}
 
-		public virtual void Rollback(LocalObjectContainer yapFile)
+		public virtual void Rollback(LocalObjectContainer container)
 		{
 			if (_shared != null)
 			{
-				yapFile.ReduceFreeOnCommitReferences(_shared);
+				container.ReduceFreeOnCommitReferences(_shared);
 			}
 			if (IsFreeOnRollback())
 			{
-				yapFile.Free(_newSlot);
+				container.Free(_newSlot);
 			}
 			if (IsFreePointerOnRollback())
 			{
@@ -201,7 +201,7 @@ namespace Db4objects.Db4o.Internal.Slots
 				{
 					DTrace.FreePointerOnRollback.LogLength(_key, Const4.PointerLength);
 				}
-				yapFile.Free(_key, Const4.PointerLength);
+				container.Free(_key, Const4.PointerLength);
 			}
 		}
 

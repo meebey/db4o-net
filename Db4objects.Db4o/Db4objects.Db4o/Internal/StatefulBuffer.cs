@@ -108,7 +108,7 @@ namespace Db4objects.Db4o.Internal
 			Container().ReadBytes(_buffer, i_address, _addressOffset, i_length);
 		}
 
-		public Db4objects.Db4o.Internal.StatefulBuffer ReadYapBytes()
+		public Db4objects.Db4o.Internal.StatefulBuffer ReadStatefulBuffer()
 		{
 			int length = ReadInt();
 			if (length == 0)

@@ -4,7 +4,6 @@ using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Query;
@@ -57,11 +56,11 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		private IQueryResult ClassOnlyQuery()
 		{
 			AbstractQueryResult queryResult = NewQueryResult();
-			queryResult.LoadFromClassIndex(YapClass());
+			queryResult.LoadFromClassIndex(ClassMetadata());
 			return queryResult;
 		}
 
-		private ClassMetadata YapClass()
+		private Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
 			return ClassMetadataFor(typeof(QueryResultTestCase.Item));
 		}

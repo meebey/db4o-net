@@ -116,7 +116,8 @@ namespace Db4objects.Db4o
 				GetPointerSlot = new Db4objects.Db4o.DTrace(true, true, "getPointerSlot", true);
 				GetSlot = new Db4objects.Db4o.DTrace(true, true, "getSlot", true);
 				GetFreespaceRam = new Db4objects.Db4o.DTrace(true, true, "getFreespaceRam", true);
-				GetYapobject = new Db4objects.Db4o.DTrace(true, true, "get yapObject", true);
+				GetYapobject = new Db4objects.Db4o.DTrace(true, true, "get ObjectReference", true
+					);
 				IdTreeAdd = new Db4objects.Db4o.DTrace(true, true, "id tree add", true);
 				IdTreeRemove = new Db4objects.Db4o.DTrace(true, true, "id tree remove", true);
 				IoCopy = new Db4objects.Db4o.DTrace(true, true, "io copy", true);

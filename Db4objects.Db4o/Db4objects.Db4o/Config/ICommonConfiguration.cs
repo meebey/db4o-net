@@ -91,46 +91,83 @@ namespace Db4objects.Db4o.Config
 		/// <summary>sets the activation depth to the specified value.</summary>
 		/// <remarks>
 		/// sets the activation depth to the specified value.
-		/// <br /><br /><b>Why activation?</b><br />
+		/// <br/><br/><b>Why activation?</b><br/>
 		/// When objects are instantiated from the database, the instantiation of member
 		/// objects needs to be limited to a certain depth. Otherwise a single object
 		/// could lead to loading the complete database into memory, if all objects where
-		/// reachable from a single root object.<br /><br />
+		/// reachable from a single root object.<br/><br/>
 		/// db4o uses the concept "depth", the number of field-to-field hops an object
 		/// is away from another object. <b>The preconfigured "activation depth" db4o uses
 		/// in the default setting is 5.</b>
-		/// <br /><br />Whenever an application iterates through the
+		/// <br/><br/>Whenever an application iterates through the
 		/// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
 		/// of a query result, the result objects
-		/// will be activated to the configured activation depth.<br /><br />
-		/// A concrete example with the preconfigured activation depth of 5:<br />
+		/// will be activated to the configured activation depth.<br/><br/>
+		/// A concrete example with the preconfigured activation depth of 5:<br/>
 		/// <pre>
 		/// // Object foo is the result of a query, it is delivered by the ObjectSet
-		/// Object foo = objectSet.next();</pre>
-		/// foo.member1.member2.member3.member4.member5 will be a valid object<br />
-		/// foo, member1, member2, member3 and member4 will be activated<br />
-		/// member5 will be deactivated, all of it's members will be null<br />
+		/// object foo = objectSet.Next();</pre>
+		/// foo.member1.member2.member3.member4.member5 will be a valid object<br/>
+		/// foo, member1, member2, member3 and member4 will be activated<br/>
+		/// member5 will be deactivated, all of it's members will be null<br/>
 		/// member5 can be activated at any time by calling
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Activate">ObjectContainer#activate(member5, depth)
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Activate">IObjectContainer.Activate(member5, depth)
+		/// </see>
 		/// .
-		/// <br /><br />
+		/// <br/><br/>
 		/// Note that raising the global activation depth will consume more memory and
 		/// have negative effects on the performance of first-time retrievals. Lowering
 		/// the global activation depth needs more individual activation work but can
-		/// increase performance of queries.<br /><br />
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Deactivate">ObjectContainer#deactivate(Object, depth)
-		/// 	</see>
-		/// can be used to manually free memory by deactivating objects.<br /><br />
+		/// increase performance of queries.<br/><br/>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Deactivate">IObjectContainer.Deactivate(object, depth)
+		/// </see>
+		/// can be used to manually free memory by deactivating objects.<br/><br/>
 		/// In client/server environment the same setting should be used on both
-		/// client and server<br /><br />.
+		/// client and server<br/><br/>.
 		/// </remarks>
-		/// <param name="depth">the desired global activation depth.</param>
 		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">configuring classes individually
-		/// 	</seealso>
+		/// </seealso>
 		/// <summary>gets the configured activation depth.</summary>
-		/// <remarks>gets the configured activation depth.</remarks>
-		/// <returns>the configured activation depth.</returns>
+		/// <summary>sets the activation depth to the specified value.</summary>
+		/// <remarks>
+		/// sets the activation depth to the specified value.
+		/// <br/><br/><b>Why activation?</b><br/>
+		/// When objects are instantiated from the database, the instantiation of member
+		/// objects needs to be limited to a certain depth. Otherwise a single object
+		/// could lead to loading the complete database into memory, if all objects where
+		/// reachable from a single root object.<br/><br/>
+		/// db4o uses the concept "depth", the number of field-to-field hops an object
+		/// is away from another object. <b>The preconfigured "activation depth" db4o uses
+		/// in the default setting is 5.</b>
+		/// <br/><br/>Whenever an application iterates through the
+		/// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
+		/// of a query result, the result objects
+		/// will be activated to the configured activation depth.<br/><br/>
+		/// A concrete example with the preconfigured activation depth of 5:<br/>
+		/// <pre>
+		/// // Object foo is the result of a query, it is delivered by the ObjectSet
+		/// object foo = objectSet.Next();</pre>
+		/// foo.member1.member2.member3.member4.member5 will be a valid object<br/>
+		/// foo, member1, member2, member3 and member4 will be activated<br/>
+		/// member5 will be deactivated, all of it's members will be null<br/>
+		/// member5 can be activated at any time by calling
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Activate">IObjectContainer.Activate(member5, depth)
+		/// </see>
+		/// .
+		/// <br/><br/>
+		/// Note that raising the global activation depth will consume more memory and
+		/// have negative effects on the performance of first-time retrievals. Lowering
+		/// the global activation depth needs more individual activation work but can
+		/// increase performance of queries.<br/><br/>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Deactivate">IObjectContainer.Deactivate(object, depth)
+		/// </see>
+		/// can be used to manually free memory by deactivating objects.<br/><br/>
+		/// In client/server environment the same setting should be used on both
+		/// client and server<br/><br/>.
+		/// </remarks>
+		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">configuring classes individually
+		/// </seealso>
+		/// <summary>gets the configured activation depth.</summary>
 		int ActivationDepth
 		{
 			get;
@@ -175,19 +212,10 @@ namespace Db4objects.Db4o.Config
 		/// <summary>turns automatic shutdown of the engine on and off.</summary>
 		/// <remarks>
 		/// turns automatic shutdown of the engine on and off.
-		/// <br /><br />Depending on the JDK, db4o uses one of the following
-		/// two methods to shut down, if no more references to the ObjectContainer
-		/// are being held or the JVM terminates:<br />
-		/// - JDK 1.3 and above: <code>Runtime.addShutdownHook()</code><br />
-		/// - JDK 1.2 and below: <code>System.runFinalizersOnExit(true)</code> and code
-		/// in the finalizer.<br /><br />
-		/// Some JVMs have severe problems with both methods. For these rare cases the
-		/// autoShutDown feature may be turned off.<br /><br />
-		/// The default and recommended setting is <code>true</code>.<br /><br />
+		/// The default and recommended setting is <code>true</code>.<br/><br/>
 		/// In client-server environment this setting should be used on both client
 		/// and server.
 		/// </remarks>
-		/// <param name="flag">whether db4o should shut down automatically.</param>
 		bool AutomaticShutDown
 		{
 			set;
@@ -235,29 +263,20 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// advises db4o to try instantiating objects with/without calling
 		/// constructors.
-		/// <br /><br />
-		/// Not all JDKs / .NET-environments support this feature. db4o will
+		/// <br/><br/>
+		/// Not all .NET-environments support this feature. db4o will
 		/// attempt, to follow the setting as good as the enviroment supports.
-		/// In doing so, it may call implementation-specific features like
-		/// sun.reflect.ReflectionFactory#newConstructorForSerialization on the
-		/// Sun Java 1.4.x/5 VM (not available on other VMs) and
-		/// FormatterServices.GetUninitializedObject() on
-		/// the .NET framework (not available on CompactFramework).
 		/// This setting may also be overridden for individual classes in
 		/// <see cref="Db4objects.Db4o.Config.IObjectClass.CallConstructor">Db4objects.Db4o.Config.IObjectClass.CallConstructor
-		/// 	</see>
+		/// </see>
 		/// .
-		/// <br /><br />The default setting depends on the features supported by your current environment.<br /><br />
+		/// <br/><br/>The default setting depends on the features supported by your current environment.<br/><br/>
 		/// In client/server environment this setting should be used on both
 		/// client and server.
-		/// <br /><br />
+		/// <br/><br/>
 		/// </remarks>
-		/// <param name="flag">
-		/// - specify true, to request calling constructors, specify
-		/// false to request <b>not</b> calling constructors.
-		/// </param>
 		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CallConstructor">Db4objects.Db4o.Config.IObjectClass.CallConstructor
-		/// 	</seealso>
+		/// </seealso>
 		bool CallConstructors
 		{
 			set;
@@ -288,10 +307,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>returns the configuration interface for diagnostics.</summary>
 		/// <remarks>returns the configuration interface for diagnostics.</remarks>
-		/// <returns>
-		/// the configuration interface for diagnostics.
-		/// TODO: refactor to use provider?
-		/// </returns>
+		/// <returns>the configuration interface for diagnostics.</returns>
 		IDiagnosticConfiguration Diagnostic
 		{
 			get;
@@ -308,13 +324,13 @@ namespace Db4objects.Db4o.Config
 		/// The first constructor that is successfully tested will
 		/// be used throughout the running db4o session. If an instance of the class
 		/// can not be instantiated, the object will not be stored. By default,
-		/// execution will continue without any message or error. This method can
-		/// be used to configure db4o to throw an
+		/// execution will be stopped with an Exception. This method can
+		/// be used to configure db4o to not throw an
 		/// <see cref="Db4objects.Db4o.Ext.ObjectNotStorableException">ObjectNotStorableException
 		/// 	</see>
 		/// if an object can not be stored.
 		/// <br /><br />
-		/// The default for this setting is <b>false</b>.<br /><br />
+		/// The default for this setting is <b>true</b>.<br /><br />
 		/// In client/server environment this setting should be used on both
 		/// client and server.<br /><br />
 		/// </remarks>
@@ -324,18 +340,18 @@ namespace Db4objects.Db4o.Config
 			set;
 		}
 
-		/// <summary>configures db4o to call #intern() on strings upon retrieval.</summary>
+		/// <summary>configures db4o to call Intern() on strings upon retrieval.</summary>
 		/// <remarks>
-		/// configures db4o to call #intern() on strings upon retrieval.
+		/// configures db4o to call Intern on strings upon retrieval if set to true.
 		/// In client/server environment the setting should be used on both
 		/// client and server.
 		/// </remarks>
-		/// <param name="flag">true to intern strings</param>
 		bool InternStrings
 		{
 			set;
 		}
 
+		// TODO: refactor to use provider?
 		/// <summary>allows to mark fields as transient with custom attributes.</summary>
 		/// <remarks>
 		/// allows to mark fields as transient with custom attributes.
@@ -406,25 +422,27 @@ namespace Db4objects.Db4o.Config
 		/// If set to true, db4o will try to optimize native queries
 		/// dynamically at query execution time, otherwise it will
 		/// run native queries in unoptimized mode as SODA evaluations.
-		/// On the Java platform the jars needed for native query
-		/// optimization (db4o-X.x-nqopt.jar, bloat-X.x.jar) have to be
-		/// on the classpath at runtime for this
-		/// switch to have effect.
-		/// <br /><br />The default setting is <code>true</code>.<br /><br />
-		/// In client-server environment this setting should be used on both client and server.<br /><br />
+		/// The following assemblies should be available for native query switch to take effect:
+		/// Db4objects.Db4o.NativeQueries.dll, Db4objects.Db4o.Instrumentation.dll.
+		/// <br/><br/>The default setting is <code>true</code>.<br/><br/>
+		/// In client-server environment this setting should be used on both client and server.<br/><br/>
 		/// </remarks>
-		/// <param name="optimizeNQ">
-		/// true, if db4o should try to optimize
-		/// native queries at query execution time, false otherwise
-		/// </param>
-		/// <summary>indicates whether Native Queries will be optimized dynamically.</summary>
-		/// <remarks>indicates whether Native Queries will be optimized dynamically.</remarks>
-		/// <returns>
-		/// boolean true if Native Queries will be optimized
-		/// dynamically.
-		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries"
-		/// 	>Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries</seealso>
+		/// <seealso cref="Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries">Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries</seealso>
+		/// <summary>
+		/// If set to true, db4o will try to optimize native queries
+		/// dynamically at query execution time, otherwise it will
+		/// run native queries in unoptimized mode as SODA evaluations.
+		/// </summary>
+		/// <remarks>
+		/// If set to true, db4o will try to optimize native queries
+		/// dynamically at query execution time, otherwise it will
+		/// run native queries in unoptimized mode as SODA evaluations.
+		/// The following assemblies should be available for native query switch to take effect:
+		/// Db4objects.Db4o.NativeQueries.dll, Db4objects.Db4o.Instrumentation.dll.
+		/// <br/><br/>The default setting is <code>true</code>.<br/><br/>
+		/// In client-server environment this setting should be used on both client and server.<br/><br/>
+		/// </remarks>
+		/// <seealso cref="Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries">Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries</seealso>
 		bool OptimizeNativeQueries
 		{
 			get;
@@ -480,26 +498,26 @@ namespace Db4objects.Db4o.Config
 		/// <summary>configures the string encoding to be used.</summary>
 		/// <remarks>
 		/// configures the string encoding to be used.
-		/// <br /><br />The string encoding can not be changed in the lifetime of a
+		/// <br/><br/>The string encoding can not be changed in the lifetime of a
 		/// database file. To set up the database with the correct string encoding,
 		/// this configuration needs to be set correctly <b>before</b> a database
 		/// file is created with the first call to
 		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4objects.Db4o.Db4oFactory.OpenFile
-		/// 	</see>
+		/// </see>
 		/// or
 		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4objects.Db4o.Db4oFactory.OpenServer
-		/// 	</see>
+		/// </see>
 		/// .
-		/// <br /><br />For subsequent open calls, db4o remembers built-in
+		/// <br/><br/>For subsequent open calls, db4o remembers built-in
 		/// string encodings. If a custom encoding is used (an encoding that is
 		/// not supplied from within the db4o library), the correct encoding
 		/// needs to be configured correctly again for all subsequent calls
 		/// that open database files.
-		/// <br /><br />Example:<br />
-		/// <code>config.stringEncoding(StringEncodings.utf8()));</code>
+		/// <br/><br/>Example:<br/>
+		/// <code>config.StringEncoding = StringEncodings.Utf8();</code>
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.Encoding.StringEncodings">Db4objects.Db4o.Config.Encoding.StringEncodings
-		/// 	</seealso>
+		/// </seealso>
 		IStringEncoding StringEncoding
 		{
 			set;
@@ -530,11 +548,11 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// specifies the global updateDepth.
 		/// <br /><br />see the documentation of
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set"></see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store"></see>
 		/// for further details.<br /><br />
 		/// The value be may be overridden for individual classes.<br /><br />
 		/// The default setting is 1: Only the object passed to
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set">Db4objects.Db4o.IObjectContainer.Set
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
 		/// 	</see>
 		/// will be updated.<br /><br />
 		/// In client-server environment this setting should be used on both client and
