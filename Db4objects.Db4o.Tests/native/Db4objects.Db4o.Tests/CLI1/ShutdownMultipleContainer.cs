@@ -9,8 +9,8 @@ namespace Db4objects.Db4o.Tests
 #if !CF && !SILVERLIGHT
 	public class ShutdownMultipleContainer : ITestLifeCycle
 	{
-		private static readonly string _firstFile = "first.db4o";
-		private static readonly string _secondFile = "second.db4o";
+		private const string _firstFile = "first.db4o";
+		private const string _secondFile = "second.db4o";
 
 		public class Runner : MarshalByRefObject
 		{
@@ -46,14 +46,22 @@ namespace Db4objects.Db4o.Tests
 
 		void RunTestInAnotherDomain()
 		{
-			AppDomain testDomain = AppDomain.CreateDomain("testDomain");
+			AppDomain testDomain = null;
+			try
+			{
+				testDomain = AppDomain.CreateDomain("testDomain");
 
-			Runner r = (Runner)testDomain.CreateInstanceAndUnwrap(
-				GetType().Assembly.FullName, typeof(Runner).FullName);
+				Runner r = (Runner) testDomain.CreateInstanceAndUnwrap(GetType().Assembly.FullName, typeof (Runner).FullName);
 
-			r.Run(Console.Error);
-
-			AppDomain.Unload(testDomain);
+				r.Run(Console.Error);
+			}
+			finally
+			{
+				if (testDomain != null)
+				{
+					AppDomain.Unload(testDomain);
+				}
+			}
 		}
 
 		public void SetUp()
