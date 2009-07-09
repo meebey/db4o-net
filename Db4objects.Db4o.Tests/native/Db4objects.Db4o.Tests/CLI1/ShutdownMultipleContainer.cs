@@ -46,12 +46,13 @@ namespace Db4objects.Db4o.Tests
 
 		void RunTestInAnotherDomain()
 		{
+			CleanFiles();
+
 			AppDomain testDomain = null;
 			try
 			{
 				testDomain = AppDomain.CreateDomain("testDomain");
-
-				Runner r = (Runner) testDomain.CreateInstanceAndUnwrap(GetType().Assembly.FullName, typeof (Runner).FullName);
+				Runner r = NewRunnerInAppDomain(testDomain);
 
 				r.Run(Console.Error);
 			}
@@ -64,11 +65,21 @@ namespace Db4objects.Db4o.Tests
 			}
 		}
 
+		private Runner NewRunnerInAppDomain(AppDomain testDomain)
+		{
+			return (Runner) testDomain.CreateInstanceAndUnwrap(GetType().Assembly.FullName, typeof (Runner).FullName);
+		}
+
 		public void SetUp()
 		{
 		}
 
 		public void TearDown()
+		{
+			CleanFiles();
+		}
+
+		private static void CleanFiles()
 		{
 			Clean(_firstFile);
 			Clean(_secondFile);
