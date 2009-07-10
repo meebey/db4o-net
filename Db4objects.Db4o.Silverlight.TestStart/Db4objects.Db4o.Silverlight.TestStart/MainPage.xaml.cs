@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			try
 			{
 				Type[] testCases = new[] { typeof(Tests.Common.AllTests) };
-				new TestRunner(SoloSuite(true, testCases)).Run(new SilverlightTestListener(Dispatcher));
+				new TestRunner(SoloSuite(testCases)).Run(new SilverlightTestListener(Dispatcher));
 
 				Complete();
 			}
@@ -41,9 +41,9 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			Dispatcher.BeginInvoke(() => HtmlPage.Window.Eval("appendException(\"" + exception.ToJScriptString() + "\");"));
 		}
 
-		private static Db4oTestSuiteBuilder SoloSuite(bool independentConfig, params Type[] testCases)
+		private static Db4oTestSuiteBuilder SoloSuite(params Type[] testCases)
 		{
-			return new Db4oTestSuiteBuilder(Db4oFixtures.NewSolo(independentConfig), testCases);
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewSolo(), testCases);
 		}
 	}
 }
