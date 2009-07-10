@@ -15,8 +15,8 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(UniqueFieldIndexTestCase), typeof(UniqueFieldIndexWithVersionNumbersTestCase
-				) };
+			return new Type[] { typeof(UniqueFieldValueConstraintTestCase), typeof(UniqueFieldIndexWithVersionNumbersTestCase
+				), typeof(UniqueFieldValueDoesNotThrowTestCase) };
 		}
 	}
 }

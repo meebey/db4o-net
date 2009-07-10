@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>IO adapter for random access files.</summary>
 	/// <remarks>IO adapter for random access files.</remarks>
-	[System.ObsoleteAttribute(@"Use")]
+	[System.ObsoleteAttribute(@"Use  instead.")]
 	public class RandomAccessFileAdapter : IoAdapter
 	{
 		private string _path;

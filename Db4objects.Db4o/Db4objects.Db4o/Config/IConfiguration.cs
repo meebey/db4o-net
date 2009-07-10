@@ -417,7 +417,7 @@ namespace Db4objects.Db4o.Config
 		/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
 		/// 	</seealso>
 		/// <exception cref="Db4objects.Db4o.Config.GlobalOnlyConfigException"></exception>
-		[System.ObsoleteAttribute(@"use a custom encrypting")]
+		[System.ObsoleteAttribute(@"use a custom encrypting  instead")]
 		void Encrypt(bool flag);
 
 		/// <summary>configures whether Exceptions are to be thrown, if objects can not be stored.
@@ -457,7 +457,7 @@ namespace Db4objects.Db4o.Config
 		/// 	</see>
 		/// .
 		/// </remarks>
-		[System.ObsoleteAttribute(@"Please use a")]
+		[System.ObsoleteAttribute(@"Please use a  instead.")]
 		void FlushFileBuffers(bool flag);
 
 		/// <summary>returns the freespace configuration interface.</summary>
@@ -473,7 +473,8 @@ namespace Db4objects.Db4o.Config
 		/// Integer.MAX_Value - on for all classes<br /><br />
 		/// This setting should be used when the database is first created.
 		/// </param>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope) instead."
+			)]
 		void GenerateUUIDs(int setting);
 
 		/// <summary>configures db4o to generate UUIDs for stored objects.</summary>
@@ -494,7 +495,8 @@ namespace Db4objects.Db4o.Config
 		/// Integer.MAX_Value - on for all classes<br /><br />
 		/// This setting should be used when the database is first created.
 		/// </param>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope) instead."
+			)]
 		void GenerateVersionNumbers(int setting);
 
 		/// <summary>configures db4o to generate version numbers for stored objects.</summary>
@@ -535,7 +537,8 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="adapter">- the IoAdapter</param>
 		/// <exception cref="Db4objects.Db4o.Config.GlobalOnlyConfigException"></exception>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Config.IConfiguration.Storage(Db4objects.Db4o.IO.IStorage) instead."
+			)]
 		void Io(IoAdapter adapter);
 
 		/// <summary>allows to configure db4o to use a customized byte IO storage mechanism.</summary>
@@ -573,7 +576,8 @@ namespace Db4objects.Db4o.Config
 		/// .
 		/// </summary>
 		/// <returns></returns>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Config.IConfiguration.Storage() instead."
+			)]
 		IoAdapter Io();
 
 		/// <summary>allows to mark fields as transient with custom attributes.</summary>
@@ -685,7 +689,7 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <param name="pass">the password to be used.</param>
 		/// <exception cref="Db4objects.Db4o.Config.GlobalOnlyConfigException"></exception>
-		[System.ObsoleteAttribute(@"use a custom encrypting")]
+		[System.ObsoleteAttribute(@"use a custom encrypting  instead")]
 		void Password(string pass);
 
 		/// <summary>returns the Query configuration interface.</summary>
@@ -886,7 +890,8 @@ namespace Db4objects.Db4o.Config
 		/// <code>true</code> for turning Unicode support on, <code>false</code> for turning
 		/// Unicode support off.
 		/// </param>
-		[System.ObsoleteAttribute(@"use")]
+		[System.ObsoleteAttribute(@"use Db4objects.Db4o.Config.IConfiguration.StringEncoding(Db4objects.Db4o.Config.Encoding.IStringEncoding)"
+			)]
 		void Unicode(bool flag);
 
 		/// <summary>specifies the global updateDepth.</summary>

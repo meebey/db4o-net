@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Mocking;
 using Db4objects.Db4o.Foundation;
@@ -25,6 +26,29 @@ namespace Db4oUnit.Mocking
 		public interface IArgumentCondition
 		{
 			void Verify(object argument);
+		}
+
+		public class Conditions
+		{
+			public static MethodCall.IArgumentCondition IsA(Type expectedClass)
+			{
+				return new _IArgumentCondition_21(expectedClass);
+			}
+
+			private sealed class _IArgumentCondition_21 : MethodCall.IArgumentCondition
+			{
+				public _IArgumentCondition_21(Type expectedClass)
+				{
+					this.expectedClass = expectedClass;
+				}
+
+				public void Verify(object argument)
+				{
+					Assert.IsInstanceOf(expectedClass, argument);
+				}
+
+				private readonly Type expectedClass;
+			}
 		}
 
 		public readonly string methodName;

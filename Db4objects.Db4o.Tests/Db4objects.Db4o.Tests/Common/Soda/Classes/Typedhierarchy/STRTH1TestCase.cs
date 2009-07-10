@@ -188,7 +188,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Classes.Typedhierarchy
 				oc.Delete(os.Next());
 			}
 			Db().Commit();
-			Fixture().Reopen(GetType());
+			Fixture().Reopen(this);
 			oc = Fixture().Db();
 			os = oc.QueryByExample(null);
 			Assert.AreEqual(0, os.Count);

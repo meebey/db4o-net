@@ -35,42 +35,93 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IConfiguration _serverConfig;
 
-		public Db4oClientServer(IConfigurationSource configSource, string fileName, bool 
-			embeddedClient, string label) : base(configSource)
+		private readonly IClientServerFactory _csFactory;
+
+		public Db4oClientServer(IClientServerFactory csFactory, bool embeddedClient, string
+			 label)
 		{
-			_file = new Sharpen.IO.File(fileName);
+			_csFactory = csFactory != null ? csFactory : DefaultClientServerFactory();
+			_file = new Sharpen.IO.File(FilePath());
 			_embeddedClient = embeddedClient;
 			_label = label;
 		}
 
-		public Db4oClientServer(IConfigurationSource configSource, bool embeddedClient, string
-			 label) : this(configSource, FilePath(), embeddedClient, label)
+		private IClientServerFactory DefaultClientServerFactory()
+		{
+			return ((Config4Impl)Config()).ClientServerFactory();
+		}
+
+		public Db4oClientServer(bool embeddedClient, string label) : this(null, embeddedClient
+			, label)
 		{
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public override void Open(Type testCaseClass)
+		public override void Open(IDb4oTestCase testInstance)
 		{
-			OpenServer();
+			OpenServerFor(testInstance);
+			OpenClientFor(testInstance);
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		private void OpenClientFor(IDb4oTestCase testInstance)
+		{
+			IConfiguration config = ClientConfigFor(testInstance);
+			_objectContainer = OpenClientWith(config);
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		private IConfiguration ClientConfigFor(IDb4oTestCase testInstance)
+		{
+			if (testInstance is ICustomClientServerConfiguration)
+			{
+				IConfiguration customServerConfig = NewConfiguration();
+				((ICustomClientServerConfiguration)testInstance).ConfigureClient(customServerConfig
+					);
+				return customServerConfig;
+			}
 			IConfiguration config = CloneConfiguration();
-			ApplyFixtureConfiguration(testCaseClass, config);
-			_objectContainer = _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient
-				(config, Host, _port, Username, Password).Ext();
+			ApplyFixtureConfiguration(testInstance, config);
+			return config;
+		}
+
+		private IExtObjectContainer OpenSocketClient(IConfiguration config)
+		{
+			return _csFactory.OpenClient(config, Host, _port, Username, Password, new PlainSocketFactory
+				()).Ext();
 		}
 
 		public virtual IExtObjectContainer OpenNewClient()
 		{
-			return _embeddedClient ? OpenEmbeddedClient().Ext() : Db4oFactory.OpenClient(CloneConfiguration
-				(), Host, _port, Username, Password).Ext();
+			return OpenClientWith(CloneConfiguration());
+		}
+
+		private IExtObjectContainer OpenClientWith(IConfiguration config)
+		{
+			return _embeddedClient ? OpenEmbeddedClient().Ext() : OpenSocketClient(config);
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		private void OpenServer()
+		private void OpenServerFor(IDb4oTestCase testInstance)
 		{
-			_serverConfig = CloneConfiguration();
-			_server = Db4oFactory.OpenServer(_serverConfig, _file.GetAbsolutePath(), -1);
+			_serverConfig = ServerConfigFor(testInstance);
+			_server = _csFactory.OpenServer(_serverConfig, _file.GetAbsolutePath(), -1, new PlainSocketFactory
+				());
 			_port = _server.Ext().Port();
 			_server.GrantAccess(Username, Password);
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		private IConfiguration ServerConfigFor(IDb4oTestCase testInstance)
+		{
+			if (testInstance is ICustomClientServerConfiguration)
+			{
+				IConfiguration customServerConfig = NewConfiguration();
+				((ICustomClientServerConfiguration)testInstance).ConfigureServer(customServerConfig
+					);
+				return customServerConfig;
+			}
+			return CloneConfiguration();
 		}
 
 		/// <exception cref="System.Exception"></exception>

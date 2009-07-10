@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>discontinued freespace system, only available before db4o 7.0.</summary>
 		/// <remarks>discontinued freespace system, only available before db4o 7.0.</remarks>
-		[System.ObsoleteAttribute(@"Please use the BTree freespace system instead by calling"
+		[System.ObsoleteAttribute(@"Please use the BTree freespace system instead by calling Db4objects.Db4o.Config.IFreespaceConfiguration.UseBTreeSystem() ."
 			)]
 		void UseIndexSystem();
 

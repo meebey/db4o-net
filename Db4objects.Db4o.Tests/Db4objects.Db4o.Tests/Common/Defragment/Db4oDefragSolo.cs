@@ -12,10 +12,6 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 {
 	public class Db4oDefragSolo : Db4oSolo
 	{
-		public Db4oDefragSolo(IConfigurationSource configSource) : base(configSource)
-		{
-		}
-
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
 		{
 			Sharpen.IO.File origFile = new Sharpen.IO.File(GetAbsolutePath());
@@ -35,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 					IConfiguration clonedConfig = (IConfiguration)((IDeepClone)config).DeepClone(null
 						);
 					defragConfig.Db4oConfig(clonedConfig);
-					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _IDefragmentListener_35
+					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _IDefragmentListener_32
 						());
 				}
 				catch (IOException e)
@@ -46,9 +42,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return base.CreateDatabase(config);
 		}
 
-		private sealed class _IDefragmentListener_35 : IDefragmentListener
+		private sealed class _IDefragmentListener_32 : IDefragmentListener
 		{
-			public _IDefragmentListener_35()
+			public _IDefragmentListener_32()
 			{
 			}
 

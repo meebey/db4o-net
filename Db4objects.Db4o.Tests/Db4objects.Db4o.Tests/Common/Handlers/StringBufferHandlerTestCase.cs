@@ -92,10 +92,10 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		}
 
 		//$NON-NLS-1$
-		public virtual void _testStringBufferQuery()
+		public virtual void TestStringBufferQuery()
 		{
 			IQuery query = NewItemQuery();
-			query.Descend("buffer").Constrain(_bufferValue);
+			query.Descend("buffer").Constrain(new StringBuilder(_bufferValue));
 			Assert.AreEqual(1, query.Execute().Count);
 		}
 

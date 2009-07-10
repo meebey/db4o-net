@@ -453,7 +453,7 @@ namespace Db4objects.Db4o.Ext
 		/// 	</see>
 		/// interface for this replication process.
 		/// </returns>
-		[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS) instead.<br><br> prepares for replication with another"
+		[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS) instead.<br><br> prepares for replication with another . <br><br>An  can only be involved in a replication process with one other  at the same time.<br><br> The returned  interface provides methods to commit and to cancel the replication process. <br><br>This ObjectContainer will be ""peerA"" for the returned ReplicationProcess. The other ObjectContainer will be ""peerB""."
 			)]
 		IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
 			 conflictHandler);
@@ -470,7 +470,8 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="depth">the depth to which the object is to be updated</param>
 		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Set">Db4objects.Db4o.IObjectContainer.Set
 		/// 	</seealso>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Ext.IExtObjectContainer.Store(object, int) instead"
+			)]
 		void Set(object obj, int depth);
 
 		/// <summary>deep update interface to store or update objects.</summary>

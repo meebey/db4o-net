@@ -12,12 +12,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	{
 		private static readonly string File = "db4oSoloTest.db4o";
 
-		public Db4oSolo() : this(new IndependentConfigurationSource())
-		{
-		}
-
-		public Db4oSolo(IConfigurationSource configSource) : base(configSource, FilePath(
-			))
+		public Db4oSolo() : base(FilePath())
 		{
 		}
 

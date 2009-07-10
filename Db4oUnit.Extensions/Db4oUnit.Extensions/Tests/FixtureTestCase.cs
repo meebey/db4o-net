@@ -19,15 +19,14 @@ namespace Db4oUnit.Extensions.Tests
 	{
 		private sealed class ExcludingInMemoryFixture : Db4oInMemory
 		{
-			public ExcludingInMemoryFixture(FixtureTestCase _enclosing, IConfigurationSource 
-				source) : base(source)
-			{
-				this._enclosing = _enclosing;
-			}
-
 			public override bool Accept(Type clazz)
 			{
 				return !typeof(IOptOutFromTestFixture).IsAssignableFrom(clazz);
+			}
+
+			internal ExcludingInMemoryFixture(FixtureTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
 			}
 
 			private readonly FixtureTestCase _enclosing;
@@ -35,23 +34,21 @@ namespace Db4oUnit.Extensions.Tests
 
 		public virtual void TestSingleTestWithDifferentFixtures()
 		{
-			IConfigurationSource configSource = new IndependentConfigurationSource();
-			AssertSimpleDb4o(new Db4oInMemory(configSource));
-			AssertSimpleDb4o(new Db4oSolo(configSource));
+			AssertSimpleDb4o(new Db4oInMemory());
+			AssertSimpleDb4o(new Db4oSolo());
 		}
 
 		public virtual void TestMultipleTestsSingleFixture()
 		{
 			MultipleDb4oTestCase.ResetConfigureCalls();
-			FrameworkTestCase.RunTestAndExpect(new Db4oTestSuiteBuilder(new Db4oInMemory(new 
-				IndependentConfigurationSource()), typeof(MultipleDb4oTestCase)), 2, false);
+			FrameworkTestCase.RunTestAndExpect(new Db4oTestSuiteBuilder(new Db4oInMemory(), typeof(
+				MultipleDb4oTestCase)), 2, false);
 			Assert.AreEqual(2, MultipleDb4oTestCase.ConfigureCalls());
 		}
 
 		public virtual void TestSelectiveFixture()
 		{
-			IDb4oFixture fixture = new FixtureTestCase.ExcludingInMemoryFixture(this, new IndependentConfigurationSource
-				());
+			IDb4oFixture fixture = new FixtureTestCase.ExcludingInMemoryFixture(this);
 			IEnumerator tests = new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(AcceptedTestCase
 				), typeof(NotAcceptedTestCase) }).GetEnumerator();
 			ITest test = NextTest(tests);
@@ -65,16 +62,16 @@ namespace Db4oUnit.Extensions.Tests
 				.GetEnumerator();
 			ITest test = NextTest(tests);
 			MethodCallRecorder recorder = new MethodCallRecorder();
-			SimpleDb4oTestCase.RecorderVariable.With(recorder, new _IRunnable_51(test));
+			SimpleDb4oTestCase.RecorderVariable.With(recorder, new _IRunnable_46(test));
 			recorder.Verify(new MethodCall[] { new MethodCall("fixture", new object[] { fixture
 				 }), new MethodCall("configure", new object[] { MethodCall.IgnoredArgument }), new 
 				MethodCall("store", new object[] {  }), new MethodCall("testResultSize", new object
 				[] {  }) });
 		}
 
-		private sealed class _IRunnable_51 : IRunnable
+		private sealed class _IRunnable_46 : IRunnable
 		{
-			public _IRunnable_51(ITest test)
+			public _IRunnable_46(ITest test)
 			{
 				this.test = test;
 			}

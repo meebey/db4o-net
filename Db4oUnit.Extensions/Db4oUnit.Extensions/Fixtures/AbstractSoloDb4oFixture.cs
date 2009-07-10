@@ -11,20 +11,19 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public abstract class AbstractSoloDb4oFixture : Db4oUnit.Extensions.Fixtures.AbstractDb4oFixture
+	public abstract class AbstractSoloDb4oFixture : AbstractDb4oFixture
 	{
 		private IExtObjectContainer _db;
 
-		protected AbstractSoloDb4oFixture(IConfigurationSource configSource) : base(configSource
-			)
+		protected AbstractSoloDb4oFixture()
 		{
 		}
 
-		public sealed override void Open(Type testCaseClass)
+		public sealed override void Open(IDb4oTestCase testInstance)
 		{
 			Assert.IsNull(_db);
 			IConfiguration config = CloneConfiguration();
-			ApplyFixtureConfiguration(testCaseClass, config);
+			ApplyFixtureConfiguration(testInstance, config);
 			_db = CreateDatabase(config).Ext();
 		}
 

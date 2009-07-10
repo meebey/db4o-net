@@ -8,8 +8,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	{
 		private readonly Sharpen.IO.File _databaseFile;
 
-		public AbstractFileBasedDb4oFixture(IConfigurationSource configSource, string fileName
-			) : base(configSource)
+		public AbstractFileBasedDb4oFixture(string fileName)
 		{
 			_databaseFile = new Sharpen.IO.File(fileName);
 		}

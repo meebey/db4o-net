@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.TA;
@@ -17,9 +16,9 @@ namespace Db4oUnit.Extensions
 	/// </remarks>
 	public class TAFixtureConfiguration : IFixtureConfiguration
 	{
-		public virtual void Configure(Type clazz, IConfiguration config)
+		public virtual void Configure(IDb4oTestCase testCase, IConfiguration config)
 		{
-			if (typeof(IOptOutTA).IsAssignableFrom(clazz))
+			if (testCase is IOptOutTA)
 			{
 				return;
 			}

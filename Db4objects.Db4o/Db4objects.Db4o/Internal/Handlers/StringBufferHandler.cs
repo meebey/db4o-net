@@ -11,14 +11,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 		}
 
-		protected override object ConvertString(string str)
-		{
-			return new StringBuilder(str);
-		}
-
 		protected override string ConvertObject(object obj)
 		{
 			return ((StringBuilder)obj).ToString();
+		}
+
+		protected override object ConvertString(string str)
+		{
+			return new StringBuilder(str);
 		}
 	}
 }

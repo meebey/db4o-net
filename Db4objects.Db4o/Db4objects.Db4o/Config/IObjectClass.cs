@@ -295,7 +295,8 @@ namespace Db4objects.Db4o.Config
 		/// information for clazz.
 		/// </remarks>
 		/// <param name="clazz">class name, Class object, or example object.<br /><br /></param>
-		[System.ObsoleteAttribute(@"use")]
+		[System.ObsoleteAttribute(@"use Db4objects.Db4o.Config.IConfiguration.AddAlias(Db4objects.Db4o.Config.IAlias) instead. It provides richer functionality in a way that is easier to use."
+			)]
 		void ReadAs(object clazz);
 
 		/// <summary>renames a stored class.</summary>

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="System.Exception"></exception>
 		private void Open()
 		{
-			Fixture().Open(GetType());
+			Fixture().Open(this);
 		}
 
 		/// <exception cref="System.Exception"></exception>

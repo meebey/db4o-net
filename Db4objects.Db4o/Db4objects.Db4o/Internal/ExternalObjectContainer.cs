@@ -72,7 +72,8 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.ExternalObjectContainer.QueryByExample(object) instead"
+			)]
 		public sealed override IObjectSet Get(object template)
 		{
 			return QueryByExample(template);
@@ -167,7 +168,8 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.ExternalObjectContainer.Store(object) instead"
+			)]
 		public sealed override void Set(object obj)
 		{
 			Store(obj);
@@ -182,7 +184,8 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.ExternalObjectContainer.Store(object, int) instead"
+			)]
 		public sealed override void Set(object obj, int depth)
 		{
 			Store(obj, depth);

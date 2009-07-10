@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		{
 			Store(new Db4oIOExceptionTestCase.Item(3));
 			Fixture().Config().ActivationDepth(1);
-			Fixture().Reopen(GetType());
+			Fixture().Reopen(this);
 			Db4oIOExceptionTestCase.Item item = (Db4oIOExceptionTestCase.Item)((Db4oIOExceptionTestCase.Item
 				)RetrieveOnlyInstance(typeof(Db4oIOExceptionTestCase.Item)));
 			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_25(this, item));
@@ -254,11 +254,11 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestGetByUUID()
 		{
 			Fixture().Config().GenerateUUIDs(ConfigScope.Globally);
-			Fixture().Reopen(GetType());
+			Fixture().Reopen(this);
 			Db4oIOExceptionTestCase.Item item = new Db4oIOExceptionTestCase.Item(1);
 			Store(item);
 			Db4oUUID uuid = Db().GetObjectInfo(item).GetUUID();
-			Fixture().Reopen(GetType());
+			Fixture().Reopen(this);
 			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_122(this, uuid));
 		}
 

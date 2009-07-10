@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.Text;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
@@ -13,7 +12,7 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Handlers
 {
 	public abstract class StringBasedValueTypeHandlerBase : IValueTypeHandler, IBuiltinTypeHandler
-		, IVariableLengthTypeHandler, IQueryableTypeHandler
+		, IVariableLengthTypeHandler, IQueryableTypeHandler, IComparable4
 	{
 		public readonly Type _clazz;
 
@@ -42,18 +41,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				return null;
 			}
-			string str = (string)read;
-			return ConvertString(str);
+			return ConvertString((string)read);
 		}
-
-		protected abstract object ConvertString(string str);
 
 		public virtual void Write(IWriteContext context, object obj)
 		{
 			StringHandler(context).Write(context, ConvertObject((object)obj));
 		}
-
-		protected abstract string ConvertObject(object obj);
 
 		private Db4objects.Db4o.Internal.Handlers.StringHandler StringHandler(IContext context
 			)
@@ -79,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void RegisterReflector(IReflector reflector)
 		{
-			_classReflector = reflector.ForClass(typeof(StringBuilder));
+			_classReflector = reflector.ForClass(_clazz);
 		}
 
 		public virtual bool IsSimple()
@@ -96,5 +90,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			return type.Equals(ClassReflector());
 		}
+
+		protected abstract string ConvertObject(object obj);
+
+		protected abstract object ConvertString(string str);
 	}
 }

@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.InvalidPasswordException"></exception>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.CS.Db4oClientServer.OpenClient")]
 		public virtual IObjectContainer OpenClient(IConfiguration config, string hostName
 			, int port, string user, string password, INativeSocketFactory socketFactory)
 		{
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.CS.Db4oClientServer.OpenServer")]
 		public virtual IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port, INativeSocketFactory socketFactory)
 		{

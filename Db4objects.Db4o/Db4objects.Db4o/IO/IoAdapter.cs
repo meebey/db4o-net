@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.IO
 	/// 	</summary>
 	/// <remarks>Base class for database file adapters, both for file and memory databases.
 	/// 	</remarks>
-	[System.ObsoleteAttribute(@"Use classes that implement")]
+	[System.ObsoleteAttribute(@"Use classes that implement  instead. The new functionality has been split:  is the factory class to open  adapters.   is the actual implementation of IO access."
+		)]
 	public abstract class IoAdapter
 	{
 		private const int CopySize = 4096;

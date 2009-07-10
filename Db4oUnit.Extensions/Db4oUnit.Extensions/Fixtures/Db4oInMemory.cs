@@ -11,11 +11,7 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oInMemory : AbstractSoloDb4oFixture
 	{
-		public Db4oInMemory() : base(new IndependentConfigurationSource())
-		{
-		}
-
-		public Db4oInMemory(IConfigurationSource configSource) : base(configSource)
+		public Db4oInMemory() : base()
 		{
 		}
 

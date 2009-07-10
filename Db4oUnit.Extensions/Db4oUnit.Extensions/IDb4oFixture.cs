@@ -12,13 +12,13 @@ namespace Db4oUnit.Extensions
 	public interface IDb4oFixture : ILabeled
 	{
 		/// <exception cref="System.Exception"></exception>
-		void Open(Type testCaseClass);
+		void Open(IDb4oTestCase testInstance);
 
 		/// <exception cref="System.Exception"></exception>
 		void Close();
 
 		/// <exception cref="System.Exception"></exception>
-		void Reopen(Type testCaseClass);
+		void Reopen(IDb4oTestCase testInstance);
 
 		void Clean();
 

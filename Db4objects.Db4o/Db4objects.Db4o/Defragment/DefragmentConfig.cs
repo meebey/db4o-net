@@ -198,7 +198,8 @@ namespace Db4objects.Db4o.Defragment
 		/// to be applied
 		/// during the defragment process.
 		/// </param>
-		[System.ObsoleteAttribute(@"since 7.9: use")]
+		[System.ObsoleteAttribute(@"since 7.9: use Db4objects.Db4o.Defragment.DefragmentConfig.Db4oConfig(Db4objects.Db4o.Config.IEmbeddedConfiguration) instead"
+			)]
 		public virtual void Db4oConfig(IConfiguration config)
 		{
 			_config = config;

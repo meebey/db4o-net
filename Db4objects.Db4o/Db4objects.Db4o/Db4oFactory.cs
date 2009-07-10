@@ -83,7 +83,8 @@ namespace Db4objects.Db4o
 		/// </summary>
 		/// <returns>a fresh, independent configuration with all options set to their default values
 		/// 	</returns>
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Db4oEmbedded.NewConfiguration() instead."
+			)]
 		public static IConfiguration NewConfiguration()
 		{
 			Config4Impl config = new Config4Impl();
@@ -100,7 +101,8 @@ namespace Db4objects.Db4o
 		/// a fresh configuration with all option values set to the values
 		/// currently configured for the global db4o configuration context
 		/// </returns>
-		[System.ObsoleteAttribute(@"use explicit configuration via")]
+		[System.ObsoleteAttribute(@"use explicit configuration via Db4objects.Db4o.Db4oEmbedded.NewConfiguration() instead"
+			)]
 		public static IConfiguration CloneConfiguration()
 		{
 			return (Config4Impl)((IDeepClone)Db4oFactory.Configure()).DeepClone(null);
@@ -703,7 +705,7 @@ namespace Db4objects.Db4o
 		/// </exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException">database was configured as read-only.
 		/// 	</exception>
-		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar  for methods to open db4o servers and db4o clients."
+		[System.ObsoleteAttribute(@"See the <code>com.db4o.cs.Db4oClientServer</code> class in db4o-X.x-cs-java.jar for methods to open db4o servers and db4o clients."
 			)]
 		public static IObjectServer OpenServer(IConfiguration config, string databaseFileName
 			, int port, INativeSocketFactory socketFactory)

@@ -14,9 +14,9 @@ namespace Db4oUnit.Extensions.Tests
 	{
 		internal sealed class MockFixtureConfiguration : MethodCallRecorder, IFixtureConfiguration
 		{
-			public void Configure(Type clazz, IConfiguration config)
+			public void Configure(IDb4oTestCase testCase, IConfiguration config)
 			{
-				Record(new MethodCall("configure", new object[] { clazz, config }));
+				Record(new MethodCall("configure", new object[] { testCase, config }));
 			}
 
 			public string GetLabel()
@@ -46,8 +46,7 @@ namespace Db4oUnit.Extensions.Tests
 
 		public virtual void TestClientServer()
 		{
-			AssertFixtureConfiguration(new Db4oClientServer(new CachingConfigurationSource(new 
-				IndependentConfigurationSource()), false, "C/S"));
+			AssertFixtureConfiguration(new Db4oClientServer(false, "C/S"));
 		}
 
 		public virtual void TestInMemory()
@@ -65,12 +64,13 @@ namespace Db4oUnit.Extensions.Tests
 			new TestRunner(new Db4oTestSuiteBuilder(fixture, new Type[] { typeof(FixtureConfigurationTestCase.TestCase1
 				), typeof(FixtureConfigurationTestCase.TestCase2) })).Run(new TestResult());
 			configuration.Verify(new MethodCall[] { new MethodCall("configure", new object[] 
-				{ typeof(FixtureConfigurationTestCase.TestCase1), MethodCall.IgnoredArgument }), 
-				new MethodCall("configure", new object[] { typeof(FixtureConfigurationTestCase.TestCase1
-				), MethodCall.IgnoredArgument }), new MethodCall("configure", new object[] { typeof(
-				FixtureConfigurationTestCase.TestCase2), MethodCall.IgnoredArgument }), new MethodCall
-				("configure", new object[] { typeof(FixtureConfigurationTestCase.TestCase2), MethodCall
-				.IgnoredArgument }) });
+				{ MethodCall.Conditions.IsA(typeof(FixtureConfigurationTestCase.TestCase1)), MethodCall
+				.IgnoredArgument }), new MethodCall("configure", new object[] { MethodCall.Conditions
+				.IsA(typeof(FixtureConfigurationTestCase.TestCase1)), MethodCall.IgnoredArgument
+				 }), new MethodCall("configure", new object[] { MethodCall.Conditions.IsA(typeof(
+				FixtureConfigurationTestCase.TestCase2)), MethodCall.IgnoredArgument }), new MethodCall
+				("configure", new object[] { MethodCall.Conditions.IsA(typeof(FixtureConfigurationTestCase.TestCase2
+				)), MethodCall.IgnoredArgument }) });
 		}
 	}
 }

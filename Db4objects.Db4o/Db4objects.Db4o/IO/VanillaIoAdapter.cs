@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>base class for IoAdapters that delegate to other IoAdapters (decorator pattern)
 	/// 	</summary>
-	[System.ObsoleteAttribute(@"use")]
+	[System.ObsoleteAttribute(@"use  /  instead.")]
 	public abstract class VanillaIoAdapter : IoAdapter
 	{
 		protected IoAdapter _delegate;

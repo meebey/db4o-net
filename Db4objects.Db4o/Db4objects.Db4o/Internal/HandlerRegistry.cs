@@ -547,6 +547,10 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 typeHandler = Container().ConfigImpl().TypeHandlerForClass(claxx, HandlerVersion
 				);
+			if (typeHandler is IBuiltinTypeHandler)
+			{
+				((IBuiltinTypeHandler)typeHandler).RegisterReflector(Reflector());
+			}
 			if (Handlers4.IsValueType(typeHandler))
 			{
 				MapClassToTypeHandler(claxx, typeHandler);

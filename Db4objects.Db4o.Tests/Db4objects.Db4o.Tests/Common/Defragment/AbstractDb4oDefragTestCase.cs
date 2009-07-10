@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
@@ -20,8 +19,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		public virtual IEnumerator GetEnumerator()
 		{
-			return new Db4oTestSuiteBuilder(new Db4oDefragSolo(new IndependentConfigurationSource
-				()), TestSuite()).GetEnumerator();
+			return new Db4oTestSuiteBuilder(new Db4oDefragSolo(), TestSuite()).GetEnumerator(
+				);
 		}
 	}
 }

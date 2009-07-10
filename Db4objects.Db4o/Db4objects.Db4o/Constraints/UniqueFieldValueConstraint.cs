@@ -41,13 +41,18 @@ namespace Db4objects.Db4o.Constraints
 		/// <remarks>internal method, public for implementation reasons.</remarks>
 		public virtual void Apply(IInternalObjectContainer objectContainer)
 		{
+			if (objectContainer.IsClient())
+			{
+				throw new InvalidOperationException(GetType().FullName + " should be configured on the server."
+					);
+			}
 			EventRegistryFactory.ForObjectContainer(objectContainer).Committing += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
-				(new _IEventListener4_42(this, objectContainer).OnEvent);
+				(new _IEventListener4_46(this, objectContainer).OnEvent);
 		}
 
-		private sealed class _IEventListener4_42
+		private sealed class _IEventListener4_46
 		{
-			public _IEventListener4_42(UniqueFieldValueConstraint _enclosing, IInternalObjectContainer
+			public _IEventListener4_46(UniqueFieldValueConstraint _enclosing, IInternalObjectContainer
 				 objectContainer)
 			{
 				this._enclosing = _enclosing;
@@ -61,11 +66,13 @@ namespace Db4objects.Db4o.Constraints
 				IEnumerator i = col.GetEnumerator();
 				while (i.MoveNext())
 				{
-					object obj = this.ObjectFor(trans, (IObjectInfo)i.Current);
-					if (!this.ReflectClass().IsInstance(obj))
+					IObjectInfo objectInfo = (IObjectInfo)i.Current;
+					if (this.ReflectClass() != this._enclosing.ReflectorFor(trans, objectInfo.GetObject
+						()))
 					{
 						continue;
 					}
+					object obj = this.ObjectFor(trans, objectInfo);
 					object fieldValue = this.FieldMetadata().GetOn(trans, obj);
 					if (fieldValue == null)
 					{
@@ -129,6 +136,11 @@ namespace Db4objects.Db4o.Constraints
 			private readonly UniqueFieldValueConstraint _enclosing;
 
 			private readonly IInternalObjectContainer objectContainer;
+		}
+
+		private IReflectClass ReflectorFor(Transaction trans, object obj)
+		{
+			return trans.Container().Reflector().ForObject(obj);
 		}
 	}
 }

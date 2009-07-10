@@ -2,7 +2,7 @@
 
 using System;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
@@ -12,13 +12,13 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public abstract class AbstractDb4oFixture : IDb4oFixture
 	{
-		private readonly CachingConfigurationSource _configSource;
-
 		private IFixtureConfiguration _fixtureConfiguration;
 
-		protected AbstractDb4oFixture(IConfigurationSource configSource)
+		private IConfiguration _configuration;
+
+		protected AbstractDb4oFixture()
 		{
-			_configSource = new CachingConfigurationSource(configSource);
+			ResetConfig();
 		}
 
 		public virtual void FixtureConfiguration(IFixtureConfiguration fc)
@@ -27,15 +27,15 @@ namespace Db4oUnit.Extensions.Fixtures
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		public virtual void Reopen(Type testCaseClass)
+		public virtual void Reopen(IDb4oTestCase testInstance)
 		{
 			Close();
-			Open(testCaseClass);
+			Open(testInstance);
 		}
 
 		public virtual IConfiguration Config()
 		{
-			return _configSource.Config();
+			return _configuration;
 		}
 
 		public virtual void Clean()
@@ -50,7 +50,17 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public virtual void ResetConfig()
 		{
-			_configSource.Reset();
+			_configuration = NewConfiguration();
+		}
+
+		/// <summary>Method can be overridden in subclasses with special instantiation requirements (oSGI for instance).
+		/// 	</summary>
+		/// <remarks>Method can be overridden in subclasses with special instantiation requirements (oSGI for instance).
+		/// 	</remarks>
+		/// <returns></returns>
+		protected virtual IConfiguration NewConfiguration()
+		{
+			return Db4oFactory.NewConfiguration();
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -72,14 +82,14 @@ namespace Db4oUnit.Extensions.Fixtures
 			return label + " - " + _fixtureConfiguration.GetLabel();
 		}
 
-		protected virtual void ApplyFixtureConfiguration(Type testCaseClass, IConfiguration
+		protected virtual void ApplyFixtureConfiguration(IDb4oTestCase testInstance, IConfiguration
 			 config)
 		{
 			if (null == _fixtureConfiguration)
 			{
 				return;
 			}
-			_fixtureConfiguration.Configure(testCaseClass, config);
+			_fixtureConfiguration.Configure(testInstance, config);
 		}
 
 		public override string ToString()
@@ -109,6 +119,6 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public abstract LocalObjectContainer FileSession();
 
-		public abstract void Open(Type arg1);
+		public abstract void Open(IDb4oTestCase arg1);
 	}
 }

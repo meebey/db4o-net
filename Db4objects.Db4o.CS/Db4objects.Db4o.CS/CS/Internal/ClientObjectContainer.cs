@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 
 			// null denotes password not necessary
-			// initial value of _batchedQueueLength is YapConst.INT_LENGTH, which is
+			// initial value of _batchedQueueLength is
 			// used for to write the number of messages.
 			public void OnMessage(Msg msg)
 			{

@@ -6,30 +6,19 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oFixtures
 	{
-		public static IConfigurationSource ConfigSource(bool independentConfig)
+		public static Db4oClientServer NewEmbeddedCS()
 		{
-			IConfigurationSource configSource = new IndependentConfigurationSource();
-			if (!independentConfig)
-			{
-				configSource = new CachingConfigurationSource(configSource);
-			}
-			return configSource;
+			return new Db4oClientServer(true, "C/S EMBEDDED");
 		}
 
-		public static Db4oClientServer NewEmbeddedCS(bool independentConfig)
+		public static Db4oClientServer NewNetworkingCS()
 		{
-			return new Db4oClientServer(ConfigSource(independentConfig), true, "C/S EMBEDDED"
-				);
+			return new Db4oClientServer(false, "C/S");
 		}
 
-		public static Db4oClientServer NewNetworkingCS(bool independentConfig)
+		public static Db4oSolo NewSolo()
 		{
-			return new Db4oClientServer(ConfigSource(independentConfig), false, "C/S");
-		}
-
-		public static Db4oSolo NewSolo(bool independentConfig)
-		{
-			return new Db4oSolo(ConfigSource(independentConfig));
+			return new Db4oSolo();
 		}
 	}
 }

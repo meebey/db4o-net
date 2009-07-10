@@ -5,18 +5,13 @@ using Db4objects.Db4o.Tests.Common.Constraints;
 
 namespace Db4objects.Db4o.Tests.Common.Constraints
 {
-	public class UniqueFieldIndexWithVersionNumbersTestCase : UniqueFieldIndexTestCase
+	public class UniqueFieldIndexWithVersionNumbersTestCase : UniqueFieldValueConstraintTestCase
 	{
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
 			config.GenerateVersionNumbers(ConfigScope.Globally);
-		}
-
-		public static void Main(string[] args)
-		{
-			new UniqueFieldIndexWithVersionNumbersTestCase().RunAll();
 		}
 	}
 }

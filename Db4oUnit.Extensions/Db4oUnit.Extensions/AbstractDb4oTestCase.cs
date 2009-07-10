@@ -52,7 +52,7 @@ namespace Db4oUnit.Extensions
 		/// <exception cref="System.Exception"></exception>
 		protected virtual void Reopen()
 		{
-			Fixture().Reopen(GetType());
+			Fixture().Reopen(this);
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -61,12 +61,12 @@ namespace Db4oUnit.Extensions
 			IDb4oFixture _fixture = Fixture();
 			_fixture.Clean();
 			Configure(_fixture);
-			_fixture.Open(GetType());
+			_fixture.Open(this);
 			Db4oSetupBeforeStore();
 			Store();
 			_fixture.Db().Commit();
 			_fixture.Close();
-			_fixture.Open(GetType());
+			_fixture.Open(this);
 			Db4oSetupAfterStore();
 		}
 
@@ -128,18 +128,19 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunAll()
 		{
-			return RunAll(true);
+			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), ClientServerSuite
+				(), EmbeddedClientServerSuite() })).Run();
 		}
 
 		public virtual int RunSolo(string testLabelSubstring)
 		{
-			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(true), new _IPredicate4_112
-				(testLabelSubstring))).Run();
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_116(testLabelSubstring
+				))).Run();
 		}
 
-		private sealed class _IPredicate4_112 : IPredicate4
+		private sealed class _IPredicate4_116 : IPredicate4
 		{
-			public _IPredicate4_112(string testLabelSubstring)
+			public _IPredicate4_116(string testLabelSubstring)
 			{
 				this.testLabelSubstring = testLabelSubstring;
 			}
@@ -152,123 +153,70 @@ namespace Db4oUnit.Extensions
 			private readonly string testLabelSubstring;
 		}
 
-		private int RunAll(bool independentConfig)
-		{
-			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(independentConfig
-				), ClientServerSuite(independentConfig), EmbeddedClientServerSuite(independentConfig
-				) })).Run();
-		}
-
 		public virtual int RunSoloAndClientServer()
 		{
-			return RunSoloAndClientServer(true);
-		}
-
-		private int RunSoloAndClientServer(bool independentConfig)
-		{
-			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(independentConfig
-				), ClientServerSuite(independentConfig) })).Run();
+			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), ClientServerSuite
+				() })).Run();
 		}
 
 		public virtual int RunSoloAndEmbeddedClientServer()
 		{
-			return RunSoloAndEmbeddedClientServer(true);
-		}
-
-		private int RunSoloAndEmbeddedClientServer(bool independentConfig)
-		{
-			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(independentConfig
-				), EmbeddedClientServerSuite(independentConfig) })).Run();
+			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), EmbeddedClientServerSuite
+				() })).Run();
 		}
 
 		public virtual int RunSolo()
 		{
-			return RunSolo(true);
-		}
-
-		public virtual int RunSolo(bool independentConfig)
-		{
-			return new ConsoleTestRunner(SoloSuite(independentConfig)).Run();
+			return new ConsoleTestRunner(SoloSuite()).Run();
 		}
 
 		public virtual int RunClientServer()
 		{
-			return RunClientServer(true);
+			return new ConsoleTestRunner(ClientServerSuite()).Run();
 		}
 
 		public virtual int RunEmbeddedClientServer()
 		{
-			return RunEmbeddedClientServer(true);
+			return new ConsoleTestRunner(EmbeddedClientServerSuite()).Run();
 		}
 
 		public virtual int RunConcurrency()
 		{
-			return RunConcurrency(true);
+			return new ConsoleTestRunner(ConcurrenyClientServerSuite(false, "CONC")).Run();
 		}
 
 		public virtual int RunEmbeddedConcurrency()
 		{
-			return RunEmbeddedConcurrency(true);
+			return new ConsoleTestRunner(ConcurrenyClientServerSuite(true, "CONC EMBEDDED")).
+				Run();
 		}
 
 		public virtual int RunConcurrencyAll()
 		{
-			return RunConcurrencyAll(true);
-		}
-
-		protected virtual int RunEmbeddedClientServer(bool independentConfig)
-		{
-			return new ConsoleTestRunner(EmbeddedClientServerSuite(independentConfig)).Run();
-		}
-
-		public virtual int RunClientServer(bool independentConfig)
-		{
-			return new ConsoleTestRunner(ClientServerSuite(independentConfig)).Run();
-		}
-
-		private int RunConcurrency(bool independentConfig)
-		{
-			return new ConsoleTestRunner(ConcurrenyClientServerSuite(independentConfig, false
-				, "CONC")).Run();
-		}
-
-		private int RunEmbeddedConcurrency(bool independentConfig)
-		{
-			return new ConsoleTestRunner(ConcurrenyClientServerSuite(independentConfig, true, 
-				"CONC EMBEDDED")).Run();
-		}
-
-		private int RunConcurrencyAll(bool independentConfig)
-		{
 			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { ConcurrenyClientServerSuite
-				(independentConfig, false, "CONC"), ConcurrenyClientServerSuite(independentConfig
-				, true, "CONC EMBEDDED") })).Run();
+				(false, "CONC"), ConcurrenyClientServerSuite(true, "CONC EMBEDDED") })).Run();
 		}
 
-		protected virtual Db4oTestSuiteBuilder SoloSuite(bool independentConfig)
+		protected virtual Db4oTestSuiteBuilder SoloSuite()
 		{
-			return new Db4oTestSuiteBuilder(Db4oFixtures.NewSolo(independentConfig), TestCases
-				());
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewSolo(), TestCases());
 		}
 
-		protected virtual Db4oTestSuiteBuilder ClientServerSuite(bool independentConfig)
+		protected virtual Db4oTestSuiteBuilder ClientServerSuite()
 		{
-			return new Db4oTestSuiteBuilder(Db4oFixtures.NewNetworkingCS(independentConfig), 
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewNetworkingCS(), TestCases());
+		}
+
+		protected virtual Db4oTestSuiteBuilder EmbeddedClientServerSuite()
+		{
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewEmbeddedCS(), TestCases());
+		}
+
+		protected virtual Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool embedded, 
+			string label)
+		{
+			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(embedded, label), 
 				TestCases());
-		}
-
-		protected virtual Db4oTestSuiteBuilder EmbeddedClientServerSuite(bool independentConfig
-			)
-		{
-			return new Db4oTestSuiteBuilder(Db4oFixtures.NewEmbeddedCS(independentConfig), TestCases
-				());
-		}
-
-		protected virtual Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool independentConfig
-			, bool embedded, string label)
-		{
-			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(Db4oFixtures.ConfigSource
-				(independentConfig), embedded, label), TestCases());
 		}
 
 		protected virtual IInternalObjectContainer Stream()
@@ -402,12 +350,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(oc, clazz, new _IVisitor4_329(oc));
+			Foreach(oc, clazz, new _IVisitor4_290(oc));
 		}
 
-		private sealed class _IVisitor4_329 : IVisitor4
+		private sealed class _IVisitor4_290 : IVisitor4
 		{
-			public _IVisitor4_329(IExtObjectContainer oc)
+			public _IVisitor4_290(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}
@@ -453,7 +401,7 @@ namespace Db4oUnit.Extensions
 		{
 			Fixture().Close();
 			Fixture().Defragment();
-			Fixture().Open(GetType());
+			Fixture().Open(this);
 		}
 
 		public int ThreadCount()

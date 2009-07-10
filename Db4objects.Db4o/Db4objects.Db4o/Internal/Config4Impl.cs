@@ -445,7 +445,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(ExceptionsOnNotStorableKey, flag);
 		}
 
-		[System.ObsoleteAttribute(@"Please use a")]
+		[System.ObsoleteAttribute(@"Please use a  instead.")]
 		public void FlushFileBuffers(bool flag)
 		{
 		}
@@ -466,7 +466,8 @@ namespace Db4objects.Db4o.Internal
 			return (IFreespaceFiller)_config.Get(FreespaceFillerKey);
 		}
 
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.Config4Impl.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope) instead."
+			)]
 		public void GenerateUUIDs(int setting)
 		{
 			GenerateUUIDs(ConfigScope.ForID(setting));
@@ -477,7 +478,8 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(GenerateUuidsKey, scope);
 		}
 
-		[System.ObsoleteAttribute(@"Use")]
+		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.Config4Impl.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope) instead."
+			)]
 		public void GenerateVersionNumbers(int setting)
 		{
 			GenerateVersionNumbers(ConfigScope.ForID(setting));
