@@ -88,11 +88,6 @@ namespace Db4objects.Db4o.Typehandlers
             context.WriteLong(Convert.ToInt64(obj));
         }
 
-        public bool CanHold(IReflectClass claxx)
-        {
-            return NetReflector.ToNative(claxx).IsEnum;
-        }
-
         public bool IsSimple()
         {
             return true;

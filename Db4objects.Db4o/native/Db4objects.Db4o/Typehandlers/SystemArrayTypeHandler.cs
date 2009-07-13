@@ -31,11 +31,6 @@ namespace Db4objects.Db4o.Typehandlers
             new ArrayHandler(elementType.TypeHandler(), false).Write(context, obj);
         }
 
-    	public bool CanHold(IReflectClass type)
-    	{
-    		return true;
-    	}
-
     	public virtual object Read(IReadContext context)
         {
             return ReadArrayHandler(context).Read(context);

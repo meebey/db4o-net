@@ -31,11 +31,6 @@ namespace Db4objects.Db4o.Typehandlers
 			WriteElements(context, enumerable, elementType.TypeHandler());
 		}
 
-		public bool CanHold(IReflectClass type)
-		{
-			return true;
-		}
-
 		public virtual void Activate(IReferenceActivationContext context)
 		{
 			object collection = context.PersistentObject();
