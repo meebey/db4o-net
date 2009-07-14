@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Internal.Events
 			});
 		}
 
-		public static bool TriggerCancellableObjectEventArgs(Transaction transaction, System.EventHandler<CancellableObjectEventArgs> e, object o)
+		public static bool TriggerCancellableObjectEventArgs(Transaction transaction, System.EventHandler<CancellableObjectEventArgs> e, IObjectInfo objectInfo, object o)
 		{
 			if (null == e) return true;
 			
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Internal.Events
 			Trigger(delegate
 			{
 				
-				CancellableObjectEventArgs coea = new CancellableObjectEventArgs(transaction, o);
+				CancellableObjectEventArgs coea = new CancellableObjectEventArgs(transaction, objectInfo, o);
 				
 				e(o, coea);
 				ret = !coea.IsCancelled;
