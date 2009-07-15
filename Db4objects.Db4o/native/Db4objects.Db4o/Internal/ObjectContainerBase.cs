@@ -164,5 +164,33 @@ namespace Db4objects.Db4o.Internal
 
     		#endregion
     	}
+
+	    private object AsTopLevelCall(IFunction4 block, Transaction trans) 
+	    {
+	    	trans = CheckTransaction(trans);
+	    	BeginTopLevelCall();
+	        try
+	        {            	
+	        	return block.Apply(trans);
+	        } 
+	        catch(Db4oRecoverableException exc) 
+	        {
+	        	throw;
+	        }
+	        catch(SystemException exc) 
+	        {
+	        	throw;
+	        }
+	        catch(Exception exc) 
+	        {
+				FatalShutdown(exc);
+	        }
+	        finally 
+	        {
+	        	EndTopLevelCall();
+	        }
+	        // should never happen - just to make compiler happy
+			throw new Db4oException();
+	    }
     }
 }
