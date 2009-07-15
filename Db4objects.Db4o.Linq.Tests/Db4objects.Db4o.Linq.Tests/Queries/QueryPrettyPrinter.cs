@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,9 +50,9 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			_builder.Append("(");
 			_builder.Append(GetClassName(klass.GetClassName()));
 
-			if (klass._children != null)
+			if (klass.HasChildren())
 			{
-				ConsumeList<IConstraint>(klass._children, cons => Visit(cons));
+				ForEach<IConstraint>(klass.IterateChildren(), cons => Visit(cons));
 			}
 			FlushOrderBy();
 			_builder.Append(")");
@@ -63,12 +64,11 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			_orderBy.Length = 0;
 		}
 
-		private static void ConsumeList<TElement>(List4 list, Action<TElement> action)
+		private static void ForEach<TElement>(IEnumerator list, Action<TElement> action)
 		{
-			while (list != null)
+			while (list.MoveNext())
 			{
-				action((TElement)list._element);
-				list = list._next;
+				action((TElement)list.Current);
 			}
 		}
 
@@ -108,12 +108,12 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		private static bool HasOrder(QCon path)
 		{
-			return path.i_orderID != 0;
+			return path.HasOrdering();
 		}
 
 		private void PrintDescend(QConPath path)
 		{
-			_builder.AppendFormat("({0}", path.GetField().i_name);
+			_builder.AppendFormat("({0}", path.GetField().Name());
 
 			VisitAllChildrenOf(path);
 
@@ -137,12 +137,12 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 		{
 			_orderBy.AppendFormat("(orderby {0} {1})",
 				PathFor(path),
-				OrderIdToString(path.i_orderID));
+				OrderIdToString(path.Ordering()));
 		}
 
 		private static string PathFor(QConObject path)
 		{
-			var fieldName = path.i_field.i_name;
+			var fieldName = path.GetField().Name();
 
 			QConPath parentField = path.Parent() as QConPath;
 			if (parentField != null)
@@ -160,9 +160,9 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 		{
 			if (_visitedJoins.Contains(join)) return;
 			_builder.Append("(");
-			VisitJoinBranch(join.i_constraint2);
-			_builder.AppendFormat(" {0} ", join.i_and ? "and" : "or");
-			VisitJoinBranch(join.i_constraint1);
+			VisitJoinBranch(join.Constraint2());
+			_builder.AppendFormat(" {0} ", join.IsOr() ? "or" : "and");
+			VisitJoinBranch(join.Constraint1());
 			_builder.Append(")");
 			_visitedJoins.Add(join);
 		}
@@ -186,10 +186,12 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		protected virtual void Visit(QConObject obj)
 		{
-			if (obj.i_joins != null)
+			if (obj.HasJoins())
 			{
-				foreach (IConstraint constraint in obj.i_joins)
+				var constraints = obj.IterateJoins();
+				while (constraints.MoveNext())
 				{
+					var constraint = (IConstraint) constraints.Current;
 					Visit(constraint);
 				}
 				return;
@@ -205,9 +207,9 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			}
 			
 			_builder.AppendFormat("({0} {1} {2})",
-				                      obj.GetField().i_name,
-				                      EvaluatorToString(obj.i_evaluator),
-				                      ValueToString(obj.i_object));
+				                      obj.GetField().Name(),
+				                      EvaluatorToString(obj.Evaluator()),
+				                      ValueToString(obj.GetObject()));
 		}
 
 		private static string EvaluatorToString(QE evaluator)
@@ -217,7 +219,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 				case "QEMulti":
 				{
 					StringBuilder sb = new StringBuilder();
-					foreach (QE qe in ((QEMulti)evaluator).i_evaluators)
+					foreach (QE qe in ((QEMulti)evaluator).Evaluators())
 					{
 						sb.Append(EvaluatorToString(qe));
 					}
