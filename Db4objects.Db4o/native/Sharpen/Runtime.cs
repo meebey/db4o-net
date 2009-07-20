@@ -252,5 +252,13 @@ namespace Sharpen
 		{
 			return (javaMilliseconds + Runtime.DIFFERENCE_IN_TICKS) * Runtime.RATIO;
 		}
-	}
+
+        internal static void AddAll(System.Collections.IList list, System.Collections.IEnumerable added)
+        {
+            foreach(Object o in added)
+            {
+                list.Add(o);
+            }
+        }
+    }
 }
