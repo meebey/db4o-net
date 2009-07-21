@@ -1,6 +1,7 @@
 /* Copyright (C) 2004	Versant Inc.	  http://www.db4o.com */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -261,7 +262,7 @@ namespace Sharpen
             }
         }
 
-        public static bool AddAll<T>(Db4objects.Db4o.Collections.ISet<T> list, System.Collections.IEnumerable added)
+        public static bool AddAll<T>(ICollection<T> list, System.Collections.IEnumerable added)
         {
             foreach (Object o in added)
             {
