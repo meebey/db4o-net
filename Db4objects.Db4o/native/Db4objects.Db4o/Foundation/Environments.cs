@@ -7,9 +7,12 @@ namespace Db4objects.Db4o.Foundation
 	{
 		public static string DefaultImplementationFor(Type type)
 		{
-			string ns = type.Namespace;
-			int lastDot = ns.LastIndexOf('.');
-			string typeName = ns.Substring(0, lastDot) + ".Internal." + ns.Substring(lastDot + 1) + "." + type.Name.Substring(1) + "Impl";
+			string implName = ("." + type.Name.Substring(1) + "Impl");
+			if (type.Namespace.IndexOf(".Internal.") > 0)
+				return type.Namespace + implName + ", " + AssemblyNameFor(type);
+
+			int lastDot = type.Namespace.LastIndexOf('.');
+			string typeName = type.Namespace.Substring(0, lastDot) + ".Internal." + type.Namespace.Substring(lastDot + 1) + implName;
 			return typeName + ", " + AssemblyNameFor(type);
 		}
 

@@ -83,11 +83,15 @@ namespace Sharpen.Lang
 		public void Join() 
 		{
 			if (_thread == null)
-			{
-				string message = "A thread must be available to join";
-				throw new InvalidOperationException(message);
-			}
+				return;
 			_thread.Join();
+		}
+
+		public void Join(int millisecondsTimeout)
+		{
+			if (_thread == null)
+				return;
+			_thread.Join(millisecondsTimeout);
 		}
 		
 		public void SetDaemon(bool isDaemon)
@@ -124,6 +128,13 @@ namespace Sharpen.Lang
 				// the process down
 				Sharpen.Runtime.PrintStackTrace(e);
 			}
+		}
+
+		public bool IsDaemon()
+		{
+			return _thread != null
+				? _thread.IsBackground
+				: _isDaemon;
 		}
 	}
 }

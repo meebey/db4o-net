@@ -32,9 +32,15 @@ namespace Sharpen
 
 	    public static object[] ToArray(ICollection collection)
 	    {
-            object[] result = new object[collection.Count];
-            collection.CopyTo(result, 0);
-	        return result;
+	    	object[] result = new object[collection.Count];
+			collection.CopyTo(result, 0);
+			return result;
 	    }
+
+		public static T[] ToArray<T>(ICollection<T> collection, T[] result)
+		{
+			collection.CopyTo(result, 0);
+			return result;
+		}
 	}
 }
