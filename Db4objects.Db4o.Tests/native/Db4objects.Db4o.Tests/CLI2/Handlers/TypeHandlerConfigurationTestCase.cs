@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
         {
             IntByRef aspectCount = new IntByRef(0);
             ClassMetadata classMetadata = ClassMetadata(storedClass);
-            classMetadata.ForEachDeclaredAspect(new _IProcedure4_51(aspectCount, typeHandlerClass
+            classMetadata.TraverseDeclaredAspects(new _IProcedure4_51(aspectCount, typeHandlerClass
                 ));
         }
 
