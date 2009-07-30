@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MDelete : MsgD, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			ByteArrayBuffer bytes = this.GetByteLoad();
 			ObjectContainerBase stream = Stream();
@@ -27,7 +27,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					}
 				}
 			}
-			return true;
 		}
 	}
 }

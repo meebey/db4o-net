@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		protected ObjectHeader _objectHeader;
 
-		private int _aspectCount;
+		private int _declaredAspectCount;
 
 		public ObjectHeaderContext(Transaction transaction, IReadBuffer buffer, ObjectHeader
 			 objectHeader) : base(transaction, buffer)
@@ -64,14 +64,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _objectHeader.ClassMetadata();
 		}
 
-		public virtual int AspectCount()
+		public virtual int DeclaredAspectCount()
 		{
-			return _aspectCount;
+			return _declaredAspectCount;
 		}
 
-		public virtual void AspectCount(int count)
+		public virtual void DeclaredAspectCount(int count)
 		{
-			_aspectCount = count;
+			_declaredAspectCount = count;
 		}
 	}
 }

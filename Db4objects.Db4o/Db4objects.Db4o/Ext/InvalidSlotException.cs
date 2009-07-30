@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Ext
 	/// information which is not valid (length or address).
 	/// </remarks>
 	[System.Serializable]
-	public class InvalidSlotException : Db4oException
+	public class InvalidSlotException : Db4oRecoverableException
 	{
 		/// <summary>Constructor allowing to specify a detailed message.</summary>
 		/// <remarks>Constructor allowing to specify a detailed message.</remarks>

@@ -8,12 +8,11 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Events;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
 {
-	public sealed class ServerMessageDispatcherImpl : Thread, IServerMessageDispatcher
+	public sealed class ServerMessageDispatcherImpl : IServerMessageDispatcher, IRunnable
 	{
 		private string _clientName;
 
@@ -43,6 +42,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private System.EventHandler<MessageEventArgs> _messageReceived;
 
+		private Sharpen.Lang.Thread _thread;
+
 		/// <exception cref="System.Exception"></exception>
 		internal ServerMessageDispatcherImpl(ObjectServerImpl server, ClientTransactionHandle
 			 transactionHandle, ISocket4 socket, int threadID, bool loggedIn, object mainLock
@@ -50,11 +51,9 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			_mainLock = mainLock;
 			_transactionHandle = transactionHandle;
-			SetDaemon(true);
 			_loggedin = loggedIn;
 			_server = server;
 			_threadID = threadID;
-			SetDispatcherName(string.Empty + threadID);
 			_socket = socket;
 			_socket.SetSoTimeout(((Config4Impl)server.Configure()).TimeoutServerSocket());
 		}
@@ -153,10 +152,12 @@ namespace Db4objects.Db4o.CS.Internal
 			return _transactionHandle.Transaction();
 		}
 
-		public override void Run()
+		public void Run()
 		{
+			_thread = Sharpen.Lang.Thread.CurrentThread();
 			try
 			{
+				SetDispatcherName(string.Empty + _threadID);
 				MessageLoop();
 			}
 			finally
@@ -202,21 +203,51 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 			// TODO: COR-885 - message may process against closed server
 			// Checking aliveness just makes the issue less likely to occur. Naive synchronization against main lock is prohibitive.        
+			return ProcessMessage(message);
+		}
+
+		public bool ProcessMessage(Msg message)
+		{
 			if (IsMessageDispatcherAlive())
 			{
+				if (message is IMessageWithResponse)
+				{
+					IMessageWithResponse msgWithResp = (IMessageWithResponse)message;
+					try
+					{
+						Msg reply = msgWithResp.ReplyFromServer();
+						Write(reply);
+					}
+					catch (Db4oRecoverableException exc)
+					{
+						WriteException(message, exc);
+						return true;
+					}
+					catch (Exception exc)
+					{
+						Sharpen.Runtime.PrintStackTrace(exc);
+						Write(Msg.Error);
+						return true;
+					}
+					try
+					{
+						msgWithResp.PostProcessAtServer();
+						return true;
+					}
+					catch (Exception exc)
+					{
+						Sharpen.Runtime.PrintStackTrace(exc);
+					}
+					return true;
+				}
 				try
 				{
-					return ((IServerSideMessage)message).ProcessAtServer();
-				}
-				catch (OutOfMemoryException oome)
-				{
-					WriteException(message, new InternalServerError(oome));
+					((IServerSideMessage)message).ProcessAtServer();
 					return true;
 				}
 				catch (Exception exc)
 				{
-					WriteException(message, exc);
-					return true;
+					Sharpen.Runtime.PrintStackTrace(exc);
 				}
 			}
 			return false;
@@ -238,7 +269,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void TriggerMessageReceived(IMessage message)
 		{
-			ServerPlatform.TriggerMessageEvent(_messageReceived, message);
+			if (null != _messageReceived) _messageReceived(null, new MessageEventArgs(message
+				));
 		}
 
 		public ObjectServerImpl Server()
@@ -328,8 +360,7 @@ namespace Db4objects.Db4o.CS.Internal
 		public void SetDispatcherName(string name)
 		{
 			_clientName = name;
-			// set thread name
-			SetName("db4o server message dispatcher " + name);
+			Thread().SetName("db4o server message dispatcher " + name);
 		}
 
 		public int DispatcherID()
@@ -340,11 +371,6 @@ namespace Db4objects.Db4o.CS.Internal
 		public void Login()
 		{
 			_loggedin = true;
-		}
-
-		public void StartDispatcher()
-		{
-			Start();
 		}
 
 		public bool CaresAboutCommitted()
@@ -391,6 +417,21 @@ namespace Db4objects.Db4o.CS.Internal
 				_messageReceived = (System.EventHandler<MessageEventArgs>)System.Delegate.Remove(
 					_messageReceived, value);
 			}
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		public void Join()
+		{
+			Thread().Join();
+		}
+
+		private Sharpen.Lang.Thread Thread()
+		{
+			if (null == _thread)
+			{
+				throw new InvalidOperationException();
+			}
+			return _thread;
 		}
 	}
 }

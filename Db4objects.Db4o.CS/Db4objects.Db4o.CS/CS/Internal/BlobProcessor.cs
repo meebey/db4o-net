@@ -9,7 +9,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
 {
-	internal class BlobProcessor : Thread
+	internal class BlobProcessor : IRunnable
 	{
 		private ClientObjectContainer stream;
 
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public override void Run()
+		public virtual void Run()
 		{
 			try
 			{
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.CS.Internal
 				{
 					msg.Write(socket);
 					msg.ProcessClient(socket);
-					lock (stream.blobLock)
+					lock (stream._blobLock)
 					{
 						lock (queue)
 						{

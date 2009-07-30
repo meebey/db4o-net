@@ -9,7 +9,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QEMulti : QE
 	{
-		public Collection4 i_evaluators = new Collection4();
+		private Collection4 i_evaluators = new Collection4();
+
+		// used by .net LINQ tests
+		public virtual IEnumerable Evaluators()
+		{
+			return i_evaluators;
+		}
 
 		internal override QE Add(QE evaluator)
 		{

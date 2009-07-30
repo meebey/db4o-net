@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MReadObject : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			StatefulBuffer bytes = null;
 			// readWriterByID may fail in certain cases, for instance if
@@ -22,8 +22,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				bytes = new StatefulBuffer(Transaction(), 0, 0);
 			}
-			Write(Msg.ObjectToClient.GetWriter(bytes));
-			return true;
+			return Msg.ObjectToClient.GetWriter(bytes);
 		}
 	}
 }

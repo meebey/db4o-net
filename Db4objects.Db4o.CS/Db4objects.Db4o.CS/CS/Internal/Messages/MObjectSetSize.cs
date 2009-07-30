@@ -7,16 +7,13 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MObjectSetSize : MObjectSet, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
-			MsgD writer = null;
 			lock (StreamLock())
 			{
 				AbstractQueryResult queryResult = QueryResult(ReadInt());
-				writer = Msg.ObjectsetSize.GetWriterForInt(Transaction(), queryResult.Size());
+				return Msg.ObjectsetSize.GetWriterForInt(Transaction(), queryResult.Size());
 			}
-			Write(writer);
-			return true;
 		}
 	}
 }

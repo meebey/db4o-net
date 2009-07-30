@@ -5,6 +5,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public interface IServerSideMessage
 	{
-		bool ProcessAtServer();
+		void ProcessAtServer();
 	}
 }

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			while (i.MoveNext())
 			{
 				ClassMetadata classmetadata = i.CurrentClass();
-				classmetadata.ForEachDeclaredField(new _IProcedure4_26(this));
+				classmetadata.TraverseDeclaredFields(new _IProcedure4_26(this));
 			}
 		}
 

@@ -1,16 +1,19 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using System.IO;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oInMemory : AbstractSoloDb4oFixture
 	{
+		private static readonly string DbUri = "test_db";
+
 		public Db4oInMemory() : base()
 		{
 		}
@@ -33,20 +36,30 @@ namespace Db4oUnit.Extensions.Fixtures
 			return true;
 		}
 
-		private MemoryFile _memoryFile;
+		private readonly MemoryStorage _storage = new MemoryStorage();
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
 		{
-			if (null == _memoryFile)
-			{
-				_memoryFile = new MemoryFile();
-			}
-			return ExtDb4oFactory.OpenMemoryFile(config, _memoryFile);
+			return Db4oFactory.OpenFile(config, DbUri);
+		}
+
+		protected override IConfiguration NewConfiguration()
+		{
+			IConfiguration config = base.NewConfiguration();
+			config.Storage = _storage;
+			return config;
 		}
 
 		protected override void DoClean()
 		{
-			_memoryFile = null;
+			try
+			{
+				_storage.Delete(DbUri);
+			}
+			catch (IOException exc)
+			{
+				Sharpen.Runtime.PrintStackTrace(exc);
+			}
 		}
 
 		public override string Label()

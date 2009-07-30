@@ -1,28 +1,40 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.CS.Internal.Messages;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MReadReaderById : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			ByteArrayBuffer bytes = null;
 			// readWriterByID may fail in certain cases, for instance if
 			// and object was deleted by another client
-			lock (StreamLock())
+			try
 			{
-				bytes = Stream().ReadReaderByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
-					() == 1);
+				lock (StreamLock())
+				{
+					bytes = Stream().ReadReaderByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
+						() == 1);
+				}
+				if (bytes == null)
+				{
+					bytes = new ByteArrayBuffer(0);
+				}
 			}
-			if (bytes == null)
+			catch (Db4oRecoverableException exc)
 			{
-				bytes = new ByteArrayBuffer(0);
+				throw;
 			}
-			Write(Msg.ReadBytes.GetWriter(Transaction(), bytes));
-			return true;
+			catch (Exception exc)
+			{
+				throw new Db4oRecoverableException(exc);
+			}
+			return Msg.ReadBytes.GetWriter(Transaction(), bytes);
 		}
 	}
 }

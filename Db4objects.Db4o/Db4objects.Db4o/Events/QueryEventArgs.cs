@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Events
 	/// </summary>
 	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
 	/// 	</seealso>
-	public class QueryEventArgs : ObjectEventArgs
+	public class QueryEventArgs : TransactionalEventArgs
 	{
 		private IQuery _query;
 
@@ -33,14 +33,6 @@ namespace Db4objects.Db4o.Events
 		/// which triggered the event.
 		/// </summary>
 		public virtual IQuery Query
-		{
-			get
-			{
-				return _query;
-			}
-		}
-
-		public override object Object
 		{
 			get
 			{

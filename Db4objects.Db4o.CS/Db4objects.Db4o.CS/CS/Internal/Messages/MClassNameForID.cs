@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <summary>get the classname for an internal ID</summary>
 	public sealed class MClassNameForID : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			int id = _payLoad.ReadInt();
 			string name = string.Empty;
@@ -20,8 +20,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					name = classMetadata.GetName();
 				}
 			}
-			Write(Msg.ClassNameForId.GetWriterForString(Transaction(), name));
-			return true;
+			return Msg.ClassNameForId.GetWriterForString(Transaction(), name);
 		}
 	}
 }

@@ -11,11 +11,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QConJoin : QCon
 	{
-		public bool i_and;
+		private bool i_and;
 
-		public QCon i_constraint1;
+		private QCon i_constraint1;
 
-		public QCon i_constraint2;
+		private QCon i_constraint2;
 
 		public QConJoin()
 		{
@@ -31,20 +31,30 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_and = a_and;
 		}
 
+		public virtual QCon Constraint2()
+		{
+			return i_constraint2;
+		}
+
+		public virtual QCon Constraint1()
+		{
+			return i_constraint1;
+		}
+
 		internal override void DoNotInclude(QCandidate a_root)
 		{
-			i_constraint1.DoNotInclude(a_root);
-			i_constraint2.DoNotInclude(a_root);
+			Constraint1().DoNotInclude(a_root);
+			Constraint2().DoNotInclude(a_root);
 		}
 
 		internal override void ExchangeConstraint(QCon a_exchange, QCon a_with)
 		{
 			base.ExchangeConstraint(a_exchange, a_with);
-			if (a_exchange == i_constraint1)
+			if (a_exchange == Constraint1())
 			{
 				i_constraint1 = a_with;
 			}
-			if (a_exchange == i_constraint2)
+			if (a_exchange == Constraint2())
 			{
 				i_constraint2 = a_with;
 			}
@@ -69,23 +79,23 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				if (!res)
 				{
-					i_constraint1.DoNotInclude(a_root);
-					i_constraint2.DoNotInclude(a_root);
+					Constraint1().DoNotInclude(a_root);
+					Constraint2().DoNotInclude(a_root);
 				}
 			}
 		}
 
 		public virtual QCon GetOtherConstraint(QCon a_constraint)
 		{
-			if (a_constraint == i_constraint1)
+			if (a_constraint == Constraint1())
 			{
-				return i_constraint2;
+				return Constraint2();
 			}
 			else
 			{
-				if (a_constraint == i_constraint2)
+				if (a_constraint == Constraint2())
 				{
-					return i_constraint1;
+					return Constraint1();
 				}
 			}
 			throw new ArgumentException();
@@ -112,13 +122,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override string ToString()
 		{
 			string str = "QConJoin " + (i_and ? "AND " : "OR");
-			if (i_constraint1 != null)
+			if (Constraint1() != null)
 			{
-				str += "\n   " + i_constraint1;
+				str += "\n   " + Constraint1();
 			}
-			if (i_constraint2 != null)
+			if (Constraint2() != null)
 			{
-				str += "\n   " + i_constraint2;
+				str += "\n   " + Constraint2();
 			}
 			return str;
 		}
@@ -135,8 +145,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			base.SetProcessedByIndex();
-			i_constraint1.SetProcessedByIndex();
-			i_constraint2.SetProcessedByIndex();
+			Constraint1().SetProcessedByIndex();
+			Constraint2().SetProcessedByIndex();
 		}
 	}
 }

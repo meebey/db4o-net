@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				if (value == null)
 				{
-					Sharpen.Util.Collections.Remove(_values, Thread.CurrentThread());
+					Sharpen.Collections.Remove(_values, Thread.CurrentThread());
 				}
 				else
 				{

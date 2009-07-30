@@ -8,15 +8,14 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MObjectSetIndexOf : MObjectSet, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
 			lock (StreamLock())
 			{
 				int id = queryResult.IndexOf(ReadInt());
-				Write(Msg.ObjectsetIndexof.GetWriterForInt(Transaction(), id));
+				return Msg.ObjectsetIndexof.GetWriterForInt(Transaction(), id);
 			}
-			return true;
 		}
 	}
 }

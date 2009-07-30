@@ -234,12 +234,24 @@ namespace Db4objects.Db4o.Defragment
 				}
 				finally
 				{
-					backupBin.Close();
+					SyncAndClose(backupBin);
 				}
 			}
 			finally
 			{
-				origBin.Close();
+				SyncAndClose(origBin);
+			}
+		}
+
+		private static void SyncAndClose(IBin bin)
+		{
+			try
+			{
+				bin.Sync();
+			}
+			finally
+			{
+				bin.Close();
 			}
 		}
 
@@ -271,14 +283,14 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.HasMoreIds())
 			{
 				int origID = unindexedIDs.NextId();
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_211(), 
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_220(), 
 					true);
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_211 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_220 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_211()
+			public _ISlotCopyHandler_220()
 			{
 			}
 
@@ -395,12 +407,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_304(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_313(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_304 : IVisitor4
+		private sealed class _IVisitor4_313 : IVisitor4
 		{
-			public _IVisitor4_304(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_313(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

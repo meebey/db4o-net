@@ -47,6 +47,9 @@ namespace Db4objects.Db4o.CS.Config
 		/// <summary>Sets the depth to which prefetched objects will be activated.</summary>
 		/// <remarks>Sets the depth to which prefetched objects will be activated.</remarks>
 		/// <param name="value"></param>
-		void PrefetchDepth(int prefetchDepth);
+		int PrefetchDepth
+		{
+			set;
+		}
 	}
 }

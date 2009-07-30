@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MGetInternalIDs : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			ByteArrayBuffer bytes = GetByteLoad();
 			int classMetadataID = bytes.ReadInt();
@@ -20,8 +20,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				);
 			MsgD message = Msg.IdList.GetWriterForLength(Transaction(), payload.Length());
 			message.PayLoad().WriteBytes(payload._buffer);
-			Write(message);
-			return true;
+			return message;
 		}
 
 		private ByteArrayBuffer MarshallIDsFor(int classMetadataID, int prefetchDepth, int

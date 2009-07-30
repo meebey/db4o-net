@@ -4,7 +4,7 @@ using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
 
-namespace Db4objects.Db4o.Tests.Jre12.Collections
+namespace Db4oUnit
 {
 	public class IteratorAssert
 	{

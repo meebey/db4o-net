@@ -13,11 +13,13 @@ using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Metadata;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Internal.Threading;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Core;
@@ -77,8 +79,6 @@ namespace Db4objects.Db4o.Internal
 		private int _topLevelCallId = 1;
 
 		private IntIdGenerator _topLevelCallIdGenerator = new IntIdGenerator();
-
-		private bool _topLevelCallCompleted;
 
 		private readonly IEnvironment _environment;
 
@@ -142,11 +142,10 @@ namespace Db4objects.Db4o.Internal
 					}
 					finally
 					{
-						//				} catch (Exception e) {
-						//					e.printStackTrace();
-						//					throw new Db4oException(e);
 						if (!ok)
 						{
+							// TODO: This will swallow the causing exception if
+							//       an exception occurs during shutdown.
 							this._enclosing.ShutdownObjectContainer();
 						}
 					}
@@ -180,16 +179,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				Activate(CheckTransaction(trans), obj, DefaultActivationDepthForObject(obj));
+				Activate(trans, obj, DefaultActivationDepthForObject(obj));
 			}
 		}
 
 		public void Deactivate(Db4objects.Db4o.Internal.Transaction trans, object obj)
 		{
-			lock (_lock)
-			{
-				Deactivate(CheckTransaction(trans), obj, 1);
-			}
+			Deactivate(trans, obj, 1);
 		}
 
 		private IActivationDepth DefaultActivationDepthForObject(object obj)
@@ -203,23 +199,33 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				trans = CheckTransaction(trans);
-				BeginTopLevelCall();
-				try
-				{
-					StillToActivate(ActivationContextFor(trans, obj, depth));
-					ActivatePending(trans);
-					CompleteTopLevelCall();
-				}
-				catch (Db4oException e)
-				{
-					CompleteTopLevelCall(e);
-				}
-				finally
-				{
-					EndTopLevelCall();
-				}
+				AsTopLevelCall(new _IFunction4_162(this, obj, depth), trans);
 			}
+		}
+
+		private sealed class _IFunction4_162 : IFunction4
+		{
+			public _IFunction4_162(ObjectContainerBase _enclosing, object obj, IActivationDepth
+				 depth)
+			{
+				this._enclosing = _enclosing;
+				this.obj = obj;
+				this.depth = depth;
+			}
+
+			public object Apply(object trans)
+			{
+				this._enclosing.StillToActivate(this._enclosing.ActivationContextFor(((Db4objects.Db4o.Internal.Transaction
+					)trans), obj, depth));
+				this._enclosing.ActivatePending(((Db4objects.Db4o.Internal.Transaction)trans));
+				return null;
+			}
+
+			private readonly ObjectContainerBase _enclosing;
+
+			private readonly object obj;
+
+			private readonly IActivationDepth depth;
 		}
 
 		internal sealed class PendingActivation
@@ -435,8 +441,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void Close1()
 		{
-			// this is set to null in close2 and is therefore our check for down.
-			if (_classCollection == null)
+			if (IsClosed())
 			{
 				return;
 			}
@@ -479,25 +484,55 @@ namespace Db4objects.Db4o.Internal
 				{
 					DTrace.Commit.Log();
 				}
-				trans = CheckTransaction(trans);
 				CheckReadOnly();
-				BeginTopLevelCall();
-				try
-				{
-					Commit1(trans);
-					trans.CommitReferenceSystem();
-					CompleteTopLevelCall();
-				}
-				catch (Db4oException e)
-				{
-					CompleteTopLevelCall(e);
-				}
-				finally
-				{
-					EndTopLevelCall();
-				}
+				AsTopLevelCall(new _IFunction4_373(this), trans);
 			}
 		}
+
+		private sealed class _IFunction4_373 : IFunction4
+		{
+			public _IFunction4_373(ObjectContainerBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object trans)
+			{
+				this._enclosing.Commit1(((Transaction)trans));
+				((Transaction)trans).CommitReferenceSystem();
+				return null;
+			}
+
+			private readonly ObjectContainerBase _enclosing;
+		}
+
+		private object AsTopLevelSet(IFunction4 block, Transaction trans)
+		{
+			trans = CheckTransaction(trans);
+			object result = AsTopLevelCall(block, trans);
+			if (_stackDepth == 0)
+			{
+				trans.ProcessDeletes();
+			}
+			return result;
+		}
+
+		// should never happen - just to make compiler happy
+		private void FatalShutdown(Exception origExc)
+		{
+			try
+			{
+				StopSession();
+				FatalStorageShutdown();
+			}
+			catch (Exception exc)
+			{
+				throw new CompositeDb4oException(new Exception[] { origExc, exc });
+			}
+			throw origExc;
+		}
+
+		protected abstract void FatalStorageShutdown();
 
 		public abstract void Commit1(Transaction trans);
 
@@ -578,23 +613,31 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				trans = CheckTransaction(trans);
-				BeginTopLevelCall();
-				try
-				{
-					DeactivateInternal(trans, obj, ActivationDepthProvider().ActivationDepth(depth, ActivationMode
-						.Deactivate));
-					CompleteTopLevelCall();
-				}
-				catch (Db4oException e)
-				{
-					CompleteTopLevelCall(e);
-				}
-				finally
-				{
-					EndTopLevelCall();
-				}
+				AsTopLevelCall(new _IFunction4_486(this, obj, depth), trans);
 			}
+		}
+
+		private sealed class _IFunction4_486 : IFunction4
+		{
+			public _IFunction4_486(ObjectContainerBase _enclosing, object obj, int depth)
+			{
+				this._enclosing = _enclosing;
+				this.obj = obj;
+				this.depth = depth;
+			}
+
+			public object Apply(object trans)
+			{
+				this._enclosing.DeactivateInternal(((Transaction)trans), obj, this._enclosing.ActivationDepthProvider
+					().ActivationDepth(depth, ActivationMode.Deactivate));
+				return null;
+			}
+
+			private readonly ObjectContainerBase _enclosing;
+
+			private readonly object obj;
+
+			private readonly int depth;
 		}
 
 		private void DeactivateInternal(Transaction trans, object obj, IActivationDepth depth
@@ -652,20 +695,33 @@ namespace Db4objects.Db4o.Internal
 			{
 				GenerateCallIDOnTopLevel();
 			}
-			try
+			AsTopLevelCall(new _IFunction4_535(this, @ref, obj, userCall), trans);
+		}
+
+		private sealed class _IFunction4_535 : IFunction4
+		{
+			public _IFunction4_535(ObjectContainerBase _enclosing, ObjectReference @ref, object
+				 obj, bool userCall)
 			{
-				BeginTopLevelCall();
-				Delete2(trans, @ref, obj, 0, userCall);
-				CompleteTopLevelCall();
+				this._enclosing = _enclosing;
+				this.@ref = @ref;
+				this.obj = obj;
+				this.userCall = userCall;
 			}
-			catch (Db4oException e)
+
+			public object Apply(object trans)
 			{
-				CompleteTopLevelCall(e);
+				this._enclosing.Delete2(((Transaction)trans), @ref, obj, 0, userCall);
+				return null;
 			}
-			finally
-			{
-				EndTopLevelCall();
-			}
+
+			private readonly ObjectContainerBase _enclosing;
+
+			private readonly ObjectReference @ref;
+
+			private readonly object obj;
+
+			private readonly bool userCall;
 		}
 
 		public void Delete2(Transaction trans, ObjectReference @ref, object obj, int cascade
@@ -712,7 +768,7 @@ namespace Db4objects.Db4o.Internal
 			// can't do anything at all with this object.
 			@ref.EndProcessing();
 			ActivateForDeletionCallback(trans, yc, @ref, obj);
-			if (!ObjectCanDelete(trans, yc, obj))
+			if (!ObjectCanDelete(trans, yc, @ref))
 			{
 				return;
 			}
@@ -769,11 +825,11 @@ namespace Db4objects.Db4o.Internal
 				(), EventDispatchers.Delete);
 		}
 
-		private bool ObjectCanDelete(Transaction transaction, ClassMetadata yc, object obj
-			)
+		private bool ObjectCanDelete(Transaction transaction, ClassMetadata yc, IObjectInfo
+			 objectInfo)
 		{
-			return Callbacks().ObjectCanDelete(transaction, obj) && yc.DispatchEvent(transaction
-				, obj, EventDispatchers.CanDelete);
+			return Callbacks().ObjectCanDelete(transaction, objectInfo) && yc.DispatchEvent(transaction
+				, objectInfo.GetObject(), EventDispatchers.CanDelete);
 		}
 
 		private void ObjectOnDelete(Transaction transaction, ClassMetadata yc, IObjectInfo
@@ -803,7 +859,8 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.ForEachField(new _IProcedure4_638(fieldName, foundField));
+				classMetadata.TraverseAllAspects(new _TraverseFieldCommand_663(fieldName, foundField
+					));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
 				{
@@ -825,20 +882,19 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IProcedure4_638 : IProcedure4
+		private sealed class _TraverseFieldCommand_663 : TraverseFieldCommand
 		{
-			public _IProcedure4_638(string fieldName, ByRef foundField)
+			public _TraverseFieldCommand_663(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
 			}
 
-			public void Apply(object arg)
+			protected override void Process(FieldMetadata field)
 			{
-				FieldMetadata fieldMetadata = (FieldMetadata)arg;
-				if (fieldMetadata.CanAddToQuery(fieldName))
+				if (field.CanAddToQuery(fieldName))
 				{
-					foundField.value = fieldMetadata;
+					foundField.value = field;
 				}
 			}
 
@@ -944,23 +1000,28 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				trans = CheckTransaction(trans);
-				IQueryResult res = null;
-				try
-				{
-					BeginTopLevelCall();
-					res = QueryByExampleInternal(trans, template);
-					CompleteTopLevelCall();
-				}
-				catch (Db4oException e)
-				{
-					CompleteTopLevelCall(e);
-				}
-				finally
-				{
-					EndTopLevelCall();
-				}
+				IQueryResult res = ((IQueryResult)AsTopLevelCall(new _IFunction4_780(this, template
+					), trans));
 				return new ObjectSetFacade(res);
 			}
+		}
+
+		private sealed class _IFunction4_780 : IFunction4
+		{
+			public _IFunction4_780(ObjectContainerBase _enclosing, object template)
+			{
+				this._enclosing = _enclosing;
+				this.template = template;
+			}
+
+			public object Apply(object trans)
+			{
+				return this._enclosing.QueryByExampleInternal(((Transaction)trans), template);
+			}
+
+			private readonly ObjectContainerBase _enclosing;
+
+			private readonly object template;
 		}
 
 		private IQueryResult QueryByExampleInternal(Transaction trans, object template)
@@ -1009,28 +1070,27 @@ namespace Db4objects.Db4o.Internal
 				BeginTopLevelCall();
 				try
 				{
-					object obj = GetByID2(ta, (int)id);
-					CompleteTopLevelCall();
-					return obj;
+					return GetByID2(ta, (int)id);
 				}
-				catch (Db4oException e)
+				catch (Db4oRecoverableException exc)
 				{
-					CompleteTopLevelCall(new InvalidIDException(e));
+					throw;
 				}
-				catch (IndexOutOfRangeException aiobe)
+				catch (OutOfMemoryException e)
 				{
-					CompleteTopLevelCall(new InvalidIDException(aiobe));
+					throw new Db4oRecoverableException(e);
+				}
+				catch (Exception e)
+				{
+					throw new Db4oRecoverableException(e);
 				}
 				finally
 				{
 					// Never shut down for getById()
 					// There may be OutOfMemoryErrors or similar
 					// The user may want to catch and continue working.
-					_topLevelCallCompleted = true;
 					EndTopLevelCall();
 				}
-				// only to make the compiler happy
-				return null;
 			}
 		}
 
@@ -1059,26 +1119,27 @@ namespace Db4objects.Db4o.Internal
 			return obj;
 		}
 
-		public object ReadActivatedObjectNotInCache(Transaction ta, int id)
+		public object ReadActivatedObjectNotInCache(Transaction trans, int id)
 		{
-			object obj = null;
-			BeginTopLevelCall();
-			try
-			{
-				obj = new ObjectReference(id).Read(ta, UnknownActivationDepth.Instance, Const4.AddToIdTree
-					, true);
-				CompleteTopLevelCall();
-			}
-			catch (Db4oException e)
-			{
-				CompleteTopLevelCall(e);
-			}
-			finally
-			{
-				EndTopLevelCall();
-			}
-			ActivatePending(ta);
+			object obj = AsTopLevelCall(new _IFunction4_862(id), trans);
+			ActivatePending(trans);
 			return obj;
+		}
+
+		private sealed class _IFunction4_862 : IFunction4
+		{
+			public _IFunction4_862(int id)
+			{
+				this.id = id;
+			}
+
+			public object Apply(object trans)
+			{
+				return new ObjectReference(id).Read(((Transaction)trans), UnknownActivationDepth.
+					Instance, Const4.AddToIdTree, true);
+			}
+
+			private readonly int id;
 		}
 
 		public object GetByUUID(Transaction trans, Db4oUUID uuid)
@@ -1426,6 +1487,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
+				// this is set to null in close2 and is therefore our check for down.
 				return _classCollection == null;
 			}
 		}
@@ -1530,30 +1592,42 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				CheckClosed();
-				BeginTopLevelCall();
-				try
-				{
-					trans = CheckTransaction(trans);
-					ObjectReference @ref = trans.ReferenceForObject(obj);
-					trans = committed ? _systemTransaction : trans;
-					object cloned = null;
-					if (@ref != null)
-					{
-						cloned = PeekPersisted(trans, @ref.GetID(), depth, true);
-					}
-					CompleteTopLevelCall();
-					return cloned;
-				}
-				catch (Db4oException e)
-				{
-					CompleteTopLevelCall(e);
-					return null;
-				}
-				finally
-				{
-					EndTopLevelCall();
-				}
+				return AsTopLevelCall(new _IFunction4_1246(this, obj, committed, depth), trans);
 			}
+		}
+
+		private sealed class _IFunction4_1246 : IFunction4
+		{
+			public _IFunction4_1246(ObjectContainerBase _enclosing, object obj, bool committed
+				, IActivationDepth depth)
+			{
+				this._enclosing = _enclosing;
+				this.obj = obj;
+				this.committed = committed;
+				this.depth = depth;
+			}
+
+			public object Apply(object trans)
+			{
+				trans = this._enclosing.CheckTransaction(((Transaction)trans));
+				ObjectReference @ref = ((Transaction)trans).ReferenceForObject(obj);
+				trans = committed ? this._enclosing._systemTransaction : ((Transaction)trans);
+				object cloned = null;
+				if (@ref != null)
+				{
+					cloned = this._enclosing.PeekPersisted(((Transaction)trans), @ref.GetID(), depth, 
+						true);
+				}
+				return cloned;
+			}
+
+			private readonly ObjectContainerBase _enclosing;
+
+			private readonly object obj;
+
+			private readonly bool committed;
+
+			private readonly IActivationDepth depth;
 		}
 
 		public object PeekPersisted(Transaction trans, int id, IActivationDepth depth, bool
@@ -1927,24 +2001,35 @@ namespace Db4objects.Db4o.Internal
 		public virtual int StoreInternal(Transaction trans, object obj, int depth, bool checkJustSet
 			)
 		{
-			trans = CheckTransaction(trans);
 			CheckReadOnly();
-			BeginTopLevelSet();
-			try
+			return (((int)AsTopLevelSet(new _IFunction4_1563(this, obj, depth, checkJustSet), 
+				trans)));
+		}
+
+		private sealed class _IFunction4_1563 : IFunction4
+		{
+			public _IFunction4_1563(ObjectContainerBase _enclosing, object obj, int depth, bool
+				 checkJustSet)
 			{
-				int id = StoreAfterReplication(trans, obj, depth, checkJustSet);
-				CompleteTopLevelSet();
-				return id;
+				this._enclosing = _enclosing;
+				this.obj = obj;
+				this.depth = depth;
+				this.checkJustSet = checkJustSet;
 			}
-			catch (Db4oException e)
+
+			public object Apply(object trans)
 			{
-				CompleteTopLevelCall();
-				throw;
+				return this._enclosing.StoreAfterReplication(((Transaction)trans), obj, depth, checkJustSet
+					);
 			}
-			finally
-			{
-				EndTopLevelSet(trans);
-			}
+
+			private readonly ObjectContainerBase _enclosing;
+
+			private readonly object obj;
+
+			private readonly int depth;
+
+			private readonly bool checkJustSet;
 		}
 
 		public int StoreAfterReplication(Transaction trans, object obj, int depth, bool checkJust
@@ -2084,9 +2169,9 @@ namespace Db4objects.Db4o.Internal
 
 		private void AssertNotInCallback()
 		{
-			if ((((bool)InCallbackState._inCallback.Value)))
+			if (InCallback.Value())
 			{
-				throw new InvalidOperationException("Objects must not be updated in callback");
+				throw new Db4oIllegalStateException("Objects must not be updated in callback");
 			}
 		}
 
@@ -2360,36 +2445,7 @@ namespace Db4objects.Db4o.Internal
 				DTrace.BeginTopLevelCall.Log();
 			}
 			GenerateCallIDOnTopLevel();
-			if (_stackDepth == 0)
-			{
-				_topLevelCallCompleted = false;
-			}
 			_stackDepth++;
-		}
-
-		public void BeginTopLevelSet()
-		{
-			BeginTopLevelCall();
-		}
-
-		public void CompleteTopLevelCall()
-		{
-			if (_stackDepth == 1)
-			{
-				_topLevelCallCompleted = true;
-			}
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oException"></exception>
-		private void CompleteTopLevelCall(Db4oException e)
-		{
-			CompleteTopLevelCall();
-			throw e;
-		}
-
-		public void CompleteTopLevelSet()
-		{
-			CompleteTopLevelCall();
 		}
 
 		private void EndTopLevelCall()
@@ -2400,22 +2456,6 @@ namespace Db4objects.Db4o.Internal
 			}
 			_stackDepth--;
 			GenerateCallIDOnTopLevel();
-			if (_stackDepth == 0)
-			{
-				if (!_topLevelCallCompleted)
-				{
-					ShutdownObjectContainer();
-				}
-			}
-		}
-
-		public void EndTopLevelSet(Transaction trans)
-		{
-			EndTopLevelCall();
-			if (_stackDepth == 0 && _topLevelCallCompleted)
-			{
-				trans.ProcessDeletes();
-			}
 		}
 
 		private void GenerateCallIDOnTopLevel()
@@ -2529,8 +2569,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (id <= 0)
 			{
-				return;
+				throw new ArgumentException("ID: " + id);
 			}
+			//			return;
 			if (cascadeDeleteDepth <= 0)
 			{
 				return;
@@ -2591,6 +2632,11 @@ namespace Db4objects.Db4o.Internal
 					_transaction = old;
 				}
 			}
+		}
+
+		public virtual IThreadPool4 ThreadPool()
+		{
+			return ((IThreadPool4)Environment().Provide(typeof(IThreadPool4)));
 		}
 
 		public abstract void Activate(object arg1, int arg2);

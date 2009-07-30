@@ -10,9 +10,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MUserMessage : MsgObject, IServerSideMessage, IClientSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
-			return ProcessUserMessage();
+			ProcessUserMessage();
 		}
 
 		public bool ProcessAtClient()

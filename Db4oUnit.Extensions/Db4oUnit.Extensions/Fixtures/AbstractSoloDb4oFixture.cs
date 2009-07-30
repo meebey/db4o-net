@@ -8,6 +8,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Threading;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
@@ -25,6 +26,12 @@ namespace Db4oUnit.Extensions.Fixtures
 			IConfiguration config = CloneConfiguration();
 			ApplyFixtureConfiguration(testInstance, config);
 			_db = CreateDatabase(config).Ext();
+			ListenToUncaughtExceptions(ThreadPool());
+		}
+
+		private IThreadPool4 ThreadPool()
+		{
+			return ThreadPoolFor(_db);
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -33,7 +40,14 @@ namespace Db4oUnit.Extensions.Fixtures
 			if (null != _db)
 			{
 				Assert.IsTrue(Db().Close());
-				_db = null;
+				try
+				{
+					ThreadPool().Join(3000);
+				}
+				finally
+				{
+					_db = null;
+				}
 			}
 		}
 

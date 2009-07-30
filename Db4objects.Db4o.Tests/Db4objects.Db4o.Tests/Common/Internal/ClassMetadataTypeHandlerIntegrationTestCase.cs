@@ -8,7 +8,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Marshall;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Internal;
 using Db4objects.Db4o.Typehandlers;
 
@@ -28,11 +27,6 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		{
 			public virtual void Activate(IReferenceActivationContext context)
 			{
-			}
-
-			public virtual bool CanHold(IReflectClass type)
-			{
-				return false;
 			}
 
 			public virtual void Defragment(IDefragmentContext context)

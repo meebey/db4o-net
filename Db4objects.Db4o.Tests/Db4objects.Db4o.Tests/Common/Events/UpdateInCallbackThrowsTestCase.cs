@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 					return;
 				}
-				Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_56(this, item));
+				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_56(this, item));
 			}
 
 			private sealed class _ICodeBlock_56 : ICodeBlock
@@ -110,17 +110,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			IObjectSet items = QueryItemsByName("foo");
 			Assert.AreEqual(1, items.Count);
 			Assert.IsFalse((((bool)activateRaised.value)));
-			try
-			{
-				items.Next();
-			}
-			catch (DatabaseClosedException dce)
-			{
-				if (!IsClientServer())
-				{
-					throw;
-				}
-			}
+			items.Next();
 			Assert.IsTrue((((bool)activateRaised.value)));
 		}
 
@@ -147,7 +137,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 					return;
 				}
 				activateRaised.value = true;
-				Assert.Expect(typeof(InvalidOperationException), new _ICodeBlock_85(this, item));
+				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_85(this, item));
 			}
 
 			private sealed class _ICodeBlock_85 : ICodeBlock

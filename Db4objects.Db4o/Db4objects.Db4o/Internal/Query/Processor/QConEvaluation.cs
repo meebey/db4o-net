@@ -13,9 +13,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		[System.NonSerialized]
 		private object i_evaluation;
 
-		public byte[] i_marshalledEvaluation;
+		private byte[] i_marshalledEvaluation;
 
-		public int i_marshalledID;
+		private int i_marshalledID;
 
 		public QConEvaluation()
 		{

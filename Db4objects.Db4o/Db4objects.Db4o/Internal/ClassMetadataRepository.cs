@@ -5,6 +5,7 @@ using System.Collections;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Metadata;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -76,25 +77,24 @@ namespace Db4objects.Db4o.Internal
 				ClassMetadata classMetadata = i.CurrentClass();
 				if (!classMetadata.IsInternal())
 				{
-					classMetadata.ForEachField(new _IProcedure4_64(fieldName, visitor, classMetadata)
-						);
+					classMetadata.TraverseAllAspects(new _TraverseFieldCommand_65(fieldName, visitor, 
+						classMetadata));
 				}
 			}
 		}
 
-		private sealed class _IProcedure4_64 : IProcedure4
+		private sealed class _TraverseFieldCommand_65 : TraverseFieldCommand
 		{
-			public _IProcedure4_64(string fieldName, IVisitor4 visitor, ClassMetadata classMetadata
-				)
+			public _TraverseFieldCommand_65(string fieldName, IVisitor4 visitor, ClassMetadata
+				 classMetadata)
 			{
 				this.fieldName = fieldName;
 				this.visitor = visitor;
 				this.classMetadata = classMetadata;
 			}
 
-			public void Apply(object obj)
+			protected override void Process(FieldMetadata field)
 			{
-				FieldMetadata field = (FieldMetadata)obj;
 				if (field.CanAddToQuery(fieldName))
 				{
 					visitor.Visit(new object[] { classMetadata, field });

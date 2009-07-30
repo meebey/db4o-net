@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			return message;
 		}
 
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			int address = ReadInt();
 			int length = ReadInt();
@@ -38,15 +38,14 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				try
 				{
 					Stream().ReadBytes(bytes._buffer, address, length);
-					Write(GetWriter(bytes));
+					return GetWriter(bytes);
 				}
 				catch (Exception)
 				{
 					// TODO: not nicely handled on the client side yet
-					Write(Msg.Null);
+					return Msg.Null;
 				}
 			}
-			return true;
 		}
 	}
 }

@@ -12,12 +12,10 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Collection4 : ISequence4, IEnumerable, IDeepClone, IUnversioned
 	{
-		/// <summary>first element of the linked list</summary>
 		private List4 _first;
 
 		private List4 _last;
 
-		/// <summary>number of elements collected</summary>
 		private int _size;
 
 		private int _version;
@@ -28,7 +26,6 @@ namespace Db4objects.Db4o.Foundation
 
 		public Collection4(object[] elements)
 		{
-			// FIELDS ARE PUBLIC SO THEY CAN BE REFLECTED ON IN JDKs <= 1.1
 			AddAll(elements);
 		}
 

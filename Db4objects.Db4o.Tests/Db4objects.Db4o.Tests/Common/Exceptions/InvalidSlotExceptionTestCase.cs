@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
-			Assert.Expect(typeof(InvalidIDException), typeof(InvalidSlotException), new _ICodeBlock_30
-				(this));
+			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_30(this));
+			Assert.IsFalse(Db().IsClosed());
 		}
 
 		private sealed class _ICodeBlock_30 : ICodeBlock
@@ -55,15 +55,20 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestDbNotClosedOnOutOfMemory()
 		{
-			Type expectedException = IsNetworkingClientServer() || IsInMemory() ? typeof(InvalidIDException
-				) : typeof(OutOfMemoryException);
-			Assert.Expect(expectedException, new _ICodeBlock_42(this));
+			// TODO why different behavior with in memory fixture?
+			if (IsInMemory())
+			{
+				Assert.Expect(typeof(InvalidSlotException), new _ICodeBlock_41(this));
+				return;
+			}
+			Assert.Expect(typeof(Db4oRecoverableException), typeof(OutOfMemoryException), new 
+				_ICodeBlock_48(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_42 : ICodeBlock
+		private sealed class _ICodeBlock_41 : ICodeBlock
 		{
-			public _ICodeBlock_42(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_41(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -77,14 +82,20 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			private readonly InvalidSlotExceptionTestCase _enclosing;
 		}
 
-		private bool IsInMemory()
+		private sealed class _ICodeBlock_48 : ICodeBlock
 		{
-			return Fixture() is Db4oInMemory;
-		}
+			public _ICodeBlock_48(InvalidSlotExceptionTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
 
-		private bool IsNetworkingClientServer()
-		{
-			return IsClientServer() && !IsEmbeddedClientServer();
+			/// <exception cref="System.Exception"></exception>
+			public void Run()
+			{
+				this._enclosing.Db().GetByID(InvalidSlotExceptionTestCase.OutOfMemoryId);
+			}
+
+			private readonly InvalidSlotExceptionTestCase _enclosing;
 		}
 
 		public class A
@@ -146,6 +157,11 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 					_deliverInvalidSlot = false;
 				}
 			}
+		}
+
+		private bool IsInMemory()
+		{
+			return Fixture() is Db4oInMemory;
 		}
 	}
 }

@@ -7,13 +7,12 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MCommitSystemTransaction : Msg, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			lock (StreamLock())
 			{
 				Transaction().SystemTransaction().Commit();
 			}
-			return true;
 		}
 	}
 }

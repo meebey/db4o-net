@@ -15,8 +15,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private static readonly double Defaultvalue = System.Convert.ToDouble(0);
 
-		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
-			)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
 			return Coercion4.ToDouble(obj);
 		}

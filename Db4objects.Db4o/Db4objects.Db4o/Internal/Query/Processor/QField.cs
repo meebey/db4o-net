@@ -15,14 +15,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		[System.NonSerialized]
 		internal Transaction i_trans;
 
-		public string i_name;
+		private string i_name;
 
 		[System.NonSerialized]
 		internal FieldMetadata _fieldMetadata;
 
-		public int i_classMetadataID;
+		private int i_classMetadataID;
 
-		public int _fieldHandle;
+		private int _fieldHandle;
 
 		public QField()
 		{
@@ -46,15 +46,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual bool CanHold(IReflectClass claxx)
+		public virtual string Name()
 		{
-			return _fieldMetadata == null || _fieldMetadata.CanHold(claxx);
+			return i_name;
 		}
 
 		internal virtual object Coerce(object a_object)
 		{
 			IReflectClass claxx = null;
-			IReflector reflector = i_trans.Reflector();
 			if (a_object != null)
 			{
 				if (a_object is IReflectClass)
@@ -63,7 +62,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				else
 				{
-					claxx = reflector.ForObject(a_object);
+					claxx = i_trans.Reflector().ForObject(a_object);
 				}
 			}
 			else
@@ -78,7 +77,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return _fieldMetadata.Coerce(claxx, a_object);
 		}
 
-		internal virtual ClassMetadata GetYapClass()
+		internal virtual ClassMetadata GetFieldType()
 		{
 			if (_fieldMetadata != null)
 			{
@@ -87,21 +86,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return null;
 		}
 
-		internal virtual FieldMetadata GetYapField(ClassMetadata yc)
-		{
-			if (_fieldMetadata != null)
-			{
-				return _fieldMetadata;
-			}
-			FieldMetadata yf = yc.FieldMetadataForName(i_name);
-			if (yf != null)
-			{
-				yf.Alive();
-			}
-			return yf;
-		}
-
-		public virtual FieldMetadata GetYapField()
+		public virtual FieldMetadata GetFieldMetadata()
 		{
 			return _fieldMetadata;
 		}
@@ -137,7 +122,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			ClassMetadata yc = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
 				(obj));
-			FieldMetadata yf = yc.FieldMetadataForName(i_name);
+			FieldMetadata yf = yc.FieldMetadataForName(Name());
 			if (yf != null)
 			{
 				return yf.PrepareComparison(context, obj);

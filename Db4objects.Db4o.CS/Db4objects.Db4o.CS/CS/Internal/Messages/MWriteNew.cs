@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MWriteNew : MsgObject, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			int classMetadataId = _payLoad.ReadInt();
 			LocalObjectContainer stream = (LocalObjectContainer)Stream();
@@ -30,7 +30,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				stream.WriteNew(Transaction(), _payLoad.Pointer(), classMetadata, _payLoad);
 				ServerTransaction().WritePointer(id, slot);
 			}
-			return true;
 		}
 	}
 }

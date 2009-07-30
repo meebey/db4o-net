@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (a_field != null)
 			{
-				i_classMetadata = a_field.GetYapClass();
+				i_classMetadata = a_field.GetFieldType();
 			}
 		}
 
@@ -65,11 +65,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return null;
 			}
-			if (!i_field.CanHold(a_class))
-			{
-				return null;
-			}
-			QConClass newConstraint = new QConClass(i_trans, i_parent, i_field, a_class);
+			QConClass newConstraint = new QConClass(i_trans, i_parent, GetField(), a_class);
 			Morph(removeExisting, newConstraint, a_class);
 			return newConstraint;
 		}
@@ -80,15 +76,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return null;
 			}
-			object obj = i_field.Coerce(a_object);
+			object obj = GetField().Coerce(a_object);
 			if (obj == No4.Instance)
 			{
 				QCon falseConstraint = new QConUnconditional(i_trans, false);
 				Morph(removeExisting, falseConstraint, ReflectClassForObject(obj));
 				return falseConstraint;
 			}
-			QConObject newConstraint = new QConObject(i_trans, i_parent, i_field, obj);
-			newConstraint.i_orderID = i_orderID;
+			QConObject newConstraint = new QConObject(i_trans, i_parent, GetField(), obj);
+			newConstraint.SetOrdering(Ordering());
 			Morph(removeExisting, newConstraint, ReflectClassForObject(obj));
 			return newConstraint;
 		}
@@ -115,7 +111,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					while (i.MoveNext())
 					{
 						QField qf = ((QCon)i.Current).GetField();
-						if (!yc.HasField(i_trans.Container(), qf.i_name))
+						if (!yc.HasField(i_trans.Container(), qf.Name()))
 						{
 							mayMorph = false;
 							break;

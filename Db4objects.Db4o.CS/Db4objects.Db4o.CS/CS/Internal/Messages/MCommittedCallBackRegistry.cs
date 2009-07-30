@@ -7,11 +7,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MCommittedCallBackRegistry : Msg, IServerSideMessage
 	{
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			IServerMessageDispatcher dispatcher = ServerMessageDispatcher();
 			dispatcher.CaresAboutCommitted(true);
-			return true;
 		}
 	}
 }

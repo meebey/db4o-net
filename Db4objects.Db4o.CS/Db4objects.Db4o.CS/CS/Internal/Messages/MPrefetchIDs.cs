@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MPrefetchIDs : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			int prefetchIDCount = ReadInt();
 			MsgD reply = Msg.IdList.GetWriterForLength(Transaction(), Const4.IntLength * prefetchIDCount
@@ -19,8 +19,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					reply.WriteInt(((LocalObjectContainer)Stream()).PrefetchID());
 				}
 			}
-			Write(reply);
-			return true;
+			return reply;
 		}
 	}
 }

@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual void Start()
 		{
-			_timer.Start();
+			_container.ThreadPool().Start(_timer);
 		}
 
 		public virtual void Stop()

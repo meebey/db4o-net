@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MObjectSetFetch : MObjectSet, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
 			int queryResultID = ReadInt();
 			int fetchSize = ReadInt();
@@ -24,8 +24,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					);
 				message = IdList.GetWriterForBuffer(Transaction(), payload);
 			}
-			Write(message);
-			return true;
+			return message;
 		}
 	}
 }

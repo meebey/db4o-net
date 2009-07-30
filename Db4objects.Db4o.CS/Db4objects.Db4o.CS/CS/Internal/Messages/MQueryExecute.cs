@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.CS.Internal.Objectexchange;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Sharpen.Lang;
@@ -10,29 +11,33 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MQueryExecute : MsgQuery, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			Unmarshall(_payLoad._offset);
-			Stream().WithTransaction(Transaction(), new _IRunnable_14(this));
-			return true;
+			ObjectByRef result = new ObjectByRef();
+			Stream().WithTransaction(Transaction(), new _IRunnable_15(this, result));
+			return ((Msg)result.value);
 		}
 
-		private sealed class _IRunnable_14 : IRunnable
+		private sealed class _IRunnable_15 : IRunnable
 		{
-			public _IRunnable_14(MQueryExecute _enclosing)
+			public _IRunnable_15(MQueryExecute _enclosing, ObjectByRef result)
 			{
 				this._enclosing = _enclosing;
+				this.result = result;
 			}
 
 			public void Run()
 			{
 				QQuery query = this._enclosing.UnmarshallQuery();
-				this._enclosing.WriteQueryResult(this._enclosing.ExecuteFully(query), query.EvaluationMode
-					(), new ObjectExchangeConfiguration(query.PrefetchDepth(), query.PrefetchCount()
-					));
+				result.value = this._enclosing.WriteQueryResult(this._enclosing.ExecuteFully(query
+					), query.EvaluationMode(), new ObjectExchangeConfiguration(query.PrefetchDepth()
+					, query.PrefetchCount()));
 			}
 
 			private readonly MQueryExecute _enclosing;
+
+			private readonly ObjectByRef result;
 		}
 
 		private QQuery UnmarshallQuery()

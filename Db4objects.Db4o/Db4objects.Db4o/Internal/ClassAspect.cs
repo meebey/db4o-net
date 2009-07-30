@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal
 		protected int _handle;
 
 		private int _disabledFromAspectCountVersion = AspectVersionContextImpl.AlwaysEnabled
-			.AspectCount();
+			.DeclaredAspectCount();
 
 		// used for identification when sending in C/S mode 
 		public abstract Db4objects.Db4o.Internal.Marshall.AspectType AspectType();
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal
 
 		public bool IsEnabledOn(IAspectVersionContext context)
 		{
-			return _disabledFromAspectCountVersion > context.AspectCount();
+			return _disabledFromAspectCountVersion > context.DeclaredAspectCount();
 		}
 
 		public abstract void Deactivate(IActivationContext context);

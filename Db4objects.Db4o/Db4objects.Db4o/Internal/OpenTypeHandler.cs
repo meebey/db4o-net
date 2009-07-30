@@ -33,11 +33,6 @@ namespace Db4objects.Db4o.Internal
 			return Container().Handlers().IclassObject;
 		}
 
-		public virtual bool CanHold(IReflectClass type)
-		{
-			return true;
-		}
-
 		public virtual void CascadeActivation(IActivationContext context)
 		{
 			object targetObject = context.TargetObject();
@@ -233,7 +228,7 @@ namespace Db4objects.Db4o.Internal
 					readContext.Collector().AddId(readContext.ReadInt());
 					return;
 				}
-				CollectIdContext collectIdContext = new _CollectIdContext_190(readContext, readContext
+				CollectIdContext collectIdContext = new _CollectIdContext_186(readContext, readContext
 					.Transaction(), readContext.Collector(), null, readContext.Buffer());
 				Handlers4.CollectIdsInternal(collectIdContext, context.Container().Handlers().CorrectHandlerVersion
 					(typeHandler, context.HandlerVersion()), 0, false);
@@ -244,9 +239,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _CollectIdContext_190 : CollectIdContext
+		private sealed class _CollectIdContext_186 : CollectIdContext
 		{
-			public _CollectIdContext_190(QueryingReadContext readContext, Transaction baseArg1
+			public _CollectIdContext_186(QueryingReadContext readContext, Transaction baseArg1
 				, IdObjectCollector baseArg2, ObjectHeader baseArg3, IReadBuffer baseArg4) : base
 				(baseArg1, baseArg2, baseArg3, baseArg4)
 			{
@@ -260,12 +255,12 @@ namespace Db4objects.Db4o.Internal
 
 			public override SlotFormat SlotFormat()
 			{
-				return new _SlotFormatCurrent_196();
+				return new _SlotFormatCurrent_192();
 			}
 
-			private sealed class _SlotFormatCurrent_196 : SlotFormatCurrent
+			private sealed class _SlotFormatCurrent_192 : SlotFormatCurrent
 			{
-				public _SlotFormatCurrent_196()
+				public _SlotFormatCurrent_192()
 				{
 				}
 

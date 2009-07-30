@@ -15,9 +15,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		[System.NonSerialized]
 		private IReflectClass _claxx;
 
-		public string _className;
+		private string _className;
 
-		public bool i_equal;
+		private bool i_equal;
 
 		public QConClass()
 		{

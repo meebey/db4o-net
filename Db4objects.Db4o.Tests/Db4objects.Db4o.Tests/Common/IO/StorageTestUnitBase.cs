@@ -42,6 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		{
 			if (null != _bin)
 			{
+				_bin.Sync();
 				_bin.Close();
 				_bin = null;
 			}

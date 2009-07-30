@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		private FieldMetadata GetYapField()
 		{
-			return _constraint.GetField().GetYapField();
+			return _constraint.GetField().GetFieldMetadata();
 		}
 
 		public virtual QCon Constraint()

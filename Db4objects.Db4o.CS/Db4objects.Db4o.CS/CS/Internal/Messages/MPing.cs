@@ -7,10 +7,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MPing : Msg, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
-			Write(Msg.Pong);
-			return true;
+			return Msg.Pong;
 		}
 	}
 }

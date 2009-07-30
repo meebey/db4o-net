@@ -1,9 +1,9 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Defragment;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Metadata;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -26,21 +26,20 @@ namespace Db4objects.Db4o.Defragment
 			, int id, int classIndexID)
 		{
 			_collector.CreateIDMapping(context, id, true);
-			classMetadata.ForEachField(new _IProcedure4_23(this, context));
+			classMetadata.TraverseAllAspects(new _TraverseFieldCommand_24(this, context));
 		}
 
-		private sealed class _IProcedure4_23 : IProcedure4
+		private sealed class _TraverseFieldCommand_24 : TraverseFieldCommand
 		{
-			public _IProcedure4_23(FirstPassCommand _enclosing, DefragmentServicesImpl context
-				)
+			public _TraverseFieldCommand_24(FirstPassCommand _enclosing, DefragmentServicesImpl
+				 context)
 			{
 				this._enclosing = _enclosing;
 				this.context = context;
 			}
 
-			public void Apply(object arg)
+			protected override void Process(FieldMetadata field)
 			{
-				FieldMetadata field = (FieldMetadata)arg;
 				if (!field.IsVirtual() && field.HasIndex())
 				{
 					this._enclosing.ProcessBTree(context, field.GetIndex(context.SystemTrans()));

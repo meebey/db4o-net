@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MClassMeta : MsgObject, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
 			ObjectContainerBase stream = Stream();
 			Unmarshall();
@@ -33,8 +33,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 							classMetadata.Write(trans);
 							trans.Commit();
 							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, classMetadata.GetID());
-							Write(Msg.ObjectToClient.GetWriter(returnBytes));
-							return true;
+							return Msg.ObjectToClient.GetWriter(returnBytes);
 						}
 					}
 				}
@@ -42,8 +41,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			catch (Exception e)
 			{
 			}
-			Write(Msg.Failed);
-			return true;
+			return Msg.Failed;
 		}
 	}
 }

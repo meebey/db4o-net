@@ -11,7 +11,7 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class MarshallingContext : IFieldListInfo, IMarshallingInfo, IWriteContext
+	public class MarshallingContext : IMarshallingInfo, IWriteContext
 	{
 		private const int HeaderLength = Const4.LeadingLength + Const4.IdLength + 1 + Const4
 			.IntLength;
@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private object _currentIndexEntry;
 
-		private int _aspectCount;
+		private int _declaredAspectCount;
 
 		public MarshallingContext(Db4objects.Db4o.Internal.Transaction trans, ObjectReference
 			 @ref, int updateDepth, bool isNew)
@@ -46,14 +46,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			// number of fields
 			_transaction = trans;
 			_reference = @ref;
-			_nullBitMap = new BitMap4(FieldCount());
+			_nullBitMap = new BitMap4(AspectCount());
 			_updateDepth = ClassMetadata().AdjustUpdateDepth(trans, updateDepth);
 			_isNew = isNew;
 			_writeBuffer = new MarshallingBuffer();
 			_currentBuffer = _writeBuffer;
 		}
 
-		private int FieldCount()
+		private int AspectCount()
 		{
 			return ClassMetadata().AspectCount();
 		}
@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_writeBuffer.MergeChildren(this, pointer.Address(), WriteBufferOffset());
 			WriteObjectClassID(buffer, ClassMetadata().GetID());
 			buffer.WriteByte(HandlerRegistry.HandlerVersion);
-			buffer.WriteInt(FieldCount());
+			buffer.WriteInt(AspectCount());
 			buffer.WriteBitMap(_nullBitMap);
 			_writeBuffer.TransferContentTo(buffer);
 			return buffer;
@@ -240,9 +240,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_currentBuffer = _writeBuffer;
 		}
 
-		public virtual void FieldCount(int fieldCount)
+		public virtual void WriteDeclaredAspectCount(int count)
 		{
-			_writeBuffer.WriteInt(fieldCount);
+			_writeBuffer.WriteInt(count);
 		}
 
 		public virtual void DebugPrependNextWrite(ByteArrayBuffer prepend)
@@ -366,14 +366,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return reservedBuffer;
 		}
 
-		public virtual int AspectCount()
+		public virtual int DeclaredAspectCount()
 		{
-			return _aspectCount;
+			return _declaredAspectCount;
 		}
 
-		public virtual void AspectCount(int count)
+		public virtual void DeclaredAspectCount(int count)
 		{
-			_aspectCount = count;
+			_declaredAspectCount = count;
 		}
 	}
 }

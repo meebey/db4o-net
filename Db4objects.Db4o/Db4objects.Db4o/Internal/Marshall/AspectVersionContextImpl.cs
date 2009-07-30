@@ -8,19 +8,19 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public class AspectVersionContextImpl : IAspectVersionContext
 	{
-		private readonly int _aspectCount;
+		private readonly int _declaredAspectCount;
 
 		private AspectVersionContextImpl(int count)
 		{
-			_aspectCount = count;
+			_declaredAspectCount = count;
 		}
 
-		public virtual int AspectCount()
+		public virtual int DeclaredAspectCount()
 		{
-			return _aspectCount;
+			return _declaredAspectCount;
 		}
 
-		public virtual void AspectCount(int count)
+		public virtual void DeclaredAspectCount(int count)
 		{
 			throw new InvalidOperationException();
 		}

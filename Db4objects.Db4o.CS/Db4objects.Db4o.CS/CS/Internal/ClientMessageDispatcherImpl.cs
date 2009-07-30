@@ -10,7 +10,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
 {
-	internal class ClientMessageDispatcherImpl : Thread, IClientMessageDispatcher
+	internal class ClientMessageDispatcherImpl : IRunnable, IClientMessageDispatcher
 	{
 		private ClientObjectContainer _container;
 
@@ -21,6 +21,8 @@ namespace Db4objects.Db4o.CS.Internal
 		private readonly BlockingQueue _asynchronousMessageQueue;
 
 		private bool _isClosed;
+
+		private string _dispatcherName;
 
 		internal ClientMessageDispatcherImpl(ClientObjectContainer client, ISocket4 a_socket
 			, BlockingQueue synchronousMessageQueue, BlockingQueue asynchronousMessageQueue)
@@ -64,7 +66,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public override void Run()
+		public virtual void Run()
 		{
 			MessageLoop();
 			Close();
@@ -115,12 +117,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual void SetDispatcherName(string name)
 		{
-			SetName("db4o client side message dispatcher for " + name);
-		}
-
-		public virtual void StartDispatcher()
-		{
-			Start();
+			_dispatcherName = "db4o client side message dispatcher for " + name;
 		}
 
 		private Db4objects.Db4o.Internal.Transaction Transaction()

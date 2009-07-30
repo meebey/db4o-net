@@ -164,9 +164,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						{
 							QCon qcon = (QCon)i.Current;
 							QField qf = qcon.GetField();
-							if (qf == null || qf.i_name.Equals(_fieldMetadata.GetName()))
+							if (qf == null || qf.Name().Equals(_fieldMetadata.GetName()))
 							{
-								QCon tempParent = qcon.i_parent;
+								QCon tempParent = qcon.Parent();
 								qcon.SetParent(null);
 								QCandidates candidates = new QCandidates(a_candidates.i_trans, null, qf);
 								candidates.AddConstraint(qcon);
@@ -237,7 +237,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 				}
 			}
-			if (_fieldMetadata == null || _fieldMetadata is NullFieldMetadata)
+			if (_fieldMetadata == null)
+			{
+				return false;
+			}
+			if (_fieldMetadata is NullFieldMetadata)
 			{
 				return false;
 			}
@@ -249,29 +253,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return false;
 			}
 			// fast early check for ClassMetadata
-			if (a_candidates.i_classMetadata != null && a_candidates.i_classMetadata.IsStrongTyped
+			if (a_candidates.i_classMetadata != null && a_candidates.i_classMetadata.IsStronglyTyped
 				())
 			{
-				if (_fieldMetadata != null)
+				ITypeHandler4 handler = _fieldMetadata.GetHandler();
+				if (Handlers4.IsUntyped(handler))
 				{
-					ITypeHandler4 handler = _fieldMetadata.GetHandler();
-					if (Handlers4.IsUntyped(handler))
-					{
-						ClassMetadata classMetadata = candidate.ReadYapClass();
-						if (classMetadata != null)
-						{
-							handler = classMetadata.TypeHandler();
-						}
-					}
-					if (handler == null)
-					{
-						return false;
-					}
-					if (!Handlers4.HandlerCanHold(handler, a_candidates.i_classMetadata.ClassReflector
-						()))
-					{
-						return false;
-					}
+					handler = TypeHandlerFor(candidate);
+				}
+				if (handler == null)
+				{
+					return false;
 				}
 			}
 			AddDependant(a_candidates.Add(candidate));
@@ -351,6 +343,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QCandidate _enclosing;
 		}
 
+		private ITypeHandler4 TypeHandlerFor(Db4objects.Db4o.Internal.Query.Processor.QCandidate
+			 candidate)
+		{
+			ClassMetadata classMetadata = candidate.ReadClassMetadata();
+			if (classMetadata != null)
+			{
+				return classMetadata.TypeHandler();
+			}
+			return null;
+		}
+
 		private void ReadArrayCandidates(ITypeHandler4 typeHandler, IReadBuffer buffer, ITypeHandler4
 			 arrayElementHandler, QCandidates candidates)
 		{
@@ -359,13 +362,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			SlotFormat slotFormat = SlotFormat.ForHandlerVersion(_handlerVersion);
-			slotFormat.DoWithSlotIndirection(buffer, typeHandler, new _IClosure4_329(this, arrayElementHandler
+			slotFormat.DoWithSlotIndirection(buffer, typeHandler, new _IClosure4_334(this, arrayElementHandler
 				, buffer, candidates));
 		}
 
-		private sealed class _IClosure4_329 : IClosure4
+		private sealed class _IClosure4_334 : IClosure4
 		{
-			public _IClosure4_329(QCandidate _enclosing, ITypeHandler4 arrayElementHandler, IReadBuffer
+			public _IClosure4_334(QCandidate _enclosing, ITypeHandler4 arrayElementHandler, IReadBuffer
 				 buffer, QCandidates candidates)
 			{
 				this._enclosing = _enclosing;
@@ -395,7 +398,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						._enclosing._handlerVersion, buffer, 0);
 					((ICascadingTypeHandler)arrayElementHandler).CollectIDs(context);
 				}
-				Tree.Traverse(context.Ids(), new _IVisitor4_347(candidates));
+				Tree.Traverse(context.Ids(), new _IVisitor4_352(candidates));
 				IEnumerator i = context.ObjectsWithoutId();
 				while (i.MoveNext())
 				{
@@ -406,9 +409,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return null;
 			}
 
-			private sealed class _IVisitor4_347 : IVisitor4
+			private sealed class _IVisitor4_352 : IVisitor4
 			{
-				public _IVisitor4_347(QCandidates candidates)
+				public _IVisitor4_352(QCandidates candidates)
 				{
 					this.candidates = candidates;
 				}
@@ -480,7 +483,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual IReflectClass ClassReflector()
 		{
-			ReadYapClass();
+			ReadClassMetadata();
 			if (_classMetadata == null)
 			{
 				return null;
@@ -698,7 +701,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual ClassMetadata ReadYapClass()
+		internal virtual ClassMetadata ReadClassMetadata()
 		{
 			if (_classMetadata == null)
 			{
@@ -757,7 +760,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				_fieldMetadata = null;
 				return;
 			}
-			ReadYapClass();
+			ReadClassMetadata();
 			_member = null;
 			if (a_field == null)
 			{
@@ -769,7 +772,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				_fieldMetadata = null;
 				return;
 			}
-			_fieldMetadata = a_field.GetYapField(_classMetadata);
+			_fieldMetadata = FieldMetadataFrom(a_field, _classMetadata);
 			if (_fieldMetadata == null)
 			{
 				FieldNotFound();
@@ -783,6 +786,21 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			_handlerVersion = handlerVersion._number;
+		}
+
+		private FieldMetadata FieldMetadataFrom(QField qField, ClassMetadata type)
+		{
+			FieldMetadata existingField = qField.GetFieldMetadata();
+			if (existingField != null)
+			{
+				return existingField;
+			}
+			FieldMetadata field = type.FieldMetadataForName(qField.Name());
+			if (field != null)
+			{
+				field.Alive();
+			}
+			return field;
 		}
 
 		private void FieldNotFound()

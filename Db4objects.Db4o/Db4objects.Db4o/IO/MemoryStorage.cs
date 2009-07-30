@@ -83,13 +83,13 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Delete(string uri)
 		{
-			Sharpen.Util.Collections.Remove(_bins, uri);
+			Sharpen.Collections.Remove(_bins, uri);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Rename(string oldUri, string newUri)
 		{
-			MemoryBin bin = ((MemoryBin)Sharpen.Util.Collections.Remove(_bins, oldUri));
+			MemoryBin bin = ((MemoryBin)Sharpen.Collections.Remove(_bins, oldUri));
 			if (bin == null)
 			{
 				throw new IOException("Bin not found: " + oldUri);

@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Ext
 	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable">Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable
 	/// 	</seealso>
 	[System.Serializable]
-	public class ObjectNotStorableException : Db4oException
+	public class ObjectNotStorableException : Db4oRecoverableException
 	{
 		public ObjectNotStorableException(IReflectClass a_class) : base(Db4objects.Db4o.Internal.Messages
 			.Get(a_class.IsPrimitive() ? 59 : 45, a_class.GetName()))

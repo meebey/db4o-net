@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MTaDelete : MsgD, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			int id = _payLoad.ReadInt();
 			int cascade = _payLoad.ReadInt();
@@ -15,7 +15,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			lock (StreamLock())
 			{
 				trans.Delete(null, id, cascade);
-				return true;
 			}
 		}
 	}

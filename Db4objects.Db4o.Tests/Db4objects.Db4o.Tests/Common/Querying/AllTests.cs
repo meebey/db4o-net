@@ -19,11 +19,12 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 				CascadeDeleteDeleted), typeof(CascadeDeleteFalse), typeof(CascadeOnActivate), typeof(
 				CascadeOnDelete), typeof(CascadeOnDeleteHierarchyTestCase), typeof(CascadeOnUpdate
 				), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase), typeof(DescendIndexQueryTestCase
-				), typeof(IdListQueryResultTestCase), typeof(IndexedJoinQueriesTestCase), typeof(
-				IndexOnParentFieldTestCase), typeof(IndexedQueriesTestCase), typeof(InvalidFieldNameConstraintTestCase
-				), typeof(LazyQueryResultTestCase), typeof(MultiFieldIndexQueryTestCase), typeof(
-				NullConstraintQueryTestCase), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase
-				), typeof(QueryByExampleTestCase), typeof(QueryingVersionFieldTestCase) };
+				), typeof(IdentityQueryForNotStoredTestCase), typeof(IdListQueryResultTestCase), 
+				typeof(IndexedJoinQueriesTestCase), typeof(IndexOnParentFieldTestCase), typeof(IndexedQueriesTestCase
+				), typeof(InvalidFieldNameConstraintTestCase), typeof(LazyQueryResultTestCase), 
+				typeof(MultiFieldIndexQueryTestCase), typeof(NullConstraintQueryTestCase), typeof(
+				ObjectSetTestCase), typeof(OrderedQueryTestCase), typeof(QueryByExampleTestCase)
+				, typeof(QueryingVersionFieldTestCase) };
 		}
 	}
 }

@@ -160,5 +160,6 @@ namespace Db4objects.Db4o.Foundation
 				return (object)binding;
 			}
 		}
+		// ignore convention for internal types
 	}
 }

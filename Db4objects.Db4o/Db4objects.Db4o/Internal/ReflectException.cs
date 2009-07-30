@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Reflect">Db4objects.Db4o.Reflect</seealso>
 	[System.Serializable]
-	public class ReflectException : Db4oException
+	public class ReflectException : Db4oRecoverableException
 	{
 		/// <summary>Constructor with the cause exception</summary>
 		/// <param name="cause">cause exception</param>

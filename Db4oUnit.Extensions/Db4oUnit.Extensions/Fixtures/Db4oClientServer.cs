@@ -8,6 +8,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Threading;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
@@ -61,6 +62,17 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			OpenServerFor(testInstance);
 			OpenClientFor(testInstance);
+			ListenToUncaughtExceptions();
+		}
+
+		private void ListenToUncaughtExceptions()
+		{
+			ListenToUncaughtExceptions(ThreadPoolFor(_server.Ext().ObjectContainer()));
+			IThreadPool4 clientThreadPool = ThreadPoolFor(_objectContainer);
+			if (null != clientThreadPool)
+			{
+				ListenToUncaughtExceptions(clientThreadPool);
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>

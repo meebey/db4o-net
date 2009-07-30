@@ -10,30 +10,35 @@ namespace Db4oUnit
 		public static Exception Expect(Type exception, ICodeBlock block)
 		{
 			Exception e = GetThrowable(block);
-			AssertThrowable(exception, e);
+			AssertThrowable(exception, e, null);
 			return e;
 		}
 
 		public static Exception Expect(Type exception, Type cause, ICodeBlock block)
 		{
+			return Expect(exception, cause, block, null);
+		}
+
+		public static Exception Expect(Type exception, Type cause, ICodeBlock block, string
+			 customMessage)
+		{
 			Exception e = GetThrowable(block);
-			AssertThrowable(exception, e);
-			AssertThrowable(cause, e.InnerException);
+			AssertThrowable(exception, e, customMessage);
+			AssertThrowable(cause, e.InnerException, customMessage);
 			return e;
 		}
 
-		private static void AssertThrowable(Type exception, Exception e)
+		private static void AssertThrowable(Type exception, Exception e, string customMessage
+			)
 		{
-			if (e == null)
-			{
-				Fail("Exception '" + exception.FullName + "' expected");
-			}
 			if (exception.IsInstanceOfType(e))
 			{
 				return;
 			}
-			Fail("Expecting '" + exception.FullName + "' but got '" + e.GetType().FullName + 
-				"'", e);
+			string messagePrefix = customMessage != null ? customMessage + ": " : string.Empty;
+			string message = e == null ? "Exception '" + exception.FullName + "' expected" : 
+				"Expecting '" + exception.FullName + "' but got '" + e.GetType().FullName + "'";
+			Fail(messagePrefix + message, e);
 		}
 
 		private static Exception GetThrowable(ICodeBlock block)

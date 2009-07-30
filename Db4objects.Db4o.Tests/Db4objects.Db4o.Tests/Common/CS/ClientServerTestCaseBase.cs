@@ -11,8 +11,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		protected virtual IServerMessageDispatcher ServerDispatcher()
 		{
-			ObjectServerImpl serverImpl = (ObjectServerImpl)ClientServerFixture().Server();
+			ObjectServerImpl serverImpl = Server();
 			return (IServerMessageDispatcher)Iterators.Next(serverImpl.IterateDispatchers());
+		}
+
+		protected virtual ObjectServerImpl Server()
+		{
+			return (ObjectServerImpl)ClientServerFixture().Server();
 		}
 
 		protected virtual ClientObjectContainer Client()

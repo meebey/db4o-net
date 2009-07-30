@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Config
 	/// <see cref="IAlias">IAlias</see>
 	/// interface.
 	/// <br/><br/>
-	/// Four examples of concrete usecases:
+	/// Examples of concrete usecases:
 	/// <br/><br/>
 	/// <code>
 	/// <b>// Creating an Alias for a single class</b><br/>

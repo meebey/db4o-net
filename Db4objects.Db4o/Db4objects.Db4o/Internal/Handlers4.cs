@@ -41,11 +41,6 @@ namespace Db4objects.Db4o.Internal
 
 		public const int AnyArrayNId = 13;
 
-		public static bool HandlerCanHold(ITypeHandler4 handler, IReflectClass claxx)
-		{
-			return handler.CanHold(claxx);
-		}
-
 		public static bool HandlesSimple(ITypeHandler4 handler)
 		{
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
@@ -330,7 +325,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			IClosure4 collectIDsFromQueryingContext = new _IClosure4_275(handler, queryingReadContext
+			IClosure4 collectIDsFromQueryingContext = new _IClosure4_271(handler, queryingReadContext
 				);
 			if (doWithSlotIndirection)
 			{
@@ -343,9 +338,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_275 : IClosure4
+		private sealed class _IClosure4_271 : IClosure4
 		{
-			public _IClosure4_275(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_271(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Ext
 	/// is not compatible with the applied configuration.
 	/// </remarks>
 	[System.Serializable]
-	public class IncompatibleFileFormatException : Db4oException
+	public class IncompatibleFileFormatException : Db4oFatalException
 	{
 		public IncompatibleFileFormatException() : base()
 		{

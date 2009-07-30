@@ -26,23 +26,15 @@ namespace Db4objects.Db4o.Foundation
 			_lock = new Lock4();
 		}
 
-		public void Start()
-		{
-			Thread thread = new Thread(this);
-			thread.SetDaemon(true);
-			thread.SetName(_name);
-			thread.Start();
-		}
-
 		public void Stop()
 		{
 			stopped = true;
-			_lock.Run(new _IClosure4_37(this));
+			_lock.Run(new _IClosure4_30(this));
 		}
 
-		private sealed class _IClosure4_37 : IClosure4
+		private sealed class _IClosure4_30 : IClosure4
 		{
-			public _IClosure4_37(SimpleTimer _enclosing)
+			public _IClosure4_30(SimpleTimer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -58,9 +50,15 @@ namespace Db4objects.Db4o.Foundation
 
 		public void Run()
 		{
+			SetThreadName();
+			TimerLoop();
+		}
+
+		private void TimerLoop()
+		{
 			while (!stopped)
 			{
-				_lock.Run(new _IClosure4_47(this));
+				_lock.Run(new _IClosure4_45(this));
 				if (!stopped)
 				{
 					_runnable.Run();
@@ -68,9 +66,9 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		private sealed class _IClosure4_47 : IClosure4
+		private sealed class _IClosure4_45 : IClosure4
 		{
-			public _IClosure4_47(SimpleTimer _enclosing)
+			public _IClosure4_45(SimpleTimer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -82,6 +80,11 @@ namespace Db4objects.Db4o.Foundation
 			}
 
 			private readonly SimpleTimer _enclosing;
+		}
+
+		private void SetThreadName()
+		{
+			Thread.CurrentThread().SetName(_name);
 		}
 	}
 }

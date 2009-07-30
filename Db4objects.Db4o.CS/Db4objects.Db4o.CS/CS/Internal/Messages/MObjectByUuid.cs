@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MObjectByUuid : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			long uuid = ReadLong();
 			byte[] signature = ReadBytes();
@@ -28,8 +28,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				{
 				}
 			}
-			Write(Msg.ObjectByUuid.GetWriterForInt(trans, id));
-			return true;
+			return Msg.ObjectByUuid.GetWriterForInt(trans, id);
 		}
 	}
 }

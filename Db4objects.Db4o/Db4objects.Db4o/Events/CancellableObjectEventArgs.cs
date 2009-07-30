@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Events
@@ -11,7 +13,7 @@ namespace Db4objects.Db4o.Events
 	/// 	</seealso>
 	/// <seealso cref="Db4objects.Db4o.Events.ICancellableEventArgs">Db4objects.Db4o.Events.ICancellableEventArgs
 	/// 	</seealso>
-	public class CancellableObjectEventArgs : ObjectEventArgs, ICancellableEventArgs
+	public class CancellableObjectEventArgs : ObjectInfoEventArgs, ICancellableEventArgs
 	{
 		private bool _cancelled;
 
@@ -19,8 +21,8 @@ namespace Db4objects.Db4o.Events
 
 		/// <summary>Creates a new instance for the specified object.</summary>
 		/// <remarks>Creates a new instance for the specified object.</remarks>
-		public CancellableObjectEventArgs(Transaction transaction, object obj) : base(transaction
-			)
+		public CancellableObjectEventArgs(Transaction transaction, IObjectInfo objectInfo
+			, object obj) : base(transaction, objectInfo)
 		{
 			_object = obj;
 		}
@@ -47,6 +49,19 @@ namespace Db4objects.Db4o.Events
 			get
 			{
 				return _object;
+			}
+		}
+
+		public override IObjectInfo Info
+		{
+			get
+			{
+				IObjectInfo info = base.Info;
+				if (null == info)
+				{
+					throw new InvalidOperationException();
+				}
+				return info;
 			}
 		}
 	}

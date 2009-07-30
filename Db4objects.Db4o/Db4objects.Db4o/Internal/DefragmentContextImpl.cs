@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ObjectHeader _objectHeader;
 
-		private int _aspectCount;
+		private int _declaredAspectCount;
 
 		public DefragmentContextImpl(ByteArrayBuffer source, Db4objects.Db4o.Internal.DefragmentContextImpl
 			 context) : this(source, context._services, context._objectHeader)
@@ -428,14 +428,14 @@ namespace Db4objects.Db4o.Internal
 			return _objectHeader._headerAttributes.IsNull(fieldIndex);
 		}
 
-		public int AspectCount()
+		public int DeclaredAspectCount()
 		{
-			return _aspectCount;
+			return _declaredAspectCount;
 		}
 
-		public void AspectCount(int count)
+		public void DeclaredAspectCount(int count)
 		{
-			_aspectCount = count;
+			_declaredAspectCount = count;
 		}
 
 		public Db4objects.Db4o.Internal.Marshall.SlotFormat SlotFormat()

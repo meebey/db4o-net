@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MRaiseVersion : MsgD, IServerSideMessage
 	{
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			long minimumVersion = ReadLong();
 			ObjectContainerBase stream = Stream();
@@ -16,7 +16,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				stream.RaiseVersion(minimumVersion);
 			}
-			return true;
 		}
 	}
 }

@@ -7,19 +7,18 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MCloseSocket : Msg, IServerSideMessage
 	{
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			lock (Stream().Lock())
 			{
 				if (Stream().IsClosed())
 				{
-					return true;
+					return;
 				}
 				Transaction().Commit();
 				LogMsg(35, ServerMessageDispatcher().Name);
 				ServerMessageDispatcher().CloseConnection();
 			}
-			return true;
 		}
 	}
 }

@@ -195,8 +195,8 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		private void CollectLeavesFromJoin(Collection4 leaves, QConJoin join)
 		{
-			CollectLeavesFromJoinConstraint(leaves, join.i_constraint1);
-			CollectLeavesFromJoinConstraint(leaves, join.i_constraint2);
+			CollectLeavesFromJoinConstraint(leaves, join.Constraint1());
+			CollectLeavesFromJoinConstraint(leaves, join.Constraint2());
 		}
 
 		private void CollectLeavesFromJoinConstraint(Collection4 leaves, QCon constraint)
@@ -257,7 +257,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		private void CollectTopLevelJoins(Collection4 joins, QCon constraintWithJoins)
 		{
-			IEnumerator i = constraintWithJoins.i_joins.GetEnumerator();
+			IEnumerator i = constraintWithJoins.IterateJoins();
 			while (i.MoveNext())
 			{
 				QConJoin join = (QConJoin)i.Current;
@@ -277,22 +277,22 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		private IIndexedNodeWithRange NewNodeForConstraint(QConJoin join)
 		{
-			IIndexedNodeWithRange c1 = NodeForConstraint(join.i_constraint1);
-			IIndexedNodeWithRange c2 = NodeForConstraint(join.i_constraint2);
+			IIndexedNodeWithRange c1 = NodeForConstraint(join.Constraint1());
+			IIndexedNodeWithRange c2 = NodeForConstraint(join.Constraint2());
 			if (join.IsOr())
 			{
 				return new OrIndexedLeaf(FindLeafForJoin(join), c1, c2);
 			}
-			return new AndIndexedLeaf(join.i_constraint1, c1, c2);
+			return new AndIndexedLeaf(join.Constraint1(), c1, c2);
 		}
 
 		private QCon FindLeafForJoin(QConJoin join)
 		{
-			if (join.i_constraint1 is QConObject)
+			if (join.Constraint1() is QConObject)
 			{
-				return join.i_constraint1;
+				return join.Constraint1();
 			}
-			QCon con = join.i_constraint2;
+			QCon con = join.Constraint2();
 			if (con is QConObject)
 			{
 				return con;

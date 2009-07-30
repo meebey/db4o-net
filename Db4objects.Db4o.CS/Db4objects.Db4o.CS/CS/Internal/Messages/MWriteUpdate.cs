@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MWriteUpdate : MsgObject, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			int classMetadataID = _payLoad.ReadInt();
 			int arrayTypeValue = _payLoad.ReadInt();
@@ -28,7 +28,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				_payLoad.WriteEncrypt();
 				DeactivateCacheFor(id);
 			}
-			return true;
 		}
 
 		private void DeactivateCacheFor(int id)

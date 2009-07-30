@@ -8,11 +8,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MProcessDeletes : Msg, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			Stream().WithTransaction(Transaction(), new _IRunnable_12(this));
-			// Don't send the exception to the user because delete is asynchronous
-			return true;
 		}
 
 		private sealed class _IRunnable_12 : IRunnable
@@ -35,5 +33,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 			private readonly MProcessDeletes _enclosing;
 		}
+		// Don't send the exception to the user because delete is asynchronous
 	}
 }

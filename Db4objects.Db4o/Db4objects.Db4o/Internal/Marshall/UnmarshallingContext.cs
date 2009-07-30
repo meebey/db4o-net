@@ -102,13 +102,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return Container().ActivationDepthProvider();
 		}
 
-		public virtual object ReadActivatedObject(ITypeHandler4 handler)
+		public virtual object ReadFullyActivatedObjectForKeys(ITypeHandler4 handler)
 		{
-			IActivationDepth tempDepth = ActivationDepth();
-			ActivationDepthProvider().ActivationDepth(int.MaxValue, ActivationMode.Activate);
 			object obj = ReadObject(handler);
-			Container().Activate(Transaction(), obj, ActivationDepth());
-			ActivationDepth(tempDepth);
+			if (obj == null)
+			{
+				return obj;
+			}
+			IActivationDepth activationDepth = ActivationDepthProvider().ActivationDepth(int.MaxValue
+				, ActivationMode.Activate);
+			Container().Activate(Transaction(), obj, activationDepth);
 			return obj;
 		}
 

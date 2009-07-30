@@ -6,6 +6,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Metadata;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
@@ -127,7 +128,7 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		public override bool IsStrongTyped()
+		public override bool IsStronglyTyped()
 		{
 			return false;
 		}
@@ -229,5 +230,22 @@ namespace Db4objects.Db4o.Internal
 			return new Db4objects.Db4o.Internal.PrimitiveTypeMetadata(original.Container(), delegateTypeHandler
 				, original._id, original.ClassReflector());
 		}
+
+		protected override IAspectTraversalStrategy DetectAspectTraversalStrategy()
+		{
+			return new _IAspectTraversalStrategy_186();
+		}
+
+		private sealed class _IAspectTraversalStrategy_186 : IAspectTraversalStrategy
+		{
+			public _IAspectTraversalStrategy_186()
+			{
+			}
+
+			public void TraverseAllAspects(ITraverseAspectCommand command)
+			{
+			}
+		}
+		// do nothing
 	}
 }

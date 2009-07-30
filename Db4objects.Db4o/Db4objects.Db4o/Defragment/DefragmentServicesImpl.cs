@@ -431,7 +431,7 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata curClazz = clazz;
 			while (!hasFieldIndex.value && curClazz != null)
 			{
-				curClazz.ForEachDeclaredField(new _IProcedure4_320(hasFieldIndex));
+				curClazz.TraverseDeclaredFields(new _IProcedure4_320(hasFieldIndex));
 				curClazz = curClazz.GetAncestor();
 			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));

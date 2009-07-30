@@ -24,6 +24,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual void Run()
 		{
+			SetThreadName();
+			MessageLoop();
+		}
+
+		private void MessageLoop()
+		{
 			while (!_stopped)
 			{
 				MCommittedInfo committedInfos;
@@ -35,13 +41,13 @@ namespace Db4objects.Db4o.CS.Internal
 				{
 					break;
 				}
-				_server.BroadcastMsg(committedInfos, new _IBroadcastFilter_28());
+				_server.BroadcastMsg(committedInfos, new _IBroadcastFilter_33());
 			}
 		}
 
-		private sealed class _IBroadcastFilter_28 : IBroadcastFilter
+		private sealed class _IBroadcastFilter_33 : IBroadcastFilter
 		{
-			public _IBroadcastFilter_28()
+			public _IBroadcastFilter_33()
 			{
 			}
 
@@ -49,6 +55,11 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				return dispatcher.CaresAboutCommitted();
 			}
+		}
+
+		private void SetThreadName()
+		{
+			Thread.CurrentThread().SetName("committed callback thread");
 		}
 
 		public virtual void Stop()

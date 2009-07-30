@@ -14,10 +14,9 @@ namespace Db4objects.Db4o.Internal.Handlers
 	/// <remarks>Shared (java/.net) logic for Date handling.</remarks>
 	public abstract class DateHandlerBase : LongHandler
 	{
-		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
-			)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.Instance;
+			return ClassReflector().IsAssignableFrom(claxx) ? obj : No4.Instance;
 		}
 
 		public abstract object CopyValue(object from, object to);

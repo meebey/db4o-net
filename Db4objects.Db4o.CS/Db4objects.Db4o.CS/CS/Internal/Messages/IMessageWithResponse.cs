@@ -4,7 +4,10 @@ using Db4objects.Db4o.CS.Internal.Messages;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
-	public interface IMessageWithResponse : IServerSideMessage
+	public interface IMessageWithResponse
 	{
+		Msg ReplyFromServer();
+
+		void PostProcessAtServer();
 	}
 }

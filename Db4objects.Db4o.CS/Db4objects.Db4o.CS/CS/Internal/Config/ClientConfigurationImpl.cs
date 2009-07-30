@@ -53,9 +53,13 @@ namespace Db4objects.Db4o.CS.Internal.Config
 			}
 		}
 
-		public virtual void PrefetchDepth(int prefetchDepth)
+		public virtual int PrefetchDepth
 		{
-			Legacy().PrefetchDepth(prefetchDepth);
+			set
+			{
+				int prefetchDepth = value;
+				Legacy().PrefetchDepth(prefetchDepth);
+			}
 		}
 	}
 }

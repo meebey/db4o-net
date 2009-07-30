@@ -6,15 +6,14 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MTaIsDeleted : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			lock (StreamLock())
 			{
 				bool isDeleted = Transaction().IsDeleted(ReadInt());
 				int ret = isDeleted ? 1 : 0;
-				Write(Msg.TaIsDeleted.GetWriterForInt(Transaction(), ret));
+				return Msg.TaIsDeleted.GetWriterForInt(Transaction(), ret);
 			}
-			return true;
 		}
 	}
 }

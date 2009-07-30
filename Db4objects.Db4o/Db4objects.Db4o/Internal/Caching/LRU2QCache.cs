@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			{
 				finalizer.Apply(_slots[key]);
 			}
-			Sharpen.Util.Collections.Remove(_slots, key);
+			Sharpen.Collections.Remove(_slots, key);
 		}
 
 		public override string ToString()

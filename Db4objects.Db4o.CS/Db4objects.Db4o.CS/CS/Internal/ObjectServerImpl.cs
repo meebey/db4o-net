@@ -11,7 +11,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Events;
+using Db4objects.Db4o.Internal.Threading;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
@@ -120,10 +120,13 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			lock (_startupLock)
 			{
-				Thread thread = new Thread(this);
-				thread.SetDaemon(true);
-				thread.Start();
+				ThreadPool().Start(this);
 			}
+		}
+
+		private IThreadPool4 ThreadPool()
+		{
+			return _container.ThreadPool();
 		}
 
 		private void StartServerSocket()
@@ -229,7 +232,7 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				try
 				{
-					((Thread)i.Current).Join();
+					((IServerMessageDispatcher)i.Current).Join();
 				}
 				catch (Exception e)
 				{
@@ -413,10 +416,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 			_committedCallbacksDispatcher = new CommittedCallbacksDispatcher(this, committedInfosQueue
 				);
-			Thread thread = new Thread(_committedCallbacksDispatcher);
-			thread.SetName("committed callback thread");
-			thread.SetDaemon(true);
-			thread.Start();
+			ThreadPool().Start(_committedCallbacksDispatcher);
 		}
 
 		private void SetThreadName()
@@ -430,12 +430,12 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				try
 				{
-					IServerMessageDispatcher messageDispatcher = new ServerMessageDispatcherImpl(this
+					ServerMessageDispatcherImpl messageDispatcher = new ServerMessageDispatcherImpl(this
 						, new ClientTransactionHandle(_transactionPool), _serverSocket.Accept(), NewThreadId
 						(), false, _container.Lock());
 					AddServerMessageDispatcher(messageDispatcher);
 					TriggerClientConnected(messageDispatcher);
-					messageDispatcher.StartDispatcher();
+					ThreadPool().Start(messageDispatcher);
 				}
 				catch (Exception)
 				{
@@ -446,7 +446,8 @@ namespace Db4objects.Db4o.CS.Internal
 		//				e.printStackTrace();
 		private void TriggerClientConnected(IServerMessageDispatcher messageDispatcher)
 		{
-			ServerPlatform.TriggerClientConnectionEvent(_clientConnected, messageDispatcher);
+			if (null != _clientConnected) _clientConnected(null, new ClientConnectionEventArgs
+				(messageDispatcher));
 		}
 
 		private void NotifyThreadStarted()

@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MObjectSetGetId : MObjectSet, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
 			int id = 0;
@@ -16,8 +16,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				id = queryResult.GetId(ReadInt());
 			}
-			Write(Msg.ObjectsetGetId.GetWriterForInt(Transaction(), id));
-			return true;
+			return Msg.ObjectsetGetId.GetWriterForInt(Transaction(), id);
 		}
 	}
 }

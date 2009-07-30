@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 
@@ -8,11 +7,17 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
 	public class ExceptionSimulatingStorage : StorageDecorator
 	{
-		private IoAdapter _delegate = new RandomAccessFileAdapter();
+		internal class ExceptionTriggerCondition
+		{
+			public bool _triggersException = false;
+
+			public bool _isClosed = false;
+		}
 
 		private readonly IExceptionFactory _exceptionFactory;
 
-		private readonly BooleanByRef _triggersException = new BooleanByRef(false);
+		private readonly ExceptionSimulatingStorage.ExceptionTriggerCondition _triggerCondition
+			 = new ExceptionSimulatingStorage.ExceptionTriggerCondition();
 
 		public ExceptionSimulatingStorage(IStorage storage, IExceptionFactory exceptionFactory
 			) : base(storage)
@@ -20,54 +25,45 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			_exceptionFactory = exceptionFactory;
 		}
 
-		public override void Delete(string path)
-		{
-			if (TriggersException())
-			{
-				return;
-			}
-			_delegate.Delete(path);
-		}
-
-		public override bool Exists(string path)
-		{
-			if (TriggersException())
-			{
-				return false;
-			}
-			else
-			{
-				return _delegate.Exists(path);
-			}
-		}
-
 		protected override IBin Decorate(IBin bin)
 		{
+			ResetShutdownState();
 			return new ExceptionSimulatingStorage.ExceptionSimulatingBin(bin, _exceptionFactory
-				, _triggersException);
+				, _triggerCondition);
+		}
+
+		private void ResetShutdownState()
+		{
+			_triggerCondition._isClosed = false;
 		}
 
 		public virtual void TriggerException(bool exception)
 		{
-			this._triggersException.value = exception;
+			ResetShutdownState();
+			_triggerCondition._triggersException = exception;
 		}
 
 		public virtual bool TriggersException()
 		{
-			return this._triggersException.value;
+			return this._triggerCondition._triggersException;
+		}
+
+		public virtual bool IsClosed()
+		{
+			return _triggerCondition._isClosed;
 		}
 
 		internal class ExceptionSimulatingBin : BinDecorator
 		{
 			private readonly IExceptionFactory _exceptionFactory;
 
-			private readonly BooleanByRef _triggersException;
+			private readonly ExceptionSimulatingStorage.ExceptionTriggerCondition _triggerCondition;
 
-			public ExceptionSimulatingBin(IBin bin, IExceptionFactory exceptionFactory, BooleanByRef
-				 triggersException) : base(bin)
+			internal ExceptionSimulatingBin(IBin bin, IExceptionFactory exceptionFactory, ExceptionSimulatingStorage.ExceptionTriggerCondition
+				 triggerCondition) : base(bin)
 			{
 				_exceptionFactory = exceptionFactory;
-				_triggersException = triggersException;
+				_triggerCondition = triggerCondition;
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -76,12 +72,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				if (TriggersException())
 				{
 					_exceptionFactory.ThrowException();
-					return 0;
 				}
-				else
-				{
-					return _bin.Read(pos, bytes, length);
-				}
+				return _bin.Read(pos, bytes, length);
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -91,10 +83,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				{
 					_exceptionFactory.ThrowException();
 				}
-				else
-				{
-					_bin.Sync();
-				}
+				_bin.Sync();
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -104,22 +93,17 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				{
 					_exceptionFactory.ThrowException();
 				}
-				else
-				{
-					_bin.Write(pos, buffer, length);
-				}
+				_bin.Write(pos, buffer, length);
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public override void Close()
 			{
+				_triggerCondition._isClosed = true;
+				_bin.Close();
 				if (TriggersException())
 				{
-					_exceptionFactory.ThrowException();
-				}
-				else
-				{
-					_bin.Close();
+					_exceptionFactory.ThrowOnClose();
 				}
 			}
 
@@ -129,17 +113,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				if (TriggersException())
 				{
 					_exceptionFactory.ThrowException();
-					return 0;
 				}
-				else
-				{
-					return _bin.Length();
-				}
+				return _bin.Length();
 			}
 
 			private bool TriggersException()
 			{
-				return _triggersException.value;
+				return _triggerCondition._triggersException;
 			}
 		}
 	}

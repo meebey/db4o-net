@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Ext
 	/// <seealso cref="Db4objects.Db4o.IObjectContainer.Close">Db4objects.Db4o.IObjectContainer.Close
 	/// 	</seealso>
 	[System.Serializable]
-	public class DatabaseClosedException : Db4oException
+	public class DatabaseClosedException : Db4oFatalException
 	{
 	}
 }

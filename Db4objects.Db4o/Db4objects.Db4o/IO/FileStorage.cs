@@ -39,11 +39,11 @@ namespace Db4objects.Db4o.IO
 			return file.Exists() && file.Length() > 0;
 		}
 
-		private class FileBin : IBin
+		internal class FileBin : IBin
 		{
 			private readonly string _path;
 
-			private readonly RandomAccessFile _file;
+			private RandomAccessFile _file;
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			internal FileBin(BinConfiguration config)
@@ -76,25 +76,10 @@ namespace Db4objects.Db4o.IO
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Close()
 			{
-				// TODO: use separate subclass for Android with the fix
-				// 
-				// FIXME: This is a temporary quickfix for a bug in Android.
-				//        Remove after Android has been fixed.
-				try
-				{
-					if (_file != null)
-					{
-						_file.Seek(0);
-					}
-				}
-				catch (IOException)
-				{
-				}
-				// ignore
 				Platform4.UnlockFile(_path, _file);
 				try
 				{
-					if (_file != null)
+					if (!IsClosed())
 					{
 						_file.Close();
 					}
@@ -103,6 +88,15 @@ namespace Db4objects.Db4o.IO
 				{
 					throw new Db4oIOException(e);
 				}
+				finally
+				{
+					_file = null;
+				}
+			}
+
+			internal virtual bool IsClosed()
+			{
+				return _file == null;
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -133,7 +127,7 @@ namespace Db4objects.Db4o.IO
 			}
 
 			/// <exception cref="System.IO.IOException"></exception>
-			private void Seek(long pos)
+			internal virtual void Seek(long pos)
 			{
 				if (DTrace.enabled)
 				{
@@ -163,6 +157,7 @@ namespace Db4objects.Db4o.IO
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public virtual void Write(long pos, byte[] buffer, int length)
 			{
+				CheckClosed();
 				try
 				{
 					Seek(pos);
@@ -171,6 +166,14 @@ namespace Db4objects.Db4o.IO
 				catch (IOException e)
 				{
 					throw new Db4oIOException(e);
+				}
+			}
+
+			private void CheckClosed()
+			{
+				if (IsClosed())
+				{
+					throw new Db4oIOException();
 				}
 			}
 		}

@@ -81,9 +81,20 @@ namespace Db4oUnit.Extensions
 			{
 				IDb4oFixture fixture = Fixture();
 				fixture.Close();
+				IList uncaughtExceptions = fixture.UncaughtExceptions();
 				fixture.Clean();
+				AssertNoUncaughtExceptions(uncaughtExceptions);
 			}
 			Db4oTearDownAfterClean();
+		}
+
+		private void AssertNoUncaughtExceptions(IList uncaughtExceptions)
+		{
+			if (uncaughtExceptions.Count > 0)
+			{
+				Assert.Fail("Uncaught exceptions: " + Iterators.Join(Iterators.Iterator(uncaughtExceptions
+					), ", "), ((Exception)uncaughtExceptions[0]));
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -134,13 +145,13 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunSolo(string testLabelSubstring)
 		{
-			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_116(testLabelSubstring
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_131(testLabelSubstring
 				))).Run();
 		}
 
-		private sealed class _IPredicate4_116 : IPredicate4
+		private sealed class _IPredicate4_131 : IPredicate4
 		{
-			public _IPredicate4_116(string testLabelSubstring)
+			public _IPredicate4_131(string testLabelSubstring)
 			{
 				this.testLabelSubstring = testLabelSubstring;
 			}
@@ -350,12 +361,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(oc, clazz, new _IVisitor4_290(oc));
+			Foreach(oc, clazz, new _IVisitor4_305(oc));
 		}
 
-		private sealed class _IVisitor4_290 : IVisitor4
+		private sealed class _IVisitor4_305 : IVisitor4
 		{
-			public _IVisitor4_290(IExtObjectContainer oc)
+			public _IVisitor4_305(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

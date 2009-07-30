@@ -7,7 +7,6 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Typehandlers.Internal;
 
@@ -43,7 +42,8 @@ namespace Db4objects.Db4o.Typehandlers
 			int elementCount = context.ReadInt();
 			for (int i = 0; i < elementCount; i++)
 			{
-				object key = unmarshallingContext.ReadActivatedObject(handlers._keyHandler);
+				object key = unmarshallingContext.ReadFullyActivatedObjectForKeys(handlers._keyHandler
+					);
 				object value = context.ReadObject(handlers._valueHandler);
 				if (key != null && value != null)
 				{
@@ -152,11 +152,6 @@ namespace Db4objects.Db4o.Typehandlers
 			ITypeHandler4 untypedHandler = (ITypeHandler4)container.Handlers().OpenTypeHandler
 				();
 			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
-		}
-
-		public virtual bool CanHold(IReflectClass type)
-		{
-			return true;
 		}
 	}
 }

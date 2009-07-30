@@ -35,22 +35,22 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		[System.NonSerialized]
 		internal Transaction _trans;
 
-		public Collection4 i_constraints = new Collection4();
+		private Collection4 i_constraints = new Collection4();
 
-		public QQuery i_parent;
+		private QQuery i_parent;
 
-		public string i_field;
+		private string i_field;
 
 		[System.NonSerialized]
 		private QueryEvaluationMode _evaluationMode;
 
-		public int _prefetchDepth;
+		private int _prefetchDepth;
 
-		public int _prefetchCount;
+		private int _prefetchCount;
 
-		public int _evaluationModeAsInt;
+		private int _evaluationModeAsInt;
 
-		public IQueryComparator _comparator;
+		private IQueryComparator _comparator;
 
 		[System.NonSerialized]
 		private readonly QQuery _this;
@@ -211,10 +211,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private Collection4 IntroduceClassConstrain(IReflectClass claxx)
 		{
 			Collection4 newConstraints = new Collection4();
-			IEnumerator constraintsIterator = IterateConstraints();
-			while (constraintsIterator.MoveNext())
+			IEnumerator existingConstraints = IterateConstraints();
+			while (existingConstraints.MoveNext())
 			{
-				QCon existingConstraint = (QConObject)constraintsIterator.Current;
+				QCon existingConstraint = (QConObject)existingConstraints.Current;
 				BooleanByRef removeExisting = new BooleanByRef(false);
 				QCon newConstraint = existingConstraint.ShareParentForClass(claxx, removeExisting
 					);

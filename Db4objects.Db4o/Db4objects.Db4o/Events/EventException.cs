@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Events
 	/// calling EventException.InnerException.
 	/// </remarks>
 	[System.Serializable]
-	public class EventException : Db4oException
+	public class EventException : Db4oRecoverableException
 	{
 		public EventException(Exception exc) : base(exc)
 		{

@@ -10,7 +10,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Reflect;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
@@ -89,11 +88,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 			}
 
-			public bool CanHold(IReflectClass type)
-			{
-				return ReflectClasses.AreEqual(typeof(CustomTypeHandlerTestCase.Item), type);
-			}
-
 			public void CascadeActivation(IActivationContext context)
 			{
 			}
@@ -120,12 +114,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				return new _IPreparedComparison_92();
+				return new _IPreparedComparison_88();
 			}
 
-			private sealed class _IPreparedComparison_92 : IPreparedComparison
+			private sealed class _IPreparedComparison_88 : IPreparedComparison
 			{
-				public _IPreparedComparison_92()
+				public _IPreparedComparison_88()
 				{
 				}
 
@@ -162,12 +156,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 			public void Defragment(IDefragmentContext context)
 			{
-			}
-
-			public bool CanHold(IReflectClass type)
-			{
-				return ReflectClasses.AreEqual(typeof(CustomTypeHandlerTestCase.ItemGrandChild), 
-					type);
 			}
 
 			public void CascadeActivation(IActivationContext context)
@@ -310,13 +298,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			GenericReflector reflector = ((Config4Impl)config).Reflector();
 			IReflectClass itemClass = reflector.ForClass(clazz);
-			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_238(itemClass);
+			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_230(itemClass);
 			config.RegisterTypeHandler(predicate, typeHandler);
 		}
 
-		private sealed class _ITypeHandlerPredicate_238 : ITypeHandlerPredicate
+		private sealed class _ITypeHandlerPredicate_230 : ITypeHandlerPredicate
 		{
-			public _ITypeHandlerPredicate_238(IReflectClass itemClass)
+			public _ITypeHandlerPredicate_230(IReflectClass itemClass)
 			{
 				this.itemClass = itemClass;
 			}

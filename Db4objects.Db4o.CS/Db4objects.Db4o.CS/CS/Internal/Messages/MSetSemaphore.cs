@@ -7,21 +7,13 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MSetSemaphore : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			int timeout = ReadInt();
 			string name = ReadString();
 			LocalObjectContainer stream = (LocalObjectContainer)Stream();
 			bool res = stream.SetSemaphore(Transaction(), name, timeout);
-			if (res)
-			{
-				Write(Msg.Success);
-			}
-			else
-			{
-				Write(Msg.Failed);
-			}
-			return true;
+			return (res ? (Msg)Msg.Success : Msg.Failed);
 		}
 	}
 }

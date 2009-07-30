@@ -102,6 +102,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				IBin backupBin = BackupStorage().Open(new BinConfiguration(TempFile(), true, 0, true
 					));
 				long backupLength = backupBin.Length();
+				backupBin.Sync();
 				backupBin.Close();
 				return backupLength;
 			}

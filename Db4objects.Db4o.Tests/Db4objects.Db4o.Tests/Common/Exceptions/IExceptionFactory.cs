@@ -5,5 +5,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 	public interface IExceptionFactory
 	{
 		void ThrowException();
+
+		void ThrowOnClose();
 	}
 }

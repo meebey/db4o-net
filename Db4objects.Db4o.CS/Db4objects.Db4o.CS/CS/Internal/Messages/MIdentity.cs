@@ -8,12 +8,11 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MIdentity : Msg, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
 			ObjectContainerBase stream = Stream();
-			RespondInt(stream.GetID(Transaction(), ((IInternalObjectContainer)stream).Identity
-				()));
-			return true;
+			return RespondInt(stream.GetID(Transaction(), ((IInternalObjectContainer)stream).
+				Identity()));
 		}
 	}
 }

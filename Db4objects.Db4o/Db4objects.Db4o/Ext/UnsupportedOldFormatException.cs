@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Ext
 	/// files for which support has been dropped.
 	/// </remarks>
 	[System.Serializable]
-	public class UnsupportedOldFormatException : Db4oException
+	public class UnsupportedOldFormatException : Db4oFatalException
 	{
 	}
 }

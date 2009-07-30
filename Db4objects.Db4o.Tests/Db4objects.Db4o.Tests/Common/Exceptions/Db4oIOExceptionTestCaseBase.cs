@@ -31,6 +31,10 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			{
 				throw new Db4oIOException();
 			}
+
+			public void ThrowOnClose()
+			{
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>

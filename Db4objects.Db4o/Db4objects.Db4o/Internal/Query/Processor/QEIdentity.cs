@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QEIdentity : QEEqual
 	{
-		public int i_objectID;
+		private int i_objectID;
 
 		public override bool Identity()
 		{

@@ -126,8 +126,15 @@ namespace Db4objects.Db4o.Internal
 				}
 				lock (this._enclosing._lock)
 				{
-					this._enclosing._backupFile.Close();
-					this._enclosing._backupFile = null;
+					try
+					{
+						Db4objects.Db4o.Internal.IoAdaptedObjectContainer.SyncAndClose(this._enclosing._backupFile
+							);
+					}
+					finally
+					{
+						this._enclosing._backupFile = null;
+					}
 				}
 			}
 
@@ -172,14 +179,26 @@ namespace Db4objects.Db4o.Internal
 		{
 			try
 			{
-				if (_file != null)
-				{
-					_file.Close();
-				}
+				SyncAndClose(_file);
 			}
 			finally
 			{
 				_file = null;
+			}
+		}
+
+		private static void SyncAndClose(IBin bin)
+		{
+			if (bin != null)
+			{
+				try
+				{
+					bin.Sync();
+				}
+				finally
+				{
+					bin.Close();
+				}
 			}
 		}
 
@@ -236,14 +255,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override long FileLength()
 		{
-			try
-			{
-				return _file.Length();
-			}
-			catch (Exception)
-			{
-				throw new Exception();
-			}
+			return _file.Length();
 		}
 
 		public override string FileName()
@@ -410,6 +422,14 @@ namespace Db4objects.Db4o.Internal
 					bytes[i] = Const4.Xbyte;
 				}
 				return bytes;
+			}
+		}
+
+		protected override void FatalStorageShutdown()
+		{
+			if (_file != null)
+			{
+				_file.Close();
 			}
 		}
 	}

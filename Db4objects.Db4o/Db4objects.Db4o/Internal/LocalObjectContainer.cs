@@ -706,8 +706,8 @@ namespace Db4objects.Db4o.Internal
 				if (i_semaphores != null && trans == i_semaphores.Get(name))
 				{
 					i_semaphores.Remove(name);
-					Sharpen.Runtime.NotifyAll(i_semaphores);
 				}
+				Sharpen.Runtime.NotifyAll(i_semaphores);
 			}
 		}
 
@@ -770,42 +770,50 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (i_semaphores)
 			{
-				trans = CheckTransaction(trans);
-				object obj = i_semaphores.Get(name);
-				if (obj == null)
+				try
 				{
-					i_semaphores.Put(name, trans);
-					return true;
-				}
-				if (trans == obj)
-				{
-					return true;
-				}
-				long endtime = Runtime.CurrentTimeMillis() + timeout;
-				long waitTime = timeout;
-				while (waitTime > 0)
-				{
-					try
-					{
-						Sharpen.Runtime.Wait(i_semaphores, waitTime);
-					}
-					catch (Exception)
-					{
-					}
-					// ignore
-					if (ClassCollection() == null)
-					{
-						return false;
-					}
-					obj = i_semaphores.Get(name);
+					trans = CheckTransaction(trans);
+					object obj = i_semaphores.Get(name);
 					if (obj == null)
 					{
 						i_semaphores.Put(name, trans);
 						return true;
 					}
-					waitTime = endtime - Runtime.CurrentTimeMillis();
+					if (trans == obj)
+					{
+						return true;
+					}
+					long endtime = Runtime.CurrentTimeMillis() + timeout;
+					long waitTime = timeout;
+					while (waitTime > 0)
+					{
+						try
+						{
+							Sharpen.Runtime.NotifyAll(i_semaphores);
+							Sharpen.Runtime.Wait(i_semaphores, waitTime);
+						}
+						catch (Exception)
+						{
+						}
+						// ignore
+						if (ClassCollection() == null)
+						{
+							return false;
+						}
+						obj = i_semaphores.Get(name);
+						if (obj == null)
+						{
+							i_semaphores.Put(name, trans);
+							return true;
+						}
+						waitTime = endtime - Runtime.CurrentTimeMillis();
+					}
+					return false;
 				}
-				return false;
+				finally
+				{
+					Sharpen.Runtime.NotifyAll(i_semaphores);
+				}
 			}
 		}
 
@@ -968,13 +976,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_820(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_825(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_820 : IVisitor4
+		private sealed class _IVisitor4_825 : IVisitor4
 		{
-			public _IVisitor4_820(IntArrayList ids)
+			public _IVisitor4_825(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

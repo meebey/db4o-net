@@ -190,5 +190,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			return 1;
 		}
+
+		protected override void FatalStorageShutdown()
+		{
+			ShutdownDataStorage();
+		}
 	}
 }

@@ -7,11 +7,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MUseTransaction : MsgD, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			IServerMessageDispatcher serverThread = ServerMessageDispatcher();
 			serverThread.UseTransaction(this);
-			return true;
 		}
 	}
 }

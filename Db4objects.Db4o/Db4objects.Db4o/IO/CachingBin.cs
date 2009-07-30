@@ -43,8 +43,8 @@ namespace Db4objects.Db4o.IO
 			)
 		{
 			_onDiscardPage = new _IProcedure4_22(this);
-			_producerFromDisk = new _IFunction4_135(this);
-			_producerFromPool = new _IFunction4_144(this);
+			_producerFromDisk = new _IFunction4_124(this);
+			_producerFromPool = new _IFunction4_133(this);
 			_pageSize = pageSize;
 			_pagePool = new SimpleObjectPool(NewPagePool(pageCount));
 			_cache = cache;
@@ -138,23 +138,9 @@ namespace Db4objects.Db4o.IO
 			return _fileLength;
 		}
 
-		/// <summary>Flushes and closes the file</summary>
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public override void Close()
+		private sealed class _IFunction4_124 : IFunction4
 		{
-			try
-			{
-				FlushAllPages();
-			}
-			finally
-			{
-				base.Close();
-			}
-		}
-
-		private sealed class _IFunction4_135 : IFunction4
-		{
-			public _IFunction4_135(CachingBin _enclosing)
+			public _IFunction4_124(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -173,9 +159,9 @@ namespace Db4objects.Db4o.IO
 
 		internal readonly IFunction4 _producerFromDisk;
 
-		private sealed class _IFunction4_144 : IFunction4
+		private sealed class _IFunction4_133 : IFunction4
 		{
-			public _IFunction4_144(CachingBin _enclosing)
+			public _IFunction4_133(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Ext
 	/// to a server with a wrong password or null password.
 	/// </remarks>
 	[System.Serializable]
-	public class InvalidPasswordException : Db4oException
+	public class InvalidPasswordException : Db4oRecoverableException
 	{
 	}
 }

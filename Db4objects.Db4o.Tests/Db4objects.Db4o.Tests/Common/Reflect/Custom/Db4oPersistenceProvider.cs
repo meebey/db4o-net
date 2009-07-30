@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 				// in case something goes wrong with the setup
 				CloseIgnoringExceptions(metadata);
 				// cant use exception chaining here because the
-				// the must run in jdk 1.1
+				// test must run in jdk 1.1
 				throw new Db4oException(e);
 			}
 		}

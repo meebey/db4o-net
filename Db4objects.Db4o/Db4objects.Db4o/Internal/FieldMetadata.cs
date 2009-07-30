@@ -263,14 +263,26 @@ namespace Db4objects.Db4o.Internal
 				().IsInternal();
 		}
 
-		public virtual bool CanHold(IReflectClass claxx)
+		private bool CanHold(IReflectClass type)
 		{
-			// alive() is checked in QField caller
-			if (claxx == null)
+			if (type == null)
 			{
-				return !_isPrimitive;
+				throw new ArgumentNullException();
 			}
-			return Handlers4.HandlerCanHold(GetHandler(), claxx);
+			ITypeHandler4 typeHandler = GetHandler();
+			if (typeHandler is IQueryableTypeHandler)
+			{
+				if (((IQueryableTypeHandler)typeHandler).DescendsIntoMembers())
+				{
+					return true;
+				}
+			}
+			IReflectClass classReflector = FieldType().ClassReflector();
+			if (classReflector.IsCollection())
+			{
+				return true;
+			}
+			return classReflector.IsAssignableFrom(type);
 		}
 
 		public virtual GenericReflector Reflector()
@@ -283,22 +295,25 @@ namespace Db4objects.Db4o.Internal
 			return container.Reflector();
 		}
 
-		public virtual object Coerce(IReflectClass claxx, object obj)
+		public virtual object Coerce(IReflectClass valueClass, object value)
 		{
-			// alive() is checked in QField caller
-			if (claxx == null || obj == null)
+			if (value == null)
 			{
-				return _isPrimitive ? No4.Instance : obj;
+				return _isPrimitive ? No4.Instance : value;
+			}
+			if (valueClass == null)
+			{
+				throw new ArgumentNullException();
 			}
 			if (GetHandler() is PrimitiveHandler)
 			{
-				return ((PrimitiveHandler)GetHandler()).Coerce(Reflector(), claxx, obj);
+				return ((PrimitiveHandler)GetHandler()).Coerce(valueClass, value);
 			}
-			if (!CanHold(claxx))
+			if (!CanHold(valueClass))
 			{
 				return No4.Instance;
 			}
-			return obj;
+			return value;
 		}
 
 		public bool CanLoadByIndex()
@@ -512,7 +527,7 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_434
+				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_446
 					(this, childContext));
 			}
 			catch (CorruptionException exc)
@@ -521,9 +536,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_434 : IClosure4
+		private sealed class _IClosure4_446 : IClosure4
 		{
-			public _IClosure4_434(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_446(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -1051,13 +1066,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_855(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_867(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_855 : IVisitor4
+		private sealed class _IVisitor4_867 : IVisitor4
 		{
-			public _IVisitor4_855(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_867(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1279,13 +1294,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
 				());
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1019
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1031
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1019 : IClosure4
+		private sealed class _IClosure4_1031 : IClosure4
 		{
-			public _IClosure4_1019(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1031(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

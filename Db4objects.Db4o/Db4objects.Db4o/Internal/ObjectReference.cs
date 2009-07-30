@@ -506,7 +506,7 @@ namespace Db4objects.Db4o.Internal
 			, object obj)
 		{
 			ObjectContainerBase container = transaction.Container();
-			return container.Callbacks().ObjectCanUpdate(transaction, obj) && _class.DispatchEvent
+			return container.Callbacks().ObjectCanUpdate(transaction, this) && _class.DispatchEvent
 				(transaction, obj, EventDispatchers.CanUpdate);
 		}
 

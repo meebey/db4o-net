@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MDeleteBlobFile : MsgBlob, IServerSideMessage
 	{
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			try
 			{
@@ -22,7 +22,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			catch (Exception)
 			{
 			}
-			return true;
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>

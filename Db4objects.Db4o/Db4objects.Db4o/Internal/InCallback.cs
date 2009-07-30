@@ -1,11 +1,12 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Foundation;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class InCallbackState
+	public class InCallback
 	{
 		private sealed class _DynamicVariable_12 : DynamicVariable
 		{
@@ -19,6 +20,16 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public static readonly DynamicVariable _inCallback = new _DynamicVariable_12();
+		private static readonly DynamicVariable _inCallback = new _DynamicVariable_12();
+
+		public static bool Value()
+		{
+			return (((bool)_inCallback.Value));
+		}
+
+		public static void Run(IRunnable runnable)
+		{
+			_inCallback.With(true, runnable);
+		}
 	}
 }

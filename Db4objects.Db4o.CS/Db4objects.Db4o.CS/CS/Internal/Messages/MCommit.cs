@@ -9,29 +9,32 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MCommit : Msg, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		private CallbackObjectInfoCollections committedInfo = null;
+
+		public Msg ReplyFromServer()
 		{
-			CallbackObjectInfoCollections committedInfo = null;
-			LocalTransaction serverTransaction = ServerTransaction();
 			IServerMessageDispatcher dispatcher = ServerMessageDispatcher();
 			lock (StreamLock())
 			{
-				serverTransaction.Commit(dispatcher);
+				ServerTransaction().Commit(dispatcher);
 				committedInfo = dispatcher.CommittedInfo();
 			}
-			Write(Msg.Ok);
+			return Msg.Ok;
+		}
+
+		public override void PostProcessAtServer()
+		{
 			try
 			{
 				if (committedInfo != null)
 				{
-					AddCommittedInfoMsg(committedInfo, serverTransaction);
+					AddCommittedInfoMsg(committedInfo, ServerTransaction());
 				}
 			}
 			catch (Exception exc)
 			{
 				Sharpen.Runtime.PrintStackTrace(exc);
 			}
-			return true;
 		}
 
 		private void AddCommittedInfoMsg(CallbackObjectInfoCollections committedInfo, LocalTransaction

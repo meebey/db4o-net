@@ -251,9 +251,9 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		{
 			ISet<BigSetTestCase.Item> set = NewBigSet();
 			IList<BigSetTestCase.Item> collection = ItemList();
-			Assert.IsTrue(set.AddAll(collection));
+			Assert.IsTrue(Sharpen.Collections.AddAll(set, collection));
 			Assert.IsTrue(set.ContainsAll(collection));
-			Assert.IsFalse(set.AddAll(collection));
+			Assert.IsFalse(Sharpen.Collections.AddAll(set, collection));
 			Assert.AreEqual(collection.Count, set.Count);
 		}
 
@@ -261,7 +261,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		{
 			ISet<BigSetTestCase.Item> set = NewBigSet();
 			IList<BigSetTestCase.Item> collection = ItemList();
-			set.AddAll(collection);
+			Sharpen.Collections.AddAll(set, collection);
 			BigSetTestCase.Item first = collection[0];
 			set.Remove(first);
 			Assert.IsTrue(collection.Remove(first));
@@ -274,7 +274,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		{
 			ISet<BigSetTestCase.Item> set = NewBigSet();
 			IList<BigSetTestCase.Item> collection = ItemList();
-			set.AddAll(collection);
+			Sharpen.Collections.AddAll(set, collection);
 			Assert.IsTrue(set.RemoveAll(collection));
 			Assert.AreEqual(0, set.Count);
 			Assert.IsFalse(set.RemoveAll(collection));
@@ -294,7 +294,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		{
 			ISet<BigSetTestCase.Item> set = NewBigSet();
 			ICollection<BigSetTestCase.Item> collection = ItemList();
-			set.AddAll(collection);
+			Sharpen.Collections.AddAll(set, collection);
 			IEnumerator i = set.GetEnumerator();
 			Assert.IsNotNull(i);
 			IteratorAssert.SameContent(collection.GetEnumerator(), i);
@@ -392,7 +392,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		{
 			ISet<BigSetTestCase.Item> set = CollectionFactory.ForObjectContainer(Db()).NewBigSet
 				<BigSetTestCase.Item>();
-			set.AddAll(Sharpen.Util.Arrays.AsList(initialSet));
+			Sharpen.Collections.AddAll(set, Sharpen.Util.Arrays.AsList(initialSet));
 			return set;
 		}
 

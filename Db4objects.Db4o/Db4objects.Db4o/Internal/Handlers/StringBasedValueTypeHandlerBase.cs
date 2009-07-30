@@ -86,11 +86,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return false;
 		}
 
-		public virtual bool CanHold(IReflectClass type)
-		{
-			return type.Equals(ClassReflector());
-		}
-
 		protected abstract string ConvertObject(object obj);
 
 		protected abstract object ConvertString(string str);

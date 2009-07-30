@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 
 		public void Verify(object[] expected)
 		{
-			ArrayAssert.AreEqual(expected, _diagnostics.ToArray());
+			ArrayAssert.AreEqual(expected, Sharpen.Collections.ToArray(_diagnostics));
 		}
 	}
 }

@@ -124,12 +124,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.AreNotSame(first._floats, second._floats);
 		}
 
-		public virtual void TestCanHold()
-		{
-			Assert.IsTrue(IntArrayHandler().CanHold(ReflectClass(typeof(int))));
-			Assert.IsFalse(IntArrayHandler().CanHold(ReflectClass(typeof(long))));
-		}
-
 		public virtual void TestHandlerVersion()
 		{
 			ArrayHandlerTestCase.IntArrayHolder intArrayHolder = new ArrayHandlerTestCase.IntArrayHolder

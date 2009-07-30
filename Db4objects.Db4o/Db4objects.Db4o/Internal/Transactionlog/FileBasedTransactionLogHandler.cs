@@ -83,12 +83,24 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 
 		private void CloseLockFile()
 		{
-			_lockFile.Close();
+			SyncAndClose(_lockFile);
+		}
+
+		private void SyncAndClose(IBin bin)
+		{
+			try
+			{
+				bin.Sync();
+			}
+			finally
+			{
+				bin.Close();
+			}
 		}
 
 		private void CloseLogFile()
 		{
-			_logFile.Close();
+			SyncAndClose(_logFile);
 		}
 
 		private void DeleteLockFile()

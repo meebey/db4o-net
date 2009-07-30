@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Bench.Logging
 		public static ISet AllEntries()
 		{
 			HashSet entries = new HashSet();
-			entries.AddAll(Sharpen.Util.Arrays.AsList(AllConstants));
+			Sharpen.Collections.AddAll(entries, Sharpen.Util.Arrays.AsList(AllConstants));
 			return entries;
 		}
 	}

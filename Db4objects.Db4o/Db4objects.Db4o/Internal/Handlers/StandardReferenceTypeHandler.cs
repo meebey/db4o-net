@@ -7,6 +7,7 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.Internal.Metadata;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -34,24 +35,26 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			TraverseAllAspects(context, new _TraverseAspectCommand_35(context));
+			TraverseAllAspects(context, new _MarshallingInfoTraverseAspectCommand_36(context, 
+				EnsureFieldList(context)));
 		}
 
-		private sealed class _TraverseAspectCommand_35 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_36 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_35(IDefragmentContext context)
+			public _MarshallingInfoTraverseAspectCommand_36(IDefragmentContext context, IMarshallingInfo
+				 baseArg1) : base(baseArg1)
 			{
 				this.context = context;
 			}
 
-			public override int AspectCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
-				, ByteArrayBuffer reader)
+			protected override int InternalDeclaredAspectCount(Db4objects.Db4o.Internal.ClassMetadata
+				 classMetadata)
 			{
 				return context.ReadInt();
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (!isNull)
 				{
@@ -77,8 +80,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 		{
 			BooleanByRef schemaUpdateDetected = new BooleanByRef();
 			ContextState savedState = context.SaveState();
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_63
-				(context, schemaUpdateDetected);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_64(context
+				, schemaUpdateDetected, EnsureFieldList(context));
 			// TODO: cant the aspect handle it itself?
 			// Probably no because old aspect versions might not be able
 			// to handle null...
@@ -86,15 +89,16 @@ namespace Db4objects.Db4o.Internal.Handlers
 			if (schemaUpdateDetected.value)
 			{
 				context.RestoreState(savedState);
-				command = new _TraverseFieldCommand_93(context);
+				command = new _MarshallingInfoTraverseAspectCommand_94(context, EnsureFieldList(context
+					));
 				TraverseAllAspects(context, command);
 			}
 		}
 
-		private sealed class _TraverseAspectCommand_63 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_64 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_63(UnmarshallingContext context, BooleanByRef schemaUpdateDetected
-				)
+			public _MarshallingInfoTraverseAspectCommand_64(UnmarshallingContext context, BooleanByRef
+				 schemaUpdateDetected, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.context = context;
 				this.schemaUpdateDetected = schemaUpdateDetected;
@@ -105,8 +109,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return aspect.IsEnabledOn(context);
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (aspect is FieldMetadata)
 				{
@@ -129,20 +133,26 @@ namespace Db4objects.Db4o.Internal.Handlers
 			private readonly BooleanByRef schemaUpdateDetected;
 		}
 
-		private sealed class _TraverseFieldCommand_93 : StandardReferenceTypeHandler.TraverseFieldCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_94 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseFieldCommand_93(UnmarshallingContext context)
+			public _MarshallingInfoTraverseAspectCommand_94(UnmarshallingContext context, IMarshallingInfo
+				 baseArg1) : base(baseArg1)
 			{
 				this.context = context;
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (!isNull)
 				{
 					((FieldMetadata)aspect).AttemptUpdate(context);
 				}
+			}
+
+			public override bool Accept(ClassAspect aspect)
+			{
+				return aspect is FieldMetadata;
 			}
 
 			private readonly UnmarshallingContext context;
@@ -161,27 +171,27 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual void MarshallAspects(object obj, MarshallingContext context)
 		{
 			Transaction trans = context.Transaction();
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_115
-				(context, obj, trans);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_121(context
+				, obj, trans, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_115 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_121 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_115(MarshallingContext context, object obj, Transaction
-				 trans)
+			public _MarshallingInfoTraverseAspectCommand_121(MarshallingContext context, object
+				 obj, Transaction trans, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.context = context;
 				this.obj = obj;
 				this.trans = trans;
 			}
 
-			public override int AspectCount(Db4objects.Db4o.Internal.ClassMetadata classMetadata
-				, ByteArrayBuffer buffer)
+			protected override int InternalDeclaredAspectCount(Db4objects.Db4o.Internal.ClassMetadata
+				 classMetadata)
 			{
-				int fieldCount = classMetadata._aspects.Length;
-				context.FieldCount(fieldCount);
-				return fieldCount;
+				int aspectCount = classMetadata._aspects.Length;
+				context.WriteDeclaredAspectCount(aspectCount);
+				return aspectCount;
 			}
 
 			public override bool Accept(ClassAspect aspect)
@@ -189,8 +199,8 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return aspect.IsEnabledOn(context);
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, Db4objects.Db4o.Internal.ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				object marshalledObject = obj;
 				if (aspect is FieldMetadata)
@@ -205,6 +215,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 					}
 				}
 				aspect.Marshall(context, marshalledObject);
+			}
+
+			public override void ProcessAspectOnMissingClass(ClassAspect aspect, int currentSlot
+				)
+			{
+				((MarshallingContext)context).IsNull(currentSlot, true);
 			}
 
 			private readonly MarshallingContext context;
@@ -242,14 +258,14 @@ namespace Db4objects.Db4o.Internal.Handlers
 			//TODO: Move the comparable wrapping to a .Net specific StandardStructHandler
 			if (source is IComparable)
 			{
-				return new _IPreparedComparison_169(source);
+				return new _IPreparedComparison_179(source);
 			}
 			throw new IllegalComparisonException();
 		}
 
-		private sealed class _IPreparedComparison_169 : IPreparedComparison
+		private sealed class _IPreparedComparison_179 : IPreparedComparison
 		{
-			public _IPreparedComparison_169(object source)
+			public _IPreparedComparison_179(object source)
 			{
 				this.source = source;
 			}
@@ -276,43 +292,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		private ObjectContainerBase Stream()
 		{
 			return ClassMetadata().Container();
-		}
-
-		public abstract class TraverseAspectCommand
-		{
-			private bool _cancelled = false;
-
-			public virtual int AspectCount(ClassMetadata classMetadata, ByteArrayBuffer reader
-				)
-			{
-				return classMetadata.ReadAspectCount(reader);
-			}
-
-			public virtual bool Cancelled()
-			{
-				return _cancelled;
-			}
-
-			protected virtual void Cancel()
-			{
-				_cancelled = true;
-			}
-
-			public virtual bool Accept(ClassAspect aspect)
-			{
-				return true;
-			}
-
-			public abstract void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, ClassMetadata containingClass);
-		}
-
-		public abstract class TraverseFieldCommand : StandardReferenceTypeHandler.TraverseAspectCommand
-		{
-			public override bool Accept(ClassAspect aspect)
-			{
-				return aspect is FieldMetadata;
-			}
 		}
 
 		public sealed class PreparedComparisonImpl : IPreparedComparison
@@ -353,34 +332,17 @@ namespace Db4objects.Db4o.Internal.Handlers
 			}
 		}
 
-		public void TraverseAllAspects(IMarshallingInfo context, StandardReferenceTypeHandler.TraverseAspectCommand
-			 command)
+		public void TraverseAllAspects(IMarshallingInfo context, ITraverseAspectCommand command
+			)
 		{
-			int currentSlot = 0;
 			ClassMetadata classMetadata = ClassMetadata();
 			AssertClassMetadata(context.ClassMetadata());
-			while (classMetadata != null)
-			{
-				int aspectCount = command.AspectCount(classMetadata, ((ByteArrayBuffer)context.Buffer
-					()));
-				context.AspectCount(aspectCount);
-				for (int i = 0; i < aspectCount && !command.Cancelled(); i++)
-				{
-					ClassAspect currentAspect = classMetadata._aspects[i];
-					if (command.Accept(currentAspect))
-					{
-						command.ProcessAspect(currentAspect, currentSlot, IsNull(context, currentSlot), classMetadata
-							);
-					}
-					context.BeginSlot();
-					currentSlot++;
-				}
-				if (command.Cancelled())
-				{
-					return;
-				}
-				classMetadata = classMetadata.i_ancestor;
-			}
+			classMetadata.TraverseAllAspects(command);
+		}
+
+		protected virtual IMarshallingInfo EnsureFieldList(IMarshallingInfo context)
+		{
+			return context;
 		}
 
 		private void AssertClassMetadata(ClassMetadata contextMetadata)
@@ -390,11 +352,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		//		if (contextMetadata != classMetadata()) {
 		//        	throw new IllegalStateException("expecting '" + classMetadata() + "', got '" + contextMetadata + "'");
 		//        }
-		protected virtual bool IsNull(IFieldListInfo fieldList, int fieldIndex)
-		{
-			return fieldList.IsNull(fieldIndex);
-		}
-
 		public virtual ClassMetadata ClassMetadata()
 		{
 			return _classMetadata;
@@ -459,22 +416,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void CollectIDs(CollectIdContext context, IPredicate4 predicate)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_343
-				(predicate, context);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_300(predicate
+				, context, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_343 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_300 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_343(IPredicate4 predicate, CollectIdContext context
-				)
+			public _MarshallingInfoTraverseAspectCommand_300(IPredicate4 predicate, CollectIdContext
+				 context, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.predicate = predicate;
 				this.context = context;
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (isNull)
 				{
@@ -526,24 +483,25 @@ namespace Db4objects.Db4o.Internal.Handlers
 			BooleanByRef aspectFound = new BooleanByRef(false);
 			CollectIdContext subContext = CollectIdContext.ForID(context.Transaction(), context
 				.Collector(), context.CollectionID());
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_380
-				(this, aspectFound, subContext);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_338(this
+				, aspectFound, subContext, EnsureFieldList(subContext));
 			TraverseAllAspects(subContext, command);
 			return aspectFound.value;
 		}
 
-		private sealed class _TraverseAspectCommand_380 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_338 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_380(StandardReferenceTypeHandler _enclosing, BooleanByRef
-				 aspectFound, CollectIdContext subContext)
+			public _MarshallingInfoTraverseAspectCommand_338(StandardReferenceTypeHandler _enclosing
+				, BooleanByRef aspectFound, CollectIdContext subContext, IMarshallingInfo baseArg1
+				) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;
 				this.aspectFound = aspectFound;
 				this.subContext = subContext;
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (isNull)
 				{
@@ -596,12 +554,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			int depth = ClassMetadata().AdjustDepthToBorders(2);
 			container.Activate(transaction, obj, container.ActivationDepthProvider().ActivationDepth
 				(depth, ActivationMode.Activate));
-			Platform4.ForEachCollectionElement(obj, new _IVisitor4_421(context));
+			Platform4.ForEachCollectionElement(obj, new _IVisitor4_379(context));
 		}
 
-		private sealed class _IVisitor4_421 : IVisitor4
+		private sealed class _IVisitor4_379 : IVisitor4
 		{
-			public _IVisitor4_421(QueryingReadContext context)
+			public _IVisitor4_379(QueryingReadContext context)
 			{
 				this.context = context;
 			}
@@ -616,20 +574,21 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void ReadVirtualAttributes(ObjectReferenceContext context)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_429
-				(context);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_387(context
+				, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_429 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_387 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_429(ObjectReferenceContext context)
+			public _MarshallingInfoTraverseAspectCommand_387(ObjectReferenceContext context, 
+				IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.context = context;
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (!isNull)
 				{
@@ -649,21 +608,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_444
-				(context, oldSlot);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_403(context
+				, oldSlot, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_444 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_403 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_444(ObjectIdContextImpl context, Slot oldSlot)
+			public _MarshallingInfoTraverseAspectCommand_403(ObjectIdContextImpl context, Slot
+				 oldSlot, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.context = context;
 				this.oldSlot = oldSlot;
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (aspect is FieldMetadata)
 				{
@@ -690,21 +650,22 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void DeleteMembers(DeleteContextImpl context, bool isUpdate)
 		{
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_462
-				(context, isUpdate);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_422(context
+				, isUpdate, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _TraverseAspectCommand_462 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_422 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_462(DeleteContextImpl context, bool isUpdate)
+			public _MarshallingInfoTraverseAspectCommand_422(DeleteContextImpl context, bool 
+				isUpdate, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.context = context;
 				this.isUpdate = isUpdate;
 			}
 
-			public override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
-				, ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect aspect, int currentSlot, bool isNull
+				)
 			{
 				if (isNull)
 				{
@@ -726,29 +687,28 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual bool SeekToField(ObjectHeaderContext context, ClassAspect aspect)
 		{
 			BooleanByRef found = new BooleanByRef(false);
-			StandardReferenceTypeHandler.TraverseAspectCommand command = new _TraverseAspectCommand_479
-				(context, aspect, found);
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_440(aspect
+				, found, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 			return found.value;
 		}
 
-		private sealed class _TraverseAspectCommand_479 : StandardReferenceTypeHandler.TraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_440 : MarshallingInfoTraverseAspectCommand
 		{
-			public _TraverseAspectCommand_479(ObjectHeaderContext context, ClassAspect aspect
-				, BooleanByRef found)
+			public _MarshallingInfoTraverseAspectCommand_440(ClassAspect aspect, BooleanByRef
+				 found, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
-				this.context = context;
 				this.aspect = aspect;
 				this.found = found;
 			}
 
 			public override bool Accept(ClassAspect aspect)
 			{
-				return aspect.IsEnabledOn(context);
+				return aspect.IsEnabledOn(this._marshallingInfo);
 			}
 
-			public override void ProcessAspect(ClassAspect curField, int currentSlot, bool isNull
-				, ClassMetadata containingClass)
+			protected override void ProcessAspect(ClassAspect curField, int currentSlot, bool
+				 isNull)
 			{
 				if (curField == aspect)
 				{
@@ -758,20 +718,13 @@ namespace Db4objects.Db4o.Internal.Handlers
 				}
 				if (!isNull)
 				{
-					curField.IncrementOffset(context);
+					curField.IncrementOffset(this._marshallingInfo.Buffer());
 				}
 			}
-
-			private readonly ObjectHeaderContext context;
 
 			private readonly ClassAspect aspect;
 
 			private readonly BooleanByRef found;
-		}
-
-		public virtual bool CanHold(IReflectClass type)
-		{
-			return ClassMetadata().CanHold(type);
 		}
 
 		public object IndexEntryToObject(IContext context, object indexEntry)

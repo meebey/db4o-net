@@ -14,8 +14,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private static readonly float Defaultvalue = System.Convert.ToSingle(0);
 
-		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
-			)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
 			return Coercion4.ToFloat(obj);
 		}

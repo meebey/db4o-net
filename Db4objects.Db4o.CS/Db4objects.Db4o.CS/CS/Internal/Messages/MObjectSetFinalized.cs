@@ -7,11 +7,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MObjectSetFinalized : MsgD, IServerSideMessage
 	{
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			int queryResultID = ReadInt();
 			ServerMessageDispatcher().QueryResultFinalized(queryResultID);
-			return true;
 		}
 	}
 }

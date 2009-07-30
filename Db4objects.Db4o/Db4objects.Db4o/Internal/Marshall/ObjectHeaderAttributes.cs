@@ -2,12 +2,11 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public class ObjectHeaderAttributes : IFieldListInfo
+	public class ObjectHeaderAttributes
 	{
 		private readonly int _fieldCount;
 

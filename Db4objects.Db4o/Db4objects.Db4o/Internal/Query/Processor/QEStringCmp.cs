@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public abstract class QEStringCmp : QEAbstract
 	{
-		public bool caseSensitive;
+		private bool caseSensitive;
 
 		/// <summary>for C/S messaging only</summary>
 		public QEStringCmp()
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					obj = candidate.ReadString((ByteArrayBuffer)obj);
 				}
 				string candidateStringValue = obj.ToString();
-				string stringConstraint = constraint.i_object.ToString();
+				string stringConstraint = constraint.GetObject().ToString();
 				if (!caseSensitive)
 				{
 					candidateStringValue = candidateStringValue.ToLower();
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				return CompareStrings(candidateStringValue, stringConstraint);
 			}
-			return constraint.i_object == null;
+			return constraint.GetObject() == null;
 		}
 
 		public override bool SupportsIndex()

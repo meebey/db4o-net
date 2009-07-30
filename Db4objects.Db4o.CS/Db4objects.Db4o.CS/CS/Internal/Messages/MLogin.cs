@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MLogin : MsgD, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
 			lock (StreamLock())
 			{
@@ -25,15 +25,13 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 						LogMsg(32, userName);
 						int blockSize = Stream().BlockSize();
 						int encrypt = Stream()._handlers.i_encrypt ? 1 : 0;
-						Write(Msg.LoginOk.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt }
-							));
 						ServerMessageDispatcher().Login();
-						return true;
+						return Msg.LoginOk.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt
+							 });
 					}
 				}
 			}
-			Write(Msg.Failed);
-			return true;
+			return Msg.Failed;
 		}
 	}
 }

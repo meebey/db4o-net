@@ -7,7 +7,7 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.CS.Internal
 {
 	/// <exclude></exclude>
-	public class ClientAsynchronousMessageProcessor : Thread
+	public class ClientAsynchronousMessageProcessor : IRunnable
 	{
 		private readonly BlockingQueue _messageQueue;
 
@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.CS.Internal
 			_messageQueue = messageQueue;
 		}
 
-		public override void Run()
+		public virtual void Run()
 		{
 			while (!_stopped)
 			{
@@ -35,11 +35,6 @@ namespace Db4objects.Db4o.CS.Internal
 					break;
 				}
 			}
-		}
-
-		public virtual void StartProcessing()
-		{
-			Start();
 		}
 
 		public virtual void StopProcessing()

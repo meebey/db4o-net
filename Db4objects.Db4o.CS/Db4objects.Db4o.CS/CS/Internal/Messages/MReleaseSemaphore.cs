@@ -7,11 +7,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MReleaseSemaphore : MsgD, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			string name = ReadString();
 			((LocalObjectContainer)Stream()).ReleaseSemaphore(Transaction(), name);
-			return true;
 		}
 	}
 }

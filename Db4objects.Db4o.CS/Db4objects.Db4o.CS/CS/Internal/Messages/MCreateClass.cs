@@ -9,11 +9,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MCreateClass : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			ObjectContainerBase stream = Stream();
 			Transaction trans = stream.SystemTransaction();
-			bool ok = false;
 			try
 			{
 				lock (StreamLock())
@@ -27,8 +26,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 							stream.CheckStillToSet();
 							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, classMetadata.GetID());
 							MsgD createdClass = Msg.ObjectToClient.GetWriter(returnBytes);
-							Write(createdClass);
-							ok = true;
+							return createdClass;
 						}
 					}
 				}
@@ -36,15 +34,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			catch (Db4oException)
 			{
 			}
-			finally
-			{
-				// TODO: send the exception to the client
-				if (!ok)
-				{
-					Write(Msg.Failed);
-				}
-			}
-			return true;
+			// TODO: send the exception to the client
+			return Msg.Failed;
 		}
 	}
 }

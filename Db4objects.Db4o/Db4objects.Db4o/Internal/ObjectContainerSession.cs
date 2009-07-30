@@ -285,11 +285,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool SetSemaphore(string name, int waitForAvailability)
 		{
-			lock (Lock())
-			{
-				CheckClosed();
-				return _server.SetSemaphore(_transaction, name, waitForAvailability);
-			}
+			CheckClosed();
+			return _server.SetSemaphore(_transaction, name, waitForAvailability);
 		}
 
 		public virtual IStoredClass StoredClass(object clazz)

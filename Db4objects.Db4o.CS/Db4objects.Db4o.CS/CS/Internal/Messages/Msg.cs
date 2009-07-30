@@ -165,8 +165,11 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		public static readonly MInstanceCount InstanceCount = new MInstanceCount();
 
-		public static readonly MRequestException RequestException = new MRequestException
-			();
+		public static readonly MRequestExceptionWithResponse RequestExceptionWithResponse
+			 = new MRequestExceptionWithResponse();
+
+		public static readonly MRequestExceptionWithoutResponse RequestExceptionWithoutResponse
+			 = new MRequestExceptionWithoutResponse();
 
 		internal Msg()
 		{
@@ -332,9 +335,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			Write(RuntimeException.GetWriterForSingleObject(Transaction(), e));
 		}
 
-		public virtual void RespondInt(int response)
+		public virtual Db4objects.Db4o.CS.Internal.Messages.Msg RespondInt(int response)
 		{
-			Write(IdList.GetWriterForInt(Transaction(), response));
+			return IdList.GetWriterForInt(Transaction(), response);
 		}
 
 		public virtual bool Write(ISocket4 sock)
@@ -401,9 +404,15 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			Stream().LogMsg(msgCode, msg);
 		}
 
+		/// <summary>to be overridden by implementors of MessageWithResponse</summary>
+		public virtual void PostProcessAtServer()
+		{
+		}
+
 		object System.ICloneable.Clone()
 		{
 			return MemberwiseClone();
 		}
+		// do nothing by default
 	}
 }

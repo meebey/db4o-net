@@ -7,17 +7,14 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MInstanceCount : MsgD, IMessageWithResponse
 	{
-		public virtual bool ProcessAtServer()
+		public virtual Msg ReplyFromServer()
 		{
-			MsgD writer = null;
 			lock (StreamLock())
 			{
 				ClassMetadata clazz = File().ClassMetadataForID(ReadInt());
-				writer = Msg.InstanceCount.GetWriterForInt(Transaction(), clazz.IndexEntryCount(Transaction
+				return Msg.InstanceCount.GetWriterForInt(Transaction(), clazz.IndexEntryCount(Transaction
 					()));
 			}
-			Write(writer);
-			return true;
 		}
 	}
 }

@@ -30,31 +30,37 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		public virtual void TestEvents()
 		{
-			EventInfo @event = (EventInfo)ExceptionPropagationInEventsTestVariables.EventSelector
-				.Value;
+			EventInfo @event = EventToTest();
 			if (IsClientServer() && !@event.IsClientServerEvent())
 			{
 				return;
 			}
-			AssertEventThrows(((ICodeBlock)_eventFirer[@event.EventFirerName()]), @event.ListenerSetter
-				());
+			AssertEventThrows(@event.EventFirerName(), ((ICodeBlock)_eventFirer[@event.EventFirerName
+				()]), @event.ListenerSetter());
 		}
 
-		private void AssertEventThrows(ICodeBlock codeBlock, IProcedure4 listenerSetter)
+		private EventInfo EventToTest()
+		{
+			return (EventInfo)ExceptionPropagationInEventsTestVariables.EventSelector.Value;
+		}
+
+		private void AssertEventThrows(string eventName, ICodeBlock codeBlock, IProcedure4
+			 listenerSetter)
 		{
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(Db());
 			listenerSetter.Apply(eventRegistry);
-			Assert.Expect(typeof(EventException), typeof(NotImplementedException), codeBlock);
+			Assert.Expect(typeof(EventException), typeof(NotImplementedException), codeBlock, 
+				eventName);
 		}
 
 		private ICodeBlock NewObjectUpdater()
 		{
-			return new _ICodeBlock_42(this);
+			return new _ICodeBlock_46(this);
 		}
 
-		private sealed class _ICodeBlock_42 : ICodeBlock
+		private sealed class _ICodeBlock_46 : ICodeBlock
 		{
-			public _ICodeBlock_42(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_46(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -73,12 +79,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private ICodeBlock NewObjectDeleter()
 		{
-			return new _ICodeBlock_56(this);
+			return new _ICodeBlock_60(this);
 		}
 
-		private sealed class _ICodeBlock_56 : ICodeBlock
+		private sealed class _ICodeBlock_60 : ICodeBlock
 		{
-			public _ICodeBlock_56(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_60(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -95,12 +101,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private ICodeBlock NewQueryRunner()
 		{
-			return new _ICodeBlock_65(this);
+			return new _ICodeBlock_69(this);
 		}
 
-		private sealed class _ICodeBlock_65 : ICodeBlock
+		private sealed class _ICodeBlock_69 : ICodeBlock
 		{
-			public _ICodeBlock_65(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_69(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -115,12 +121,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private ICodeBlock NewObjectInserter()
 		{
-			return new _ICodeBlock_73(this);
+			return new _ICodeBlock_77(this);
 		}
 
-		private sealed class _ICodeBlock_73 : ICodeBlock
+		private sealed class _ICodeBlock_77 : ICodeBlock
 		{
-			public _ICodeBlock_73(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_77(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -141,7 +147,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			query.Descend("id").Constrain(id);
 			IObjectSet results = query.Execute();
 			Assert.AreEqual(1, results.Count);
-			return ((EventsTestCaseBase.Item)results.Next());
+			EventsTestCaseBase.Item found = ((EventsTestCaseBase.Item)results.Next());
+			Assert.AreEqual(id, found.id);
+			return found;
 		}
 
 		private Hashtable _eventFirer = new Hashtable();

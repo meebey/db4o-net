@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// <exclude></exclude>
 	public class QENot : QE
 	{
-		public QE i_evaluator;
+		private QE i_evaluator;
 
 		public QENot()
 		{
@@ -26,6 +26,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				i_evaluator = i_evaluator.Add(evaluator);
 			}
 			return this;
+		}
+
+		public virtual QE Evaluator()
+		{
+			return i_evaluator;
 		}
 
 		public override bool Identity()

@@ -9,34 +9,24 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MClassMetadataIdForName : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			string name = ReadString();
 			ObjectContainerBase stream = Stream();
 			Transaction trans = stream.SystemTransaction();
-			bool ok = false;
 			try
 			{
 				lock (StreamLock())
 				{
 					int id = stream.ClassMetadataIdForName(name);
-					MsgD msg = Msg.ClassId.GetWriterForInt(trans, id);
-					Write(msg);
-					ok = true;
+					return Msg.ClassId.GetWriterForInt(trans, id);
 				}
 			}
 			catch (Db4oException)
 			{
 			}
-			finally
-			{
-				// TODO: send the exception to the client
-				if (!ok)
-				{
-					Write(Msg.Failed);
-				}
-			}
-			return true;
+			// TODO: send the exception to the client
+			return Msg.Failed;
 		}
 	}
 }

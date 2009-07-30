@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.CS.Internal
 	public class ClientObjectContainer : ExternalObjectContainer, IExtClient, IBlobTransport
 		, IClientMessageDispatcher
 	{
-		internal readonly object blobLock = new object();
+		internal readonly object _blobLock = new object();
 
-		private BlobProcessor blobThread;
+		private BlobProcessor _blobTask;
 
 		private ISocket4 i_socket;
 
@@ -148,14 +148,20 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			if (!_singleThreaded)
 			{
-				_asynchronousMessageProcessor = new ClientAsynchronousMessageProcessor(_asynchronousMessageQueue
-					);
-				_asynchronousMessageProcessor.StartProcessing();
+				StartAsynchronousMessageProcessor();
 			}
-			_messageDispatcher = new ClientMessageDispatcherImpl(this, socket, _synchronousMessageQueue
-				, _asynchronousMessageQueue);
-			_messageDispatcher.SetDispatcherName(user);
-			_messageDispatcher.StartDispatcher();
+			ClientMessageDispatcherImpl dispatcherImpl = new ClientMessageDispatcherImpl(this
+				, socket, _synchronousMessageQueue, _asynchronousMessageQueue);
+			dispatcherImpl.SetDispatcherName(user);
+			_messageDispatcher = dispatcherImpl;
+			ThreadPool().Start(dispatcherImpl);
+		}
+
+		private void StartAsynchronousMessageProcessor()
+		{
+			_asynchronousMessageProcessor = new ClientAsynchronousMessageProcessor(_asynchronousMessageQueue
+				);
+			ThreadPool().Start(_asynchronousMessageProcessor);
 		}
 
 		/// <exception cref="System.NotSupportedException"></exception>
@@ -621,17 +627,17 @@ namespace Db4objects.Db4o.CS.Internal
 
 		internal virtual void ProcessBlobMessage(MsgBlob msg)
 		{
-			lock (blobLock)
+			lock (_blobLock)
 			{
-				bool needStart = blobThread == null || blobThread.IsTerminated();
+				bool needStart = _blobTask == null || _blobTask.IsTerminated();
 				if (needStart)
 				{
-					blobThread = new BlobProcessor(this);
+					_blobTask = new BlobProcessor(this);
 				}
-				blobThread.Add(msg);
+				_blobTask.Add(msg);
 				if (needStart)
 				{
-					blobThread.Start();
+					ThreadPool().StartLowPriority(_blobTask);
 				}
 			}
 		}
@@ -726,14 +732,14 @@ namespace Db4objects.Db4o.CS.Internal
 			 prefetchDepth)
 		{
 			IDictionary buffers = new Hashtable(ids.Length);
-			WithEnvironment(new _IRunnable_580(this, transaction, ids, buffers, prefetchDepth
+			WithEnvironment(new _IRunnable_587(this, transaction, ids, buffers, prefetchDepth
 				));
 			return PackSlotBuffers(ids, buffers);
 		}
 
-		private sealed class _IRunnable_580 : IRunnable
+		private sealed class _IRunnable_587 : IRunnable
 		{
-			public _IRunnable_580(ClientObjectContainer _enclosing, Transaction transaction, 
+			public _IRunnable_587(ClientObjectContainer _enclosing, Transaction transaction, 
 				int[] ids, IDictionary buffers, int prefetchDepth)
 			{
 				this._enclosing = _enclosing;
@@ -766,13 +772,13 @@ namespace Db4objects.Db4o.CS.Internal
 			 id, bool lastCommitted)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_593(this, lastCommitted, result, transaction, id));
+			WithEnvironment(new _IRunnable_600(this, lastCommitted, result, transaction, id));
 			return ((ByteArrayBuffer)result.value);
 		}
 
-		private sealed class _IRunnable_593 : IRunnable
+		private sealed class _IRunnable_600 : IRunnable
 		{
-			public _IRunnable_593(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
+			public _IRunnable_600(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
 				 result, Transaction transaction, int id)
 			{
 				this._enclosing = _enclosing;
@@ -822,13 +828,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_623(this, trans, result));
+			WithEnvironment(new _IRunnable_630(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_623 : IRunnable
+		private sealed class _IRunnable_630 : IRunnable
 		{
-			public _IRunnable_623(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_630(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1089,6 +1095,10 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			try
 			{
+				if (IsClosed())
+				{
+					return false;
+				}
 				Write(Msg.IsAlive);
 				return ExpectedResponse(Msg.IsAlive) != null;
 			}
@@ -1160,13 +1170,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount() });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_884(this, trans, result));
+			WithEnvironment(new _IRunnable_894(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_884 : IRunnable
+		private sealed class _IRunnable_894 : IRunnable
 		{
-			public _IRunnable_884(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_894(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1276,7 +1286,7 @@ namespace Db4objects.Db4o.CS.Internal
 		private void ClearBatchedObjects()
 		{
 			_batchedMessages.Clear();
-			// initial value of _batchedQueueLength is YapConst.INT_LENGTH, which is
+			// initial value of _batchedQueueLength is Const4.INT_LENGTH, which is
 			// used for to write the number of messages.
 			_batchedQueueLength = Const4.IntLength;
 		}
@@ -1304,11 +1314,6 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		// do nothing here		
-		public virtual void StartDispatcher()
-		{
-		}
-
-		// do nothing here for single thread, ClientObjectContainer is already running
 		public virtual IClientMessageDispatcher MessageDispatcher()
 		{
 			return _singleThreaded ? this : _messageDispatcher;
@@ -1444,6 +1449,11 @@ namespace Db4objects.Db4o.CS.Internal
 			ByteArrayBuffer buffer = ((MReadBytes)ExpectedResponse(Msg.ReadBytes)).Unmarshall
 				();
 			return buffer;
+		}
+
+		protected override void FatalStorageShutdown()
+		{
+			ShutdownDataStorage();
 		}
 	}
 }

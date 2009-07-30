@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Config
 {
@@ -38,6 +39,11 @@ namespace Db4objects.Db4o.Config
 			}
 			_storedType = storedType;
 			_runtimeType = runtimeType;
+		}
+
+		public TypeAlias(Type storedClass, Type runtimeClass) : this(ReflectPlatform.FullyQualifiedName
+			(storedClass), ReflectPlatform.FullyQualifiedName(runtimeClass))
+		{
 		}
 
 		/// <summary>returns the stored type name if the alias was written for the passed runtime type name

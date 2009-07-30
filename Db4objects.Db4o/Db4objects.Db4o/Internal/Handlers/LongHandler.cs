@@ -17,8 +17,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	{
 		private static readonly long Defaultvalue = System.Convert.ToInt64(0);
 
-		public override object Coerce(IReflector reflector, IReflectClass claxx, object obj
-			)
+		public override object Coerce(IReflectClass claxx, object obj)
 		{
 			return Coercion4.ToLong(obj);
 		}

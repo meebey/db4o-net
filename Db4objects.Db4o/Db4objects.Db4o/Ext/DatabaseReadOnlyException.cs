@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Ext
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly"></seealso>
 	[System.Serializable]
-	public class DatabaseReadOnlyException : Db4oException
+	public class DatabaseReadOnlyException : Db4oRecoverableException
 	{
 	}
 }

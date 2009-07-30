@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Config
 	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
 	/// 	</seealso>
 	[System.Serializable]
-	public class GlobalOnlyConfigException : Db4oException
+	public class GlobalOnlyConfigException : Db4oRecoverableException
 	{
 	}
 }

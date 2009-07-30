@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
@@ -7,6 +8,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Events;
 using Db4objects.Db4o.Query;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Events
 {
@@ -62,94 +64,253 @@ namespace Db4objects.Db4o.Internal.Events
 		// Callbacks implementation
 		public virtual void QueryOnFinished(Transaction transaction, IQuery query)
 		{
-			EventPlatform.TriggerQueryEvent(transaction, _queryFinished, query);
+			if (!(_queryFinished != null))
+			{
+				return;
+			}
+			WithExceptionHandling(new _IRunnable_55(this, transaction, query));
+		}
+
+		private sealed class _IRunnable_55 : IRunnable
+		{
+			public _IRunnable_55(EventRegistryImpl _enclosing, Transaction transaction, IQuery
+				 query)
+			{
+				this._enclosing = _enclosing;
+				this.transaction = transaction;
+				this.query = query;
+			}
+
+			public void Run()
+			{
+				if (null != this._enclosing._queryFinished) this._enclosing._queryFinished(null, 
+					new QueryEventArgs(transaction, query));
+			}
+
+			private readonly EventRegistryImpl _enclosing;
+
+			private readonly Transaction transaction;
+
+			private readonly IQuery query;
 		}
 
 		public virtual void QueryOnStarted(Transaction transaction, IQuery query)
 		{
-			EventPlatform.TriggerQueryEvent(transaction, _queryStarted, query);
+			if (!(_queryStarted != null))
+			{
+				return;
+			}
+			WithExceptionHandling(new _IRunnable_64(this, transaction, query));
+		}
+
+		private sealed class _IRunnable_64 : IRunnable
+		{
+			public _IRunnable_64(EventRegistryImpl _enclosing, Transaction transaction, IQuery
+				 query)
+			{
+				this._enclosing = _enclosing;
+				this.transaction = transaction;
+				this.query = query;
+			}
+
+			public void Run()
+			{
+				if (null != this._enclosing._queryStarted) this._enclosing._queryStarted(null, new 
+					QueryEventArgs(transaction, query));
+			}
+
+			private readonly EventRegistryImpl _enclosing;
+
+			private readonly Transaction transaction;
+
+			private readonly IQuery query;
 		}
 
 		public virtual bool ObjectCanNew(Transaction transaction, object obj)
 		{
-			return EventPlatform.TriggerCancellableObjectEventArgs(transaction, _creating, obj
-				);
+			return TriggerCancellableObjectEventArgsInCallback(transaction, _creating, null, 
+				obj);
 		}
 
 		public virtual bool ObjectCanActivate(Transaction transaction, object obj)
 		{
-			return EventPlatform.TriggerCancellableObjectEventArgs(transaction, _activating, 
-				obj);
-		}
-
-		public virtual bool ObjectCanUpdate(Transaction transaction, object obj)
-		{
-			return EventPlatform.TriggerCancellableObjectEventArgs(transaction, _updating, obj
-				);
-		}
-
-		public virtual bool ObjectCanDelete(Transaction transaction, object obj)
-		{
-			return EventPlatform.TriggerCancellableObjectEventArgs(transaction, _deleting, obj
-				);
-		}
-
-		public virtual bool ObjectCanDeactivate(Transaction transaction, object obj)
-		{
-			return EventPlatform.TriggerCancellableObjectEventArgs(transaction, _deactivating
+			return TriggerCancellableObjectEventArgsInCallback(transaction, _activating, null
 				, obj);
+		}
+
+		public virtual bool ObjectCanUpdate(Transaction transaction, IObjectInfo objectInfo
+			)
+		{
+			return TriggerCancellableObjectEventArgsInCallback(transaction, _updating, objectInfo
+				, objectInfo.GetObject());
+		}
+
+		public virtual bool ObjectCanDelete(Transaction transaction, IObjectInfo objectInfo
+			)
+		{
+			return TriggerCancellableObjectEventArgsInCallback(transaction, _deleting, objectInfo
+				, objectInfo.GetObject());
+		}
+
+		public virtual bool ObjectCanDeactivate(Transaction transaction, IObjectInfo objectInfo
+			)
+		{
+			return TriggerCancellableObjectEventArgsInCallback(transaction, _deactivating, objectInfo
+				, objectInfo.GetObject());
 		}
 
 		public virtual void ObjectOnActivate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectInfoEvent(transaction, _activated, obj);
+			TriggerObjectInfoEventInCallback(transaction, _activated, obj);
 		}
 
 		public virtual void ObjectOnNew(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectInfoEvent(transaction, _created, obj);
+			TriggerObjectInfoEventInCallback(transaction, _created, obj);
 		}
 
 		public virtual void ObjectOnUpdate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectInfoEvent(transaction, _updated, obj);
+			TriggerObjectInfoEventInCallback(transaction, _updated, obj);
 		}
 
 		public virtual void ObjectOnDelete(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectInfoEvent(transaction, _deleted, obj);
+			TriggerObjectInfoEventInCallback(transaction, _deleted, obj);
 		}
 
 		public virtual void ClassOnRegistered(ClassMetadata clazz)
 		{
-			EventPlatform.TriggerClassEvent(_classRegistered, clazz);
+			if (!(_classRegistered != null))
+			{
+				return;
+			}
+			WithExceptionHandling(new _IRunnable_109(this, clazz));
+		}
+
+		private sealed class _IRunnable_109 : IRunnable
+		{
+			public _IRunnable_109(EventRegistryImpl _enclosing, ClassMetadata clazz)
+			{
+				this._enclosing = _enclosing;
+				this.clazz = clazz;
+			}
+
+			public void Run()
+			{
+				if (null != this._enclosing._classRegistered) this._enclosing._classRegistered(null, 
+					new ClassEventArgs(clazz));
+			}
+
+			private readonly EventRegistryImpl _enclosing;
+
+			private readonly ClassMetadata clazz;
 		}
 
 		public virtual void ObjectOnDeactivate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectInfoEvent(transaction, _deactivated, obj);
+			TriggerObjectInfoEventInCallback(transaction, _deactivated, obj);
 		}
 
 		public virtual void ObjectOnInstantiate(Transaction transaction, IObjectInfo obj)
 		{
-			EventPlatform.TriggerObjectInfoEvent(transaction, _instantiated, obj);
+			TriggerObjectInfoEventInCallback(transaction, _instantiated, obj);
 		}
 
 		public virtual void CommitOnStarted(Transaction transaction, CallbackObjectInfoCollections
 			 objectInfoCollections)
 		{
-			EventPlatform.TriggerCommitEvent(transaction, _committing, objectInfoCollections);
+			if (!(_committing != null))
+			{
+				return;
+			}
+			WithExceptionHandlingInCallback(new _IRunnable_126(this, transaction, objectInfoCollections
+				));
+		}
+
+		private sealed class _IRunnable_126 : IRunnable
+		{
+			public _IRunnable_126(EventRegistryImpl _enclosing, Transaction transaction, CallbackObjectInfoCollections
+				 objectInfoCollections)
+			{
+				this._enclosing = _enclosing;
+				this.transaction = transaction;
+				this.objectInfoCollections = objectInfoCollections;
+			}
+
+			public void Run()
+			{
+				if (null != this._enclosing._committing) this._enclosing._committing(null, new CommitEventArgs
+					(transaction, objectInfoCollections));
+			}
+
+			private readonly EventRegistryImpl _enclosing;
+
+			private readonly Transaction transaction;
+
+			private readonly CallbackObjectInfoCollections objectInfoCollections;
 		}
 
 		public virtual void CommitOnCompleted(Transaction transaction, CallbackObjectInfoCollections
 			 objectInfoCollections)
 		{
-			EventPlatform.TriggerCommitEvent(transaction, _committed, objectInfoCollections);
+			if (!(_committed != null))
+			{
+				return;
+			}
+			WithExceptionHandlingInCallback(new _IRunnable_137(this, transaction, objectInfoCollections
+				));
+		}
+
+		private sealed class _IRunnable_137 : IRunnable
+		{
+			public _IRunnable_137(EventRegistryImpl _enclosing, Transaction transaction, CallbackObjectInfoCollections
+				 objectInfoCollections)
+			{
+				this._enclosing = _enclosing;
+				this.transaction = transaction;
+				this.objectInfoCollections = objectInfoCollections;
+			}
+
+			public void Run()
+			{
+				if (null != this._enclosing._committed) this._enclosing._committed(null, new CommitEventArgs
+					(transaction, objectInfoCollections));
+			}
+
+			private readonly EventRegistryImpl _enclosing;
+
+			private readonly Transaction transaction;
+
+			private readonly CallbackObjectInfoCollections objectInfoCollections;
 		}
 
 		public virtual void CloseOnStarted(IObjectContainer container)
 		{
-			EventPlatform.TriggerObjectContainerEvent(container, _closing);
+			if (!(_closing != null))
+			{
+				return;
+			}
+			WithExceptionHandlingInCallback(new _IRunnable_148(this, container));
+		}
+
+		private sealed class _IRunnable_148 : IRunnable
+		{
+			public _IRunnable_148(EventRegistryImpl _enclosing, IObjectContainer container)
+			{
+				this._enclosing = _enclosing;
+				this.container = container;
+			}
+
+			public void Run()
+			{
+				if (null != this._enclosing._closing) this._enclosing._closing(null, new ObjectContainerEventArgs
+					(container));
+			}
+
+			private readonly EventRegistryImpl _enclosing;
+
+			private readonly IObjectContainer container;
 		}
 
 		public virtual event System.EventHandler<Db4objects.Db4o.Events.QueryEventArgs> QueryFinished
@@ -414,22 +575,119 @@ namespace Db4objects.Db4o.Internal.Events
 
 		public virtual bool CaresAboutCommitting()
 		{
-			return EventPlatform.HasListeners(_committing);
+			return (_committing != null);
 		}
 
 		public virtual bool CaresAboutCommitted()
 		{
-			return EventPlatform.HasListeners(_committed);
+			return (_committed != null);
 		}
 
 		public virtual bool CaresAboutDeleting()
 		{
-			return EventPlatform.HasListeners(_deleting);
+			return (_deleting != null);
 		}
 
 		public virtual bool CaresAboutDeleted()
 		{
-			return EventPlatform.HasListeners(_deleted);
+			return (_deleted != null);
+		}
+
+		internal virtual bool TriggerCancellableObjectEventArgsInCallback(Transaction transaction
+			, System.EventHandler<CancellableObjectEventArgs> e, IObjectInfo objectInfo, object
+			 o)
+		{
+			if (!(e != null))
+			{
+				return true;
+			}
+			CancellableObjectEventArgs args = new CancellableObjectEventArgs(transaction, objectInfo
+				, o);
+			WithExceptionHandlingInCallback(new _IRunnable_253(e, args));
+			return !args.IsCancelled;
+		}
+
+		private sealed class _IRunnable_253 : IRunnable
+		{
+			public _IRunnable_253(System.EventHandler<CancellableObjectEventArgs> e, CancellableObjectEventArgs
+				 args)
+			{
+				this.e = e;
+				this.args = args;
+			}
+
+			public void Run()
+			{
+				if (null != e) e(null, args);
+			}
+
+			private readonly System.EventHandler<CancellableObjectEventArgs> e;
+
+			private readonly CancellableObjectEventArgs args;
+		}
+
+		internal virtual void TriggerObjectInfoEventInCallback(Transaction transaction, System.EventHandler<
+			ObjectInfoEventArgs> e, IObjectInfo o)
+		{
+			if (!(e != null))
+			{
+				return;
+			}
+			WithExceptionHandlingInCallback(new _IRunnable_265(e, transaction, o));
+		}
+
+		private sealed class _IRunnable_265 : IRunnable
+		{
+			public _IRunnable_265(System.EventHandler<ObjectInfoEventArgs> e, Transaction transaction
+				, IObjectInfo o)
+			{
+				this.e = e;
+				this.transaction = transaction;
+				this.o = o;
+			}
+
+			public void Run()
+			{
+				if (null != e) e(null, new ObjectInfoEventArgs(transaction, o));
+			}
+
+			private readonly System.EventHandler<ObjectInfoEventArgs> e;
+
+			private readonly Transaction transaction;
+
+			private readonly IObjectInfo o;
+		}
+
+		private void WithExceptionHandlingInCallback(IRunnable runnable)
+		{
+			try
+			{
+				InCallback.Run(runnable);
+			}
+			catch (Db4oException e)
+			{
+				throw;
+			}
+			catch (Exception x)
+			{
+				throw new EventException(x);
+			}
+		}
+
+		private void WithExceptionHandling(IRunnable runnable)
+		{
+			try
+			{
+				runnable.Run();
+			}
+			catch (Db4oException e)
+			{
+				throw;
+			}
+			catch (Exception x)
+			{
+				throw new EventException(x);
+			}
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Ext
 	/// process encounters another backup process already running.
 	/// </remarks>
 	[System.Serializable]
-	public class BackupInProgressException : Db4oException
+	public class BackupInProgressException : Db4oRecoverableException
 	{
 	}
 }

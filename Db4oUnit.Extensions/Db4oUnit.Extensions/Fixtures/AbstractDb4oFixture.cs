@@ -1,12 +1,15 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Threading;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
@@ -16,14 +19,53 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IConfiguration _configuration;
 
+		private IList _uncaughtExceptions;
+
 		protected AbstractDb4oFixture()
 		{
-			ResetConfig();
+			ResetUncaughtExceptions();
+		}
+
+		private void ResetUncaughtExceptions()
+		{
+			_uncaughtExceptions = new ArrayList();
 		}
 
 		public virtual void FixtureConfiguration(IFixtureConfiguration fc)
 		{
 			_fixtureConfiguration = fc;
+		}
+
+		public virtual IList UncaughtExceptions()
+		{
+			return _uncaughtExceptions;
+		}
+
+		protected virtual void ListenToUncaughtExceptions(IThreadPool4 threadPool)
+		{
+			if (null == threadPool)
+			{
+				return;
+			}
+			// mocks don't have thread pools
+			threadPool.UncaughtException += new System.EventHandler<UncaughtExceptionEventArgs>
+				(new _IEventListener4_42(this).OnEvent);
+		}
+
+		private sealed class _IEventListener4_42
+		{
+			public _IEventListener4_42(AbstractDb4oFixture _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void OnEvent(object sender, UncaughtExceptionEventArgs args)
+			{
+				this._enclosing._uncaughtExceptions.Add(((UncaughtExceptionEventArgs)args).Exception
+					);
+			}
+
+			private readonly AbstractDb4oFixture _enclosing;
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -35,6 +77,10 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public virtual IConfiguration Config()
 		{
+			if (_configuration == null)
+			{
+				_configuration = NewConfiguration();
+			}
 			return _configuration;
 		}
 
@@ -42,6 +88,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			DoClean();
 			ResetConfig();
+			ResetUncaughtExceptions();
 		}
 
 		public abstract bool Accept(Type clazz);
@@ -50,7 +97,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public virtual void ResetConfig()
 		{
-			_configuration = NewConfiguration();
+			_configuration = null;
 		}
 
 		/// <summary>Method can be overridden in subclasses with special instantiation requirements (oSGI for instance).
@@ -105,6 +152,15 @@ namespace Db4oUnit.Extensions.Fixtures
 		protected virtual Config4Impl CloneDb4oConfiguration(IConfiguration config)
 		{
 			return (Config4Impl)((Config4Impl)config).DeepClone(this);
+		}
+
+		protected virtual IThreadPool4 ThreadPoolFor(IObjectContainer container)
+		{
+			if (container is ObjectContainerBase)
+			{
+				return ((ObjectContainerBase)container).ThreadPool();
+			}
+			return null;
 		}
 
 		public abstract string Label();

@@ -28,17 +28,20 @@ namespace Db4objects.Db4o.Internal.Callbacks
 			return true;
 		}
 
-		public virtual bool ObjectCanUpdate(Transaction transaction, object obj)
+		public virtual bool ObjectCanUpdate(Transaction transaction, IObjectInfo objectInfo
+			)
 		{
 			return true;
 		}
 
-		public virtual bool ObjectCanDelete(Transaction transaction, object obj)
+		public virtual bool ObjectCanDelete(Transaction transaction, IObjectInfo objectInfo
+			)
 		{
 			return true;
 		}
 
-		public virtual bool ObjectCanDeactivate(Transaction transaction, object obj)
+		public virtual bool ObjectCanDeactivate(Transaction transaction, IObjectInfo objectInfo
+			)
 		{
 			return true;
 		}

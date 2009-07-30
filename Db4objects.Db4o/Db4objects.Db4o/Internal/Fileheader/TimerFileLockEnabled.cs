@@ -105,6 +105,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void Run()
 		{
+			SetThreadName();
 			while (true)
 			{
 				lock (_timerLock)
@@ -113,10 +114,22 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					{
 						return;
 					}
-					WriteAccessTime(false);
+					try
+					{
+						WriteAccessTime(false);
+					}
+					catch (Db4oIOException)
+					{
+						return;
+					}
 				}
 				Cool.SleepIgnoringInterruption(Const4.LockTimeInterval);
 			}
+		}
+
+		private void SetThreadName()
+		{
+			Thread.CurrentThread().SetName("db4o file lock");
 		}
 
 		public override void SetAddresses(int baseAddress, int openTimeOffset, int accessTimeOffset
@@ -132,10 +145,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			WriteAccessTime(false);
 			CheckOpenTime();
-			Thread thread = new Thread(this);
-			thread.SetName("db4o file lock");
-			thread.SetDaemon(true);
-			thread.Start();
 		}
 
 		private long UniqueOpenTime()

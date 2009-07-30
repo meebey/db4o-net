@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Ext
 	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4objects.Db4o.Db4oFactory.OpenFile
 	/// 	</seealso>
 	[System.Serializable]
-	public class DatabaseFileLockedException : Db4oException
+	public class DatabaseFileLockedException : Db4oFatalException
 	{
 		/// <summary>Constructor with a database description message</summary>
 		/// <param name="databaseDescription">message, which can help to identify the database

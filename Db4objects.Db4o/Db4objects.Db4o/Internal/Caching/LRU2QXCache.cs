@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Internal.Caching
 
 		private void Discard(object key, IProcedure4 finalizer)
 		{
-			object removed = Sharpen.Util.Collections.Remove(_slots, key);
+			object removed = Sharpen.Collections.Remove(_slots, key);
 			if (finalizer != null)
 			{
 				finalizer.Apply(removed);

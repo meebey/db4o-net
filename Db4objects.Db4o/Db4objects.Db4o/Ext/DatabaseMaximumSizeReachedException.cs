@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Ext
 	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.BlockSize">Db4objects.Db4o.Config.IConfiguration.BlockSize
 	/// 	</seealso>
 	[System.Serializable]
-	public class DatabaseMaximumSizeReachedException : Db4oException
+	public class DatabaseMaximumSizeReachedException : Db4oRecoverableException
 	{
 	}
 }

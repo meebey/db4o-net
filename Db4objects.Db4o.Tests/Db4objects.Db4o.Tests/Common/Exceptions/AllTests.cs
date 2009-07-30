@@ -29,7 +29,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		protected override Type[] ComposeWith()
 		{
 			return new Type[] { typeof(BackupDb4oIOExceptionTestCase), typeof(IncompatibleFileFormatExceptionTestCase
-				), typeof(InvalidSlotExceptionTestCase), typeof(OldFormatExceptionTestCase) };
+				), typeof(InvalidSlotExceptionTestCase), typeof(OldFormatExceptionTestCase), typeof(
+				Db4objects.Db4o.Tests.Common.Exceptions.Propagation.AllTests) };
 		}
 		#endif // !SILVERLIGHT
 	}

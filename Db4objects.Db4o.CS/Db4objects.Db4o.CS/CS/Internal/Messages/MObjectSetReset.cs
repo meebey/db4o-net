@@ -7,10 +7,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MObjectSetReset : MObjectSet, IServerSideMessage
 	{
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			Stub(ReadInt()).Reset();
-			return true;
 		}
 	}
 }

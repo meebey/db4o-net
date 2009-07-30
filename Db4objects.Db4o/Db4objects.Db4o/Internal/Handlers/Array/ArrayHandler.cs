@@ -657,11 +657,6 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		private const int HashcodeForNull = 9141078;
 
-		public virtual bool CanHold(IReflectClass type)
-		{
-			return _handler.CanHold(type);
-		}
-
 		public override string ToString()
 		{
 			return "ArrayHandler(isPrimitive=" + _usePrimitiveClassReflector + ", handler=" +

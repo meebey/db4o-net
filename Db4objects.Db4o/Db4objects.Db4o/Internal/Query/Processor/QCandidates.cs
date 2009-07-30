@@ -675,7 +675,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				QField qf = a_constraint.GetField();
 				if (qf != null)
 				{
-					if (_field.i_name != null && !_field.i_name.Equals(qf.i_name))
+					if (_field.Name() != null && !_field.Name().Equals(qf.Name()))
 					{
 						return false;
 					}
@@ -764,7 +764,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				QField qf = constraint.GetField();
 				if (qf != null)
 				{
-					if (_field.i_name != null && !_field.i_name.Equals(qf.i_name))
+					if (_field.Name() != null && !_field.Name().Equals(qf.Name()))
 					{
 						return false;
 					}
@@ -798,7 +798,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return false;
 			}
-			return ((QCon)_constraints._element)._children == null;
+			return !((QCon)_constraints._element).HasChildren();
 		}
 	}
 }

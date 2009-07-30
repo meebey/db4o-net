@@ -14,20 +14,17 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		private static int nextID;
 
-		protected void WriteQueryResult(AbstractQueryResult queryResult, QueryEvaluationMode
+		protected MsgD WriteQueryResult(AbstractQueryResult queryResult, QueryEvaluationMode
 			 evaluationMode, ObjectExchangeConfiguration config)
 		{
 			if (evaluationMode == QueryEvaluationMode.Immediate)
 			{
-				WriteImmediateQueryResult(queryResult, config);
+				return WriteImmediateQueryResult(queryResult, config);
 			}
-			else
-			{
-				WriteLazyQueryResult(queryResult, config);
-			}
+			return WriteLazyQueryResult(queryResult, config);
 		}
 
-		private void WriteLazyQueryResult(AbstractQueryResult queryResult, ObjectExchangeConfiguration
+		private MsgD WriteLazyQueryResult(AbstractQueryResult queryResult, ObjectExchangeConfiguration
 			 config)
 		{
 			int queryResultId = GenerateID();
@@ -38,15 +35,15 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			IServerMessageDispatcher serverThread = ServerMessageDispatcher();
 			serverThread.MapQueryResultToID(new LazyClientObjectSetStub(queryResult, idIterator
 				), queryResultId);
-			Write(message);
+			return message;
 		}
 
-		private void WriteImmediateQueryResult(AbstractQueryResult queryResult, ObjectExchangeConfiguration
+		private MsgD WriteImmediateQueryResult(AbstractQueryResult queryResult, ObjectExchangeConfiguration
 			 config)
 		{
 			IIntIterator4 idIterator = queryResult.IterateIDs();
 			MsgD message = BuildQueryResultMessage(0, idIterator, queryResult.Size(), config);
-			Write(message);
+			return message;
 		}
 
 		private MsgD BuildQueryResultMessage(int queryResultId, IIntIterator4 ids, int maxCount

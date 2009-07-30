@@ -46,11 +46,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return false;
 		}
 
-		public virtual bool CanHold(IReflectClass type)
-		{
-			return type.Equals(ClassReflector());
-		}
-
 		public object IndexEntryToObject(IContext context, object indexEntry)
 		{
 			if (indexEntry is Slot)
@@ -271,12 +266,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_238(this, context, sourceBuffer);
+			return new _IPreparedComparison_234(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_238 : IPreparedComparison
+		private sealed class _IPreparedComparison_234 : IPreparedComparison
 		{
-			public _IPreparedComparison_238(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_234(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

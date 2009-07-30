@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override int Compare(Tree a_to)
 		{
-			return _constraint.i_id - ((Db4objects.Db4o.Internal.Query.Processor.QPending)a_to
-				)._constraint.i_id;
+			return _constraint.Id() - ((Db4objects.Db4o.Internal.Query.Processor.QPending)a_to
+				)._constraint.Id();
 		}
 
 		internal virtual void ChangeConstraint()

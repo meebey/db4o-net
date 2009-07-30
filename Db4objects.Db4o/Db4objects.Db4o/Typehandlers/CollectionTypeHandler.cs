@@ -7,7 +7,6 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
-using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Typehandlers
@@ -18,7 +17,7 @@ namespace Db4objects.Db4o.Typehandlers
 	/// On the .NET side, usage is restricted to instances of IList.
 	/// </remarks>
 	public partial class CollectionTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler
-		, IVariableLengthTypeHandler
+		, IVariableLengthTypeHandler, IQueryableTypeHandler
 	{
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj
 			)
@@ -139,9 +138,14 @@ namespace Db4objects.Db4o.Typehandlers
 			return (ITypeHandler4)container.Handlers().OpenTypeHandler();
 		}
 
-		public virtual bool CanHold(IReflectClass type)
+		public virtual bool DescendsIntoMembers()
 		{
 			return true;
+		}
+
+		public virtual bool IsSimple()
+		{
+			return false;
 		}
 	}
 }

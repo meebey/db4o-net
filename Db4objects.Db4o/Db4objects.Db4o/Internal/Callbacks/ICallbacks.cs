@@ -13,11 +13,11 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		bool ObjectCanActivate(Transaction transaction, object obj);
 
-		bool ObjectCanUpdate(Transaction transaction, object obj);
+		bool ObjectCanUpdate(Transaction transaction, IObjectInfo objectInfo);
 
-		bool ObjectCanDelete(Transaction transaction, object obj);
+		bool ObjectCanDelete(Transaction transaction, IObjectInfo objectInfo);
 
-		bool ObjectCanDeactivate(Transaction transaction, object obj);
+		bool ObjectCanDeactivate(Transaction transaction, IObjectInfo objectInfo);
 
 		void ObjectOnActivate(Transaction transaction, IObjectInfo obj);
 

@@ -22,21 +22,21 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		[System.NonSerialized]
 		internal QCandidates i_candidates;
 
-		public Collection4 i_childrenCandidates;
+		private Collection4 i_childrenCandidates;
 
-		public List4 _children;
+		protected List4 _children;
 
-		public QE i_evaluator = QE.Default;
+		protected QE i_evaluator = QE.Default;
 
-		public int i_id;
+		private int i_id;
 
-		public Collection4 i_joins;
+		internal Collection4 i_joins;
 
-		public int i_orderID = 0;
+		private int i_orderID = 0;
 
-		public Db4objects.Db4o.Internal.Query.Processor.QCon i_parent;
+		protected Db4objects.Db4o.Internal.Query.Processor.QCon i_parent;
 
-		public bool i_removed = false;
+		private bool i_removed = false;
 
 		[System.NonSerialized]
 		internal Db4objects.Db4o.Internal.Transaction i_trans;
@@ -267,7 +267,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.Donotinclude.Log(i_id);
+				DTrace.Donotinclude.Log(Id());
 			}
 			if (i_parent != null)
 			{
@@ -303,7 +303,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.CollectChildren.Log(i_id);
+				DTrace.CollectChildren.Log(Id());
 			}
 			IEnumerator i = i_childrenCandidates.GetEnumerator();
 			while (i.MoveNext())
@@ -406,7 +406,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				object obj = i.Current;
 				if (obj is QConObject)
 				{
-					if (((QConObject)obj).i_field.i_name.Equals(name))
+					if (((QConObject)obj).GetField().Name().Equals(name))
 					{
 						visitor.Visit(obj);
 					}
@@ -537,7 +537,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		internal virtual IEnumerator IterateJoins()
+		public virtual IEnumerator IterateJoins()
 		{
 			if (i_joins == null)
 			{
@@ -730,7 +730,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (IsNot())
 			{
-				i_evaluator = ((QENot)i_evaluator).i_evaluator;
+				i_evaluator = ((QENot)i_evaluator).Evaluator();
 			}
 		}
 
@@ -907,7 +907,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		protected virtual bool HasOrdering()
+		public virtual bool HasOrdering()
 		{
 			return i_orderID != 0;
 		}
@@ -938,6 +938,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual int ChildrenCount()
 		{
 			return List4.Size(_children);
+		}
+
+		public virtual int Id()
+		{
+			return i_id;
 		}
 	}
 }

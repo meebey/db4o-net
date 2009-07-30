@@ -44,5 +44,10 @@ namespace Db4objects.Db4o.CS.Internal
 		CallbackObjectInfoCollections CommittedInfo();
 
 		Db4objects.Db4o.CS.Internal.ClassInfoHelper ClassInfoHelper();
+
+		bool ProcessMessage(Msg message);
+
+		/// <exception cref="System.Exception"></exception>
+		void Join();
 	}
 }

@@ -27,6 +27,11 @@ namespace Db4objects.Db4o.Foundation
 				throw new NotSupportedException();
 			}
 
+			public virtual void AddAll(IEnumerable iterable)
+			{
+				throw new NotSupportedException();
+			}
+
 			public virtual bool IsEmpty()
 			{
 				return _sequence.IsEmpty();
@@ -65,6 +70,11 @@ namespace Db4objects.Db4o.Foundation
 			public virtual object[] ToArray()
 			{
 				return _sequence.ToArray();
+			}
+
+			public virtual object[] ToArray(object[] array)
+			{
+				return _sequence.ToArray(array);
 			}
 		}
 	}

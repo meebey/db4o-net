@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Ext
 	/// is set to false.
 	/// </summary>
 	[System.Serializable]
-	public class OldFormatException : Db4oException
+	public class OldFormatException : Db4oFatalException
 	{
 		/// <summary>Constructor with the default message.</summary>
 		/// <remarks>Constructor with the default message.</remarks>

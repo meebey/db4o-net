@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.CS.Internal.Caching
 
 		private void Purge(Transaction provider, int id)
 		{
-			Sharpen.Util.Collections.Remove(CacheOn(provider), id);
+			Sharpen.Collections.Remove(CacheOn(provider), id);
 		}
 
 		private IDictionary CacheOn(Transaction provider)

@@ -9,6 +9,8 @@ namespace Db4objects.Db4o.Foundation
 	{
 		bool Add(object element);
 
+		void AddAll(IEnumerable iterable);
+
 		bool IsEmpty();
 
 		object Get(int index);
@@ -22,5 +24,7 @@ namespace Db4objects.Db4o.Foundation
 		bool Contains(object obj);
 
 		object[] ToArray();
+
+		object[] ToArray(object[] array);
 	}
 }

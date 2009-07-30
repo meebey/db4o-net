@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MGetClasses : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			ObjectContainerBase stream = Stream();
 			lock (StreamLock())
@@ -29,8 +29,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			ByteArrayBuffer writer = message.PayLoad();
 			writer.WriteInt(stream.ClassCollection().GetID());
 			writer.WriteByte(stream.StringIO().EncodingByte());
-			Write(message);
-			return true;
+			return message;
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private IdObjectCollector _collector;
 
-		private int _aspectCount;
+		private int _declaredAspectCount;
 
 		private QueryingReadContext(Transaction transaction, QCandidates candidates, int 
 			handlerVersion, IReadBuffer buffer, int collectionID, IdObjectCollector collector
@@ -156,14 +156,14 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _collector.Objects();
 		}
 
-		public virtual int AspectCount()
+		public virtual int DeclaredAspectCount()
 		{
-			return _aspectCount;
+			return _declaredAspectCount;
 		}
 
-		public virtual void AspectCount(int count)
+		public virtual void DeclaredAspectCount(int count)
 		{
-			_aspectCount = count;
+			_declaredAspectCount = count;
 		}
 
 		public virtual IdObjectCollector Collector()

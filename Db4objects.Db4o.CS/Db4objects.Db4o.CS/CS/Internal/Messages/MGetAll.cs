@@ -10,17 +10,16 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MGetAll : MsgQuery, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			QueryEvaluationMode evaluationMode = QueryEvaluationMode.FromInt(ReadInt());
 			int prefetchDepth = ReadInt();
 			int prefetchCount = ReadInt();
 			lock (StreamLock())
 			{
-				WriteQueryResult(GetAll(evaluationMode), evaluationMode, new ObjectExchangeConfiguration
+				return WriteQueryResult(GetAll(evaluationMode), evaluationMode, new ObjectExchangeConfiguration
 					(prefetchDepth, prefetchCount));
 			}
-			return true;
 		}
 
 		private AbstractQueryResult GetAll(QueryEvaluationMode mode)

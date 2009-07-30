@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Ext
 	/// is encounted by db4o process.
 	/// </remarks>
 	[System.Serializable]
-	public class Db4oIOException : Db4oException
+	public class Db4oIOException : Db4oFatalException
 	{
 		/// <summary>Constructor.</summary>
 		/// <remarks>Constructor.</remarks>

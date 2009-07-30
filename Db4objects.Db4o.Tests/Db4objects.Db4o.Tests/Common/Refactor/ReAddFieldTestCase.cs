@@ -4,7 +4,6 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Common.Refactor;
 
 namespace Db4objects.Db4o.Tests.Common.Refactor
@@ -42,8 +41,8 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
-			TypeAlias alias = new TypeAlias(ReflectPlatform.FullyQualifiedName(typeof(ReAddFieldTestCase.Version1
-				)), ReflectPlatform.FullyQualifiedName(typeof(ReAddFieldTestCase.Version2)));
+			TypeAlias alias = new TypeAlias(typeof(ReAddFieldTestCase.Version1), typeof(ReAddFieldTestCase.Version2
+				));
 			Fixture().Config().AddAlias(alias);
 			Reopen();
 			Assert.AreEqual(42, ((ReAddFieldTestCase.Version2)RetrieveOnlyInstance(typeof(ReAddFieldTestCase.Version2

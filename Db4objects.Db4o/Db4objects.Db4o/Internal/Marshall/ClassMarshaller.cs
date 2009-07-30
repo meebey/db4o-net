@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteIDOf(trans, clazz.i_ancestor);
 			WriteIndex(trans, clazz, writer);
 			writer.WriteInt(clazz.DeclaredAspectCount());
-			clazz.ForEachDeclaredAspect(new _IProcedure4_39(this, trans, clazz, writer));
+			clazz.TraverseDeclaredAspects(new _IProcedure4_39(this, trans, clazz, writer));
 		}
 
 		private sealed class _IProcedure4_39 : IProcedure4
@@ -126,7 +126,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			IntByRef len = new IntByRef(stream.StringIO().ShortLength(clazz.NameToWrite()) + 
 				Const4.ObjectLength + (Const4.IntLength * 2) + (Const4.IdLength));
 			len.value += clazz.Index().OwnLength();
-			clazz.ForEachDeclaredAspect(new _IProcedure4_108(this, len, stream));
+			clazz.TraverseDeclaredAspects(new _IProcedure4_108(this, len, stream));
 			return len.value;
 		}
 
@@ -170,7 +170,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 				throw new InvalidOperationException();
 			}
 			IntByRef processedAspectCount = new IntByRef(0);
-			classMetadata.ForEachDeclaredAspect(new _IProcedure4_136(this, processedAspectCount
+			classMetadata.TraverseDeclaredAspects(new _IProcedure4_136(this, processedAspectCount
 				, aspectCount, classMetadata, sio, context));
 		}
 

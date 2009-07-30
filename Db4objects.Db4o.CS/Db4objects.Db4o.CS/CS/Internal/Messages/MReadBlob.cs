@@ -9,7 +9,7 @@ using Sharpen.IO;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
-	public class MReadBlob : MsgBlob, IMessageWithResponse
+	public class MReadBlob : MsgBlob, IServerSideMessage
 	{
 		/// <exception cref="System.IO.IOException"></exception>
 		public override void ProcessClient(ISocket4 sock)
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			}
 		}
 
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			try
 			{
@@ -69,7 +69,6 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				Write(Msg.Error);
 			}
-			return true;
 		}
 	}
 }

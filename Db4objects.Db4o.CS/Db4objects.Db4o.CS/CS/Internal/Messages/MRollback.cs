@@ -6,13 +6,12 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public sealed class MRollback : Msg, IServerSideMessage
 	{
-		public bool ProcessAtServer()
+		public void ProcessAtServer()
 		{
 			lock (StreamLock())
 			{
 				Transaction().Rollback();
 			}
-			return true;
 		}
 	}
 }

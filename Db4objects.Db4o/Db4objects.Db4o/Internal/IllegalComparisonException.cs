@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	[System.Serializable]
-	public class IllegalComparisonException : Db4oException
+	public class IllegalComparisonException : Db4oRecoverableException
 	{
 	}
 }

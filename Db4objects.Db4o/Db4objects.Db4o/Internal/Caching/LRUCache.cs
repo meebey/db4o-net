@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Caching
 				}
 				if (_slots.Count >= _maxSize)
 				{
-					object discarded = Sharpen.Util.Collections.Remove(_slots, _lru.RemoveLast());
+					object discarded = Sharpen.Collections.Remove(_slots, _lru.RemoveLast());
 					if (null != finalizer)
 					{
 						finalizer.Apply(discarded);
@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Internal.Caching
 			{
 				return null;
 			}
-			return Sharpen.Util.Collections.Remove(_slots, key);
+			return Sharpen.Collections.Remove(_slots, key);
 		}
 	}
 }

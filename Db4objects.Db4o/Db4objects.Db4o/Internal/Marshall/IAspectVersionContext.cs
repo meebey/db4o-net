@@ -5,8 +5,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 	/// <exclude></exclude>
 	public interface IAspectVersionContext
 	{
-		int AspectCount();
+		int DeclaredAspectCount();
 
-		void AspectCount(int count);
+		void DeclaredAspectCount(int count);
 	}
 }

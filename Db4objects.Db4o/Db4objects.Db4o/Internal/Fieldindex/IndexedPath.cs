@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			{
 				return null;
 			}
-			return field.GetYapField();
+			return field.GetFieldMetadata();
 		}
 
 		private IIndexedNode _next;

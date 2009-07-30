@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			file.SyncFiles();
 			if (startFileLockingThread)
 			{
-				_timerFileLock.Start();
+				file.ThreadPool().Start(_timerFileLock);
 			}
 		}
 

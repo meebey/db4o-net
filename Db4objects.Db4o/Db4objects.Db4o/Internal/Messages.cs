@@ -86,10 +86,10 @@ namespace Db4objects.Db4o.Internal
 					, "Uncaught Exception. db4o engine closed.", "Add constructor that won't throw exceptions, configure constructor calls, configure exceptionsOnNotStorable(false) or provide a translator to class % and make sure the class is deployed to the server with the same package/namespace + assembly name."
 					, "This method can only be called before opening the database file.", "AccessibleObject#setAccessible() is not available. Private fields can not be stored."
 					, "ObjectTranslator could not be installed: %.", "Not implemented", "% closed by ShutdownHook."
-					, "This constraint is not persistent. It has no database identity.", "Add at least one ObjectContainer to the Cluster"
-					, "Unsupported Operation", "Database password does not match user-provided password."
-					, "Thread interrupted.", "Password can not be null.", "Classes does not match.", 
-					"rename() needs to be executed on the server.", "Primitive types like % can not be stored directly. Store and retrieve them in wrapper objects."
+					, string.Empty, "Add at least one ObjectContainer to the Cluster", "Unsupported Operation"
+					, "Database password does not match user-provided password.", "Thread interrupted."
+					, "Password can not be null.", "Classes does not match.", "rename() needs to be executed on the server."
+					, "Primitive types like % can not be stored directly. Store and retrieve them in wrapper objects."
 					, "Backups can not be run from clients and memory files.", "Backup in progress."
 					, "Only use persisted first class objects as keys for IdentityHashMap.", "This functionality is only available from version 5.0 onwards."
 					, "By convention a Predicate needs the following method: public boolean match(ExtentClass extent){}"
@@ -110,6 +110,7 @@ namespace Db4objects.Db4o.Internal
 		// 40
 		// 45
 		// 50
+		// removed, can be reused
 		// 55
 		// 60
 		// 65

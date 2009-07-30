@@ -8,11 +8,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MSwitchToFile : MsgD, IServerSideMessage
 	{
-		public virtual bool ProcessAtServer()
+		public virtual void ProcessAtServer()
 		{
 			IServerMessageDispatcher serverThread = ServerMessageDispatcher();
 			serverThread.SwitchToFile(this);
-			return true;
 		}
 	}
 }

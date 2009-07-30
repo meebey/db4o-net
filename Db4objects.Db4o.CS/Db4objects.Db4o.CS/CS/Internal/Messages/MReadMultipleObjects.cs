@@ -9,15 +9,13 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 {
 	public class MReadMultipleObjects : MsgD, IMessageWithResponse
 	{
-		public bool ProcessAtServer()
+		public Msg ReplyFromServer()
 		{
 			int prefetchDepth = ReadInt();
 			int prefetchCount = ReadInt();
 			IIntIterator4 ids = new _FixedSizeIntIterator4Base_14(this, prefetchCount);
 			ByteArrayBuffer buffer = MarshallObjects(prefetchDepth, prefetchCount, ids);
-			MsgD msg = Msg.ReadMultipleObjects.GetWriterForBuffer(Transaction(), buffer);
-			Write(msg);
-			return true;
+			return Msg.ReadMultipleObjects.GetWriterForBuffer(Transaction(), buffer);
 		}
 
 		private sealed class _FixedSizeIntIterator4Base_14 : FixedSizeIntIterator4Base

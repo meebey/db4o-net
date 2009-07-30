@@ -22,10 +22,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private object _primitiveNull;
 
-		public virtual object Coerce(IReflector reflector, IReflectClass claxx, object obj
-			)
+		public virtual object Coerce(IReflectClass claxx, object obj)
 		{
-			return Handlers4.HandlerCanHold(this, claxx) ? obj : No4.Instance;
+			return IsAssignableFrom(claxx) ? obj : No4.Instance;
+		}
+
+		private bool IsAssignableFrom(IReflectClass claxx)
+		{
+			return ClassReflector().IsAssignableFrom(claxx) || PrimitiveClassReflector().IsAssignableFrom
+				(claxx);
 		}
 
 		public abstract object DefaultValue();
@@ -55,11 +60,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual bool DescendsIntoMembers()
 		{
 			return false;
-		}
-
-		public virtual bool CanHold(IReflectClass type)
-		{
-			return type.Equals(ClassReflector()) || type.Equals(PrimitiveClassReflector());
 		}
 
 		public virtual object PrimitiveNull()

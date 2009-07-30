@@ -166,7 +166,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public virtual bool ProcessAtClient()
 		{
 			CallbackObjectInfoCollections callbackInfos = Decode();
-			new Thread(new _IRunnable_125(this, callbackInfos)).Start();
+			Stream().ThreadPool().Start(new _IRunnable_125(this, callbackInfos));
 			return true;
 		}
 

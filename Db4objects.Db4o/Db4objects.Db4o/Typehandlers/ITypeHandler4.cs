@@ -3,7 +3,6 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Marshall;
-using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Typehandlers
 {
@@ -38,13 +37,5 @@ namespace Db4objects.Db4o.Typehandlers
 		/// <param name="context"></param>
 		/// <param name="obj">the object</param>
 		void Write(IWriteContext context, object obj);
-
-		/// <summary>
-		/// gets called to check whether a TypeHandler can hold
-		/// a specific type
-		/// </summary>
-		/// <param name="type">the type</param>
-		/// <returns>true, if this Typehandler can hold a type</returns>
-		bool CanHold(IReflectClass type);
 	}
 }

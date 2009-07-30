@@ -6,12 +6,14 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public interface IMarshallingInfo : IFieldListInfo, IAspectVersionContext
+	public interface IMarshallingInfo : IAspectVersionContext
 	{
 		Db4objects.Db4o.Internal.ClassMetadata ClassMetadata();
 
 		IReadBuffer Buffer();
 
 		void BeginSlot();
+
+		bool IsNull(int fieldIndex);
 	}
 }

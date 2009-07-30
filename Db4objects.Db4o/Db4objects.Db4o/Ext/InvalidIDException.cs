@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Ext
 {
@@ -19,7 +20,7 @@ namespace Db4objects.Db4o.Ext
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.GetByID">Db4objects.Db4o.Ext.IExtObjectContainer.GetByID
 	/// 	</seealso>
 	[System.Serializable]
-	public class InvalidIDException : Db4objects.Db4o.Ext.Db4oException
+	public class InvalidIDException : Db4oRecoverableException
 	{
 		/// <summary>Constructor allowing to specify the exception cause</summary>
 		/// <param name="cause">cause exception</param>
