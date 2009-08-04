@@ -20,9 +20,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using Db4oTool.Tests.Core;
 using Db4oUnit;
 using Mono.Cecil;
@@ -66,7 +66,8 @@ namespace Db4oTool.Tests.TA
 			}
 
 			Assert.AreEqual(sign, assembly.Name.HasPublicKey);
-			InstrumentAndAssert(sign, assembly.MainModule.Image.FileInformation.FullName, "has been signed");
+			string[] messages = sign ? new string[] { "has been signed" } : new string[0];
+			InstrumentAndAssert(assembly.MainModule.Image.FileInformation.FullName, sign, messages);
 		}
 
 		private static string GenerateKeyToSign()
@@ -105,11 +106,11 @@ namespace Db4oTool.Tests.TA
 
 	internal class TraceListener : System.Diagnostics.TraceListener
 	{
-		private readonly StringBuilder _contents = new StringBuilder();
+		private readonly IList<string> _messages = new List<string>();
 
 		public override void Write(string message)
 		{
-			_contents.Append(message);
+			_messages.Add(message);
 		}
 
 		public override void WriteLine(string message)
@@ -117,9 +118,9 @@ namespace Db4oTool.Tests.TA
 			Write(message + Environment.NewLine);
 		}
 
-		public string Contents
+		public IList<string> Contents
 		{
-			get { return _contents.ToString(); }
+			get { return _messages; }
 		}
 	}
 }

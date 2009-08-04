@@ -44,33 +44,6 @@ namespace Db4oTool.TA
 			ProcessTypes(module.Types, NoFiltering, ProcessType);
 		}
 
-		protected override void ProcessType(TypeDefinition type)
-		{
-			EmitWarningForNonPrivateFields(type);
-			base.ProcessType(type);
-		}
-
-		private void EmitWarningForNonPrivateFields(TypeDefinition type)
-		{
-			if (HasNonPrivateFields(type))
-			{
-				_context.TraceWarning("Class '" + type.Name + "' has non-private fields. Make sure that any accessing classes are instrumented.");
-			}
-		}
-
-		private static bool HasNonPrivateFields(TypeDefinition type)
-		{
-			foreach (FieldDefinition field in type.Fields)
-			{
-				if (!field.IsPrivate)
-				{
-					return true;
-				}
-			}
-			
-			return false;
-		}
-
 		private void CreateTagAttribute()
         {
             _instrumentationAttribute = new CustomAttribute(ImportConstructor(typeof(TagAttribute)));
@@ -115,6 +88,27 @@ namespace Db4oTool.TA
 
 			type.Methods.Add(CreateActivateMethod(activatorField));
 			type.Methods.Add(CreateBindMethod(activatorField));
+
+			EmitWarningsForNonPrivateFields(type);
+		}
+
+		private void EmitWarningsForNonPrivateFields(TypeDefinition type)
+		{
+			foreach (FieldDefinition field in NonPrivateStorableFieldsIn(type))
+			{
+				_context.TraceWarning("Found non-private field '{0}' in instrumented type '{1}'. Make sure that any accessing classes are instrumented also.", field.Name, type.Name);
+			}
+		}
+
+		private IEnumerable<FieldDefinition> NonPrivateStorableFieldsIn(TypeDefinition type)
+		{
+			foreach (FieldDefinition field in type.Fields)
+			{
+				if (!field.IsPrivate && IsStorable(field))
+				{
+					yield return field;
+				}
+			}
 		}
 
 		private bool HasInstrumentedBaseType(TypeDefinition type)
@@ -138,7 +132,7 @@ namespace Db4oTool.TA
 			if (type.Name == "<Module>") return false;
 			if (IsDelegate(type)) return false;
 			if (ByAttributeFilter.ContainsCustomAttribute(type, CompilerGeneratedAttribute)) return false;
-			if (!HasSerializableFields(type) && type.BaseType.FullName == "System.Object") return false;
+			if (!HasStorableFields(type) && type.BaseType.FullName == "System.Object") return false;
 			return true;
 		}
 
@@ -147,15 +141,15 @@ namespace Db4oTool.TA
 			return type.IsAbstract && type.IsSealed;
 		}
 
-		private bool HasSerializableFields(TypeDefinition type)
+		private bool HasStorableFields(TypeDefinition type)
 		{
 			foreach (FieldDefinition field in type.Fields)
-				if (IsSerializable(field))
+				if (IsStorable(field))
 					return true;
 			return false;
 		}
 
-		private bool IsSerializable(FieldDefinition field)
+		private bool IsStorable(FieldDefinition field)
 		{
 			TypeDefinition fieldType = ResolveTypeReference(field.FieldType);
 			if (field.IsNotSerialized || (fieldType != null && (IsDelegate(fieldType) || IsWin32Handle(fieldType))))
@@ -463,14 +457,19 @@ namespace Db4oTool.TA
 			if (DeclaredInNonActivatableType(field))
 				return false;
 
-			return IsActivatableFieldType(field.FieldType);
+			return IsActivatableFieldType(field);
 		}
 
-		private bool IsActivatableFieldType(TypeReference fieldTypeRef)
+		private bool IsActivatableFieldType(FieldReference field)
 		{
-			if (IsPointer(fieldTypeRef)) return false;
+			if (IsPointer(field.FieldType)) return false;
 
-			TypeDefinition fieldType = ResolveTypeReference(fieldTypeRef);
+			TypeDefinition declaringType = ResolveTypeReference(field.DeclaringType);
+			if (declaringType == null) return false;
+
+			if (IsTransient(declaringType, field)) return false;
+
+			TypeDefinition fieldType = ResolveTypeReference(field.FieldType);
 			if (null == fieldType)
 			{	
 				// we dont know the field type but it doesn't hurt
@@ -478,6 +477,7 @@ namespace Db4oTool.TA
 				// filtering would be only an optimization
 				return true;
 			}
+
 			return !IsDelegate(fieldType);
 		}
 
