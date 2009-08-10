@@ -14,14 +14,11 @@ namespace Db4objects.Db4o.Config
 	/// This exception is thrown when a global configuration
 	/// setting is attempted on an open object container.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.BlockSize">Db4objects.Db4o.Config.IConfiguration.BlockSize
+	/// <seealso cref="IConfiguration.BlockSize(int)">IConfiguration.BlockSize(int)</seealso>
+	/// <seealso cref="IConfiguration.Encrypt(bool)">IConfiguration.Encrypt(bool)</seealso>
+	/// <seealso cref="IConfiguration.Io(Db4objects.Db4o.IO.IoAdapter)">IConfiguration.Io(Db4objects.Db4o.IO.IoAdapter)
 	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Encrypt">Db4objects.Db4o.Config.IConfiguration.Encrypt
-	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Io">Db4objects.Db4o.Config.IConfiguration.Io
-	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.Password">Db4objects.Db4o.Config.IConfiguration.Password
-	/// 	</seealso>
+	/// <seealso cref="IConfiguration.Password(string)">IConfiguration.Password(string)</seealso>
 	[System.Serializable]
 	public class GlobalOnlyConfigException : Db4oRecoverableException
 	{

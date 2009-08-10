@@ -83,12 +83,12 @@ namespace Db4oUnit.Extensions
 				fixture.Close();
 				IList uncaughtExceptions = fixture.UncaughtExceptions();
 				fixture.Clean();
-				AssertNoUncaughtExceptions(uncaughtExceptions);
+				HandleUncaughtExceptions(uncaughtExceptions);
 			}
 			Db4oTearDownAfterClean();
 		}
 
-		private void AssertNoUncaughtExceptions(IList uncaughtExceptions)
+		protected virtual void HandleUncaughtExceptions(IList uncaughtExceptions)
 		{
 			if (uncaughtExceptions.Count > 0)
 			{
@@ -181,6 +181,11 @@ namespace Db4oUnit.Extensions
 			return new ConsoleTestRunner(SoloSuite()).Run();
 		}
 
+		public virtual int RunInMemory()
+		{
+			return new ConsoleTestRunner(InMemorySuite()).Run();
+		}
+
 		public virtual int RunClientServer()
 		{
 			return new ConsoleTestRunner(ClientServerSuite()).Run();
@@ -211,6 +216,11 @@ namespace Db4oUnit.Extensions
 		protected virtual Db4oTestSuiteBuilder SoloSuite()
 		{
 			return new Db4oTestSuiteBuilder(Db4oFixtures.NewSolo(), TestCases());
+		}
+
+		protected virtual Db4oTestSuiteBuilder InMemorySuite()
+		{
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewInMemory(), TestCases());
 		}
 
 		protected virtual Db4oTestSuiteBuilder ClientServerSuite()
@@ -361,12 +371,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(oc, clazz, new _IVisitor4_305(oc));
+			Foreach(oc, clazz, new _IVisitor4_314(oc));
 		}
 
-		private sealed class _IVisitor4_305 : IVisitor4
+		private sealed class _IVisitor4_314 : IVisitor4
 		{
-			public _IVisitor4_305(IExtObjectContainer oc)
+			public _IVisitor4_314(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

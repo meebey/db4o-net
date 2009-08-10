@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
 using Sharpen;
+using Sharpen.Util;
 
 namespace Db4objects.Db4o.Collections
 {
@@ -87,8 +88,8 @@ namespace Db4objects.Db4o.Collections
 		{
 			Activate(ActivationPurpose.Write);
 			_size = 0;
-			Sharpen.Util.Arrays.Fill(_keys, DefaultKeyValue());
-			Sharpen.Util.Arrays.Fill(_values, DefaultValue());
+			Arrays.Fill(_keys, DefaultKeyValue());
+			Arrays.Fill(_values, DefaultValue());
 		}
 
 		private bool ContainsKeyImpl(K key)

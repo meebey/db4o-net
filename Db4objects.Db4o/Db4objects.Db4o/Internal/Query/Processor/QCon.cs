@@ -840,7 +840,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			Visit1(a_root, this, i_evaluator.Not(res));
 		}
 
-		/// <param name="reason"></param>
 		internal virtual void Visit1(QCandidate root, Db4objects.Db4o.Internal.Query.Processor.QCon
 			 reason, bool res)
 		{

@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Ext
 	/// db4o-specific exception.<br /><br />
 	/// This exception is thrown when an old file format was detected
 	/// and
-	/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates
+	/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates(bool)">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates(bool)
 	/// 	</see>
 	/// is set to false.
 	/// </summary>

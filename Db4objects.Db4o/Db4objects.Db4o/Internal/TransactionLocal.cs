@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <summary>A transaction local variable.</summary>
 	/// <remarks>A transaction local variable.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Internal.Transaction.Get">Db4objects.Db4o.Internal.Transaction.Get
+	/// <seealso cref="Transaction.Get(TransactionLocal)">Transaction.Get(TransactionLocal)
 	/// 	</seealso>
 	public class TransactionLocal
 	{

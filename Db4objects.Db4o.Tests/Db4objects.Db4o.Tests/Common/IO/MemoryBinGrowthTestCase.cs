@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 				_idx = 0;
 			}
 
-			public long NewSize(long curSize)
+			public long NewSize(long curSize, long requiredSize)
 			{
 				return _values[_idx++];
 			}
@@ -37,13 +37,13 @@ namespace Db4objects.Db4o.Tests.Common.IO
 
 		public virtual void TestGrowth()
 		{
-			int[] values = new int[] { 42, 47, -1 };
+			int[] values = new int[] { 42, 47, 48 };
 			MemoryBinGrowthTestCase.MockGrowthStrategy strategy = new MemoryBinGrowthTestCase.MockGrowthStrategy
 				(values);
 			MemoryBin bin = NewBin(InitialSize, strategy);
 			Write(bin, 0, InitialSize + 1, values[0]);
 			Write(bin, values[0], 1, values[1]);
-			Write(bin, values[1], 1, values[1] + 1);
+			Write(bin, values[1], 1, values[2]);
 			strategy.Verify();
 		}
 

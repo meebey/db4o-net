@@ -10,8 +10,7 @@ namespace Db4objects.Db4o.Foundation
 	/// <remarks>
 	/// A dynamic variable is a value associated to a specific thread and scope.
 	/// The value is brought into scope with the
-	/// <see cref="Db4objects.Db4o.Foundation.DynamicVariable.With">Db4objects.Db4o.Foundation.DynamicVariable.With
-	/// 	</see>
+	/// <see cref="With(object, IClosure4)">With(object, IClosure4)</see>
 	/// method.
 	/// </remarks>
 	public class DynamicVariable

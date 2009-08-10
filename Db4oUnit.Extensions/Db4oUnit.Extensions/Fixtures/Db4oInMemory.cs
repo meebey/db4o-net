@@ -36,7 +36,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			return true;
 		}
 
-		private readonly MemoryStorage _storage = new MemoryStorage();
+		private readonly PagingMemoryStorage _storage = new PagingMemoryStorage(63);
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
 		{

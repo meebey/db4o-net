@@ -70,9 +70,9 @@ namespace Db4oUnit.Tests.Fixtures
 			public override IFixtureProvider[] FixtureProviders()
 			{
 				return new IFixtureProvider[] { new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
-					.RecorderFixture, new MethodCallRecorder[] { recorder }), new SimpleFixtureProvider
-					(FixtureBasedTestSuiteTestCase.Fixture1, new string[] { "f11", "f12" }), new SimpleFixtureProvider
-					(FixtureBasedTestSuiteTestCase.Fixture2, new string[] { "f21", "f22" }) };
+					.RecorderFixture, new object[] { recorder }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture2, new object[] { "f21", "f22" }) };
 			}
 
 			public override Type[] TestUnits()
@@ -102,9 +102,9 @@ namespace Db4oUnit.Tests.Fixtures
 			public override IFixtureProvider[] FixtureProviders()
 			{
 				return new IFixtureProvider[] { new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
-					.RecorderFixture, new MethodCallRecorder[] { recorder }), new SimpleFixtureProvider
-					(FixtureBasedTestSuiteTestCase.Fixture1, new string[] { "f11", "f12" }), new SimpleFixtureProvider
-					(FixtureBasedTestSuiteTestCase.Fixture2, new string[] { "f21", "f22" }) };
+					.RecorderFixture, new object[] { recorder }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture2, new object[] { "f21", "f22" }) };
 			}
 
 			public override Type[] TestUnits()
@@ -154,8 +154,8 @@ namespace Db4oUnit.Tests.Fixtures
 			public override IFixtureProvider[] FixtureProviders()
 			{
 				return new IFixtureProvider[] { new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
-					.Fixture1, new string[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
-					.Fixture2, new string[] { "f21", "f22" }) };
+					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture2, new object[] { "f21", "f22" }) };
 			}
 
 			public override Type[] TestUnits()
@@ -198,8 +198,8 @@ namespace Db4oUnit.Tests.Fixtures
 			public override IFixtureProvider[] FixtureProviders()
 			{
 				return new IFixtureProvider[] { new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
-					.Fixture1, new string[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
-					.Fixture2, new string[] { "f21", "f22" }) };
+					.Fixture1, new object[] { "f11", "f12" }), new SimpleFixtureProvider(FixtureBasedTestSuiteTestCase
+					.Fixture2, new object[] { "f21", "f22" }) };
 			}
 
 			public override Type[] TestUnits()

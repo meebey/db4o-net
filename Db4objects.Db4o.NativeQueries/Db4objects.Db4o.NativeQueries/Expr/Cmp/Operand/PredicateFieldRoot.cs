@@ -6,7 +6,9 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 {
 	public class PredicateFieldRoot : ComparisonOperandRoot
 	{
-		public static readonly PredicateFieldRoot Instance = new PredicateFieldRoot();
+		public static readonly Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.PredicateFieldRoot
+			 Instance = new Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand.PredicateFieldRoot
+			();
 
 		private PredicateFieldRoot()
 		{

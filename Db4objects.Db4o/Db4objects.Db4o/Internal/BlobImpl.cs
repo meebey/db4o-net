@@ -134,7 +134,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!file.Exists())
 			{
-				throw new IOException(Messages.Get(41, file.GetAbsolutePath()));
+				throw new IOException(Db4objects.Db4o.Internal.Messages.Get(41, file.GetAbsolutePath
+					()));
 			}
 			i_length = (int)file.Length();
 			CheckExt(file);
@@ -204,7 +205,7 @@ namespace Db4objects.Db4o.Internal
 						{
 							// should never happen
 							i_status = Status.Error;
-							throw new IOException(Messages.Get(40));
+							throw new IOException(Db4objects.Db4o.Internal.Messages.Get(40));
 						}
 					}
 					fileName = tryPath;
@@ -218,7 +219,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (fileName == null)
 				{
-					throw new IOException(Messages.Get(38));
+					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(38));
 				}
 			}
 			string lastTryPath = path + Sharpen.IO.File.separator + fileName;
@@ -226,7 +227,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (!(new Sharpen.IO.File(lastTryPath).Exists()))
 				{
-					throw new IOException(Messages.Get(39));
+					throw new IOException(Db4objects.Db4o.Internal.Messages.Get(39));
 				}
 			}
 			return new Sharpen.IO.File(lastTryPath);
@@ -267,7 +268,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (GetStatus() == Status.Unused)
 			{
-				throw new IOException(Messages.Get(43));
+				throw new IOException(Db4objects.Db4o.Internal.Messages.Get(43));
 			}
 			if (i_stream.IsClient())
 			{
@@ -291,7 +292,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (GetStatus() == Status.Unused)
 			{
-				throw new IOException(Messages.Get(43));
+				throw new IOException(Db4objects.Db4o.Internal.Messages.Get(43));
 			}
 			if (i_stream.IsClient())
 			{

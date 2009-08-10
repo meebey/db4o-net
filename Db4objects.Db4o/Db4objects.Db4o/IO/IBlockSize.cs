@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.IO
 	/// Block size registry.
 	/// Accessible through the environment.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Foundation.Environments.My">Db4objects.Db4o.Foundation.Environments.My
+	/// <seealso cref="Db4objects.Db4o.Foundation.Environments.My(System.Type{T})">Db4objects.Db4o.Foundation.Environments.My(System.Type&lt;T&gt;)
 	/// 	</seealso>
 	/// <since>7.7</since>
 	public interface IBlockSize

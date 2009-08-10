@@ -6,11 +6,9 @@ namespace Db4objects.Db4o.Marshall
 {
 	/// <summary>
 	/// common functionality for
-	/// <see cref="Db4objects.Db4o.Marshall.IReadContext">Db4objects.Db4o.Marshall.IReadContext
-	/// 	</see>
+	/// <see cref="IReadContext">IReadContext</see>
 	/// and
-	/// <see cref="Db4objects.Db4o.Marshall.IWriteContext">Db4objects.Db4o.Marshall.IWriteContext
-	/// 	</see>
+	/// <see cref="IWriteContext">IWriteContext</see>
 	/// and
 	/// <see cref="Db4objects.Db4o.Internal.Delete.IDeleteContext">Db4objects.Db4o.Internal.Delete.IDeleteContext
 	/// 	</see>

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Ext
 	/// This exception is thrown when a write operation is attempted
 	/// on a database in a read-only mode.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly"></seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ReadOnly(bool)"></seealso>
 	[System.Serializable]
 	public class DatabaseReadOnlyException : Db4oRecoverableException
 	{

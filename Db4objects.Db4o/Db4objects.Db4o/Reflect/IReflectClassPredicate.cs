@@ -7,8 +7,7 @@ namespace Db4objects.Db4o.Reflect
 	/// <summary>Predicate representation.</summary>
 	/// <remarks>Predicate representation.</remarks>
 	/// <seealso cref="Db4objects.Db4o.Query.Predicate">Db4objects.Db4o.Query.Predicate</seealso>
-	/// <seealso cref="Db4objects.Db4o.Reflect.IReflector">Db4objects.Db4o.Reflect.IReflector
-	/// 	</seealso>
+	/// <seealso cref="IReflector">IReflector</seealso>
 	public interface IReflectClassPredicate
 	{
 		/// <summary>Match method definition.</summary>

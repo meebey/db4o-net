@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.IO
 	/// Each class that adds functionality to a Storage must
 	/// extend this class.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.IO.BinDecorator"></seealso>
+	/// <seealso cref="BinDecorator"></seealso>
 	public class StorageDecorator : IStorage
 	{
 		protected readonly IStorage _storage;

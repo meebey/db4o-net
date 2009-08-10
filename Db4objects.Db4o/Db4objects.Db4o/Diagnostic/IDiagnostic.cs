@@ -12,15 +12,12 @@ namespace Db4objects.Db4o.Diagnostic
 	/// Diagnostic system can be enabled on a running db4o database
 	/// to notify a user about possible problems or misconfigurations. Diagnostic
 	/// messages must implement this interface and are usually derived from
-	/// <see cref="Db4objects.Db4o.Diagnostic.DiagnosticBase">Db4objects.Db4o.Diagnostic.DiagnosticBase
-	/// 	</see>
+	/// <see cref="DiagnosticBase">DiagnosticBase</see>
 	/// class. A separate Diagnostic implementation
 	/// should be used for each problem.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Diagnostic.DiagnosticBase">Db4objects.Db4o.Diagnostic.DiagnosticBase
-	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Diagnostic.IDiagnosticConfiguration">Db4objects.Db4o.Diagnostic.IDiagnosticConfiguration
-	/// 	</seealso>
+	/// <seealso cref="DiagnosticBase">DiagnosticBase</seealso>
+	/// <seealso cref="IDiagnosticConfiguration">IDiagnosticConfiguration</seealso>
 	public interface IDiagnostic
 	{
 	}

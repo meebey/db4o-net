@@ -15,7 +15,7 @@ namespace Db4objects.Db4o
 	/// recommended, never to reference ObjectSet directly in code but to use
 	/// List / IList instead.
 	/// <br /><br />Note that the underlying
-	/// <see cref="Db4objects.Db4o.IObjectContainer">IObjectContainer</see>
+	/// <see cref="IObjectContainer">IObjectContainer</see>
 	/// of an ObjectSet
 	/// needs to remain open as long as an ObjectSet is used. This is necessary
 	/// for lazy instantiation. The objects in an ObjectSet are only instantiated
@@ -51,9 +51,9 @@ namespace Db4objects.Db4o
 		/// <br /><br />
 		/// Before returning the Object, next() triggers automatic activation of the
 		/// Object with the respective
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth">global</see>
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.ActivationDepth()">global</see>
 		/// or
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">class specific
+		/// <see cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth(int)">class specific
 		/// 	</see>
 		/// setting.<br /><br />
 		/// </remarks>

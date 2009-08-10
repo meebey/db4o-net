@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public static void Main(string[] args)
 		{
-			new MessagingTestCase().RunConcurrency();
+			new Db4objects.Db4o.Tests.Common.Concurrency.MessagingTestCase().RunConcurrency();
 		}
 
 		public MessagingTestCase.TestMessageRecipient _recipient;

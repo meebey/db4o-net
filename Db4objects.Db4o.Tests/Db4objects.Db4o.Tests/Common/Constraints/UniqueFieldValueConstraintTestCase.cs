@@ -26,6 +26,17 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 			}
 		}
 
+		public class IHaveNothingToDoWithItemInstances
+		{
+			public static int _constructorCallsCounter = 0;
+
+			public IHaveNothingToDoWithItemInstances(int value)
+			{
+				_constructorCallsCounter = value == unchecked((int)(0xdb40)) ? 0 : _constructorCallsCounter
+					 + 1;
+			}
+		}
+
 		/// <exception cref="System.Exception"></exception>
 		public virtual void ConfigureClient(IConfiguration config)
 		{
@@ -45,6 +56,8 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 			IndexField(config, typeof(UniqueFieldValueConstraintTestCase.Item), "_str");
 			config.Add(new UniqueFieldValueConstraint(typeof(UniqueFieldValueConstraintTestCase.Item
 				), "_str"));
+			config.ObjectClass(typeof(UniqueFieldValueConstraintTestCase.IHaveNothingToDoWithItemInstances
+				)).CallConstructor(true);
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -101,14 +114,14 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 
 		private void CommitExpectingViolation()
 		{
-			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_88
+			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_97
 				(this));
 			Db().Rollback();
 		}
 
-		private sealed class _ICodeBlock_88 : ICodeBlock
+		private sealed class _ICodeBlock_97 : ICodeBlock
 		{
-			public _ICodeBlock_88(UniqueFieldValueConstraintTestCase _enclosing)
+			public _ICodeBlock_97(UniqueFieldValueConstraintTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -139,6 +152,35 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 			UniqueFieldValueConstraintTestCase.Item item = QueryItem(existing);
 			item._str = newValue;
 			Store(item);
+		}
+
+		public virtual void TestObjectsAreNotReadUnnecessarily()
+		{
+			AddItem("5");
+			Store(new UniqueFieldValueConstraintTestCase.IHaveNothingToDoWithItemInstances(unchecked(
+				(int)(0xdb40))));
+			Db().Commit();
+			Assert.AreEqual(ExpectedConstructorsCalls(), UniqueFieldValueConstraintTestCase.IHaveNothingToDoWithItemInstances
+				._constructorCallsCounter);
+		}
+
+		private int ExpectedConstructorsCalls()
+		{
+			if (IsNetworkClientServer())
+			{
+				return ExpectedConstructorCallOnCSMode();
+			}
+			return 1;
+		}
+
+		private int ExpectedConstructorCallOnCSMode()
+		{
+			return 2;
+		}
+
+		private bool IsNetworkClientServer()
+		{
+			return IsClientServer() && !IsEmbeddedClientServer();
 		}
 	}
 }

@@ -15,6 +15,6 @@ namespace Db4objects.Db4o.IO
 		/// the new size, after the growth strategy has been
 		/// applied, must be bigger than curSize
 		/// </returns>
-		long NewSize(long curSize);
+		long NewSize(long curSize, long requiredSize);
 	}
 }

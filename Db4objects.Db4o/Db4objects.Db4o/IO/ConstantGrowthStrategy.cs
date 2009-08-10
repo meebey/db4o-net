@@ -21,9 +21,14 @@ namespace Db4objects.Db4o.IO
 		/// </summary>
 		/// <param name="curSize">the original size</param>
 		/// <returns>the new size</returns>
-		public virtual long NewSize(long curSize)
+		public virtual long NewSize(long curSize, long requiredSize)
 		{
-			return curSize + _growth;
+			long newSize = curSize;
+			while (newSize < requiredSize)
+			{
+				newSize += _growth;
+			}
+			return newSize;
 		}
 	}
 }

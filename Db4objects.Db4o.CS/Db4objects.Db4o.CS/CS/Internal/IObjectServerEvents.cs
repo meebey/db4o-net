@@ -5,5 +5,7 @@ namespace Db4objects.Db4o.CS.Internal
 	public interface IObjectServerEvents
 	{
 		event System.EventHandler<ClientConnectionEventArgs> ClientConnected;
+
+		event System.EventHandler<ServerClosedEventArgs> Closed;
 	}
 }

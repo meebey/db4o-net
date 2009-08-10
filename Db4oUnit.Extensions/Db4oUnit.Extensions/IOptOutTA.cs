@@ -4,8 +4,7 @@ namespace Db4oUnit.Extensions
 {
 	/// <summary>
 	/// Marks a test case as non valid for the
-	/// <see cref="Db4oUnit.Extensions.TAFixtureConfiguration">Db4oUnit.Extensions.TAFixtureConfiguration
-	/// 	</see>
+	/// <see cref="TAFixtureConfiguration">TAFixtureConfiguration</see>
 	/// .
 	/// </summary>
 	public interface IOptOutTA

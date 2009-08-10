@@ -4,13 +4,13 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class Molecule : Db4objects.Db4o.Tests.Common.Assorted.Atom
+	public class Molecule : Atom
 	{
 		public Molecule()
 		{
 		}
 
-		public Molecule(Db4objects.Db4o.Tests.Common.Assorted.Atom child) : base(child)
+		public Molecule(Atom child) : base(child)
 		{
 		}
 
@@ -18,14 +18,13 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 		}
 
-		public Molecule(Db4objects.Db4o.Tests.Common.Assorted.Atom child, string name) : 
-			base(child, name)
+		public Molecule(Atom child, string name) : base(child, name)
 		{
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Molecule)
+			if (obj is Db4objects.Db4o.Tests.Common.Assorted.Molecule)
 			{
 				return base.Equals(obj);
 			}

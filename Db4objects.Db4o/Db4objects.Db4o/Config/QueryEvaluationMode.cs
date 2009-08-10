@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Config
 	/// This class provides static constants for the query evaluation
 	/// modes that db4o supports.
 	/// <br /><br /><b>For detailed documentation please see
-	/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+	/// <see cref="IQueryConfiguration.EvaluationMode(QueryEvaluationMode)">IQueryConfiguration.EvaluationMode(QueryEvaluationMode)
 	/// 	</see>
 	/// </b>
 	/// </remarks>
@@ -29,11 +29,11 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// Constant for immediate query evaluation. The query is executed fully
 		/// when
-		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute()">Db4objects.Db4o.Query.IQuery.Execute()
 		/// 	</see>
 		/// is called.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// <see cref="IQueryConfiguration.EvaluationMode(QueryEvaluationMode)">IQueryConfiguration.EvaluationMode(QueryEvaluationMode)
 		/// 	</see>
 		/// </b>
 		/// </remarks>
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Config
 		/// <summary>Constant for snapshot query evaluation.</summary>
 		/// <remarks>
 		/// Constant for snapshot query evaluation. When
-		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute()">Db4objects.Db4o.Query.IQuery.Execute()
 		/// 	</see>
 		/// is called,
 		/// the query processor chooses the best indexes, does all index processing
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// <see cref="IQueryConfiguration.EvaluationMode(QueryEvaluationMode)">IQueryConfiguration.EvaluationMode(QueryEvaluationMode)
 		/// 	</see>
 		/// </b>
 		/// </remarks>
@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Config
 		/// <summary>Constant for lazy query evaluation.</summary>
 		/// <remarks>
 		/// Constant for lazy query evaluation. When
-		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute()">Db4objects.Db4o.Query.IQuery.Execute()
 		/// 	</see>
 		/// is called, the
 		/// query processor only chooses the best index and creates an iterator on
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// resultset of the query.
 		/// <br /><br /><b>For detailed documentation please see
-		/// <see cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// <see cref="IQueryConfiguration.EvaluationMode(QueryEvaluationMode)">IQueryConfiguration.EvaluationMode(QueryEvaluationMode)
 		/// 	</see>
 		/// </b>
 		/// </remarks>

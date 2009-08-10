@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Ext
 	/// The maximum database size is configurable
 	/// and can reach up to 254GB.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.BlockSize">Db4objects.Db4o.Config.IConfiguration.BlockSize
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.BlockSize(int)">Db4objects.Db4o.Config.IConfiguration.BlockSize(int)
 	/// 	</seealso>
 	[System.Serializable]
 	public class DatabaseMaximumSizeReachedException : Db4oRecoverableException

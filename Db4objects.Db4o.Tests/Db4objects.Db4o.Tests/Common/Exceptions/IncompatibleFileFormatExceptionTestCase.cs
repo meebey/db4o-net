@@ -3,7 +3,6 @@
 #if !SILVERLIGHT
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;

@@ -29,14 +29,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			protected override void Configure(IConfiguration config)
 			{
 				IExceptionPropagationFixture propagationFixture = CurPropagationFixture();
-				_storage = new ExceptionSimulatingStorage(config.Storage, new _IExceptionFactory_26
+				_storage = new ExceptionSimulatingStorage(config.Storage, new _IExceptionFactory_25
 					(propagationFixture));
 				config.Storage = _storage;
 			}
 
-			private sealed class _IExceptionFactory_26 : IExceptionFactory
+			private sealed class _IExceptionFactory_25 : IExceptionFactory
 			{
-				public _IExceptionFactory_26(IExceptionPropagationFixture propagationFixture)
+				public _IExceptionFactory_25(IExceptionPropagationFixture propagationFixture)
 				{
 					this.propagationFixture = propagationFixture;
 					this._alreadyCalled = false;
@@ -115,18 +115,18 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 		public override IFixtureProvider[] FixtureProviders()
 		{
 			return new IFixtureProvider[] { new Db4oFixtureProvider(), new SimpleFixtureProvider
-				(PropagationFixture, new IExceptionPropagationFixture[] { new OutOfMemoryErrorPropagationFixture
-				(), new OneTimeDb4oExceptionPropagationFixture(), new OneTimeRuntimeExceptionPropagationFixture
+				(PropagationFixture, new object[] { new OutOfMemoryErrorPropagationFixture(), new 
+				OneTimeDb4oExceptionPropagationFixture(), new OneTimeRuntimeExceptionPropagationFixture
 				(), new RecurringDb4oExceptionPropagationFixture(), new RecurringRuntimeExceptionPropagationFixture
 				(), new RecoverableExceptionPropagationFixture() }), new SimpleFixtureProvider(ToplevelFixture
-				, new TopLevelOperation[] { new _TopLevelOperation_86("commit"), new _TopLevelOperation_90
-				("store"), new _TopLevelOperation_95("activate"), new _TopLevelOperation_108("peek"
-				), new _TopLevelOperation_112("qbe"), new _TopLevelOperation_117("query") }) };
+				, new object[] { new _TopLevelOperation_84("commit"), new _TopLevelOperation_88(
+				"store"), new _TopLevelOperation_92("activate"), new _TopLevelOperation_106("peek"
+				), new _TopLevelOperation_110("qbe"), new _TopLevelOperation_114("query") }) };
 		}
 
-		private sealed class _TopLevelOperation_86 : TopLevelOperation
+		private sealed class _TopLevelOperation_84 : TopLevelOperation
 		{
-			public _TopLevelOperation_86(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_84(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -136,9 +136,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_90 : TopLevelOperation
+		private sealed class _TopLevelOperation_88 : TopLevelOperation
 		{
-			public _TopLevelOperation_90(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_88(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -148,9 +148,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_95 : TopLevelOperation
+		private sealed class _TopLevelOperation_92 : TopLevelOperation
 		{
-			public _TopLevelOperation_95(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_92(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -160,14 +160,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_108 : TopLevelOperation
+		private sealed class _TopLevelOperation_106 : TopLevelOperation
 		{
-			public _TopLevelOperation_108(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_106(string baseArg1) : base(baseArg1)
 			{
 			}
 
 			// - no deactivate test, since it doesn't trigger I/O activity
-			// - no getByID test, not refactored to asTopLevelCall, since it has custom, more relaxed exception handling
+			// - no getByID test, not refactored to asTopLevelCall, since it has custom, more relaxed exception handling -> InvalidSlotExceptionTestCase
 			// FIXME doesn't trigger initial exception - deletes are processed in finally block
 			//					new TopLevelOperation("delete") {
 			//						@Override
@@ -181,9 +181,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_112 : TopLevelOperation
+		private sealed class _TopLevelOperation_110 : TopLevelOperation
 		{
-			public _TopLevelOperation_112(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_110(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -193,9 +193,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_117 : TopLevelOperation
+		private sealed class _TopLevelOperation_114 : TopLevelOperation
 		{
-			public _TopLevelOperation_117(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_114(string baseArg1) : base(baseArg1)
 			{
 			}
 

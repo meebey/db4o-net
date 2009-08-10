@@ -14,6 +14,8 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oClientServer : AbstractDb4oFixture, IDb4oClientServerFixture
 	{
+		private const int ThreadpoolTimeout = 3000;
+
 		protected static readonly string File = "Db4oClientServer.db4o";
 
 		public static readonly string Host = "127.0.0.1";
@@ -67,12 +69,22 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private void ListenToUncaughtExceptions()
 		{
-			ListenToUncaughtExceptions(ThreadPoolFor(_server.Ext().ObjectContainer()));
-			IThreadPool4 clientThreadPool = ThreadPoolFor(_objectContainer);
+			ListenToUncaughtExceptions(ServerThreadPool());
+			IThreadPool4 clientThreadPool = ClientThreadPool();
 			if (null != clientThreadPool)
 			{
 				ListenToUncaughtExceptions(clientThreadPool);
 			}
+		}
+
+		private IThreadPool4 ClientThreadPool()
+		{
+			return ThreadPoolFor(_objectContainer);
+		}
+
+		private IThreadPool4 ServerThreadPool()
+		{
+			return ThreadPoolFor(_server.Ext().ObjectContainer());
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -141,8 +153,13 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			if (null != _objectContainer)
 			{
+				IThreadPool4 clientThreadPool = ClientThreadPool();
 				_objectContainer.Close();
 				_objectContainer = null;
+				if (null != clientThreadPool)
+				{
+					clientThreadPool.Join(ThreadpoolTimeout);
+				}
 			}
 			CloseServer();
 		}
@@ -152,8 +169,13 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			if (null != _server)
 			{
+				IThreadPool4 serverThreadPool = ServerThreadPool();
 				_server.Close();
 				_server = null;
+				if (null != serverThreadPool)
+				{
+					serverThreadPool.Join(ThreadpoolTimeout);
+				}
 			}
 		}
 

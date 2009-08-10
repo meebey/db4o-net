@@ -46,9 +46,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		public override IFixtureProvider[] FixtureProviders()
 		{
 			return new IFixtureProvider[] { new SimpleFixtureProvider(StorageSpecFixture, new 
-				DefragInMemoryTestSuite.StorageSpec[] { new DefragInMemoryTestSuite.StorageSpec(
-				"memory", null), new DefragInMemoryTestSuite.StorageSpec("file", Db4oUnitPlatform
-				.NewPersistentStorage()) }) };
+				object[] { new DefragInMemoryTestSuite.StorageSpec("memory", null), new DefragInMemoryTestSuite.StorageSpec
+				("file", Db4oUnitPlatform.NewPersistentStorage()) }) };
 		}
 
 		public override Type[] TestUnits()

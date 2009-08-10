@@ -11,8 +11,7 @@ namespace Db4objects.Db4o.Events
 	/// <see cref="Db4objects.Db4o.Query.IQuery">Db4objects.Db4o.Query.IQuery</see>
 	/// related events.
 	/// </summary>
-	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-	/// 	</seealso>
+	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
 	public class QueryEventArgs : TransactionalEventArgs
 	{
 		private IQuery _query;

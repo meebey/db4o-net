@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="container">the ObjectContainer used</param>
 		/// <param name="storedObject">
 		/// the object stored with
-		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator.OnStore">ObjectTranslator.onStore
+		/// <see cref="IObjectTranslator.OnStore(Db4objects.Db4o.IObjectContainer, object)">ObjectTranslator.onStore
 		/// 	</see>
 		/// .
 		/// </param>

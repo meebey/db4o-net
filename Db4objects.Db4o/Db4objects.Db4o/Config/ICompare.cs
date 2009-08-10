@@ -6,8 +6,7 @@ namespace Db4objects.Db4o.Config
 	/// <remarks>
 	/// allows special comparison behaviour during query evaluation.
 	/// <br /><br />db4o will use the Object returned by the
-	/// <see cref="Db4objects.Db4o.Config.ICompare.Compare">Db4objects.Db4o.Config.ICompare.Compare
-	/// 	</see>
+	/// <see cref="Compare()">Compare()</see>
 	/// method for all query comparisons.
 	/// </remarks>
 	public interface ICompare

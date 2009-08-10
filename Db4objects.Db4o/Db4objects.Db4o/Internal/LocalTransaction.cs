@@ -15,7 +15,7 @@ using Db4objects.Db4o.Internal.Transactionlog;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class LocalTransaction : Db4objects.Db4o.Internal.Transaction
+	public class LocalTransaction : Transaction
 	{
 		private readonly byte[] _pointerBuffer = new byte[Const4.PointerLength];
 
@@ -36,9 +36,9 @@ namespace Db4objects.Db4o.Internal
 		private TransactionLogHandler _transactionLogHandler = new EmbeddedTransactionLogHandler
 			();
 
-		public LocalTransaction(ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
-			 parentTransaction, TransactionalReferenceSystem referenceSystem) : base(container
-			, parentTransaction, referenceSystem)
+		public LocalTransaction(ObjectContainerBase container, Transaction parentTransaction
+			, TransactionalReferenceSystem referenceSystem) : base(container, parentTransaction
+			, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
 			i_pointerIo = new StatefulBuffer(this, Const4.PointerLength);
@@ -84,7 +84,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!IsSystemTransaction())
 			{
-				_transactionLogHandler = ((LocalTransaction)SystemTransaction())._transactionLogHandler;
+				_transactionLogHandler = ((Db4objects.Db4o.Internal.LocalTransaction)SystemTransaction
+					())._transactionLogHandler;
 				return;
 			}
 			bool fileBased = Config().FileBasedTransactionLog() && Container() is IoAdaptedObjectContainer;
@@ -263,9 +264,9 @@ namespace Db4objects.Db4o.Internal
 			Container().ClassCollection().Write(Container().SystemTransaction());
 		}
 
-		private LocalTransaction ParentLocalTransaction()
+		private Db4objects.Db4o.Internal.LocalTransaction ParentLocalTransaction()
 		{
-			return (LocalTransaction)_systemTransaction;
+			return (Db4objects.Db4o.Internal.LocalTransaction)_systemTransaction;
 		}
 
 		private void CommitClearAll()
@@ -906,10 +907,11 @@ namespace Db4objects.Db4o.Internal
 			return new FrozenObjectInfo(this, ReferenceForId(id));
 		}
 
-		public static Db4objects.Db4o.Internal.Transaction ReadInterruptedTransaction(LocalObjectContainer
-			 file, ByteArrayBuffer reader)
+		public static Transaction ReadInterruptedTransaction(LocalObjectContainer file, ByteArrayBuffer
+			 reader)
 		{
-			LocalTransaction transaction = (LocalTransaction)file.NewTransaction(null, null);
+			Db4objects.Db4o.Internal.LocalTransaction transaction = (Db4objects.Db4o.Internal.LocalTransaction
+				)file.NewTransaction(null, null);
 			if (transaction.WasInterrupted(reader))
 			{
 				return transaction;

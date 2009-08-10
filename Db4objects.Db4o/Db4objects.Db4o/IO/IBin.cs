@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.IO
 		/// <remarks>
 		/// reads a given number of bytes into an array of bytes at an
 		/// offset position. In contrast to the normal
-		/// <see cref="Db4objects.Db4o.IO.IBin.Read">Db4objects.Db4o.IO.IBin.Read</see>
+		/// <see cref="Read(long, byte[], int)">Read(long, byte[], int)</see>
 		/// method, the Bin should ensure direct access to the raw storage medium.
 		/// No caching should take place.
 		/// </remarks>

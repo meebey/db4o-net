@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
@@ -12,8 +11,7 @@ namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Configuration for a defragmentation run.</summary>
 	/// <remarks>Configuration for a defragmentation run.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
-	/// 	</seealso>
+	/// <seealso cref="Defragment">Defragment</seealso>
 	public class DefragmentConfig
 	{
 		public const bool Debug = false;
@@ -119,8 +117,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <returns>
 		/// The
-		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
-		/// 	</see>
+		/// <see cref="IStoredClassFilter">IStoredClassFilter</see>
 		/// used to select stored class extents to
 		/// be included into the defragmented file.
 		/// </returns>
@@ -131,8 +128,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <param name="storedClassFilter">
 		/// The
-		/// <see cref="Db4objects.Db4o.Defragment.IStoredClassFilter">Db4objects.Db4o.Defragment.IStoredClassFilter
-		/// 	</see>
+		/// <see cref="IStoredClassFilter">IStoredClassFilter</see>
 		/// used to select stored class extents to
 		/// be included into the defragmented file.
 		/// </param>
@@ -198,7 +194,7 @@ namespace Db4objects.Db4o.Defragment
 		/// to be applied
 		/// during the defragment process.
 		/// </param>
-		[System.ObsoleteAttribute(@"since 7.9: use Db4objects.Db4o.Defragment.DefragmentConfig.Db4oConfig(Db4objects.Db4o.Config.IEmbeddedConfiguration) instead"
+		[System.ObsoleteAttribute(@"since 7.9: use Db4oConfig(Db4objects.Db4o.Config.IEmbeddedConfiguration) instead"
 			)]
 		public virtual void Db4oConfig(IConfiguration config)
 		{

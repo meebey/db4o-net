@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.Ext
 	/// extended functionality for the ObjectServer interface.
 	/// <br /><br />Every ObjectServer also always is an ExtObjectServer
 	/// so a cast is possible.<br /><br />
-	/// <see cref="Db4objects.Db4o.IObjectServer.Ext">Db4objects.Db4o.IObjectServer.Ext</see>
+	/// <see cref="Db4objects.Db4o.IObjectServer.Ext()">Db4objects.Db4o.IObjectServer.Ext()
+	/// 	</see>
 	/// is a convenient method to perform the cast.<br /><br />
 	/// The functionality is split to two interfaces to allow newcomers to
 	/// focus on the essential methods.
@@ -41,7 +42,7 @@ namespace Db4objects.Db4o.Ext
 		/// context for this ObjectServer.
 		/// <br /><br />
 		/// Upon opening an ObjectServer with any of the factory methods in the
-		/// <see cref="Db4objects.Db4o.Db4oFactory">Db4objects.Db4o.Db4oFactory</see>
+		/// <see cref="Db4oFactory">Db4oFactory</see>
 		/// class, the global
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration">Db4objects.Db4o.Config.IConfiguration
 		/// 	</see>
@@ -53,8 +54,7 @@ namespace Db4objects.Db4o.Ext
 		/// each ObjectServer without any effects on the global settings.<br /><br />
 		/// </summary>
 		/// <returns>the Configuration context for this ObjectServer</returns>
-		/// <seealso cref="Db4objects.Db4o.Db4oFactory.Configure">Db4objects.Db4o.Db4oFactory.Configure
-		/// 	</seealso>
+		/// <seealso cref="Db4oFactory.Configure()">Db4oFactory.Configure()</seealso>
 		IConfiguration Configure();
 
 		/// <summary>returns the ObjectContainer used by the server.</summary>

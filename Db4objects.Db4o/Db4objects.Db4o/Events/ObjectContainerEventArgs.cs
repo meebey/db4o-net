@@ -7,8 +7,7 @@ namespace Db4objects.Db4o.Events
 {
 	/// <summary>Arguments for container related events.</summary>
 	/// <remarks>Arguments for container related events.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-	/// 	</seealso>
+	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
 	public class ObjectContainerEventArgs : EventArgs
 	{
 		private readonly IObjectContainer _container;

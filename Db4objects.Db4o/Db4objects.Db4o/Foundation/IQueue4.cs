@@ -13,13 +13,13 @@ namespace Db4objects.Db4o.Foundation
 
 		bool HasNext();
 
-		/// <summary>Returns tQueue4<ClassMetadata>he next object in the queue that matches the specified condition.
+		/// <summary>Returns the next object in the queue that matches the specified condition.
 		/// 	</summary>
 		/// <remarks>
-		/// Returns tQueue4<ClassMetadata>he next object in the queue that matches the specified condition.
+		/// Returns the next object in the queue that matches the specified condition.
 		/// The operation is always NON-BLOCKING.
 		/// </remarks>
-		/// <param name="predicate">condition the object must satisfy to be returned</param>
+		/// <param name="condition">the object must satisfy to be returned</param>
 		/// <returns>the object satisfying the condition or null if none does</returns>
 		object NextMatching(IPredicate4 condition);
 

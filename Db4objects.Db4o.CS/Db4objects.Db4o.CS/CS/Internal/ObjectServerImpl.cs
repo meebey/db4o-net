@@ -54,6 +54,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private System.EventHandler<ClientConnectionEventArgs> _clientConnected;
 
+		private System.EventHandler<ServerClosedEventArgs> _closed;
+
 		public ObjectServerImpl(LocalObjectContainer container, int port, INativeSocketFactory
 			 socketFactory) : this(container, (port < 0 ? 0 : port), port == 0, socketFactory
 			)
@@ -188,10 +190,25 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			lock (this)
 			{
-				CloseServerSocket();
-				StopCommittedCallbacksDispatcher();
-				CloseMessageDispatchers();
-				return CloseFile();
+				return Close(ShutdownMode.Normal);
+			}
+		}
+
+		public virtual bool Close(ShutdownMode mode)
+		{
+			lock (this)
+			{
+				try
+				{
+					CloseServerSocket();
+					StopCommittedCallbacksDispatcher();
+					CloseMessageDispatchers();
+					return CloseFile(mode);
+				}
+				finally
+				{
+					TriggerClosed();
+				}
 			}
 		}
 
@@ -203,11 +220,11 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private bool CloseFile()
+		private bool CloseFile(ShutdownMode mode)
 		{
 			if (_container != null)
 			{
-				_transactionPool.Close();
+				_transactionPool.Close(mode);
 				_container = null;
 			}
 			return true;
@@ -450,6 +467,11 @@ namespace Db4objects.Db4o.CS.Internal
 				(messageDispatcher));
 		}
 
+		private void TriggerClosed()
+		{
+			if (null != _closed) _closed(null, new ServerClosedEventArgs());
+		}
+
 		private void NotifyThreadStarted()
 		{
 			lock (_startupLock)
@@ -549,6 +571,20 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				_clientConnected = (System.EventHandler<ClientConnectionEventArgs>)System.Delegate.Remove
 					(_clientConnected, value);
+			}
+		}
+
+		public virtual event System.EventHandler<ServerClosedEventArgs> Closed
+		{
+			add
+			{
+				_closed = (System.EventHandler<ServerClosedEventArgs>)System.Delegate.Combine(_closed
+					, value);
+			}
+			remove
+			{
+				_closed = (System.EventHandler<ServerClosedEventArgs>)System.Delegate.Remove(_closed
+					, value);
 			}
 		}
 	}

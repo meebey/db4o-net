@@ -42,7 +42,8 @@ namespace Db4objects.Db4o.TA
 		/// which will be triggered when activation or de-activation is required.
 		/// </remarks>
 		/// <param name="container">the ObjectContainer to configure</param>
-		/// <seealso cref="Db4objects.Db4o.TA.TransparentPersistenceSupport.Apply">Db4objects.Db4o.TA.TransparentPersistenceSupport.Apply
+		/// <seealso cref="TransparentPersistenceSupport.Apply(Db4objects.Db4o.Internal.IInternalObjectContainer)
+		/// 	">TransparentPersistenceSupport.Apply(Db4objects.Db4o.Internal.IInternalObjectContainer)
 		/// 	</seealso>
 		public virtual void Apply(IInternalObjectContainer container)
 		{

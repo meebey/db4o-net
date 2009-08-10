@@ -12,8 +12,8 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 		{
 			return new Type[] { typeof(AccessOldFieldVersionsTestCase), typeof(AccessRemovedFieldTestCase
 				), typeof(ClassRenameByConfigTestCase), typeof(ClassRenameByStoredClassTestCase)
-				, typeof(ReAddFieldTestCase), typeof(RemoveArrayFieldTestCase), typeof(RemovedClassRefactoringTestSuite
-				) };
+				, typeof(ReAddFieldTestCase), typeof(RefactorFieldToTransientTestCase), typeof(RemoveArrayFieldTestCase
+				), typeof(RemovedClassRefactoringTestSuite) };
 		}
 	}
 }

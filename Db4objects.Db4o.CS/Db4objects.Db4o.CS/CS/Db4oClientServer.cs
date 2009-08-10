@@ -59,9 +59,9 @@ namespace Db4objects.Db4o.CS
 		/// <param name="port">the server port to connect to</param>
 		/// <param name="user">the username for authentication</param>
 		/// <param name="password">the password for authentication</param>
-		/// <seealso cref="Db4objects.Db4o.CS.Db4oClientServer.OpenServer">Db4objects.Db4o.CS.Db4oClientServer.OpenServer
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
+		/// <seealso cref="OpenServer(Db4objects.Db4o.CS.Config.IServerConfiguration, string, int)
+		/// 	">OpenServer(Db4objects.Db4o.CS.Config.IServerConfiguration, string, int)</seealso>
+		/// <seealso cref="Db4objects.Db4o.IObjectServer.GrantAccess(string, string)">Db4objects.Db4o.IObjectServer.GrantAccess(string, string)
 		/// 	</seealso>
 		/// <exception cref="System.ArgumentException">if the configuration passed in has already been used.
 		/// 	</exception>

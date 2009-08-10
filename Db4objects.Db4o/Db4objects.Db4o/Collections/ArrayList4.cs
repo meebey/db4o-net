@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
 using Sharpen;
+using Sharpen.Util;
 
 namespace Db4objects.Db4o.Collections
 {
@@ -138,7 +139,7 @@ namespace Db4objects.Db4o.Collections
 		{
 			int size = Count;
 			ActivateForWrite();
-			Sharpen.Util.Arrays.Fill(elements, 0, size, DefaultValue());
+			Arrays.Fill(elements, 0, size, DefaultValue());
 			SetSize(0);
 			MarkModified();
 		}
@@ -202,7 +203,7 @@ namespace Db4objects.Db4o.Collections
 				return;
 			}
 			System.Array.Copy(elements, toIndex, elements, fromIndex, size - toIndex);
-			Sharpen.Util.Arrays.Fill(elements, size - count, size, DefaultValue());
+			Arrays.Fill(elements, size - count, size, DefaultValue());
 			DecreaseSize(count);
 			MarkModified();
 		}

@@ -12,7 +12,8 @@ namespace Db4objects.Db4o.Typehandlers
 	/// <summary>Typehandler that ignores all fields on a class</summary>
 	public class IgnoreFieldsTypeHandler : IReferenceTypeHandler, ICascadingTypeHandler
 	{
-		public static readonly ITypeHandler4 Instance = new IgnoreFieldsTypeHandler();
+		public static readonly ITypeHandler4 Instance = new Db4objects.Db4o.Typehandlers.IgnoreFieldsTypeHandler
+			();
 
 		private IgnoreFieldsTypeHandler()
 		{

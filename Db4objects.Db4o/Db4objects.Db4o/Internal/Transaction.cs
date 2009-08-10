@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Internal
 		/// <remarks>
 		/// Retrieves the value of a transaction local variables.
 		/// If this is the first time the variable is accessed
-		/// <see cref="Db4objects.Db4o.Internal.TransactionLocal.InitialValueFor">Db4objects.Db4o.Internal.TransactionLocal.InitialValueFor
+		/// <see cref="TransactionLocal.InitialValueFor(Transaction)">TransactionLocal.InitialValueFor(Transaction)
 		/// 	</see>
 		/// will provide the initial value.
 		/// </remarks>

@@ -14,6 +14,7 @@ using Db4objects.Db4o.Internal.Collections;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Jre12.Collections;
 using Db4objects.Db4o.Typehandlers;
+using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.Jre12.Collections
 {
@@ -392,7 +393,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		{
 			ISet<BigSetTestCase.Item> set = CollectionFactory.ForObjectContainer(Db()).NewBigSet
 				<BigSetTestCase.Item>();
-			Sharpen.Collections.AddAll(set, Sharpen.Util.Arrays.AsList(initialSet));
+			Sharpen.Collections.AddAll(set, Arrays.AsList(initialSet));
 			return set;
 		}
 

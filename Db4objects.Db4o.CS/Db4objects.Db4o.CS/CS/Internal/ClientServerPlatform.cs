@@ -13,8 +13,7 @@ namespace Db4objects.Db4o.CS.Internal
 	{
 		/// <summary>
 		/// The default
-		/// <see cref="Db4objects.Db4o.CS.Internal.ClientQueryResultIterator">Db4objects.Db4o.CS.Internal.ClientQueryResultIterator
-		/// 	</see>
+		/// <see cref="ClientQueryResultIterator">ClientQueryResultIterator</see>
 		/// for this platform.
 		/// </summary>
 		/// <returns></returns>

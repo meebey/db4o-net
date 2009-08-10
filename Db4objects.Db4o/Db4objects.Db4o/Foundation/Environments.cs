@@ -34,12 +34,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnvironment NewClosedEnvironment(object[] bindings)
 		{
-			return new _IEnvironment_31(bindings);
+			return new _IEnvironment_32(bindings);
 		}
 
-		private sealed class _IEnvironment_31 : IEnvironment
+		private sealed class _IEnvironment_32 : IEnvironment
 		{
-			public _IEnvironment_31(object[] bindings)
+			public _IEnvironment_32(object[] bindings)
 			{
 				this.bindings = bindings;
 			}
@@ -62,12 +62,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnvironment NewCachingEnvironmentFor(IEnvironment environment)
 		{
-			return new _IEnvironment_47(environment);
+			return new _IEnvironment_48(environment);
 		}
 
-		private sealed class _IEnvironment_47 : IEnvironment
+		private sealed class _IEnvironment_48 : IEnvironment
 		{
-			public _IEnvironment_47(IEnvironment environment)
+			public _IEnvironment_48(IEnvironment environment)
 			{
 				this.environment = environment;
 				this._bindings = new Hashtable();
@@ -107,12 +107,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnvironment Compose(IEnvironment[] environments)
 		{
-			return new _IEnvironment_74(environments);
+			return new _IEnvironment_75(environments);
 		}
 
-		private sealed class _IEnvironment_74 : IEnvironment
+		private sealed class _IEnvironment_75 : IEnvironment
 		{
-			public _IEnvironment_74(IEnvironment[] environments)
+			public _IEnvironment_75(IEnvironment[] environments)
 			{
 				this.environments = environments;
 			}

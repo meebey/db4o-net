@@ -8,7 +8,8 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	public class UnknownActivationDepth : IActivationDepth
 	{
-		public static readonly IActivationDepth Instance = new UnknownActivationDepth();
+		public static readonly IActivationDepth Instance = new Db4objects.Db4o.Internal.Activation.UnknownActivationDepth
+			();
 
 		private UnknownActivationDepth()
 		{

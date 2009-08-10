@@ -9,7 +9,7 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
-	public sealed class TranslatedAspect : Db4objects.Db4o.Internal.FieldMetadata
+	public sealed class TranslatedAspect : FieldMetadata
 	{
 		private IObjectTranslator _translator;
 

@@ -4,8 +4,7 @@ namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>The ID mapping used internally during a defragmentation run.</summary>
 	/// <remarks>The ID mapping used internally during a defragmentation run.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
-	/// 	</seealso>
+	/// <seealso cref="Defragment">Defragment</seealso>
 	public interface IContextIDMapping
 	{
 		/// <summary>Returns a previously registered mapping ID for the given ID if it exists.

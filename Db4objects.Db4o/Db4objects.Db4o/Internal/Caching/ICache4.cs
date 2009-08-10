@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Caching
 		/// cached
 		/// <see cref="producer">producer</see>
 		/// will be called to produce it. If the cache needs to discard a value
-		/// <see cref="onDiscard">onDiscard</see>
+		/// <see cref="finalizer">finalizer</see>
 		/// will be given a chance to process it.
 		/// </summary>
 		/// <param name="key">the key for the value - must never change - cannot be null</param>

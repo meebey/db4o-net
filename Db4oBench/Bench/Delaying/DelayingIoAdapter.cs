@@ -6,7 +6,7 @@ using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.Bench.Delaying
 {
-	public class DelayingIoAdapter : Db4objects.Db4o.IO.VanillaIoAdapter
+	public class DelayingIoAdapter : VanillaIoAdapter
 	{
 		private static Delays _delays = new Delays(0, 0, 0, 0);
 

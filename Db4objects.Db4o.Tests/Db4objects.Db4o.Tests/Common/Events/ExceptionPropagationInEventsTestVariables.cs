@@ -375,10 +375,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		}
 
 		internal static readonly IFixtureProvider EventProvider = new SimpleFixtureProvider
-			(EventSelector, new EventInfo[] { new EventInfo("query", new _IProcedure4_14()), 
-			new EventInfo("query", new _IProcedure4_23()), new EventInfo("delete", false, new 
-			_IProcedure4_32()), new EventInfo("delete", false, new _IProcedure4_42()), new EventInfo
-			("insert", false, new _IProcedure4_51()), new EventInfo("insert", false, new _IProcedure4_65
+			(EventSelector, new object[] { new EventInfo("query", new _IProcedure4_14()), new 
+			EventInfo("query", new _IProcedure4_23()), new EventInfo("delete", false, new _IProcedure4_32
+			()), new EventInfo("delete", false, new _IProcedure4_42()), new EventInfo("insert"
+			, false, new _IProcedure4_51()), new EventInfo("insert", false, new _IProcedure4_65
 			()), new EventInfo("insert", new _IProcedure4_79()), new EventInfo("insert", new 
 			_IProcedure4_89()), new EventInfo("query", new _IProcedure4_98()), new EventInfo
 			("update", new _IProcedure4_107()), new EventInfo("update", new _IProcedure4_116

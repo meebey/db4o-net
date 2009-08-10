@@ -31,8 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		/// <remarks>
 		/// Creates a suite builder for the specific FormatMigrationTestCaseBase derived classes
 		/// and specific db4o libraries. If no libraries are specified (either null or empty array)
-		/// <see cref="Db4objects.Db4o.Tests.Common.Migration.Db4oLibrarian.Libraries">Db4objects.Db4o.Tests.Common.Migration.Db4oLibrarian.Libraries
-		/// 	</see>
+		/// <see cref="Db4oLibrarian.Libraries()">Db4oLibrarian.Libraries()</see>
 		/// is used to find archived libraries.
 		/// </remarks>
 		/// <param name="classes"></param>

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Config
 	/// a simple Alias for a single Class or Type, using equals on
 	/// the names in the resolve method.
 	/// <br /><br />See
-	/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+	/// <see cref="IAlias">IAlias</see>
 	/// for concrete examples.
 	/// </remarks>
 	public class TypeAlias : IAlias

@@ -10,11 +10,9 @@ namespace Db4objects.Db4o.Config
 	/// <br /><br />All methods should be called before opening database files.
 	/// If db4o is instructed to exchange the system
 	/// (
-	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseBTreeSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseBTreeSystem
-	/// 	</see>
+	/// <see cref="UseBTreeSystem()">UseBTreeSystem()</see>
 	/// ,
-	/// <see cref="Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem">Db4objects.Db4o.Config.IFreespaceConfiguration.UseRamSystem
-	/// 	</see>
+	/// <see cref="UseRamSystem()">UseRamSystem()</see>
 	/// )
 	/// this will happen on opening the database file.<br /><br />
 	/// By default the ram based system will be used.
@@ -70,7 +68,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>discontinued freespace system, only available before db4o 7.0.</summary>
 		/// <remarks>discontinued freespace system, only available before db4o 7.0.</remarks>
-		[System.ObsoleteAttribute(@"Please use the BTree freespace system instead by calling Db4objects.Db4o.Config.IFreespaceConfiguration.UseBTreeSystem() ."
+		[System.ObsoleteAttribute(@"Please use the BTree freespace system instead by calling UseBTreeSystem() ."
 			)]
 		void UseIndexSystem();
 

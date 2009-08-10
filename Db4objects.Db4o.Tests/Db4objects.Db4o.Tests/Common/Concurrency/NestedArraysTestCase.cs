@@ -4,7 +4,6 @@
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Tests.Common.Concurrency;
 
 namespace Db4objects.Db4o.Tests.Common.Concurrency
 {
@@ -12,7 +11,8 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 	{
 		public static void Main(string[] args)
 		{
-			new NestedArraysTestCase().RunConcurrency();
+			new Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase().RunConcurrency
+				();
 		}
 
 		public object _object;
@@ -54,8 +54,9 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 
 		public virtual void Conc(IExtObjectContainer oc)
 		{
-			NestedArraysTestCase nr = (NestedArraysTestCase)((NestedArraysTestCase)RetrieveOnlyInstance
-				(oc, typeof(NestedArraysTestCase)));
+			Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase nr = (Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase
+				)((Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase)RetrieveOnlyInstance
+				(oc, typeof(Db4objects.Db4o.Tests.Common.Concurrency.NestedArraysTestCase)));
 			Check((object[])nr._object, Depth);
 			Check((object[])nr._objectArray, Depth);
 		}

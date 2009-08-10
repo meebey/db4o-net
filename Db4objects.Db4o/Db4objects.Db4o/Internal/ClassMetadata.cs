@@ -1112,7 +1112,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			bool configValue = (i_config == null) ? false : i_config.GenerateUUIDs();
+			TernaryBool configValue = (i_config == null) ? TernaryBool.Unspecified : i_config
+				.GenerateUUIDs();
 			return Generate1(_container.Config().GenerateUUIDs(), configValue);
 		}
 
@@ -1122,7 +1123,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			bool configValue = (i_config == null) ? false : i_config.GenerateVersionNumbers();
+			TernaryBool configValue = (i_config == null) ? TernaryBool.Unspecified : i_config
+				.GenerateVersionNumbers();
 			return Generate1(_container.Config().GenerateVersionNumbers(), configValue);
 		}
 
@@ -1139,7 +1141,7 @@ namespace Db4objects.Db4o.Internal
 			return true;
 		}
 
-		private bool Generate1(ConfigScope globalConfig, bool individualConfig)
+		private bool Generate1(ConfigScope globalConfig, TernaryBool individualConfig)
 		{
 			return globalConfig.ApplyConfig(individualConfig);
 		}
@@ -2135,7 +2137,7 @@ namespace Db4objects.Db4o.Internal
 			return Platform4.CanSetAccessible() || field.IsPublic();
 		}
 
-		private bool ShouldStoreTransientFields()
+		internal virtual bool ShouldStoreTransientFields()
 		{
 			Config4Class config = ConfigOrAncestorConfig();
 			if (config == null)

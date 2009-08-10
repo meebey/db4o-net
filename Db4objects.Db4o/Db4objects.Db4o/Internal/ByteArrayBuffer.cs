@@ -73,8 +73,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <summary>non-encrypted read, used for indexes</summary>
-		/// <param name="a_stream"></param>
-		/// <param name="a_address"></param>
 		public virtual void Read(ObjectContainerBase stream, int address, int addressOffset
 			)
 		{

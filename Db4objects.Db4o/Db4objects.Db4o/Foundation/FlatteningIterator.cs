@@ -5,7 +5,7 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
-	public class FlatteningIterator : Db4objects.Db4o.Foundation.CompositeIterator4
+	public class FlatteningIterator : CompositeIterator4
 	{
 		private class IteratorStack
 		{

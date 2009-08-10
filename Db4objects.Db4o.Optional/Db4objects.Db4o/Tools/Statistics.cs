@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tools
 			}
 			else
 			{
-				new Db4objects.Db4o.Tools.Statistics().Run(args[0]);
+				new Statistics().Run(args[0]);
 			}
 		}
 

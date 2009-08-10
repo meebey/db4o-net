@@ -14,7 +14,6 @@ namespace Db4objects.Db4o.Tests.Common.Config
 {
 	/// <summary>Tests all combinations of configuration use/reuse scenarios.</summary>
 	/// <remarks>Tests all combinations of configuration use/reuse scenarios.</remarks>
-	[System.ObsoleteAttribute(@"tests deprecated api")]
 	public class ConfigurationReuseTestSuite : FixtureTestSuiteDescription
 	{
 		internal static readonly FixtureVariable ConfigurationUseFunction = FixtureVariable
@@ -33,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 					).Apply(config));
 				try
 				{
-					Assert.Expect(typeof(ArgumentException), new _ICodeBlock_75(config));
+					Assert.Expect(typeof(ArgumentException), new _ICodeBlock_74(config));
 				}
 				finally
 				{
@@ -41,9 +40,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				}
 			}
 
-			private sealed class _ICodeBlock_75 : ICodeBlock
+			private sealed class _ICodeBlock_74 : ICodeBlock
 			{
-				public _ICodeBlock_75(IConfiguration config)
+				public _ICodeBlock_74(IConfiguration config)
 				{
 					this.config = config;
 				}
@@ -70,30 +69,30 @@ namespace Db4objects.Db4o.Tests.Common.Config
 		{
 			{
 				FixtureProviders(new IFixtureProvider[] { new SimpleFixtureProvider(ConfigurationUseFunction
-					, new IFunction4[] { new _IFunction4_22(), new _IFunction4_27(), new _IFunction4_32
-					() }), new SimpleFixtureProvider(ConfigurationReuseProcedure, new IProcedure4[] 
-					{ new _IProcedure4_45(), new _IProcedure4_47(), new _IProcedure4_49(), new _IProcedure4_57
+					, new object[] { new _IFunction4_21(), new _IFunction4_26(), new _IFunction4_31(
+					) }), new SimpleFixtureProvider(ConfigurationReuseProcedure, new object[] { new 
+					_IProcedure4_44(), new _IProcedure4_46(), new _IProcedure4_48(), new _IProcedure4_56
 					() }) });
 				TestUnits(new Type[] { typeof(ConfigurationReuseTestSuite.ConfigurationReuseTestUnit
 					) });
 			}
 		}
 
-		private sealed class _IFunction4_22 : IFunction4
+		private sealed class _IFunction4_21 : IFunction4
 		{
-			public _IFunction4_22()
+			public _IFunction4_21()
 			{
 			}
 
 			public object Apply(object config)
 			{
 				IObjectContainer container = Db4oFactory.OpenFile(((IConfiguration)config), ".");
-				return new _IRunnable_24(container);
+				return new _IRunnable_23(container);
 			}
 
-			private sealed class _IRunnable_24 : IRunnable
+			private sealed class _IRunnable_23 : IRunnable
 			{
-				public _IRunnable_24(IObjectContainer container)
+				public _IRunnable_23(IObjectContainer container)
 				{
 					this.container = container;
 				}
@@ -107,21 +106,21 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IFunction4_27 : IFunction4
+		private sealed class _IFunction4_26 : IFunction4
 		{
-			public _IFunction4_27()
+			public _IFunction4_26()
 			{
 			}
 
 			public object Apply(object config)
 			{
 				IObjectServer server = Db4oFactory.OpenServer(((IConfiguration)config), ".", 0);
-				return new _IRunnable_29(server);
+				return new _IRunnable_28(server);
 			}
 
-			private sealed class _IRunnable_29 : IRunnable
+			private sealed class _IRunnable_28 : IRunnable
 			{
-				public _IRunnable_29(IObjectServer server)
+				public _IRunnable_28(IObjectServer server)
 				{
 					this.server = server;
 				}
@@ -135,9 +134,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IFunction4_32 : IFunction4
+		private sealed class _IFunction4_31 : IFunction4
 		{
-			public _IFunction4_32()
+			public _IFunction4_31()
 			{
 			}
 
@@ -149,12 +148,12 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				server.GrantAccess("user", "password");
 				IObjectContainer client = Db4oFactory.OpenClient(((IConfiguration)config), "localhost"
 					, server.Ext().Port(), "user", "password");
-				return new _IRunnable_38(client, server);
+				return new _IRunnable_37(client, server);
 			}
 
-			private sealed class _IRunnable_38 : IRunnable
+			private sealed class _IRunnable_37 : IRunnable
 			{
-				public _IRunnable_38(IObjectContainer client, IObjectServer server)
+				public _IRunnable_37(IObjectContainer client, IObjectServer server)
 				{
 					this.client = client;
 					this.server = server;
@@ -172,9 +171,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IProcedure4_45 : IProcedure4
+		private sealed class _IProcedure4_44 : IProcedure4
 		{
-			public _IProcedure4_45()
+			public _IProcedure4_44()
 			{
 			}
 
@@ -184,9 +183,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IProcedure4_47 : IProcedure4
+		private sealed class _IProcedure4_46 : IProcedure4
 		{
-			public _IProcedure4_47()
+			public _IProcedure4_46()
 			{
 			}
 
@@ -196,9 +195,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IProcedure4_49 : IProcedure4
+		private sealed class _IProcedure4_48 : IProcedure4
 		{
-			public _IProcedure4_49()
+			public _IProcedure4_48()
 			{
 			}
 
@@ -218,9 +217,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IProcedure4_57 : IProcedure4
+		private sealed class _IProcedure4_56 : IProcedure4
 		{
-			public _IProcedure4_57()
+			public _IProcedure4_56()
 			{
 			}
 

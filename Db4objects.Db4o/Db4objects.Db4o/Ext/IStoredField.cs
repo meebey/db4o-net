@@ -36,8 +36,7 @@ namespace Db4objects.Db4o.Ext
 		/// returns the Class (Java) / Type (.NET) of the field.
 		/// <br /><br />For array fields this method will return the type of the array.
 		/// Use
-		/// <see cref="Db4objects.Db4o.Ext.IStoredField.IsArray">Db4objects.Db4o.Ext.IStoredField.IsArray
-		/// 	</see>
+		/// <see cref="IsArray()">IsArray()</see>
 		/// to detect arrays.
 		/// </remarks>
 		IReflectClass GetStoredType();

@@ -5,7 +5,7 @@ using Db4objects.Db4o.IO;
 namespace Db4objects.Db4o.IO
 {
 	/// <exclude></exclude>
-	public class DebugIoAdapter : Db4objects.Db4o.IO.VanillaIoAdapter
+	public class DebugIoAdapter : VanillaIoAdapter
 	{
 		internal static int counter;
 
@@ -26,8 +26,8 @@ namespace Db4objects.Db4o.IO
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
-			return new DebugIoAdapter(new RandomAccessFileAdapter(), path, lockFile, initialLength
-				, readOnly);
+			return new Db4objects.Db4o.IO.DebugIoAdapter(new RandomAccessFileAdapter(), path, 
+				lockFile, initialLength, readOnly);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

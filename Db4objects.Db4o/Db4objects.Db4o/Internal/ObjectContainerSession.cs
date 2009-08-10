@@ -267,8 +267,7 @@ namespace Db4objects.Db4o.Internal
 			throw new NotSupportedException();
 		}
 
-		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.ObjectContainerSession.Store(object, int) instead"
-			)]
+		[System.ObsoleteAttribute(@"Use Store(object, int) instead")]
 		public virtual void Set(object obj, int depth)
 		{
 			Store(obj, depth);
@@ -425,8 +424,7 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.ObjectContainerSession.QueryByExample(object) instead"
-			)]
+		[System.ObsoleteAttribute(@"Use QueryByExample(object) instead")]
 		public virtual IObjectSet Get(object template)
 		{
 			return QueryByExample(template);
@@ -500,8 +498,7 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.ObjectContainerSession.Store(object) instead"
-			)]
+		[System.ObsoleteAttribute(@"Use Store(object) instead")]
 		public virtual void Set(object obj)
 		{
 			Store(obj);

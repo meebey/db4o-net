@@ -33,21 +33,20 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Two simple Alias implementations are supplied along with
 		/// db4o:<br />
 		/// -
-		/// <see cref="Db4objects.Db4o.Config.TypeAlias">Db4objects.Db4o.Config.TypeAlias</see>
+		/// <see cref="TypeAlias">TypeAlias</see>
 		/// provides an #equals() resolver to match
 		/// names directly.<br />
 		/// -
-		/// <see cref="Db4objects.Db4o.Config.WildcardAlias">Db4objects.Db4o.Config.WildcardAlias
-		/// 	</see>
+		/// <see cref="WildcardAlias">WildcardAlias</see>
 		/// allows simple pattern matching
 		/// with one single '*' wildcard character.<br />
 		/// <br />
 		/// It is possible to create
 		/// own complex
-		/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+		/// <see cref="IAlias">IAlias</see>
 		/// constructs by creating own resolvers
 		/// that implement the
-		/// <see cref="Db4objects.Db4o.Config.IAlias">Db4objects.Db4o.Config.IAlias</see>
+		/// <see cref="IAlias">IAlias</see>
 		/// interface.
 		/// <br /><br />
 		/// Examples of concrete usecases:
@@ -81,8 +80,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// Removes an alias previously added with
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AddAlias">Db4objects.Db4o.Config.IConfiguration.AddAlias
-		/// 	</see>
+		/// <see cref="IConfiguration.AddAlias(IAlias)">IConfiguration.AddAlias(IAlias)</see>
 		/// .
 		/// </summary>
 		/// <param name="alias">the alias to remove</param>
@@ -233,7 +231,7 @@ namespace Db4objects.Db4o.Config
 		/// This setting should be used on both client and server in
 		/// client-server environment.
 		/// </remarks>
-		/// <param name="size">the number of elements held in one BTree node.</param>
+		/// <value>the number of elements held in one BTree node.</value>
 		int BTreeNodeSize
 		{
 			set;
@@ -249,7 +247,7 @@ namespace Db4objects.Db4o.Config
 		/// In client/server environment this setting should be used on both
 		/// client and server.
 		/// </remarks>
-		/// <param name="flag">false to turn callback methods off</param>
+		/// <value>false to turn callback methods off</value>
 		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		bool Callbacks
 		{
@@ -299,7 +297,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Default value:<br />
 		/// <code>true</code>
 		/// </remarks>
-		/// <param name="flag">the desired setting</param>
+		/// <value>the desired setting</value>
 		bool DetectSchemaChanges
 		{
 			set;
@@ -334,7 +332,7 @@ namespace Db4objects.Db4o.Config
 		/// In client/server environment this setting should be used on both
 		/// client and server.<br /><br />
 		/// </remarks>
-		/// <param name="flag">true to throw Exceptions if objects can not be stored.</param>
+		/// <value>true to throw Exceptions if objects can not be stored.</value>
 		bool ExceptionsOnNotStorable
 		{
 			set;
@@ -386,8 +384,8 @@ namespace Db4objects.Db4o.Config
 		/// depending on which information do you want to track (server side provides more
 		/// detailed information).<br /><br />
 		/// </remarks>
-		/// <param name="level">integer from 0 to 3</param>
-		/// <seealso cref="Db4objects.Db4o.Config.ICommonConfiguration.OutStream">TODO: replace int with enumeration
+		/// <value>integer from 0 to 3</value>
+		/// <seealso cref="OutStream(System.IO.TextWriter)">TODO: replace int with enumeration
 		/// 	</seealso>
 		int MessageLevel
 		{
@@ -396,7 +394,7 @@ namespace Db4objects.Db4o.Config
 
 		/// <summary>
 		/// returns an
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass">IObjectClass</see>
+		/// <see cref="IObjectClass">IObjectClass</see>
 		/// object
 		/// to configure the specified class.
 		/// <br /><br />
@@ -408,7 +406,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="clazz">class name, Class object, or example object.<br /><br /></param>
 		/// <returns>
 		/// an instance of an
-		/// <see cref="Db4objects.Db4o.Config.IObjectClass">IObjectClass</see>
+		/// <see cref="IObjectClass">IObjectClass</see>
 		/// object for configuration.
 		/// </returns>
 		IObjectClass ObjectClass(object clazz);
@@ -476,20 +474,17 @@ namespace Db4objects.Db4o.Config
 		/// where db4o is to print its event messages.
 		/// <br /><br />Messages are useful for debugging purposes and for learning
 		/// to understand, how db4o works. The message level can be raised with
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.MessageLevel">Db4objects.Db4o.Config.IConfiguration.MessageLevel
-		/// 	</see>
+		/// <see cref="IConfiguration.MessageLevel(int)">IConfiguration.MessageLevel(int)</see>
 		/// to produce more detailed messages.
 		/// <br /><br />Use <code>outStream(System.out)</code> to print messages to the
 		/// console.<br /><br />
 		/// In client-server environment this setting should be used on the same side
 		/// where
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.MessageLevel">Db4objects.Db4o.Config.IConfiguration.MessageLevel
-		/// 	</see>
+		/// <see cref="IConfiguration.MessageLevel(int)">IConfiguration.MessageLevel(int)</see>
 		/// is used.<br /><br />
 		/// </summary>
-		/// <param name="outStream">the new <code>PrintStream</code> for messages.</param>
-		/// <seealso cref="Db4objects.Db4o.Config.ICommonConfiguration.MessageLevel">Db4objects.Db4o.Config.ICommonConfiguration.MessageLevel
-		/// 	</seealso>
+		/// <value>the new <code>PrintStream</code> for messages.</value>
+		/// <seealso cref="MessageLevel(int)">MessageLevel(int)</seealso>
 		TextWriter OutStream
 		{
 			set;
@@ -538,7 +533,7 @@ namespace Db4objects.Db4o.Config
 		/// Default value:<br />
 		/// <code>true</code>
 		/// </remarks>
-		/// <param name="flag">the desired setting</param>
+		/// <value>the desired setting</value>
 		bool TestConstructors
 		{
 			set;
@@ -548,20 +543,19 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// specifies the global updateDepth.
 		/// <br /><br />see the documentation of
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Store"></see>
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store(object)"></see>
 		/// for further details.<br /><br />
 		/// The value be may be overridden for individual classes.<br /><br />
 		/// The default setting is 1: Only the object passed to
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Store">Db4objects.Db4o.IObjectContainer.Store
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Store(object)">Db4objects.Db4o.IObjectContainer.Store(object)
 		/// 	</see>
 		/// will be updated.<br /><br />
 		/// In client-server environment this setting should be used on both client and
 		/// server sides.<br /><br />
 		/// </remarks>
-		/// <param name="depth">the depth of the desired update.</param>
-		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.UpdateDepth">Db4objects.Db4o.Config.IObjectClass.UpdateDepth
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate">Db4objects.Db4o.Config.IObjectClass.CascadeOnUpdate
+		/// <value>the depth of the desired update.</value>
+		/// <seealso cref="IObjectClass.UpdateDepth(int)">IObjectClass.UpdateDepth(int)</seealso>
+		/// <seealso cref="IObjectClass.CascadeOnUpdate(bool)">IObjectClass.CascadeOnUpdate(bool)
 		/// 	</seealso>
 		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		int UpdateDepth
@@ -579,7 +573,7 @@ namespace Db4objects.Db4o.Config
 		/// references durring memory management at the cost of higher
 		/// memory consumption or by alternatively implementing a manual
 		/// memory management scheme using
-		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Purge">Db4objects.Db4o.Ext.IExtObjectContainer.Purge
+		/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Purge(object)">Db4objects.Db4o.Ext.IExtObjectContainer.Purge(object)
 		/// 	</see>
 		/// <br /><br />Setting the value to <code>false</code> causes db4o to use hard
 		/// references to objects, preventing the garbage collection process
@@ -600,7 +594,7 @@ namespace Db4objects.Db4o.Config
 		/// collection off.
 		/// <br /><br />Ignored on JDKs before 1.2.<br /><br />
 		/// </remarks>
-		/// <param name="milliseconds">the time in milliseconds</param>
+		/// <value>the time in milliseconds</value>
 		int WeakReferenceCollectionInterval
 		{
 			set;

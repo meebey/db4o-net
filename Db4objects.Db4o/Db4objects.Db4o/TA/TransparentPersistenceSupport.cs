@@ -46,7 +46,8 @@ namespace Db4objects.Db4o.TA
 
 		/// <summary>Configures current ObjectContainer to support Transparent Activation and Transparent Persistence
 		/// 	</summary>
-		/// <seealso cref="Db4objects.Db4o.TA.TransparentActivationSupport.Apply"></seealso>
+		/// <seealso cref="TransparentActivationSupport.Apply(Db4objects.Db4o.Internal.IInternalObjectContainer)
+		/// 	"></seealso>
 		public override void Apply(IInternalObjectContainer container)
 		{
 			base.Apply(container);

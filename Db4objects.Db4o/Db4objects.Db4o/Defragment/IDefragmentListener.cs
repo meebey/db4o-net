@@ -6,8 +6,7 @@ namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Listener for defragmentation process messages.</summary>
 	/// <remarks>Listener for defragmentation process messages.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
-	/// 	</seealso>
+	/// <seealso cref="Defragment">Defragment</seealso>
 	public interface IDefragmentListener
 	{
 		/// <summary>

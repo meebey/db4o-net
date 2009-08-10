@@ -14,7 +14,8 @@ namespace Db4objects.Db4o.Typehandlers
 	/// </summary>
 	/// <seealso>
 	/// 
-	/// <see cref="Db4objects.Db4o.Config.IConfiguration.RegisterTypeHandler">Db4objects.Db4o.Config.IConfiguration.RegisterTypeHandler
+	/// <see cref="Db4objects.Db4o.Config.IConfiguration.RegisterTypeHandler(ITypeHandlerPredicate, ITypeHandler4)
+	/// 	">Db4objects.Db4o.Config.IConfiguration.RegisterTypeHandler(ITypeHandlerPredicate, ITypeHandler4)
 	/// 	</see>
 	/// 
 	/// </seealso>

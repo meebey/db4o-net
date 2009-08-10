@@ -11,8 +11,7 @@ namespace Db4objects.Db4o.Defragment
 	/// the defragmentation process. These probably are harmless and the
 	/// result of a user-initiated delete operation.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
-	/// 	</seealso>
+	/// <seealso cref="Defragment">Defragment</seealso>
 	public class DefragmentInfo
 	{
 		private string _msg;

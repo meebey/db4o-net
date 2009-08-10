@@ -19,7 +19,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public static void Main(string[] args)
 		{
-			new ConsoleTestRunner(typeof(IntHandlerUpdateTestCase)).Run();
+			new ConsoleTestRunner(typeof(Db4objects.Db4o.Tests.Common.Handlers.IntHandlerUpdateTestCase
+				)).Run();
 		}
 
 		protected override string TypeName()

@@ -161,7 +161,7 @@ namespace Db4objects.Db4o.Query
 		/// <remarks>set the evaluation mode to object comparison (query by example).</remarks>
 		/// <returns>
 		/// this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// to allow the chaining of method calls.
 		/// </returns>
 		IConstraint ByExample();
@@ -269,7 +269,7 @@ namespace Db4objects.Db4o.Query
 		/// <summary>
 		/// returns the Object the query graph was constrained with to
 		/// create this
-		/// <see cref="Db4objects.Db4o.Query.IConstraint">Db4objects.Db4o.Query.IConstraint</see>
+		/// <see cref="IConstraint">IConstraint</see>
 		/// .
 		/// </summary>
 		/// <returns>Object the constraining object.</returns>

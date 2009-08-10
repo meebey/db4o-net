@@ -18,16 +18,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <summary>
 	/// Holds the tree of
-	/// <see cref="Db4objects.Db4o.Internal.Query.Processor.QCandidate">Db4objects.Db4o.Internal.Query.Processor.QCandidate
-	/// 	</see>
+	/// <see cref="QCandidate">QCandidate</see>
 	/// objects and the list of
-	/// <see cref="Db4objects.Db4o.Internal.Query.Processor.QCon">Db4objects.Db4o.Internal.Query.Processor.QCon
-	/// 	</see>
+	/// <see cref="QCon">QCon</see>
 	/// during query evaluation.
 	/// The query work (adding and removing nodes) happens here.
 	/// Candidates during query evaluation.
-	/// <see cref="Db4objects.Db4o.Internal.Query.Processor.QCandidate">Db4objects.Db4o.Internal.Query.Processor.QCandidate
-	/// 	</see>
+	/// <see cref="QCandidate">QCandidate</see>
 	/// objects are stored in i_root
 	/// </summary>
 	/// <exclude></exclude>

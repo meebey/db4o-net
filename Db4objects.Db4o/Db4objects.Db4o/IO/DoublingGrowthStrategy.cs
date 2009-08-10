@@ -8,9 +8,18 @@ namespace Db4objects.Db4o.IO
 	/// 	</summary>
 	public class DoublingGrowthStrategy : IGrowthStrategy
 	{
-		public virtual long NewSize(long curSize)
+		public virtual long NewSize(long curSize, long requiredSize)
 		{
-			return curSize * 2;
+			if (curSize == 0)
+			{
+				return requiredSize;
+			}
+			long newSize = curSize;
+			while (newSize < requiredSize)
+			{
+				newSize *= 2;
+			}
+			return newSize;
 		}
 	}
 }

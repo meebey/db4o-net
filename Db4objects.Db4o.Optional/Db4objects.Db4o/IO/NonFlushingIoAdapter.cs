@@ -44,18 +44,16 @@ namespace Db4objects.Db4o.IO
 	/// file caching, the OS cache may revert the order of writes to optimize
 	/// file performance.<br /><br />
 	/// db4o enforces the correct write order by calling
-	/// <see cref="Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync">Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync
-	/// 	</see>
+	/// <see cref="Sync()">Sync()</see>
 	/// after every single one of the above steps during transaction
 	/// commit. The calls to
-	/// <see cref="Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync">Db4objects.Db4o.IO.NonFlushingIoAdapter.Sync
-	/// 	</see>
+	/// <see cref="Sync()">Sync()</see>
 	/// have a high performance cost.
 	/// By using this IoAdapter it is possible to omit these calls, at the cost
 	/// of a risc of corrupted database files upon hardware-, power- or operating
 	/// system failures.<br /><br />
 	/// </remarks>
-	public class NonFlushingIoAdapter : Db4objects.Db4o.IO.VanillaIoAdapter
+	public class NonFlushingIoAdapter : VanillaIoAdapter
 	{
 		public NonFlushingIoAdapter(IoAdapter delegateAdapter) : base(delegateAdapter)
 		{
@@ -72,8 +70,8 @@ namespace Db4objects.Db4o.IO
 		public override IoAdapter Open(string path, bool lockFile, long initialLength, bool
 			 readOnly)
 		{
-			return new NonFlushingIoAdapter(_delegate, path, lockFile, initialLength, readOnly
-				);
+			return new Db4objects.Db4o.IO.NonFlushingIoAdapter(_delegate, path, lockFile, initialLength
+				, readOnly);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

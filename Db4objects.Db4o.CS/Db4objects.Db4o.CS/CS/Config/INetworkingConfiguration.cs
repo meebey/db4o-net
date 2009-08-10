@@ -20,16 +20,14 @@ namespace Db4objects.Db4o.CS.Config
 		/// Default value: 600000ms (10 minutes)<br />
 		/// <br />
 		/// It is recommended to use the same values for
-		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket
-		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket</see>
+		/// <see cref="TimeoutClientSocket(int)">TimeoutClientSocket(int)</see>
 		/// and
-		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket
-		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket</see>
+		/// <see cref="TimeoutServerSocket(int)">TimeoutServerSocket(int)</see>
 		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
-		/// <param name="milliseconds">time in milliseconds</param>
+		/// <value>time in milliseconds</value>
 		int TimeoutClientSocket
 		{
 			set;
@@ -56,16 +54,14 @@ namespace Db4objects.Db4o.CS.Config
 		/// Default value: 600000ms (10 minutes)<br />
 		/// <br />
 		/// It is recommended to use the same values for
-		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket
-		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutClientSocket</see>
+		/// <see cref="TimeoutClientSocket(int)">TimeoutClientSocket(int)</see>
 		/// and
-		/// <see cref="Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket
-		/// 	">Db4objects.Db4o.CS.Config.INetworkingConfiguration.TimeoutServerSocket</see>
+		/// <see cref="TimeoutServerSocket(int)">TimeoutServerSocket(int)</see>
 		/// .
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
-		/// <param name="milliseconds">time in milliseconds</param>
+		/// <value>time in milliseconds</value>
 		int TimeoutServerSocket
 		{
 			set;
@@ -87,7 +83,7 @@ namespace Db4objects.Db4o.CS.Config
 		/// - all other platforms: <code>false</code><br /><br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
-		/// <param name="flag">the desired setting</param>
+		/// <value>the desired setting</value>
 		bool SingleThreadedClient
 		{
 			set;
@@ -99,7 +95,7 @@ namespace Db4objects.Db4o.CS.Config
 		/// mode is enabled.<br /><br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
-		/// <param name="flag">false, to turn message batching off.</param>
+		/// <value>false, to turn message batching off.</value>
 		bool BatchMessages
 		{
 			set;
@@ -112,7 +108,7 @@ namespace Db4objects.Db4o.CS.Config
 		/// messages will be sent to server.<br /><br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
-		/// <param name="maxSize"></param>
+		/// <value></value>
 		int MaxBatchQueueSize
 		{
 			set;
@@ -124,7 +120,7 @@ namespace Db4objects.Db4o.CS.Config
 		/// <br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
-		/// <param name="messageRecipient">the MessageRecipient to be used</param>
+		/// <value>the MessageRecipient to be used</value>
 		IMessageRecipient MessageRecipient
 		{
 			set;

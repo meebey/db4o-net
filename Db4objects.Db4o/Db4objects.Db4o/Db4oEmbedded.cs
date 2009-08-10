@@ -100,15 +100,14 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// Same as calling
-		/// <see cref="Db4objects.Db4o.Db4oEmbedded.OpenFile">Db4objects.Db4o.Db4oEmbedded.OpenFile
+		/// <see cref="OpenFile(Db4objects.Db4o.Config.IEmbeddedConfiguration, string)">OpenFile(Db4objects.Db4o.Config.IEmbeddedConfiguration, string)
 		/// 	</see>
 		/// with a fresh configuration (
-		/// <see cref="Db4objects.Db4o.Db4oEmbedded.NewConfiguration">Db4objects.Db4o.Db4oEmbedded.NewConfiguration
-		/// 	</see>
+		/// <see cref="NewConfiguration()">NewConfiguration()</see>
 		/// ).
 		/// </summary>
 		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
-		/// <seealso cref="Db4objects.Db4o.Db4oEmbedded.OpenFile">Db4objects.Db4o.Db4oEmbedded.OpenFile
+		/// <seealso cref="OpenFile(Db4objects.Db4o.Config.IEmbeddedConfiguration, string)">OpenFile(Db4objects.Db4o.Config.IEmbeddedConfiguration, string)
 		/// 	</seealso>
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException"></exception>

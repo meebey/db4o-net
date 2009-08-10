@@ -10,6 +10,7 @@ using Sharpen;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
+	[System.ObsoleteAttribute(@"since 7.11: Use  instead")]
 	public class InMemoryObjectContainer : LocalObjectContainer
 	{
 		private bool _closed = false;

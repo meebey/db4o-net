@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 {
 	/// <summary>n-dimensional array</summary>
 	/// <exclude></exclude>
-	public class MultidimensionalArrayHandler : Db4objects.Db4o.Internal.Handlers.Array.ArrayHandler
+	public class MultidimensionalArrayHandler : ArrayHandler
 	{
 		public MultidimensionalArrayHandler(ITypeHandler4 a_handler, bool a_isPrimitive) : 
 			base(a_handler, a_isPrimitive)
@@ -139,7 +139,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		public override ITypeHandler4 UnversionedTemplate()
 		{
-			return new MultidimensionalArrayHandler();
+			return new Db4objects.Db4o.Internal.Handlers.Array.MultidimensionalArrayHandler();
 		}
 	}
 }

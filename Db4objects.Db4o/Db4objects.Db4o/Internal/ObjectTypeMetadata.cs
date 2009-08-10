@@ -7,7 +7,7 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal
 {
-	public class ObjectTypeMetadata : Db4objects.Db4o.Internal.PrimitiveTypeMetadata
+	public class ObjectTypeMetadata : PrimitiveTypeMetadata
 	{
 		public ObjectTypeMetadata(ObjectContainerBase container, ITypeHandler4 handler, int
 			 id, IReflectClass classReflector) : base(container, handler, id, classReflector

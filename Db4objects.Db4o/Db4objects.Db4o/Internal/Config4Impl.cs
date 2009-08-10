@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.IO;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
@@ -240,7 +239,7 @@ namespace Db4objects.Db4o.Internal
 		/// instances
 		/// added.
 		/// </summary>
-		/// <seealso cref="Db4objects.Db4o.Internal.Config4Impl.Add">Db4objects.Db4o.Internal.Config4Impl.Add
+		/// <seealso cref="Add(Db4objects.Db4o.Config.IConfigurationItem)">Add(Db4objects.Db4o.Config.IConfigurationItem)
 		/// 	</seealso>
 		/// <returns>the iterator</returns>
 		public IEnumerator ConfigurationItemsIterator()
@@ -466,7 +465,7 @@ namespace Db4objects.Db4o.Internal
 			return (IFreespaceFiller)_config.Get(FreespaceFillerKey);
 		}
 
-		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.Config4Impl.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope) instead."
+		[System.ObsoleteAttribute(@"Use GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope) instead."
 			)]
 		public void GenerateUUIDs(int setting)
 		{
@@ -478,7 +477,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(GenerateUuidsKey, scope);
 		}
 
-		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.Internal.Config4Impl.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope) instead."
+		[System.ObsoleteAttribute(@"Use GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope) instead."
 			)]
 		public void GenerateVersionNumbers(int setting)
 		{

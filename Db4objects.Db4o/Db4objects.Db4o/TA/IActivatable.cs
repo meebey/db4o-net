@@ -118,13 +118,14 @@ namespace Db4objects.Db4o.TA
 		/// should be called by every reading field access of an object. <br />
 		/// <br />
 		/// The recommended implementation of this method is to call
-		/// <see cref="Db4objects.Db4o.Activation.IActivator.Activate">Db4objects.Db4o.Activation.IActivator.Activate
+		/// <see cref="Db4objects.Db4o.Activation.IActivator.Activate(Db4objects.Db4o.Activation.ActivationPurpose)
+		/// 	">Db4objects.Db4o.Activation.IActivator.Activate(Db4objects.Db4o.Activation.ActivationPurpose)
 		/// 	</see>
 		/// on the
 		/// <see cref="Db4objects.Db4o.Activation.IActivator">Db4objects.Db4o.Activation.IActivator
 		/// 	</see>
 		/// that was previously passed to
-		/// <see cref="Db4objects.Db4o.TA.IActivatable.Bind">Db4objects.Db4o.TA.IActivatable.Bind
+		/// <see cref="Bind(Db4objects.Db4o.Activation.IActivator)">Bind(Db4objects.Db4o.Activation.IActivator)
 		/// 	</see>
 		/// .
 		/// </remarks>

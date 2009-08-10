@@ -11,8 +11,7 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
-	public abstract class AbstractReadContext : Db4objects.Db4o.Internal.AbstractBufferContext
-		, IInternalReadContext
+	public abstract class AbstractReadContext : AbstractBufferContext, IInternalReadContext
 	{
 		protected IActivationDepth _activationDepth = UnknownActivationDepth.Instance;
 

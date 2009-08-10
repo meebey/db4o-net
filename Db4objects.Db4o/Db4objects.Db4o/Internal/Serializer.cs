@@ -1,6 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 
@@ -21,23 +21,26 @@ namespace Db4objects.Db4o.Internal
 		public static SerializedGraph Marshall(ObjectContainerBase serviceProvider, object
 			 obj)
 		{
-			MemoryFile memoryFile = new MemoryFile();
-			memoryFile.SetInitialSize(223);
-			memoryFile.SetIncrementSizeBy(300);
-			TransportObjectContainer carrier = NewTransportObjectContainer(serviceProvider, memoryFile
+			MemoryBin memoryBin = new MemoryBin(223, GrowthStrategy());
+			TransportObjectContainer carrier = NewTransportObjectContainer(serviceProvider, memoryBin
 				);
 			carrier.ProduceClassMetadata(carrier.Reflector().ForObject(obj));
 			carrier.Store(obj);
 			int id = (int)carrier.GetID(obj);
 			carrier.Close();
-			return new SerializedGraph(id, memoryFile.GetBytes());
+			return new SerializedGraph(id, memoryBin.Data());
+		}
+
+		private static ConstantGrowthStrategy GrowthStrategy()
+		{
+			return new ConstantGrowthStrategy(300);
 		}
 
 		private static TransportObjectContainer NewTransportObjectContainer(ObjectContainerBase
-			 serviceProvider, MemoryFile memoryFile)
+			 serviceProvider, MemoryBin memoryBin)
 		{
 			TransportObjectContainer container = new TransportObjectContainer(serviceProvider
-				, memoryFile);
+				, memoryBin);
 			container.DeferredOpen();
 			return container;
 		}
@@ -61,8 +64,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			MemoryFile memoryFile = new MemoryFile(bytes);
-			TransportObjectContainer carrier = NewTransportObjectContainer(serviceProvider, memoryFile
+			MemoryBin memoryBin = new MemoryBin(bytes, GrowthStrategy());
+			TransportObjectContainer carrier = NewTransportObjectContainer(serviceProvider, memoryBin
 				);
 			object obj = carrier.GetByID(id);
 			carrier.Activate(carrier.Transaction(), obj, new FullActivationDepth());

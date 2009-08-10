@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.IO
 	{
 		/// <summary>
 		/// opens a
-		/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+		/// <see cref="IBin">IBin</see>
 		/// on the specified URI (file system path).
 		/// </summary>
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

@@ -43,8 +43,8 @@ namespace Db4objects.Db4o.IO
 			)
 		{
 			_onDiscardPage = new _IProcedure4_22(this);
-			_producerFromDisk = new _IFunction4_124(this);
-			_producerFromPool = new _IFunction4_133(this);
+			_producerFromDisk = new _IFunction4_128(this);
+			_producerFromPool = new _IFunction4_137(this);
 			_pageSize = pageSize;
 			_pagePool = new SimpleObjectPool(NewPagePool(pageCount));
 			_cache = cache;
@@ -66,6 +66,10 @@ namespace Db4objects.Db4o.IO
 		/// Reads the file into the buffer using pages from cache. If the next page
 		/// is not cached it will be read from the file.
 		/// </remarks>
+		/// <param name="pos">
+		/// 
+		/// start position to read
+		/// </param>
 		/// <param name="buffer">destination buffer</param>
 		/// <param name="length">how many bytes to read</param>
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -96,12 +100,13 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <summary>Writes the buffer to cache using pages</summary>
+		/// <param name="pos">start position to write</param>
 		/// <param name="buffer">source buffer</param>
 		/// <param name="length">how many bytes to write</param>
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public override void Write(long _position, byte[] buffer, int length)
+		public override void Write(long pos, byte[] buffer, int length)
 		{
-			long startAddress = _position;
+			long startAddress = pos;
 			int bytesToWrite = length;
 			int bufferOffset = 0;
 			while (bytesToWrite > 0)
@@ -138,9 +143,9 @@ namespace Db4objects.Db4o.IO
 			return _fileLength;
 		}
 
-		private sealed class _IFunction4_124 : IFunction4
+		private sealed class _IFunction4_128 : IFunction4
 		{
-			public _IFunction4_124(CachingBin _enclosing)
+			public _IFunction4_128(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -159,9 +164,9 @@ namespace Db4objects.Db4o.IO
 
 		internal readonly IFunction4 _producerFromDisk;
 
-		private sealed class _IFunction4_133 : IFunction4
+		private sealed class _IFunction4_137 : IFunction4
 		{
-			public _IFunction4_133(CachingBin _enclosing)
+			public _IFunction4_137(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

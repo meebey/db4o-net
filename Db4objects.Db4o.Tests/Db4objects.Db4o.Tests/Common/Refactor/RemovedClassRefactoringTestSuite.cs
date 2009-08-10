@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 		{
 			return new IFixtureProvider[] { new Db4oFixtureProvider(), new SimpleFixtureProvider
 				(DoDefragment, new object[] { true, false }), new SimpleFixtureProvider(ExcludingReflector
-				, new ExcludingReflector[] { new ExcludingReflector(new Type[] { typeof(RemovedClassRefactoringTestSuite.Super
+				, new object[] { new ExcludingReflector(new Type[] { typeof(RemovedClassRefactoringTestSuite.Super
 				) }), new ExcludingReflector(new Type[] {  }) }), new SimpleFixtureProvider(Indexed
 				, new object[] { true, false }) };
 		}

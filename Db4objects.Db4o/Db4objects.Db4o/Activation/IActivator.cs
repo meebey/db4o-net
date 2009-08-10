@@ -21,11 +21,10 @@ namespace Db4objects.Db4o.Activation
 		/// <remarks>Method to be called to activate the host object.</remarks>
 		/// <param name="purpose">
 		/// for which purpose is the object being activated?
-		/// <see cref="Db4objects.Db4o.Activation.ActivationPurpose.Write">Db4objects.Db4o.Activation.ActivationPurpose.Write
-		/// 	</see>
+		/// <see cref="ActivationPurpose.Write">ActivationPurpose.Write</see>
 		/// will cause the object
 		/// to be saved on the next
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Commit">Db4objects.Db4o.IObjectContainer.Commit
+		/// <see cref="Db4objects.Db4o.IObjectContainer.Commit()">Db4objects.Db4o.IObjectContainer.Commit()
 		/// 	</see>
 		/// operation.
 		/// </param>

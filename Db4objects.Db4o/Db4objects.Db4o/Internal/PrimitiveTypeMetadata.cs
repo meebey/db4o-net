@@ -14,7 +14,7 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class PrimitiveTypeMetadata : Db4objects.Db4o.Internal.ClassMetadata
+	public class PrimitiveTypeMetadata : ClassMetadata
 	{
 		private const int HashcodeForNull = 283636383;
 

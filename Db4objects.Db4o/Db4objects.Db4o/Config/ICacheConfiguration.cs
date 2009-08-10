@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Config
 		/// configures the size of the slot cache to hold a number of
 		/// slots in the cache.
 		/// </remarks>
-		/// <param name="size">the number of slots</param>
+		/// <value>the number of slots</value>
 		int SlotCacheSize
 		{
 			set;

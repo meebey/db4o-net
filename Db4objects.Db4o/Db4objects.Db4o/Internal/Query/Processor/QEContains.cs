@@ -1,9 +1,11 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Internal.Query.Processor;
+
 namespace Db4objects.Db4o.Internal.Query.Processor
 {
 	/// <exclude></exclude>
-	public class QEContains : Db4objects.Db4o.Internal.Query.Processor.QEStringCmp
+	public class QEContains : QEStringCmp
 	{
 		/// <summary>for C/S messaging only</summary>
 		public QEContains()

@@ -8,18 +8,17 @@ namespace Db4objects.Db4o.IO
 	/// <summary>
 	/// Caching storage adapter to cache db4o database data in memory
 	/// until the underlying
-	/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+	/// <see cref="IBin">IBin</see>
 	/// is instructed to flush its
 	/// data when
-	/// <see cref="Db4objects.Db4o.IO.IBin.Sync">Db4objects.Db4o.IO.IBin.Sync</see>
+	/// <see cref="IBin.Sync()">IBin.Sync()</see>
 	/// is called.<br /><br />
 	/// You can override the
-	/// <see cref="Db4objects.Db4o.IO.CachingStorage.NewCache">Db4objects.Db4o.IO.CachingStorage.NewCache
-	/// 	</see>
+	/// <see cref="NewCache()">NewCache()</see>
 	/// method if you want to
 	/// work with a different caching strategy.
 	/// </summary>
-	public class CachingStorage : Db4objects.Db4o.IO.StorageDecorator
+	public class CachingStorage : StorageDecorator
 	{
 		private static int DefaultPageCount = 64;
 
@@ -39,7 +38,7 @@ namespace Db4objects.Db4o.IO
 		/// </remarks>
 		/// <param name="storage">
 		/// the
-		/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+		/// <see cref="IStorage">IStorage</see>
 		/// to be cached.
 		/// </param>
 		public CachingStorage(IStorage storage) : this(storage, DefaultPageCount, DefaultPageSize
@@ -53,7 +52,7 @@ namespace Db4objects.Db4o.IO
 		/// </summary>
 		/// <param name="storage">
 		/// the
-		/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+		/// <see cref="IStorage">IStorage</see>
 		/// to be cached.
 		/// </param>
 		/// <param name="pageCount">the number of pages the cache should use.</param>
@@ -92,7 +91,7 @@ namespace Db4objects.Db4o.IO
 			return CacheFactory.New2QCache(_pageCount);
 		}
 
-		private sealed class NonFlushingCachingBin : Db4objects.Db4o.IO.CachingBin
+		private sealed class NonFlushingCachingBin : CachingBin
 		{
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 			public NonFlushingCachingBin(IBin bin, ICache4 cache, int pageCount, int pageSize

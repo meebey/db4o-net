@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public class TreeIntObject : Db4objects.Db4o.Internal.TreeInt
+	public class TreeIntObject : TreeInt
 	{
 		public object _object;
 
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			int key = a_bytes.ReadInt();
 			object obj = null;
-			if (_object is Db4objects.Db4o.Internal.TreeInt)
+			if (_object is TreeInt)
 			{
 				obj = new TreeReader(a_bytes, (IReadable)_object).Read();
 			}
@@ -66,10 +66,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				if (_object is Db4objects.Db4o.Internal.TreeInt)
+				if (_object is TreeInt)
 				{
-					Db4objects.Db4o.Internal.TreeInt.Write(a_writer, (Db4objects.Db4o.Internal.TreeInt
-						)_object);
+					TreeInt.Write(a_writer, (TreeInt)_object);
 				}
 				else
 				{

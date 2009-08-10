@@ -9,31 +9,29 @@ namespace Db4objects.Db4o
 	/// <remarks>
 	/// the db4o server interface.
 	/// <br /><br />- db4o servers can be opened with
-	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4objects.Db4o.Db4oFactory.OpenServer
+	/// <see cref="Db4oFactory.OpenServer(string, int)">Db4oFactory.OpenServer(string, int)
 	/// 	</see>
 	/// .<br />
 	/// - Direct in-memory connections to servers can be made with
-	/// <see cref="Db4objects.Db4o.IObjectServer.OpenClient">Db4objects.Db4o.IObjectServer.OpenClient
-	/// 	</see>
+	/// <see cref="OpenClient()">OpenClient()</see>
 	/// <br />
 	/// - TCP connections are available through
-	/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
+	/// <see cref="Db4oFactory.OpenClient(string, int, string, string)">Db4oFactory.OpenClient(string, int, string, string)
 	/// 	</see>
 	/// .
 	/// <br /><br />Before connecting clients over TCP, you have to
-	/// <see cref="Db4objects.Db4o.IObjectServer.GrantAccess">Db4objects.Db4o.IObjectServer.GrantAccess
-	/// 	</see>
+	/// <see cref="GrantAccess(string, string)">GrantAccess(string, string)</see>
 	/// to the username and password combination
 	/// that you want to use.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenServer">Db4o.openServer</seealso>
+	/// <seealso cref="Db4oFactory.OpenServer(string, int)">Db4o.openServer</seealso>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectServer">ExtObjectServer for extended functionality
 	/// 	</seealso>
 	public interface IObjectServer : System.IDisposable
 	{
 		/// <summary>
 		/// closes the
-		/// <see cref="Db4objects.Db4o.IObjectServer"></see>
+		/// <see cref="IObjectServer"></see>
 		/// and writes all cached data.
 		/// <br /><br />
 		/// </summary>
@@ -45,11 +43,11 @@ namespace Db4objects.Db4o
 
 		/// <summary>
 		/// returns an
-		/// <see cref="Db4objects.Db4o.IObjectServer"></see>
+		/// <see cref="IObjectServer"></see>
 		/// with extended functionality.
 		/// <br /><br />Use this method as a convenient accessor to extended methods.
 		/// Every
-		/// <see cref="Db4objects.Db4o.IObjectServer"></see>
+		/// <see cref="IObjectServer"></see>
 		/// can be casted to an
 		/// <see cref="Db4objects.Db4o.Ext.IExtObjectServer">Db4objects.Db4o.Ext.IExtObjectServer
 		/// 	</see>
@@ -76,7 +74,7 @@ namespace Db4objects.Db4o
 		/// as the server. Since an embedded client can use direct communication, without
 		/// an in-between socket connection, performance will be better than a client
 		/// opened with
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
+		/// <see cref="Db4oFactory.OpenClient(string, int, string, string)">Db4oFactory.OpenClient(string, int, string, string)
 		/// 	</see>
 		/// <br /><br />Every client has it's own transaction and uses it's own cache
 		/// for it's own version of all peristent objects.

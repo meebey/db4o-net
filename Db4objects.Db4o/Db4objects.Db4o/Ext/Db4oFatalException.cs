@@ -1,11 +1,12 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o.Ext
 {
 	[System.Serializable]
-	public class Db4oFatalException : Db4objects.Db4o.Ext.Db4oException
+	public class Db4oFatalException : Db4oException
 	{
 		public Db4oFatalException() : base()
 		{

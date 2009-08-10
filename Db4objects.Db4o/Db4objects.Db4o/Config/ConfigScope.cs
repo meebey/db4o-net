@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
+
 namespace Db4objects.Db4o.Config
 {
 	/// <summary>
@@ -9,9 +11,9 @@ namespace Db4objects.Db4o.Config
 	/// - enabled individually for a specified class; <br />
 	/// - disabled.<br /><br />
 	/// </summary>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs
+	/// <seealso cref="IConfiguration.GenerateUUIDs(ConfigScope)">IConfiguration.GenerateUUIDs(ConfigScope)
 	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers
+	/// <seealso cref="IConfiguration.GenerateVersionNumbers(ConfigScope)">IConfiguration.GenerateVersionNumbers(ConfigScope)
 	/// 	</seealso>
 	[System.Serializable]
 	public sealed class ConfigScope
@@ -66,7 +68,7 @@ namespace Db4objects.Db4o.Config
 		/// false if disabled, true if globally enabled, default
 		/// value otherwise
 		/// </returns>
-		public bool ApplyConfig(bool defaultValue)
+		public bool ApplyConfig(TernaryBool defaultValue)
 		{
 			switch (_value)
 			{
@@ -77,12 +79,12 @@ namespace Db4objects.Db4o.Config
 
 				case GloballyId:
 				{
-					return true;
+					return !defaultValue.DefiniteNo();
 				}
 
 				default:
 				{
-					return defaultValue;
+					return defaultValue.DefiniteYes();
 					break;
 				}
 			}

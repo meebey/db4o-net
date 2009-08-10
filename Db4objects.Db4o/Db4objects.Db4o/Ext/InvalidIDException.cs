@@ -15,9 +15,9 @@ namespace Db4objects.Db4o.Ext
 	/// This exception is thrown when the supplied object ID
 	/// is incorrect (outside the scope of the database IDs).
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.Bind">Db4objects.Db4o.Ext.IExtObjectContainer.Bind
+	/// <seealso cref="IExtObjectContainer.Bind(object, long)">IExtObjectContainer.Bind(object, long)
 	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.GetByID">Db4objects.Db4o.Ext.IExtObjectContainer.GetByID
+	/// <seealso cref="IExtObjectContainer.GetByID(long)">IExtObjectContainer.GetByID(long)
 	/// 	</seealso>
 	[System.Serializable]
 	public class InvalidIDException : Db4oRecoverableException

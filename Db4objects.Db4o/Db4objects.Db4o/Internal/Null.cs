@@ -9,7 +9,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class Null : IIndexable4, IPreparedComparison
 	{
-		public static readonly Null Instance = new Null();
+		public static readonly Db4objects.Db4o.Internal.Null Instance = new Db4objects.Db4o.Internal.Null
+			();
 
 		private Null()
 		{
@@ -63,7 +64,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					return 0;
 				}
-				if (obj is Null)
+				if (obj is Db4objects.Db4o.Internal.Null)
 				{
 					return 0;
 				}

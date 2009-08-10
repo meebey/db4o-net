@@ -4,8 +4,7 @@ namespace Db4objects.Db4o.Events
 {
 	/// <summary>Argument for events related to cancellable actions.</summary>
 	/// <remarks>Argument for events related to cancellable actions.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-	/// 	</seealso>
+	/// <seealso cref="IEventRegistry">IEventRegistry</seealso>
 	public interface ICancellableEventArgs
 	{
 		/// <summary>Queries if the action was already cancelled by some event listener.</summary>

@@ -7,7 +7,7 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class Hashtable4 : Db4objects.Db4o.Foundation.HashtableBase, IDeepClone, IMap4
+	public class Hashtable4 : HashtableBase, IDeepClone, IMap4
 	{
 		public Hashtable4(int size) : base(size)
 		{
@@ -24,7 +24,8 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object DeepClone(object obj)
 		{
-			return DeepCloneInternal(new Hashtable4((IDeepClone)null), obj);
+			return DeepCloneInternal(new Db4objects.Db4o.Foundation.Hashtable4((IDeepClone)null
+				), obj);
 		}
 
 		public virtual void ForEachKeyForIdentity(IVisitor4 visitor, object obj)
@@ -136,28 +137,26 @@ namespace Db4objects.Db4o.Foundation
 
 		/// <summary>
 		/// Iterates through all the
-		/// <see cref="Db4objects.Db4o.Foundation.IEntry4">entries</see>
+		/// <see cref="IEntry4">entries</see>
 		/// .
 		/// </summary>
 		/// <returns>
 		/// 
-		/// <see cref="Db4objects.Db4o.Foundation.IEntry4">Db4objects.Db4o.Foundation.IEntry4
-		/// 	</see>
+		/// <see cref="IEntry4">IEntry4</see>
 		/// iterator
 		/// </returns>
-		/// <seealso cref="Db4objects.Db4o.Foundation.HashtableBase.Values">Db4objects.Db4o.Foundation.HashtableBase.Values
-		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Foundation.HashtableBase.Keys">
+		/// <seealso cref="HashtableBase.Values()">HashtableBase.Values()</seealso>
+		/// <seealso cref="HashtableBase.Keys()">
 		/// #see
-		/// <see cref="Db4objects.Db4o.Foundation.HashtableBase.ValuesIterator">Db4objects.Db4o.Foundation.HashtableBase.ValuesIterator
-		/// 	</see>
+		/// <see cref="HashtableBase.ValuesIterator()">HashtableBase.ValuesIterator()</see>
 		/// </seealso>
 		public virtual IEnumerator Iterator()
 		{
 			return HashtableIterator();
 		}
 
-		protected virtual Hashtable4 DeepCloneInternal(Hashtable4 ret, object obj)
+		protected virtual Db4objects.Db4o.Foundation.Hashtable4 DeepCloneInternal(Db4objects.Db4o.Foundation.Hashtable4
+			 ret, object obj)
 		{
 			ret._mask = _mask;
 			ret._maximumSize = _maximumSize;

@@ -14,6 +14,11 @@ namespace Db4objects.Db4o.IO
 
 		private IGrowthStrategy _growthStrategy;
 
+		public MemoryBin(int initialSize, IGrowthStrategy growthStrategy) : this(new byte
+			[initialSize], growthStrategy)
+		{
+		}
+
 		public MemoryBin(byte[] bytes, IGrowthStrategy growthStrategy)
 		{
 			_bytes = bytes;
@@ -80,11 +85,10 @@ namespace Db4objects.Db4o.IO
 		{
 			if (pos + length > _bytes.Length)
 			{
-				long newSize = _growthStrategy.NewSize(_bytes.Length);
-				if (pos + length > newSize)
-				{
-					newSize = pos + length;
-				}
+				long newSize = _growthStrategy.NewSize(_bytes.Length, pos + length);
+				//			if (pos + length > newSize) {
+				//				newSize = pos + length;
+				//			}
 				byte[] temp = new byte[(int)newSize];
 				System.Array.Copy(_bytes, 0, temp, 0, _length);
 				_bytes = temp;

@@ -4,7 +4,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal
 {
-	public sealed class InterfaceTypeHandler : Db4objects.Db4o.Internal.OpenTypeHandler
+	public sealed class InterfaceTypeHandler : OpenTypeHandler
 	{
 		public InterfaceTypeHandler(ObjectContainerBase container) : base(container)
 		{
@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override bool Equals(object obj)
 		{
-			return obj is InterfaceTypeHandler;
+			return obj is Db4objects.Db4o.Internal.InterfaceTypeHandler;
 		}
 	}
 }

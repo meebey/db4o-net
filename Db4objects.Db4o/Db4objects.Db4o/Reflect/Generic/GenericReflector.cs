@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 	/// ObjectContainer is opened. All subsequent reflector
 	/// calls are routed through this interface.<br /><br />
 	/// An instance of GenericReflector can be obtained through
-	/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Reflector">Db4objects.Db4o.Ext.IExtObjectContainer.Reflector
+	/// <see cref="Db4objects.Db4o.Ext.IExtObjectContainer.Reflector()">Db4objects.Db4o.Ext.IExtObjectContainer.Reflector()
 	/// 	</see>
 	/// .<br /><br />
 	/// GenericReflector keeps list of known classes in memory.

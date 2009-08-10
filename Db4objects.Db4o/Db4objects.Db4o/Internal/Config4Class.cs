@@ -21,9 +21,11 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ExceptionalFieldsKey = new KeySpec(null);
 
-		private static readonly KeySpec GenerateUuidsKey = new KeySpec(false);
+		private static readonly KeySpec GenerateUuidsKey = new KeySpec(TernaryBool.Unspecified
+			);
 
-		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(false);
+		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(TernaryBool
+			.Unspecified);
 
 		/// <summary>
 		/// We are running into cyclic dependancies on reading the PBootRecord
@@ -139,12 +141,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void GenerateUUIDs(bool setting)
 		{
-			_config.Put(GenerateUuidsKey, setting);
+			_config.Put(GenerateUuidsKey, TernaryBool.ForBoolean(setting));
 		}
 
 		public virtual void GenerateVersionNumbers(bool setting)
 		{
-			_config.Put(GenerateVersionNumbersKey, setting);
+			_config.Put(GenerateVersionNumbersKey, TernaryBool.ForBoolean(setting));
 		}
 
 		public virtual IObjectTranslator GetTranslator()
@@ -312,14 +314,14 @@ namespace Db4objects.Db4o.Internal
 			return _configImpl;
 		}
 
-		internal virtual bool GenerateUUIDs()
+		internal virtual TernaryBool GenerateUUIDs()
 		{
-			return _config.GetAsBoolean(GenerateUuidsKey);
+			return (TernaryBool)_config.Get(GenerateUuidsKey);
 		}
 
-		internal virtual bool GenerateVersionNumbers()
+		internal virtual TernaryBool GenerateVersionNumbers()
 		{
-			return _config.GetAsBoolean(GenerateVersionNumbersKey);
+			return (TernaryBool)_config.Get(GenerateVersionNumbersKey);
 		}
 
 		internal virtual void MaintainMetaClass(bool flag)

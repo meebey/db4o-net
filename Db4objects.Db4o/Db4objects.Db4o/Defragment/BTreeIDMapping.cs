@@ -10,8 +10,7 @@ namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>BTree mapping for IDs during a defragmentation run.</summary>
 	/// <remarks>BTree mapping for IDs during a defragmentation run.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Defragment.Defragment">Db4objects.Db4o.Defragment.Defragment
-	/// 	</seealso>
+	/// <seealso cref="Defragment">Defragment</seealso>
 	public class BTreeIDMapping : AbstractContextIDMapping
 	{
 		private string _fileName;

@@ -26,8 +26,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="applicationObject">the Object to be translated</param>
 		/// <returns>
 		/// return the object to store.<br />It needs to be of the class
-		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator.StoredClass">Db4objects.Db4o.Config.IObjectTranslator.StoredClass
-		/// 	</see>
+		/// <see cref="StoredClass()">StoredClass()</see>
 		/// .
 		/// </returns>
 		object OnStore(IObjectContainer container, object applicationObject);
@@ -44,7 +43,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>return the Class you are converting to.</remarks>
 		/// <returns>
 		/// the Class of the object you are returning with the method
-		/// <see cref="Db4objects.Db4o.Config.IObjectTranslator.OnStore">Db4objects.Db4o.Config.IObjectTranslator.OnStore
+		/// <see cref="OnStore(Db4objects.Db4o.IObjectContainer, object)">OnStore(Db4objects.Db4o.IObjectContainer, object)
 		/// 	</see>
 		/// </returns>
 		Type StoredClass();

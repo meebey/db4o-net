@@ -7,7 +7,8 @@ namespace Db4objects.Db4o.Marshall
 {
 	/// <summary>
 	/// this interface is passed to internal class
-	/// <see cref="com.db4o.internal.TypeHandler4">com.db4o.internal.TypeHandler4</see>
+	/// <see cref="Db4objects.Db4o.Typehandlers.ITypeHandler4">Db4objects.Db4o.Typehandlers.ITypeHandler4
+	/// 	</see>
 	/// when instantiating objects.
 	/// </summary>
 	public interface IReadContext : IContext, IReadBuffer
@@ -25,7 +26,8 @@ namespace Db4objects.Db4o.Marshall
 
 		/// <summary>
 		/// reads sub-objects, in cases where the
-		/// <see cref="com.db4o.internal.TypeHandler4">com.db4o.internal.TypeHandler4</see>
+		/// <see cref="Db4objects.Db4o.Typehandlers.ITypeHandler4">Db4objects.Db4o.Typehandlers.ITypeHandler4
+		/// 	</see>
 		/// is known.
 		/// </summary>
 		object ReadObject(ITypeHandler4 handler);

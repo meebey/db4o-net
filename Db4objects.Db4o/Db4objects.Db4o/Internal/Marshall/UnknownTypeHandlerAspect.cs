@@ -5,7 +5,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
-	public class UnknownTypeHandlerAspect : Db4objects.Db4o.Internal.FieldMetadata
+	public class UnknownTypeHandlerAspect : FieldMetadata
 	{
 		public UnknownTypeHandlerAspect(ClassMetadata containingClass, string name) : base
 			(containingClass, name)

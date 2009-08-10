@@ -10,8 +10,7 @@ namespace Db4objects.Db4o.IO
 	/// Each class that adds functionality to a Bin must
 	/// extend this class to allow db4o to access the
 	/// delegate instance with
-	/// <see cref="Db4objects.Db4o.IO.StorageDecorator.Decorate">Db4objects.Db4o.IO.StorageDecorator.Decorate
-	/// 	</see>
+	/// <see cref="StorageDecorator.Decorate(IBin)">StorageDecorator.Decorate(IBin)</see>
 	/// .
 	/// </remarks>
 	public class BinDecorator : IBin
@@ -22,7 +21,7 @@ namespace Db4objects.Db4o.IO
 		/// <remarks>Default constructor.</remarks>
 		/// <param name="bin">
 		/// the
-		/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+		/// <see cref="IBin">IBin</see>
 		/// that is to be wrapped.
 		/// </param>
 		public BinDecorator(IBin bin)
@@ -32,7 +31,7 @@ namespace Db4objects.Db4o.IO
 
 		/// <summary>
 		/// closes the BinDecorator and the underlying
-		/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+		/// <see cref="IBin">IBin</see>
 		/// .
 		/// </summary>
 		public virtual void Close()
@@ -40,32 +39,32 @@ namespace Db4objects.Db4o.IO
 			_bin.Close();
 		}
 
-		/// <seealso cref="Db4objects.Db4o.IO.IBin.Length"></seealso>
+		/// <seealso cref="IBin.Length()"></seealso>
 		public virtual long Length()
 		{
 			return _bin.Length();
 		}
 
-		/// <seealso cref="Db4objects.Db4o.IO.IBin.Read">Db4objects.Db4o.IO.IBin.Read</seealso>
+		/// <seealso cref="IBin.Read(long, byte[], int)">IBin.Read(long, byte[], int)</seealso>
 		public virtual int Read(long position, byte[] buffer, int bytesToRead)
 		{
 			return _bin.Read(position, buffer, bytesToRead);
 		}
 
-		/// <seealso cref="Db4objects.Db4o.IO.IBin.Sync">Db4objects.Db4o.IO.IBin.Sync</seealso>
+		/// <seealso cref="IBin.Sync()">IBin.Sync()</seealso>
 		public virtual void Sync()
 		{
 			_bin.Sync();
 		}
 
-		/// <seealso cref="Db4objects.Db4o.IO.IBin.SyncRead">Db4objects.Db4o.IO.IBin.SyncRead
+		/// <seealso cref="IBin.SyncRead(long, byte[], int)">IBin.SyncRead(long, byte[], int)
 		/// 	</seealso>
 		public virtual int SyncRead(long position, byte[] bytes, int bytesToRead)
 		{
 			return _bin.SyncRead(position, bytes, bytesToRead);
 		}
 
-		/// <seealso cref="Db4objects.Db4o.IO.IBin.Write">Db4objects.Db4o.IO.IBin.Write</seealso>
+		/// <seealso cref="IBin.Write(long, byte[], int)">IBin.Write(long, byte[], int)</seealso>
 		public virtual void Write(long position, byte[] bytes, int bytesToWrite)
 		{
 			_bin.Write(position, bytes, bytesToWrite);

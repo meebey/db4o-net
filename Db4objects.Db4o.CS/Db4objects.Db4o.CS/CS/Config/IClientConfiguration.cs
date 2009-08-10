@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.CS.Config
 		/// Sets the number of IDs to be pre-allocated in the database for new
 		/// objects created on the client.
 		/// </remarks>
-		/// <param name="prefetchIDCount">The number of IDs to be prefetched</param>
+		/// <value>The number of IDs to be prefetched</value>
 		int PrefetchIDCount
 		{
 			set;
@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.CS.Config
 
 		/// <summary>Sets the number of objects to be prefetched for an ObjectSet.</summary>
 		/// <remarks>Sets the number of objects to be prefetched for an ObjectSet.</remarks>
-		/// <param name="prefetchObjectCount">The number of objects to be prefetched</param>
+		/// <value>The number of objects to be prefetched</value>
 		int PrefetchObjectCount
 		{
 			set;
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.CS.Config
 
 		/// <summary>Sets the depth to which prefetched objects will be activated.</summary>
 		/// <remarks>Sets the depth to which prefetched objects will be activated.</remarks>
-		/// <param name="value"></param>
+		/// <value></value>
 		int PrefetchDepth
 		{
 			set;

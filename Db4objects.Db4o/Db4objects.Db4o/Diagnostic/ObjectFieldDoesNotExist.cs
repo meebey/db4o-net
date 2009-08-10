@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Diagnostic
 {
 	/// <summary>
 	/// Diagnostic if
-	/// <see cref="Db4objects.Db4o.Config.IObjectClass.ObjectField">Db4objects.Db4o.Config.IObjectClass.ObjectField
+	/// <see cref="Db4objects.Db4o.Config.IObjectClass.ObjectField(string)">Db4objects.Db4o.Config.IObjectClass.ObjectField(string)
 	/// 	</see>
 	/// was called on a
 	/// field that does not exist.

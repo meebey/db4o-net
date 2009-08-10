@@ -20,5 +20,10 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			return new Db4oSolo();
 		}
+
+		public static Db4oInMemory NewInMemory()
+		{
+			return new Db4oInMemory();
+		}
 	}
 }

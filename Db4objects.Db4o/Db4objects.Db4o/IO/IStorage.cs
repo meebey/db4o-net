@@ -6,15 +6,15 @@ namespace Db4objects.Db4o.IO
 {
 	/// <summary>
 	/// Base interface for Storage adapters that open a
-	/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+	/// <see cref="IBin">IBin</see>
 	/// to store db4o database data to.
 	/// </summary>
-	/// <seealso cref="Db4objects.Db4o.Config.IFileConfiguration.Storage"></seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IFileConfiguration.Storage(IStorage)"></seealso>
 	public interface IStorage
 	{
 		/// <summary>
 		/// opens a
-		/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+		/// <see cref="IBin">IBin</see>
 		/// to store db4o database data.
 		/// </summary>
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

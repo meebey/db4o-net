@@ -11,8 +11,7 @@ namespace Db4objects.Db4o.Events
 {
 	/// <summary>
 	/// Provides an interface for getting an
-	/// <see cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-	/// 	</see>
+	/// <see cref="IEventRegistry">IEventRegistry</see>
 	/// from an
 	/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
 	/// .
@@ -21,8 +20,7 @@ namespace Db4objects.Db4o.Events
 	{
 		/// <summary>
 		/// Returns an
-		/// <see cref="Db4objects.Db4o.Events.IEventRegistry">Db4objects.Db4o.Events.IEventRegistry
-		/// 	</see>
+		/// <see cref="IEventRegistry">IEventRegistry</see>
 		/// for registering events with the specified container.
 		/// </summary>
 		public static IEventRegistry ForObjectContainer(IObjectContainer objectContainer)

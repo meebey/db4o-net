@@ -7,9 +7,11 @@ namespace Db4objects.Db4o.Config
 {
 	/// <summary>factory to open C/S server and client implementations.</summary>
 	/// <remarks>factory to open C/S server and client implementations.</remarks>
-	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenClient">Db4objects.Db4o.Db4oFactory.OpenClient
+	/// <seealso cref="Db4oFactory.OpenClient(IConfiguration, string, int, string, string, INativeSocketFactory)
+	/// 	">Db4oFactory.OpenClient(IConfiguration, string, int, string, string, INativeSocketFactory)
 	/// 	</seealso>
-	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenServer"></seealso>
+	/// <seealso cref="Db4oFactory.OpenServer(IConfiguration, string, int, INativeSocketFactory)
+	/// 	"></seealso>
 	public interface IClientServerFactory
 	{
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

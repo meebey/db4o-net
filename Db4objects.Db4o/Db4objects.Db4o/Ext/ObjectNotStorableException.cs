@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Ext
 	/// this Exception is thrown, if objects can not be stored and if
 	/// db4o is configured to throw Exceptions on storage failures.
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable">Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable
-	/// 	</seealso>
+	/// <seealso cref="Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable(bool)
+	/// 	">Db4objects.Db4o.Config.IConfiguration.ExceptionsOnNotStorable(bool)</seealso>
 	[System.Serializable]
 	public class ObjectNotStorableException : Db4oRecoverableException
 	{

@@ -4,14 +4,13 @@ using Db4objects.Db4o.Tests.Common.Sampledata;
 
 namespace Db4objects.Db4o.Tests.Common.Sampledata
 {
-	public class MoleculeData : Db4objects.Db4o.Tests.Common.Sampledata.AtomData
+	public class MoleculeData : AtomData
 	{
 		public MoleculeData()
 		{
 		}
 
-		public MoleculeData(Db4objects.Db4o.Tests.Common.Sampledata.AtomData child) : base
-			(child)
+		public MoleculeData(AtomData child) : base(child)
 		{
 		}
 
@@ -19,14 +18,13 @@ namespace Db4objects.Db4o.Tests.Common.Sampledata
 		{
 		}
 
-		public MoleculeData(Db4objects.Db4o.Tests.Common.Sampledata.AtomData child, string
-			 name) : base(child, name)
+		public MoleculeData(AtomData child, string name) : base(child, name)
 		{
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (obj is MoleculeData)
+			if (obj is Db4objects.Db4o.Tests.Common.Sampledata.MoleculeData)
 			{
 				return base.Equals(obj);
 			}

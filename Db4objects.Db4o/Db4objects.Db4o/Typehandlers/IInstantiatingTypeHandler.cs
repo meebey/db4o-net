@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Typehandlers
 		/// types that means their complete state.
 		/// Mutable state (only allowed in reference types) must be handled
 		/// during
-		/// <see cref="ReferenceTypeHandler#writeActivation(WriteContext)">ReferenceTypeHandler#writeActivation(WriteContext)
+		/// <see cref="IReferenceTypeHandler.Activate(Db4objects.Db4o.Marshall.IReferenceActivationContext)
+		/// 	">IReferenceTypeHandler.Activate(Db4objects.Db4o.Marshall.IReferenceActivationContext)
 		/// 	</see>
 		/// </remarks>
 		/// <param name="context"></param>

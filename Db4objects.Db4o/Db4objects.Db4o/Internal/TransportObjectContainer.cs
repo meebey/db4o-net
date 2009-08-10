@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Slots;
@@ -20,16 +21,20 @@ namespace Db4objects.Db4o.Internal
 	/// MetaInformationCaches
 	/// </summary>
 	/// <exclude></exclude>
-	public class TransportObjectContainer : InMemoryObjectContainer
+	public class TransportObjectContainer : LocalObjectContainer
 	{
 		private readonly ObjectContainerBase _parent;
 
-		public TransportObjectContainer(ObjectContainerBase parent, MemoryFile memoryFile
-			) : base(parent.Config(), memoryFile, DeferredOpenMode)
+		private readonly MemoryBin _memoryBin;
+
+		public TransportObjectContainer(ObjectContainerBase parent, MemoryBin memoryFile)
+			 : base(parent.Config())
 		{
+			_memoryBin = memoryFile;
 			_parent = parent;
 			_lock = parent.Lock();
 			_showInternalClasses = parent._showInternalClasses;
+			Open();
 		}
 
 		protected override void Initialize1(IConfiguration config)
@@ -81,7 +86,7 @@ namespace Db4objects.Db4o.Internal
 			return Converter.Version;
 		}
 
-		protected override void DropReferences()
+		protected virtual void DropReferences()
 		{
 			_config = null;
 		}
@@ -234,6 +239,119 @@ namespace Db4objects.Db4o.Internal
 				obj = _parent.GetByID(null, oi._id);
 			}
 			return obj;
+		}
+
+		public virtual void DeferredOpen()
+		{
+			Open();
+		}
+
+		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
+		protected sealed override void OpenImpl()
+		{
+			if (_memoryBin.Length() == 0)
+			{
+				ConfigureNewFile();
+				CommitTransaction();
+				WriteHeader(false, false);
+			}
+			else
+			{
+				ReadThis();
+			}
+		}
+
+		/// <exception cref="System.NotSupportedException"></exception>
+		public override void Backup(IStorage targetStorage, string path)
+		{
+			throw new NotSupportedException();
+		}
+
+		public override void BlockSize(int size)
+		{
+		}
+
+		// do nothing, blocksize is always 1
+		protected override void CloseSystemTransaction()
+		{
+		}
+
+		// do nothing
+		protected override void FreeInternalResources()
+		{
+		}
+
+		// nothing to do here
+		protected override void ShutdownDataStorage()
+		{
+			DropReferences();
+		}
+
+		public override long FileLength()
+		{
+			return _memoryBin.Length();
+		}
+
+		public override string FileName()
+		{
+			return "Memory File";
+		}
+
+		protected override bool HasShutDownHook()
+		{
+			return false;
+		}
+
+		public sealed override bool NeedsLockFileThread()
+		{
+			return false;
+		}
+
+		public override void ReadBytes(byte[] bytes, int address, int length)
+		{
+			try
+			{
+				_memoryBin.Read(address, bytes, length);
+			}
+			catch (Exception e)
+			{
+				Exceptions4.ThrowRuntimeException(13, e);
+			}
+		}
+
+		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
+			length)
+		{
+			ReadBytes(bytes, address + addressOffset, length);
+		}
+
+		public override void SyncFiles()
+		{
+		}
+
+		public override void WriteBytes(ByteArrayBuffer buffer, int address, int addressOffset
+			)
+		{
+			_memoryBin.Write(address + addressOffset, buffer._buffer, buffer.Length());
+		}
+
+		public override void OverwriteDeletedBytes(int a_address, int a_length)
+		{
+		}
+
+		public override void Reserve(int byteCount)
+		{
+			throw new NotSupportedException();
+		}
+
+		public override byte BlockSize()
+		{
+			return 1;
+		}
+
+		protected override void FatalStorageShutdown()
+		{
+			ShutdownDataStorage();
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Config
 		/// - <b>Snapshot</b> mode<br />
 		/// - <b>Lazy</b> mode<br /><br />
 		/// In <b>Immediate</b> mode, a query will be fully evaluated when
-		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute()">Db4objects.Db4o.Query.IQuery.Execute()
 		/// 	</see>
 		/// 
 		/// is called. The complete
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Config
 		/// of all matching IDs is
 		/// generated immediately.<br /><br />
 		/// In <b>Snapshot</b> mode, the
-		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute()">Db4objects.Db4o.Query.IQuery.Execute()
 		/// 	</see>
 		/// call will trigger all index
 		/// processing immediately. A snapshot of the current state of all relevant indexes
@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IObjectSet">Db4objects.Db4o.IObjectSet</see>
 		/// .<br /><br />
 		/// In <b>Lazy</b> mode, the
-		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute()">Db4objects.Db4o.Query.IQuery.Execute()
 		/// 	</see>
 		/// call will only create an Iterator
 		/// against the best index found. Further query processing (including all index
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Config
 		/// be used on the server side.<br /><br />
 		/// <b>Lazy</b> mode<br />
 		/// <b>+</b> The call to
-		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute">Db4objects.Db4o.Query.IQuery.Execute
+		/// <see cref="Db4objects.Db4o.Query.IQuery.Execute()">Db4objects.Db4o.Query.IQuery.Execute()
 		/// 	</see>
 		/// will return very fast. First results can be
 		/// made available to the application before the query is fully processed.<br />
@@ -97,7 +97,8 @@ namespace Db4objects.Db4o.Config
 		/// will require the query
 		/// processor to create a snapshot or to evaluate the query fully. An example of such
 		/// a call is
-		/// <see cref="Db4objects.Db4o.IObjectSet.Count">Db4objects.Db4o.IObjectSet.Count</see>
+		/// <see cref="Db4objects.Db4o.IObjectSet.Count()">Db4objects.Db4o.IObjectSet.Count()
+		/// 	</see>
 		/// .
 		/// <br /><br />
 		/// The default query evaluation mode is <b>Immediate</b> mode.
@@ -109,29 +110,24 @@ namespace Db4objects.Db4o.Config
 		/// <b>Snapshot</b> mode to avoid side effects from other transactions.
 		/// <br /><br />
 		/// To change the evaluationMode, pass any of the three static
-		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode">Db4objects.Db4o.Config.QueryEvaluationMode
-		/// 	</see>
+		/// <see cref="QueryEvaluationMode">QueryEvaluationMode</see>
 		/// constants from the
-		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode">Db4objects.Db4o.Config.QueryEvaluationMode
-		/// 	</see>
+		/// <see cref="QueryEvaluationMode">QueryEvaluationMode</see>
 		/// class to this method:<br />
 		/// -
-		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.Immediate">Db4objects.Db4o.Config.QueryEvaluationMode.Immediate
-		/// 	</see>
+		/// <see cref="QueryEvaluationMode.Immediate">QueryEvaluationMode.Immediate</see>
 		/// <br />
 		/// -
-		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.Snapshot">Db4objects.Db4o.Config.QueryEvaluationMode.Snapshot
-		/// 	</see>
+		/// <see cref="QueryEvaluationMode.Snapshot">QueryEvaluationMode.Snapshot</see>
 		/// <br />
 		/// -
-		/// <see cref="Db4objects.Db4o.Config.QueryEvaluationMode.Lazy">Db4objects.Db4o.Config.QueryEvaluationMode.Lazy
-		/// 	</see>
+		/// <see cref="QueryEvaluationMode.Lazy">QueryEvaluationMode.Lazy</see>
 		/// <br /><br />
 		/// This setting must be issued from the client side.
 		/// </remarks>
 		void EvaluationMode(QueryEvaluationMode mode);
 
-		/// <seealso cref="Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode">Db4objects.Db4o.Config.IQueryConfiguration.EvaluationMode
+		/// <seealso cref="EvaluationMode(QueryEvaluationMode)">EvaluationMode(QueryEvaluationMode)
 		/// 	</seealso>
 		/// <returns>the currently configured query evaluation mode</returns>
 		QueryEvaluationMode EvaluationMode();

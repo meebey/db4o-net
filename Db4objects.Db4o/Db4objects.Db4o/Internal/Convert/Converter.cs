@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Convert
 			return Instance().RunConversions(stage);
 		}
 
-		private static Converter _instance;
+		private static Db4objects.Db4o.Internal.Convert.Converter _instance;
 
 		private IDictionary _conversions;
 
@@ -36,11 +36,11 @@ namespace Db4objects.Db4o.Internal.Convert
 			CommonConversions.Register(this);
 		}
 
-		public static Converter Instance()
+		public static Db4objects.Db4o.Internal.Convert.Converter Instance()
 		{
 			if (_instance == null)
 			{
-				_instance = new Converter();
+				_instance = new Db4objects.Db4o.Internal.Convert.Converter();
 			}
 			return _instance;
 		}

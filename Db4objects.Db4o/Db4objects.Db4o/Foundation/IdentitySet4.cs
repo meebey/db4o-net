@@ -8,7 +8,7 @@ using Sharpen;
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class IdentitySet4 : Db4objects.Db4o.Foundation.HashtableBase, IEnumerable
+	public class IdentitySet4 : HashtableBase, IEnumerable
 	{
 		public IdentitySet4()
 		{

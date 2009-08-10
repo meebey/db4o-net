@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Config
 	/// Client/Server setup.
 	/// </remarks>
 	/// <since>7.5</since>
-	/// <seealso cref="Db4objects.Db4o.Config.IFileConfigurationProvider.File">Db4objects.Db4o.Config.IFileConfigurationProvider.File
+	/// <seealso cref="IFileConfigurationProvider.File()">IFileConfigurationProvider.File()
 	/// 	</seealso>
 	public interface IFileConfiguration
 	{
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Config
 		/// client-server environment in most cases it means that the setting
 		/// should be used on the server side.
 		/// </remarks>
-		/// <param name="bytes">the size in bytes from 1 to 127</param>
+		/// <value>the size in bytes from 1 to 127</value>
 		int BlockSize
 		{
 			set;
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Config
 		/// aware that a high setting will require allocating memory for
 		/// this byte array.
 		/// </remarks>
-		/// <param name="bytes">amount of bytes</param>
+		/// <value>amount of bytes</value>
 		int DatabaseGrowthSize
 		{
 			set;
@@ -94,8 +94,8 @@ namespace Db4objects.Db4o.Config
 		/// configures db4o to generate UUIDs for stored objects.
 		/// This setting should be used when the database is first created.<br /><br />
 		/// </remarks>
-		/// <param name="setting">the scope for UUID generation: disabled, generate for all classes, or configure individually
-		/// 	</param>
+		/// <value>the scope for UUID generation: disabled, generate for all classes, or configure individually
+		/// 	</value>
 		ConfigScope GenerateUUIDs
 		{
 			set;
@@ -106,8 +106,8 @@ namespace Db4objects.Db4o.Config
 		/// configures db4o to generate version numbers for stored objects.
 		/// This setting should be used when the database is first created.
 		/// </remarks>
-		/// <param name="setting">the scope for version number generation: disabled, generate for all classes, or configure individually
-		/// 	</param>
+		/// <value>the scope for version number generation: disabled, generate for all classes, or configure individually
+		/// 	</value>
 		ConfigScope GenerateVersionNumbers
 		{
 			set;
@@ -123,7 +123,7 @@ namespace Db4objects.Db4o.Config
 		/// with a native library, mirrored write to two files, encryption or
 		/// read-on-write fail-safety control.<br /><br />
 		/// </remarks>
-		/// <param name="storage">- the storage</param>
+		/// <value>- the storage</value>
 		/// <seealso cref="Db4objects.Db4o.IO.FileStorage">Db4objects.Db4o.IO.FileStorage</seealso>
 		/// <seealso cref="Db4objects.Db4o.IO.CachingStorage">Db4objects.Db4o.IO.CachingStorage
 		/// 	</seealso>
@@ -179,7 +179,7 @@ namespace Db4objects.Db4o.Config
 		/// In client-server environment this setting should be used on the server side. <br /><br />
 		/// Default configuration: 0<br /><br />
 		/// </remarks>
-		/// <param name="byteCount">the number of bytes to reserve</param>
+		/// <value>the number of bytes to reserve</value>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		/// <exception cref="System.NotSupportedException"></exception>
 		long ReserveStorageSpace
@@ -198,7 +198,7 @@ namespace Db4objects.Db4o.Config
 		/// In client-server environment this setting should be used on the
 		/// server side. <br /><br />
 		/// </remarks>
-		/// <param name="path">the path to be used</param>
+		/// <value>the path to be used</value>
 		/// <exception cref="System.IO.IOException"></exception>
 		string BlobPath
 		{
@@ -209,8 +209,8 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// turns readOnly mode on and off.
 		/// <br /><br />This method configures the mode in which subsequent calls to
-		/// <see cref="Db4objects.Db4o.Db4oEmbedded.OpenFile">Db4objects.Db4o.Db4oEmbedded.OpenFile
-		/// 	</see>
+		/// <see cref="Db4objects.Db4o.Db4oEmbedded.OpenFile(IEmbeddedConfiguration, string)"
+		/// 	>Db4objects.Db4o.Db4oEmbedded.OpenFile(IEmbeddedConfiguration, string)</see>
 		/// 
 		/// will open files.
 		/// <br /><br />Readonly mode allows to open an unlimited number of reading
@@ -219,13 +219,13 @@ namespace Db4objects.Db4o.Config
 		/// In client-server environment this setting should be used
 		/// ONLY on client side.<br /><br />
 		/// </remarks>
-		/// <param name="flag">
+		/// <value>
 		/// <code>true</code> for configuring readOnly mode for subsequent
 		/// calls to
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile">Db4o.openFile()</see>
+		/// <see cref="Db4oFactory.OpenFile(string)">Db4o.openFile()</see>
 		/// .
 		/// TODO: this is rather embedded + client than base?
-		/// </param>
+		/// </value>
 		bool ReadOnly
 		{
 			set;
@@ -245,7 +245,7 @@ namespace Db4objects.Db4o.Config
 		/// Use this method with care as a last resort to get data out of a
 		/// corrupted database.
 		/// </remarks>
-		/// <param name="flag"><code>true</code> to turn recover mode on.</param>
+		/// <value><code>true</code> to turn recover mode on.</value>
 		bool RecoveryMode
 		{
 			set;

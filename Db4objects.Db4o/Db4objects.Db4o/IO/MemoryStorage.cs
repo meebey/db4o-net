@@ -7,13 +7,13 @@ using Db4objects.Db4o.IO;
 namespace Db4objects.Db4o.IO
 {
 	/// <summary>
-	/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+	/// <see cref="IStorage">IStorage</see>
 	/// implementation that produces
-	/// <see cref="Db4objects.Db4o.IO.IBin">Db4objects.Db4o.IO.IBin</see>
+	/// <see cref="IBin">IBin</see>
 	/// instances
 	/// that operate in memory.
 	/// Use this
-	/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+	/// <see cref="IStorage">IStorage</see>
 	/// to work with db4o as an in-memory database.
 	/// </summary>
 	public class MemoryStorage : IStorage

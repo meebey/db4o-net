@@ -12,14 +12,14 @@ namespace Db4objects.Db4o.Messaging
 	/// http://developer.db4o.com/Resources/view.aspx/Reference/Client-Server/Messaging<br />
 	/// http://developer.db4o.com/Resources/view.aspx/Reference/Client-Server/Remote_Code_Execution<br /><br />
 	/// <b>See Also:</b><br />
-	/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.GetMessageSender">Db4objects.Db4o.Config.IClientServerConfiguration.GetMessageSender
+	/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.GetMessageSender()">Db4objects.Db4o.Config.IClientServerConfiguration.GetMessageSender()
 	/// 	</see>
 	/// ,<br />
-	/// <see cref="Db4objects.Db4o.Messaging.IMessageRecipient">Db4objects.Db4o.Messaging.IMessageRecipient
-	/// 	</see>
+	/// <see cref="IMessageRecipient">IMessageRecipient</see>
 	/// ,<br />
-	/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.SetMessageRecipient"
-	/// 	>Db4objects.Db4o.Config.IClientServerConfiguration.SetMessageRecipient</see>
+	/// <see cref="Db4objects.Db4o.Config.IClientServerConfiguration.SetMessageRecipient(IMessageRecipient)
+	/// 	">Db4objects.Db4o.Config.IClientServerConfiguration.SetMessageRecipient(IMessageRecipient)
+	/// 	</see>
 	/// </remarks>
 	public interface IMessageSender
 	{

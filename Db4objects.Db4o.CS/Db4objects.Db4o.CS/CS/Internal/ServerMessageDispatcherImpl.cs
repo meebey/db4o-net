@@ -227,7 +227,8 @@ namespace Db4objects.Db4o.CS.Internal
 					{
 						Sharpen.Runtime.PrintStackTrace(exc);
 						Write(Msg.Error);
-						return true;
+						FatalShutDownServer(exc);
+						return false;
 					}
 					try
 					{
@@ -245,14 +246,30 @@ namespace Db4objects.Db4o.CS.Internal
 					((IServerSideMessage)message).ProcessAtServer();
 					return true;
 				}
+				catch (Db4oRecoverableException exc)
+				{
+					Sharpen.Runtime.PrintStackTrace(exc);
+					return true;
+				}
 				catch (Exception exc)
 				{
 					Sharpen.Runtime.PrintStackTrace(exc);
+					FatalShutDownServer(exc);
 				}
 			}
 			return false;
 		}
 
+		private void FatalShutDownServer(Exception exc)
+		{
+			//		try {
+			_server.Close(ShutdownMode.Fatal(exc));
+		}
+
+		//		}
+		//		catch(RuntimeException recExc) {
+		//			recExc.printStackTrace();
+		//		}
 		private void WriteException(Msg message, Exception exc)
 		{
 			if (!(message is IMessageWithResponse))

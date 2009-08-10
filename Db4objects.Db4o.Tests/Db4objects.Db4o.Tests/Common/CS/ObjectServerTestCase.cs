@@ -79,6 +79,31 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			private readonly ArrayList connections;
 		}
 
+		public virtual void TestServerClosedEvent()
+		{
+			BooleanByRef receivedEvent = new BooleanByRef(false);
+			IObjectServerEvents events = (IObjectServerEvents)server;
+			events.Closed += new System.EventHandler<ServerClosedEventArgs>(new _IEventListener4_64
+				(receivedEvent).OnEvent);
+			server.Close();
+			Assert.IsTrue(receivedEvent.value);
+		}
+
+		private sealed class _IEventListener4_64
+		{
+			public _IEventListener4_64(BooleanByRef receivedEvent)
+			{
+				this.receivedEvent = receivedEvent;
+			}
+
+			public void OnEvent(object sender, ServerClosedEventArgs args)
+			{
+				receivedEvent.value = true;
+			}
+
+			private readonly BooleanByRef receivedEvent;
+		}
+
 		private IEnumerator ServerMessageDispatchers()
 		{
 			return ((ObjectServerImpl)server).IterateDispatchers();

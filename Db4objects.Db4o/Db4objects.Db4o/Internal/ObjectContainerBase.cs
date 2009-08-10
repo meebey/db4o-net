@@ -518,7 +518,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// should never happen - just to make compiler happy
-		private void FatalShutdown(Exception origExc)
+		public virtual void FatalShutdown(Exception origExc)
 		{
 			try
 			{

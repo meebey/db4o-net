@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
@@ -9,8 +10,7 @@ using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.CS.Internal.Config
 {
-	public class ClientConfigurationImpl : Db4objects.Db4o.CS.Internal.Config.NetworkingConfigurationProviderImpl
-		, IClientConfiguration
+	public class ClientConfigurationImpl : NetworkingConfigurationProviderImpl, IClientConfiguration
 	{
 		public ClientConfigurationImpl(Config4Impl config) : base(config)
 		{

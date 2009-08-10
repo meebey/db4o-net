@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Ext
 	/// <br /><br />Every db4o
 	/// <see cref="Db4objects.Db4o.IObjectSet">IObjectSet</see>
 	/// always is an ExtObjectSet so a cast is possible.<br /><br />
-	/// <see cref="Db4objects.Db4o.IObjectSet.Ext">Db4objects.Db4o.IObjectSet.Ext</see>
+	/// <see cref="Db4objects.Db4o.IObjectSet.Ext()">Db4objects.Db4o.IObjectSet.Ext()</see>
 	/// is a convenient method to perform the cast.<br /><br />
 	/// The ObjectSet functionality is split to two interfaces to allow newcomers to
 	/// focus on the essential methods.
@@ -24,9 +24,9 @@ namespace Db4objects.Db4o.Ext
 		/// returns an array of internal IDs that correspond to the contained objects.
 		/// <br /><br />
 		/// </remarks>
-		/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.GetID">Db4objects.Db4o.Ext.IExtObjectContainer.GetID
+		/// <seealso cref="IExtObjectContainer.GetID(object)">IExtObjectContainer.GetID(object)
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer.GetByID">Db4objects.Db4o.Ext.IExtObjectContainer.GetByID
+		/// <seealso cref="IExtObjectContainer.GetByID(long)">IExtObjectContainer.GetByID(long)
 		/// 	</seealso>
 		long[] GetIDs();
 

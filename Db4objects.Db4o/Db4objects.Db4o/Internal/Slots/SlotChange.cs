@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.Slots;
 namespace Db4objects.Db4o.Internal.Slots
 {
 	/// <exclude></exclude>
-	public class SlotChange : Db4objects.Db4o.Internal.TreeInt
+	public class SlotChange : TreeInt
 	{
 		private int _action;
 
@@ -33,7 +33,8 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public override object ShallowClone()
 		{
-			SlotChange sc = new SlotChange(0);
+			Db4objects.Db4o.Internal.Slots.SlotChange sc = new Db4objects.Db4o.Internal.Slots.SlotChange
+				(0);
 			sc._action = _action;
 			sc._newSlot = _newSlot;
 			sc._shared = _shared;
@@ -179,7 +180,8 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public override object Read(ByteArrayBuffer reader)
 		{
-			SlotChange change = new SlotChange(reader.ReadInt());
+			Db4objects.Db4o.Internal.Slots.SlotChange change = new Db4objects.Db4o.Internal.Slots.SlotChange
+				(reader.ReadInt());
 			change._newSlot = new Slot(reader.ReadInt(), reader.ReadInt());
 			change.DoSetPointer();
 			return change;

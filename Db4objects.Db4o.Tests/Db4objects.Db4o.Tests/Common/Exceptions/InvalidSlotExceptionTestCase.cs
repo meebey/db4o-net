@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				return new InvalidSlotExceptionTestCase.MockStorage.MockBin(bin);
 			}
 
-			private class MockBin : Db4objects.Db4o.IO.BinDecorator
+			private class MockBin : BinDecorator
 			{
 				private bool _deliverInvalidSlot;
 

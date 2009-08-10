@@ -8,7 +8,7 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers.Versions
 {
-	public class OpenTypeHandler7 : Db4objects.Db4o.Internal.OpenTypeHandler
+	public class OpenTypeHandler7 : OpenTypeHandler
 	{
 		public OpenTypeHandler7(ObjectContainerBase container) : base(container)
 		{

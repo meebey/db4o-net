@@ -12,12 +12,12 @@ namespace Db4objects.Db4o.IO
 	/// Storage adapter that does not pass flush calls
 	/// on to its delegate.
 	/// You can use this
-	/// <see cref="Db4objects.Db4o.IO.IStorage">Db4objects.Db4o.IO.IStorage</see>
+	/// <see cref="IStorage">IStorage</see>
 	/// for improved db4o
 	/// speed at the risk of corrupted database files in
 	/// case of system failure.
 	/// </remarks>
-	public class NonFlushingStorage : Db4objects.Db4o.IO.StorageDecorator
+	public class NonFlushingStorage : StorageDecorator
 	{
 		public NonFlushingStorage(IStorage storage) : base(storage)
 		{
@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.IO
 			return new NonFlushingStorage.NonFlushingBin(storage);
 		}
 
-		private class NonFlushingBin : Db4objects.Db4o.IO.BinDecorator
+		private class NonFlushingBin : BinDecorator
 		{
 			public NonFlushingBin(IBin storage) : base(storage)
 			{

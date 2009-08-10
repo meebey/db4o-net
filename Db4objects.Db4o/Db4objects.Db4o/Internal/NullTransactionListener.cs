@@ -1,13 +1,12 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
-using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal
 {
 	public class NullTransactionListener : ITransactionListener
 	{
-		public static readonly ITransactionListener Instance = new NullTransactionListener
+		public static readonly ITransactionListener Instance = new Db4objects.Db4o.Internal.NullTransactionListener
 			();
 
 		private NullTransactionListener()

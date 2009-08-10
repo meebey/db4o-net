@@ -76,13 +76,18 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual void Close()
 		{
+			Close(ShutdownMode.Normal);
+		}
+
+		public virtual void Close(ShutdownMode mode)
+		{
 			lock (_mainContainer.Lock())
 			{
 				IEnumerator entryIter = _fileName2Container.Iterator();
 				while (entryIter.MoveNext())
 				{
 					IEntry4 hashEntry = (IEntry4)entryIter.Current;
-					((ClientTransactionPool.ContainerCount)hashEntry.Value()).Close();
+					((ClientTransactionPool.ContainerCount)hashEntry.Value()).Close(mode);
 				}
 				_closed = true;
 			}
@@ -146,8 +151,18 @@ namespace Db4objects.Db4o.CS.Internal
 
 			public virtual void Close()
 			{
-				_container.Close();
-				_container = null;
+				Close(ShutdownMode.Normal);
+			}
+
+			public virtual void Close(ShutdownMode mode)
+			{
+				if (!mode.IsFatal())
+				{
+					_container.Close();
+					_container = null;
+					return;
+				}
+				_container.FatalShutdown(((ShutdownMode.FatalMode)mode).Exc());
 			}
 
 			public override int GetHashCode()
