@@ -14,7 +14,7 @@ namespace Sharpen
             }
         }
 
-        public static bool AddAll<T>(ICollection<T> list, System.Collections.IEnumerable added)
+        public static bool AddAll<T>(ICollection<T> list, System.Collections.Generic.IEnumerable<T> added)
         {
             foreach (T o in added)
             {
