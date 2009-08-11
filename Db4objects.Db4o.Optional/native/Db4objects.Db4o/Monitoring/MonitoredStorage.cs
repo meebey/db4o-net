@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Monitoring
         {   
         }
 
-        protected override IBin Decorate(IBin bin)
+        protected override IBin Decorate(BinConfiguration config, IBin bin)
         {
             return new MonitoredBin(bin);
         }
