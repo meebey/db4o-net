@@ -4,7 +4,7 @@ using System.Threading;
 using System.Windows.Browser;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Fixtures;
+using Db4oUnit.Extensions.Extensions;
 
 namespace Db4objects.Db4o.Silverlight.TestStart
 {
@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			try
 			{
 				Type[] testCases = new[] { typeof(Tests.Common.AllTests) };
-				new TestRunner(SoloSuite(testCases)).Run(new SilverlightTestListener(Dispatcher));
+				new TestRunner(SilverlightSuiteSuite(testCases)).Run(new SilverlightTestListener(Dispatcher));
 
 				Complete();
 			}
@@ -41,9 +41,9 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			Dispatcher.BeginInvoke(() => HtmlPage.Window.Eval("appendException(\"" + exception.ToJScriptString() + "\");"));
 		}
 
-		private static Db4oTestSuiteBuilder SoloSuite(params Type[] testCases)
+		private static Db4oTestSuiteBuilder SilverlightSuite(params Type[] testCases)
 		{
-			return new Db4oTestSuiteBuilder(Db4oFixtures.NewSolo(), testCases);
+			return new Db4oTestSuiteBuilder(new SilverlightFixture(), testCases);
 		}
 	}
 }

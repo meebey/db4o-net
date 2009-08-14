@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Sharpen.Lang
 {	
-	public abstract partial class TypeReference
+	public abstract class TypeReference
 	{
 		public static TypeReference FromString(string s)
 		{
@@ -61,7 +61,7 @@ namespace Sharpen.Lang
 		}
 	}
 
-	public class SimpleTypeReference : TypeReference
+	public partial class SimpleTypeReference : TypeReference
 	{
 		protected string _simpleName;
 
@@ -128,7 +128,7 @@ namespace Sharpen.Lang
 		private Assembly ResolveAssembly()
 		{
 #if SILVERLIGHT
-			return RaiseAssemblyResolveEvent(this, _assemblyName.Name);
+			return ResolveAssemblySilverlight();
 #else
 			if (null == _assemblyName.Version)
 			{

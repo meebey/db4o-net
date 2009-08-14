@@ -15,14 +15,5 @@ namespace Db4oUnit.Extensions
 		{
 			return (T) RetrieveOnlyInstance(typeof(T));
 		}
-
-		private void Configure(IDb4oFixture fixture) 
-		{
-			IConfiguration config = fixture.Config();
-#if SILVERLIGHT
-			config.Storage = new IsolatedStorageStorage();
-#endif
-			Configure(config);		
-		}
 	}
 }
