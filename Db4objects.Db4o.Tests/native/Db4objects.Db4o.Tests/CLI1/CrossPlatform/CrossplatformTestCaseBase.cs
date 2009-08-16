@@ -348,9 +348,8 @@ public class ClientCrossPlatform {
 #endif
 	}
 
-	internal class StopServer
+	public class StopServer
 	{
-		public int _id;
 	}
 
 	public class UnoptimizideJoeFinder : Predicate

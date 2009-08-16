@@ -365,7 +365,6 @@ public class StartServer implements MessageRecipient  {
 	}
 
 	public static class StopServer {
-		private int _id;
 	}
 
 	private static class Movies {
