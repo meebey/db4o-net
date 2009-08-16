@@ -2,13 +2,16 @@
 
 using System;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Reflect.Self;
 using Sharpen.Lang;
 #if !SILVERLIGHT
 using Db4objects.Db4o.CS.Internal.Messages;
+using ClassInfo=Db4objects.Db4o.Reflect.Self.ClassInfo;
+using FieldInfo=Db4objects.Db4o.Reflect.Self.FieldInfo;
+
 #endif
 
 namespace Db4objects.Db4o.Config
@@ -18,37 +21,38 @@ namespace Db4objects.Db4o.Config
 		public void Prepare(IConfiguration config)
 		{
 			config.AddAlias(new WildcardAlias("com.db4o.ext.*", "Db4objects.Db4o.Ext.*, Db4objects.Db4o"));
-			config.AddAlias(new TypeAlias("com.db4o.foundation.ChainedRuntimeException", FullTypeNameFor(typeof(Exception))));
+			config.AddAlias(new TypeAlias("com.db4o.foundation.ChainedRuntimeException", FullyQualifiedName(typeof(Exception))));
 
-			config.AddAlias(new TypeAlias("com.db4o.StaticField", FullTypeNameFor(typeof(StaticField))));
-			config.AddAlias(new TypeAlias("com.db4o.StaticClass", FullTypeNameFor(typeof(StaticClass))));
+			config.AddAlias(new TypeAlias("com.db4o.StaticField", FullyQualifiedName(typeof(StaticField))));
+			config.AddAlias(new TypeAlias("com.db4o.StaticClass", FullyQualifiedName(typeof(StaticClass))));
 
-			config.AddAlias(new TypeAlias("com.db4o.query.Evaluation", FullTypeNameFor(typeof(IEvaluation))));
-			config.AddAlias(new TypeAlias("com.db4o.query.Candidate", FullTypeNameFor(typeof(ICandidate))));
+			config.AddAlias(new TypeAlias("com.db4o.query.Evaluation", FullyQualifiedName(typeof(IEvaluation))));
+			config.AddAlias(new TypeAlias("com.db4o.query.Candidate", FullyQualifiedName(typeof(ICandidate))));
 
 			config.AddAlias(new WildcardAlias("com.db4o.internal.query.processor.*", "Db4objects.Db4o.Internal.Query.Processor.*, Db4objects.Db4o"));
 			//config.AddAlias(new WildcardAlias("com.db4o.query.*", "Db4objects.Db4o.Query.*, Db4objects.Db4o"));
 
-			config.AddAlias(new TypeAlias("com.db4o.foundation.Collection4", FullTypeNameFor(typeof(Collection4))));
-			config.AddAlias(new TypeAlias("com.db4o.foundation.List4", FullTypeNameFor(typeof(List4))));
-			config.AddAlias(new TypeAlias("com.db4o.User", FullTypeNameFor(typeof(User))));
+			config.AddAlias(new TypeAlias("com.db4o.foundation.Collection4", FullyQualifiedName(typeof(Collection4))));
+			config.AddAlias(new TypeAlias("com.db4o.foundation.List4", FullyQualifiedName(typeof(List4))));
+			config.AddAlias(new TypeAlias("com.db4o.User", FullyQualifiedName(typeof(User))));
 
 #if !SILVERLIGHT
-			config.AddAlias(new TypeAlias("com.db4o.cs.internal.ClassInfo", FullTypeNameFor(typeof(ClassInfo))));
-			config.AddAlias(new TypeAlias("com.db4o.cs.internal.FieldInfo", FullTypeNameFor(typeof(FieldInfo))));
+			config.AddAlias(new TypeAlias("com.db4o.cs.internal.ClassInfo", FullyQualifiedName(typeof(ClassInfo))));
+			config.AddAlias(new TypeAlias("com.db4o.cs.internal.FieldInfo", FullyQualifiedName(typeof(FieldInfo))));
+			config.AddAlias(new TypeAlias("com.db4o.cs.internal.ClientQQuery", FullyQualifiedName(typeof(ClientQQuery))));
 
-			config.AddAlias(new TypeAlias("com.db4o.cs.internal.messages.MUserMessage$UserMessagePayload", FullTypeNameFor(typeof(MUserMessage.UserMessagePayload))));
-			config.AddAlias(new WildcardAlias("com.db4o.cs.internal.messages.*", "Db4objects.Db4o.Internal.CS.Messages.*, Db4objects.Db4o"));
+			config.AddAlias(new TypeAlias("com.db4o.cs.internal.messages.MUserMessage$UserMessagePayload", FullyQualifiedName(typeof(MUserMessage.UserMessagePayload))));
+			config.AddAlias(new WildcardAlias("com.db4o.cs.internal.messages.*", "Db4objects.Db4o.Internal.CS.Messages.*, Db4objects.Db4o.CS"));
 #endif
 
-			config.AddAlias(new TypeAlias("java.lang.Throwable", FullTypeNameFor(typeof(Exception))));
-			config.AddAlias(new TypeAlias("java.lang.RuntimeException", FullTypeNameFor(typeof(Exception))));
-			config.AddAlias(new TypeAlias("java.lang.Exception", FullTypeNameFor(typeof(Exception))));
+			config.AddAlias(new TypeAlias("java.lang.Throwable", FullyQualifiedName(typeof(Exception))));
+			config.AddAlias(new TypeAlias("java.lang.RuntimeException", FullyQualifiedName(typeof(Exception))));
+			config.AddAlias(new TypeAlias("java.lang.Exception", FullyQualifiedName(typeof(Exception))));
 		}
 
-		private static string FullTypeNameFor(Type type)
+		private static string FullyQualifiedName(Type type)
 		{
-			return TypeReference.FromType(type).GetUnversionedName();
+			return ReflectPlatform.FullyQualifiedName(type);
 		}
 
 		public void Apply(IInternalObjectContainer container)
