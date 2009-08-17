@@ -47,6 +47,9 @@ namespace Db4objects.Db4o.Config
 			config.AddAlias(new TypeAlias("java.lang.Throwable", FullyQualifiedName(typeof(Exception))));
 			config.AddAlias(new TypeAlias("java.lang.RuntimeException", FullyQualifiedName(typeof(Exception))));
 			config.AddAlias(new TypeAlias("java.lang.Exception", FullyQualifiedName(typeof(Exception))));
+			
+
+			config.ObjectClass("java.lang.Class").Translate(new TType());
 		}
 
 		private static string FullyQualifiedName(Type type)
