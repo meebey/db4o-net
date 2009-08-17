@@ -24,10 +24,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				), typeof(CsDeleteReaddTestCase), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase
 				), typeof(ObjectServerTestCase), typeof(PrefetchConfigurationTestCase), typeof(PrimitiveMessageTestCase
 				), typeof(QueryConsistencyTestCase), typeof(SendMessageToClientTestCase), typeof(
-				ServerClosedTestCase), typeof(ServerPortUsedTestCase), typeof(ServerRevokeAccessTestCase
-				), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase), typeof(SetSemaphoreTestCase
-				), typeof(SwitchingFilesFromClientTestCase), typeof(SwitchingFilesFromMultipleClientsTestCase
-				), typeof(SwitchingToFileWithDifferentClassesTestCase) };
+				ServerClosedTestCase), typeof(ServerPortUsedTestCase), typeof(ServerQueryEventsTestCase
+				), typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase
+				), typeof(SetSemaphoreTestCase), typeof(SwitchingFilesFromClientTestCase), typeof(
+				SwitchingFilesFromMultipleClientsTestCase), typeof(SwitchingToFileWithDifferentClassesTestCase
+				) };
 		}
 	}
 }

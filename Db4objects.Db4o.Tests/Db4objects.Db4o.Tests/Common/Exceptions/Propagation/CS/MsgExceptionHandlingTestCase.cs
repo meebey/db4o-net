@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 			{
 			}
 
-			protected override IBin Decorate(IBin bin)
+			protected override IBin Decorate(BinConfiguration config, IBin bin)
 			{
 				MsgExceptionHandlingTestCase.CloseAwareBin decorated = new MsgExceptionHandlingTestCase.CloseAwareBin
 					(this, bin);

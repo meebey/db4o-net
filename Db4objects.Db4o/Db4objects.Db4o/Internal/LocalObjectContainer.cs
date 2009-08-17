@@ -1000,11 +1000,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!clazz.HasClassIndex())
 			{
-				// TODO: If the class does not have an index, we won't be
-				//       able to get objects for it, so why not return an
-				//       empty QueryResult here, to signal that no further
-				//       processing needs to take place?
-				return null;
+				return new IdListQueryResult(query.GetTransaction());
 			}
 			AbstractQueryResult queryResult = NewQueryResult(query.GetTransaction());
 			queryResult.LoadFromClassIndex(clazz);

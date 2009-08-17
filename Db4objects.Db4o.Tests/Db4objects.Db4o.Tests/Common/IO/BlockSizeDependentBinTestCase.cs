@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 				return bin;
 			}
 
-			protected override IBin Decorate(IBin bin)
+			protected override IBin Decorate(BinConfiguration config, IBin bin)
 			{
 				return new BlockSizeDependentBinTestCase.BlockSizeDependentStorage.BlockSizeDependentBin
 					(bin, _blockSize);

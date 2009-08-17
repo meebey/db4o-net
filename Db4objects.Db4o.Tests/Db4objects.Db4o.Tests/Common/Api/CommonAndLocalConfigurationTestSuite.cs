@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			public virtual void Test()
 			{
 				ICommonConfigurationProvider config = ((ICommonConfigurationProvider)Subject());
-				Config4Impl legacy = LegacyFrom(config);
+				Config4Impl legacy = Db4oLegacyConfigurationBridge.LegacyFrom(config);
 				ICommonConfiguration common = config.Common;
 				common.ActivationDepth = 42;
 				Assert.AreEqual(42, legacy.ActivationDepth());
@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				}
 				IFileConfigurationProvider config = ((IFileConfigurationProvider)Subject());
 				IFileConfiguration fileConfig = config.File;
-				Config4Impl legacyConfig = LegacyFrom(config);
+				Config4Impl legacyConfig = Db4oLegacyConfigurationBridge.LegacyFrom(config);
 				fileConfig.BlockSize = 42;
 				Assert.AreEqual(42, legacyConfig.BlockSize());
 				fileConfig.DatabaseGrowthSize = 42;
@@ -222,11 +222,6 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			return new Type[] { typeof(CommonAndLocalConfigurationTestSuite.BaseConfigurationProviderTestUnit
 				), typeof(CommonAndLocalConfigurationTestSuite.LocalConfigurationProviderTestUnit
 				) };
-		}
-
-		private static Config4Impl LegacyFrom(object config)
-		{
-			return ((ILegacyConfigurationProvider)config).Legacy();
 		}
 
 		public static object Subject()

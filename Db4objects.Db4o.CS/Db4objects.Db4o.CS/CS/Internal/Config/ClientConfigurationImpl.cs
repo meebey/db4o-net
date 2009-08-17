@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Config;
@@ -20,8 +19,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		{
 			get
 			{
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				return Legacy().GetMessageSender();
 			}
 		}
 
@@ -30,8 +28,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 			set
 			{
 				int prefetchIDCount = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				Legacy().PrefetchIDCount(prefetchIDCount);
 			}
 		}
 
@@ -40,8 +37,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 			set
 			{
 				int prefetchObjectCount = value;
-				// TODO Auto-generated method stub
-				throw new NotImplementedException();
+				Legacy().PrefetchObjectCount(prefetchObjectCount);
 			}
 		}
 
@@ -49,7 +45,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		{
 			get
 			{
-				return new CommonConfigurationImpl(Legacy());
+				return Db4oLegacyConfigurationBridge.AsCommonConfiguration(Legacy());
 			}
 		}
 

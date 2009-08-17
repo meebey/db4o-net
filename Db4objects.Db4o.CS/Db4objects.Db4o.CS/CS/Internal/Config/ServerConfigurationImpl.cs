@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		{
 			get
 			{
-				return new FileConfigurationImpl(Legacy());
+				return Db4oLegacyConfigurationBridge.AsFileConfiguration(Legacy());
 			}
 		}
 
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		{
 			get
 			{
-				return new CommonConfigurationImpl(Legacy());
+				return Db4oLegacyConfigurationBridge.AsCommonConfiguration(Legacy());
 			}
 		}
 	}

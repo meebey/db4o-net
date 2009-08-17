@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Internal
 			ObjectOnNew(trans, obj);
 			if (!_class.IsPrimitive())
 			{
-				_object = container._references.CreateYapRef(this, obj);
+				_object = container.NewWeakReference(this, obj);
 			}
 			SetStateClean();
 			EndProcessing();
@@ -346,19 +346,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void SetObjectWeak(ObjectContainerBase container, object obj)
 		{
-			if (container._references._weak)
+			if (_object != null)
 			{
-				if (_object != null)
-				{
-					Platform4.KillYapRef(_object);
-				}
-				_object = Platform4.CreateActiveObjectReference(container._references._queue, this
-					, obj);
+				Platform4.KillYapRef(_object);
 			}
-			else
-			{
-				_object = obj;
-			}
+			_object = container.NewWeakReference(this, obj);
 		}
 
 		public virtual void SetObject(object obj)

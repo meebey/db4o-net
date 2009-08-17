@@ -22,7 +22,8 @@ namespace Db4objects.Db4o.Tests.Common.Api
 		protected override Type[] ComposeWith()
 		{
 			return new Type[] { typeof(CommonAndLocalConfigurationTestSuite), typeof(Db4oClientServerTestCase
-				), typeof(Db4oEmbeddedTestCase), typeof(StoreAllTestCase) };
+				), typeof(Db4oEmbeddedTestCase), typeof(EnvironmentConfigurationTestCase), typeof(
+				StoreAllTestCase) };
 		}
 		#endif // !SILVERLIGHT
 	}

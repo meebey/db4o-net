@@ -58,9 +58,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private sealed class _IDeferred_67 : KeySpec.IDeferred
+		private sealed class _IDeferred_68 : KeySpec.IDeferred
 		{
-			public _IDeferred_67()
+			public _IDeferred_68()
 			{
 			}
 
@@ -71,16 +71,16 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_67
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_68
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
 
 		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
 
-		private sealed class _IDeferred_77 : KeySpec.IDeferred
+		private sealed class _IDeferred_78 : KeySpec.IDeferred
 		{
-			public _IDeferred_77()
+			public _IDeferred_78()
 			{
 			}
 
@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_77());
+		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_78());
 
 		private static readonly KeySpec DisableCommitRecoveryKey = new KeySpec(false);
 
@@ -106,6 +106,21 @@ namespace Db4objects.Db4o.Internal
 			(DefaultStringEncoding));
 
 		private static readonly KeySpec EncryptKey = new KeySpec(false);
+
+		private sealed class _IDeferred_96 : KeySpec.IDeferred
+		{
+			public _IDeferred_96()
+			{
+			}
+
+			public object Evaluate()
+			{
+				return new ArrayList();
+			}
+		}
+
+		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_96
+			());
 
 		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
 
@@ -148,9 +163,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchDepthKey = new KeySpec(0);
 
-		private sealed class _IDeferred_133 : KeySpec.IDeferred
+		private sealed class _IDeferred_140 : KeySpec.IDeferred
 		{
-			public _IDeferred_133()
+			public _IDeferred_140()
 			{
 			}
 
@@ -162,7 +177,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_133());
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_140());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -1266,6 +1281,11 @@ namespace Db4objects.Db4o.Internal
 		public int PrefetchDepth()
 		{
 			return _config.GetAsInt(PrefetchDepthKey);
+		}
+
+		public IList EnvironmentContributions()
+		{
+			return (IList)_config.Get(EnvironmentContributionsKey);
 		}
 	}
 }

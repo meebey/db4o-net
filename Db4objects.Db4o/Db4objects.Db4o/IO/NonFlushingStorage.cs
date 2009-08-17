@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.IO
 		{
 		}
 
-		protected override IBin Decorate(IBin storage)
+		protected override IBin Decorate(BinConfiguration config, IBin storage)
 		{
 			return new NonFlushingStorage.NonFlushingBin(storage);
 		}

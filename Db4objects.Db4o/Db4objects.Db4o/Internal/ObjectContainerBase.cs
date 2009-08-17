@@ -20,6 +20,7 @@ using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Threading;
+using Db4objects.Db4o.Internal.Weakref;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Core;
@@ -67,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal int _replicationCallState;
 
-		internal WeakReferenceCollector _references;
+		internal IWeakReferenceSupport _references;
 
 		private NativeQueryHandler _nativeQueryHandler;
 
@@ -105,8 +106,19 @@ namespace Db4objects.Db4o.Internal
 			// weak reference management
 			_lock = new object();
 			_config = (Config4Impl)config;
-			_environment = Environments.NewConventionBasedEnvironment(new object[] { this, config
-				 });
+			_environment = CreateEnvironment(_config);
+		}
+
+		private IEnvironment CreateEnvironment(Config4Impl config)
+		{
+			ArrayList bindings = new ArrayList();
+			Sharpen.Collections.AddAll(bindings, config.EnvironmentContributions());
+			bindings.Add(this);
+			// my(ObjectContainer.class)
+			bindings.Add(config);
+			// my(Configuration.class)
+			return Environments.NewConventionBasedEnvironment(Sharpen.Collections.ToArray(bindings
+				));
 		}
 
 		protected virtual IEnvironment Environment()
@@ -117,12 +129,12 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		protected void Open()
 		{
-			WithEnvironment(new _IRunnable_109(this));
+			WithEnvironment(new _IRunnable_118(this));
 		}
 
-		private sealed class _IRunnable_109 : IRunnable
+		private sealed class _IRunnable_118 : IRunnable
 		{
-			public _IRunnable_109(ObjectContainerBase _enclosing)
+			public _IRunnable_118(ObjectContainerBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -199,13 +211,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				AsTopLevelCall(new _IFunction4_162(this, obj, depth), trans);
+				AsTopLevelCall(new _IFunction4_171(this, obj, depth), trans);
 			}
 		}
 
-		private sealed class _IFunction4_162 : IFunction4
+		private sealed class _IFunction4_171 : IFunction4
 		{
-			public _IFunction4_162(ObjectContainerBase _enclosing, object obj, IActivationDepth
+			public _IFunction4_171(ObjectContainerBase _enclosing, object obj, IActivationDepth
 				 depth)
 			{
 				this._enclosing = _enclosing;
@@ -485,13 +497,13 @@ namespace Db4objects.Db4o.Internal
 					DTrace.Commit.Log();
 				}
 				CheckReadOnly();
-				AsTopLevelCall(new _IFunction4_373(this), trans);
+				AsTopLevelCall(new _IFunction4_382(this), trans);
 			}
 		}
 
-		private sealed class _IFunction4_373 : IFunction4
+		private sealed class _IFunction4_382 : IFunction4
 		{
-			public _IFunction4_373(ObjectContainerBase _enclosing)
+			public _IFunction4_382(ObjectContainerBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -613,13 +625,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				AsTopLevelCall(new _IFunction4_486(this, obj, depth), trans);
+				AsTopLevelCall(new _IFunction4_495(this, obj, depth), trans);
 			}
 		}
 
-		private sealed class _IFunction4_486 : IFunction4
+		private sealed class _IFunction4_495 : IFunction4
 		{
-			public _IFunction4_486(ObjectContainerBase _enclosing, object obj, int depth)
+			public _IFunction4_495(ObjectContainerBase _enclosing, object obj, int depth)
 			{
 				this._enclosing = _enclosing;
 				this.obj = obj;
@@ -695,12 +707,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				GenerateCallIDOnTopLevel();
 			}
-			AsTopLevelCall(new _IFunction4_535(this, @ref, obj, userCall), trans);
+			AsTopLevelCall(new _IFunction4_544(this, @ref, obj, userCall), trans);
 		}
 
-		private sealed class _IFunction4_535 : IFunction4
+		private sealed class _IFunction4_544 : IFunction4
 		{
-			public _IFunction4_535(ObjectContainerBase _enclosing, ObjectReference @ref, object
+			public _IFunction4_544(ObjectContainerBase _enclosing, ObjectReference @ref, object
 				 obj, bool userCall)
 			{
 				this._enclosing = _enclosing;
@@ -859,7 +871,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				ClassMetadata classMetadata = @ref.ClassMetadata();
 				ByRef foundField = new ByRef();
-				classMetadata.TraverseAllAspects(new _TraverseFieldCommand_663(fieldName, foundField
+				classMetadata.TraverseAllAspects(new _TraverseFieldCommand_672(fieldName, foundField
 					));
 				FieldMetadata field = (FieldMetadata)foundField.value;
 				if (field == null)
@@ -882,9 +894,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _TraverseFieldCommand_663 : TraverseFieldCommand
+		private sealed class _TraverseFieldCommand_672 : TraverseFieldCommand
 		{
-			public _TraverseFieldCommand_663(string fieldName, ByRef foundField)
+			public _TraverseFieldCommand_672(string fieldName, ByRef foundField)
 			{
 				this.fieldName = fieldName;
 				this.foundField = foundField;
@@ -992,7 +1004,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void Gc()
 		{
-			_references.PollReferenceQueue();
+			_references.Purge();
 		}
 
 		public IObjectSet QueryByExample(Transaction trans, object template)
@@ -1000,15 +1012,15 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				trans = CheckTransaction(trans);
-				IQueryResult res = ((IQueryResult)AsTopLevelCall(new _IFunction4_780(this, template
+				IQueryResult res = ((IQueryResult)AsTopLevelCall(new _IFunction4_789(this, template
 					), trans));
 				return new ObjectSetFacade(res);
 			}
 		}
 
-		private sealed class _IFunction4_780 : IFunction4
+		private sealed class _IFunction4_789 : IFunction4
 		{
-			public _IFunction4_780(ObjectContainerBase _enclosing, object template)
+			public _IFunction4_789(ObjectContainerBase _enclosing, object template)
 			{
 				this._enclosing = _enclosing;
 				this.template = template;
@@ -1121,14 +1133,14 @@ namespace Db4objects.Db4o.Internal
 
 		public object ReadActivatedObjectNotInCache(Transaction trans, int id)
 		{
-			object obj = AsTopLevelCall(new _IFunction4_862(id), trans);
+			object obj = AsTopLevelCall(new _IFunction4_871(id), trans);
 			ActivatePending(trans);
 			return obj;
 		}
 
-		private sealed class _IFunction4_862 : IFunction4
+		private sealed class _IFunction4_871 : IFunction4
 		{
-			public _IFunction4_862(int id)
+			public _IFunction4_871(int id)
 			{
 				this.id = id;
 			}
@@ -1373,9 +1385,9 @@ namespace Db4objects.Db4o.Internal
 			if (_references != null)
 			{
 				Gc();
-				_references.StopTimer();
+				_references.Stop();
 			}
-			_references = new WeakReferenceCollector(this);
+			_references = WeakReferenceSupportFactory.ForObjectContainer(this);
 			if (HasShutDownHook())
 			{
 				Platform4.AddShutDownHook(this);
@@ -1412,7 +1424,7 @@ namespace Db4objects.Db4o.Internal
 		internal virtual void Initialize2NObjectCarrier()
 		{
 			_classCollection = new ClassMetadataRepository(_systemTransaction);
-			_references.StartTimer();
+			_references.Start();
 		}
 
 		private void InitializePostOpen()
@@ -1592,13 +1604,13 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				CheckClosed();
-				return AsTopLevelCall(new _IFunction4_1246(this, obj, committed, depth), trans);
+				return AsTopLevelCall(new _IFunction4_1255(this, obj, committed, depth), trans);
 			}
 		}
 
-		private sealed class _IFunction4_1246 : IFunction4
+		private sealed class _IFunction4_1255 : IFunction4
 		{
-			public _IFunction4_1246(ObjectContainerBase _enclosing, object obj, bool committed
+			public _IFunction4_1255(ObjectContainerBase _enclosing, object obj, bool committed
 				, IActivationDepth depth)
 			{
 				this._enclosing = _enclosing;
@@ -2002,13 +2014,13 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			CheckReadOnly();
-			return (((int)AsTopLevelSet(new _IFunction4_1563(this, obj, depth, checkJustSet), 
+			return (((int)AsTopLevelSet(new _IFunction4_1572(this, obj, depth, checkJustSet), 
 				trans)));
 		}
 
-		private sealed class _IFunction4_1563 : IFunction4
+		private sealed class _IFunction4_1572 : IFunction4
 		{
-			public _IFunction4_1563(ObjectContainerBase _enclosing, object obj, int depth, bool
+			public _IFunction4_1572(ObjectContainerBase _enclosing, object obj, int depth, bool
 				 checkJustSet)
 			{
 				this._enclosing = _enclosing;
@@ -2391,7 +2403,7 @@ namespace Db4objects.Db4o.Internal
 			_classCollection = null;
 			if (_references != null)
 			{
-				_references.StopTimer();
+				_references.Stop();
 			}
 			_systemTransaction = null;
 			_transaction = null;
@@ -2637,6 +2649,11 @@ namespace Db4objects.Db4o.Internal
 		public virtual IThreadPool4 ThreadPool()
 		{
 			return ((IThreadPool4)Environment().Provide(typeof(IThreadPool4)));
+		}
+
+		public virtual object NewWeakReference(ObjectReference referent, object obj)
+		{
+			return _references.NewWeakReference(referent, obj);
 		}
 
 		public abstract void Activate(object arg1, int arg2);

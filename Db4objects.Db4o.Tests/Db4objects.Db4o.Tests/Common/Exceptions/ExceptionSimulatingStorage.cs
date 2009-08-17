@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			_exceptionFactory = exceptionFactory;
 		}
 
-		protected override IBin Decorate(IBin bin)
+		protected override IBin Decorate(BinConfiguration config, IBin bin)
 		{
 			ResetShutdownState();
 			return new ExceptionSimulatingStorage.ExceptionSimulatingBin(bin, _exceptionFactory

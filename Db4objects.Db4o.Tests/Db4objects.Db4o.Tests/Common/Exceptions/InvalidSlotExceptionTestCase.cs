@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			{
 			}
 
-			protected override IBin Decorate(IBin bin)
+			protected override IBin Decorate(BinConfiguration config, IBin bin)
 			{
 				return new InvalidSlotExceptionTestCase.MockStorage.MockBin(bin);
 			}

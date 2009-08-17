@@ -60,7 +60,7 @@ namespace Db4oUnit.Extensions
 		{
 			IDb4oFixture _fixture = Fixture();
 			_fixture.Clean();
-			Configure(_fixture);
+			Configure(_fixture.Config());
 			_fixture.Open(this);
 			Db4oSetupBeforeStore();
 			Store();
@@ -145,13 +145,13 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunSolo(string testLabelSubstring)
 		{
-			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_131(testLabelSubstring
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_123(testLabelSubstring
 				))).Run();
 		}
 
-		private sealed class _IPredicate4_131 : IPredicate4
+		private sealed class _IPredicate4_123 : IPredicate4
 		{
-			public _IPredicate4_131(string testLabelSubstring)
+			public _IPredicate4_123(string testLabelSubstring)
 			{
 				this.testLabelSubstring = testLabelSubstring;
 			}
@@ -371,12 +371,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(oc, clazz, new _IVisitor4_314(oc));
+			Foreach(oc, clazz, new _IVisitor4_306(oc));
 		}
 
-		private sealed class _IVisitor4_314 : IVisitor4
+		private sealed class _IVisitor4_306 : IVisitor4
 		{
-			public _IVisitor4_314(IExtObjectContainer oc)
+			public _IVisitor4_306(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

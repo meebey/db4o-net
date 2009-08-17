@@ -10,7 +10,7 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Config
 {
-	public class CommonConfigurationImpl : ICommonConfiguration
+	internal class CommonConfigurationImpl : ICommonConfiguration
 	{
 		private readonly Config4Impl _config;
 
@@ -230,6 +230,29 @@ namespace Db4objects.Db4o.Internal.Config
 			 typeHandler)
 		{
 			_config.RegisterTypeHandler(predicate, typeHandler);
+		}
+
+		public virtual IEnvironmentConfiguration Environment
+		{
+			get
+			{
+				return new _IEnvironmentConfiguration_135(this);
+			}
+		}
+
+		private sealed class _IEnvironmentConfiguration_135 : IEnvironmentConfiguration
+		{
+			public _IEnvironmentConfiguration_135(CommonConfigurationImpl _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Add(object service)
+			{
+				this._enclosing._config.EnvironmentContributions().Add(service);
+			}
+
+			private readonly CommonConfigurationImpl _enclosing;
 		}
 	}
 }

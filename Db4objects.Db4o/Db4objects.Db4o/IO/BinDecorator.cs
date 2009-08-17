@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.IO
 	/// Each class that adds functionality to a Bin must
 	/// extend this class to allow db4o to access the
 	/// delegate instance with
-	/// <see cref="StorageDecorator.Decorate(IBin)">StorageDecorator.Decorate(IBin)</see>
+	/// <see cref="StorageDecorator.Decorate(BinConfiguration, IBin)">StorageDecorator.Decorate(BinConfiguration, IBin)
+	/// 	</see>
 	/// .
 	/// </remarks>
 	public class BinDecorator : IBin
@@ -46,9 +47,9 @@ namespace Db4objects.Db4o.IO
 		}
 
 		/// <seealso cref="IBin.Read(long, byte[], int)">IBin.Read(long, byte[], int)</seealso>
-		public virtual int Read(long position, byte[] buffer, int bytesToRead)
+		public virtual int Read(long position, byte[] bytes, int bytesToRead)
 		{
-			return _bin.Read(position, buffer, bytesToRead);
+			return _bin.Read(position, bytes, bytesToRead);
 		}
 
 		/// <seealso cref="IBin.Sync()">IBin.Sync()</seealso>

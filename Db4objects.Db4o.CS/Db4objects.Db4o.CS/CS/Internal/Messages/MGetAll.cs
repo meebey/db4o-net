@@ -4,6 +4,8 @@ using System;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.CS.Internal.Objectexchange;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
@@ -24,14 +26,40 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		private AbstractQueryResult GetAll(QueryEvaluationMode mode)
 		{
-			try
+			return ((AbstractQueryResult)NewQuery(mode).TriggeringQueryEvents(new _IClosure4_24
+				(this, mode)));
+		}
+
+		private sealed class _IClosure4_24 : IClosure4
+		{
+			public _IClosure4_24(MGetAll _enclosing, QueryEvaluationMode mode)
 			{
-				return File().GetAll(Transaction(), mode);
+				this._enclosing = _enclosing;
+				this.mode = mode;
 			}
-			catch (Exception e)
+
+			public object Run()
 			{
+				try
+				{
+					return this._enclosing.File().GetAll(this._enclosing.Transaction(), mode);
+				}
+				catch (Exception e)
+				{
+				}
+				return this._enclosing.NewQueryResult(mode);
 			}
-			return NewQueryResult(mode);
+
+			private readonly MGetAll _enclosing;
+
+			private readonly QueryEvaluationMode mode;
+		}
+
+		private QQuery NewQuery(QueryEvaluationMode mode)
+		{
+			QQuery query = (QQuery)File().Query();
+			query.EvaluationMode(mode);
+			return query;
 		}
 	}
 }

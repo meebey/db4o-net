@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(CLI2.Defrag.DefragUnavailableGenericArgumentTestCase) };
+			return new Type[] { typeof(CLI1.CrossPlatform.AllTests) };
 			return new Type[]
 				{	
 #if CF_3_5

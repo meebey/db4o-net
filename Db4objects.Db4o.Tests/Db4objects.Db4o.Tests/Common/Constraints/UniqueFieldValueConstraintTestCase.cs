@@ -28,12 +28,16 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 
 		public class IHaveNothingToDoWithItemInstances
 		{
-			public static int _constructorCallsCounter = 0;
+			public static int _constructorCallsCounter;
+
+			public IHaveNothingToDoWithItemInstances()
+			{
+				_constructorCallsCounter++;
+			}
 
 			public IHaveNothingToDoWithItemInstances(int value)
 			{
-				_constructorCallsCounter = value == unchecked((int)(0xdb40)) ? 0 : _constructorCallsCounter
-					 + 1;
+				_constructorCallsCounter = 0;
 			}
 		}
 
@@ -58,8 +62,10 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 				), "_str"));
 			config.ObjectClass(typeof(UniqueFieldValueConstraintTestCase.IHaveNothingToDoWithItemInstances
 				)).CallConstructor(true);
+			config.WeakReferences(false);
 		}
 
+		//Constructor calls is reliable only if we don't use WeakReferences.
 		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
@@ -114,14 +120,14 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 
 		private void CommitExpectingViolation()
 		{
-			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_97
+			Assert.Expect(typeof(UniqueFieldValueConstraintViolationException), new _ICodeBlock_104
 				(this));
 			Db().Rollback();
 		}
 
-		private sealed class _ICodeBlock_97 : ICodeBlock
+		private sealed class _ICodeBlock_104 : ICodeBlock
 		{
-			public _ICodeBlock_97(UniqueFieldValueConstraintTestCase _enclosing)
+			public _ICodeBlock_104(UniqueFieldValueConstraintTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

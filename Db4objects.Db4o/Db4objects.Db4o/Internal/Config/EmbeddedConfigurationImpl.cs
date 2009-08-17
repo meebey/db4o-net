@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Config
 		{
 			get
 			{
-				return new CommonConfigurationImpl(_legacy);
+				return Db4oLegacyConfigurationBridge.AsCommonConfiguration(Legacy());
 			}
 		}
 

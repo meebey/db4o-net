@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				this.password = password;
 			}
 
-			protected override IBin Decorate(IBin bin)
+			protected override IBin Decorate(BinConfiguration config, IBin bin)
 			{
 				return new DefragEncryptedFileTestCase.MockStorage.MockBin(bin, password);
 			}

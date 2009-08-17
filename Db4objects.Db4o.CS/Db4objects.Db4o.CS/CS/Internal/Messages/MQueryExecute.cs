@@ -52,9 +52,28 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		private AbstractQueryResult ExecuteFully(QQuery query)
 		{
-			AbstractQueryResult qr = NewQueryResult(query.EvaluationMode());
-			qr.LoadFromQuery(query);
-			return qr;
+			return ((AbstractQueryResult)query.TriggeringQueryEvents(new _IClosure4_35(this, 
+				query)));
+		}
+
+		private sealed class _IClosure4_35 : IClosure4
+		{
+			public _IClosure4_35(MQueryExecute _enclosing, QQuery query)
+			{
+				this._enclosing = _enclosing;
+				this.query = query;
+			}
+
+			public object Run()
+			{
+				AbstractQueryResult qr = this._enclosing.NewQueryResult(query.EvaluationMode());
+				qr.LoadFromQuery(query);
+				return qr;
+			}
+
+			private readonly MQueryExecute _enclosing;
+
+			private readonly QQuery query;
 		}
 	}
 }

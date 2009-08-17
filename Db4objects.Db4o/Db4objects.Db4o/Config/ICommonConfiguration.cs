@@ -615,5 +615,13 @@ namespace Db4objects.Db4o.Config
 		/// <param name="typeHandler">to be used for the classes that match the predicate.</param>
 		void RegisterTypeHandler(ITypeHandlerPredicate predicate, ITypeHandler4 typeHandler
 			);
+
+		/// <seealso cref="Db4objects.Db4o.Foundation.IEnvironment">Db4objects.Db4o.Foundation.IEnvironment
+		/// 	</seealso>
+		/// <returns></returns>
+		IEnvironmentConfiguration Environment
+		{
+			get;
+		}
 	}
 }

@@ -1166,17 +1166,24 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
+			bool triggerQueryEvents = false;
+			return GetIDsForClass(trans, clazz, triggerQueryEvents);
+		}
+
+		private long[] GetIDsForClass(Transaction trans, ClassMetadata clazz, bool triggerQueryEvents
+			)
+		{
 			MsgD msg = Msg.GetInternalIds.GetWriterForInts(trans, new int[] { clazz.GetID(), 
-				PrefetchDepth(), PrefetchCount() });
+				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_894(this, trans, result));
+			WithEnvironment(new _IRunnable_900(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_894 : IRunnable
+		private sealed class _IRunnable_900 : IRunnable
 		{
-			public _IRunnable_894(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_900(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1198,6 +1205,19 @@ namespace Db4objects.Db4o.CS.Internal
 			private readonly ByRef result;
 		}
 
+		public override IQueryResult ClassOnlyQuery(QQueryBase query, ClassMetadata clazz
+			)
+		{
+			Transaction trans = query.GetTransaction();
+			long[] ids = GetIDsForClass(trans, clazz, true);
+			ClientQueryResult resClient = new ClientQueryResult(trans, ids.Length);
+			for (int i = 0; i < ids.Length; i++)
+			{
+				resClient.Add((int)ids[i]);
+			}
+			return resClient;
+		}
+
 		private long[] ToLongArray(IFixedSizeIntIterator4 idIterator)
 		{
 			long[] ids = new long[idIterator.Size()];
@@ -1217,19 +1237,6 @@ namespace Db4objects.Db4o.CS.Internal
 		internal virtual int PrefetchCount()
 		{
 			return _config.PrefetchObjectCount();
-		}
-
-		public override IQueryResult ClassOnlyQuery(QQueryBase query, ClassMetadata clazz
-			)
-		{
-			Transaction trans = query.GetTransaction();
-			long[] ids = clazz.GetIDs(trans);
-			ClientQueryResult resClient = new ClientQueryResult(trans, ids.Length);
-			for (int i = 0; i < ids.Length; i++)
-			{
-				resClient.Add((int)ids[i]);
-			}
-			return resClient;
 		}
 
 		public override IQueryResult ExecuteQuery(QQuery query)

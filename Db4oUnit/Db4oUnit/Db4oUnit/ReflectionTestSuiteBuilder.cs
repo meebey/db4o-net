@@ -190,7 +190,7 @@ namespace Db4oUnit
 			}
 			catch (Exception e)
 			{
-				throw new TestException(e);
+				throw new TestException("Failed to instantiate " + clazz, e);
 			}
 		}
 

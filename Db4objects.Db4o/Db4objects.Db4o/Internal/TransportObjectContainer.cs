@@ -7,6 +7,7 @@ using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Internal.Weakref;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Types;
 
@@ -42,7 +43,7 @@ namespace Db4objects.Db4o.Internal
 			_handlers = _parent._handlers;
 			_classCollection = _parent.ClassCollection();
 			_config = _parent.ConfigImpl();
-			_references = new WeakReferenceCollector(this);
+			_references = WeakReferenceSupportFactory.DisabledWeakReferenceSupport();
 			Initialize2();
 		}
 

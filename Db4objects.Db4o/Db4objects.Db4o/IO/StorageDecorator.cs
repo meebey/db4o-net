@@ -28,10 +28,10 @@ namespace Db4objects.Db4o.IO
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual IBin Open(BinConfiguration config)
 		{
-			return Decorate(_storage.Open(config));
+			return Decorate(config, _storage.Open(config));
 		}
 
-		protected virtual IBin Decorate(IBin bin)
+		protected virtual IBin Decorate(BinConfiguration config, IBin bin)
 		{
 			return bin;
 		}

@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.Config
 {
-	public class FileConfigurationImpl : IFileConfiguration
+	internal class FileConfigurationImpl : IFileConfiguration
 	{
 		private readonly Config4Impl _config;
 
