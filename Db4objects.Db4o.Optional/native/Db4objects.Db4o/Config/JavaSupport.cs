@@ -39,7 +39,6 @@ namespace Db4objects.Db4o.Config
 #if !SILVERLIGHT
 			config.AddAlias(new TypeAlias("com.db4o.cs.internal.ClassInfo", FullyQualifiedName(typeof(ClassInfo))));
 			config.AddAlias(new TypeAlias("com.db4o.cs.internal.FieldInfo", FullyQualifiedName(typeof(FieldInfo))));
-			config.AddAlias(new TypeAlias("com.db4o.cs.internal.ClientQQuery", FullyQualifiedName(typeof(ClientQQuery))));
 
 			config.AddAlias(new TypeAlias("com.db4o.cs.internal.messages.MUserMessage$UserMessagePayload", FullyQualifiedName(typeof(MUserMessage.UserMessagePayload))));
 			config.AddAlias(new WildcardAlias("com.db4o.cs.internal.messages.*", "Db4objects.Db4o.Internal.CS.Messages.*, Db4objects.Db4o.CS"));
