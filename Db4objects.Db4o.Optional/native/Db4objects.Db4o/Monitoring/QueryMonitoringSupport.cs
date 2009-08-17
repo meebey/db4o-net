@@ -1,4 +1,4 @@
-/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
+﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
 
 #if !CF && !SILVERLIGHT
 
@@ -10,7 +10,7 @@ using Db4objects.Db4o.Monitoring.Internal;
 
 namespace Db4objects.Db4o.Monitoring
 {
-	public class ObjectMonitoringSupport : IConfigurationItem
+	public class QueryMonitoringSupport : IConfigurationItem
 	{
 		public void Prepare(IConfiguration configuration)
 		{
@@ -18,16 +18,16 @@ namespace Db4objects.Db4o.Monitoring
 
 		public void Apply(IInternalObjectContainer container)
 		{
-			PerformanceCounter storedObjectsPerSec = Db4oPerformanceCounterCategory.CounterForObjectsStoredPerSec();
+			PerformanceCounter queriesPerSec = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(false);
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
-			eventRegistry.Created += delegate
-										{
-											storedObjectsPerSec.Increment();
-										};
+			eventRegistry.QueryFinished += delegate
+			{
+				queriesPerSec.Increment();
+			};
 			eventRegistry.Closing += delegate
-										{
-											storedObjectsPerSec.Dispose();
-										};
+         	{
+         		queriesPerSec.Dispose();
+         	};
 		}
 	}
 }

@@ -30,5 +30,10 @@ namespace Db4oUnit
 				_block();
 			}
 		}
+
+		public static void InRange(double value, double from, double to)
+		{
+			Assert.IsTrue(value >= from && value <= to, string.Format("'{0}' not in range '{1}'..'{2}'", value, from, to));
+		}
 	}
 }

@@ -2,24 +2,22 @@
 
 #if !CF && !SILVERLIGHT
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace Db4objects.Db4o.Monitoring.Internal
 {
-    class Db4oPerformanceCounterCategory
+    public class Db4oPerformanceCounterCategory
     {
-        private const string BytesWrittenPerSec = "bytes written/sec";
+    	public static readonly string CategoryName = "Db4o";
+
+    	private const string BytesWrittenPerSec = "bytes written/sec";
         private const string BytesReadPerSec = "bytes read/sec";
         private const string ObjectsStoredPerSec = "objects stored/sec";
+    	private const string QueriesPerSec = "queries/sec";
 
-        public static void Install()
+    	public static void Install()
         {
-//            PerformanceCounterCategory.Delete("Db4o");
-
-            if (PerformanceCounterCategory.Exists("Db4o"))
+            if (PerformanceCounterCategory.Exists(CategoryName))
                 return;
 
             var collection = new CounterCreationDataCollection
@@ -33,34 +31,44 @@ namespace Db4objects.Db4o.Monitoring.Internal
                                      new CounterCreationData(ObjectsStoredPerSec,
                                                              "Number of objects stored per second.",
                                                              PerformanceCounterType.RateOfCountsPerSecond32),
+									 new CounterCreationData(QueriesPerSec,
+                                                             "Number of queries executed per second.",
+                                                             PerformanceCounterType.RateOfCountsPerSecond32),
                                  };
-            PerformanceCounterCategory.Create("Db4o", "Db4o Performance Counters",
+            PerformanceCounterCategory.Create(CategoryName, "Db4o Performance Counters",
                                                      PerformanceCounterCategoryType.SingleInstance,
                                                      collection);
         }
 
+		public static PerformanceCounter CounterForQueriesPerSec(bool readOnly)
+		{
+			return NewDb4oCounter(QueriesPerSec, readOnly);
+		}
+
         public static PerformanceCounter CounterForBytesReadPerSec()
         {
-            return NewDb4oCounter(BytesReadPerSec);
+            return NewDb4oCounter(BytesReadPerSec, false);
         }
 
         public static PerformanceCounter CounterForBytesWrittenPerSec()
         {
-            return NewDb4oCounter(BytesWrittenPerSec);
+            return NewDb4oCounter(BytesWrittenPerSec, false);
         }
 
         public static PerformanceCounter CounterForObjectsStoredPerSec()
         {
-            return NewDb4oCounter(ObjectsStoredPerSec);
+            return NewDb4oCounter(ObjectsStoredPerSec, false);
         }
        
-        private static PerformanceCounter NewDb4oCounter(string counterName)
+        private static PerformanceCounter NewDb4oCounter(string counterName, bool readOnly)
         {
         	Install();
-            return new PerformanceCounter("Db4o", counterName, false)
-                       {
-                           RawValue = 0
-                       };
+
+        	PerformanceCounter counter = new PerformanceCounter(CategoryName, counterName, readOnly);
+			if (readOnly) return counter;
+
+			counter.RawValue = 0;
+        	return counter;
         }
     }
 }

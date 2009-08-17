@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System.Collections.Generic;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -135,7 +137,11 @@ namespace Db4objects.Db4o.Internal
             if (null == match) throw new ArgumentNullException("match");
             lock (Lock())
             {
-                return GetNativeQueryHandler().Execute(Query(CheckTransaction(trans)), match, comparator);
+            	IQuery query = Query(CheckTransaction(trans));
+				return (IList<Extent>) ((QQuery)query).TriggeringQueryEvents(Closures4.ForDelegate(
+				                                                     	delegate() {
+				                                                     	           	return GetNativeQueryHandler().Execute(query, match, comparator);
+				                                                     	}));
             }
         }
 
