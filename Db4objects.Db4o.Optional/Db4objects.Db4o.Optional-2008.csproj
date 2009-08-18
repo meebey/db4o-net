@@ -66,6 +66,10 @@
       <Project>{FFA59708-14D1-4C22-B9A4-1A389EE796D5}</Project>
       <Name>Db4objects.Db4o.Instrumentation-2008</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Db4objects.Db4o.Linq\Db4objects.Db4o.Linq-2008.csproj">
+      <Project>{23531440-0922-43EB-A483-6592FFC2F093}</Project>
+      <Name>Db4objects.Db4o.Linq-2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-2008.csproj">
       <Project>{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}</Project>
       <Name>Db4objects.Db4o-2008</Name>

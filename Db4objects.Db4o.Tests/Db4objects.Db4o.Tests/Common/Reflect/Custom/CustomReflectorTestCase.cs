@@ -169,8 +169,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 
 		private ClassMetadata ClassMetadataForName(string className)
 		{
-			ObjectContainerBase container = (ObjectContainerBase)_provider.DataContainer(_context
-				);
+			IInternalObjectContainer container = (IInternalObjectContainer)_provider.DataContainer
+				(_context);
 			return container.ClassMetadataForReflectClass(container.Reflector().ForName(className
 				));
 		}

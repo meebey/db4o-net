@@ -101,11 +101,11 @@ namespace Db4objects.Db4o.Internal
 			// for TransportObjectContainer
 			_handlerVersions = new HandlerVersionRegistry(this);
 			_stringIO = BuiltInStringEncoding.StringIoForEncoding(stringEncoding, container.ConfigImpl
-				().StringEncoding());
+				.StringEncoding());
 			_container = container;
 			container._handlers = this;
 			_reflector = reflector;
-			_diagnosticProcessor = container.ConfigImpl().DiagnosticProcessor();
+			_diagnosticProcessor = container.ConfigImpl.DiagnosticProcessor();
 			InitClassReflectors(reflector);
 			_indexes = new SharedIndexedFields();
 			_virtualFields[0] = _indexes._version;
@@ -355,7 +355,7 @@ namespace Db4objects.Db4o.Internal
 			i_encrypt = false;
 			i_encryptor = null;
 			i_lastEncryptorByte = 0;
-			Container().ConfigImpl().OldEncryptionOff();
+			Container().ConfigImpl.OldEncryptionOff();
 		}
 
 		public IReflectClass ClassForID(int id)
@@ -545,7 +545,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return (ITypeHandler4)cachedHandler;
 			}
-			ITypeHandler4 typeHandler = Container().ConfigImpl().TypeHandlerForClass(claxx, HandlerVersion
+			ITypeHandler4 typeHandler = Container().ConfigImpl.TypeHandlerForClass(claxx, HandlerVersion
 				);
 			if (typeHandler is IBuiltinTypeHandler)
 			{
@@ -566,8 +566,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return handler;
 			}
-			return context.Transaction().Container().Handlers().CorrectHandlerVersion(handler
-				, version);
+			return context.Transaction().Container().Handlers.CorrectHandlerVersion(handler, 
+				version);
 		}
 
 		public bool IsTransient(IReflectClass claxx)

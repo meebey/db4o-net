@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		private HandlerRegistry Handlers(IContext context)
 		{
-			return ((IInternalObjectContainer)context.ObjectContainer()).Handlers();
+			return ((IInternalObjectContainer)context.ObjectContainer()).Handlers;
 		}
 
 		public virtual IPreparedComparison PrepareComparison(IContext context, object obj

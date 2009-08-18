@@ -583,7 +583,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal virtual IPreparedComparison PrepareComparison(ObjectContainerBase container
 			, object constraint)
 		{
-			IContext context = container.Transaction().Context();
+			IContext context = container.Transaction.Context();
 			if (_fieldMetadata != null)
 			{
 				return _fieldMetadata.PrepareComparison(context, constraint);

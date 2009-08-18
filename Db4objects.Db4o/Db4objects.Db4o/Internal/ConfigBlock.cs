@@ -133,8 +133,8 @@ namespace Db4objects.Db4o.Internal
 				try
 				{
 					byte[] pwdbytes = new LatinStringIO().Write(fullpwd);
-					ByteArrayBuffer encwriter = new StatefulBuffer(_container.Transaction(), pwdbytes
-						.Length + EncryptionPasswordLength);
+					ByteArrayBuffer encwriter = new StatefulBuffer(_container.Transaction, pwdbytes.Length
+						 + EncryptionPasswordLength);
 					encwriter.Append(pwdbytes);
 					encwriter.Append(new byte[EncryptionPasswordLength]);
 					_container._handlers.Decrypt(encwriter);
@@ -286,15 +286,15 @@ namespace Db4objects.Db4o.Internal
 
 		private Config4Impl ConfigImpl()
 		{
-			return _container.ConfigImpl();
+			return _container.ConfigImpl;
 		}
 
 		public void Write()
 		{
 			TimerFileLock().CheckHeaderLock();
 			AddressChanged(_container.GetSlot(Length).Address());
-			StatefulBuffer writer = _container.GetWriter(_container.Transaction(), _address, 
-				Length);
+			StatefulBuffer writer = _container.GetWriter(_container.Transaction, _address, Length
+				);
 			IntHandler.WriteInt(Length, writer);
 			for (int i = 0; i < 2; i++)
 			{
@@ -326,8 +326,8 @@ namespace Db4objects.Db4o.Internal
 		private void WritePointer()
 		{
 			TimerFileLock().CheckHeaderLock();
-			StatefulBuffer writer = _container.GetWriter(_container.Transaction(), 0, Const4.
-				IdLength);
+			StatefulBuffer writer = _container.GetWriter(_container.Transaction, 0, Const4.IdLength
+				);
 			writer.MoveForward(2);
 			IntHandler.WriteInt(_address, writer);
 			writer.NoXByteCheck();

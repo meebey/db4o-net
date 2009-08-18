@@ -71,9 +71,9 @@ namespace Db4objects.Db4o.Reflect.Generic
 		{
 			lock (_stream.Lock())
 			{
-				if (_stream.Handlers().IsSystemHandler(id))
+				if (_stream.Handlers.IsSystemHandler(id))
 				{
-					return _stream.Handlers().ClassForID(id);
+					return _stream.Handlers.ClassForID(id);
 				}
 				return EnsureClassAvailability(id);
 			}
@@ -292,7 +292,7 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private VirtualFieldMetadata VirtualFieldByName(string fieldName)
 		{
-			return _stream.Handlers().VirtualFieldByName(fieldName);
+			return _stream.Handlers.VirtualFieldByName(fieldName);
 		}
 
 		private Db4objects.Db4o.Internal.Marshall.MarshallerFamily MarshallerFamily()

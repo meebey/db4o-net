@@ -97,7 +97,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// <exception cref="System.Exception"></exception>
 		private IConfiguration ClientConfigFor(IDb4oTestCase testInstance)
 		{
-			if (testInstance is ICustomClientServerConfiguration)
+			if (RequiresCustomConfiguration(testInstance))
 			{
 				IConfiguration customServerConfig = NewConfiguration();
 				((ICustomClientServerConfiguration)testInstance).ConfigureClient(customServerConfig
@@ -138,7 +138,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// <exception cref="System.Exception"></exception>
 		private IConfiguration ServerConfigFor(IDb4oTestCase testInstance)
 		{
-			if (testInstance is ICustomClientServerConfiguration)
+			if (RequiresCustomConfiguration(testInstance))
 			{
 				IConfiguration customServerConfig = NewConfiguration();
 				((ICustomClientServerConfiguration)testInstance).ConfigureServer(customServerConfig
@@ -146,6 +146,19 @@ namespace Db4oUnit.Extensions.Fixtures
 				return customServerConfig;
 			}
 			return CloneConfiguration();
+		}
+
+		private bool RequiresCustomConfiguration(IDb4oTestCase testInstance)
+		{
+			if (EmbeddedClients())
+			{
+				return false;
+			}
+			if (testInstance is ICustomClientServerConfiguration)
+			{
+				return true;
+			}
+			return false;
 		}
 
 		/// <exception cref="System.Exception"></exception>

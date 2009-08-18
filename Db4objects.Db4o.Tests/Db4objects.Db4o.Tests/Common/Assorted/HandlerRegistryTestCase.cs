@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private HandlerRegistry Handlers()
 		{
-			return Stream().Handlers();
+			return Stream().Handlers;
 		}
 
 		public virtual void TestTypeHandlerForID()

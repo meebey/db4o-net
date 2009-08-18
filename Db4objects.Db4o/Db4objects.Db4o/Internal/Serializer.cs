@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 			TransportObjectContainer carrier = NewTransportObjectContainer(serviceProvider, memoryBin
 				);
 			object obj = carrier.GetByID(id);
-			carrier.Activate(carrier.Transaction(), obj, new FullActivationDepth());
+			carrier.Activate(carrier.Transaction, obj, new FullActivationDepth());
 			carrier.Close();
 			return obj;
 		}

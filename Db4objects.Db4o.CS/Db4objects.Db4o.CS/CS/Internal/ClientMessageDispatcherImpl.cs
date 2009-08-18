@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private Db4objects.Db4o.Internal.Transaction Transaction()
 		{
-			return _container.Transaction();
+			return _container.Transaction;
 		}
 	}
 }

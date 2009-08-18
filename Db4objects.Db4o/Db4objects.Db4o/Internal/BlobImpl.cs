@@ -139,7 +139,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			i_length = (int)file.Length();
 			CheckExt(file);
-			if (i_stream.IsClient())
+			if (i_stream.IsClient)
 			{
 				i_file = file;
 				((IBlobTransport)i_stream).ReadBlobFrom(i_trans, this);
@@ -183,7 +183,7 @@ namespace Db4objects.Db4o.Internal
 				i_stream.Activate(i_trans, this, new FixedActivationDepth(2));
 			}
 			string path = ServerPath();
-			i_stream.ConfigImpl().EnsureDirExists(path);
+			i_stream.ConfigImpl.EnsureDirExists(path);
 			if (writeToServer)
 			{
 				if (fileName == null)
@@ -236,12 +236,12 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="System.IO.IOException"></exception>
 		private string ServerPath()
 		{
-			string path = i_stream.ConfigImpl().BlobPath();
+			string path = i_stream.ConfigImpl.BlobPath();
 			if (path == null)
 			{
 				path = "blobs";
 			}
-			i_stream.ConfigImpl().EnsureDirExists(path);
+			i_stream.ConfigImpl.EnsureDirExists(path);
 			return path;
 		}
 
@@ -270,7 +270,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new IOException(Db4objects.Db4o.Internal.Messages.Get(43));
 			}
-			if (i_stream.IsClient())
+			if (i_stream.IsClient)
 			{
 				i_file = file;
 				i_status = Status.Queued;
@@ -294,7 +294,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new IOException(Db4objects.Db4o.Internal.Messages.Get(43));
 			}
-			if (i_stream.IsClient())
+			if (i_stream.IsClient)
 			{
 				((IBlobTransport)i_stream).DeleteBlobFile(i_trans, this);
 			}

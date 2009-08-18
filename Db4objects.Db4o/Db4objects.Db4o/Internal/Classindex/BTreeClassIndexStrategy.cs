@@ -63,7 +63,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		private void CreateBTreeIndex(ObjectContainerBase stream, int btreeID)
 		{
-			if (stream.IsClient())
+			if (stream.IsClient)
 			{
 				return;
 			}
@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		private void ReadBTreeIndex(ObjectContainerBase stream, int indexId)
 		{
-			if (!stream.IsClient() && _btreeIndex == null)
+			if (!stream.IsClient && _btreeIndex == null)
 			{
 				CreateBTreeIndex(stream, indexId);
 			}

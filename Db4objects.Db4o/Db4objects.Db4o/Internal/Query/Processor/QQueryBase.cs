@@ -26,13 +26,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// and should never be used explicitly.
 	/// </remarks>
 	/// <exclude></exclude>
-	public abstract class QQueryBase : IUnversioned
+	public abstract class QQueryBase : IInternalQuery, IUnversioned
 	{
 		[System.NonSerialized]
 		private static readonly IDGenerator i_orderingGenerator = new IDGenerator();
 
 		[System.NonSerialized]
-		internal Transaction _trans;
+		internal Db4objects.Db4o.Internal.Transaction _trans;
 
 		private Collection4 i_constraints = new Collection4();
 
@@ -60,7 +60,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_this = Cast(this);
 		}
 
-		protected QQueryBase(Transaction a_trans, QQuery a_parent, string a_field)
+		protected QQueryBase(Db4objects.Db4o.Internal.Transaction a_trans, QQuery a_parent
+			, string a_field)
 		{
 			_this = Cast(this);
 			_trans = a_trans;
@@ -624,6 +625,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return _trans.Container();
 		}
 
+		public virtual IInternalObjectContainer Container
+		{
+			get
+			{
+				return Stream();
+			}
+		}
+
 		private IQueryResult ExecuteClassOnlyQuery()
 		{
 			ClassMetadata clazz = SingleClassConstraint();
@@ -717,12 +726,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private IEnumerator CheckDuplicates(CompositeIterator4 executeAllCandidates)
 		{
-			return Iterators.Filter(executeAllCandidates, new _IPredicate4_556());
+			return Iterators.Filter(executeAllCandidates, new _IPredicate4_560());
 		}
 
-		private sealed class _IPredicate4_556 : IPredicate4
+		private sealed class _IPredicate4_560 : IPredicate4
 		{
-			public _IPredicate4_556()
+			public _IPredicate4_560()
 			{
 				this.ids = new TreeInt(0);
 			}
@@ -852,7 +861,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return false;
 		}
 
-		public Transaction GetTransaction()
+		public Transaction Transaction()
 		{
 			return _trans;
 		}
@@ -1005,12 +1014,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool HasOrJoins()
 		{
-			return ForEachConstraintRecursively(new _IFunction4_782());
+			return ForEachConstraintRecursively(new _IFunction4_786());
 		}
 
-		private sealed class _IFunction4_782 : IFunction4
+		private sealed class _IFunction4_786 : IFunction4
 		{
-			public _IFunction4_782()
+			public _IFunction4_786()
 			{
 			}
 
@@ -1032,12 +1041,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void RemoveJoins()
 		{
-			ForEachConstraintRecursively(new _IFunction4_798());
+			ForEachConstraintRecursively(new _IFunction4_802());
 		}
 
-		private sealed class _IFunction4_798 : IFunction4
+		private sealed class _IFunction4_802 : IFunction4
 		{
-			public _IFunction4_798()
+			public _IFunction4_802()
 			{
 			}
 

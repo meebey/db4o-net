@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		private ObjectContainerBase LocalContainer()
 		{
-			return Stream().Container();
+			return Stream().Container;
 		}
 	}
 }

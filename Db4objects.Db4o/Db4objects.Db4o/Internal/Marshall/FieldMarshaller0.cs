@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		protected override RawFieldSpec ReadSpec(AspectType aspectType, ObjectContainerBase
 			 stream, ByteArrayBuffer reader)
 		{
-			string name = StringHandler.ReadStringNoDebug(stream.Transaction().Context(), reader
+			string name = StringHandler.ReadStringNoDebug(stream.Transaction.Context(), reader
 				);
 			if (!aspectType.IsFieldMetadata())
 			{

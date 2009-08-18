@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		private bool IsValueType(IReflectClass knownClass)
 		{
-			if (Container().Handlers().IsTransient(knownClass))
+			if (Container().Handlers.IsTransient(knownClass))
 			{
 				return false;
 			}

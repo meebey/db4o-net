@@ -147,7 +147,7 @@ namespace Db4objects.Db4o.TA
 		private void SetActivationDepthProvider(IInternalObjectContainer container, IActivationDepthProvider
 			 provider)
 		{
-			container.ConfigImpl().ActivationDepthProvider(provider);
+			container.ConfigImpl.ActivationDepthProvider(provider);
 		}
 
 		private IEventRegistry EventRegistryFor(IObjectContainer container)
@@ -157,7 +157,7 @@ namespace Db4objects.Db4o.TA
 
 		private void UnbindAll(IInternalObjectContainer container)
 		{
-			Db4objects.Db4o.Internal.Transaction transaction = container.Transaction();
+			Db4objects.Db4o.Internal.Transaction transaction = container.Transaction;
 			// FIXME should that ever happen?
 			if (transaction == null)
 			{
@@ -233,7 +233,7 @@ namespace Db4objects.Db4o.TA
 		protected static IActivationDepthProvider ActivationProvider(IInternalObjectContainer
 			 container)
 		{
-			return container.ConfigImpl().ActivationDepthProvider();
+			return container.ConfigImpl.ActivationDepthProvider();
 		}
 
 		private bool IsEmbeddedClient(IObjectContainer objectContainer)
@@ -268,7 +268,7 @@ namespace Db4objects.Db4o.TA
 				}
 				NotTransparentActivationEnabled diagnostic = new NotTransparentActivationEnabled(
 					clazz);
-				DiagnosticProcessor processor = this._container.Handlers()._diagnosticProcessor;
+				DiagnosticProcessor processor = this._container.Handlers._diagnosticProcessor;
 				processor.OnDiagnostic(diagnostic);
 			}
 

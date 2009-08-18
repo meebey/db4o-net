@@ -229,7 +229,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		protected static LatinStringIO StringIo(IInternalObjectContainer objectContainer)
 		{
-			return objectContainer.Container().StringIO();
+			return objectContainer.Container.StringIO();
 		}
 
 		public static string ReadString(IContext context, IReadBuffer buffer)

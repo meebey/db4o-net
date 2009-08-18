@@ -66,10 +66,13 @@ namespace Db4objects.Db4o.Internal
 			_server.Bind(_transaction, obj, id);
 		}
 
-		public virtual Config4Impl ConfigImpl()
+		public virtual Config4Impl ConfigImpl
 		{
-			// internal interface method doesn't need to lock
-			return _server.ConfigImpl();
+			get
+			{
+				// internal interface method doesn't need to lock
+				return _server.ConfigImpl;
+			}
 		}
 
 		public virtual IConfiguration Configure()
@@ -363,7 +366,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				if (!_server.IsClosed())
 				{
-					if (!_server.ConfigImpl().IsReadOnly())
+					if (!_server.ConfigImpl.IsReadOnly())
 					{
 						Commit();
 					}
@@ -515,14 +518,20 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual ObjectContainerBase Container()
+		public virtual ObjectContainerBase Container
 		{
-			return _server;
+			get
+			{
+				return _server;
+			}
 		}
 
-		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
+		public virtual Db4objects.Db4o.Internal.Transaction Transaction
 		{
-			return _transaction;
+			get
+			{
+				return _transaction;
+			}
 		}
 
 		public virtual void Callbacks(ICallbacks cb)
@@ -573,9 +582,12 @@ namespace Db4objects.Db4o.Internal
 			return _server.ClassMetadataForID(id);
 		}
 
-		public virtual HandlerRegistry Handlers()
+		public virtual HandlerRegistry Handlers
 		{
-			return _server.Handlers();
+			get
+			{
+				return _server.Handlers;
+			}
 		}
 
 		public virtual object SyncExec(IClosure4 block)
@@ -589,9 +601,12 @@ namespace Db4objects.Db4o.Internal
 			return _server.InstanceCount(clazz, trans);
 		}
 
-		public virtual bool IsClient()
+		public virtual bool IsClient
 		{
-			return true;
+			get
+			{
+				return true;
+			}
 		}
 
 		public virtual void StoreAll(Db4objects.Db4o.Internal.Transaction transaction, IEnumerator

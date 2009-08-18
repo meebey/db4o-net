@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IActivationDepthProvider ActivationDepthProvider()
 		{
-			return ConfigImpl().ActivationDepthProvider();
+			return ConfigImpl.ActivationDepthProvider();
 		}
 
 		public void Activate(Db4objects.Db4o.Internal.Transaction trans, object obj)
@@ -282,7 +282,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void Backup(string path)
 		{
-			Backup(ConfigImpl().Storage, path);
+			Backup(ConfigImpl.Storage, path);
 		}
 
 		public virtual ActivationContext4 ActivationContextFor(Transaction ta, object obj
@@ -429,7 +429,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return ta;
 			}
-			return Transaction();
+			return Transaction;
 		}
 
 		public bool Close()
@@ -550,12 +550,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IConfiguration Configure()
 		{
-			return ConfigImpl();
+			return ConfigImpl;
 		}
 
 		public virtual Config4Impl Config()
 		{
-			return ConfigImpl();
+			return ConfigImpl;
 		}
 
 		public abstract int ConverterVersion();
@@ -565,7 +565,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected void CreateStringIO(byte encoding)
 		{
-			StringIO(BuiltInStringEncoding.StringIoForEncoding(encoding, ConfigImpl().StringEncoding
+			StringIO(BuiltInStringEncoding.StringIoForEncoding(encoding, ConfigImpl.StringEncoding
 				()));
 		}
 
@@ -792,7 +792,7 @@ namespace Db4objects.Db4o.Internal
 			if (Delete4(trans, @ref, obj, cascade, userCall))
 			{
 				ObjectOnDelete(trans, yc, @ref);
-				if (ConfigImpl().MessageLevel() > Const4.State)
+				if (ConfigImpl.MessageLevel() > Const4.State)
 				{
 					Message(string.Empty + @ref.GetID() + " delete " + @ref.ClassMetadata().GetName()
 						);
@@ -928,7 +928,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool DetectSchemaChanges()
 		{
 			// overriden in YapClient
-			return ConfigImpl().DetectSchemaChanges();
+			return ConfigImpl.DetectSchemaChanges();
 		}
 
 		public virtual bool DispatchsEvents()
@@ -949,7 +949,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (AllOperationsCompleted())
 			{
-				Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), 50, ToString(), null);
+				Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl, 50, ToString(), null);
 				Close();
 			}
 			else
@@ -957,7 +957,7 @@ namespace Db4objects.Db4o.Internal
 				ShutdownObjectContainer();
 				if (OperationIsProcessing())
 				{
-					Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), 24, null, null);
+					Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl, 24, null, null);
 				}
 			}
 		}
@@ -988,7 +988,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				DTrace.FatalException.Log(t.ToString());
 			}
-			Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl(), (msgID == Db4objects.Db4o.Internal.Messages
+			Db4objects.Db4o.Internal.Messages.LogErr(ConfigImpl, (msgID == Db4objects.Db4o.Internal.Messages
 				.FatalMsgId ? 18 : msgID), null, t);
 			if (!IsClosed())
 			{
@@ -999,7 +999,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool ConfiguredForAutomaticShutDown()
 		{
-			return (ConfigImpl() == null || ConfigImpl().AutomaticShutDown());
+			return (ConfigImpl == null || ConfigImpl.AutomaticShutDown());
 		}
 
 		internal virtual void Gc()
@@ -1245,9 +1245,12 @@ namespace Db4objects.Db4o.Internal
 			return _systemTransaction;
 		}
 
-		public Transaction Transaction()
+		public Transaction Transaction
 		{
-			return _transaction;
+			get
+			{
+				return _transaction;
+			}
 		}
 
 		public ClassMetadata ClassMetadataForReflectClass(IReflectClass claxx)
@@ -1350,9 +1353,12 @@ namespace Db4objects.Db4o.Internal
 			return _classCollection.ClassMetadataForId(id);
 		}
 
-		public virtual HandlerRegistry Handlers()
+		public virtual HandlerRegistry Handlers
 		{
-			return _handlers;
+			get
+			{
+				return _handlers;
+			}
 		}
 
 		public virtual bool NeedsLockFileThread()
@@ -1365,22 +1371,22 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			if (ConfigImpl().IsReadOnly())
+			if (ConfigImpl.IsReadOnly())
 			{
 				return false;
 			}
-			return ConfigImpl().LockFile();
+			return ConfigImpl.LockFile();
 		}
 
 		protected virtual bool HasShutDownHook()
 		{
-			return ConfigImpl().AutomaticShutDown();
+			return ConfigImpl.AutomaticShutDown();
 		}
 
 		protected virtual void Initialize1(IConfiguration config)
 		{
 			_config = InitializeConfig(config);
-			_handlers = new HandlerRegistry(this, ConfigImpl().Encoding(), ConfigImpl().Reflector
+			_handlers = new HandlerRegistry(this, ConfigImpl.Encoding(), ConfigImpl.Reflector
 				());
 			if (_references != null)
 			{
@@ -1392,7 +1398,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Platform4.AddShutDownHook(this);
 			}
-			_handlers.InitEncryption(ConfigImpl());
+			_handlers.InitEncryption(ConfigImpl);
 			Initialize2();
 			_stillToSet = null;
 		}
@@ -1437,13 +1443,13 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void InitializePostOpenExcludingTransportObjectContainer()
 		{
 			InitializeEssentialClasses();
-			Rename(ConfigImpl());
+			Rename(ConfigImpl);
 			_classCollection.InitOnUp(_systemTransaction);
-			if (ConfigImpl().DetectSchemaChanges())
+			if (ConfigImpl.DetectSchemaChanges())
 			{
 				_systemTransaction.Commit();
 			}
-			ConfigImpl().ApplyConfigurationItems(this);
+			ConfigImpl.ApplyConfigurationItems(this);
 		}
 
 		internal virtual void InitializeEssentialClasses()
@@ -1490,9 +1496,12 @@ namespace Db4objects.Db4o.Internal
 		/// The method allows checking whether will make it easier to refactor than
 		/// an "instanceof YapClient" check.
 		/// </remarks>
-		public virtual bool IsClient()
+		public virtual bool IsClient
 		{
-			return false;
+			get
+			{
+				return false;
+			}
 		}
 
 		public bool IsClosed()
@@ -1571,7 +1580,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void LogMsg(int code, string msg)
 		{
-			Db4objects.Db4o.Internal.Messages.LogMsg(ConfigImpl(), code, msg);
+			Db4objects.Db4o.Internal.Messages.LogMsg(ConfigImpl, code, msg);
 		}
 
 		public virtual bool MaintainsIndices()
@@ -2110,7 +2119,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void NotStorable(IReflectClass claxx, object obj)
 		{
-			if (!ConfigImpl().ExceptionsOnNotStorable())
+			if (!ConfigImpl.ExceptionsOnNotStorable())
 			{
 				return;
 			}
@@ -2149,7 +2158,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					((IDb4oTypeImpl)obj).SetTrans(trans);
 				}
-				if (ConfigImpl().MessageLevel() > Const4.State)
+				if (ConfigImpl.MessageLevel() > Const4.State)
 				{
 					Message(string.Empty + @ref.GetID() + " new " + @ref.ClassMetadata().GetName());
 				}
@@ -2532,9 +2541,12 @@ namespace Db4objects.Db4o.Internal
 			_callbacks = cb;
 		}
 
-		public virtual Config4Impl ConfigImpl()
+		public virtual Config4Impl ConfigImpl
 		{
-			return _config;
+			get
+			{
+				return _config;
+			}
 		}
 
 		public virtual UUIDFieldMetadata UUIDIndex()
@@ -2571,9 +2583,12 @@ namespace Db4objects.Db4o.Internal
 			return _referenceSystemRegistry;
 		}
 
-		public virtual ObjectContainerBase Container()
+		public virtual ObjectContainerBase Container
 		{
-			return this;
+			get
+			{
+				return this;
+			}
 		}
 
 		public virtual void DeleteByID(Transaction transaction, int id, int cascadeDeleteDepth

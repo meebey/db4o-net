@@ -617,7 +617,7 @@ namespace Db4objects.Db4o.Internal
 				//        be wrong for MTOC.
 				if (trans == null)
 				{
-					trans = container.Transaction();
+					trans = container.Transaction;
 				}
 				container.CheckClosed();
 				ObjectReference @ref = trans.ReferenceForObject(onObject);
@@ -1012,7 +1012,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual void Rename(string newName)
 		{
 			ObjectContainerBase container = Container();
-			if (!container.IsClient())
+			if (!container.IsClient)
 			{
 				_name = newName;
 				_containingClass.SetStateDirty();
@@ -1051,7 +1051,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			TraverseValues(Container().Transaction(), userVisitor);
+			TraverseValues(Container().Transaction, userVisitor);
 		}
 
 		public void TraverseValues(Transaction transaction, IVisitor4 userVisitor)
@@ -1062,7 +1062,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			AssertHasIndex();
 			ObjectContainerBase stream = transaction.Container();
-			if (stream.IsClient())
+			if (stream.IsClient)
 			{
 				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.ClientServerUnsupported
 					);
@@ -1130,7 +1130,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new InvalidOperationException();
 			}
-			if (systemTrans.Container().IsClient())
+			if (systemTrans.Container().IsClient)
 			{
 				return;
 			}
@@ -1279,7 +1279,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			ObjectContainerBase stream = systemTrans.Container();
-			if (stream.ConfigImpl().MessageLevel() > Const4.None)
+			if (stream.ConfigImpl.MessageLevel() > Const4.None)
 			{
 				stream.Message("dropping index " + ToString());
 			}
@@ -1327,7 +1327,7 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			LocalObjectContainer container = (LocalObjectContainer)Container();
-			if (container.ConfigImpl().MessageLevel() > Const4.None)
+			if (container.ConfigImpl.MessageLevel() > Const4.None)
 			{
 				container.Message("creating index " + ToString());
 			}

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.CS.Internal
 		public ClientHeartbeat(ClientObjectContainer container)
 		{
 			_container = container;
-			_timer = new SimpleTimer(this, Frequency(container.ConfigImpl()), "db4o client heartbeat"
+			_timer = new SimpleTimer(this, Frequency(container.ConfigImpl), "db4o client heartbeat"
 				);
 		}
 

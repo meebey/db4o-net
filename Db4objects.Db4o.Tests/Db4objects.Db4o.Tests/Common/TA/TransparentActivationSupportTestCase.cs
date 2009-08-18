@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		public virtual void TestActivationDepth()
 		{
 			Assert.IsInstanceOf(typeof(TransparentActivationDepthProviderImpl), Stream().ConfigImpl
-				().ActivationDepthProvider());
+				.ActivationDepthProvider());
 		}
 
 		public sealed partial class Item : ActivatableImpl

@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Activate(ActivationPurpose purpose)
 		{
-			ActivateOn(Container().Transaction(), purpose);
+			ActivateOn(Container().Transaction, purpose);
 		}
 
 		public virtual void ActivateOn(Db4objects.Db4o.Internal.Transaction transaction, 
@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void LogEvent(ObjectContainerBase container, string @event, int level)
 		{
-			if (container.ConfigImpl().MessageLevel() > level)
+			if (container.ConfigImpl.MessageLevel() > level)
 			{
 				container.Message(string.Empty + GetID() + " " + @event + " " + _class.GetName());
 			}
@@ -250,7 +250,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
 		{
-			return Container().Transaction();
+			return Container().Transaction;
 		}
 
 		public virtual Db4oUUID GetUUID()
@@ -1018,7 +1018,7 @@ namespace Db4objects.Db4o.Internal
 					ObjectContainerBase container = _class.Container();
 					if (container != null && id > 0)
 					{
-						obj = container.PeekPersisted(container.Transaction(), id, container.DefaultActivationDepth
+						obj = container.PeekPersisted(container.Transaction, id, container.DefaultActivationDepth
 							(ClassMetadata()), true).ToString();
 					}
 				}

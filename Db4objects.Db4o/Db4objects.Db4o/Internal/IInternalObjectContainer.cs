@@ -11,15 +11,21 @@ using Db4objects.Db4o.Reflect;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public interface IInternalObjectContainer : IExtObjectContainer
+	public partial interface IInternalObjectContainer : IExtObjectContainer
 	{
 		void Callbacks(ICallbacks cb);
 
 		ICallbacks Callbacks();
 
-		ObjectContainerBase Container();
+		ObjectContainerBase Container
+		{
+			get;
+		}
 
-		Db4objects.Db4o.Internal.Transaction Transaction();
+		Db4objects.Db4o.Internal.Transaction Transaction
+		{
+			get;
+		}
 
 		void OnCommittedListener();
 
@@ -31,16 +37,25 @@ namespace Db4objects.Db4o.Internal
 
 		ClassMetadata ClassMetadataForID(int id);
 
-		HandlerRegistry Handlers();
+		HandlerRegistry Handlers
+		{
+			get;
+		}
 
-		Config4Impl ConfigImpl();
+		Config4Impl ConfigImpl
+		{
+			get;
+		}
 
 		object SyncExec(IClosure4 block);
 
 		int InstanceCount(ClassMetadata clazz, Db4objects.Db4o.Internal.Transaction trans
 			);
 
-		bool IsClient();
+		bool IsClient
+		{
+			get;
+		}
 
 		void StoreAll(Db4objects.Db4o.Internal.Transaction trans, IEnumerator objects);
 	}

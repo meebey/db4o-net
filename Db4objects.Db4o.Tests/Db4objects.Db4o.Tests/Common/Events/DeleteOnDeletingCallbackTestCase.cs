@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private IIntIterator4 GetAllIds()
 		{
-			return FileSession().GetAll(FileSession().Transaction(), QueryEvaluationMode.Immediate
+			return FileSession().GetAll(FileSession().Transaction, QueryEvaluationMode.Immediate
 				).IterateIDs();
 		}
 	}

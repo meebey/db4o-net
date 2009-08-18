@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		public virtual void TestExceptionMarshalling()
 		{
 			ReflectException e = new ReflectException(new ArgumentNullException());
-			SerializedGraph marshalled = Serializer.Marshall(Stream().Container(), e);
+			SerializedGraph marshalled = Serializer.Marshall(Stream().Container, e);
 			Assert.IsTrue(marshalled.Length() > 0);
 		}
 		#endif // !SILVERLIGHT

@@ -161,11 +161,11 @@ namespace Db4objects.Db4o.Internal
 
 		private static int EventCountFor(ObjectContainerBase container)
 		{
-			if (container.ConfigImpl().Callbacks())
+			if (container.ConfigImpl.Callbacks())
 			{
 				return Count;
 			}
-			if (container.ConfigImpl().IsServer())
+			if (container.ConfigImpl.IsServer())
 			{
 				return ServerCount;
 			}

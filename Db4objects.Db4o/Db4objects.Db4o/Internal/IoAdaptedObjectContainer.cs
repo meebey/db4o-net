@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		protected sealed override void OpenImpl()
 		{
-			IStorage storage = ConfigImpl().Storage;
+			IStorage storage = ConfigImpl.Storage;
 			bool isNew = !storage.Exists(FileName());
 			if (isNew)
 			{
@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Internal
 				CheckReadOnly();
 				_handlers.OldEncryptionOff();
 			}
-			bool readOnly = ConfigImpl().IsReadOnly();
-			bool lockFile = Debug4.lockFile && ConfigImpl().LockFile() && (!readOnly);
+			bool readOnly = ConfigImpl.IsReadOnly();
+			bool lockFile = Debug4.lockFile && ConfigImpl.LockFile() && (!readOnly);
 			if (NeedsLockFileThread())
 			{
 				IBin fileBin = storage.Open(new BinConfiguration(FileName(), false, 0, false));
@@ -64,9 +64,9 @@ namespace Db4objects.Db4o.Internal
 			if (isNew)
 			{
 				ConfigureNewFile();
-				if (ConfigImpl().ReservedStorageSpace() > 0)
+				if (ConfigImpl.ReservedStorageSpace() > 0)
 				{
-					Reserve(ConfigImpl().ReservedStorageSpace());
+					Reserve(ConfigImpl.ReservedStorageSpace());
 				}
 				CommitTransaction();
 				WriteHeader(true, false);

@@ -96,12 +96,12 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual void ConfigureNewFile()
 		{
-			NewSystemData(ConfigImpl().FreespaceSystem());
+			NewSystemData(ConfigImpl.FreespaceSystem());
 			SystemData().ConverterVersion(Converter.Version);
 			CreateStringIO(_systemData.StringEncoding());
 			GenerateNewIdentity();
 			_freespaceManager = AbstractFreespaceManager.CreateNew(this);
-			BlockSize(ConfigImpl().BlockSize());
+			BlockSize(ConfigImpl.BlockSize());
 			_fileHeader = new FileHeader1();
 			SetRegularEndAddress(_fileHeader.Length());
 			InitNewClassCollection();
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Internal
 		private void NewSystemData(byte freespaceSystem)
 		{
 			_systemData = new Db4objects.Db4o.Internal.SystemData();
-			_systemData.StringEncoding(ConfigImpl().Encoding());
+			_systemData.StringEncoding(ConfigImpl.Encoding());
 			_systemData.FreespaceSystem(freespaceSystem);
 		}
 
@@ -335,7 +335,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool GrowDatabaseByConfiguredSize()
 		{
-			int reservedStorageSpace = ConfigImpl().DatabaseGrowthSize();
+			int reservedStorageSpace = ConfigImpl.DatabaseGrowthSize();
 			if (reservedStorageSpace <= 0)
 			{
 				return false;
@@ -619,7 +619,7 @@ namespace Db4objects.Db4o.Internal
 			LocalTransaction trans = (LocalTransaction)_fileHeader.InterruptedTransaction();
 			if (trans != null)
 			{
-				if (!ConfigImpl().CommitRecoveryDisabled())
+				if (!ConfigImpl.CommitRecoveryDisabled())
 				{
 					trans.CompleteInterruptedTransaction();
 				}
@@ -628,7 +628,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				_systemData.ConverterVersion(Converter.Version);
 				_fileHeader.WriteVariablePart(this, 1);
-				Transaction().Commit();
+				Transaction.Commit();
 			}
 		}
 
@@ -639,7 +639,7 @@ namespace Db4objects.Db4o.Internal
 				return false;
 			}
 			byte readSystem = _systemData.FreespaceSystem();
-			byte configuredSystem = ConfigImpl().FreespaceSystem();
+			byte configuredSystem = ConfigImpl.FreespaceSystem();
 			if (_freespaceManager.SystemType() == configuredSystem)
 			{
 				return false;
@@ -655,9 +655,9 @@ namespace Db4objects.Db4o.Internal
 		{
 			IFreespaceManager oldFreespaceManager = _freespaceManager;
 			IFreespaceManager newFreespaceManager = AbstractFreespaceManager.CreateNew(this, 
-				ConfigImpl().FreespaceSystem());
+				ConfigImpl.FreespaceSystem());
 			newFreespaceManager.Start(0);
-			SystemData().FreespaceSystem(ConfigImpl().FreespaceSystem());
+			SystemData().FreespaceSystem(ConfigImpl.FreespaceSystem());
 			_freespaceManager = newFreespaceManager;
 			AbstractFreespaceManager.Migrate(oldFreespaceManager, _freespaceManager);
 			_fileHeader.WriteVariablePart(this, 1);
@@ -1000,16 +1000,16 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (!clazz.HasClassIndex())
 			{
-				return new IdListQueryResult(query.GetTransaction());
+				return new IdListQueryResult(query.Transaction());
 			}
-			AbstractQueryResult queryResult = NewQueryResult(query.GetTransaction());
+			AbstractQueryResult queryResult = NewQueryResult(query.Transaction());
 			queryResult.LoadFromClassIndex(clazz);
 			return queryResult;
 		}
 
 		public override IQueryResult ExecuteQuery(QQuery query)
 		{
-			AbstractQueryResult queryResult = NewQueryResult(query.GetTransaction());
+			AbstractQueryResult queryResult = NewQueryResult(query.Transaction());
 			queryResult.LoadFromQuery(query);
 			return queryResult;
 		}

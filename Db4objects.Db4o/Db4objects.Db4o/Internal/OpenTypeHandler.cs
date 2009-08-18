@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IReflectClass ClassReflector()
 		{
-			return Container().Handlers().IclassObject;
+			return Container().Handlers.IclassObject;
 		}
 
 		public virtual void CascadeActivation(IActivationContext context)
@@ -230,7 +230,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				CollectIdContext collectIdContext = new _CollectIdContext_186(readContext, readContext
 					.Transaction(), readContext.Collector(), null, readContext.Buffer());
-				Handlers4.CollectIdsInternal(collectIdContext, context.Container().Handlers().CorrectHandlerVersion
+				Handlers4.CollectIdsInternal(collectIdContext, context.Container().Handlers.CorrectHandlerVersion
 					(typeHandler, context.HandlerVersion()), 0, false);
 			}
 			finally

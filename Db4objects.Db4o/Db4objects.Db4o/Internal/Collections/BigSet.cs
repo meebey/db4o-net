@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Collections
 			{
 				return;
 			}
-			_transaction = db.Transaction();
+			_transaction = db.Transaction;
 			_bTree = BTreeManager().NewBTree();
 		}
 

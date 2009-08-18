@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Weakref
 			{
 				return DisabledWeakReferenceSupport();
 			}
-			if (!container.ConfigImpl().WeakReferences())
+			if (!container.ConfigImpl.WeakReferences())
 			{
 				return DisabledWeakReferenceSupport();
 			}

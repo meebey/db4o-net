@@ -202,7 +202,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		private void AssertCorrectedHandlerVersion(ITypeHandler4 arrayHandler, int version
 			, Type handlerClass)
 		{
-			ITypeHandler4 correctedHandlerVersion = Container().Handlers().CorrectHandlerVersion
+			ITypeHandler4 correctedHandlerVersion = Container().Handlers.CorrectHandlerVersion
 				(arrayHandler, version);
 			Assert.IsInstanceOf(handlerClass, correctedHandlerVersion);
 		}

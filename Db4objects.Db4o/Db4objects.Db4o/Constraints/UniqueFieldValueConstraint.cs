@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Constraints
 		/// <remarks>internal method, public for implementation reasons.</remarks>
 		public virtual void Apply(IInternalObjectContainer objectContainer)
 		{
-			if (objectContainer.IsClient())
+			if (objectContainer.IsClient)
 			{
 				throw new InvalidOperationException(GetType().FullName + " should be configured on the server."
 					);

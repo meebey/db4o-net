@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		private ObjectContainerBase Container(IContext context)
 		{
-			return ((IInternalObjectContainer)context.ObjectContainer()).Container();
+			return ((IInternalObjectContainer)context.ObjectContainer()).Container;
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Typehandlers
 		{
 			buffer.ReadInt();
 			buffer.ReadInt();
-			ITypeHandler4 untypedHandler = (ITypeHandler4)Container(context).Handlers().OpenTypeHandler
+			ITypeHandler4 untypedHandler = (ITypeHandler4)Container(context).Handlers.OpenTypeHandler
 				();
 			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
 		}
@@ -149,8 +149,8 @@ namespace Db4objects.Db4o.Typehandlers
 		private KeyValueHandlerPair DetectKeyValueTypeHandlers(IInternalObjectContainer container
 			, IDictionary map)
 		{
-			ITypeHandler4 untypedHandler = (ITypeHandler4)container.Handlers().OpenTypeHandler
-				();
+			ITypeHandler4 untypedHandler = (ITypeHandler4)container.Handlers.OpenTypeHandler(
+				);
 			return new KeyValueHandlerPair(untypedHandler, untypedHandler);
 		}
 	}

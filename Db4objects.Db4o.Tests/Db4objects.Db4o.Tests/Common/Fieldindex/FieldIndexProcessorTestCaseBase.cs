@@ -156,7 +156,7 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected virtual Transaction TransactionFromQuery(IQuery query)
 		{
-			return ((QQuery)query).GetTransaction();
+			return ((QQuery)query).Transaction();
 		}
 	}
 }

@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		protected sealed override void OpenImpl()
 		{
-			_singleThreaded = ConfigImpl().SingleThreadedClient();
+			_singleThreaded = ConfigImpl.SingleThreadedClient();
 			// TODO: Experiment with packetsize and noDelay
 			// socket.setSendBufferSize(100);
 			// socket.setTcpNoDelay(true);
@@ -319,7 +319,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 			if (resp.Equals(Msg.Failed))
 			{
-				if (ConfigImpl().ExceptionsOnNotStorable())
+				if (ConfigImpl.ExceptionsOnNotStorable())
 				{
 					throw new ObjectNotStorableException(claxx);
 				}
@@ -562,9 +562,12 @@ namespace Db4objects.Db4o.CS.Internal
 			return i_db;
 		}
 
-		public override bool IsClient()
+		public override bool IsClient
 		{
-			return true;
+			get
+			{
+				return true;
+			}
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.InvalidPasswordException"></exception>
@@ -1208,7 +1211,7 @@ namespace Db4objects.Db4o.CS.Internal
 		public override IQueryResult ClassOnlyQuery(QQueryBase query, ClassMetadata clazz
 			)
 		{
-			Transaction trans = query.GetTransaction();
+			Transaction trans = query.Transaction();
 			long[] ids = GetIDsForClass(trans, clazz, true);
 			ClientQueryResult resClient = new ClientQueryResult(trans, ids.Length);
 			for (int i = 0; i < ids.Length; i++)
@@ -1241,7 +1244,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public override IQueryResult ExecuteQuery(QQuery query)
 		{
-			Transaction trans = query.GetTransaction();
+			Transaction trans = query.Transaction();
 			query.CaptureQueryResultConfig();
 			query.Marshall();
 			MsgD msg = Msg.QueryExecute.GetWriter(Serializer.Marshall(trans, query));
@@ -1258,7 +1261,7 @@ namespace Db4objects.Db4o.CS.Internal
 					return;
 				}
 				Msg msg;
-				MsgD multibytes = Msg.WriteBatchedMessages.GetWriterForLength(Transaction(), _batchedQueueLength
+				MsgD multibytes = Msg.WriteBatchedMessages.GetWriterForLength(Transaction, _batchedQueueLength
 					);
 				multibytes.WriteInt(_batchedMessages.Size());
 				IEnumerator iter = _batchedMessages.GetEnumerator();
@@ -1300,7 +1303,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		internal virtual int Timeout()
 		{
-			return ConfigImpl().TimeoutClientSocket();
+			return ConfigImpl.TimeoutClientSocket();
 		}
 
 		protected override void ShutdownDataStorage()

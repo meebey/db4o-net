@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			_handlers = _parent._handlers;
 			_classCollection = _parent.ClassCollection();
-			_config = _parent.ConfigImpl();
+			_config = _parent.ConfigImpl;
 			_references = WeakReferenceSupportFactory.DisabledWeakReferenceSupport();
 			Initialize2();
 		}
@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			ProcessPendingClassUpdates();
 			WriteDirty();
-			Transaction().Commit();
+			Transaction.Commit();
 		}
 
 		internal sealed override void WriteHeader(bool startFileLockingThread, bool shuttingDown

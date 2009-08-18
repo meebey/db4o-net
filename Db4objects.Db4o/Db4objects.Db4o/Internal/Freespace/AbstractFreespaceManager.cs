@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		protected virtual int DiscardLimit()
 		{
-			return _file.ConfigImpl().DiscardFreeSpace();
+			return _file.ConfigImpl.DiscardFreeSpace();
 		}
 
 		internal bool CanDiscard(int blocks)

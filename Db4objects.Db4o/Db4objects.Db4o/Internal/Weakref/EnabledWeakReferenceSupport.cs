@@ -39,16 +39,16 @@ namespace Db4objects.Db4o.Internal.Weakref
 			{
 				return;
 			}
-			if (!_container.ConfigImpl().WeakReferences())
+			if (!_container.ConfigImpl.WeakReferences())
 			{
 				return;
 			}
-			if (_container.ConfigImpl().WeakReferenceCollectionInterval() <= 0)
+			if (_container.ConfigImpl.WeakReferenceCollectionInterval() <= 0)
 			{
 				return;
 			}
 			_timer = new SimpleTimer(new EnabledWeakReferenceSupport.Collector(this), _container
-				.ConfigImpl().WeakReferenceCollectionInterval(), "db4o WeakReference collector");
+				.ConfigImpl.WeakReferenceCollectionInterval(), "db4o WeakReference collector");
 			_container.ThreadPool().Start(_timer);
 		}
 

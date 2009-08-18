@@ -398,7 +398,7 @@ namespace Db4objects.Db4o.Internal
 
 		private string ResolveAliasRuntimeName(string name)
 		{
-			return Container().ConfigImpl().ResolveAliasRuntimeName(name);
+			return Container().ConfigImpl.ResolveAliasRuntimeName(name);
 		}
 
 		internal void InitOnUp(Transaction systemTrans)
@@ -525,7 +525,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void ApplyReadAs()
 		{
-			Hashtable4 readAs = Container().ConfigImpl().ReadAs();
+			Hashtable4 readAs = Container().ConfigImpl.ReadAs();
 			IEnumerator i = readAs.Iterator();
 			while (i.MoveNext())
 			{
@@ -550,7 +550,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Config4Class ConfigClass(string name)
 		{
-			return Container().ConfigImpl().ConfigClass(name);
+			return Container().ConfigImpl.ConfigClass(name);
 		}
 
 		public ClassMetadata ReadClassMetadata(ClassMetadata classMetadata, IReflectClass
@@ -720,7 +720,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void SetID(int id)
 		{
-			if (Container().IsClient())
+			if (Container().IsClient)
 			{
 				base.SetID(id);
 				return;

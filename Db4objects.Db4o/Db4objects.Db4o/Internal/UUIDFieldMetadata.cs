@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Internal
 					return null;
 				}
 			}
-			if (classMetadata.SeekToField(container.Transaction(), reader, this) == HandlerVersion
+			if (classMetadata.SeekToField(container.Transaction, reader, this) == HandlerVersion
 				.Invalid)
 			{
 				return null;

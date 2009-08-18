@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.CS.Internal
 				{
 					LocalObjectContainer container = (LocalObjectContainer)Db4oEmbedded.OpenFile(Db4oEmbedded
 						.NewConfiguration(), fileName);
-					container.ConfigImpl().SetMessageRecipient(_mainContainer.ConfigImpl().MessageRecipient
+					container.ConfigImpl.SetMessageRecipient(_mainContainer.ConfigImpl.MessageRecipient
 						());
 					entry = new ClientTransactionPool.ContainerCount(container);
 					_fileName2Container.Put(fileName, entry);

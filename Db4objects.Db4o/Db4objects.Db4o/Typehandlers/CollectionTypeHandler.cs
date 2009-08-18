@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		private ObjectContainerBase Container(IContext context)
 		{
-			return ((IInternalObjectContainer)context.ObjectContainer()).Container();
+			return ((IInternalObjectContainer)context.ObjectContainer()).Container;
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -129,13 +129,13 @@ namespace Db4objects.Db4o.Typehandlers
 			)
 		{
 			buffer.ReadInt();
-			return (ITypeHandler4)Container(context).Handlers().OpenTypeHandler();
+			return (ITypeHandler4)Container(context).Handlers.OpenTypeHandler();
 		}
 
 		private ITypeHandler4 DetectElementTypeHandler(IInternalObjectContainer container
 			, ICollection collection)
 		{
-			return (ITypeHandler4)container.Handlers().OpenTypeHandler();
+			return (ITypeHandler4)container.Handlers.OpenTypeHandler();
 		}
 
 		public virtual bool DescendsIntoMembers()

@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.CS.Internal
 			_container = container;
 			_transactionPool = new ClientTransactionPool(container);
 			_port = port;
-			_config = _container.ConfigImpl();
+			_config = _container.ConfigImpl;
 			_name = "db4o ServerSocket FILE: " + container.ToString() + "  PORT:" + _port;
 			_container.SetServer(true);
 			ConfigureObjectServer();

@@ -597,7 +597,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				throw new ArgumentNullException();
 			}
-			return trans.Container().ConfigImpl();
+			return trans.Container().ConfigImpl;
 		}
 
 		public override void Free(Transaction systemTrans)

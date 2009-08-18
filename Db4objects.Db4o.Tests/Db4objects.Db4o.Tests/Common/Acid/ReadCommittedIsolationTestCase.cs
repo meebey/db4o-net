@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			{
 				lock (this._enclosing._updatesMonitor)
 				{
-					Transaction trans = ((IInternalObjectContainer)client).Transaction();
+					Transaction trans = ((IInternalObjectContainer)client).Transaction;
 					IObjectInfoCollection updated = ((CommitEventArgs)args).Updated;
 					IEnumerator infos = updated.GetEnumerator();
 					while (infos.MoveNext())

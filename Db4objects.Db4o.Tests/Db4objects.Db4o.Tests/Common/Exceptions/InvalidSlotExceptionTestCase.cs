@@ -3,7 +3,6 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
@@ -33,13 +32,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
-			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_30(this));
+			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_29(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_30 : ICodeBlock
+		private sealed class _ICodeBlock_29 : ICodeBlock
 		{
-			public _ICodeBlock_30(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_29(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -55,36 +54,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public virtual void TestDbNotClosedOnOutOfMemory()
 		{
-			// TODO why different behavior with in memory fixture?
-			if (IsInMemory())
-			{
-				Assert.Expect(typeof(InvalidSlotException), new _ICodeBlock_41(this));
-				return;
-			}
 			Assert.Expect(typeof(Db4oRecoverableException), typeof(OutOfMemoryException), new 
-				_ICodeBlock_48(this));
+				_ICodeBlock_38(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_41 : ICodeBlock
+		private sealed class _ICodeBlock_38 : ICodeBlock
 		{
-			public _ICodeBlock_41(InvalidSlotExceptionTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			/// <exception cref="System.Exception"></exception>
-			public void Run()
-			{
-				this._enclosing.Db().GetByID(InvalidSlotExceptionTestCase.OutOfMemoryId);
-			}
-
-			private readonly InvalidSlotExceptionTestCase _enclosing;
-		}
-
-		private sealed class _ICodeBlock_48 : ICodeBlock
-		{
-			public _ICodeBlock_48(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_38(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -157,11 +134,6 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 					_deliverInvalidSlot = false;
 				}
 			}
-		}
-
-		private bool IsInMemory()
-		{
-			return Fixture() is Db4oInMemory;
 		}
 	}
 }

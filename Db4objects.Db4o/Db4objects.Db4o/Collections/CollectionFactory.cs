@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Collections
 
 		private static bool IsClient(IObjectContainer oc)
 		{
-			return ((IInternalObjectContainer)oc).IsClient();
+			return ((IInternalObjectContainer)oc).IsClient;
 		}
 	}
 }

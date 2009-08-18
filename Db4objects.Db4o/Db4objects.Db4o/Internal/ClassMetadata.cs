@@ -251,7 +251,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				aspects.AddAll(_aspects);
 			}
-			ITypeHandler4 customTypeHandler = Container().Handlers().ConfiguredTypeHandler(ClassReflector
+			ITypeHandler4 customTypeHandler = Container().Handlers.ConfiguredTypeHandler(ClassReflector
 				());
 			bool dirty = IsDirty();
 			if (InstallTranslator(aspects, customTypeHandler))
@@ -537,7 +537,7 @@ namespace Db4objects.Db4o.Internal
 					if (_classReflector != null)
 					{
 						InitializeAspects();
-						if (!_container.IsClient() && !IsReadOnlyContainer())
+						if (!_container.IsClient && !IsReadOnlyContainer())
 						{
 							Write(_container.SystemTransaction());
 						}
@@ -585,7 +585,7 @@ namespace Db4objects.Db4o.Internal
 			Config4Class config = ConfigOrAncestorConfig();
 			if (depth == Const4.Unspecified)
 			{
-				depth = CheckUpdateDepthUnspecified(trans.Container().ConfigImpl());
+				depth = CheckUpdateDepthUnspecified(trans.Container().ConfigImpl);
 				depth = AdjustCollectionDepthToBorders(depth);
 			}
 			if (config == null)
@@ -1220,7 +1220,7 @@ namespace Db4objects.Db4o.Internal
 				{
 					return new long[0];
 				}
-				return GetIDs(_container.Transaction());
+				return GetIDs(_container.Transaction);
 			}
 		}
 
@@ -1749,7 +1749,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Config4Impl ConfigImpl()
 		{
-			return _container.ConfigImpl();
+			return _container.ConfigImpl;
 		}
 
 		private TernaryBool CallConstructorSpecialized()
@@ -1878,7 +1878,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
-			if (_container.IsClient())
+			if (_container.IsClient)
 			{
 				Exceptions4.ThrowRuntimeException(58);
 			}
@@ -2249,7 +2249,7 @@ namespace Db4objects.Db4o.Internal
 			IEnumerator staticFields = Iterators.Map(StaticReflectFields(), new _IFunction4_1764
 				(this, existingFields, trans));
 			sc.fields = ToStaticFieldArray(staticFields);
-			if (!stream.IsClient())
+			if (!stream.IsClient)
 			{
 				SetStaticClass(trans, sc);
 			}
@@ -2287,7 +2287,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void CreateStaticClass(Transaction trans)
 		{
-			if (trans.Container().IsClient())
+			if (trans.Container().IsClient)
 			{
 				return;
 			}
@@ -2598,7 +2598,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual int InstanceCount()
 		{
-			return InstanceCount(_container.Transaction());
+			return InstanceCount(_container.Transaction);
 		}
 
 		public virtual int InstanceCount(Transaction trans)
@@ -2680,7 +2680,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void DropClassIndex()
 		{
-			if (Container().IsClient())
+			if (Container().IsClient)
 			{
 				throw new InvalidOperationException();
 			}

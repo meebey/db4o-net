@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return 0;
 			}
-			if (_sourceDb.Handlers().IsSystemHandler(oldID))
+			if (_sourceDb.Handlers.IsSystemHandler(oldID))
 			{
 				return oldID;
 			}

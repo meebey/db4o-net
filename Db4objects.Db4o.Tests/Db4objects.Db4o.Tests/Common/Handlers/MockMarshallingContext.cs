@@ -95,12 +95,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual Db4objects.Db4o.Internal.Transaction Transaction()
 		{
-			return Container().Transaction();
+			return Container().Transaction;
 		}
 
 		protected virtual ObjectContainerBase Container()
 		{
-			return ((IInternalObjectContainer)_objectContainer).Container();
+			return ((IInternalObjectContainer)_objectContainer).Container;
 		}
 
 		public virtual int Offset()

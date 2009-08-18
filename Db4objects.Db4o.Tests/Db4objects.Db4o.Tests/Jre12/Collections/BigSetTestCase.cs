@@ -186,8 +186,8 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestTypeHandlerInstalled()
 		{
-			ITypeHandler4 typeHandler = Container().Handlers().ConfiguredTypeHandler(Reflector
-				().ForClass(NewBigSet().GetType()));
+			ITypeHandler4 typeHandler = Container().Handlers.ConfiguredTypeHandler(Reflector(
+				).ForClass(NewBigSet().GetType()));
 			Assert.IsInstanceOf(typeof(BigSetTypeHandler), typeHandler);
 		}
 

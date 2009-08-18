@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal MessageOutput(ObjectContainerBase a_stream, string msg)
 		{
-			stream = a_stream.ConfigImpl().OutStream();
+			stream = a_stream.ConfigImpl.OutStream();
 			Print(msg, true);
 		}
 
