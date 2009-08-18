@@ -16,6 +16,10 @@ namespace Db4objects.Db4o.Monitoring.Internal
         private const string ObjectsStoredPerSec = "objects stored/sec";
     	private const string QueriesPerSec = "queries/sec";
     	private const string ClassIndexScansPerSec = "class index scans/sec";
+    	private const string LinqQueriesPerSec = "linq queries/sec";
+		private const string UnoptimizedLinqQueriesPerSec = "unoptimized linq queries/sec";
+		private const string NativeQueriesPerSec = "native queries/sec";
+		private const string UnoptimizedNativeQueriesPerSec = "unoptimized native queries/sec";
 
     	public static void Install()
         {
@@ -40,6 +44,23 @@ namespace Db4objects.Db4o.Monitoring.Internal
 									 new CounterCreationData(ClassIndexScansPerSec,
                                                              "Number of queries that could not use field indexes and had to fall back to class index scans per second.",
                                                              PerformanceCounterType.RateOfCountsPerSecond32),
+
+									 new CounterCreationData(NativeQueriesPerSec,
+                                                             "Number of native queries executed per second.",
+                                                             PerformanceCounterType.RateOfCountsPerSecond32),
+
+									 new CounterCreationData(UnoptimizedNativeQueriesPerSec,
+                                                             "Number of unoptimized native queries executed per second.",
+                                                             PerformanceCounterType.RateOfCountsPerSecond32),
+#if NET_3_5
+									 new CounterCreationData(LinqQueriesPerSec,
+                                                             "Number of Linq queries executed per second.",
+                                                             PerformanceCounterType.RateOfCountsPerSecond32),
+
+									 new CounterCreationData(UnoptimizedLinqQueriesPerSec,
+                                                             "Number of unoptimized Linq queries executed per second.",
+                                                             PerformanceCounterType.RateOfCountsPerSecond32),
+#endif
                                  };
             PerformanceCounterCategory.Create(CategoryName, "Db4o Performance Counters",
                                                      PerformanceCounterCategoryType.SingleInstance,
@@ -70,6 +91,28 @@ namespace Db4objects.Db4o.Monitoring.Internal
 		public static PerformanceCounter CounterForClassIndexScansPerSec(bool readOnly)
 		{
 			return NewDb4oCounter(ClassIndexScansPerSec, readOnly);
+		}
+
+#if NET_3_5
+		public static PerformanceCounter CounterForLinqQueriesPerSec(bool readOnly)
+		{
+			return NewDb4oCounter(LinqQueriesPerSec, readOnly);
+		}
+
+		public static PerformanceCounter CounterForUnoptimizedLinqQueriesPerSec(bool readOnly)
+		{
+			return NewDb4oCounter(UnoptimizedLinqQueriesPerSec, readOnly);
+		}
+#endif
+
+		public static PerformanceCounter CounterForNativeQueriesPerSec(bool readOnly)
+		{
+			return NewDb4oCounter(LinqQueriesPerSec, readOnly);
+		}
+
+		public static PerformanceCounter CounterForUnoptimizedNativeQueriesPerSec(bool readOnly)
+		{
+			return NewDb4oCounter(UnoptimizedLinqQueriesPerSec, readOnly);
 		}
 
         public static PerformanceCounter CounterForBytesReadPerSec()

@@ -1,18 +1,17 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 #if !CF && !SILVERLIGHT
-using System;
 using System.Diagnostics;
 using Db4objects.Db4o.Config;
+
 using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Monitoring.Internal;
 using Db4objects.Db4o.Query;
-using Db4oUnit.Extensions;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests.Monitoring
 {
-	class QueryMonitoringSupportTestCase : AbstractDb4oTestCase, ICustomClientServerConfiguration
+	class QueryMonitoringSupportTestCase : QueryMonitoringSupportTestCaseBase, ICustomClientServerConfiguration
 	{
 		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
 		{
@@ -28,11 +27,6 @@ namespace Db4objects.Db4o.Tests.Monitoring
 		{
 		}
 
-		protected override void Db4oSetupBeforeConfigure()
-		{
-			Db4oPerformanceCounterCategory.ReInstall();
-		}
-
 		public void TestQueriesPerSecond()
 		{
 			using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(true))
@@ -44,27 +38,27 @@ namespace Db4objects.Db4o.Tests.Monitoring
 				ExecuteOptimizedNQ();
 				ExecuteUnoptimizedNQ();
 
+#if CF_3_5 || NET_3_5
+				ExecuteOptimizedLinq();
+				ExecuteUnoptimizedLinq();
+				Assert.AreEqual(6, counter.RawValue);
+#else
 				Assert.AreEqual(4, counter.RawValue);
+#endif
+
 			}
 		}
 
 		public void TestClassIndexScansPerSecond()
 		{
-			using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(true))
-			{
-				Assert.AreEqual(0, counter.RawValue);
-
-				for (int i = 0; i < 3; ++i)
-				{
-					ExecuteSodaClassIndexScan();
-					Assert.AreEqual(i + 1, counter.RawValue);
-				}
-			}
+			AssertCounter(
+				Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(true),
+				ExecuteSodaClassIndexScan);
 		}
-
+		
 		private void ExecuteClassOnlyQuery()
 		{
-			NewQuery(typeof (Item)).Execute();
+			NewQuery(typeof(Item)).Execute();
 		}
 
 		private void ExecuteGetAllQuery()
@@ -72,26 +66,11 @@ namespace Db4objects.Db4o.Tests.Monitoring
 			NewQuery().Execute();
 		}
 
-		private void ExecuteOptimizedNQ()
-		{
-			Db().Query(delegate(Item item) { return item.id == 42; });
-		}
-
-		private void ExecuteUnoptimizedNQ()
-		{
-			Db().Query(delegate(Item item) { return item.GetType() == typeof (Item); });
-		}
-		
 		private void ExecuteSodaClassIndexScan()
 		{
 			IQuery query = NewQuery(typeof(Item));
 			query.Descend("_id").Constrain(42);
 			query.Execute();
-		}
-
-		public class Item
-		{
-			public int id;
 		}
 	}
 }

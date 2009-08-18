@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Linq.Internals
@@ -46,7 +49,31 @@ namespace Db4objects.Db4o.Linq.Internals
 		public ObjectSetWrapper<T> GetExtentResult()
 		{
 			var query = NewQuery();
-			return Wrap(query.Execute());
+			return Wrap(ExecuteQuery(query, MonitorUnoptimizedQuery));
+		}
+
+		private IObjectSet Execute()
+		{
+			var query = NewQuery();
+			_record.Playback(query);
+			return ExecuteQuery(query, MonitorOptimizedQuery);
+		}
+
+		private IObjectSet ExecuteQuery(IQuery query, Action monitorAction)
+		{
+			var result = query.Execute();
+			((IInternalQuery)query).Container.WithEnvironment(monitorAction);
+			return result;
+		}
+
+		private void MonitorOptimizedQuery()
+		{
+			My<ILinqQueryMonitor>.Instance.OnOptimizedQuery();
+		}
+
+		private void MonitorUnoptimizedQuery()
+		{
+			My<ILinqQueryMonitor>.Instance.OnUnoptimizedQuery();
 		}
 
 		private IQuery NewQuery()
@@ -64,13 +91,6 @@ namespace Db4objects.Db4o.Linq.Internals
 		public IEnumerator<T> GetEnumerator()
 		{
 			return Wrap(Execute()).GetEnumerator();
-		}
-
-		private IObjectSet Execute()
-		{
-			var query = NewQuery();
-			_record.Playback(query);
-			return query.Execute();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
