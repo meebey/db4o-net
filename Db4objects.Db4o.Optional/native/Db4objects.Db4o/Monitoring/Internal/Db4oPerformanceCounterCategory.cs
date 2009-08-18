@@ -2,6 +2,7 @@
 
 #if !CF && !SILVERLIGHT
 
+using System;
 using System.Diagnostics;
 
 namespace Db4objects.Db4o.Monitoring.Internal
@@ -14,10 +15,11 @@ namespace Db4objects.Db4o.Monitoring.Internal
         private const string BytesReadPerSec = "bytes read/sec";
         private const string ObjectsStoredPerSec = "objects stored/sec";
     	private const string QueriesPerSec = "queries/sec";
+    	private const string ClassIndexScansPerSec = "class index scans/sec";
 
     	public static void Install()
         {
-            if (PerformanceCounterCategory.Exists(CategoryName))
+            if (CategoryExists())
                 return;
 
             var collection = new CounterCreationDataCollection
@@ -31,8 +33,12 @@ namespace Db4objects.Db4o.Monitoring.Internal
                                      new CounterCreationData(ObjectsStoredPerSec,
                                                              "Number of objects stored per second.",
                                                              PerformanceCounterType.RateOfCountsPerSecond32),
+
 									 new CounterCreationData(QueriesPerSec,
                                                              "Number of queries executed per second.",
+                                                             PerformanceCounterType.RateOfCountsPerSecond32),
+									 new CounterCreationData(ClassIndexScansPerSec,
+                                                             "Number of queries that could not use field indexes and had to fall back to class index scans per second.",
                                                              PerformanceCounterType.RateOfCountsPerSecond32),
                                  };
             PerformanceCounterCategory.Create(CategoryName, "Db4o Performance Counters",
@@ -40,9 +46,30 @@ namespace Db4objects.Db4o.Monitoring.Internal
                                                      collection);
         }
 
-		public static PerformanceCounter CounterForQueriesPerSec(bool readOnly)
+		public static void ReInstall()
+		{
+			if (CategoryExists()) DeleteCategory();
+			Install();
+		}
+
+    	private static bool CategoryExists()
+    	{
+    		return PerformanceCounterCategory.Exists(CategoryName);
+    	}
+
+    	private static void DeleteCategory()
+    	{
+    		PerformanceCounterCategory.Delete(CategoryName);
+    	}
+
+    	public static PerformanceCounter CounterForQueriesPerSec(bool readOnly)
 		{
 			return NewDb4oCounter(QueriesPerSec, readOnly);
+		}
+
+		public static PerformanceCounter CounterForClassIndexScansPerSec(bool readOnly)
+		{
+			return NewDb4oCounter(ClassIndexScansPerSec, readOnly);
 		}
 
         public static PerformanceCounter CounterForBytesReadPerSec()

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Monitoring.Internal;
+using Db4objects.Db4o.Query;
 using Db4oUnit.Extensions;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
@@ -27,16 +28,65 @@ namespace Db4objects.Db4o.Tests.Monitoring
 		{
 		}
 
+		protected override void Db4oSetupBeforeConfigure()
+		{
+			Db4oPerformanceCounterCategory.ReInstall();
+		}
+
 		public void TestQueriesPerSecond()
 		{
-			PerformanceCounter queriesPerSec = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(true);
-			Assert.AreEqual(0, queriesPerSec.RawValue);
-			
-			NewQuery().Execute();
-			NewQuery(typeof (Item)).Execute();
-			Db().Query(delegate(Item item) { return item.id == 42; });
+			using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(true))
+			{
+				Assert.AreEqual(0, counter.RawValue);
 
-			Assert.AreEqual(3, queriesPerSec.RawValue);
+				ExecuteGetAllQuery();
+				ExecuteClassOnlyQuery();
+				ExecuteOptimizedNQ();
+				ExecuteUnoptimizedNQ();
+
+				Assert.AreEqual(4, counter.RawValue);
+			}
+		}
+
+		public void TestClassIndexScansPerSecond()
+		{
+			using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(true))
+			{
+				Assert.AreEqual(0, counter.RawValue);
+
+				for (int i = 0; i < 3; ++i)
+				{
+					ExecuteSodaClassIndexScan();
+					Assert.AreEqual(i + 1, counter.RawValue);
+				}
+			}
+		}
+
+		private void ExecuteClassOnlyQuery()
+		{
+			NewQuery(typeof (Item)).Execute();
+		}
+
+		private void ExecuteGetAllQuery()
+		{
+			NewQuery().Execute();
+		}
+
+		private void ExecuteOptimizedNQ()
+		{
+			Db().Query(delegate(Item item) { return item.id == 42; });
+		}
+
+		private void ExecuteUnoptimizedNQ()
+		{
+			Db().Query(delegate(Item item) { return item.GetType() == typeof (Item); });
+		}
+		
+		private void ExecuteSodaClassIndexScan()
+		{
+			IQuery query = NewQuery(typeof(Item));
+			query.Descend("_id").Constrain(42);
+			query.Execute();
 		}
 
 		public class Item

@@ -60,6 +60,9 @@ namespace Db4oUnit.Extensions
 		{
 			IDb4oFixture _fixture = Fixture();
 			_fixture.Clean();
+
+			Db4oSetupBeforeConfigure();
+
 			Configure(_fixture.Config());
 			_fixture.Open(this);
 			Db4oSetupBeforeStore();
@@ -95,6 +98,11 @@ namespace Db4oUnit.Extensions
 				Assert.Fail("Uncaught exceptions: " + Iterators.Join(Iterators.Iterator(uncaughtExceptions
 					), ", "), ((Exception)uncaughtExceptions[0]));
 			}
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		protected virtual void Db4oSetupBeforeConfigure()
+		{
 		}
 
 		/// <exception cref="System.Exception"></exception>
