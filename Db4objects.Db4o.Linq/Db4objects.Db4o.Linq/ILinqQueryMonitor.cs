@@ -2,7 +2,7 @@
 namespace Db4objects.Db4o.Linq
 {
 	/// <summary>
-	/// embeddedConfiguration.Environment.Add(new MyLinqQueryMonitor());
+	/// commonConfiguration.Environment.Add(new MyLinqQueryMonitor());
 	/// </summary>
 	public interface ILinqQueryMonitor
 	{
