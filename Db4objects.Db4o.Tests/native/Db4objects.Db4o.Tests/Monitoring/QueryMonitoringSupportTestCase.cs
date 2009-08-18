@@ -30,26 +30,13 @@ namespace Db4objects.Db4o.Tests.Monitoring
 		public void TestQueriesPerSecond()
 		{
 			PerformanceCounter queriesPerSec = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(true);
-			Assert.AreEqual(0, queriesPerSec.NextValue());
+			Assert.AreEqual(0, queriesPerSec.RawValue);
 			
-			Stopwatch stopwatch = Stopwatch.StartNew();
-			int numIterations = 50;
-			for (int i = 0; i < numIterations; i++)
-			{
-				NewQuery().Execute();
-				NewQuery(typeof (Item)).Execute();
-				Db().Query(delegate(Item item) { return item.id == 42; });
-			}
-			stopwatch.Stop();
+			NewQuery().Execute();
+			NewQuery(typeof (Item)).Execute();
+			Db().Query(delegate(Item item) { return item.id == 42; });
 
-			double actualValue = queriesPerSec.NextValue();
-
-			int queryCount = numIterations * 3;
-			Assert.AreEqual(queryCount, queriesPerSec.RawValue);
-
-			double expected = queryCount * 1000.0/(stopwatch.ElapsedMilliseconds + 1);
-			Assert.InRange(actualValue, expected * .95, expected * 1.05);
-
+			Assert.AreEqual(3, queriesPerSec.RawValue);
 		}
 
 		public class Item
