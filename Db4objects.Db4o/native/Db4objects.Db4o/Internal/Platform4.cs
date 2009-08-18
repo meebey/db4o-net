@@ -670,14 +670,14 @@ namespace Db4objects.Db4o.Internal
         public static void RegisterPlatformHandlers(ObjectContainerBase container)
         {
             EnumTypeHandler enumTypeHandler = new EnumTypeHandler();
-            container.ConfigImpl().RegisterTypeHandler(new EnumTypeHandlerPredicate(), enumTypeHandler);
-			// container.Handlers().RegisterHandlerVersion(enumTypeHandler, 7, new StandardReferenceTypeHandler());
-			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 4, new StandardReferenceTypeHandler());
-			container.Handlers().RegisterHandlerVersion(enumTypeHandler, 0, new StandardReferenceTypeHandler0());
+            container.ConfigImpl.RegisterTypeHandler(new EnumTypeHandlerPredicate(), enumTypeHandler);
+			// container.Handlers.RegisterHandlerVersion(enumTypeHandler, 7, new StandardReferenceTypeHandler());
+			container.Handlers.RegisterHandlerVersion(enumTypeHandler, 4, new StandardReferenceTypeHandler());
+			container.Handlers.RegisterHandlerVersion(enumTypeHandler, 0, new StandardReferenceTypeHandler0());
 
             DateTimeHandler dateTimeHandler = new DateTimeHandler();
-            container.Handlers().RegisterNetTypeHandler(dateTimeHandler);
-            container.Handlers().RegisterHandlerVersion(dateTimeHandler, 6, new DateTimeHandler6());
+            container.Handlers.RegisterNetTypeHandler(dateTimeHandler);
+            container.Handlers.RegisterHandlerVersion(dateTimeHandler, 6, new DateTimeHandler6());
 
         }
 

@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		private static ITypeHandler4 OpenTypeHandlerFrom(IContext context)
 		{
-			return context.Transaction().Container().Handlers().OpenTypeHandler();
+			return context.Transaction().Container().Handlers.OpenTypeHandler();
 		}
 
 		private static void ReadElements(IReadContext context, ICollectionInitializer initializer, ITypeHandler4 elementHandler)
@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		private static ObjectContainerBase Container(IContext context)
 		{
-			return ((IInternalObjectContainer)context.ObjectContainer()).Container();
+			return ((IInternalObjectContainer)context.ObjectContainer()).Container;
 		}
 
 		private static ITypeHandler4 ReadElementTypeHandler(IReadBuffer buffer, IContext context)
@@ -152,7 +152,7 @@ namespace Db4objects.Db4o.Typehandlers
 			Type elementType = ElementTypeOf(collection);
 			if (IsNullableInstance(elementType))
 			{
-				return container.ClassMetadataForReflectClass(container.Handlers().IclassObject);
+				return container.ClassMetadataForReflectClass(container.Handlers.IclassObject);
 			}
 			return container.ProduceClassMetadata(container.Reflector().ForClass(elementType));
 		}

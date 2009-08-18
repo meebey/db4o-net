@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.Query.Processor;
@@ -56,5 +57,10 @@ namespace Db4objects.Db4o.Internal
         {
             return Query<Extent>(typeof(Extent), comparer);
         }
+
+		public void WithEnvironment(System.Action action)
+		{
+			_server.WithEnvironment(new RunnableAction(action));
+		}
     }
 }

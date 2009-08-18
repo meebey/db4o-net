@@ -198,5 +198,10 @@ namespace Db4objects.Db4o.Internal
 	        // should never happen - just to make compiler happy
 			throw new Db4oException();
 	    }
+
+		public void WithEnvironment(System.Action action)
+		{
+			WithEnvironment(new RunnableAction(action));
+		}
     }
 }

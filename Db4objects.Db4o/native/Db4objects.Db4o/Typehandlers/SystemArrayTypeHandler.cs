@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Typehandlers
 
         private static ITypeHandler4 OpenTypeHandlerFrom(IContext context)
         {
-            return context.Transaction().Container().Handlers().OpenTypeHandler();
+            return context.Transaction().Container().Handlers.OpenTypeHandler();
         }
 
         private static void WriteElementTypeId(IWriteContext context, ClassMetadata elementType)
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Typehandlers
 
         private static ObjectContainerBase Container(IContext context)
         {
-            return ((IInternalObjectContainer)context.ObjectContainer()).Container();
+            return ((IInternalObjectContainer)context.ObjectContainer()).Container;
         }
 
         private static ITypeHandler4 ReadElementTypeHandler(IReadBuffer buffer, IContext context)
