@@ -762,5 +762,12 @@ namespace Db4objects.Db4o.Internal
 														typeof(ushort),
 														typeof(DateTime),
     	                                        	};
-	}
+
+        public static void ThrowUncheckedException(Exception exc)
+        {
+            throw exc;
+        }
+
+    }
+
 }
