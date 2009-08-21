@@ -468,9 +468,9 @@ namespace Db4objects.Db4o.Internal
 
         public static void RegisterCollections(GenericReflector reflector)
         {
-            reflector.RegisterCollectionUpdateDepth(
-                typeof(IDictionary),
-                3);
+//            reflector.RegisterCollectionUpdateDepth(
+//                typeof(IDictionary),
+//                3);
         }
 
         internal static void RemoveShutDownHook(ObjectContainerBase container)
