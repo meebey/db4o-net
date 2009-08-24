@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Db4objects.Db4o.Linq")]
-[assembly: AssemblyDescription("Db4objects.Db4o.Linq 7.11.108.13502 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Db4o.Linq 7.11.109.13536 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Inc., San Mateo, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible (false)]
 
-[assembly: AssemblyVersion("7.11.108.13502")]
+[assembly: AssemblyVersion("7.11.109.13536")]

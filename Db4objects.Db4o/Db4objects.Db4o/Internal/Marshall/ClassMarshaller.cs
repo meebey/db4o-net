@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			writer.WriteShortString(trans, clazz.NameToWrite());
 			int intFormerlyKnownAsMetaClassID = 0;
 			writer.WriteInt(intFormerlyKnownAsMetaClassID);
-			writer.WriteIDOf(trans, clazz.i_ancestor);
+			writer.WriteIDOf(trans, clazz._ancestor);
 			WriteIndex(trans, clazz, writer);
 			writer.WriteInt(clazz.DeclaredAspectCount());
 			clazz.TraverseDeclaredAspects(new _IProcedure4_39(this, trans, clazz, writer));

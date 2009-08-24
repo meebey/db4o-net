@@ -35,10 +35,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				Assert.AreEqual(trans2.Container(), trans3.Container());
 				Assert.AreEqual(3, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
-				pool.Release(trans3, true);
+				pool.Release(ShutdownMode.Normal, trans3, true);
 				Assert.AreEqual(2, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
-				pool.Release(trans2, true);
+				pool.Release(ShutdownMode.Normal, trans2, true);
 				Assert.AreEqual(1, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
 			}

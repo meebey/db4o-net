@@ -2,15 +2,15 @@
 
 using System;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o.Tests.Common.Set;
+using Db4objects.Db4o.Tests.Common.Store;
 
-namespace Db4objects.Db4o.Tests.Common.Set
+namespace Db4objects.Db4o.Tests.Common.Store
 {
 	public class AllTests : Db4oTestSuite
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Set.AllTests().RunAll();
+			new Db4objects.Db4o.Tests.Common.Store.AllTests().RunAll();
 		}
 
 		protected override Type[] TestCases()

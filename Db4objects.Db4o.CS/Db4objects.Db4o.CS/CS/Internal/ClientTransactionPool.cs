@@ -57,9 +57,10 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public virtual void Release(Transaction transaction, bool rollbackOnClose)
+		public virtual void Release(ShutdownMode mode, Transaction transaction, bool rollbackOnClose
+			)
 		{
-			transaction.Close(rollbackOnClose);
+			transaction.Close(mode.IsFatal() ? false : rollbackOnClose);
 			lock (_mainContainer.Lock())
 			{
 				ClientTransactionPool.ContainerCount entry = (ClientTransactionPool.ContainerCount
@@ -69,7 +70,17 @@ namespace Db4objects.Db4o.CS.Internal
 				if (entry.IsEmpty())
 				{
 					_fileName2Container.Remove(entry.FileName());
-					entry.Close();
+					try
+					{
+						entry.Close(mode);
+					}
+					catch (Exception t)
+					{
+						// If we are in fatal ShutdownMode close will
+						// throw but we want to continue shutting down
+						// all entries.
+						Sharpen.Runtime.PrintStackTrace(t);
+					}
 				}
 			}
 		}
@@ -87,7 +98,19 @@ namespace Db4objects.Db4o.CS.Internal
 				while (entryIter.MoveNext())
 				{
 					IEntry4 hashEntry = (IEntry4)entryIter.Current;
-					((ClientTransactionPool.ContainerCount)hashEntry.Value()).Close(mode);
+					ClientTransactionPool.ContainerCount containerCount = (ClientTransactionPool.ContainerCount
+						)hashEntry.Value();
+					try
+					{
+						containerCount.Close(mode);
+					}
+					catch (Exception t)
+					{
+						// If we are in fatal ShutdownMode close will
+						// throw but we want to continue shutting down
+						// all entries.
+						Sharpen.Runtime.PrintStackTrace(t);
+					}
 				}
 				_closed = true;
 			}
@@ -147,11 +170,6 @@ namespace Db4objects.Db4o.CS.Internal
 			public virtual string FileName()
 			{
 				return _container.FileName();
-			}
-
-			public virtual void Close()
-			{
-				Close(ShutdownMode.Normal);
 			}
 
 			public virtual void Close(ShutdownMode mode)

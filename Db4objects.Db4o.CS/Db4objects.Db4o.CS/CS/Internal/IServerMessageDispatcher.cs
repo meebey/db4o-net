@@ -33,6 +33,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		bool Close();
 
+		bool Close(ShutdownMode mode);
+
 		void CloseConnection();
 
 		void CaresAboutCommitted(bool care);

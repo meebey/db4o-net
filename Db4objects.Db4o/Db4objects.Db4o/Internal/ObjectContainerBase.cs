@@ -541,7 +541,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new CompositeDb4oException(new Exception[] { origExc, exc });
 			}
-			throw origExc;
+			Platform4.ThrowUncheckedException(origExc);
 		}
 
 		protected abstract void FatalStorageShutdown();

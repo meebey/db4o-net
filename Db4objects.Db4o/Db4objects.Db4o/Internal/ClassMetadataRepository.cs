@@ -645,7 +645,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (clazz != null)
 			{
-				ReReadClassMetadata(clazz.i_ancestor);
+				ReReadClassMetadata(clazz._ancestor);
 				clazz.ReadName(_systemTransaction);
 				clazz.ForceRead();
 				clazz.SetStateClean();

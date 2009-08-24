@@ -63,6 +63,11 @@ namespace Db4objects.Db4o.CS.Internal
 		// i_socket.setTcpNoDelay(true);
 		public bool Close()
 		{
+			return Close(ShutdownMode.Normal);
+		}
+
+		public bool Close(ShutdownMode mode)
+		{
 			lock (_lock)
 			{
 				if (!IsMessageDispatcherAlive())
@@ -73,9 +78,12 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 			lock (_mainLock)
 			{
-				_transactionHandle.ReleaseTransaction();
-				SendCloseMessage();
-				_transactionHandle.Close();
+				_transactionHandle.ReleaseTransaction(mode);
+				if (!mode.IsFatal())
+				{
+					SendCloseMessage();
+				}
+				_transactionHandle.Close(mode);
 				CloseSocket();
 				RemoveFromServer();
 				return true;
@@ -223,11 +231,10 @@ namespace Db4objects.Db4o.CS.Internal
 						WriteException(message, exc);
 						return true;
 					}
-					catch (Exception exc)
+					catch (Exception t)
 					{
-						Sharpen.Runtime.PrintStackTrace(exc);
-						Write(Msg.Error);
-						FatalShutDownServer(exc);
+						Sharpen.Runtime.PrintStackTrace(t);
+						FatalShutDownServer(t);
 						return false;
 					}
 					try
@@ -251,25 +258,20 @@ namespace Db4objects.Db4o.CS.Internal
 					Sharpen.Runtime.PrintStackTrace(exc);
 					return true;
 				}
-				catch (Exception exc)
+				catch (Exception t)
 				{
-					Sharpen.Runtime.PrintStackTrace(exc);
-					FatalShutDownServer(exc);
+					Sharpen.Runtime.PrintStackTrace(t);
+					FatalShutDownServer(t);
 				}
 			}
 			return false;
 		}
 
-		private void FatalShutDownServer(Exception exc)
+		private void FatalShutDownServer(Exception origExc)
 		{
-			//		try {
-			_server.Close(ShutdownMode.Fatal(exc));
+			new FatalServerShutdown(_server, origExc);
 		}
 
-		//		}
-		//		catch(RuntimeException recExc) {
-		//			recExc.printStackTrace();
-		//		}
 		private void WriteException(Msg message, Exception exc)
 		{
 			if (!(message is IMessageWithResponse))
@@ -321,13 +323,13 @@ namespace Db4objects.Db4o.CS.Internal
 				string fileName = message.ReadString();
 				try
 				{
-					_transactionHandle.ReleaseTransaction();
+					_transactionHandle.ReleaseTransaction(ShutdownMode.Normal);
 					_transactionHandle.AcquireTransactionForFile(fileName);
 					Write(Msg.Ok);
 				}
 				catch (Exception e)
 				{
-					_transactionHandle.ReleaseTransaction();
+					_transactionHandle.ReleaseTransaction(ShutdownMode.Normal);
 					Write(Msg.Error);
 				}
 			}
@@ -337,7 +339,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			lock (_mainLock)
 			{
-				_transactionHandle.ReleaseTransaction();
+				_transactionHandle.ReleaseTransaction(ShutdownMode.Normal);
 				Write(Msg.Ok);
 			}
 		}

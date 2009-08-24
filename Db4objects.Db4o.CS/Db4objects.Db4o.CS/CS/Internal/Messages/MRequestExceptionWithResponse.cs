@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o.CS.Internal.Messages;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
@@ -9,7 +10,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public virtual Msg ReplyFromServer()
 		{
-			throw ((Exception)ReadSingleObject());
+			Platform4.ThrowUncheckedException((Exception)ReadSingleObject());
+			return null;
 		}
 	}
 }

@@ -202,7 +202,7 @@ namespace Db4objects.Db4o.CS.Internal
 				{
 					CloseServerSocket();
 					StopCommittedCallbacksDispatcher();
-					CloseMessageDispatchers();
+					CloseMessageDispatchers(mode);
 					return CloseFile(mode);
 				}
 				finally
@@ -230,14 +230,14 @@ namespace Db4objects.Db4o.CS.Internal
 			return true;
 		}
 
-		private void CloseMessageDispatchers()
+		private void CloseMessageDispatchers(ShutdownMode mode)
 		{
 			IEnumerator i = IterateDispatchers();
 			while (i.MoveNext())
 			{
 				try
 				{
-					((IServerMessageDispatcher)i.Current).Close();
+					((IServerMessageDispatcher)i.Current).Close(mode);
 				}
 				catch (Exception e)
 				{

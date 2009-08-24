@@ -107,8 +107,6 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 
 		private bool _serverClosed;
 
-		private Type _expectedUncaughtExceptionType;
-
 		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
@@ -159,12 +157,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 
 		public virtual void TestNonRecoverableExceptionWithResponse()
 		{
-			_expectedUncaughtExceptionType = typeof(Db4oException);
-			_storage.SyncAllowed(false);
-			Client().Write(Msg.RequestExceptionWithResponse.GetWriterForSingleObject(Trans(), 
-				new Db4oException(ExceptionMessage)));
-			AssertDatabaseClosedException();
-			AssertServerContainerStateClosed(true);
+			AssertNonRecoverableExceptionForMessage(Msg.RequestExceptionWithResponse, new Db4oException
+				(ExceptionMessage));
 		}
 
 		public virtual void TestRecoverableExceptionWithoutResponse()
@@ -176,23 +170,40 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 
 		public virtual void TestNonRecoverableExceptionWithoutResponse()
 		{
-			_expectedUncaughtExceptionType = typeof(Db4oException);
+			AssertNonRecoverableExceptionForMessage(Msg.RequestExceptionWithoutResponse, new 
+				Db4oException(ExceptionMessage));
+		}
+
+		public virtual void TestVmErrorWithResponse()
+		{
+			AssertNonRecoverableExceptionForMessage(Msg.RequestExceptionWithResponse, new OutOfMemoryException
+				());
+		}
+
+		public virtual void TestVmErrorWithoutResponse()
+		{
+			AssertNonRecoverableExceptionForMessage(Msg.RequestExceptionWithoutResponse, new 
+				OutOfMemoryException());
+		}
+
+		private void AssertNonRecoverableExceptionForMessage(MsgD message, Exception throwable
+			)
+		{
 			_storage.SyncAllowed(false);
-			Client().Write(Msg.RequestExceptionWithoutResponse.GetWriterForSingleObject(Trans
-				(), new Db4oException(ExceptionMessage)));
+			Client().Write(message.GetWriterForSingleObject(Trans(), throwable));
 			AssertDatabaseClosedException();
 			AssertServerContainerStateClosed(true);
 		}
 
 		private void AssertDatabaseClosedException()
 		{
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_143(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_151(this));
 			Assert.IsFalse(Client().IsAlive());
 		}
 
-		private sealed class _ICodeBlock_143 : ICodeBlock
+		private sealed class _ICodeBlock_151 : ICodeBlock
 		{
-			public _ICodeBlock_143(MsgExceptionHandlingTestCase _enclosing)
+			public _ICodeBlock_151(MsgExceptionHandlingTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -248,18 +259,6 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 		{
 			IExtObjectContainer otherClient = OpenNewClient();
 			otherClient.Close();
-		}
-
-		protected override void HandleUncaughtExceptions(IList uncaughtExceptions)
-		{
-			if (_expectedUncaughtExceptionType == null)
-			{
-				Assert.IsTrue(uncaughtExceptions.Count == 0);
-				return;
-			}
-			Assert.AreEqual(1, uncaughtExceptions.Count);
-			Assert.IsInstanceOf(_expectedUncaughtExceptionType, ((Exception)uncaughtExceptions
-				[0]));
 		}
 	}
 }

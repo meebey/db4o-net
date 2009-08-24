@@ -5,7 +5,7 @@ using System;
 namespace Db4objects.Db4o.Ext
 {
 	[System.Serializable]
-	public class CompositeDb4oException : Exception
+	public partial class CompositeDb4oException : Exception
 	{
 		public readonly Exception[] _exceptions;
 

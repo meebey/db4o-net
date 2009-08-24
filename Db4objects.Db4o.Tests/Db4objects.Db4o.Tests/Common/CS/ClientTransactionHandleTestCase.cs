@@ -38,18 +38,18 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				Assert.AreNotEqual(handleA.Transaction(), handleB.Transaction());
 				Assert.AreEqual(handleA.Transaction().Container(), handleB.Transaction().Container
 					());
-				handleA.ReleaseTransaction();
+				handleA.ReleaseTransaction(ShutdownMode.Normal);
 				Assert.AreEqual(db, handleA.Transaction().Container());
 				Assert.AreNotEqual(db, handleB.Transaction().Container());
 				Assert.AreEqual(3, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
-				handleB.ReleaseTransaction();
+				handleB.ReleaseTransaction(ShutdownMode.Normal);
 				Assert.AreEqual(db, handleB.Transaction().Container());
 				Assert.AreEqual(2, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
-				handleB.Close();
+				handleB.Close(ShutdownMode.Normal);
 				Assert.AreEqual(1, pool.OpenTransactionCount());
-				handleA.Close();
+				handleA.Close(ShutdownMode.Normal);
 				Assert.AreEqual(0, pool.OpenTransactionCount());
 			}
 			finally

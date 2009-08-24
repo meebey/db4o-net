@@ -26,11 +26,11 @@ namespace Db4objects.Db4o.CS.Internal
 			_transaction = _transactionPool.Acquire(fileName);
 		}
 
-		public virtual void ReleaseTransaction()
+		public virtual void ReleaseTransaction(ShutdownMode mode)
 		{
 			if (_transaction != null)
 			{
-				_transactionPool.Release(_transaction, _rollbackOnClose);
+				_transactionPool.Release(mode, _transaction, _rollbackOnClose);
 				_transaction = null;
 			}
 		}
@@ -40,12 +40,11 @@ namespace Db4objects.Db4o.CS.Internal
 			return _transactionPool.IsClosed();
 		}
 
-		public virtual void Close()
+		public virtual void Close(ShutdownMode mode)
 		{
 			if ((!_transactionPool.IsClosed()) && (_mainTransaction != null))
 			{
-				_transactionPool.Release(_mainTransaction, _rollbackOnClose);
-				_mainTransaction.Close(_rollbackOnClose);
+				_transactionPool.Release(mode, _mainTransaction, _rollbackOnClose);
 			}
 		}
 

@@ -3,9 +3,9 @@
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Tests.Common.Set;
+using Db4objects.Db4o.Tests.Common.Store;
 
-namespace Db4objects.Db4o.Tests.Common.Set
+namespace Db4objects.Db4o.Tests.Common.Store
 {
 	public class DeepSetTestCase : AbstractDb4oTestCase
 	{

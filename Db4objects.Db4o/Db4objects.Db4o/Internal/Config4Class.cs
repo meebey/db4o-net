@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec TranslatorNameKey = new KeySpec((string)null);
 
-		private static readonly KeySpec UpdateDepthKey = new KeySpec(0);
+		private static readonly KeySpec UpdateDepthKey = new KeySpec(-1);
 
 		private static readonly KeySpec WriteAsKey = new KeySpec((string)null);
 

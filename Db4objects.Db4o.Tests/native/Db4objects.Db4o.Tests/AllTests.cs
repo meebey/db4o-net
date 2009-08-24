@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests
 		
 		protected override Type[] TestCases()
 		{
-//			return new Type[] { typeof(Monitoring.AllTests), };
+//			return new Type[] { typeof(CLI2.Collections.AllTests), };
 			return new Type[]
 				{	
 #if CF_3_5 || NET_3_5

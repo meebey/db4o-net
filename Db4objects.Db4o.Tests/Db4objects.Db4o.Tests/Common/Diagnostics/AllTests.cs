@@ -15,8 +15,8 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(DiagnosticsTestCase), typeof(IndexFieldDiagnosticTestCase
-				) };
+			return new Type[] { typeof(ClassHasNoFieldsTestCase), typeof(DescendIntoTranslatorTestCase
+				), typeof(DiagnosticsTestCase), typeof(IndexFieldDiagnosticTestCase) };
 		}
 	}
 }

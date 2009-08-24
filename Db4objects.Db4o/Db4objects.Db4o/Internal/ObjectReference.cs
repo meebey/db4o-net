@@ -473,13 +473,18 @@ namespace Db4objects.Db4o.Internal
 				EndProcessing();
 				return;
 			}
+			MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
+				, false);
+			if (context.UpdateDepth() < 0)
+			{
+				EndProcessing();
+				return;
+			}
 			ObjectContainerBase container = transaction.Container();
 			LogEvent(container, "update", Const4.State);
 			SetStateClean();
 			transaction.WriteUpdateAdjustIndexes(GetID(), _class, container._handlers.ArrayType
 				(obj), 0);
-			MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
-				, false);
 			Handlers4.Write(_class.TypeHandler(), context, obj);
 			Pointer4 pointer = context.AllocateSlot();
 			ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);

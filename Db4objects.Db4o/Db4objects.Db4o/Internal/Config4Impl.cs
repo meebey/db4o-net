@@ -197,7 +197,7 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec TimeoutServerSocketKey = new KeySpec(Const4.ServerSocketTimeout
 			);
 
-		private static readonly KeySpec UpdateDepthKey = new KeySpec(0);
+		private static readonly KeySpec UpdateDepthKey = new KeySpec(1);
 
 		private static readonly KeySpec WeakReferenceCollectionIntervalKey = new KeySpec(
 			1000);

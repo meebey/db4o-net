@@ -339,9 +339,13 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			IActivationContext cascadeContext = context.ForObject(cascadeTo);
+			ClassMetadata classMetadata = cascadeContext.ClassMetadata();
+			if (classMetadata == null)
+			{
+				return;
+			}
 			EnsureObjectIsActive(cascadeContext);
-			Handlers4.CascadeActivation(cascadeContext, cascadeContext.ClassMetadata().TypeHandler
-				());
+			Handlers4.CascadeActivation(cascadeContext, classMetadata.TypeHandler());
 		}
 
 		private void EnsureObjectIsActive(IActivationContext context)
@@ -532,7 +536,7 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_449
+				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_453
 					(this, childContext));
 			}
 			catch (CorruptionException exc)
@@ -541,9 +545,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_449 : IClosure4
+		private sealed class _IClosure4_453 : IClosure4
 		{
-			public _IClosure4_449(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_453(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -1070,13 +1074,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_869(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_873(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_869 : IVisitor4
+		private sealed class _IVisitor4_873 : IVisitor4
 		{
-			public _IVisitor4_869(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_873(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1297,13 +1301,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
 				());
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1032
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1036
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1032 : IClosure4
+		private sealed class _IClosure4_1036 : IClosure4
 		{
-			public _IClosure4_1032(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1036(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

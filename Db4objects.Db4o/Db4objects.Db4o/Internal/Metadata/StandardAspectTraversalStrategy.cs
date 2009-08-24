@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Internal.Metadata
 				{
 					return;
 				}
-				classMetadata = classMetadata.i_ancestor;
+				classMetadata = classMetadata._ancestor;
 			}
 		}
 	}
