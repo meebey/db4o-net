@@ -98,7 +98,7 @@ public class InnerAuthorNamePredicate : Predicate
 			Db().Configure().OptimizeNativeQueries(true);
 
 			NativeQueryHandler handler = GetNativeQueryHandler(Db());
-			handler.QueryExecution += new QueryExecutionHandler(OnQueryExecution);
+			handler.QueryExecution += OnQueryExecution;
 			try
 			{
 				IObjectSet os = Db().Query(predicate);
@@ -107,7 +107,7 @@ public class InnerAuthorNamePredicate : Predicate
 			}
 			finally
 			{
-				handler.QueryExecution -= new QueryExecutionHandler(OnQueryExecution);
+				handler.QueryExecution -= OnQueryExecution;
 			}
 		}
 		
@@ -120,7 +120,7 @@ public class InnerAuthorNamePredicate : Predicate
 		{	
 			string assemblyFile = Path.Combine(Path.GetTempPath(), assemblyName);
 			CompilationServices.EmitAssembly(assemblyFile, code);
-			return System.Reflection.Assembly.LoadFrom(assemblyFile);
+			return Assembly.LoadFrom(assemblyFile);
 		}
 
 		private void OnQueryExecution(object sender, QueryExecutionEventArgs args)
