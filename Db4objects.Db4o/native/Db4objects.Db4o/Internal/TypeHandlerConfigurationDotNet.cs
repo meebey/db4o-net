@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Internal
 			RegisterCollection(typeof(System.Collections.ArrayList));
             RegisterCollection(typeof (System.Collections.CollectionBase));
             RegisterMap(typeof (System.Collections.Hashtable));
+            RegisterMap(typeof (System.Collections.Specialized.HybridDictionary));
 #if !CF
             RegisterMap(typeof (System.Collections.DictionaryBase));
 #endif
