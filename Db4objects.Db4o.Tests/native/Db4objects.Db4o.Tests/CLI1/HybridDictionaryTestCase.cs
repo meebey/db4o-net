@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using Db4objects.Db4o.Internal;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Fixtures;
@@ -18,7 +19,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 			return new IFixtureProvider[]
 			{
 				new SubjectFixtureProvider(new object[] {
-//					new ItemCounts(5, 10),
+					new ItemCounts(5, 10),
 					new ItemCounts(10, 5)
 				})
 			};
@@ -55,7 +56,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 				AssertHolder(InitialItemCount());
 			}
 
-			public void _TestUpdate()
+			public void TestUpdate()
 			{
 				UpdateHolder();
 				Reopen();
