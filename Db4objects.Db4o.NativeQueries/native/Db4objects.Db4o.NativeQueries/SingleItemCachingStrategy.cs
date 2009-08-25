@@ -3,19 +3,28 @@ using System;
 
 namespace Db4objects.Db4o.Internal.Query
 {
+	public delegate R Producer<T, R>(T arg);
+
 	/// <summary>
 	/// A very simple caching strategy that caches only the last added item.
 	/// </summary>
-	public class SingleItemCachingStrategy : ICachingStrategy
+	public class SingleItemCachingStrategy<K,V> : ICachingStrategy<K,V>
 	{
-		private object _lastKey;
-		private object _lastItem;
+
+		private K _lastKey;
+		private V _lastItem;
 		private object _monitor = new object();
+		private readonly Producer<K, V> _producer;
 		
-		#region ICachingStrategy Members
-		public void Add(object key, object item)
+		public SingleItemCachingStrategy(Producer<K,V> producer)
 		{
-			if (null == key) throw new ArgumentNullException("key");
+			_producer = producer;
+		}
+
+		#region ICachingStrategy Members
+		public void Add(K key, V item)
+		{
+			if (!typeof(K).IsValueType && null == key) throw new ArgumentNullException("key");
 			lock (_monitor)
 			{
 				_lastKey = key;
@@ -23,22 +32,25 @@ namespace Db4objects.Db4o.Internal.Query
 			}
 		}
 
-		public object Get(object key)
+		public V Get(K key)
 		{
 			if (null == key) throw new ArgumentNullException("key");
 			lock (_monitor)
 			{
-				return key.Equals(_lastKey)
-					? _lastItem
-					: null;
+				if (!key.Equals(_lastKey))
+				{
+					Add(key, _producer(key));
+				}
+				
+				return _lastItem;
 			}
 		}
 		#endregion
 	}
     
-    public class NullCachingStrategy : ICachingStrategy
+    public class NullCachingStrategy : ICachingStrategy<object, object>
     {
-        public static readonly ICachingStrategy Default = new NullCachingStrategy();
+        public static readonly ICachingStrategy<object, object> Default = new NullCachingStrategy();
         
         #region ICachingStrategy Members
         public void Add(object key, object item)

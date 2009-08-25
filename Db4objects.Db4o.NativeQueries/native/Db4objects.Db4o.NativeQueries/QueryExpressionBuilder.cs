@@ -1,6 +1,6 @@
 ﻿/* Copyright (C) 2004-2006   Versant Inc.   http://www.db4o.com */
 
-
+using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Instrumentation.Cecil;
 using Db4objects.Db4o.TA;
@@ -25,75 +25,46 @@ namespace Db4objects.Db4o.NativeQueries
 	using Internal.Query;
 
 	/// <summary>
-	/// Build a Db4objects.Db4o.Nativequery.Expr tree out of
-	/// a predicate method definition.
+	/// Build a Db4objects.Db4o.Nativequery.Expr tree out of a predicate method definition.
 	/// </summary>
 	public class QueryExpressionBuilder
 	{
-		protected static ICachingStrategy _assemblyCachingStrategy = new SingleItemCachingStrategy();
+		protected static ICachingStrategy<string, AssemblyDefinition> _assemblyCachingStrategy = 
+				new SingleItemCachingStrategy<string, AssemblyDefinition>( delegate(string location)
+																			{
+																				return AssemblyFactory.GetAssembly(location);
+																			});
 
-		protected static ICachingStrategy _expressionCachingStrategy = new SingleItemCachingStrategy();
-
-		public static ICachingStrategy AssemblyCachingStrategy
-		{
-			get
-			{
-				return _assemblyCachingStrategy;
-			}
-
-			set
-			{
-				if (null == value) throw new ArgumentNullException("AssemblyCachingStrategy");
-				_assemblyCachingStrategy = value;
-			}
-		}
-
-		public static ICachingStrategy ExpressionCachingStrategy
-		{
-			get
-			{
-				return _expressionCachingStrategy;
-			}
-
-			set
-			{
-				if (null == value) throw new ArgumentNullException("ExpressionCachingStrategy");
-				_expressionCachingStrategy = value;
-			}
-		}
+		protected static ICachingStrategy<MethodBase, IExpression> _expressionCachingStrategy = 
+				new SingleItemCachingStrategy<MethodBase, IExpression>(
+																		delegate(MethodBase method)
+																			{
+																				MethodDefinition methodDef = GetMethodDefinition(method);
+																				return AdjustBoxedValueTypes(FromMethodDefinition(methodDef));
+																			}
+																		);
 
 		public NQExpression FromMethod(MethodBase method)
 		{
 			if (method == null) throw new ArgumentNullException("method");
 			
-			NQExpression e = GetCachedExpression(method);
-			if (e != null) return e;
-
-			MethodDefinition methodDef = GetMethodDefinition(method);
-			e = AdjustBoxedValueTypes(FromMethodDefinition(methodDef));
-			CacheExpression(method, e);
-			
-			return e;
-		}
-
-		private static void CacheExpression(MethodBase method, NQExpression e)
-		{
-			_expressionCachingStrategy.Add(method, e);
+			return GetCachedExpression(method);
 		}
 
 		private static NQExpression GetCachedExpression(MethodBase method)
 		{
-			return (NQExpression)_expressionCachingStrategy.Get(method);
+			return _expressionCachingStrategy.Get(method);
 		}
 
 		private static MethodDefinition GetMethodDefinition(MethodBase method)
 		{
 			string location = GetAssemblyLocation(method);
-			AssemblyDefinition assembly = GetAssembly(location);
+			AssemblyDefinition assembly = _assemblyCachingStrategy.Get(location);
 			TypeDefinition type = FindTypeDefinition(assembly.MainModule, method.DeclaringType);
 			if (null == type) UnsupportedPredicate(string.Format("Unable to load type '{0}' from assembly '{1}'", method.DeclaringType.FullName, location));
 			MethodDefinition methodDef = type.Methods.GetMethod(method.Name, GetParameterTypes(method));
 			if (null == methodDef) UnsupportedPredicate(string.Format("Unable to load the definition of '{0}' from assembly '{1}'", method, location));
+			
 			return methodDef;
 		}
 
@@ -101,17 +72,6 @@ namespace Db4objects.Db4o.NativeQueries
 		{
 			expression.Accept(new BoxedValueTypeProcessor());
 			return expression;
-		}
-
-		private static AssemblyDefinition GetAssembly(string location)
-		{
-			AssemblyDefinition assembly = (AssemblyDefinition)_assemblyCachingStrategy.Get(location);
-			if (null == assembly)
-			{
-				assembly = AssemblyFactory.GetAssembly(location);
-				_assemblyCachingStrategy.Add(location, assembly);
-			}
-			return assembly;
 		}
 
 		private static Type[] GetParameterTypes(MethodBase method)
@@ -176,7 +136,7 @@ namespace Db4objects.Db4o.NativeQueries
 			Expression expression = GetQueryExpression(method);
 			if (null == expression) UnsupportedPredicate("No expression found.");
 			
-			Visitor visitor = new Visitor(method);
+			Visitor visitor = new Visitor(method, new AssemblyResolver(_assemblyCachingStrategy));
 			expression.Accept(visitor);
 			return visitor.Expression;
 		}
@@ -211,7 +171,7 @@ namespace Db4objects.Db4o.NativeQueries
 
 		private static Expression GetQueryExpression(ActionFlowGraph afg)
 		{
-			Hashtable variables = new Hashtable();
+			IDictionary<int, Expression> variables = new Dictionary<int, Expression>();
 			ActionBlock block = afg.Blocks[0];
 			while (block != null)
 			{
@@ -220,11 +180,13 @@ namespace Db4objects.Db4o.NativeQueries
 					case ActionType.Invoke:
 						InvokeActionBlock invokeBlock = (InvokeActionBlock)block;
 						MethodInvocationExpression invocation = invokeBlock.Expression;
-						if (IsActivateInvocation(invocation))
+						if (IsActivateInvocation(invocation) 
+							|| IsNoSideEffectIndirectActivationInvocation(invocation))
 						{
 							block = invokeBlock.Next;
 							break;
 						}
+
 						UnsupportedExpression(invocation);
 						break;
 
@@ -247,8 +209,9 @@ namespace Db4objects.Db4o.NativeQueries
 							}
 							else
 							{
-								if (variables.Contains(variable.Variable.Index))
+								if (variables.ContainsKey(variable.Variable.Index))
 									UnsupportedExpression(assign.Expression);
+								
 								variables.Add(variable.Variable.Index, assign.Expression);
 								block = assignBlock.Next;
 							}
@@ -261,11 +224,34 @@ namespace Db4objects.Db4o.NativeQueries
 							VariableReferenceExpression variable = expression as VariableReferenceExpression;
 							return null == variable
 								? expression
-								: (Expression)variables[variable.Variable.Index];
+								: variables[variable.Variable.Index];
 						}
 				}
 			}
 			return null;
+		}
+
+		private static bool IsNoSideEffectIndirectActivationInvocation(MethodInvocationExpression invocation)
+		{
+			MethodDefinition methodDefinition = MethodDefinitionFor(invocation);
+			if (null == methodDefinition) return false;
+			ActionFlowGraph afg = FlowGraphFactory.CreateActionFlowGraph(FlowGraphFactory.CreateControlFlowGraph(methodDefinition));
+
+			if (afg.Blocks.Count == 2 && afg.Blocks[0].ActionType == ActionType.Invoke)
+			{
+				InvokeActionBlock invocationBlock = (InvokeActionBlock) afg.Blocks[0];
+				return IsActivateInvocation(invocationBlock.Expression);
+			}
+
+			return false;
+		}
+
+		private static MethodDefinition MethodDefinitionFor(MethodInvocationExpression invocation)
+		{
+			MethodReferenceExpression methodRef = invocation.Target as MethodReferenceExpression;
+			if (null == methodRef) return null;
+
+			return GetMethodDefinition(methodRef);
 		}
 
 		private static bool IsActivateInvocation(MethodInvocationExpression invocation)
@@ -305,19 +291,31 @@ namespace Db4objects.Db4o.NativeQueries
 			return false;
 		}
 
+		private static MethodDefinition GetMethodDefinition(MethodReferenceExpression methodRef)
+		{
+			MethodDefinition definition = methodRef.Method as MethodDefinition;
+			return definition ?? LoadExternalMethodDefinition(methodRef);
+		}
+
+		private static MethodDefinition LoadExternalMethodDefinition(MethodReferenceExpression methodRef)
+		{
+			MethodReference method = methodRef.Method;
+			AssemblyDefinition assemblyDef = new AssemblyResolver(_assemblyCachingStrategy).ForTypeReference(method.DeclaringType);
+			TypeDefinition type = assemblyDef.MainModule.Types[method.DeclaringType.FullName];
+			return type.Methods.GetMethod(method.Name, method.Parameters);
+		}
+
 		class Visitor : AbstractCodeStructureVisitor
 		{
-			object _current;
+			private object _current;
 			private int _insideCandidate;
-			readonly Hashtable _assemblies = new Hashtable();
 			readonly IList _methodDefinitionStack = new ArrayList();
 			private readonly CecilReferenceProvider _referenceProvider;
 
-			public Visitor(MethodDefinition topLevelMethod)
+			public Visitor(MethodDefinition topLevelMethod, AssemblyResolver resolver)
 			{
 				EnterMethodDefinition(topLevelMethod);
-				AssemblyDefinition assembly = topLevelMethod.DeclaringType.Module.Assembly;
-				RegisterAssembly(assembly);
+				AssemblyDefinition assembly = resolver.ForType(topLevelMethod.DeclaringType);
 				_referenceProvider = CecilReferenceProvider.ForModule(assembly.MainModule);
 			}
 
@@ -332,21 +330,6 @@ namespace Db4objects.Db4o.NativeQueries
 				object popped = _methodDefinitionStack[lastIndex];
 				System.Diagnostics.Debug.Assert(method == popped);
 				_methodDefinitionStack.RemoveAt(lastIndex);
-			}
-
-			/// <summary>
-			/// Registers an assembly so it can be looked up by its assembly name
-			/// string later.
-			/// </summary>
-			/// <param name="assembly"></param>
-			private void RegisterAssembly(AssemblyDefinition assembly)
-			{
-				_assemblies.Add(assembly.Name.FullName, assembly);
-			}
-
-			private AssemblyDefinition LookupAssembly(string fullName)
-			{
-				return (AssemblyDefinition)_assemblies[fullName];
 			}
 
 			public NQExpression Expression
@@ -655,35 +638,6 @@ namespace Db4objects.Db4o.NativeQueries
 			{
 				if (_methodDefinitionStack.Contains(method))
 					UnsupportedExpression(methodInvocationExpression);
-			}
-
-			private MethodDefinition GetMethodDefinition(MethodReferenceExpression methodRef)
-			{
-				MethodDefinition definition = methodRef.Method as MethodDefinition;
-				return definition ?? LoadExternalMethodDefinition(methodRef);
-			}
-
-			private MethodDefinition LoadExternalMethodDefinition(MethodReferenceExpression methodRef)
-			{
-				MethodReference method = methodRef.Method;
-				AssemblyDefinition assemblyDef = GetContainingAssembly(method.DeclaringType);
-				TypeDefinition type = assemblyDef.MainModule.Types[method.DeclaringType.FullName];
-				return type.Methods.GetMethod(method.Name, method.Parameters);
-			}
-
-			private AssemblyDefinition GetContainingAssembly(TypeReference type)
-			{
-				AssemblyNameReference scope = (AssemblyNameReference)type.Scope;
-				string assemblyName = scope.FullName;
-				AssemblyDefinition definition = LookupAssembly(assemblyName);
-				if (null == definition)
-				{
-					Assembly assembly = Assembly.Load(assemblyName);
-					string location = assembly.GetType(type.FullName).Module.FullyQualifiedName;
-					definition = GetAssembly(location);
-					RegisterAssembly(definition);
-				}
-				return definition;
 			}
 
 			private void EnterCandidateMethod(MethodDefinition method)
