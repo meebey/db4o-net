@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !SILVERLIGHT
+
+using System;
 using System.Collections.Specialized;
 using Db4objects.Db4o.Internal;
 using Db4oUnit;
@@ -162,3 +164,4 @@ namespace Db4objects.Db4o.Tests.CLI1
 		}
 	}
 }
+#endif

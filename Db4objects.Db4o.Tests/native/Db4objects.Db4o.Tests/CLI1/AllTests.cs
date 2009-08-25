@@ -45,7 +45,10 @@ namespace Db4objects.Db4o.Tests.CLI1
                     typeof(CsSystemArrayTestCase),
 					typeof(CultureInfoTestCase),
                     typeof(DictionaryBaseTestCase),
+
+#if !SILVERLIGHT
 					typeof(HybridDictionaryTestCase),
+#endif
 					typeof(ImageTestCase),
 					typeof(JavaDateCompatibilityTestCase),
 					typeof(JavaUUIDCompatibilityTestCase),
