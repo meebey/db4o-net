@@ -18,8 +18,8 @@ namespace Db4objects.Db4o.Tests.CLI1
 			return new IFixtureProvider[]
 			{
 				new SubjectFixtureProvider(new object[] {
-					new ItemCounts(5, 10),
-//					new ItemCounts(10, 5)
+//					new ItemCounts(5, 10),
+					new ItemCounts(10, 5)
 				})
 			};
 		}
