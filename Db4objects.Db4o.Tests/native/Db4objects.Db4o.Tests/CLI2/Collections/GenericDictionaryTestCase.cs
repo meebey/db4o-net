@@ -6,8 +6,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
     using System.Collections;
     using System.Collections.Generic;
 
-    using Db4objects.Db4o;
-    using Db4objects.Db4o.Query;
+    using Db4o;
+    using Query;
 
 	using Db4oUnit;
 	using Db4oUnit.Extensions;
@@ -110,7 +110,9 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
         public void CreateDicts()
         {
             nDict1 = new Dictionary<DItem1, string>();
-#if !SILVERLIGHT
+#if SILVERLIGHT
+			nDict2 = new Dictionary<DItem2, string>();
+#else
             nDict2 = new SortedList<DItem2, string>();
 #endif
             gDict1 = new Dictionary<DItem1, string>();
@@ -225,7 +227,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
     public class DItem1 : Named, IComparable<DItem1>
     {
-        string _name;
+        public string _name;
 
         public DItem1()
         {
@@ -272,7 +274,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
     public class DItem2 :Named, IComparable<DItem2>
     {
-        string _name;
+        public string _name;
 
         public DItem2()
         {
@@ -319,7 +321,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 	
 	public class DItem3 : Named
 	{
-		string _name;
+		public string _name;
 		
 		public DItem3(string name)
 		{
@@ -330,28 +332,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 		{
 			return _name;
 		}
-
-		//public override bool Equals(object obj)
-		//{
-		//    if (obj == null)
-		//    {
-		//        return false;
-		//    }
-
-		//    DItem3 other = obj as DItem3;
-
-		//    if (other == null)
-		//    {
-		//        return false;
-		//    }
-
-		//    return _name.Equals(other._name);
-		//}
-
-		//public override int GetHashCode()
-		//{
-		//    return _name.GetHashCode();
-		//}
 	}
 
     public interface Named

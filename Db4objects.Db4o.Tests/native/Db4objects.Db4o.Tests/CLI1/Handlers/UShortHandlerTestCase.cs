@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class UShortHandlerTestCase : TypeHandlerTestCaseBase
+    public class UShortHandlerTestCase : TypeHandlerTestCaseBase
     {
 		protected override void Configure(IConfiguration config)
 		{
@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             DoTestStoreObject(storedItem);
         }
 
-        private Db4objects.Db4o.Internal.Handlers.UShortHandler UShortHandler()
+        private Internal.Handlers.UShortHandler UShortHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.UShortHandler();
+            return new Internal.Handlers.UShortHandler();
         }
 
         public class Item
@@ -53,12 +53,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return true;
                 }
-                if (!(obj is UShortHandlerTestCase.Item))
+                if (!(obj is Item))
                 {
                     return false;
                 }
-                UShortHandlerTestCase.Item other = (UShortHandlerTestCase.Item)obj;
-                return (other._ushort == this._ushort) && this._ushortWrapper.Equals(other._ushortWrapper
+                var other = (Item)obj;
+                return (other._ushort == _ushort) && _ushortWrapper.Equals(other._ushortWrapper
                     );
             }
 

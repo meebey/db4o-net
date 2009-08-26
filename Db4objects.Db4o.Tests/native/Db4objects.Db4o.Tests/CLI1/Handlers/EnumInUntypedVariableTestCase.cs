@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/* Copyright (C) 2009 Versant Inc.  http://www.db4o.com */
+
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Diagnostic;
@@ -9,7 +8,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class EnumInUntypedVariableTestCase : AbstractDb4oTestCase
+    public class EnumInUntypedVariableTestCase : AbstractDb4oTestCase
     {
         enum EnumAsInteger
         {
@@ -17,10 +16,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             Second,
         }
 
-
-        class Item
+        public class Item
         {
-            public readonly object _enum;
+            public object _enum;
 
             public Item(object enum_)
             {
@@ -34,7 +32,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
                 if (rhs.GetType() != GetType()) return false;
 
-                return object.Equals(_enum, rhs._enum);
+                return Equals(_enum, rhs._enum);
             }
 
             public override string ToString()
@@ -44,7 +42,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         }
 
         private DeletionListener _diagnosticListener;
-
 
         class DeletionListener : IDiagnosticListener
         {

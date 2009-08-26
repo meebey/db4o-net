@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 	using IntCStringIntIntP = Pair<NullableContainer<Pair<NullableContainer<int>, Pair<string, int>>>, int>;
 	using IntCStringIntIntPC = NullableContainer<Pair<NullableContainer<Pair<NullableContainer<int>, Pair<string, int>>>, int>>;
 
-    class NullableTypeActivationTestCase : AbstractDb4oTestCase, IOptOutCS
+    public class NullableTypeActivationTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
 		protected override void Configure(IConfiguration config)
 		{

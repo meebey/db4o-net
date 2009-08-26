@@ -1,12 +1,14 @@
+/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
-	class JavaSnippet
+	public class JavaSnippet
 	{
 		public readonly string MainClassName;
 
@@ -24,7 +26,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 		}
 	}
 
-	internal abstract class JavaCompatibilityTestCaseBase : ITestCase
+	public abstract class JavaCompatibilityTestCaseBase : ITestCase, IOptOutSilverlight
 	{
 		protected abstract JavaSnippet JavaCode();
 

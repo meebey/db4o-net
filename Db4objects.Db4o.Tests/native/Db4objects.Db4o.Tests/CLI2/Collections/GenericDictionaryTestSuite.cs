@@ -1,7 +1,7 @@
+/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Db4objects.Db4o.Foundation;
 using Db4oUnit;
 using Db4oUnit.Data;
@@ -10,7 +10,7 @@ using Db4oUnit.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
-	class GenericDictionaryTestSuite : FixtureBasedTestSuite
+	public class GenericDictionaryTestSuite : FixtureBasedTestSuite
 	{
 		public override Type[] TestUnits()
 		{
@@ -80,9 +80,9 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 			}
 		}
 
-		class DictionaryTestUnit : AbstractDb4oTestCase
+		public class DictionaryTestUnit : AbstractDb4oTestCase
 		{
-			private class Item
+			public class Item
 			{
 				public IDictionary dictionary;
 

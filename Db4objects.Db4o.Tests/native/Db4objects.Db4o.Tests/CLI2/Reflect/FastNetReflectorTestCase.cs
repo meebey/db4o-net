@@ -7,10 +7,11 @@ using Db4objects.Db4o.Internal.Reflect;
 using System.Collections.Generic;
 using Db4objects.Db4o.Reflect;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Reflector
 {
-	class FastNetReflectorTestCase : ITestCase
+	public class FastNetReflectorTestCase : ITestCase, IOptOutSilverlight
 	{
 #if !CF
 		public void TestNullAssignmentToValueTypeField()

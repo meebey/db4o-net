@@ -12,7 +12,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Handlers
 {
-	internal abstract class GenericCollectionTypeHandlerTestUnitBase : AbstractDb4oTestCase
+	public abstract class GenericCollectionTypeHandlerTestUnitBase : AbstractDb4oTestCase
 	{
 		protected override void Configure(IConfiguration config)
 		{

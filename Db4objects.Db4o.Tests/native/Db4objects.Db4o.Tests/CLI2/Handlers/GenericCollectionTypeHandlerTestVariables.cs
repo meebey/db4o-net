@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 			}
 		}
 
-		private class ListItemFactory : GenericCollectionTestFactory
+		public class ListItemFactory : GenericCollectionTestFactory
 		{
 			public override object NewItem<T>()
 			{
@@ -115,13 +115,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				return "List<>";
 			}
 
-			private class Item<T>
+			public class Item<T>
 			{
 				public List<T> _coll = new List<T>();
 			}
 		}
 
-		private class LinkedListItemFactory : GenericCollectionTestFactory
+		public class LinkedListItemFactory : GenericCollectionTestFactory
 		{
 			public override object NewItem<T>()
 			{
@@ -138,13 +138,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				return "LinkedList<>";
 			}
 
-			private class Item<T>
+			public class Item<T>
 			{
 				public LinkedList<T> _coll = new LinkedList<T>();
 			}
 		}
 
-        private class UntypedLinkedListItemFactory : GenericCollectionTestFactory
+		public class UntypedLinkedListItemFactory : GenericCollectionTestFactory
         {
             public override object NewItem<T>()
             {
@@ -161,13 +161,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
                 return "LinkedList<>(object)";
             }
 
-            private class Item<T>
+			public class Item<T>
             {
                 public object _coll = new LinkedList<T>();
             }
         }
 
-		private class StackItemFactory : GenericCollectionTestFactory
+		public class StackItemFactory : GenericCollectionTestFactory
 		{
 			public override object NewItem<T>()
 			{
@@ -184,13 +184,13 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				return "Stack<>()";
 			}
 
-			private class Item<T>
+			public class Item<T>
 			{
 				public Stack<T>_coll = new Stack<T>();
 			}
 		}
 
-		private class QueueItemFactory : GenericCollectionTestFactory
+		public class QueueItemFactory : GenericCollectionTestFactory
 		{
 			public override object NewItem<T>()
 			{
@@ -207,7 +207,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 				return "Queue<>()";
 			}
 
-			private class Item<T>
+			public class Item<T>
 			{
 				public Queue<T> _coll = new Queue<T>();
 			}

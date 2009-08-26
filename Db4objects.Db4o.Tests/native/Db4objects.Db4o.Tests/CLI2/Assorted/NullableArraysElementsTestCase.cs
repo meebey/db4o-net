@@ -1,12 +1,12 @@
-﻿using System;
-using Db4objects.Db4o.Internal;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+using System;
 using Db4objects.Db4o.Query;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
-	class NullableArraysElementsTestCase : AbstractDb4oTestCase
+	public class NullableArraysElementsTestCase : AbstractDb4oTestCase
 	{
         private static readonly Action<string> warning = delegate(String s) { TestPlatform.EmitWarning( s + "NullableArraysElementsTestCase: Remove the if() when COR-1130 get closed");  };
 
@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
         }
 	}
 
-	class TestSubject
+	public class TestSubject
 	{
 		public int?[] _elements;
 		public int? _nullableInt;
@@ -138,7 +138,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		}
 	}
 
-	struct VTTestSubject
+	public struct VTTestSubject
 	{
 		public int _value;
 		public string _name;

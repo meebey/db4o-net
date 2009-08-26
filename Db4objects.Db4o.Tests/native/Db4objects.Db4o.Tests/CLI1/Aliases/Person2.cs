@@ -5,7 +5,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 {
     public class Person2 : IPerson
     {
-        private String _name;
+        public String _name;
 
         public Person2(String name)
         {

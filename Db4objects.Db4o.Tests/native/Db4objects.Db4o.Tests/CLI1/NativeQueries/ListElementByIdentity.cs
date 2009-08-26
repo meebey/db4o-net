@@ -1,5 +1,4 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
-using Db4objects.Db4o.Ext;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -9,7 +8,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 {
 	public class ListElementByIdentity : AbstractDb4oTestCase, IOptOutCS
 	{
-		IList<LebiElement> _list;
+		public IList<LebiElement> _list;
 
 		override protected void Store()
 		{
@@ -23,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		{
 			LebiElement elem = (LebiElement)Db().Get(new LebiElement("23"))[0];
 
-			IList<ListElementByIdentity> res = Db().Query<ListElementByIdentity>(delegate(ListElementByIdentity lebi)
+			IList<ListElementByIdentity> res = Db().Query(delegate(ListElementByIdentity lebi)
 			{
 				return lebi._list.Contains(elem);
 			});

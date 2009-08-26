@@ -13,16 +13,16 @@ using Db4oUnit.Extensions;
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
 
-    class EnumTypeHandlerTestCase : AbstractDb4oTestCase
+    public class EnumTypeHandlerTestCase : AbstractDb4oTestCase
     {
-        enum EnumAsByte : byte
+    	public enum EnumAsByte : byte
         {
             First,
             Second,
             Third
         }
 
-        enum EnumAsInteger
+    	public enum EnumAsInteger
         {
             First = -42,
             Second,
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             Second,
         }
 
-        enum EnumAsLong : long
+    	public enum EnumAsLong : long
         {
             First = -42,
             Second = 37,
@@ -61,11 +61,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             Second
         }
 
-        class Item
+        public class Item
         {
-			public readonly EnumAsByte _asByte;
-            public readonly EnumAsInteger _asInteger;
-            public readonly EnumAsLong _asLong;
+			public EnumAsByte _asByte;
+            public EnumAsInteger _asInteger;
+            public EnumAsLong _asLong;
 
             public Item(EnumAsByte asByte, EnumAsInteger asInteger, EnumAsLong asLong)
             {
@@ -329,6 +329,5 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         // for .NET 2.0 compatibility
         public delegate R Func<T, R>(T value);
-
     }
 }

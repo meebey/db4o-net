@@ -9,7 +9,7 @@ using Db4oUnit.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI2.Handlers
 {
-	class GenericCollectionTypeHandlerTestSuite : FixtureBasedTestSuite, IDb4oTestCase
+	public class GenericCollectionTypeHandlerTestSuite : FixtureBasedTestSuite, IDb4oTestCase
 	{
 		public override Type[] TestUnits()
 		{
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 		}
 	}
 
-	class GenericCollectionTypeHandlerTestUnit : GenericCollectionTypeHandlerTestUnitBase
+	public class GenericCollectionTypeHandlerTestUnit : GenericCollectionTypeHandlerTestUnitBase
 	{
 		public void TestSubQuery()
 		{

@@ -5,7 +5,7 @@ using Db4oUnit.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI1.Soda 
 {
-	internal class STValueTypeOrderByTestSuite : FixtureBasedTestSuite
+	public class STValueTypeOrderByTestSuite : FixtureBasedTestSuite
 	{
 		public static FixtureVariable VALUE_TYPE_TYPE_VARIABLE = FixtureVariable.NewInstance("Type");
 
@@ -28,8 +28,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Soda
 #if !SILVERLIGHT && !CF
 											new ValueTypeFixture<DateTimeOffset>(delegate(int i) { return DateTimeOffset.Now.AddHours(i); }),
 #endif
+#if !SILVERLIGHT
 											new ValueTypeFixture<Guid>(delegate(int i) { return new Guid(i, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }),
 											new ValueTypeFixture<TimeSpan>(delegate(int i) { return TimeSpan.FromHours(i); }),
+#endif
 										}),
 						};
 		}

@@ -8,7 +8,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.Soda
 {
-	class STValueTypesOrderByTestCase : AbstractDb4oTestCase
+	public class STValueTypesOrderByTestCase : AbstractDb4oTestCase
 	{
 		const int ThingsCount = 10;
 

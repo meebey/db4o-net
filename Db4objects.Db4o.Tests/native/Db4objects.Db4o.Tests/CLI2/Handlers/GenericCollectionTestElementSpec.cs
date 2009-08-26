@@ -5,11 +5,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 {
 	public class GenericCollectionTestElementSpec<T> : ILabeled
 	{
-		public readonly T[] _elements;
+		public T[] _elements;
 
-		public readonly T _notContained;
+		public T _notContained;
 
-		public readonly T _largeElement;
+		public T _largeElement;
 
 		public GenericCollectionTestElementSpec(T[] elements, T notContained, T largeElement)
 		{

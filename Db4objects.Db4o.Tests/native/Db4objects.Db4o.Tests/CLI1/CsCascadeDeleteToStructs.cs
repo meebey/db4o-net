@@ -1,6 +1,5 @@
 /* Copyright (C) 2004   Versant Inc.   http://www.db4o.com */
 
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
@@ -8,7 +7,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
     public class CsCascadeDeleteToStructs : AbstractDb4oTestCase
     {
-        CDSStruct myStruct;
+        public CDSStruct myStruct;
 
         protected override void Store()
         {

@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
+/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o.Collections;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
-    class ArrayDictionary4TestCase : ITestLifeCycle
+    public class ArrayDictionary4TestCase : ITestLifeCycle
     {
         private ArrayDictionary4<string, int> dict;
 

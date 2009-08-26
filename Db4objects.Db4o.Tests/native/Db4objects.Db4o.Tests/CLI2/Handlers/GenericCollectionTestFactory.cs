@@ -3,7 +3,7 @@ using Db4oUnit.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI2.Handlers
 {
-	internal abstract class GenericCollectionTestFactory : ILabeled
+	public abstract class GenericCollectionTestFactory : ILabeled
 	{
 		public static readonly string FieldName = "_coll";
 

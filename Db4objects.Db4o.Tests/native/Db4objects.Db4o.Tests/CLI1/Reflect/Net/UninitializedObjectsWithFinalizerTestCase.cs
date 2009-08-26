@@ -1,46 +1,36 @@
-﻿using System;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+
+using System;
 using System.Collections.Generic;
-using System.IO;
-using Db4objects.Db4o.Config;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 {
-	class UninitializedObjectsWithFinalizerTestCase : ITestCase
+	public class UninitializedObjectsWithFinalizerTestCase : AbstractDb4oTestCase
 	{
 #if !CF
-		public void TestUninitilizedObjects()
+		protected override void Store()
 		{
-			string databaseFileName = Path.GetTempFileName();
-			File.Delete(databaseFileName);
+			Store(new TestSubject("Test"));
 
-			using (IObjectContainer db = Db4oFactory.OpenFile(NewConfiguration(), databaseFileName))
-			{
-				db.Store(new TestSubject("Test"));
-				
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
-			}
-
-			using (IObjectContainer db = Db4oFactory.OpenFile(NewConfiguration(), databaseFileName))
-			{
-				IList <TestSubject> result = db.Query<TestSubject>();
-				
-				Assert.AreEqual(1, result.Count);
-				db.Activate(result[0], 2);
-				Assert.AreEqual("Test", result[0].name);
-            }
-
-			File.Delete(databaseFileName);
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
 		}
 
-		private static IConfiguration NewConfiguration()
+		public void TestUninitilizedObjects()
 		{
-			return Db4oFactory.NewConfiguration();
+			Reopen();
+			
+			IList <TestSubject> result = Db().Query<TestSubject>();
+				
+			Assert.AreEqual(1, result.Count);
+			Db().Activate(result[0], 2);
+			Assert.AreEqual("Test", result[0].name);
 		}
 	}
 
-	internal class TestSubject
+	public class TestSubject
 	{
 		public string name;
 

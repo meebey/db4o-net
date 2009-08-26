@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Events
 {
 	public class EventRegistryTestCase : AbstractDb4oTestCase
 	{
-		class Item
+		public class Item
 		{	
 		}
 		

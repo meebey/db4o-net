@@ -9,9 +9,9 @@ namespace Db4objects.Db4o.Tests.CLI1
     public class CsCustomTransientAttribute : AbstractDb4oTestCase
     {
         [CustomTransient]
-        String myTransient;
+        public String myTransient;
 
-        String myPersistent;
+		public String myPersistent;
 
         protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
         {

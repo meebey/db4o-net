@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 	{
 		public class Item
 		{	
-			int _value;
+			public int _value;
 
 			public Item()
 			{	

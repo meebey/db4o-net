@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 	/// </summary>
 	public class CsEnum : AbstractDb4oTestCase
 	{
-		CsEnumState _state;
+		public CsEnumState _state;
 
 		public CsEnum()
 		{

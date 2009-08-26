@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
@@ -6,14 +7,12 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
     public class EnumTestCase : AbstractDb4oTestCase
     {
+        public enum MyEnum { A, B, C, D, F, INCOMPLETE }; 
 
-        enum MyEnum { A, B, C, D, F, INCOMPLETE }; 
-
-        class Item { 
-
+        public class Item 
+		{ 
             public MyEnum _enum; 
-
-         } 
+        } 
 
        protected override void Store()
        {

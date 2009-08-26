@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class ULongHandlerTestCase : TypeHandlerTestCaseBase
+    public class ULongHandlerTestCase : TypeHandlerTestCaseBase
     {
 		protected override void Configure(IConfiguration config)
 		{
@@ -26,13 +26,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         public virtual void TestStoreObject()
         {
-            ULongHandlerTestCase.Item storedItem = new ULongHandlerTestCase.Item(0x1122334455667788, 0x8877665544332211);
+            Item storedItem = new Item(0x1122334455667788, 0x8877665544332211);
             DoTestStoreObject(storedItem);
         }
 
-        private Db4objects.Db4o.Internal.Handlers.ULongHandler ULongHandler()
+        private Internal.Handlers.ULongHandler ULongHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.ULongHandler();
+            return new Internal.Handlers.ULongHandler();
         }
 
         public class Item
@@ -53,13 +53,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return true;
                 }
-                if (!(obj is ULongHandlerTestCase.Item))
+                if (!(obj is Item))
                 {
                     return false;
                 }
-                ULongHandlerTestCase.Item other = (ULongHandlerTestCase.Item)obj;
-                return (other._ulong == this._ulong) && this._ulongWrapper.Equals(other._ulongWrapper
-                    );
+                Item other = (Item)obj;
+                return (other._ulong == _ulong) && _ulongWrapper.Equals(other._ulongWrapper);
             }
 
             public override string ToString()

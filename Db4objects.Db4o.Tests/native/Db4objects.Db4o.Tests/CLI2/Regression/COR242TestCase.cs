@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Regression
     using Db4oUnit;
     using Db4oUnit.Extensions;
 
-    class COR242TestCase : AbstractDb4oTestCase
+    public class COR242TestCase : AbstractDb4oTestCase
     {
         public class Item
         {

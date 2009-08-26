@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 	public class Item
 	{
-		NullableInt32 _id;
+		public NullableInt32 _id;
 
 		public Item(int id)
 		{
@@ -59,8 +59,8 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 	public struct NullableInt32
 	{
-		private int _value;
-		private bool _hasValue;
+		public int _value;
+		public bool _hasValue;
 
 		public NullableInt32(int value)
 		{

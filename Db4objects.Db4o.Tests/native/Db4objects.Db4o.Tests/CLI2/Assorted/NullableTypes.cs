@@ -3,16 +3,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
 	using System;
 
-	using Db4objects.Db4o;
-	using Db4objects.Db4o.Query;
+	using Db4o;
+	using Query;
 
 	using Db4oUnit;
 	using Db4oUnit.Extensions;
 
-	class NullableContainer
+	public class NullableContainer
 	{
-		public int? intValue = null;
-		public DateTime? dateValue = null;
+		public int? intValue;
+		public DateTime? dateValue;
 
 		public NullableContainer(int value)
 		{
@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		}
 	}
 
-	class NullableTypes : AbstractDb4oTestCase
+	public class NullableTypes : AbstractDb4oTestCase
 	{
 		static readonly DateTime TheDate = new DateTime(1983, 3, 7);
 

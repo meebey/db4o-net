@@ -1,15 +1,14 @@
-using System;
+/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System.Collections.Generic;
-using System.Text;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Collections;
-using Db4objects.Db4o.Reflect;
 using Db4oUnit;
 using Db4objects.Db4o.Internal;
+using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
-    class ArrayDictionary4TATestCase : TransparentActivationTestCaseBase
+    public class ArrayDictionary4TATestCase : TransparentActivationTestCaseBase, IOptOutSilverlight
     {
         protected override void Store()
         {

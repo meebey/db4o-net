@@ -1,6 +1,6 @@
+/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections

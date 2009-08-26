@@ -1,4 +1,5 @@
-﻿using Db4objects.Db4o.Config;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4oUnit;
 using Db4oUnit.Extensions;

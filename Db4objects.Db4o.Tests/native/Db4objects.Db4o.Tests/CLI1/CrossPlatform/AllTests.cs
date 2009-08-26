@@ -1,9 +1,10 @@
-﻿using System;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+using System;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 {
-	class AllTests : Db4oTestSuite
+	public class AllTests : Db4oTestSuite
 	{
 		private static void Main()
 		{
@@ -14,8 +15,10 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 		{
 			return new Type[]
 			       	{
+#if !SILVERLIGHT
 						typeof(DotnetServerCrossplatformTestCase),
 			       		typeof(JavaServerCrossplatformTestCase),
+#endif
 			       	};
 		}
 	}

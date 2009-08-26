@@ -1,14 +1,15 @@
+/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Types
 {
-	class ArrayAsListTestCase : AbstractDb4oTestCase
+	public class ArrayAsListTestCase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
-			private IList _list;
+			public IList _list;
 
 			public Item(IList list)
 			{

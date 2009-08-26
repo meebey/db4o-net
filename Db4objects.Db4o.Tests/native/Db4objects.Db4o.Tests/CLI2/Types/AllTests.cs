@@ -4,7 +4,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Types
 {
-	class AllTests : Db4oTestSuite
+	public class AllTests : Db4oTestSuite
 	{
 		protected override Type[] TestCases()
 		{

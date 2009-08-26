@@ -5,9 +5,9 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
-    class ListOfNullableItemTestCase : AbstractDb4oTestCase
+    public class ListOfNullableItemTestCase : AbstractDb4oTestCase
     {
-        private class Item
+        public class Item
         {
             public IList<int?> nullableList;
             public Item(IList<int?> nullableList_)

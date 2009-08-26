@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 	using IntCStringIntIntP = Pair<Container<Pair<Container<int>, Pair<string, int>>>, int>;
 	using IntCStringIntIntPC = Container<Pair<Container<Pair<Container<int>, Pair<string, int>>>, int>>;
 
-    class ValueTypeActivationTestCase : AbstractDb4oTestCase, IOptOutCS
+    public class ValueTypeActivationTestCase : AbstractDb4oTestCase, IOptOutCS
 	{
 		protected override void Configure(IConfiguration config)
 		{

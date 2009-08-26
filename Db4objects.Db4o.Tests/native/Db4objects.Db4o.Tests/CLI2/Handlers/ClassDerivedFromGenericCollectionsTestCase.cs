@@ -158,6 +158,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 			_collection = collection;
 		}
 
-		public readonly ICollection _collection;
+		public ICollection _collection;
 	}
 }

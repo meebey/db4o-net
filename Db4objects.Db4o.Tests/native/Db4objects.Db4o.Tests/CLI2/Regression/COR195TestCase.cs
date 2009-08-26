@@ -4,16 +4,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Regression
 {
 	using System.Collections.Generic;
 
-	using Db4objects.Db4o.Config;
+	using Config;
 
 	using Db4oUnit;
 	using Db4oUnit.Extensions;
 
-	class COR195TestCase : AbstractDb4oTestCase
+	public class COR195TestCase : AbstractDb4oTestCase
 	{
 		public class Item
 		{
-			private int i;
+			public int i;
 
 			public Item(int i)
 			{

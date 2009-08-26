@@ -6,7 +6,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 {
-	public class Cat : AbstractDb4oTestCase
+	public class Cat : AbstractDb4oTestCase, IOptOutSilverlight
 	{
 		public string name;
 

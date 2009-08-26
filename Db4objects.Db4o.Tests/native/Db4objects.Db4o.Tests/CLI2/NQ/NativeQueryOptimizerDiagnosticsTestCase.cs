@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 {
-    public partial class NativeQueryOptimizerDiagnosticsTestCase
+    public partial class NativeQueryOptimizerDiagnosticsTestCase : IOptOutSilverlight
 	{
 #if !CF && !SILVERLIGHT
         public void TesteInlineClosureComplexQueryFails()

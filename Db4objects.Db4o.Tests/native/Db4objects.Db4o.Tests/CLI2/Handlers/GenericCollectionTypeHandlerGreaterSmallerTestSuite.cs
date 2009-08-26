@@ -7,7 +7,7 @@ using Db4oUnit.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI2.Handlers
 {
-	class GenericCollectionTypeHandlerGreaterSmallerTestSuite : FixtureBasedTestSuite, IDb4oTestCase
+	public class GenericCollectionTypeHandlerGreaterSmallerTestSuite : FixtureBasedTestSuite, IDb4oTestCase
 	{
 		public override IFixtureProvider[] FixtureProviders()
 		{

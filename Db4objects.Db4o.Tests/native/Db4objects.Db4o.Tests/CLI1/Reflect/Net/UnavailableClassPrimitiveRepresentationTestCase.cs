@@ -1,4 +1,6 @@
-﻿using System;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+
+using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Assorted;
@@ -7,7 +9,7 @@ using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.CLI1.Reflect.Net
 {
-	class UnavailableClassPrimitiveRepresentationTestCase : UnavailableClassTestCaseBase
+	public class UnavailableClassPrimitiveRepresentationTestCase : UnavailableClassTestCaseBase
 	{
 		protected override void Store()
 		{

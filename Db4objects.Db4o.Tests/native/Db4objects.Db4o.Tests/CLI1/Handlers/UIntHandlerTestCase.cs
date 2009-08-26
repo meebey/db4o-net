@@ -6,9 +6,9 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class UIntHandlerTestCase : TypeHandlerTestCaseBase
+    public class UIntHandlerTestCase : TypeHandlerTestCaseBase
     {
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(Config.IConfiguration config)
 		{
 			config.ExceptionsOnNotStorable(false);
 		}
@@ -25,13 +25,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         public virtual void TestStoreObject()
         {
-            UIntHandlerTestCase.Item storedItem = new UIntHandlerTestCase.Item((uint)0x11223344, (uint)0x55667788);
+            Item storedItem = new Item(0x11223344, 0x55667788);
             DoTestStoreObject(storedItem);
         }
 
-        private Db4objects.Db4o.Internal.Handlers.UIntHandler UIntHandler()
+        private Internal.Handlers.UIntHandler UIntHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.UIntHandler();
+            return new Internal.Handlers.UIntHandler();
         }
 
         public class Item
@@ -52,13 +52,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return true;
                 }
-                if (!(obj is UIntHandlerTestCase.Item))
+                if (!(obj is Item))
                 {
                     return false;
                 }
-                UIntHandlerTestCase.Item other = (UIntHandlerTestCase.Item)obj;
-                return (other._uint == this._uint) && this._uintWrapper.Equals(other._uintWrapper
-                    );
+                Item other = (Item)obj;
+                return (other._uint == _uint) && _uintWrapper.Equals(other._uintWrapper);
             }
 
             public override string ToString()

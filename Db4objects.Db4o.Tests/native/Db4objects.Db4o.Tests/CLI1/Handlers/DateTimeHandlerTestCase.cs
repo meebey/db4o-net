@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class DateTimeHandlerTestCase : TypeHandlerTestCaseBase
+    public class DateTimeHandlerTestCase : TypeHandlerTestCaseBase
     {
 		protected override void Configure(IConfiguration config)
 		{
@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         public virtual void TestStoreObject()
         {
-            DateTimeHandlerTestCase.Item storedItem = new DateTimeHandlerTestCase.Item(new DateTime());
+            Item storedItem = new Item(new DateTime());
             DoTestStoreObject(storedItem);
         }
 
@@ -34,16 +34,16 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         {
             DateTimeKind kind = DateTimeKind.Utc;
             DateTime storedDateTime = DateTime.SpecifyKind(new DateTime(), kind);
-            DateTimeHandlerTestCase.Item storedItem = new DateTimeHandlerTestCase.Item(storedDateTime);
+            Item storedItem = new Item(storedDateTime);
             Store(storedItem);
             Reopen();
             Item retrievedItem = (Item) RetrieveOnlyInstance(typeof(Item));
             Assert.AreEqual(kind, retrievedItem._dateTime.Kind);
         }
 
-        private Db4objects.Db4o.Internal.Handlers.DateTimeHandler DateTimeHandler()
+        private Internal.Handlers.DateTimeHandler DateTimeHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.DateTimeHandler();
+            return new Internal.Handlers.DateTimeHandler();
         }
 
         public class Item
@@ -61,11 +61,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return true;
                 }
-                if (!(obj is DateTimeHandlerTestCase.Item))
+                if (!(obj is Item))
                 {
                     return false;
                 }
-                DateTimeHandlerTestCase.Item other = (DateTimeHandlerTestCase.Item)obj;
+                Item other = (Item)obj;
                 return (other._dateTime == _dateTime);
             }
 

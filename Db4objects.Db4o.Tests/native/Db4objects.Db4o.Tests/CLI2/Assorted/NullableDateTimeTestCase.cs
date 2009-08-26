@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
@@ -6,7 +7,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
     public class NullableDateTimeTestCase : AbstractDb4oTestCase
     {
-        class Item
+        public class Item
         {
             public DateTime? _typedDateTime;
 

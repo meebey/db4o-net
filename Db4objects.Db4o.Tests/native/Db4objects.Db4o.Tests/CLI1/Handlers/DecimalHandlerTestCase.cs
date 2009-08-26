@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class DecimalHandlerTestCase : TypeHandlerTestCaseBase
+    public class DecimalHandlerTestCase : TypeHandlerTestCaseBase
     {
 		protected override void Configure(IConfiguration config)
 		{
@@ -26,13 +26,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         public virtual void TestStoreObject()
         {
-            DecimalHandlerTestCase.Item storedItem = new DecimalHandlerTestCase.Item(Decimal.MaxValue, Decimal.MinValue);
+            Item storedItem = new Item(Decimal.MaxValue, Decimal.MinValue);
             DoTestStoreObject(storedItem);
         }
 
-        private Db4objects.Db4o.Internal.Handlers.DecimalHandler DecimalHandler()
+        private Internal.Handlers.DecimalHandler DecimalHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.DecimalHandler();
+            return new Internal.Handlers.DecimalHandler();
         }
 
         public class Item
@@ -53,13 +53,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return true;
                 }
-                if (!(obj is DecimalHandlerTestCase.Item))
+                if (!(obj is Item))
                 {
                     return false;
                 }
-                DecimalHandlerTestCase.Item other = (DecimalHandlerTestCase.Item)obj;
-                return (other._decimal == this._decimal) && this._decimalWrapper.Equals(other._decimalWrapper
-                    );
+                Item other = (Item)obj;
+                return (other._decimal == this._decimal) && this._decimalWrapper.Equals(other._decimalWrapper);
             }
 
             public override string ToString()

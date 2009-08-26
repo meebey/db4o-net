@@ -1,10 +1,9 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 using System;
-using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
-	class DateCompatibilityItem
+	public class DateCompatibilityItem
 	{
 		public DateCompatibilityItem()
 		{	
@@ -23,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 	}
 
 
-	class JavaDateCompatibilityTestCase : JavaCompatibilityTestCaseBase
+	public class JavaDateCompatibilityTestCase : JavaCompatibilityTestCaseBase
 	{
 		public void _Test()
 		{

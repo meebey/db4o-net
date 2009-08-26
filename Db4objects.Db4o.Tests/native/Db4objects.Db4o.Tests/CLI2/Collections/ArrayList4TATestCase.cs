@@ -7,10 +7,11 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
-    class ArrayList4TATestCase : TransparentActivationTestCaseBase
+    class ArrayList4TATestCase : TransparentActivationTestCaseBase, IOptOutSilverlight
     {
 #if !SILVERLIGHT
         private const int SIZE = 50;

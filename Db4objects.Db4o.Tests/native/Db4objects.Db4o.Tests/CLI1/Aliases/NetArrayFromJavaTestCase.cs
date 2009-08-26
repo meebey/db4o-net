@@ -3,11 +3,12 @@ using System.IO;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI1.Aliases
 {
-	class NetArrayFromJavaTestCase : ITestCase
+	class NetArrayFromJavaTestCase : ITestCase, IOptOutSilverlight
 	{
 #if !CF
 		public class Item
@@ -38,7 +39,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 			static string ToString(System.Collections.IEnumerable items)
 			{
 				if (items == null) return "null";
-				return new Db4objects.Db4o.Foundation.Collection4(items).ToString();
+				return new Foundation.Collection4(items).ToString();
 			}
 
 		}

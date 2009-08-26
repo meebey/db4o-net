@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Db4o.Foundation.Collections;
@@ -107,7 +108,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 		private Type _itemType;
 	}
 
-	internal interface ICollectionHelper
+	public interface ICollectionHelper
 	{
 		void AssertCollection(object item);
 		void AssertPlainContent(IEnumerable enumerable);

@@ -5,92 +5,88 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
-    class CsValueTypesTestCase : AbstractDb4oTestCase
+    public class CsValueTypesTestCase : AbstractDb4oTestCase
     {
-        static decimal DECIMAL_PREC = 9999999999999999999999999999m;
-        static float FLOAT_PREC = 1.123456E+38f;
-        static double DOUBLE_PREC = 1.12345678901234E-300;
+		public static decimal DECIMAL_PREC = 9999999999999999999999999999m;
+		public static float FLOAT_PREC = 1.123456E+38f;
+		public static double DOUBLE_PREC = 1.12345678901234E-300;
 
-        bool boolMin;
-        bool boolMax;
+		public bool boolMin;
+		public bool boolMax;
 
-        byte byteMin;
-        byte byteOne;
-        byte byteFuzzy;
-        byte byteMax;
+		public byte byteMin;
+		public byte byteOne;
+		public byte byteFuzzy;
+		public byte byteMax;
 
-        sbyte sbyteMin;
-        sbyte sbyteNegOne;
-        sbyte sbyteOne;
-        sbyte sbyteFuzzy;
-        sbyte sbyteMax;
+		public sbyte sbyteMin;
+		public sbyte sbyteNegOne;
+		public sbyte sbyteOne;
+		public sbyte sbyteFuzzy;
+		public sbyte sbyteMax;
 
-        char charMin;
-        char charOne;
-        char charFuzzy;
-        char charMax;
+		public char charMin;
+		public char charOne;
+		public char charFuzzy;
+		public char charMax;
 
-        decimal decimalMin;
-        decimal decimalNegOne;
-        decimal decimalOne;
-        decimal decimalPrec;
-        decimal decimalMax;
+		public decimal decimalMin;
+		public decimal decimalNegOne;
+		public decimal decimalOne;
+		public decimal decimalPrec;
+		public decimal decimalMax;
 
-        double doubleMin;
-        double doubleNegOne;
-        double doubleOne;
-        double doublePrec;
-        double doubleMax;
+		public double doubleMin;
+		public double doubleNegOne;
+		public double doubleOne;
+		public double doublePrec;
+		public double doubleMax;
 
-        float floatMin;
-        float floatNegOne;
-        float floatOne;
-        float floatPrec;
-        float floatMax;
+		public float floatMin;
+		public float floatNegOne;
+		public float floatOne;
+		public float floatPrec;
+		public float floatMax;
 
-        int intMin;
-        int intNegOne;
-        int intOne;
-        int intFuzzy;
-        int intMax;
+		public int intMin;
+		public int intNegOne;
+		public int intOne;
+		public int intFuzzy;
+		public int intMax;
 
-        uint uintMin;
-        uint uintOne;
-        uint uintFuzzy;
-        uint uintMax;
+		public uint uintMin;
+		public uint uintOne;
+		public uint uintFuzzy;
+		public uint uintMax;
 
-        long longMin;
-        long longNegOne;
-        long longOne;
-        long longFuzzy;
-        long longMax;
+		public long longMin;
+		public long longNegOne;
+		public long longOne;
+		public long longFuzzy;
+		public long longMax;
 
-        ulong ulongMin;
-        ulong ulongOne;
-        ulong ulongFuzzy;
-        ulong ulongMax;
+		public ulong ulongMin;
+		public ulong ulongOne;
+		public ulong ulongFuzzy;
+		public ulong ulongMax;
 
-        short shortMin;
-        short shortNegOne;
-        short shortOne;
-        short shortFuzzy;
-        short shortMax;
+		public short shortMin;
+		public short shortNegOne;
+		public short shortOne;
+		public short shortFuzzy;
+		public short shortMax;
 
-        ushort ushortMin;
-        ushort ushortOne;
-        ushort ushortFuzzy;
-        ushort ushortMax;
+		public ushort ushortMin;
+		public ushort ushortOne;
+		public ushort ushortFuzzy;
+		public ushort ushortMax;
 
-        DateTime dateTimeMin;
-        DateTime dateTimeOne;
-        DateTime dateTimeFuzzy;
-        DateTime dateTimeMax;
+		public DateTime dateTimeMin;
+		public DateTime dateTimeOne;
+		public DateTime dateTimeFuzzy;
+		public DateTime dateTimeMax;
 
-        String name;
-
-        public CsValueTypesTestCase()
-        {
-        }
+		public String name;
 
         override protected void Store()
         {

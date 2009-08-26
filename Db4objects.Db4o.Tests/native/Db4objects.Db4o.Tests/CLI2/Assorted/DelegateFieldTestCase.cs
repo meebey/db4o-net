@@ -1,11 +1,11 @@
-﻿using System;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System.ComponentModel;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
-	class DelegateFieldTestCase : AbstractDb4oTestCase
+	public class DelegateFieldTestCase : AbstractDb4oTestCase, IOptOutSilverlight
 	{
 		public class Item
 		{

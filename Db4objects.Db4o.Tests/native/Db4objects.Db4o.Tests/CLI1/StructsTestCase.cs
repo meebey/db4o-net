@@ -7,7 +7,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
-	public class StructsTestCase : AbstractDb4oTestCase
+	public class StructsTestCase : AbstractDb4oTestCase, IOptOutSilverlight
 	{
 		public static string GUID = "6a0d8033-444e-4b44-b0df-bf33dfe050f9";
 

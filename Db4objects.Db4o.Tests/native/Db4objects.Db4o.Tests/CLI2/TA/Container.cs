@@ -4,9 +4,9 @@ using Db4objects.Db4o.Tests.Common.TA;
 
 namespace Db4objects.Db4o.Tests.CLI2.TA
 {
-	class Named : ActivatableImpl
+	public class Named : ActivatableImpl
 	{
-		private string _name;
+		public string _name;
 
 		public Named(string name)
 		{
@@ -32,12 +32,11 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		}
 	}
 
-	class NullableContainer<T> : Named where T : struct
+	public class NullableContainer<T> : Named where T : struct
 	{
-		private T? _value;
+		public T? _value;
 
-		public NullableContainer(string name, T? value)
-			: base(name)
+		public NullableContainer(string name, T? value) : base(name)
 		{
 			_value = value;
 		}
@@ -64,9 +63,9 @@ namespace Db4objects.Db4o.Tests.CLI2.TA
 		}
 	}
 
-	class Container<T> : Named where T: struct 
-	{	
-		private T _value;
+	public class Container<T> : Named where T : struct 
+	{
+		public T _value;
 
 		public Container(string name, T value) : base(name)
 		{	

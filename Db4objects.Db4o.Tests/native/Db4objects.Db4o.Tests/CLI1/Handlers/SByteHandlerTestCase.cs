@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Handlers;
 
 namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
-    class SByteHandlerTestCase : TypeHandlerTestCaseBase
+    public class SByteHandlerTestCase : TypeHandlerTestCaseBase
     {
 		protected override void Configure(IConfiguration config)
 		{
@@ -26,13 +26,13 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
         public virtual void TestStoreObject()
         {
-            SByteHandlerTestCase.Item storedItem = new SByteHandlerTestCase.Item(0x11, 0x22);
+            Item storedItem = new Item(0x11, 0x22);
             DoTestStoreObject(storedItem);
         }
 
-        private Db4objects.Db4o.Internal.Handlers.SByteHandler SByteHandler()
+        private Internal.Handlers.SByteHandler SByteHandler()
         {
-            return new Db4objects.Db4o.Internal.Handlers.SByteHandler();
+            return new Internal.Handlers.SByteHandler();
         }
 
         public class Item
@@ -53,12 +53,12 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return true;
                 }
-                if (!(obj is SByteHandlerTestCase.Item))
+                if (!(obj is Item))
                 {
                     return false;
                 }
-                SByteHandlerTestCase.Item other = (SByteHandlerTestCase.Item)obj;
-                return (other._sbyte == this._sbyte) && this._sbyteWrapper.Equals(other._sbyteWrapper
+                Item other = (Item)obj;
+                return (other._sbyte == _sbyte) && _sbyteWrapper.Equals(other._sbyteWrapper
                     );
             }
 

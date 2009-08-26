@@ -1,4 +1,4 @@
-using System;
+/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System.Collections.Generic;
 using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Tests.Common.TA;
@@ -6,7 +6,7 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
-	class ArrayDictionary4TransparentPersistenceTestCase : ITestLifeCycle
+	public class ArrayDictionary4TransparentPersistenceTestCase : ITestLifeCycle
 	{
 		private ArrayDictionary4<string, int> dict;
 		private MockActivator activator;

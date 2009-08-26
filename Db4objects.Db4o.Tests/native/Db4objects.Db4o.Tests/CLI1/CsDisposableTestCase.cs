@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 		public void TestDispose()
 		{
 			Assert.IsTrue(!Db().IsClosed());
-			(Db() as System.IDisposable).Dispose();
+			Db().Dispose();
 			Assert.IsTrue(Db().IsClosed());
 		}
 	}

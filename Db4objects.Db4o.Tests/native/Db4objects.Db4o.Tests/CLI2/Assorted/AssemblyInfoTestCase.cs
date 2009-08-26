@@ -1,10 +1,11 @@
 using System;
 using System.Reflection;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
-	class AssemblyInfoTestCase : ITestCase
+	class AssemblyInfoTestCase : ITestCase, IOptOutSilverlight
 	{
 		public void Test()
 		{

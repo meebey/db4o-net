@@ -45,9 +45,9 @@ namespace Db4objects.Db4o.Tests.CLI1
     {
         public event EventHandler Bang;
 
-        object UntypedDelegate;
+        public object UntypedDelegate;
 
-        static string Message = null;
+		public static string Message = null;
 
         public void RaiseBang()
         {

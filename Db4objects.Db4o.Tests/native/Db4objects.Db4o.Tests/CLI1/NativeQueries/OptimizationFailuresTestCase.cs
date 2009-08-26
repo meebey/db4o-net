@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 
 	/// <summary>
 	/// </summary>
-	public class OptimizationFailuresTestCase : AbstractDb4oTestCase
+	public class OptimizationFailuresTestCase : AbstractDb4oTestCase, IOptOutSilverlight
 	{
 		IList<Exception> _failures = new List<Exception>();
 

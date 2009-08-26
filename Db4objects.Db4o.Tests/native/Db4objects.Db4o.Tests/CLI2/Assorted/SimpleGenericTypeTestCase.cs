@@ -5,7 +5,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {
-	class SimpleGenericType<T>
+	public class SimpleGenericType<T>
 	{
 		public T value;
 
@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 		}
 	}
 
-	class SimpleGenericTypeTestCase : AbstractDb4oTestCase
+	public class SimpleGenericTypeTestCase : AbstractDb4oTestCase
 	{
 		override protected void Store()
 		{

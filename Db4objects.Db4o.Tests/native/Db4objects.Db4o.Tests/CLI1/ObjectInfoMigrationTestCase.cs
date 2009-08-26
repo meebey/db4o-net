@@ -4,19 +4,19 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 
 namespace Db4o52Regression
 {
     public class Item
     {
-        private string _name;
+        public string _name;
 
         public Item(string name)
         {
@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Tests.CLI1
         }
     }
 
-    public abstract class ObjectInfoMigrationTestCaseBase : ITestCase, ITestLifeCycle
+    public abstract class ObjectInfoMigrationTestCaseBase : ITestLifeCycle, IOptOutSilverlight
     {
         protected abstract string OriginalTestFile
         {

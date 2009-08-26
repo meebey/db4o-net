@@ -1,4 +1,4 @@
-﻿using System;
+﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
 using System.Collections.Generic;
 using System.Text;
 using Db4objects.Db4o;
@@ -8,7 +8,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.NQ
 {
-	public class GenericPredicateTestCase : AbstractDb4oTestCase
+	public class GenericPredicateTestCase : AbstractDb4oTestCase, IOptOutSilverlight
 	{
 		protected override void Configure(Config.IConfiguration config)
 		{
