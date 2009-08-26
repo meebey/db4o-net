@@ -41,6 +41,12 @@ namespace Db4oUnit.Extensions.Extensions
 			return config;
 		}
 
+		public override bool Accept(System.Type clazz)
+		{
+			if (typeof(IOptOutSilverlight).IsAssignableFrom(clazz)) return false;
+			return base.Accept(clazz);
+		}
+
 		private const string DatabaseFileName = "SilverlightDatabase.db4o";
 		private readonly IsolatedStorageStorage _storage = new IsolatedStorageStorage();
 	}
