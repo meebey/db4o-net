@@ -199,7 +199,7 @@ namespace Db4objects.Db4o.Internal
 			throw new Db4oException();
 	    }
 
-		public void WithEnvironment(System.Action action)
+		public void WithEnvironment(Action4 action)
 		{
 			WithEnvironment(new RunnableAction(action));
 		}

@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Internal
             return Query<Extent>(typeof(Extent), comparer);
         }
 
-		public void WithEnvironment(System.Action action)
+		public void WithEnvironment(Action4 action)
 		{
 			_server.WithEnvironment(new RunnableAction(action));
 		}
