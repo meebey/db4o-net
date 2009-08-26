@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Linq.Internals
 			return ExecuteQuery(query, MonitorOptimizedQuery);
 		}
 
-		private IObjectSet ExecuteQuery(IQuery query, Action monitorAction)
+		private IObjectSet ExecuteQuery(IQuery query, Action4 monitorAction)
 		{
 			var result = query.Execute();
 			((IInternalQuery)query).Container.WithEnvironment(monitorAction);
