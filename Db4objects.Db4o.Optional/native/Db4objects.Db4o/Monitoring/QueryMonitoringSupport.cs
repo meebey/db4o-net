@@ -2,7 +2,6 @@
 
 #if !CF && !SILVERLIGHT
 
-using System;
 using System.Diagnostics;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
@@ -11,8 +10,13 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Query;
-using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.Monitoring.Internal;
+
+#if CF_3_5 || NET_3_5
+
+using Db4objects.Db4o.Linq;
+
+#endif
 
 namespace Db4objects.Db4o.Monitoring
 {
