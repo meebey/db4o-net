@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Soda
 										VALUE_TYPE_TYPE_VARIABLE, 
 										new object[]
 										{
-#if !SILVERLIGHT && !CF
+#if NET_3_5
 											new ValueTypeFixture<DateTimeOffset>(delegate(int i) { return DateTimeOffset.Now.AddHours(i); }),
 #endif
 #if !SILVERLIGHT
