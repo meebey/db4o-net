@@ -22,7 +22,8 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		{
 			LebiElement elem = (LebiElement)Db().Get(new LebiElement("23"))[0];
 
-			IList<ListElementByIdentity> res = Db().Query(delegate(ListElementByIdentity lebi)
+
+            IList<ListElementByIdentity> res = Db().Query((System.Predicate<ListElementByIdentity>)delegate(ListElementByIdentity lebi)
 			{
 				return lebi._list.Contains(elem);
 			});

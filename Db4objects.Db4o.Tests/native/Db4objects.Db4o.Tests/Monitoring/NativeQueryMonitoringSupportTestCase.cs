@@ -2,6 +2,8 @@
 #if !CF && !SILVERLIGHT
 using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Monitoring.Internal;
+using System.Diagnostics;
+using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.Monitoring
 {
@@ -11,6 +13,18 @@ namespace Db4objects.Db4o.Tests.Monitoring
 		{
 			config.Add(new NativeQueryMonitoringSupport());
 		}
+        
+        public void TestNativeQueriesPerSecondPerformanceCount()
+        {
+            PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForNativeQueriesPerSec(true);
+            Assert.IsTrue(counter.CounterName.Contains("native queries"));
+        }
+
+        public void TestUnoptimizedNativeQueriesPerSecondPerformanceCount()
+        {
+            PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForUnoptimizedNativeQueriesPerSec(true);
+            Assert.IsTrue(counter.CounterName.Contains("native queries"));
+        }
 
 		public void TestNativeQueriesPerSecondWithOptimizedQuery()
 		{
