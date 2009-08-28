@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 {
                     return false;
                 }
-                var other = (Item)obj;
+                Item other = (Item)obj;
                 return (other._ushort == _ushort) && _ushortWrapper.Equals(other._ushortWrapper
                     );
             }
