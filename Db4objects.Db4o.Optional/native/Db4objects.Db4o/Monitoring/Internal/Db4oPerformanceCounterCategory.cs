@@ -26,8 +26,9 @@ namespace Db4objects.Db4o.Monitoring.Internal
             if (CategoryExists())
                 return;
 
-            var collection = new CounterCreationDataCollection
-                                 {
+			CounterCreationDataCollection collection = new CounterCreationDataCollection(
+                                 new CounterCreationData[] 
+								 {
                                      new CounterCreationData(BytesWrittenPerSec,
                                                              "Bytes written/sec",
                                                              PerformanceCounterType.RateOfCountsPerSecond32),
@@ -61,7 +62,8 @@ namespace Db4objects.Db4o.Monitoring.Internal
                                                              "Number of unoptimized Linq queries executed per second.",
                                                              PerformanceCounterType.RateOfCountsPerSecond32),
 #endif
-                                 };
+                                 });
+
             PerformanceCounterCategory.Create(CategoryName, "Db4o Performance Counters",
                                                      PerformanceCounterCategoryType.SingleInstance,
                                                      collection);
@@ -107,12 +109,12 @@ namespace Db4objects.Db4o.Monitoring.Internal
 
 		public static PerformanceCounter CounterForNativeQueriesPerSec(bool readOnly)
 		{
-			return NewDb4oCounter(LinqQueriesPerSec, readOnly);
+			return NewDb4oCounter(NativeQueriesPerSec, readOnly);
 		}
 
 		public static PerformanceCounter CounterForUnoptimizedNativeQueriesPerSec(bool readOnly)
 		{
-			return NewDb4oCounter(UnoptimizedLinqQueriesPerSec, readOnly);
+			return NewDb4oCounter(UnoptimizedNativeQueriesPerSec, readOnly);
 		}
 
         public static PerformanceCounter CounterForBytesReadPerSec()
