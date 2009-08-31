@@ -41,6 +41,11 @@ namespace Db4oTool
                 new Statistics().Run(fileName);
             }
 
+			if (options.InstallPerformanceCounters)
+			{
+				Db4objects.Db4o.Monitoring.Internal.Db4oPerformanceCounterCategory.Install();
+			}
+
             if (options.Assembly == null)
             {
                 return;

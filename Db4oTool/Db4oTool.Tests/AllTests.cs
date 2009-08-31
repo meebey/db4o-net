@@ -8,6 +8,7 @@ namespace Db4oTool.Tests
 	{
 		protected override Type[] TestCases()
 		{
+//			return new Type[] { typeof(Core.InstallPerformanceCountersTestCase), };
 			return new Type[]
 				{
 					typeof(ProgramOptionsTestCase),

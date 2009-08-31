@@ -47,6 +47,9 @@ namespace Db4oTool
             return WhatToDoNext.GoAhead;
         }
 
+		[Option("Installs the db4o performance counter category", "install-performance-counters")]
+		public bool InstallPerformanceCounters;
+
 		public List<string> CustomInstrumentations = new List<string>();
 
 		[Option("Custom instrumentation type", "instrumentation", MaxOccurs = -1)]
@@ -101,6 +104,7 @@ namespace Db4oTool
 		{
 			get
 			{
+				if (RemainingArguments == null) return null;
 				if (RemainingArguments.Length != 1) return null;
 				return RemainingArguments[0];
 			}

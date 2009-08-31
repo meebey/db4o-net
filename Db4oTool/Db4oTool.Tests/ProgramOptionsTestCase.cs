@@ -10,6 +10,14 @@ namespace Db4oTool.Tests
 			AssertTransparentPersistence("-ta");
 		}
 
+		public void TestInstallPerformanceCounters()
+		{
+			ProgramOptions options = new ProgramOptions();
+			Assert.IsFalse(options.InstallPerformanceCounters);
+			options.ProcessArgs(new string[] { "--install-performance-counters"});
+			Assert.IsTrue(options.InstallPerformanceCounters);
+		}
+
 		private static void AssertTransparentPersistence(string arg)
 		{
 			ProgramOptions options = new ProgramOptions();
