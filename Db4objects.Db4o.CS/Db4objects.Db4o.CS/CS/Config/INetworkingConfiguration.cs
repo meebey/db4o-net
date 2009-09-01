@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.CS.Config
@@ -9,6 +11,12 @@ namespace Db4objects.Db4o.CS.Config
 	/// <since>7.5</since>
 	public interface INetworkingConfiguration
 	{
+		IClientServerFactory ClientServerFactory
+		{
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// configures the time a client waits for a message response
 		/// from the server.
@@ -124,6 +132,11 @@ namespace Db4objects.Db4o.CS.Config
 		IMessageRecipient MessageRecipient
 		{
 			set;
+		}
+
+		ISocket4Factory SocketFactory
+		{
+			get;
 		}
 	}
 }

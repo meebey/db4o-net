@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.TP
 	{
 		public static void Main(string[] args)
 		{
-			new QueryConsistencyTestCase().RunClientServer();
+			new QueryConsistencyTestCase().RunNetworking();
 		}
 
 		/// <exception cref="System.Exception"></exception>

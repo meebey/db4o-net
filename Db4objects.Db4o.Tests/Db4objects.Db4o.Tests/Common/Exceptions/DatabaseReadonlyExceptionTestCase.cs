@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestReserveStorage()
 		{
 			ConfigReadOnly();
-			Type exceptionType = IsClientServer() && !IsMTOC() ? typeof(NotSupportedException
+			Type exceptionType = IsMultiSession() && !IsEmbedded() ? typeof(NotSupportedException
 				) : typeof(DatabaseReadOnlyException);
 			Assert.Expect(exceptionType, new _ICodeBlock_70(this));
 		}

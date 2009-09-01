@@ -12,7 +12,7 @@ using Db4objects.Db4o.Tests.Common.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Internal
 {
-	public partial class Comparable4TestCase : AbstractDb4oTestCase, IOptOutCS
+	public partial class Comparable4TestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public static void Main(string[] args)
 		{

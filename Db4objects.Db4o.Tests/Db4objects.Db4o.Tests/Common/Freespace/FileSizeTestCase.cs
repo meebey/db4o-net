@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		public static void Main(string[] args)
 		{
-			new FileSizeTestCase().RunEmbeddedClientServer();
+			new FileSizeTestCase().RunEmbedded();
 		}
 
 		public virtual void TestConsistentSizeOnRollback()

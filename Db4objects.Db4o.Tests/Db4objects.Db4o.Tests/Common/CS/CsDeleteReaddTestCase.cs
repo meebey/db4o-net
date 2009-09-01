@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void TestDeleteReadd()
 		{
 			IExtObjectContainer client1 = Db();
-			IExtObjectContainer client2 = OpenNewClient();
+			IExtObjectContainer client2 = OpenNewSession();
 			CsDeleteReaddTestCase.Item item1 = (CsDeleteReaddTestCase.Item)((CsDeleteReaddTestCase.Item
 				)RetrieveOnlyInstance(client1, typeof(CsDeleteReaddTestCase.Item)));
 			CsDeleteReaddTestCase.Item item2 = (CsDeleteReaddTestCase.Item)((CsDeleteReaddTestCase.Item

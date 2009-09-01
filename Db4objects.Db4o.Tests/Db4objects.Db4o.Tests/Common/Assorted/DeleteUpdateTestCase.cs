@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public static void Main(string[] args)
 		{
-			new DeleteUpdateTestCase().RunClientServer();
+			new DeleteUpdateTestCase().RunNetworking();
 		}
 
 		protected override void Store()
@@ -21,9 +21,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void _testDS()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
-			IExtObjectContainer oc3 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
+			IExtObjectContainer oc3 = OpenNewSession();
 			try
 			{
 				SimpleObject o1 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject
@@ -59,9 +59,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestSD()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
-			IExtObjectContainer oc3 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
+			IExtObjectContainer oc3 = OpenNewSession();
 			try
 			{
 				SimpleObject o1 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject

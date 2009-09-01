@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		public virtual void TestDeletionEvents()
 		{
-			if (IsEmbeddedClientServer())
+			if (IsEmbedded())
 			{
 				// TODO: something wrong when embedded c/s is run as part
 				// of the full test suite

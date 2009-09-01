@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Refactor
 	{
 		public static void Main(string[] args)
 		{
-			new ClassRenameByConfigTestCase().RunClientServer();
+			new ClassRenameByConfigTestCase().RunNetworking();
 		}
 
 		public class Original

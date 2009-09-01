@@ -1,9 +1,12 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System;
 using Db4oUnit;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
@@ -32,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 					).Apply(config));
 				try
 				{
-					Assert.Expect(typeof(ArgumentException), new _ICodeBlock_74(config));
+					Assert.Expect(typeof(ArgumentException), new _ICodeBlock_79(config));
 				}
 				finally
 				{
@@ -40,9 +43,9 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				}
 			}
 
-			private sealed class _ICodeBlock_74 : ICodeBlock
+			private sealed class _ICodeBlock_79 : ICodeBlock
 			{
-				public _ICodeBlock_74(IConfiguration config)
+				public _ICodeBlock_79(IConfiguration config)
 				{
 					this.config = config;
 				}
@@ -65,34 +68,48 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			return config;
 		}
 
+		protected virtual IObjectServer OpenServer(IConfiguration config, string databaseFileName
+			, int port)
+		{
+			return Db4oClientServer.OpenServer(Db4oClientServerLegacyConfigurationBridge.AsServerConfiguration
+				(config), databaseFileName, port);
+		}
+
+		protected virtual IObjectContainer OpenClient(IConfiguration config, string host, 
+			int port, string user, string password)
+		{
+			return Db4oClientServer.OpenClient(Db4oClientServerLegacyConfigurationBridge.AsClientConfiguration
+				(config), host, port, user, password);
+		}
+
 		public ConfigurationReuseTestSuite()
 		{
 			{
 				FixtureProviders(new IFixtureProvider[] { new SimpleFixtureProvider(ConfigurationUseFunction
-					, new object[] { new _IFunction4_21(), new _IFunction4_26(), new _IFunction4_31(
-					) }), new SimpleFixtureProvider(ConfigurationReuseProcedure, new object[] { new 
-					_IProcedure4_44(), new _IProcedure4_46(), new _IProcedure4_48(), new _IProcedure4_56
-					() }) });
+					, new object[] { new _IFunction4_26(), new _IFunction4_31(this), new _IFunction4_36
+					(this) }), new SimpleFixtureProvider(ConfigurationReuseProcedure, new object[] { 
+					new _IProcedure4_49(), new _IProcedure4_51(this), new _IProcedure4_53(this), new 
+					_IProcedure4_61(this) }) });
 				TestUnits(new Type[] { typeof(ConfigurationReuseTestSuite.ConfigurationReuseTestUnit
 					) });
 			}
 		}
 
-		private sealed class _IFunction4_21 : IFunction4
+		private sealed class _IFunction4_26 : IFunction4
 		{
-			public _IFunction4_21()
+			public _IFunction4_26()
 			{
 			}
 
 			public object Apply(object config)
 			{
 				IObjectContainer container = Db4oFactory.OpenFile(((IConfiguration)config), ".");
-				return new _IRunnable_23(container);
+				return new _IRunnable_28(container);
 			}
 
-			private sealed class _IRunnable_23 : IRunnable
+			private sealed class _IRunnable_28 : IRunnable
 			{
-				public _IRunnable_23(IObjectContainer container)
+				public _IRunnable_28(IObjectContainer container)
 				{
 					this.container = container;
 				}
@@ -106,21 +123,23 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IFunction4_26 : IFunction4
+		private sealed class _IFunction4_31 : IFunction4
 		{
-			public _IFunction4_26()
+			public _IFunction4_31(ConfigurationReuseTestSuite _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			public object Apply(object config)
 			{
-				IObjectServer server = Db4oFactory.OpenServer(((IConfiguration)config), ".", 0);
-				return new _IRunnable_28(server);
+				IObjectServer server = this._enclosing.OpenServer(((IConfiguration)config), ".", 
+					0);
+				return new _IRunnable_33(server);
 			}
 
-			private sealed class _IRunnable_28 : IRunnable
+			private sealed class _IRunnable_33 : IRunnable
 			{
-				public _IRunnable_28(IObjectServer server)
+				public _IRunnable_33(IObjectServer server)
 				{
 					this.server = server;
 				}
@@ -132,28 +151,31 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 				private readonly IObjectServer server;
 			}
+
+			private readonly ConfigurationReuseTestSuite _enclosing;
 		}
 
-		private sealed class _IFunction4_31 : IFunction4
+		private sealed class _IFunction4_36 : IFunction4
 		{
-			public _IFunction4_31()
+			public _IFunction4_36(ConfigurationReuseTestSuite _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			public object Apply(object config)
 			{
 				IConfiguration serverConfig = Db4oFactory.NewConfiguration();
 				serverConfig.Storage = new MemoryStorage();
-				IObjectServer server = Db4oFactory.OpenServer(serverConfig, ".", -1);
+				IObjectServer server = this._enclosing.OpenServer(serverConfig, ".", -1);
 				server.GrantAccess("user", "password");
-				IObjectContainer client = Db4oFactory.OpenClient(((IConfiguration)config), "localhost"
+				IObjectContainer client = this._enclosing.OpenClient(((IConfiguration)config), "localhost"
 					, server.Ext().Port(), "user", "password");
-				return new _IRunnable_37(client, server);
+				return new _IRunnable_42(client, server);
 			}
 
-			private sealed class _IRunnable_37 : IRunnable
+			private sealed class _IRunnable_42 : IRunnable
 			{
-				public _IRunnable_37(IObjectContainer client, IObjectServer server)
+				public _IRunnable_42(IObjectContainer client, IObjectServer server)
 				{
 					this.client = client;
 					this.server = server;
@@ -169,11 +191,13 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 				private readonly IObjectServer server;
 			}
+
+			private readonly ConfigurationReuseTestSuite _enclosing;
 		}
 
-		private sealed class _IProcedure4_44 : IProcedure4
+		private sealed class _IProcedure4_49 : IProcedure4
 		{
-			public _IProcedure4_44()
+			public _IProcedure4_49()
 			{
 			}
 
@@ -183,51 +207,61 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			}
 		}
 
-		private sealed class _IProcedure4_46 : IProcedure4
+		private sealed class _IProcedure4_51 : IProcedure4
 		{
-			public _IProcedure4_46()
+			public _IProcedure4_51(ConfigurationReuseTestSuite _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			public void Apply(object config)
 			{
-				Db4oFactory.OpenServer(((IConfiguration)config), "..", 0);
+				this._enclosing.OpenServer(((IConfiguration)config), "..", 0);
 			}
+
+			private readonly ConfigurationReuseTestSuite _enclosing;
 		}
 
-		private sealed class _IProcedure4_48 : IProcedure4
+		private sealed class _IProcedure4_53 : IProcedure4
 		{
-			public _IProcedure4_48()
+			public _IProcedure4_53(ConfigurationReuseTestSuite _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			public void Apply(object config)
 			{
-				IObjectServer server = Db4oFactory.OpenServer(ConfigurationReuseTestSuite.NewInMemoryConfiguration
+				IObjectServer server = this._enclosing.OpenServer(ConfigurationReuseTestSuite.NewInMemoryConfiguration
 					(), "..", 0);
 				try
 				{
-					Db4oFactory.OpenClient(((IConfiguration)config), "localhost", server.Ext().Port()
-						, "user", "password");
+					this._enclosing.OpenClient(((IConfiguration)config), "localhost", server.Ext().Port
+						(), "user", "password");
 				}
 				finally
 				{
 					server.Close();
 				}
 			}
+
+			private readonly ConfigurationReuseTestSuite _enclosing;
 		}
 
-		private sealed class _IProcedure4_56 : IProcedure4
+		private sealed class _IProcedure4_61 : IProcedure4
 		{
-			public _IProcedure4_56()
+			public _IProcedure4_61(ConfigurationReuseTestSuite _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			public void Apply(object config)
 			{
-				Db4oFactory.OpenClient(((IConfiguration)config), "localhost", unchecked((int)(0xdb40
-					)), "user", "password");
+				this._enclosing.OpenClient(((IConfiguration)config), "localhost", unchecked((int)
+					(0xdb40)), "user", "password");
 			}
+
+			private readonly ConfigurationReuseTestSuite _enclosing;
 		}
 	}
 }
+#endif // !SILVERLIGHT

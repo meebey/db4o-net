@@ -8,11 +8,11 @@ namespace Db4objects.Drs.Db4o
 {
 	internal class Db4oSignatureMap
 	{
-		private readonly ObjectContainerBase _stream;
+		private readonly IInternalObjectContainer _stream;
 
 		private readonly Hashtable4 _identities;
 
-		internal Db4oSignatureMap(ObjectContainerBase stream)
+		internal Db4oSignatureMap(IInternalObjectContainer stream)
 		{
 			_stream = stream;
 			_identities = new Hashtable4();
@@ -26,7 +26,7 @@ namespace Db4objects.Drs.Db4o
 				return db;
 			}
 			db = new Db4oDatabase(signature, creationTime);
-			db.Bind(_stream.Transaction());
+			db.Bind(_stream.Transaction);
 			_identities.Put(signature, db);
 			return db;
 		}

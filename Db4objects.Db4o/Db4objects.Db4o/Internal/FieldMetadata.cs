@@ -918,8 +918,7 @@ namespace Db4objects.Db4o.Internal
 			int minimumUpdateDepth = 1;
 			if (_containingClass.IsCollection(obj))
 			{
-				GenericReflector reflector = Reflector();
-				minimumUpdateDepth = reflector.CollectionUpdateDepth(reflector.ForObject(obj));
+				minimumUpdateDepth = 2;
 			}
 			if (updateDepth < minimumUpdateDepth)
 			{
@@ -1074,13 +1073,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_873(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_872(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_873 : IVisitor4
+		private sealed class _IVisitor4_872 : IVisitor4
 		{
-			public _IVisitor4_873(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_872(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1301,13 +1300,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
 				());
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1036
+			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1035
 				(context, typeHandler));
 		}
 
-		private sealed class _IClosure4_1036 : IClosure4
+		private sealed class _IClosure4_1035 : IClosure4
 		{
-			public _IClosure4_1036(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1035(IDefragmentContext context, ITypeHandler4 typeHandler)
 			{
 				this.context = context;
 				this.typeHandler = typeHandler;

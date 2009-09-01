@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Fieldindex;
 
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
-	public abstract class FieldIndexTestCaseBase : AbstractDb4oTestCase, IOptOutCS
+	public abstract class FieldIndexTestCaseBase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public FieldIndexTestCaseBase() : base()
 		{

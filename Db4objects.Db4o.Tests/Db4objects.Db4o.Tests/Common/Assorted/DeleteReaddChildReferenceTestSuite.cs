@@ -175,12 +175,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 			private bool PrepareTest()
 			{
-				if (!IsClientServer())
+				if (!IsMultiSession())
 				{
 					return false;
 				}
 				client1 = Db();
-				client2 = OpenNewClient();
+				client2 = OpenNewSession();
 				return true;
 			}
 

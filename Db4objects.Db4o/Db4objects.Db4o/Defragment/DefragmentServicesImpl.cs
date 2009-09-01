@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;

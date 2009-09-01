@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 		public static void Main(string[] arguments)
 		{
-			new ClientServerPingTestCase().RunClientServer();
+			new ClientServerPingTestCase().RunNetworking();
 		}
 
 		protected override void Configure(IConfiguration config)
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
-			if (IsMTOC())
+			if (IsEmbedded())
 			{
 				// This test really doesn't make sense for MTOC, there
 				// is no client to ping.

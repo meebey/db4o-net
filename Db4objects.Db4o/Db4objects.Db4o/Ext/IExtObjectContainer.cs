@@ -155,7 +155,7 @@ namespace Db4objects.Db4o.Ext
 		/// returns the Configuration context for this ObjectContainer.
 		/// <br /><br />
 		/// Upon opening an ObjectContainer with any of the factory methods in the
-		/// <see cref="Db4oFactory">Db4o class</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory">Db4o class</see>
 		/// , the global
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration">IConfiguration</see>
 		/// context
@@ -170,7 +170,8 @@ namespace Db4objects.Db4o.Ext
 		/// the Configuration
 		/// context for this ObjectContainer
 		/// </returns>
-		/// <seealso cref="Db4oFactory.Configure()">Db4oFactory.Configure()</seealso>
+		/// <seealso cref="Db4objects.Db4o.Db4oFactory.Configure()">Db4objects.Db4o.Db4oFactory.Configure()
+		/// 	</seealso>
 		IConfiguration Configure();
 
 		/// <summary>returns a member at the specific path without activating intermediate objects.

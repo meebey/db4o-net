@@ -9,7 +9,8 @@ using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class Db4oIOExceptionTestCaseBase : AbstractDb4oTestCase, IOptOutCS, IOptOutTA
+	public class Db4oIOExceptionTestCaseBase : AbstractDb4oTestCase, IOptOutMultiSession
+		, IOptOutTA
 	{
 		private ExceptionSimulatingStorage _storage;
 

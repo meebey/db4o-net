@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public static void Main(string[] args)
 		{
-			new RollbackDeleteTestCase().RunClientServer();
+			new RollbackDeleteTestCase().RunNetworking();
 		}
 
 		protected override void Store()
@@ -21,9 +21,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestDRDC()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
-			IExtObjectContainer oc3 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
+			IExtObjectContainer oc3 = OpenNewSession();
 			try
 			{
 				SimpleObject o1 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject
@@ -57,9 +57,9 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void TestSRDC()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
-			IExtObjectContainer oc3 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
+			IExtObjectContainer oc3 = OpenNewSession();
 			try
 			{
 				SimpleObject o1 = (SimpleObject)((SimpleObject)RetrieveOnlyInstance(oc1, typeof(SimpleObject

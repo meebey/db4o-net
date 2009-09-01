@@ -11,7 +11,8 @@ using Db4objects.Db4o.Tests.Common.Querying;
 
 namespace Db4objects.Db4o.Tests.Common.Querying
 {
-	public abstract class QueryResultTestCase : AbstractDb4oTestCase, IOptOutCS, IOptOutDefragSolo
+	public abstract class QueryResultTestCase : AbstractDb4oTestCase, IOptOutMultiSession
+		, IOptOutDefragSolo
 	{
 		private static readonly int[] Values = new int[] { 1, 5, 6, 7, 9 };
 

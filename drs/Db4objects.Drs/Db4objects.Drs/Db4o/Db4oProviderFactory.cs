@@ -29,7 +29,7 @@ namespace Db4objects.Drs.Db4o
 
 		private static bool IsClient(IObjectContainer oc)
 		{
-			return ((IInternalObjectContainer)oc).IsClient();
+			return ((IInternalObjectContainer)oc).IsClient;
 		}
 	}
 }

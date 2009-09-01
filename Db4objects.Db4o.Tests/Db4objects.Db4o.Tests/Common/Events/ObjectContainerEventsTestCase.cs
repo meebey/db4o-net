@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			EventRegistry().Closing += new System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>
 				(new _IEventListener4_20(actual).OnEvent);
 			Fixture().Close();
-			if (IsEmbeddedClientServer())
+			if (IsEmbedded())
 			{
 				Iterator4Assert.AreEqual(new object[] { container, session }, actual.GetEnumerator
 					());

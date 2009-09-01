@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -30,11 +29,11 @@ namespace Db4objects.Drs.Tests
 			_name = name;
 			if (RamDrive.Exists())
 			{
-				testFile = new File(RamDrive.GetPath() + "drs_cs_" + _name + ".yap");
+				testFile = new File(RamDrive.GetPath() + "drs_cs_" + _name + ".db4o");
 			}
 			else
 			{
-				testFile = new File("drs_cs_" + _name + ".yap");
+				testFile = new File("drs_cs_" + _name + ".db4o");
 			}
 		}
 
@@ -62,10 +61,8 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void Open()
 		{
-			//	Comment out because MemoryIoAdapter has problems on .net 
-			//	MemoryIoAdapter memoryIoAdapter = new MemoryIoAdapter();
-			//	Db4o.configure().io(memoryIoAdapter);
-			_db = Db4oFactory.OpenFile(CloneConfiguration(), testFile.GetPath()).Ext();
+			_db = Db4objects.Db4o.Db4oFactory.OpenFile(CloneConfiguration(), testFile.GetPath
+				()).Ext();
 			_provider = Db4oProviderFactory.NewInstance(_db, _name);
 		}
 
@@ -78,7 +75,7 @@ namespace Db4objects.Drs.Tests
 		{
 			if (_config == null)
 			{
-				_config = Db4oFactory.NewConfiguration();
+				_config = Db4objects.Db4o.Db4oFactory.NewConfiguration();
 			}
 			return _config;
 		}

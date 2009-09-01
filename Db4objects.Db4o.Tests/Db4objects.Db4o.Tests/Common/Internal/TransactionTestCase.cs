@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Internal
 {
-	public class TransactionTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class TransactionTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		private const int TestId = 5;
 

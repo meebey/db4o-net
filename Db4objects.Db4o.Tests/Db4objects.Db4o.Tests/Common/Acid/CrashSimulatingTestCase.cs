@@ -14,7 +14,7 @@ using Db4objects.Db4o.Tests.Common.Acid;
 
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
-	public class CrashSimulatingTestCase : ITestCase, IOptOutCS
+	public class CrashSimulatingTestCase : ITestCase, IOptOutMultiSession
 	{
 		public class CrashData
 		{

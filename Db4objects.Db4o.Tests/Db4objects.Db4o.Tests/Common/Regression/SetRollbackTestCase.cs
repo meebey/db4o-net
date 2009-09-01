@@ -12,13 +12,13 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 	{
 		public static void Main(string[] args)
 		{
-			new SetRollbackTestCase().RunClientServer();
+			new SetRollbackTestCase().RunNetworking();
 		}
 
 		public virtual void TestSetRollback()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
 			try
 			{
 				for (int i = 0; i < 1000; i++)

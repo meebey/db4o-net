@@ -9,14 +9,13 @@ namespace Db4objects.Db4o
 	/// <remarks>
 	/// the db4o server interface.
 	/// <br /><br />- db4o servers can be opened with
-	/// <see cref="Db4oFactory.OpenServer(string, int)">Db4oFactory.OpenServer(string, int)
-	/// 	</see>
+	/// <see cref="Db4o#openServer(String,int)">Db4o#openServer(String,int)</see>
 	/// .<br />
 	/// - Direct in-memory connections to servers can be made with
 	/// <see cref="OpenClient()">OpenClient()</see>
 	/// <br />
 	/// - TCP connections are available through
-	/// <see cref="Db4oFactory.OpenClient(string, int, string, string)">Db4oFactory.OpenClient(string, int, string, string)
+	/// <see cref="Db4o#openClient(String,int,String,String)">Db4o#openClient(String,int,String,String)
 	/// 	</see>
 	/// .
 	/// <br /><br />Before connecting clients over TCP, you have to
@@ -24,7 +23,7 @@ namespace Db4objects.Db4o
 	/// to the username and password combination
 	/// that you want to use.
 	/// </remarks>
-	/// <seealso cref="Db4oFactory.OpenServer(string, int)">Db4o.openServer</seealso>
+	/// <seealso cref="Db4o#openServer(java.lang.String,int)">Db4o.openServer</seealso>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectServer">ExtObjectServer for extended functionality
 	/// 	</seealso>
 	public interface IObjectServer : System.IDisposable
@@ -74,8 +73,8 @@ namespace Db4objects.Db4o
 		/// as the server. Since an embedded client can use direct communication, without
 		/// an in-between socket connection, performance will be better than a client
 		/// opened with
-		/// <see cref="Db4oFactory.OpenClient(string, int, string, string)">Db4oFactory.OpenClient(string, int, string, string)
-		/// 	</see>
+		/// <see cref="Db4o#openClient(java.lang.String,int,java.lang.String,java.lang.String)
+		/// 	">Db4o#openClient(java.lang.String,int,java.lang.String,java.lang.String)</see>
 		/// <br /><br />Every client has it's own transaction and uses it's own cache
 		/// for it's own version of all peristent objects.
 		/// </remarks>

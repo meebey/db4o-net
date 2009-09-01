@@ -45,12 +45,12 @@ namespace Db4objects.Db4o.Tests.Common.TP
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestConcurrentClientModification()
 		{
-			if (!IsClientServer())
+			if (!IsMultiSession())
 			{
 				return;
 			}
 			IExtObjectContainer client1 = Db();
-			IExtObjectContainer client2 = OpenNewClient();
+			IExtObjectContainer client2 = OpenNewSession();
 			try
 			{
 				Item foo1 = ItemByName(client1, "Foo");
@@ -168,11 +168,6 @@ namespace Db4objects.Db4o.Tests.Common.TP
 				return (Item)result.Next();
 			}
 			return null;
-		}
-
-		private IExtObjectContainer OpenNewClient()
-		{
-			return ((IDb4oClientServerFixture)Fixture()).OpenNewClient();
 		}
 	}
 }

@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class ChangeIdentity : AbstractDb4oTestCase, IOptOutCS
+	public class ChangeIdentity : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()

@@ -1,10 +1,13 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
@@ -12,7 +15,7 @@ using Db4objects.Db4o.Internal.Threading;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
-	public class Db4oClientServer : AbstractDb4oFixture, IDb4oClientServerFixture
+	public class Db4oNetworking : AbstractDb4oFixture, IDb4oClientServerFixture
 	{
 		private const int ThreadpoolTimeout = 3000;
 
@@ -28,8 +31,6 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private readonly Sharpen.IO.File _file;
 
-		private bool _embeddedClient;
-
 		private IExtObjectContainer _objectContainer;
 
 		private string _label;
@@ -40,22 +41,23 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private readonly IClientServerFactory _csFactory;
 
-		public Db4oClientServer(IClientServerFactory csFactory, bool embeddedClient, string
-			 label)
+		public Db4oNetworking(IClientServerFactory csFactory, string label)
 		{
 			_csFactory = csFactory != null ? csFactory : DefaultClientServerFactory();
 			_file = new Sharpen.IO.File(FilePath());
-			_embeddedClient = embeddedClient;
 			_label = label;
 		}
 
 		private IClientServerFactory DefaultClientServerFactory()
 		{
-			return ((Config4Impl)Config()).ClientServerFactory();
+			return new StandardClientServerFactory();
 		}
 
-		public Db4oClientServer(bool embeddedClient, string label) : this(null, embeddedClient
-			, label)
+		public Db4oNetworking(string label) : this(null, label)
+		{
+		}
+
+		public Db4oNetworking() : this("C/S")
 		{
 		}
 
@@ -111,26 +113,26 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private IExtObjectContainer OpenSocketClient(IConfiguration config)
 		{
-			return _csFactory.OpenClient(config, Host, _port, Username, Password, new PlainSocketFactory
-				()).Ext();
+			return _csFactory.OpenClient(AsClientConfiguration(config), Host, _port, Username
+				, Password).Ext();
 		}
 
-		public virtual IExtObjectContainer OpenNewClient()
+		public virtual IExtObjectContainer OpenNewSession()
 		{
 			return OpenClientWith(CloneConfiguration());
 		}
 
 		private IExtObjectContainer OpenClientWith(IConfiguration config)
 		{
-			return _embeddedClient ? OpenEmbeddedClient().Ext() : OpenSocketClient(config);
+			return OpenSocketClient(config);
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		private void OpenServerFor(IDb4oTestCase testInstance)
 		{
 			_serverConfig = ServerConfigFor(testInstance);
-			_server = _csFactory.OpenServer(_serverConfig, _file.GetAbsolutePath(), -1, new PlainSocketFactory
-				());
+			_server = _csFactory.OpenServer(AsServerConfiguration(_serverConfig), _file.GetAbsolutePath
+				(), -1);
 			_port = _server.Ext().Port();
 			_server.GrantAccess(Username, Password);
 		}
@@ -150,10 +152,6 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		private bool RequiresCustomConfiguration(IDb4oTestCase testInstance)
 		{
-			if (EmbeddedClients())
-			{
-				return false;
-			}
 			if (testInstance is ICustomClientServerConfiguration)
 			{
 				return true;
@@ -207,11 +205,6 @@ namespace Db4oUnit.Extensions.Fixtures
 			return _server;
 		}
 
-		public virtual bool EmbeddedClients()
-		{
-			return _embeddedClient;
-		}
-
 		/// <summary>
 		/// Does not accept a clazz which is assignable from OptOutCS, or not
 		/// assignable from Db4oTestCase.
@@ -230,16 +223,11 @@ namespace Db4oUnit.Extensions.Fixtures
 			{
 				return false;
 			}
-			if (typeof(IOptOutCS).IsAssignableFrom(clazz))
+			if (typeof(IOptOutMultiSession).IsAssignableFrom(clazz))
 			{
 				return false;
 			}
-			if (!_embeddedClient && (typeof(IOptOutNetworkingCS).IsAssignableFrom(clazz)))
-			{
-				return false;
-			}
-			if (_embeddedClient && (typeof(IOptOutAllButNetworkingCS).IsAssignableFrom(clazz)
-				))
+			if (typeof(IOptOutNetworkingCS).IsAssignableFrom(clazz))
 			{
 				return false;
 			}
@@ -282,5 +270,18 @@ namespace Db4oUnit.Extensions.Fixtures
 			action.Apply(Config());
 			action.Apply(_serverConfig);
 		}
+
+		private IClientConfiguration AsClientConfiguration(IConfiguration serverConfig)
+		{
+			return Db4oClientServerLegacyConfigurationBridge.AsClientConfiguration(serverConfig
+				);
+		}
+
+		private IServerConfiguration AsServerConfiguration(IConfiguration serverConfig)
+		{
+			return Db4oClientServerLegacyConfigurationBridge.AsServerConfiguration(serverConfig
+				);
+		}
 	}
 }
+#endif // !SILVERLIGHT

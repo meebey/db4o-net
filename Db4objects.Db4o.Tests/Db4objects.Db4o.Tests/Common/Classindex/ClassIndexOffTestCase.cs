@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Classindex;
 
 namespace Db4objects.Db4o.Tests.Common.Classindex
 {
-	public class ClassIndexOffTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class ClassIndexOffTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		internal static string Name = "1";
 

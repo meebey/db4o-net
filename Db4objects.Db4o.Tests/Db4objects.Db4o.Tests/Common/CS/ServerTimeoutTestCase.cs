@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public static void Main(string[] arguments)
 		{
-			new ServerTimeoutTestCase().RunClientServer();
+			new ServerTimeoutTestCase().RunNetworking();
 		}
 
 		protected override void Configure(IConfiguration config)

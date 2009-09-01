@@ -35,9 +35,9 @@ namespace Db4objects.Db4o.Tests.Common.Store
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
-			IExtObjectContainer oc3 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
+			IExtObjectContainer oc3 = OpenNewSession();
 			DeepSetClientServerTestCase.Item example = new DeepSetClientServerTestCase.Item();
 			example.name = "1";
 			try

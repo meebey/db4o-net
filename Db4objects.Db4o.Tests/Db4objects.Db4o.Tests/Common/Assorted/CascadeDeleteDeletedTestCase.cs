@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Assorted.CascadeDeleteDeletedTestCase().RunClientServer
+			new Db4objects.Db4o.Tests.Common.Assorted.CascadeDeleteDeletedTestCase().RunNetworking
 				();
 		}
 
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			{
 				for (int i = 0; i < total; i++)
 				{
-					containers[i] = OpenNewClient();
+					containers[i] = OpenNewSession();
 					AssertOccurrences(containers[i], typeof(CascadeDeleteDeletedTestCase.CddMember), 
 						CddMemberCount);
 				}
@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				{
 					DeleteAll(containers[i], typeof(CascadeDeleteDeletedTestCase.CddMember));
 				}
-				oc = OpenNewClient();
+				oc = OpenNewSession();
 				AssertOccurrences(oc, typeof(CascadeDeleteDeletedTestCase.CddMember), CddMemberCount
 					);
 				// ocs[0] deleted all CddMember objects, and committed the change

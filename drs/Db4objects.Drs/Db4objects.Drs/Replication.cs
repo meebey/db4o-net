@@ -14,10 +14,8 @@ namespace Db4objects.Drs
 	/// <version>1.2</version>
 	/// <seealso cref="com.db4o.drs.hibernate.HibernateReplication">com.db4o.drs.hibernate.HibernateReplication
 	/// 	</seealso>
-	/// <seealso cref="Db4objects.Drs.IReplicationProvider">Db4objects.Drs.IReplicationProvider
-	/// 	</seealso>
-	/// <seealso cref="Db4objects.Drs.IReplicationEventListener">Db4objects.Drs.IReplicationEventListener
-	/// 	</seealso>
+	/// <seealso cref="IReplicationProvider">IReplicationProvider</seealso>
+	/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
 	/// <since>dRS 1.0</since>
 	public class Replication
 	{
@@ -25,10 +23,8 @@ namespace Db4objects.Drs
 		/// 	</summary>
 		/// <remarks>Begins a replication session between two ReplicationProviders without ReplicationEventListener.
 		/// 	</remarks>
-		/// <exception cref="Db4objects.Drs.ReplicationConflictException">when conflicts occur
-		/// 	</exception>
-		/// <seealso cref="Db4objects.Drs.IReplicationEventListener">Db4objects.Drs.IReplicationEventListener
-		/// 	</seealso>
+		/// <exception cref="ReplicationConflictException">when conflicts occur</exception>
+		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
 		public static IReplicationSession Begin(IReplicationProvider providerA, IReplicationProvider
 			 providerB)
 		{
@@ -39,10 +35,8 @@ namespace Db4objects.Drs
 		/// 	</summary>
 		/// <remarks>Begins a replication session between db4o and db4o without ReplicationEventListener.
 		/// 	</remarks>
-		/// <exception cref="Db4objects.Drs.ReplicationConflictException">when conflicts occur
-		/// 	</exception>
-		/// <seealso cref="Db4objects.Drs.IReplicationEventListener">Db4objects.Drs.IReplicationEventListener
-		/// 	</seealso>
+		/// <exception cref="ReplicationConflictException">when conflicts occur</exception>
+		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
 		public static IReplicationSession Begin(IObjectContainer oc1, IObjectContainer oc2
 			)
 		{

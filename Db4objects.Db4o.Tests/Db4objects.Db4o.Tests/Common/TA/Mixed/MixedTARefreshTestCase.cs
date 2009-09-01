@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Ext;
@@ -16,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 	{
 		public static void Main(string[] args)
 		{
-			new MixedTARefreshTestCase().RunClientServer();
+			new MixedTARefreshTestCase().RunNetworking();
 		}
 
 		private const int ItemDepth = 10;
@@ -32,8 +31,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 
 		public virtual void TestRefresh()
 		{
-			IExtObjectContainer client1 = OpenNewClient();
-			IExtObjectContainer client2 = OpenNewClient();
+			IExtObjectContainer client1 = OpenNewSession();
+			IExtObjectContainer client2 = OpenNewSession();
 			MixedTARefreshTestCase.Item item1 = RetrieveInstance(client1);
 			MixedTARefreshTestCase.Item item2 = RetrieveInstance(client2);
 			MixedTARefreshTestCase.Item next1 = item1;
@@ -100,11 +99,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 			query.Constrain(typeof(MixedTARefreshTestCase.Item));
 			query.Descend("_isRoot").Constrain(true);
 			return (MixedTARefreshTestCase.Item)query.Execute().Next();
-		}
-
-		private IExtObjectContainer OpenNewClient()
-		{
-			return ((IDb4oClientServerFixture)Fixture()).OpenNewClient();
 		}
 
 		public class Item

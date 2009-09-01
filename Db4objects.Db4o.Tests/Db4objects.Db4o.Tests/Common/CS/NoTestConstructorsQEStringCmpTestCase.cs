@@ -112,7 +112,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public static void Main(string[] args)
 		{
-			new NoTestConstructorsQEStringCmpTestCase().RunClientServer();
+			new NoTestConstructorsQEStringCmpTestCase().RunNetworking();
 		}
 	}
 }

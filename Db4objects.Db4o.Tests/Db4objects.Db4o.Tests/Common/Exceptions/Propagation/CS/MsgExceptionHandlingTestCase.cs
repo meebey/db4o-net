@@ -257,7 +257,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 		//			});
 		private void TryToOpenNewClient()
 		{
-			IExtObjectContainer otherClient = OpenNewClient();
+			IExtObjectContainer otherClient = OpenNewSession();
 			otherClient.Close();
 		}
 	}

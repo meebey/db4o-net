@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Classindex;
 
 namespace Db4objects.Db4o.Tests.Common.Classindex
 {
-	public class ClassIndexTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class ClassIndexTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public class Item
 		{

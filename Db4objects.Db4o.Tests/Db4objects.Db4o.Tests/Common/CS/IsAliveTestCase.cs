@@ -3,8 +3,8 @@
 #if !SILVERLIGHT
 using Db4oUnit;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
 using Db4objects.Db4o.CS.Internal;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Common.Api;
 
 namespace Db4objects.Db4o.Tests.Common.CS
@@ -35,22 +35,19 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			client.Close();
 		}
 
-		private IConfiguration Config()
-		{
-			return Db4oFactory.NewConfiguration();
-		}
-
 		private IObjectServer OpenServer()
 		{
-			IObjectServer server = Db4oFactory.OpenServer(Config(), TempFile(), -1);
+			IObjectServer server = Db4oClientServer.OpenServer(Db4oClientServer.NewServerConfiguration
+				(), TempFile(), -1);
 			server.GrantAccess(Username, Password);
 			return server;
 		}
 
 		private ClientObjectContainer OpenClient(int port)
 		{
-			ClientObjectContainer client = (ClientObjectContainer)Db4oFactory.OpenClient(Config
-				(), "localhost", port, Username, Password);
+			ClientObjectContainer client = (ClientObjectContainer)Db4oClientServer.OpenClient
+				(Db4oClientServer.NewClientConfiguration(), "localhost", port, Username, Password
+				);
 			return client;
 		}
 	}

@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
-	public class DefragInheritedFieldIndexTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class DefragInheritedFieldIndexTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		private static readonly string FieldName = "_name";
 

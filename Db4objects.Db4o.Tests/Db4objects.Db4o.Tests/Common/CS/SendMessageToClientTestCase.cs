@@ -11,12 +11,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public static void Main(string[] args)
 		{
-			new SendMessageToClientTestCase().RunClientServer();
+			new SendMessageToClientTestCase().RunNetworking();
 		}
 
 		public virtual void Test()
 		{
-			if (IsMTOC())
+			if (IsEmbedded())
 			{
 				// No sending messages back and forth on MTOC.
 				return;

@@ -4,7 +4,6 @@ using System;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
@@ -260,20 +259,20 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		protected static StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
-			 trans, ISocket4 sock)
+			 trans, Socket4Adapter socket)
 		{
-			return ReadMessageBuffer(trans, sock, Const4.MessageLength);
+			return ReadMessageBuffer(trans, socket, Const4.MessageLength);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		protected static StatefulBuffer ReadMessageBuffer(Db4objects.Db4o.Internal.Transaction
-			 trans, ISocket4 sock, int length)
+			 trans, Socket4Adapter socket, int length)
 		{
 			StatefulBuffer buffer = new StatefulBuffer(trans, length);
 			int offset = 0;
 			while (length > 0)
 			{
-				int read = sock.Read(buffer._buffer, offset, length);
+				int read = socket.Read(buffer._buffer, offset, length);
 				if (read < 0)
 				{
 					throw new Db4oIOException();
@@ -286,18 +285,19 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public static Db4objects.Db4o.CS.Internal.Messages.Msg ReadMessage(IMessageDispatcher
-			 messageDispatcher, Db4objects.Db4o.Internal.Transaction trans, ISocket4 sock)
+			 messageDispatcher, Db4objects.Db4o.Internal.Transaction trans, Socket4Adapter socket
+			)
 		{
-			StatefulBuffer reader = ReadMessageBuffer(trans, sock);
+			StatefulBuffer reader = ReadMessageBuffer(trans, socket);
 			Db4objects.Db4o.CS.Internal.Messages.Msg message = _messages[reader.ReadInt()].ReadPayLoad
-				(messageDispatcher, trans, sock, reader);
+				(messageDispatcher, trans, socket, reader);
 			return message;
 		}
 
-		/// <param name="sock"></param>
+		/// <param name="socket"></param>
 		internal virtual Db4objects.Db4o.CS.Internal.Messages.Msg ReadPayLoad(IMessageDispatcher
-			 messageDispatcher, Db4objects.Db4o.Internal.Transaction a_trans, ISocket4 sock, 
-			ByteArrayBuffer reader)
+			 messageDispatcher, Db4objects.Db4o.Internal.Transaction a_trans, Socket4Adapter
+			 socket, ByteArrayBuffer reader)
 		{
 			Db4objects.Db4o.CS.Internal.Messages.Msg msg = PublicClone();
 			msg.SetMessageDispatcher(messageDispatcher);
@@ -340,7 +340,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			return IdList.GetWriterForInt(Transaction(), response);
 		}
 
-		public virtual bool Write(ISocket4 sock)
+		public virtual bool Write(Socket4Adapter sock)
 		{
 			if (null == sock)
 			{

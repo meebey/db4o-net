@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void TestRefreshIsUnaffectedByPrefetchingBehavior()
 		{
 			IExtObjectContainer oc1 = Db();
-			IExtObjectContainer oc2 = OpenNewClient();
+			IExtObjectContainer oc2 = OpenNewSession();
 			oc1.Configure().ClientServer().PrefetchDepth(1);
 			oc2.Configure().ClientServer().PrefetchDepth(1);
 			try
@@ -217,7 +217,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private void DeleteAllItemsFromSecondClient()
 		{
-			IExtObjectContainer client = OpenNewClient();
+			IExtObjectContainer client = OpenNewSession();
 			try
 			{
 				DeleteAll(client, typeof(PrefetchConfigurationTestCase.Item));

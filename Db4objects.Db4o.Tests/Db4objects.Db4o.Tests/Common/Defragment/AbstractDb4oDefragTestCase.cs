@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4objects.Db4o.Tests.Common.Defragment;
+using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {

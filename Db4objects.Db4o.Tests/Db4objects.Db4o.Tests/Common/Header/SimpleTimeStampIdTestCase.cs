@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.Common.Header;
 
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class SimpleTimeStampIdTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class SimpleTimeStampIdTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public static void Main(string[] arguments)
 		{

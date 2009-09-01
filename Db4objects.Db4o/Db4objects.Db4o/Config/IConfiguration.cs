@@ -15,7 +15,8 @@ namespace Db4objects.Db4o.Config
 	/// configuration interface.
 	/// <br /><br />This interface contains methods to configure db4o.<br /><br />
 	/// The global Configuration context is available with
-	/// <see cref="Db4oFactory.Configure()">Db4oFactory.Configure()</see>
+	/// <see cref="Db4objects.Db4o.Db4oFactory.Configure()">Db4objects.Db4o.Db4oFactory.Configure()
+	/// 	</see>
 	/// .
 	/// When an ObjectContainer or ObjectServer is opened, the global Configuration
 	/// context is cloned and copied into the ObjectContainer/ObjectServer.
@@ -400,7 +401,8 @@ namespace Db4objects.Db4o.Config
 		/// configures the use of encryption.
 		/// <br /><br />This method needs to be called <b>before</b> a database file
 		/// is created with the first
-		/// <see cref="Db4oFactory.OpenFile(string)">Db4oFactory.OpenFile(string)</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4objects.Db4o.Db4oFactory.OpenFile(string)
+		/// 	</see>
 		/// .
 		/// <br /><br />If encryption is set to true,
 		/// you need to supply a password to seed the encryption mechanism.<br /><br />
@@ -668,7 +670,8 @@ namespace Db4objects.Db4o.Config
 		/// protects the database file with a password.
 		/// <br /><br />To set a password for a database file, this method needs to be
 		/// called <b>before</b> a database file is created with the first
-		/// <see cref="Db4oFactory.OpenFile(string)">Db4oFactory.OpenFile(string)</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4objects.Db4o.Db4oFactory.OpenFile(string)
+		/// 	</see>
 		/// .
 		/// <br /><br />All further attempts to open
 		/// the file, are required to set the same password.<br /><br />The password
@@ -688,7 +691,7 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// turns readOnly mode on and off.
 		/// <br /><br />This method configures the mode in which subsequent calls to
-		/// <see cref="Db4oFactory.OpenFile(string)">Db4o.openFile()</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4o.openFile()</see>
 		/// will open files.
 		/// <br /><br />Readonly mode allows to open an unlimited number of reading
 		/// processes on one database file. It is also convenient
@@ -699,7 +702,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="flag">
 		/// <code>true</code> for configuring readOnly mode for subsequent
 		/// calls to
-		/// <see cref="Db4oFactory.OpenFile(string)">Db4o.openFile()</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4o.openFile()</see>
 		/// .
 		/// </param>
 		void ReadOnly(bool flag);
@@ -860,10 +863,10 @@ namespace Db4objects.Db4o.Config
 		/// configures the storage format of Strings.
 		/// <br /><br />This method needs to be called <b>before</b> a database file
 		/// is created with the first
-		/// <see cref="Db4oFactory.OpenFile(string)">Db4oFactory.OpenFile(string)</see>
-		/// or
-		/// <see cref="Db4oFactory.OpenServer(string, int)">Db4oFactory.OpenServer(string, int)
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4objects.Db4o.Db4oFactory.OpenFile(string)
 		/// 	</see>
+		/// or
+		/// <see cref="com.db4o.Db4o#openServer">com.db4o.Db4o#openServer</see>
 		/// .
 		/// db4o database files keep their string format after creation.<br /><br />
 		/// Turning Unicode support off reduces the file storage space for strings

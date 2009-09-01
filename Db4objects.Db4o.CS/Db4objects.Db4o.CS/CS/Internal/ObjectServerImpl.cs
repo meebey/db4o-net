@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly string _name;
 
-		private ServerSocket4 _serverSocket;
+		private IServerSocket4 _serverSocket;
 
 		private int _port;
 
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private bool _caresAboutCommitted;
 
-		private readonly INativeSocketFactory _socketFactory;
+		private readonly ISocket4Factory _socketFactory;
 
 		private readonly bool _isEmbeddedServer;
 
@@ -56,14 +56,13 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private System.EventHandler<ServerClosedEventArgs> _closed;
 
-		public ObjectServerImpl(LocalObjectContainer container, int port, INativeSocketFactory
-			 socketFactory) : this(container, (port < 0 ? 0 : port), port == 0, socketFactory
-			)
+		public ObjectServerImpl(LocalObjectContainer container, ISocket4Factory socketFactory
+			, int port) : this(container, socketFactory, (port < 0 ? 0 : port), port == 0)
 		{
 		}
 
-		public ObjectServerImpl(LocalObjectContainer container, int port, bool isEmbeddedServer
-			, INativeSocketFactory socketFactory)
+		private ObjectServerImpl(LocalObjectContainer container, ISocket4Factory socketFactory
+			, int port, bool isEmbeddedServer)
 		{
 			_isEmbeddedServer = isEmbeddedServer;
 			_socketFactory = socketFactory;
@@ -135,7 +134,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			try
 			{
-				_serverSocket = new ServerSocket4(_socketFactory, _port);
+				_serverSocket = _socketFactory.CreateServerSocket(_port);
 				_port = _serverSocket.GetLocalPort();
 			}
 			catch (IOException e)

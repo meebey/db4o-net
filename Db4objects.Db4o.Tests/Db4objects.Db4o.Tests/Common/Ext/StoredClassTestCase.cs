@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 			IReflectClass fieldType = storedField.GetStoredType();
 			Assert.AreEqual(Reflector().ForClass(expectedFieldType), fieldType);
 			Assert.AreEqual(isArray, storedField.IsArray());
-			if (IsClientServer())
+			if (IsMultiSession())
 			{
 				return;
 			}

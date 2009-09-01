@@ -6,6 +6,8 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Common.CS;
 
@@ -28,8 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			string password = "hohoho";
 			IObjectServer server = ClientServerFixture().Server();
 			server.GrantAccess(user, password);
-			IObjectContainer con = Db4oFactory.OpenClient(Config(), ServerHostname, ClientServerFixture
-				().ServerPort(), user, password);
+			IObjectContainer con = OpenClient(user, password);
 			Assert.IsNotNull(con);
 			con.Close();
 			server.Ext().RevokeAccess(user);
@@ -50,8 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenClient(this._enclosing.Config(), ServerRevokeAccessTestCase.ServerHostname
-					, this._enclosing.ClientServerFixture().ServerPort(), user, password);
+				this._enclosing.OpenClient(user, password);
 			}
 
 			private readonly ServerRevokeAccessTestCase _enclosing;
@@ -59,6 +59,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			private readonly string user;
 
 			private readonly string password;
+		}
+
+		private IObjectContainer OpenClient(string user, string password)
+		{
+			return Db4oClientServer.OpenClient(Db4oClientServerLegacyConfigurationBridge.AsClientConfiguration
+				(Config()), ServerHostname, ClientServerFixture().ServerPort(), user, password);
 		}
 
 		private IConfiguration Config()

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 	{
 		public static void Main(string[] args)
 		{
-			new StoreExceptionBubblesUpTestCase().RunClientServer();
+			new StoreExceptionBubblesUpTestCase().RunNetworking();
 		}
 
 		public sealed class ItemTranslator : IObjectTranslator

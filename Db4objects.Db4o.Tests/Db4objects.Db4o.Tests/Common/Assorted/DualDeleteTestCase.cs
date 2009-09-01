@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public static void Main(string[] args)
 		{
-			new DualDeleteTestCase().RunClientServer();
+			new DualDeleteTestCase().RunNetworking();
 		}
 
 		public Atom atom;
@@ -36,8 +36,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public virtual void Test()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
 			try
 			{
 				IObjectSet os1 = oc1.Query(typeof(DualDeleteTestCase));

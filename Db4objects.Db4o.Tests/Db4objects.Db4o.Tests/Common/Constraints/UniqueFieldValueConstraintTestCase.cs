@@ -186,7 +186,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 
 		private bool IsNetworkClientServer()
 		{
-			return IsClientServer() && !IsEmbeddedClientServer();
+			return IsMultiSession() && !IsEmbedded();
 		}
 	}
 }

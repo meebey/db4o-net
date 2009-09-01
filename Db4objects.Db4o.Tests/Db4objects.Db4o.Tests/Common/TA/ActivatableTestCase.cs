@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4oUnit.Mocking;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Common.TA;
@@ -39,7 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		public virtual void TestUnbindingIsIsolated()
 		{
-			if (!IsClientServer())
+			if (!IsMultiSession())
 			{
 				return;
 			}
@@ -67,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 
 		private MockActivatable RetrieveMockFromNewClientAndClose()
 		{
-			IExtObjectContainer client = OpenNewClient();
+			IExtObjectContainer client = OpenNewSession();
 			try
 			{
 				return RetrieveMock(client);
@@ -76,11 +75,6 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			{
 				client.Close();
 			}
-		}
-
-		private IExtObjectContainer OpenNewClient()
-		{
-			return ((IDb4oClientServerFixture)Fixture()).OpenNewClient();
 		}
 
 		private void AssertBindUnbindCalls(MockActivatable mock)

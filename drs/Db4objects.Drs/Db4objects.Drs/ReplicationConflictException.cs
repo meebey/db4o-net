@@ -11,11 +11,10 @@ namespace Db4objects.Drs
 	/// <author>Albert Kwan</author>
 	/// <author>Klaus Wuestefeld</author>
 	/// <version>1.2</version>
-	/// <seealso cref="Db4objects.Drs.IReplicationEventListener">Db4objects.Drs.IReplicationEventListener
-	/// 	</seealso>
+	/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
 	/// <since>dRS 1.2</since>
 	[System.Serializable]
-	public class ReplicationConflictException : Db4oException
+	public class ReplicationConflictException : Db4oRecoverableException
 	{
 		public ReplicationConflictException(string message) : base(message)
 		{

@@ -46,7 +46,7 @@ namespace Db4oUnit.Extensions.Tests
 
 		public virtual void TestClientServer()
 		{
-			AssertFixtureConfiguration(new Db4oClientServer(false, "C/S"));
+			AssertFixtureConfiguration(Db4oFixtures.NewNetworkingCS());
 		}
 
 		public virtual void TestInMemory()

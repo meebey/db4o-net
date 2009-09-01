@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Fieldindex;
 
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
-	public class RuntimeFieldIndexTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class RuntimeFieldIndexTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		private static readonly string Fieldname = "_id";
 

@@ -2,13 +2,14 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Drs.Tests;
 using Db4objects.Drs.Tests.Db4o;
 using Db4objects.Drs.Tests.Dotnet;
 
 namespace Db4objects.Drs.Tests
 {
-	public partial class Db4oTests : DrsTestSuite
+	public partial class Db4oTests : DrsTestSuite, IDb4oTestCase
 	{
 		public static int Main(string[] args)
 		{

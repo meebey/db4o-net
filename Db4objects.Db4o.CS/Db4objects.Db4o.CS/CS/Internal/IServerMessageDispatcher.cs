@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal
@@ -13,7 +12,7 @@ namespace Db4objects.Db4o.CS.Internal
 	{
 		void QueryResultFinalized(int queryResultID);
 
-		ISocket4 Socket();
+		Socket4Adapter Socket();
 
 		int DispatcherID();
 
@@ -51,5 +50,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		/// <exception cref="System.Exception"></exception>
 		void Join();
+
+		void SetDispatcherName(string name);
 	}
 }

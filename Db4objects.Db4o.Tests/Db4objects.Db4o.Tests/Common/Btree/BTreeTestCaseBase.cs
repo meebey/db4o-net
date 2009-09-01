@@ -8,7 +8,7 @@ using Db4objects.Db4o.Internal.Btree;
 
 namespace Db4objects.Db4o.Tests.Common.Btree
 {
-	public abstract class BTreeTestCaseBase : AbstractDb4oTestCase, IOptOutCS
+	public abstract class BTreeTestCaseBase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		protected const int BtreeNodeSize = 4;
 

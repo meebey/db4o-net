@@ -8,6 +8,8 @@ namespace Db4objects.Db4o.Internal.Threading
 	{
 		void Start(IRunnable task);
 
+		void Start(string taskName, IRunnable task);
+
 		void StartLowPriority(IRunnable task);
 
 		event System.EventHandler<UncaughtExceptionEventArgs> UncaughtException;

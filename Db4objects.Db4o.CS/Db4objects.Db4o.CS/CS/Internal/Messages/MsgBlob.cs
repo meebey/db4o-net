@@ -2,9 +2,9 @@
 
 using System.IO;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Sharpen.IO;
@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public abstract void ProcessClient(ISocket4 sock);
+		public abstract void ProcessClient(Socket4Adapter socket);
 
 		internal virtual BlobImpl ServerGetBlobImpl()
 		{
@@ -45,8 +45,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		protected virtual void Copy(ISocket4 sock, IOutputStream rawout, int length, bool
-			 update)
+		protected virtual void Copy(Socket4Adapter sock, IOutputStream rawout, int length
+			, bool update)
 		{
 			BufferedOutputStream @out = new BufferedOutputStream(rawout);
 			byte[] buffer = new byte[BlobImpl.CopybufferLength];
@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		protected virtual void Copy(IInputStream rawin, ISocket4 sock, bool update)
+		protected virtual void Copy(IInputStream rawin, Socket4Adapter sock, bool update)
 		{
 			BufferedInputStream @in = new BufferedInputStream(rawin);
 			byte[] buffer = new byte[BlobImpl.CopybufferLength];

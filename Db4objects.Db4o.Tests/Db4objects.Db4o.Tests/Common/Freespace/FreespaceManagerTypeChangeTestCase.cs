@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public class FreespaceManagerTypeChangeTestCase : FreespaceManagerTestCaseBase, IOptOutCS
+	public class FreespaceManagerTypeChangeTestCase : FreespaceManagerTestCaseBase, IOptOutMultiSession
 		, IOptOutDefragSolo
 	{
 		private const bool Verbose = false;

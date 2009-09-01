@@ -40,7 +40,8 @@ namespace Db4objects.Drs.Inside
 		/// Purpose: handle circular references
 		/// TODO Big Refactoring: Evolve this to handle ALL reference logic (!) and remove it from the providers.
 		/// </remarks>
-		private readonly Hashtable4 _objectsPreparedToReplicate = new Hashtable4(10000);
+		private readonly IdentitySet4 _objectsPreparedToReplicate = new IdentitySet4(1000
+			);
 
 		/// <summary>
 		/// key = object originated from one provider
@@ -83,15 +84,15 @@ namespace Db4objects.Drs.Inside
 
 		public bool Visit(object obj)
 		{
-			if (_objectsPreparedToReplicate.Get(obj) != null)
-			{
-				return false;
-			}
 			if (IsValueType(obj))
 			{
 				return true;
 			}
-			_objectsPreparedToReplicate.Put(obj, obj);
+			if (_objectsPreparedToReplicate.Contains(obj))
+			{
+				return false;
+			}
+			_objectsPreparedToReplicate.Add(obj);
 			return PrepareObjectToBeReplicated(obj, null, null);
 		}
 

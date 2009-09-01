@@ -7,6 +7,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.Events;
 
@@ -43,20 +44,50 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				("bar")));
 		}
 
+		public virtual void TestUpdatingInDeletingCallback()
+		{
+			EventRegistryFor(FileSession()).Deleting += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
+				(new _IEventListener4_40().OnEvent);
+			Db().Delete(ItemByName("foo"));
+			Assert.IsNotNull(ItemByName("bar*"));
+		}
+
+		private sealed class _IEventListener4_40
+		{
+			public _IEventListener4_40()
+			{
+			}
+
+			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
+				 args)
+			{
+				object obj = ((CancellableObjectEventArgs)args).Object;
+				if (!(obj is UpdateInCallbackThrowsTestCase.Item))
+				{
+					return;
+				}
+				UpdateInCallbackThrowsTestCase.Item foo = (UpdateInCallbackThrowsTestCase.Item)obj;
+				foo._child._name += "*";
+				Transaction transaction = (Transaction)((CancellableObjectEventArgs)args).Transaction
+					();
+				IObjectContainer container = transaction.ObjectContainer();
+				container.Store(foo._child);
+				Sharpen.Runtime.Out.WriteLine("Updating " + foo._child + " on " + container);
+			}
+		}
+
 		public virtual void TestReentrantUpdateAfterActivationThrows()
 		{
-			UpdateInCallbackThrowsTestCase.Item foo = ((UpdateInCallbackThrowsTestCase.Item)QueryItemsByName
-				("foo").Next());
+			UpdateInCallbackThrowsTestCase.Item foo = ItemByName("foo");
 			Db().Deactivate(foo);
-			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(Db());
-			registry.Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_44(this).OnEvent);
+			EventRegistry().Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_66(this).OnEvent);
 			Db().Activate(foo, 1);
 		}
 
-		private sealed class _IEventListener4_44
+		private sealed class _IEventListener4_66
 		{
-			public _IEventListener4_44(UpdateInCallbackThrowsTestCase _enclosing)
+			public _IEventListener4_66(UpdateInCallbackThrowsTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -74,12 +105,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 					return;
 				}
-				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_56(this, item));
+				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_78(this, item));
 			}
 
-			private sealed class _ICodeBlock_56 : ICodeBlock
+			private sealed class _ICodeBlock_78 : ICodeBlock
 			{
-				public _ICodeBlock_56(_IEventListener4_44 _enclosing, UpdateInCallbackThrowsTestCase.Item
+				public _ICodeBlock_78(_IEventListener4_66 _enclosing, UpdateInCallbackThrowsTestCase.Item
 					 item)
 				{
 					this._enclosing = _enclosing;
@@ -92,35 +123,40 @@ namespace Db4objects.Db4o.Tests.Common.Events
 					this._enclosing._enclosing.Store(item);
 				}
 
-				private readonly _IEventListener4_44 _enclosing;
+				private readonly _IEventListener4_66 _enclosing;
 
 				private readonly UpdateInCallbackThrowsTestCase.Item item;
 			}
 
 			private readonly UpdateInCallbackThrowsTestCase _enclosing;
+		}
+
+		private UpdateInCallbackThrowsTestCase.Item ItemByName(string name)
+		{
+			return ((UpdateInCallbackThrowsTestCase.Item)QueryItemsByName(name).Next());
 		}
 
 		public virtual void TestReentrantUpdateThrows()
 		{
-			ByRef activateRaised = new ByRef();
-			activateRaised.value = false;
+			ByRef updatedTriggered = new ByRef();
+			updatedTriggered.value = false;
 			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(Db());
-			registry.Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_71(this, activateRaised).OnEvent);
+			registry.Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_97(this, updatedTriggered).OnEvent);
 			IObjectSet items = QueryItemsByName("foo");
 			Assert.AreEqual(1, items.Count);
-			Assert.IsFalse((((bool)activateRaised.value)));
-			items.Next();
-			Assert.IsTrue((((bool)activateRaised.value)));
+			Assert.IsFalse((((bool)updatedTriggered.value)));
+			Store(items.Next());
+			Assert.IsTrue((((bool)updatedTriggered.value)));
 		}
 
-		private sealed class _IEventListener4_71
+		private sealed class _IEventListener4_97
 		{
-			public _IEventListener4_71(UpdateInCallbackThrowsTestCase _enclosing, ByRef activateRaised
+			public _IEventListener4_97(UpdateInCallbackThrowsTestCase _enclosing, ByRef updatedTriggered
 				)
 			{
 				this._enclosing = _enclosing;
-				this.activateRaised = activateRaised;
+				this.updatedTriggered = updatedTriggered;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
@@ -136,13 +172,13 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 					return;
 				}
-				activateRaised.value = true;
-				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_85(this, item));
+				updatedTriggered.value = true;
+				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_111(this, item));
 			}
 
-			private sealed class _ICodeBlock_85 : ICodeBlock
+			private sealed class _ICodeBlock_111 : ICodeBlock
 			{
-				public _ICodeBlock_85(_IEventListener4_71 _enclosing, UpdateInCallbackThrowsTestCase.Item
+				public _ICodeBlock_111(_IEventListener4_97 _enclosing, UpdateInCallbackThrowsTestCase.Item
 					 item)
 				{
 					this._enclosing = _enclosing;
@@ -155,14 +191,14 @@ namespace Db4objects.Db4o.Tests.Common.Events
 					this._enclosing._enclosing.Store(item);
 				}
 
-				private readonly _IEventListener4_71 _enclosing;
+				private readonly _IEventListener4_97 _enclosing;
 
 				private readonly UpdateInCallbackThrowsTestCase.Item item;
 			}
 
 			private readonly UpdateInCallbackThrowsTestCase _enclosing;
 
-			private readonly ByRef activateRaised;
+			private readonly ByRef updatedTriggered;
 		}
 
 		private IObjectSet QueryItemsByName(string name)

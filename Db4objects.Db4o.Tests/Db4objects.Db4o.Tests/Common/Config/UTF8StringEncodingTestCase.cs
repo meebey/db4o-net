@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public static void Main(string[] arguments)
 		{
-			new UTF8StringEncodingTestCase().RunEmbeddedClientServer();
+			new UTF8StringEncodingTestCase().RunEmbedded();
 		}
 
 		public virtual void TestEncodeDecode()

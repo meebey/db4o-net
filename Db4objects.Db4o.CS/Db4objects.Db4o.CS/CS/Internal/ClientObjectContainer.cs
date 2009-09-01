@@ -11,7 +11,6 @@ using Db4objects.Db4o.CS.Internal.Objectexchange;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -34,7 +33,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private BlobProcessor _blobTask;
 
-		private ISocket4 i_socket;
+		private Socket4Adapter i_socket;
 
 		private BlockingQueue _synchronousMessageQueue = new BlockingQueue();
 
@@ -101,8 +100,8 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 		}
 
-		public ClientObjectContainer(IConfiguration config, ISocket4 socket, string user, 
-			string password, bool login) : base(config)
+		public ClientObjectContainer(IConfiguration config, Socket4Adapter socket, string
+			 user, string password, bool login) : base(config)
 		{
 			// Db4o.registerClientConstructor(new ClientConstructor());
 			_userName = user;
@@ -113,7 +112,7 @@ namespace Db4objects.Db4o.CS.Internal
 			Open();
 		}
 
-		private void SetAndConfigSocket(ISocket4 socket)
+		private void SetAndConfigSocket(Socket4Adapter socket)
 		{
 			i_socket = socket;
 			i_socket.SetSoTimeout(_config.TimeoutClientSocket());
@@ -144,7 +143,7 @@ namespace Db4objects.Db4o.CS.Internal
 			_heartbeat.Start();
 		}
 
-		private void StartDispatcherThread(ISocket4 socket, string user)
+		private void StartDispatcherThread(Socket4Adapter socket, string user)
 		{
 			if (!_singleThreaded)
 			{
@@ -152,9 +151,9 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 			ClientMessageDispatcherImpl dispatcherImpl = new ClientMessageDispatcherImpl(this
 				, socket, _synchronousMessageQueue, _asynchronousMessageQueue);
-			dispatcherImpl.SetDispatcherName(user);
+			string dispatcherName = "db4o client side message dispatcher for " + user;
 			_messageDispatcher = dispatcherImpl;
-			ThreadPool().Start(dispatcherImpl);
+			ThreadPool().Start(dispatcherName, dispatcherImpl);
 		}
 
 		private void StartAsynchronousMessageProcessor()
@@ -269,11 +268,11 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		internal virtual ISocket4 CreateParalellSocket()
+		internal virtual Socket4Adapter CreateParalellSocket()
 		{
 			Write(Msg.GetThreadId);
 			int serverThreadID = ExpectedByteResponse(Msg.IdList).ReadInt();
-			ISocket4 sock = i_socket.OpenParalellSocket();
+			Socket4Adapter sock = i_socket.OpenParalellSocket();
 			LoginToServer(sock);
 			if (switchedToFile != null)
 			{
@@ -571,15 +570,15 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.InvalidPasswordException"></exception>
-		private void LoginToServer(ISocket4 socket)
+		private void LoginToServer(Socket4Adapter iSocket)
 		{
 			UnicodeStringIO stringWriter = new UnicodeStringIO();
 			int length = stringWriter.Length(_userName) + stringWriter.Length(_password);
 			MsgD message = Msg.Login.GetWriterForLength(SystemTransaction(), length);
 			message.WriteString(_userName);
 			message.WriteString(_password);
-			message.Write(socket);
-			Msg msg = ReadLoginMessage(socket);
+			message.Write(iSocket);
+			Msg msg = ReadLoginMessage(iSocket);
 			ByteArrayBuffer payLoad = msg.PayLoad();
 			_blockSize = payLoad.ReadInt();
 			int doEncrypt = payLoad.ReadInt();
@@ -589,12 +588,12 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private Msg ReadLoginMessage(ISocket4 socket)
+		private Msg ReadLoginMessage(Socket4Adapter iSocket)
 		{
-			Msg msg = Msg.ReadMessage(this, SystemTransaction(), socket);
+			Msg msg = Msg.ReadMessage(this, SystemTransaction(), iSocket);
 			while (Msg.Pong.Equals(msg))
 			{
-				msg = Msg.ReadMessage(this, SystemTransaction(), socket);
+				msg = Msg.ReadMessage(this, SystemTransaction(), iSocket);
 			}
 			if (!Msg.LoginOk.Equals(msg))
 			{
@@ -735,14 +734,14 @@ namespace Db4objects.Db4o.CS.Internal
 			 prefetchDepth)
 		{
 			IDictionary buffers = new Hashtable(ids.Length);
-			WithEnvironment(new _IRunnable_587(this, transaction, ids, buffers, prefetchDepth
+			WithEnvironment(new _IRunnable_586(this, transaction, ids, buffers, prefetchDepth
 				));
 			return PackSlotBuffers(ids, buffers);
 		}
 
-		private sealed class _IRunnable_587 : IRunnable
+		private sealed class _IRunnable_586 : IRunnable
 		{
-			public _IRunnable_587(ClientObjectContainer _enclosing, Transaction transaction, 
+			public _IRunnable_586(ClientObjectContainer _enclosing, Transaction transaction, 
 				int[] ids, IDictionary buffers, int prefetchDepth)
 			{
 				this._enclosing = _enclosing;
@@ -775,13 +774,13 @@ namespace Db4objects.Db4o.CS.Internal
 			 id, bool lastCommitted)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_600(this, lastCommitted, result, transaction, id));
+			WithEnvironment(new _IRunnable_599(this, lastCommitted, result, transaction, id));
 			return ((ByteArrayBuffer)result.value);
 		}
 
-		private sealed class _IRunnable_600 : IRunnable
+		private sealed class _IRunnable_599 : IRunnable
 		{
-			public _IRunnable_600(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
+			public _IRunnable_599(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
 				 result, Transaction transaction, int id)
 			{
 				this._enclosing = _enclosing;
@@ -831,13 +830,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_630(this, trans, result));
+			WithEnvironment(new _IRunnable_629(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_630 : IRunnable
+		private sealed class _IRunnable_629 : IRunnable
 		{
-			public _IRunnable_630(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_629(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1111,8 +1110,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		// Remove, for testing purposes only
-		public virtual ISocket4 Socket()
+		public virtual Socket4Adapter Socket()
 		{
 			return i_socket;
 		}
@@ -1180,13 +1178,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_900(this, trans, result));
+			WithEnvironment(new _IRunnable_898(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_900 : IRunnable
+		private sealed class _IRunnable_898 : IRunnable
 		{
-			public _IRunnable_900(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_898(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;

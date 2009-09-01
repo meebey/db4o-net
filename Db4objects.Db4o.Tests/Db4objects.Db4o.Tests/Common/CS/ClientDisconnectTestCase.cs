@@ -14,13 +14,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	{
 		public static void Main(string[] arguments)
 		{
-			new ClientDisconnectTestCase().RunClientServer();
+			new ClientDisconnectTestCase().RunNetworking();
 		}
 
 		public virtual void TestDisconnect()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
 			try
 			{
 				ClientObjectContainer client1 = (ClientObjectContainer)oc1;

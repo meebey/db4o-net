@@ -34,16 +34,23 @@ namespace Db4objects.Db4o.Internal.Threading
 			ActivateThread(thread);
 		}
 
+		public virtual void Start(string taskName, IRunnable task)
+		{
+			Thread thread = ThreadFor(task);
+			thread.SetName(taskName);
+			ActivateThread(thread);
+		}
+
 		private Thread ThreadFor(IRunnable task)
 		{
-			Thread thread = new Thread(new _IRunnable_40(this, task));
+			Thread thread = new Thread(new _IRunnable_47(this, task));
 			thread.SetDaemon(true);
 			return thread;
 		}
 
-		private sealed class _IRunnable_40 : IRunnable
+		private sealed class _IRunnable_47 : IRunnable
 		{
-			public _IRunnable_40(ThreadPool4Impl _enclosing, IRunnable task)
+			public _IRunnable_47(ThreadPool4Impl _enclosing, IRunnable task)
 			{
 				this._enclosing = _enclosing;
 				this.task = task;

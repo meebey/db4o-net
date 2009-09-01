@@ -4,7 +4,6 @@ using System;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
@@ -42,7 +41,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			try
 			{
-				ISocket4 socket = stream.CreateParalellSocket();
+				Socket4Adapter socket = stream.CreateParalellSocket();
 				MsgBlob msg = null;
 				// no blobLock synchronisation here, since our first msg is valid
 				lock (queue)

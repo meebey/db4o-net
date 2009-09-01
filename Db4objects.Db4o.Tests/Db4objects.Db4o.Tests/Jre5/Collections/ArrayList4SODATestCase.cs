@@ -2,9 +2,7 @@
 
 #if !SILVERLIGHT
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Jre5.Collections;
@@ -72,16 +70,6 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections
 				o.AddItem(new OrderItem(products[i], i));
 			}
 			return o;
-		}
-
-		protected virtual IDb4oClientServerFixture ClientServerFixture()
-		{
-			return (IDb4oClientServerFixture)Fixture();
-		}
-
-		protected virtual IExtObjectContainer OpenNewClient()
-		{
-			return ClientServerFixture().OpenNewClient();
 		}
 	}
 }

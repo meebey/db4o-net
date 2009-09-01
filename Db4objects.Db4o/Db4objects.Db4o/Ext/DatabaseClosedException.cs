@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.Ext
 	/// This exception is thrown when the object container required for
 	/// the current operation was closed or failed to open.
 	/// </remarks>
-	/// <seealso cref="Db4oFactory.OpenFile(string)">Db4oFactory.OpenFile(string)</seealso>
+	/// <seealso cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4objects.Db4o.Db4oFactory.OpenFile(string)
+	/// 	</seealso>
 	/// <seealso cref="Db4objects.Db4o.IObjectContainer.Close()">Db4objects.Db4o.IObjectContainer.Close()
 	/// 	</seealso>
 	[System.Serializable]

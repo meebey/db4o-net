@@ -151,7 +151,7 @@ namespace Db4objects.Drs.Tests
 		private int ReplicateAll(ITestableReplicationProviderInside peerA, ITestableReplicationProviderInside
 			 peerB, bool modifiedOnly)
 		{
-			IReplicationSession replication = Db4objects.Drs.Replication.Begin(peerA, peerB);
+			IReplicationSession replication = Replication.Begin(peerA, peerB);
 			IEnumerator it = modifiedOnly ? peerA.ObjectsChangedSinceLastReplication(typeof(R0
 				)).GetEnumerator() : peerA.GetStoredObjects(typeof(R0)).GetEnumerator();
 			int replicated = 0;

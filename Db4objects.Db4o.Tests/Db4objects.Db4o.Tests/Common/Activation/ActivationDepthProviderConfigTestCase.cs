@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Activation
 
 		private bool IsNetworkCS()
 		{
-			return IsClientServer() && !IsMTOC();
+			return IsMultiSession() && !IsEmbedded();
 		}
 
 		private ClassMetadata ItemRootMetadata()

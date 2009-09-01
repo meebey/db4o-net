@@ -2,9 +2,6 @@
 
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
-using Db4oUnit.Extensions.Util;
-using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
 
 namespace Db4oUnit.Extensions.Fixtures
 {
@@ -12,18 +9,13 @@ namespace Db4oUnit.Extensions.Fixtures
 	{
 		private static readonly string File = "db4oSoloTest.db4o";
 
-		public Db4oSolo() : base(FilePath())
+		public Db4oSolo()
 		{
 		}
 
-		public Db4oSolo(IFixtureConfiguration fixtureConfiguration) : this()
+		public Db4oSolo(IFixtureConfiguration fixtureConfiguration)
 		{
 			FixtureConfiguration(fixtureConfiguration);
-		}
-
-		protected override IObjectContainer CreateDatabase(IConfiguration config)
-		{
-			return Db4oFactory.OpenFile(config, GetAbsolutePath());
 		}
 
 		public override string Label()
@@ -31,15 +23,9 @@ namespace Db4oUnit.Extensions.Fixtures
 			return BuildLabel("SOLO");
 		}
 
-		/// <exception cref="System.Exception"></exception>
-		public override void Defragment()
+		protected override string FileName()
 		{
-			Defragment(FilePath());
-		}
-
-		private static string FilePath()
-		{
-			return CrossPlatformServices.DatabasePath(File);
+			return File;
 		}
 	}
 }

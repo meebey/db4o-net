@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Instrumentation.Api;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 
 namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
@@ -8,7 +9,7 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 	{
 		private IComparisonOperand _index;
 
-		public ArrayAccessValue(IComparisonOperandAnchor parent, IComparisonOperand index
+		public ArrayAccessValue(ComparisonOperandDescendant parent, IComparisonOperand index
 			) : base(parent)
 		{
 			_index = index;
@@ -43,6 +44,14 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 		public override string ToString()
 		{
 			return base.ToString() + "[" + _index + "]";
+		}
+
+		public override ITypeRef Type
+		{
+			get
+			{
+				return ((ComparisonOperandDescendant)Parent()).Type.ElementType;
+			}
 		}
 	}
 }

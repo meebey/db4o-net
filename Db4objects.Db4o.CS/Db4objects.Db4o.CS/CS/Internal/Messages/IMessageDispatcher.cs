@@ -12,7 +12,5 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		bool Write(Msg msg);
 
 		bool Close();
-
-		void SetDispatcherName(string name);
 	}
 }

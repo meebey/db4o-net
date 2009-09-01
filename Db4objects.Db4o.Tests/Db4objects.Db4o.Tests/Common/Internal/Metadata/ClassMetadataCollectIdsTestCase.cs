@@ -11,7 +11,7 @@ using Db4objects.Db4o.Tests.Common.Internal.Metadata;
 
 namespace Db4objects.Db4o.Tests.Common.Internal.Metadata
 {
-	public class ClassMetadataCollectIdsTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class ClassMetadataCollectIdsTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public class Item
 		{

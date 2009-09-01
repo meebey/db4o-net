@@ -222,7 +222,7 @@ namespace Db4objects.Db4o.Config
 		/// <value>
 		/// <code>true</code> for configuring readOnly mode for subsequent
 		/// calls to
-		/// <see cref="Db4oFactory.OpenFile(string)">Db4o.openFile()</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4o.openFile()</see>
 		/// .
 		/// TODO: this is rather embedded + client than base?
 		/// </value>

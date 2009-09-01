@@ -4,7 +4,7 @@ using System.Threading;
 using System.Windows.Browser;
 using Db4oUnit;
 using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Silverlight.TestStart
 {

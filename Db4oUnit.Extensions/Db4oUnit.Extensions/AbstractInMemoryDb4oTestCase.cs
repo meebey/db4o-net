@@ -7,7 +7,7 @@ using Db4objects.Db4o.IO;
 
 namespace Db4oUnit.Extensions
 {
-	public class AbstractInMemoryDb4oTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class AbstractInMemoryDb4oTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)

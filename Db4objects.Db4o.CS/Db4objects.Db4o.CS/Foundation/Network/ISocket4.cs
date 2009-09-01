@@ -6,32 +6,29 @@ namespace Db4objects.Db4o.Foundation.Network
 {
 	public interface ISocket4
 	{
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		void Close();
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		void Flush();
-
-		bool IsConnected();
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		int Read();
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		int Read(byte[] a_bytes, int a_offset, int a_length);
 
 		void SetSoTimeout(int timeout);
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		void Write(byte[] bytes);
+		bool IsConnected();
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		void Write(byte[] bytes, int off, int len);
+		/// <exception cref="System.IO.IOException"></exception>
+		int Read(byte[] buffer, int offset, int count);
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		void Write(int i);
+		/// <exception cref="System.IO.IOException"></exception>
+		int Read();
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
+		void Write(byte[] bytes, int offset, int count);
+
+		/// <exception cref="System.IO.IOException"></exception>
+		void Write(int b);
+
+		/// <exception cref="System.IO.IOException"></exception>
 		ISocket4 OpenParalellSocket();
 	}
 }

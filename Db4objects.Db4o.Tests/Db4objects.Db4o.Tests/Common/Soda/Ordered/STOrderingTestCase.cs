@@ -8,7 +8,7 @@ using Db4objects.Db4o.Tests.Common.Soda.Util;
 namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 {
 	/// <summary>Tests for COR-1007</summary>
-	public class STOrderingTestCase : SodaBaseTestCase, IOptOutCS
+	public class STOrderingTestCase : SodaBaseTestCase, IOptOutMultiSession
 	{
 		public static void Main(string[] args)
 		{

@@ -5,6 +5,7 @@ using System.Reflection;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Concurrency;
+using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Ext;
 using Sharpen.Lang;
@@ -135,12 +136,12 @@ namespace Db4oUnit.Extensions.Concurrency
 
 			public virtual void Run()
 			{
-				this.Run(new _IRunnable_114(this));
+				this.Run(new _IRunnable_115(this));
 			}
 
-			private sealed class _IRunnable_114 : IRunnable
+			private sealed class _IRunnable_115 : IRunnable
 			{
-				public _IRunnable_114(RunnableTestMethod _enclosing)
+				public _IRunnable_115(RunnableTestMethod _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -158,7 +159,7 @@ namespace Db4oUnit.Extensions.Concurrency
 				IExtObjectContainer oc = null;
 				try
 				{
-					oc = this._enclosing.Fixture().OpenNewClient();
+					oc = this._enclosing.Fixture().OpenNewSession();
 					object[] args;
 					if (this.showSeq)
 					{
@@ -189,9 +190,9 @@ namespace Db4oUnit.Extensions.Concurrency
 			private readonly ConcurrencyTestMethod _enclosing;
 		}
 
-		internal virtual IDb4oClientServerFixture Fixture()
+		internal virtual IMultiSessionFixture Fixture()
 		{
-			return ((IDb4oClientServerFixture)AbstractDb4oTestCase.Fixture());
+			return ((IMultiSessionFixture)AbstractDb4oTestCase.Fixture());
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly ObjectServerImpl _server;
 
-		private ISocket4 _socket;
+		private Socket4Adapter _socket;
 
 		private ClientTransactionHandle _transactionHandle;
 
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		/// <exception cref="System.Exception"></exception>
 		internal ServerMessageDispatcherImpl(ObjectServerImpl server, ClientTransactionHandle
-			 transactionHandle, ISocket4 socket, int threadID, bool loggedIn, object mainLock
+			 transactionHandle, ISocket4 socket4, int threadID, bool loggedIn, object mainLock
 			)
 		{
 			_mainLock = mainLock;
@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.CS.Internal
 			_loggedin = loggedIn;
 			_server = server;
 			_threadID = threadID;
-			_socket = socket;
+			_socket = new Socket4Adapter(socket4);
 			_socket.SetSoTimeout(((Config4Impl)server.Configure()).TimeoutServerSocket());
 		}
 
@@ -363,7 +363,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public ISocket4 Socket()
+		public Socket4Adapter Socket()
 		{
 			return _socket;
 		}

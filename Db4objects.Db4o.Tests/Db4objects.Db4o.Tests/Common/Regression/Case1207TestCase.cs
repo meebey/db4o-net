@@ -13,15 +13,15 @@ namespace Db4objects.Db4o.Tests.Common.Regression
 		/// <exception cref="System.Exception"></exception>
 		public static void Main(string[] args)
 		{
-			new Case1207TestCase().RunClientServer();
+			new Case1207TestCase().RunNetworking();
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
-			IObjectContainer oc1 = OpenNewClient();
-			IObjectContainer oc2 = OpenNewClient();
-			IObjectContainer oc3 = OpenNewClient();
+			IObjectContainer oc1 = OpenNewSession();
+			IObjectContainer oc2 = OpenNewSession();
+			IObjectContainer oc3 = OpenNewSession();
 			try
 			{
 				for (int i = 0; i < 1000; i++)

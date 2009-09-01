@@ -6,16 +6,6 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oFixtures
 	{
-		public static Db4oClientServer NewEmbeddedCS()
-		{
-			return new Db4oClientServer(true, "C/S EMBEDDED");
-		}
-
-		public static Db4oClientServer NewNetworkingCS()
-		{
-			return new Db4oClientServer(false, "C/S");
-		}
-
 		public static Db4oSolo NewSolo()
 		{
 			return new Db4oSolo();
@@ -24,6 +14,26 @@ namespace Db4oUnit.Extensions.Fixtures
 		public static Db4oInMemory NewInMemory()
 		{
 			return new Db4oInMemory();
+		}
+
+		public static IMultiSessionFixture NewEmbedded()
+		{
+			return new Db4oEmbeddedSessionFixture();
+		}
+
+		public static IMultiSessionFixture NewEmbedded(string label)
+		{
+			return new Db4oEmbeddedSessionFixture(label);
+		}
+
+		public static Db4oNetworking NewNetworkingCS()
+		{
+			return new Db4oNetworking();
+		}
+
+		public static Db4oNetworking NewNetworkingCS(string label)
+		{
+			return new Db4oNetworking(label);
 		}
 	}
 }

@@ -18,7 +18,7 @@ using Sharpen.Util;
 
 namespace Db4objects.Db4o.Tests.Jre12.Collections
 {
-	public class BigSetTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class BigSetTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public static void Main(string[] args)
 		{

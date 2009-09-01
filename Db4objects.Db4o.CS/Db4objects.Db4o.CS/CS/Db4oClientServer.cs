@@ -3,7 +3,6 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal.Config;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS
@@ -33,23 +32,70 @@ namespace Db4objects.Db4o.CS
 		}
 
 		/// <summary>
-		/// opens a db4o server with the specified configuration on
-		/// the specified database file and provides access through
-		/// the specified port.
+		/// opens an
+		/// <see cref="Db4objects.Db4o.IObjectServer">IObjectServer</see>
+		/// on the specified database file and port.
+		/// <br /><br />
 		/// </summary>
-		/// <remarks>
-		/// opens a db4o server with the specified configuration on
-		/// the specified database file and provides access through
-		/// the specified port.
-		/// </remarks>
-		/// <exception cref="System.ArgumentException">if the configuration passed in has already been used.
+		/// <param name="config">
+		/// a custom
+		/// <see cref="Db4objects.Db4o.CS.Config.IServerConfiguration">Db4objects.Db4o.CS.Config.IServerConfiguration
+		/// 	</see>
+		/// instance to be obtained via
+		/// <see cref="NewServerConfiguration()">NewServerConfiguration()</see>
+		/// </param>
+		/// <param name="databaseFileName">an absolute or relative path to the database file</param>
+		/// <param name="port">
+		/// the port to be used or 0 if the server should not open a port, specify a value &lt; 0 if an arbitrary free port should be chosen - see
+		/// <see cref="ExtObjectServer#port()">ExtObjectServer#port()</see>
+		/// .
+		/// </param>
+		/// <returns>
+		/// an
+		/// <see cref="Db4objects.Db4o.IObjectServer">IObjectServer</see>
+		/// listening
+		/// on the specified port.
+		/// </returns>
+		/// <seealso cref="Configuration#readOnly">Configuration#readOnly</seealso>
+		/// <seealso cref="Configuration#encrypt">Configuration#encrypt</seealso>
+		/// <seealso cref="Configuration#password">Configuration#password</seealso>
+		/// <exception cref="Db4oIOException">I/O operation failed or was unexpectedly interrupted.
+		/// 	</exception>
+		/// <exception cref="DatabaseFileLockedException">
+		/// the required database file is locked by
+		/// another process.
+		/// </exception>
+		/// <exception cref="IncompatibleFileFormatException">
+		/// runtime
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration">configuration</see>
+		/// is not compatible
+		/// with the configuration of the database file.
+		/// </exception>
+		/// <exception cref="OldFormatException">
+		/// open operation failed because the database file
+		/// is in old format and
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates(bool)">Db4objects.Db4o.Config.IConfiguration.AllowVersionUpdates(bool)
+		/// 	</see>
+		/// 
+		/// is set to false.
+		/// </exception>
+		/// <exception cref="DatabaseReadOnlyException">database was configured as read-only.
 		/// 	</exception>
 		public static IObjectServer OpenServer(IServerConfiguration config, string databaseFileName
 			, int port)
 		{
-			Config4Impl legacy = LegacyFrom(config);
-			return legacy.ClientServerFactory().OpenServer(legacy, databaseFileName, port, new 
-				PlainSocketFactory());
+			return config.Networking.ClientServerFactory.OpenServer(config, databaseFileName, 
+				port);
+		}
+
+		/// <summary>opens a db4o server with a fresh server configuration.</summary>
+		/// <remarks>opens a db4o server with a fresh server configuration.</remarks>
+		/// <seealso cref="OpenServer(Db4objects.Db4o.CS.Config.IServerConfiguration, string, int)
+		/// 	">OpenServer(Db4objects.Db4o.CS.Config.IServerConfiguration, string, int)</seealso>
+		/// <seealso cref="NewServerConfiguration()">NewServerConfiguration()</seealso>
+		public static IObjectServer OpenServer(string databaseFileName, int port)
+		{
+			return OpenServer(NewServerConfiguration(), databaseFileName, port);
 		}
 
 		/// <summary>opens a db4o client instance with the specified configuration.</summary>
@@ -68,14 +114,20 @@ namespace Db4objects.Db4o.CS
 		public static IObjectContainer OpenClient(IClientConfiguration config, string host
 			, int port, string user, string password)
 		{
-			Config4Impl legacy = LegacyFrom(config);
-			return legacy.ClientServerFactory().OpenClient(legacy, host, port, user, password
-				, new PlainSocketFactory());
+			return config.Networking.ClientServerFactory.OpenClient(config, host, port, user, 
+				password);
 		}
 
-		private static Config4Impl LegacyFrom(INetworkingConfigurationProvider config)
+		/// <summary>opens a db4o client instance with a fresh client configuration.</summary>
+		/// <remarks>opens a db4o client instance with a fresh client configuration.</remarks>
+		/// <seealso cref="OpenClient(Db4objects.Db4o.CS.Config.IClientConfiguration, string, int, string, string)
+		/// 	">OpenClient(Db4objects.Db4o.CS.Config.IClientConfiguration, string, int, string, string)
+		/// 	</seealso>
+		/// <seealso cref="NewClientConfiguration()">NewClientConfiguration()</seealso>
+		public static IObjectContainer OpenClient(string host, int port, string user, string
+			 password)
 		{
-			return ((NetworkingConfigurationImpl)config.Networking).Config();
+			return OpenClient(NewClientConfiguration(), host, port, user, password);
 		}
 
 		/// <summary>

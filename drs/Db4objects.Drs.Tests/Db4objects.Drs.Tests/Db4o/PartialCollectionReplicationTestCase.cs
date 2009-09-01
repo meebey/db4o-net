@@ -114,8 +114,8 @@ namespace Db4objects.Drs.Tests.Db4o
 		private void ListenToUpdated(IList<PartialCollectionReplicationTestCase.Data> updated
 			)
 		{
-			EventRegistryFor(B()).Updated += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_IEventListener4_93(this, updated).OnEvent);
+			EventRegistryFor(B()).Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_93(this, updated).OnEvent);
 		}
 
 		private sealed class _IEventListener4_93
@@ -127,7 +127,8 @@ namespace Db4objects.Drs.Tests.Db4o
 				this.updated = updated;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				object o = ((ObjectEventArgs)args).Object;
 				if (o is PartialCollectionReplicationTestCase.Data)
@@ -152,8 +153,8 @@ namespace Db4objects.Drs.Tests.Db4o
 		private void ListenToCreated(IList<PartialCollectionReplicationTestCase.Data> created
 			)
 		{
-			EventRegistryFor(B()).Created += new Db4objects.Db4o.Events.ObjectEventHandler(new 
-				_IEventListener4_111(this, created).OnEvent);
+			EventRegistryFor(B()).Created += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
+				(new _IEventListener4_111(this, created).OnEvent);
 		}
 
 		private sealed class _IEventListener4_111
@@ -165,7 +166,8 @@ namespace Db4objects.Drs.Tests.Db4o
 				this.created = created;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectEventArgs args)
+			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
+				)
 			{
 				object o = ((ObjectEventArgs)args).Object;
 				if (o is PartialCollectionReplicationTestCase.Data)

@@ -27,6 +27,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			ApplyFixtureConfiguration(testInstance, config);
 			_db = CreateDatabase(config).Ext();
 			ListenToUncaughtExceptions(ThreadPool());
+			PostOpen();
 		}
 
 		private IThreadPool4 ThreadPool()
@@ -37,9 +38,10 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// <exception cref="System.Exception"></exception>
 		public override void Close()
 		{
+			PreClose();
 			if (null != _db)
 			{
-				Assert.IsTrue(Db().Close());
+				Assert.IsTrue(_db.Close());
 				try
 				{
 					ThreadPool().Join(3000);
@@ -61,8 +63,6 @@ namespace Db4oUnit.Extensions.Fixtures
 			return _db;
 		}
 
-		protected abstract IObjectContainer CreateDatabase(IConfiguration config);
-
 		public override LocalObjectContainer FileSession()
 		{
 			return (LocalObjectContainer)_db;
@@ -72,5 +72,15 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 			action.Apply(Config());
 		}
+
+		protected virtual void PreClose()
+		{
+		}
+
+		protected virtual void PostOpen()
+		{
+		}
+
+		protected abstract IObjectContainer CreateDatabase(IConfiguration config);
 	}
 }

@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Db4oUnit;
 using Db4oUnit.Fixtures;
+using Db4objects.Db4o.Config;
+using Db4objects.Db4o.TA;
 using Db4objects.Drs.Db4o;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
@@ -14,10 +16,14 @@ namespace Db4objects.Drs.Tests
 {
 	public class SingleTypeCollectionReplicationTest : FixtureBasedTestSuite
 	{
+		private static readonly FixtureVariable TransparentActivationFixture = new FixtureVariable
+			("TransparentActivation");
+
 		public override IFixtureProvider[] FixtureProviders()
 		{
 			return new IFixtureProvider[] { new SubjectFixtureProvider(new object[] { Collection1
-				(), Collection2(), Collection3() }) };
+				(), Collection2(), Collection3() }), new SimpleFixtureProvider(TransparentActivationFixture
+				, new object[] { true, false }) };
 		}
 
 		private object Collection1()
@@ -54,6 +60,14 @@ namespace Db4objects.Drs.Tests
 
 		public class TestUnit : DrsTestCase
 		{
+			protected override void Configure(IConfiguration config)
+			{
+				if ((bool)TransparentActivationFixture.Value)
+				{
+					config.Add(new TransparentActivationSupport());
+				}
+			}
+
 			public virtual void Test()
 			{
 				CollectionHolder h1 = Subject();

@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
@@ -50,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			ArrayList connections = new ArrayList();
 			IObjectServerEvents events = (IObjectServerEvents)server;
 			events.ClientConnected += new System.EventHandler<ClientConnectionEventArgs>(new 
-				_IEventListener4_46(connections).OnEvent);
+				_IEventListener4_47(connections).OnEvent);
 			IObjectContainer client = OpenClient();
 			try
 			{
@@ -64,9 +65,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private sealed class _IEventListener4_46
+		private sealed class _IEventListener4_47
 		{
-			public _IEventListener4_46(ArrayList connections)
+			public _IEventListener4_47(ArrayList connections)
 			{
 				this.connections = connections;
 			}
@@ -83,15 +84,15 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			BooleanByRef receivedEvent = new BooleanByRef(false);
 			IObjectServerEvents events = (IObjectServerEvents)server;
-			events.Closed += new System.EventHandler<ServerClosedEventArgs>(new _IEventListener4_64
+			events.Closed += new System.EventHandler<ServerClosedEventArgs>(new _IEventListener4_65
 				(receivedEvent).OnEvent);
 			server.Close();
 			Assert.IsTrue(receivedEvent.value);
 		}
 
-		private sealed class _IEventListener4_64
+		private sealed class _IEventListener4_65
 		{
-			public _IEventListener4_64(BooleanByRef receivedEvent)
+			public _IEventListener4_65(BooleanByRef receivedEvent)
 			{
 				this.receivedEvent = receivedEvent;
 			}
@@ -113,8 +114,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public override void SetUp()
 		{
 			fileName = TempFile();
-			server = Db4oFactory.OpenServer(Db4oFactory.NewConfiguration(), fileName, -1).Ext
-				();
+			server = Db4oClientServer.OpenServer(fileName, -1).Ext();
 			server.GrantAccess(Credentials(), Credentials());
 		}
 
@@ -127,8 +127,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private IObjectContainer OpenClient()
 		{
-			return Db4oFactory.OpenClient(Db4oFactory.NewConfiguration(), "localhost", Port()
-				, Credentials(), Credentials());
+			return Db4oClientServer.OpenClient("localhost", Port(), Credentials(), Credentials
+				());
 		}
 
 		private void AssertClientCount(int count)

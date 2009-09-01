@@ -1,32 +1,31 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
-using Db4objects.Db4o.Config;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal.Config
 {
 	/// <exclude></exclude>
-	[System.ObsoleteAttribute(@"Use Db4oClientServer")]
-	public class ClientServerFactoryImpl : IClientServerFactory
+	public class StandardClientServerFactory : IClientServerFactory
 	{
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.InvalidPasswordException"></exception>
-		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.CS.Db4oClientServer.OpenClient(Db4objects.Db4o.CS.Config.IClientConfiguration, string, int, string, string)"
-			)]
-		public virtual IObjectContainer OpenClient(IConfiguration config, string hostName
-			, int port, string user, string password, INativeSocketFactory socketFactory)
+		public virtual IObjectContainer OpenClient(IClientConfiguration clientConfig, string
+			 hostName, int port, string user, string password)
 		{
 			if (user == null || password == null)
 			{
 				throw new InvalidPasswordException();
 			}
+			Config4Impl config = AsLegacy(clientConfig);
 			Config4Impl.AssertIsNotTainted(config);
-			NetworkSocket networkSocket = new NetworkSocket(socketFactory, hostName, port);
+			Socket4Adapter networkSocket = new Socket4Adapter(clientConfig.Networking.SocketFactory
+				, hostName, port);
 			return new ClientObjectContainer(config, networkSocket, user, password, true);
 		}
 
@@ -35,21 +34,24 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use Db4objects.Db4o.CS.Db4oClientServer.OpenServer(Db4objects.Db4o.CS.Config.IServerConfiguration, string, int)"
-			)]
-		public virtual IObjectServer OpenServer(IConfiguration config, string databaseFileName
-			, int port, INativeSocketFactory socketFactory)
+		public virtual IObjectServer OpenServer(IServerConfiguration config, string databaseFileName
+			, int port)
 		{
-			LocalObjectContainer container = (LocalObjectContainer)Db4oFactory.OpenFile(config
-				, databaseFileName);
+			LocalObjectContainer container = (LocalObjectContainer)Db4oFactory.OpenFile(AsLegacy
+				(config), databaseFileName);
 			if (container == null)
 			{
 				return null;
 			}
 			lock (container.Lock())
 			{
-				return new ObjectServerImpl(container, port, socketFactory);
+				return new ObjectServerImpl(container, config.Networking.SocketFactory, port);
 			}
+		}
+
+		private Config4Impl AsLegacy(object config)
+		{
+			return Db4oClientServerLegacyConfigurationBridge.AsLegacy(config);
 		}
 	}
 }

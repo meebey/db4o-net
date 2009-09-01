@@ -35,10 +35,11 @@ namespace Db4objects.Drs.Tests
 		public override void Open()
 		{
 			Config().MessageLevel(-1);
-			_server = Db4oFactory.OpenServer(CloneConfiguration(), testFile.GetPath(), _port);
+			_server = Db4objects.Db4o.Db4oFactory.OpenServer(CloneConfiguration(), testFile.GetPath
+				(), _port);
 			_server.GrantAccess(Username, Password);
-			_db = (IExtObjectContainer)Db4oFactory.OpenClient(CloneConfiguration(), Host, _port
-				, Username, Password);
+			_db = (IExtObjectContainer)Db4objects.Db4o.Db4oFactory.OpenClient(CloneConfiguration
+				(), Host, _port, Username, Password);
 			_provider = Db4oProviderFactory.NewInstance(_db, _name);
 		}
 

@@ -5,7 +5,6 @@ using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
@@ -14,7 +13,7 @@ namespace Db4objects.Db4o.CS.Internal
 	{
 		private ClientObjectContainer _container;
 
-		private ISocket4 _socket;
+		private Socket4Adapter _socket;
 
 		private readonly BlockingQueue _synchronousMessageQueue;
 
@@ -22,10 +21,9 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private bool _isClosed;
 
-		private string _dispatcherName;
-
-		internal ClientMessageDispatcherImpl(ClientObjectContainer client, ISocket4 a_socket
-			, BlockingQueue synchronousMessageQueue, BlockingQueue asynchronousMessageQueue)
+		internal ClientMessageDispatcherImpl(ClientObjectContainer client, Socket4Adapter
+			 a_socket, BlockingQueue synchronousMessageQueue, BlockingQueue asynchronousMessageQueue
+			)
 		{
 			_container = client;
 			_synchronousMessageQueue = synchronousMessageQueue;
@@ -113,11 +111,6 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			_container.Write(msg);
 			return true;
-		}
-
-		public virtual void SetDispatcherName(string name)
-		{
-			_dispatcherName = "db4o client side message dispatcher for " + name;
 		}
 
 		private Db4objects.Db4o.Internal.Transaction Transaction()

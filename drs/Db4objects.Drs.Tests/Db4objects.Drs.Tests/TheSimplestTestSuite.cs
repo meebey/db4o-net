@@ -87,8 +87,7 @@ namespace Db4objects.Drs.Tests
 				, ITestableReplicationProviderInside providerB, Type clazz)
 			{
 				//System.out.println("ReplicationTestcase.replicateClass");
-				IReplicationSession replication = Db4objects.Drs.Replication.Begin(providerA, providerB
-					);
+				IReplicationSession replication = Replication.Begin(providerA, providerB);
 				IEnumerator allObjects = providerA.ObjectsChangedSinceLastReplication(clazz).GetEnumerator
 					();
 				while (allObjects.MoveNext())

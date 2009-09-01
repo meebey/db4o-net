@@ -2,7 +2,6 @@
 
 using System;
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Query;
@@ -15,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 	{
 		public static void Main(string[] args)
 		{
-			new NonTARefreshTestCase().RunClientServer();
+			new NonTARefreshTestCase().RunNetworking();
 		}
 
 		private const int ItemDepth = 10;
@@ -34,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 
 		public virtual void TestRefresh()
 		{
-			IExtObjectContainer client1 = OpenNewClient();
-			IExtObjectContainer client2 = OpenNewClient();
+			IExtObjectContainer client1 = OpenNewSession();
+			IExtObjectContainer client2 = OpenNewSession();
 			NonTARefreshTestCase.TAItem item1 = (NonTARefreshTestCase.TAItem)RetrieveInstance
 				(client1);
 			NonTARefreshTestCase.TAItem item2 = (NonTARefreshTestCase.TAItem)RetrieveInstance
@@ -106,11 +105,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 			query.Constrain(_class);
 			query.Descend("_isRoot").Constrain(true);
 			return query.Execute().Next();
-		}
-
-		private IExtObjectContainer OpenNewClient()
-		{
-			return ((IDb4oClientServerFixture)Fixture()).OpenNewClient();
 		}
 
 		public class TAItem

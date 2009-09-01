@@ -8,7 +8,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 
-namespace Db4objects.Db4o.Tests.Common.Defragment
+namespace Db4oUnit.Extensions.Fixtures
 {
 	public class Db4oDefragSolo : Db4oSolo
 	{
@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 					IConfiguration clonedConfig = (IConfiguration)((IDeepClone)config).DeepClone(null
 						);
 					defragConfig.Db4oConfig(clonedConfig);
-					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _IDefragmentListener_32
+					Db4objects.Db4o.Defragment.Defragment.Defrag(defragConfig, new _IDefragmentListener_30
 						());
 				}
 				catch (IOException e)
@@ -42,9 +42,9 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			return base.CreateDatabase(config);
 		}
 
-		private sealed class _IDefragmentListener_32 : IDefragmentListener
+		private sealed class _IDefragmentListener_30 : IDefragmentListener
 		{
-			public _IDefragmentListener_32()
+			public _IDefragmentListener_30()
 			{
 			}
 

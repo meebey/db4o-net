@@ -2,15 +2,15 @@
 
 #if !SILVERLIGHT
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Messaging;
+using Db4objects.Db4o.Tests.Common.CS;
 using Db4objects.Db4o.Tests.Common.Concurrency;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Concurrency
 {
-	public class MessagingTestCase : Db4oClientServerTestCase
+	public class MessagingTestCase : ClientServerTestCaseBase
 	{
 		public static readonly object Lock = new object();
 
@@ -32,12 +32,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 			// Configuration is not threadsafe.
 			lock (Lock)
 			{
-				if (IsMTOC())
-				{
-					return;
-				}
-				ClientServerFixture().Server().Ext().Configure().ClientServer().SetMessageRecipient
-					(_recipient);
+				Server().Ext().Configure().ClientServer().SetMessageRecipient(_recipient);
 				sender = oc.Configure().ClientServer().GetMessageSender();
 			}
 			sender.Send(new MessagingTestCase.Data(seq));
@@ -46,10 +41,6 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Check(IExtObjectContainer oc)
 		{
-			if (IsMTOC())
-			{
-				return;
-			}
 			Thread.Sleep(1000);
 			_recipient.Check();
 		}

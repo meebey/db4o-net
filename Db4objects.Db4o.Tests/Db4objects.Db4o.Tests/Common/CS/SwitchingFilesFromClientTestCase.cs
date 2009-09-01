@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		[System.ObsoleteAttribute(@"using deprecated api")]
 		public virtual void TestSwitch()
 		{
-			if (IsMTOC())
+			if (IsEmbedded())
 			{
 				// Cast to ExtClient won't work and switching files is 
 				// not supported.

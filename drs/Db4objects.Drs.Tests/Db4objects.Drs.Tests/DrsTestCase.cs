@@ -174,8 +174,7 @@ namespace Db4objects.Drs.Tests
 			, ITestableReplicationProviderInside providerTo)
 		{
 			//System.out.println("from = " + providerFrom + ", to = " + providerTo);
-			IReplicationSession replication = Db4objects.Drs.Replication.Begin(providerFrom, 
-				providerTo);
+			IReplicationSession replication = Replication.Begin(providerFrom, providerTo);
 			IObjectSet changedSet = providerFrom.ObjectsChangedSinceLastReplication();
 			if (changedSet.Count == 0)
 			{
@@ -199,8 +198,7 @@ namespace Db4objects.Drs.Tests
 		protected virtual void ReplicateAll(ITestableReplicationProviderInside from, ITestableReplicationProviderInside
 			 to, IReplicationEventListener listener)
 		{
-			IReplicationSession replication = Db4objects.Drs.Replication.Begin(from, to, listener
-				);
+			IReplicationSession replication = Replication.Begin(from, to, listener);
 			ReplicateAll(replication, from.ObjectsChangedSinceLastReplication().GetEnumerator
 				());
 		}
@@ -220,8 +218,7 @@ namespace Db4objects.Drs.Tests
 			, ITestableReplicationProviderInside providerB, Type clazz)
 		{
 			//System.out.println("ReplicationTestcase.replicateClass");
-			IReplicationSession replication = Db4objects.Drs.Replication.Begin(providerA, providerB
-				);
+			IReplicationSession replication = Replication.Begin(providerA, providerB);
 			IEnumerator allObjects = providerA.ObjectsChangedSinceLastReplication(clazz).GetEnumerator
 				();
 			ReplicateAll(replication, allObjects);

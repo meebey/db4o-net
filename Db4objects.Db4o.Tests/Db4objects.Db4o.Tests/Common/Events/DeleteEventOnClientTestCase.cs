@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		public virtual void TestAttachingToDeletingEventThrows()
 		{
-			if (IsMTOC())
+			if (IsEmbedded())
 			{
 				return;
 			}
@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		public virtual void TestAttachingToDeleteEventThrows()
 		{
-			if (IsMTOC())
+			if (IsEmbedded())
 			{
 				return;
 			}

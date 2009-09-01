@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public abstract class FreespaceManagerTestCaseBase : FileSizeTestCaseBase, IOptOutCS
+	public abstract class FreespaceManagerTestCaseBase : FileSizeTestCaseBase, IOptOutMultiSession
 	{
 		protected IFreespaceManager[] fm;
 

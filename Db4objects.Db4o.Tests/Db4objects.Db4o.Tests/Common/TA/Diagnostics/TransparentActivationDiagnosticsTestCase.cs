@@ -14,7 +14,7 @@ using Db4objects.Db4o.Tests.Common.TA.Diagnostics;
 namespace Db4objects.Db4o.Tests.Common.TA.Diagnostics
 {
 	public class TransparentActivationDiagnosticsTestCase : TransparentActivationTestCaseBase
-		, IOptOutCS, IOptOutDefragSolo
+		, IOptOutMultiSession, IOptOutDefragSolo
 	{
 		public class SomeTAAwareData
 		{

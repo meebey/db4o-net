@@ -3,7 +3,7 @@
 #if !SILVERLIGHT
 using System;
 using Db4oUnit;
-using Db4objects.Db4o.Config;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
@@ -15,15 +15,15 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 	/// <exclude></exclude>
 	public class NetworkSocketTestCase : ITestLifeCycle
 	{
-		private ServerSocket4 _serverSocket;
+		private IServerSocket4 _serverSocket;
 
 		private int _port;
 
-		internal ISocket4 _client;
+		internal Socket4Adapter _client;
 
-		internal ISocket4 _server;
+		internal Socket4Adapter _server;
 
-		private PlainSocketFactory _plainSocketFactory = new PlainSocketFactory();
+		private ISocket4Factory _plainSocketFactory = new StandardSocket4Factory();
 
 		public static void Main(string[] args)
 		{
@@ -33,10 +33,11 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
-			_serverSocket = new ServerSocket4(_plainSocketFactory, 0);
+			_serverSocket = _plainSocketFactory.CreateServerSocket(0);
 			_port = _serverSocket.GetLocalPort();
-			_client = new NetworkSocket(_plainSocketFactory, "localhost", _port);
-			_server = _serverSocket.Accept();
+			_client = new Socket4Adapter(_plainSocketFactory.CreateSocket("localhost", _port)
+				);
+			_server = new Socket4Adapter(_serverSocket.Accept());
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -256,7 +257,8 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		private void AssertReadClose(ISocket4 socketToBeClosed, ICodeBlock codeBlock)
+		private void AssertReadClose(Socket4Adapter socketToBeClosed, ICodeBlock codeBlock
+			)
 		{
 			NetworkSocketTestCase.CatchAllThread thread = new NetworkSocketTestCase.CatchAllThread
 				(codeBlock);
@@ -266,7 +268,8 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 			Assert.IsInstanceOf(typeof(Db4oIOException), thread.Caught());
 		}
 
-		private void AssertWriteClose(ISocket4 socketToBeClosed, ICodeBlock codeBlock)
+		private void AssertWriteClose(Socket4Adapter socketToBeClosed, ICodeBlock codeBlock
+			)
 		{
 			socketToBeClosed.Close();
 			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_133(codeBlock));

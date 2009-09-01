@@ -3,8 +3,6 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
-using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Sharpen.IO;
@@ -21,28 +19,23 @@ namespace Db4objects.Db4o.Foundation.Network
 
 		private string _hostName;
 
-		private INativeSocketFactory _factory;
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public NetworkSocket(INativeSocketFactory factory, string hostName, int port)
+		/// <exception cref="System.IO.IOException"></exception>
+		public NetworkSocket(string hostName, int port)
 		{
-			_factory = factory;
-			try
-			{
-				Sharpen.Net.Socket socket = _factory.CreateSocket(hostName, port);
-				InitSocket(socket);
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			Sharpen.Net.Socket socket = CreateSocket(hostName, port);
+			InitSocket(socket);
 			_hostName = hostName;
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public NetworkSocket(INativeSocketFactory factory, Sharpen.Net.Socket socket)
+		protected virtual Sharpen.Net.Socket CreateSocket(string hostName, int port)
 		{
-			_factory = factory;
+			return new Sharpen.Net.Socket(hostName, port);
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public NetworkSocket(Sharpen.Net.Socket socket)
+		{
 			InitSocket(socket);
 		}
 
@@ -54,30 +47,16 @@ namespace Db4objects.Db4o.Foundation.Network
 			_in = _socket.GetInputStream();
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Close()
 		{
-			try
-			{
-				_socket.Close();
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			_socket.Close();
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Flush()
 		{
-			try
-			{
-				_out.Flush();
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			_out.Flush();
 		}
 
 		public virtual bool IsConnected()
@@ -85,41 +64,28 @@ namespace Db4objects.Db4o.Foundation.Network
 			return Platform4.IsConnected(_socket);
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual int Read()
 		{
-			try
-			{
-				int ret = _in.Read();
-				CheckEOF(ret);
-				return ret;
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			int ret = _in.Read();
+			CheckEOF(ret);
+			return ret;
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
 		{
-			try
-			{
-				int ret = _in.Read(a_bytes, a_offset, a_length);
-				CheckEOF(ret);
-				return ret;
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			int ret = _in.Read(a_bytes, a_offset, a_length);
+			CheckEOF(ret);
+			return ret;
 		}
 
+		/// <exception cref="System.IO.IOException"></exception>
 		private void CheckEOF(int ret)
 		{
 			if (ret == -1)
 			{
-				throw new Db4oIOException();
+				throw new IOException();
 			}
 		}
 
@@ -135,54 +101,27 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public virtual void Write(byte[] bytes)
-		{
-			try
-			{
-				_out.Write(bytes);
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
-			try
-			{
-				_out.Write(bytes, off, len);
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			_out.Write(bytes, off, len);
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Write(int i)
 		{
-			try
-			{
-				_out.Write(i);
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
+			_out.Write(i);
 		}
 
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
+		/// <exception cref="System.IO.IOException"></exception>
 		public virtual ISocket4 OpenParalellSocket()
 		{
 			if (_hostName == null)
 			{
 				throw new InvalidOperationException();
 			}
-			return new Db4objects.Db4o.Foundation.Network.NetworkSocket(_factory, _hostName, 
-				_socket.GetPort());
+			return new Db4objects.Db4o.Foundation.Network.NetworkSocket(_hostName, _socket.GetPort
+				());
 		}
 	}
 }

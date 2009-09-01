@@ -20,7 +20,7 @@ namespace Db4objects.Drs
 	/// <author>Albert Kwan</author>
 	/// <author>Klaus Wuestefeld</author>
 	/// <version>1.2</version>
-	/// <seealso cref="Db4objects.Drs.Replication">Db4objects.Drs.Replication</seealso>
+	/// <seealso cref="Replication">Replication</seealso>
 	/// <since>dRS 1.0</since>
 	public interface IReplicationSession
 	{
@@ -92,8 +92,7 @@ namespace Db4objects.Drs
 		/// were replicated.
 		/// </remarks>
 		/// <param name="obj">the object to be replicated.</param>
-		/// <seealso cref="Db4objects.Drs.IReplicationEventListener">Db4objects.Drs.IReplicationEventListener
-		/// 	</seealso>
+		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
 		void Replicate(object obj);
 
 		/// <summary>Replicates all deletions between the two providers.</summary>
@@ -125,8 +124,7 @@ namespace Db4objects.Drs
 		/// Sets the direction of replication. By default, if this method is not called, replication is bidirectional,
 		/// which means the newer copy of the object is copied to the other provider..
 		/// <p/> If you want to force unidirectional replication, call this method before calling
-		/// <see cref="Db4objects.Drs.IReplicationSession.Replicate">Db4objects.Drs.IReplicationSession.Replicate
-		/// 	</see>
+		/// <see cref="Replicate(object)">Replicate(object)</see>
 		/// .
 		/// </remarks>
 		/// <param name="from">objects in this provider will not be changed.</param>

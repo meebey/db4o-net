@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				(new _IEventListener4_22().OnEvent);
 			object item = ((EventsTestCaseBase.Item)RetrieveOnlyInstance(typeof(EventsTestCaseBase.Item
 				)));
-			if (IsMTOC())
+			if (IsEmbedded())
 			{
 				Assert.Expect(typeof(EventException), new _ICodeBlock_29(this, item));
 			}

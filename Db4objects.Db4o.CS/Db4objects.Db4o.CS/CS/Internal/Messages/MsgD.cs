@@ -1,9 +1,9 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		}
 
 		internal sealed override Msg ReadPayLoad(IMessageDispatcher messageDispatcher, Transaction
-			 a_trans, ISocket4 sock, ByteArrayBuffer reader)
+			 a_trans, Socket4Adapter sock, ByteArrayBuffer reader)
 		{
 			int length = reader.ReadInt();
 			a_trans = CheckParentTransaction(a_trans, reader);

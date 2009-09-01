@@ -15,7 +15,7 @@ using Db4objects.Db4o.Tests.Common.Diagnostics;
 
 namespace Db4objects.Db4o.Tests.Common.Diagnostics
 {
-	public class DescendIntoTranslatorTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class DescendIntoTranslatorTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
@@ -33,8 +33,10 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 
 		public virtual void TestDiagnostic()
 		{
-			Db().Query(new _Predicate_33());
-			IList diagnostics = NativeCollections.Filter(_collector.Diagnostics(), new _IPredicate4_41
+			IQuery query = NewQuery(typeof(DescendIntoTranslatorTestCase.Item));
+			query.Descend("_name").Constrain("foo").StartsWith(true);
+			query.Execute();
+			IList diagnostics = NativeCollections.Filter(_collector.Diagnostics(), new _IPredicate4_39
 				());
 			Assert.AreEqual(1, diagnostics.Count);
 			DescendIntoTranslator diagnostic = (DescendIntoTranslator)((IDiagnostic)diagnostics
@@ -43,21 +45,9 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 				)) + "." + "_name", diagnostic.Reason());
 		}
 
-		private sealed class _Predicate_33 : Predicate
+		private sealed class _IPredicate4_39 : IPredicate4
 		{
-			public _Predicate_33()
-			{
-			}
-
-			public bool Match(DescendIntoTranslatorTestCase.Item candidate)
-			{
-				return candidate.GetName().StartsWith("foo");
-			}
-		}
-
-		private sealed class _IPredicate4_41 : IPredicate4
-		{
-			public _IPredicate4_41()
+			public _IPredicate4_39()
 			{
 			}
 

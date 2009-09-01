@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void TestDeleteReadd()
 		{
 			IExtObjectContainer client1 = Db();
-			IExtObjectContainer client2 = OpenNewClient();
+			IExtObjectContainer client2 = OpenNewSession();
 			CsCascadedDeleteReaddChildReferenceTestCase.ItemParent parent1 = ((CsCascadedDeleteReaddChildReferenceTestCase.ItemParent
 				)RetrieveOnlyInstance(client1, typeof(CsCascadedDeleteReaddChildReferenceTestCase.ItemParent
 				)));
@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void TestRepeatedStore()
 		{
 			IExtObjectContainer client1 = Db();
-			IExtObjectContainer client2 = OpenNewClient();
+			IExtObjectContainer client2 = OpenNewSession();
 			CsCascadedDeleteReaddChildReferenceTestCase.ItemParent parent1 = ((CsCascadedDeleteReaddChildReferenceTestCase.ItemParent
 				)RetrieveOnlyInstance(client1, typeof(CsCascadedDeleteReaddChildReferenceTestCase.ItemParent
 				)));

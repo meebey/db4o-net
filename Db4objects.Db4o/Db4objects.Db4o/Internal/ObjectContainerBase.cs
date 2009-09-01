@@ -2167,7 +2167,10 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				AssertNotInCallback();
+				if (@ref.IsFlaggedAsHandled(_topLevelCallId))
+				{
+					AssertNotInCallback();
+				}
 				if (CanUpdate())
 				{
 					if (checkJustSet)
@@ -2612,7 +2615,7 @@ namespace Db4objects.Db4o.Internal
 			IReflectClass claxx = ReflectorForObject(obj);
 			if (claxx.IsCollection())
 			{
-				cascadeDeleteDepth += Reflector().CollectionUpdateDepth(claxx) - 1;
+				cascadeDeleteDepth += 1;
 			}
 			ObjectReference @ref = transaction.ReferenceForId(id);
 			if (@ref == null)

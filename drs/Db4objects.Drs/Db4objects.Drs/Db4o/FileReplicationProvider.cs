@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -10,6 +11,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.TA;
 using Db4objects.Db4o.Types;
 using Db4objects.Drs.Db4o;
 using Db4objects.Drs.Inside;
@@ -34,6 +36,8 @@ namespace Db4objects.Drs.Db4o
 
 		private readonly string _name;
 
+		private readonly IProcedure4 _activationStrategy;
+
 		public FileReplicationProvider(IObjectContainer objectContainer) : this(objectContainer
 			, "null")
 		{
@@ -49,6 +53,58 @@ namespace Db4objects.Drs.Db4o
 			_stream = (ExternalObjectContainer)objectContainer;
 			_reflector = _stream.Reflector();
 			_signatureMap = new Db4oSignatureMap(_stream);
+			_activationStrategy = CreateActivationStrategy();
+		}
+
+		private IProcedure4 CreateActivationStrategy()
+		{
+			if (IsTransparentActivationEnabled())
+			{
+				return new _IProcedure4_86(this);
+			}
+			return new _IProcedure4_94(this);
+		}
+
+		private sealed class _IProcedure4_86 : IProcedure4
+		{
+			public _IProcedure4_86(FileReplicationProvider _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Apply(object obj)
+			{
+				IObjectInfo objectInfo = this._enclosing._stream.GetObjectInfo(obj);
+				((IActivator)objectInfo).Activate(ActivationPurpose.Read);
+			}
+
+			private readonly FileReplicationProvider _enclosing;
+		}
+
+		private sealed class _IProcedure4_94 : IProcedure4
+		{
+			public _IProcedure4_94(FileReplicationProvider _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Apply(object obj)
+			{
+				if (obj == null)
+				{
+					return;
+				}
+				IReflectClass claxx = this._enclosing._reflector.ForObject(obj);
+				int level = claxx.IsCollection() ? 3 : 1;
+				this._enclosing._stream.Activate(obj, level);
+			}
+
+			private readonly FileReplicationProvider _enclosing;
+		}
+
+		private bool IsTransparentActivationEnabled()
+		{
+			return TransparentActivationSupport.IsTransparentActivationEnabledOn(_stream);
 		}
 
 		public virtual IReadonlyReplicationProviderSignature GetSignature()
@@ -71,7 +127,7 @@ namespace Db4objects.Drs.Db4o
 			ClearAllReferences();
 			lock (GetMonitor())
 			{
-				Transaction trans = _stream.Transaction();
+				Transaction trans = _stream.Transaction;
 				Db4oDatabase myIdentity = _stream.Identity();
 				_signatureMap.Put(myIdentity);
 				Db4oDatabase otherIdentity = _signatureMap.Produce(peerSignature.GetSignature(), 
@@ -151,13 +207,7 @@ namespace Db4objects.Drs.Db4o
 
 		public virtual void Activate(object obj)
 		{
-			if (obj == null)
-			{
-				return;
-			}
-			IReflectClass claxx = _reflector.ForObject(obj);
-			int level = claxx.IsCollection() ? 3 : 1;
-			_stream.Activate(obj, level);
+			_activationStrategy.Apply(obj);
 		}
 
 		public virtual IDb4oReplicationReference ReferenceFor(object obj)
@@ -260,13 +310,13 @@ namespace Db4objects.Drs.Db4o
 		{
 			if (_referencesByObject != null)
 			{
-				_referencesByObject.Traverse(new _IVisitor4_282(visitor));
+				_referencesByObject.Traverse(new _IVisitor4_302(visitor));
 			}
 		}
 
-		private sealed class _IVisitor4_282 : IVisitor4
+		private sealed class _IVisitor4_302 : IVisitor4
 		{
-			public _IVisitor4_282(IVisitor4 visitor)
+			public _IVisitor4_302(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}

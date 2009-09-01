@@ -24,15 +24,15 @@ namespace Db4objects.Drs.Tests
 
 		private void ChangeInProviderB()
 		{
-			SimpleListHolder SimpleListHolder = (SimpleListHolder)GetOneInstance(B(), typeof(
+			SimpleListHolder simpleListHolder = (SimpleListHolder)GetOneInstance(B(), typeof(
 				SimpleListHolder));
-			SimpleItem fooBaby = new SimpleItem(SimpleListHolder, "foobaby");
+			SimpleItem fooBaby = new SimpleItem(simpleListHolder, "foobaby");
 			B().Provider().StoreNew(fooBaby);
-			SimpleListHolder.Add(fooBaby);
-			SimpleItem foo = GetItem(SimpleListHolder, "foo");
+			simpleListHolder.Add(fooBaby);
+			SimpleItem foo = GetItem(simpleListHolder, "foo");
 			foo.SetChild(fooBaby);
 			B().Provider().Update(foo);
-			B().Provider().Update(SimpleListHolder);
+			B().Provider().Update(simpleListHolder);
 		}
 
 		private void ReplicateAndTest(IDrsFixture source, IDrsFixture target)

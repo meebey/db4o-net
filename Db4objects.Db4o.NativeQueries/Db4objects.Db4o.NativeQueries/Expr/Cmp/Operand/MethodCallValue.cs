@@ -77,5 +77,13 @@ namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 				return _callingConvention;
 			}
 		}
+
+		public override ITypeRef Type
+		{
+			get
+			{
+				return _method.ReturnType;
+			}
+		}
 	}
 }

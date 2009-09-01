@@ -11,7 +11,7 @@ using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class StoredClassExceptionBubblesUpTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class StoredClassExceptionBubblesUpTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public static void Main(string[] args)
 		{

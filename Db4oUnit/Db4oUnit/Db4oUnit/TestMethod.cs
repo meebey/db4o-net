@@ -50,6 +50,7 @@ namespace Db4oUnit
 
 		public virtual void Run()
 		{
+			bool exceptionInTest = false;
 			try
 			{
 				SetUp();
@@ -59,16 +60,29 @@ namespace Db4oUnit
 				}
 				catch (TargetInvocationException x)
 				{
+					exceptionInTest = true;
 					throw new TestException(x.InnerException);
 				}
 				catch (Exception x)
 				{
+					exceptionInTest = true;
 					throw new TestException(x);
 				}
 			}
 			finally
 			{
-				TearDown();
+				try
+				{
+					TearDown();
+				}
+				catch (Exception exc)
+				{
+					if (!exceptionInTest)
+					{
+						throw;
+					}
+					Sharpen.Runtime.PrintStackTrace(exc);
+				}
 			}
 		}
 

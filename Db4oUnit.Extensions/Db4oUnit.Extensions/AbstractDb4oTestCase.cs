@@ -30,23 +30,25 @@ namespace Db4oUnit.Extensions
 			return Db4oFixtureVariable.Fixture();
 		}
 
-		public virtual bool IsClientServer()
+		public virtual bool IsMultiSession()
 		{
-			return Fixture() is IDb4oClientServerFixture;
+			return Fixture() is IMultiSessionFixture;
 		}
 
-		protected virtual bool IsEmbeddedClientServer()
+		protected virtual bool IsEmbedded()
 		{
-			return IsClientServer() && ((IDb4oClientServerFixture)Fixture()).EmbeddedClients(
-				);
+			return Fixture() is Db4oEmbeddedSessionFixture;
 		}
 
-		// TODO: The following code is only a temporary addition until MTOC
-		//       is part of the core. When it is, all occurences of this 
-		//       method should be replaced with    isEmbeddedClientServer() 
-		protected virtual bool IsMTOC()
+		protected virtual bool IsNetworking()
 		{
-			return Fixture().Db() is ObjectContainerSession;
+			return Fixture() is Db4oNetworking;
+		}
+
+		public virtual IExtObjectContainer OpenNewSession()
+		{
+			IMultiSessionFixture fixture = (IMultiSessionFixture)Fixture();
+			return fixture.OpenNewSession();
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -145,19 +147,19 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunAll()
 		{
-			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), ClientServerSuite
-				(), EmbeddedClientServerSuite() })).Run();
+			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), NetworkingSuite
+				(), EmbeddedSuite() })).Run();
 		}
 
 		public virtual int RunSolo(string testLabelSubstring)
 		{
-			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_125(testLabelSubstring
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_127(testLabelSubstring
 				))).Run();
 		}
 
-		private sealed class _IPredicate4_125 : IPredicate4
+		private sealed class _IPredicate4_127 : IPredicate4
 		{
-			public _IPredicate4_125(string testLabelSubstring)
+			public _IPredicate4_127(string testLabelSubstring)
 			{
 				this.testLabelSubstring = testLabelSubstring;
 			}
@@ -172,13 +174,13 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunSoloAndClientServer()
 		{
-			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), ClientServerSuite
+			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), NetworkingSuite
 				() })).Run();
 		}
 
 		public virtual int RunSoloAndEmbeddedClientServer()
 		{
-			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), EmbeddedClientServerSuite
+			return new ConsoleTestRunner(Iterators.Concat(new IEnumerable[] { SoloSuite(), EmbeddedSuite
 				() })).Run();
 		}
 
@@ -192,14 +194,14 @@ namespace Db4oUnit.Extensions
 			return new ConsoleTestRunner(InMemorySuite()).Run();
 		}
 
-		public virtual int RunClientServer()
+		public virtual int RunNetworking()
 		{
-			return new ConsoleTestRunner(ClientServerSuite()).Run();
+			return new ConsoleTestRunner(NetworkingSuite()).Run();
 		}
 
-		public virtual int RunEmbeddedClientServer()
+		public virtual int RunEmbedded()
 		{
-			return new ConsoleTestRunner(EmbeddedClientServerSuite()).Run();
+			return new ConsoleTestRunner(EmbeddedSuite()).Run();
 		}
 
 		public virtual int RunConcurrency()
@@ -229,21 +231,21 @@ namespace Db4oUnit.Extensions
 			return new Db4oTestSuiteBuilder(Db4oFixtures.NewInMemory(), TestCases());
 		}
 
-		protected virtual Db4oTestSuiteBuilder ClientServerSuite()
+		protected virtual Db4oTestSuiteBuilder NetworkingSuite()
 		{
 			return new Db4oTestSuiteBuilder(Db4oFixtures.NewNetworkingCS(), TestCases());
 		}
 
-		protected virtual Db4oTestSuiteBuilder EmbeddedClientServerSuite()
+		protected virtual Db4oTestSuiteBuilder EmbeddedSuite()
 		{
-			return new Db4oTestSuiteBuilder(Db4oFixtures.NewEmbeddedCS(), TestCases());
+			return new Db4oTestSuiteBuilder(Db4oFixtures.NewEmbedded(), TestCases());
 		}
 
 		protected virtual Db4oTestSuiteBuilder ConcurrenyClientServerSuite(bool embedded, 
 			string label)
 		{
-			return new Db4oConcurrencyTestSuiteBuilder(new Db4oClientServer(embedded, label), 
-				TestCases());
+			return new Db4oConcurrencyTestSuiteBuilder(embedded ? Db4oFixtures.NewEmbedded(label
+				) : Db4oFixtures.NewNetworkingCS(label), TestCases());
 		}
 
 		protected virtual IInternalObjectContainer Stream()
@@ -377,12 +379,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(oc, clazz, new _IVisitor4_308(oc));
+			Foreach(oc, clazz, new _IVisitor4_310(oc));
 		}
 
-		private sealed class _IVisitor4_308 : IVisitor4
+		private sealed class _IVisitor4_310 : IVisitor4
 		{
-			public _IVisitor4_308(IExtObjectContainer oc)
+			public _IVisitor4_310(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

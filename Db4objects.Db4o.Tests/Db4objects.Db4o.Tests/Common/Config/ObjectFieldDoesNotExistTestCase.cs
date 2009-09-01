@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 
 		public static void Main(string[] args)
 		{
-			new ObjectFieldDoesNotExistTestCase().RunClientServer();
+			new ObjectFieldDoesNotExistTestCase().RunNetworking();
 		}
 	}
 }

@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -12,7 +13,7 @@ using Db4objects.Db4o.Tests.Common.Staging;
 
 namespace Db4objects.Db4o.Tests.Common.Staging
 {
-	public class PingTestCase : Db4oClientServerTestCase
+	public class PingTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
 		public static void Main(string[] args)
 		{
@@ -33,9 +34,9 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 				(recipient);
 			IExtObjectContainer client = ClientServerFixture().Db();
 			IMessageSender sender = client.Configure().ClientServer().GetMessageSender();
-			if (IsMTOC())
+			if (IsEmbedded())
 			{
-				Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_35(sender));
+				Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_36(sender));
 				return;
 			}
 			sender.Send(new PingTestCase.Data());
@@ -48,9 +49,9 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			Assert.IsFalse(client.IsClosed());
 		}
 
-		private sealed class _ICodeBlock_35 : ICodeBlock
+		private sealed class _ICodeBlock_36 : ICodeBlock
 		{
-			public _ICodeBlock_35(IMessageSender sender)
+			public _ICodeBlock_36(IMessageSender sender)
 			{
 				this.sender = sender;
 			}

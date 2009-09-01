@@ -12,7 +12,7 @@ namespace Db4oUnit.Extensions.Fixtures
 	/// Marker interface to denote that implementing test cases should be excluded
 	/// from running both with the embedded and networking Client/Server fixture.
 	/// </remarks>
-	public interface IOptOutCS : IOptOutFromTestFixture
+	public interface IOptOutMultiSession : IOptOutFromTestFixture
 	{
 	}
 }

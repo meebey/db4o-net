@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Ext;
@@ -15,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 	{
 		public static void Main(string[] args)
 		{
-			new TARefreshTestCase().RunClientServer();
+			new TARefreshTestCase().RunNetworking();
 		}
 
 		private const int ItemDepth = 10;
@@ -29,8 +28,8 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 
 		public virtual void TestRefresh()
 		{
-			IExtObjectContainer client1 = OpenNewClient();
-			IExtObjectContainer client2 = OpenNewClient();
+			IExtObjectContainer client1 = OpenNewSession();
+			IExtObjectContainer client2 = OpenNewSession();
 			TARefreshTestCase.TAItem item1 = QueryRoot(client1);
 			TARefreshTestCase.TAItem item2 = QueryRoot(client2);
 			TARefreshTestCase.TAItem next1 = item1;
@@ -103,11 +102,6 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			query.Constrain(typeof(TARefreshTestCase.TAItem));
 			query.Descend("_isRoot").Constrain(true);
 			return (TARefreshTestCase.TAItem)query.Execute().Next();
-		}
-
-		private IExtObjectContainer OpenNewClient()
-		{
-			return ((IDb4oClientServerFixture)Fixture()).OpenNewClient();
 		}
 
 		public class TAItem : ActivatableImpl

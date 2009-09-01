@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 	{
 		public static void Main(string[] args)
 		{
-			new ObjectSetTestCase().RunClientServer();
+			new ObjectSetTestCase().RunNetworking();
 		}
 
 		public class Item

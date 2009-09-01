@@ -11,8 +11,9 @@ namespace Db4oUnit.Tests
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(TestExceptionWithInnerCause), typeof(AssertTestCase), 
-				typeof(CompositeTestListenerTestCase), typeof(FrameworkTestCase), typeof(ReflectionTestSuiteBuilderTestCase
-				), typeof(ReinstantiatePerMethodTest), typeof(TestLifeCycleTestCase), typeof(TestRunnerTestCase
+				typeof(CompositeTestListenerTestCase), typeof(ExceptionInTearDownDoesNotShadowTestCase
+				), typeof(FrameworkTestCase), typeof(ReflectionTestSuiteBuilderTestCase), typeof(
+				ReinstantiatePerMethodTest), typeof(TestLifeCycleTestCase), typeof(TestRunnerTestCase
 				), typeof(Db4oUnit.Tests.Data.AllTests), typeof(Db4oUnit.Tests.Fixtures.AllTests
 				) };
 		}

@@ -7,7 +7,8 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class ObjectUpdateFileSizeTestCase : AbstractDb4oTestCase, IOptOutCS, IOptOutDefragSolo
+	public class ObjectUpdateFileSizeTestCase : AbstractDb4oTestCase, IOptOutMultiSession
+		, IOptOutDefragSolo
 	{
 		public static void Main(string[] args)
 		{

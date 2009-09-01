@@ -1,9 +1,9 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Sharpen.IO;
@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	public class MWriteBlob : MsgBlob, IServerSideMessage
 	{
 		/// <exception cref="System.IO.IOException"></exception>
-		public override void ProcessClient(ISocket4 sock)
+		public override void ProcessClient(Socket4Adapter sock)
 		{
 			Msg message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
 			if (message.Equals(Msg.Ok))
@@ -58,7 +58,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				{
 					blobImpl.SetTrans(Transaction());
 					Sharpen.IO.File file = blobImpl.ServerFile(null, true);
-					ISocket4 sock = ServerMessageDispatcher().Socket();
+					Socket4Adapter sock = ServerMessageDispatcher().Socket();
 					Msg.Ok.Write(sock);
 					FileOutputStream fout = new FileOutputStream(file);
 					Copy(sock, fout, blobImpl.GetLength(), false);

@@ -8,7 +8,7 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class DatabaseGrowthSizeTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class DatabaseGrowthSizeTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		private const int Size = 10000;
 

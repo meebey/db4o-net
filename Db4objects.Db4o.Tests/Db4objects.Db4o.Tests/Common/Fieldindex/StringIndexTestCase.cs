@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.Common.Fieldindex;
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
 	/// <exclude></exclude>
-	public class StringIndexTestCase : StringIndexTestCaseBase, IOptOutCS
+	public class StringIndexTestCase : StringIndexTestCaseBase, IOptOutMultiSession
 	{
 		public static void Main(string[] args)
 		{

@@ -4,6 +4,9 @@
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
@@ -11,7 +14,7 @@ using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class MessagingTestCaseBase : ITestCase, IOptOutCS
+	public class MessagingTestCaseBase : ITestCase, IOptOutMultiSession
 	{
 		public sealed class MessageCollector : IMessageRecipient
 		{
@@ -32,14 +35,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			)
 		{
 			server.GrantAccess(clientId, "p");
-			return Db4oFactory.OpenClient(MultithreadedClientConfig(), "127.0.0.1", server.Ext
-				().Port(), clientId, "p");
+			return Db4oClientServer.OpenClient(MultithreadedClientConfig(), "127.0.0.1", server
+				.Ext().Port(), clientId, "p");
 		}
 
-		private IConfiguration MultithreadedClientConfig()
+		private IClientConfiguration MultithreadedClientConfig()
 		{
-			IConfiguration config = Db4oFactory.NewConfiguration();
-			config.ClientServer().SingleThreadedClient(false);
+			IClientConfiguration config = Db4oClientServer.NewClientConfiguration();
+			config.Networking.SingleThreadedClient = false;
 			return config;
 		}
 
@@ -59,7 +62,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		protected virtual IObjectServer OpenServer(IConfiguration config)
 		{
-			return Db4oFactory.OpenServer(config, "nofile", unchecked((int)(0xdb40)));
+			return Db4oClientServer.OpenServer(Db4oClientServerLegacyConfigurationBridge.AsServerConfiguration
+				(config), "nofile", unchecked((int)(0xdb40)));
 		}
 
 		protected virtual void SetMessageRecipient(IObjectContainer container, IMessageRecipient

@@ -87,8 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		/// <exception cref="System.Exception"></exception>
 		protected override void Db4oSetupAfterStore()
 		{
-			IDb4oClientServerFixture fixture = (IDb4oClientServerFixture)Fixture();
-			_client2 = fixture.OpenNewClient();
+			_client2 = OpenNewSession();
 		}
 
 		/// <exception cref="System.Exception"></exception>

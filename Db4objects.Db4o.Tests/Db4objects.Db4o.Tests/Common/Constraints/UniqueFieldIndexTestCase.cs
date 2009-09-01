@@ -117,7 +117,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 		// Account for constructor validations 
 		private bool IsNetworkClientServer()
 		{
-			return IsClientServer() && !IsEmbeddedClientServer();
+			return IsMultiSession() && !IsEmbedded();
 		}
 
 		private void DeleteItem(string value)

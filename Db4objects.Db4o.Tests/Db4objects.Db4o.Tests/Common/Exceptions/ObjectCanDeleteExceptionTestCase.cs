@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.Common.Exceptions;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class ObjectCanDeleteExceptionTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class ObjectCanDeleteExceptionTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public static void Main(string[] args)
 		{

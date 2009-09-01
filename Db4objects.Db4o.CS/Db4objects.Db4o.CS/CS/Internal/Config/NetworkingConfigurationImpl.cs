@@ -1,6 +1,10 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
+using System.Collections;
 using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.CS.Internal.Config;
+using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Messaging;
 
@@ -72,6 +76,53 @@ namespace Db4objects.Db4o.CS.Internal.Config
 				IMessageRecipient messageRecipient = value;
 				_config.SetMessageRecipient(messageRecipient);
 			}
+		}
+
+		public virtual IClientServerFactory ClientServerFactory
+		{
+			get
+			{
+				IClientServerFactory configuredFactory = ((IClientServerFactory)My(typeof(IClientServerFactory
+					)));
+				if (null == configuredFactory)
+				{
+					return new StandardClientServerFactory();
+				}
+				return configuredFactory;
+			}
+			set
+			{
+				IClientServerFactory factory = value;
+				_config.EnvironmentContributions().Add(factory);
+			}
+		}
+
+		public virtual ISocket4Factory SocketFactory
+		{
+			get
+			{
+				ISocket4Factory configuredFactory = ((ISocket4Factory)My(typeof(ISocket4Factory))
+					);
+				if (null == configuredFactory)
+				{
+					return new StandardSocket4Factory();
+				}
+				return configuredFactory;
+			}
+		}
+
+		private object My(Type type)
+		{
+			for (IEnumerator oIter = _config.EnvironmentContributions().GetEnumerator(); oIter
+				.MoveNext(); )
+			{
+				object o = oIter.Current;
+				if (type.IsInstanceOfType(o))
+				{
+					return (object)o;
+				}
+			}
+			return null;
 		}
 	}
 }

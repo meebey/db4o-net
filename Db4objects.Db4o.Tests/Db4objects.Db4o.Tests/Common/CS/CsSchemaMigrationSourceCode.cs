@@ -2,7 +2,8 @@
 
 #if !SILVERLIGHT
 using Db4objects.Db4o;
-using Db4objects.Db4o.Config;
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Common.CS;
 using Sharpen;
@@ -32,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void Run()
 		{
 			//store
-			IConfiguration conf = Db4oFactory.NewConfiguration();
-			IObjectServer server = Db4oFactory.OpenServer(conf, File, Port);
+			IServerConfiguration conf = Db4oClientServer.NewServerConfiguration();
+			IObjectServer server = Db4oClientServer.OpenServer(conf, File, Port);
 			server.GrantAccess("db4o", "db4o");
 			//store
 			//update
@@ -66,8 +67,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private IObjectContainer OpenClient()
 		{
-			return Db4oFactory.OpenClient(Db4oFactory.NewConfiguration(), "localhost", Port, 
-				"db4o", "db4o");
+			return Db4oClientServer.OpenClient("localhost", Port, "db4o", "db4o");
 		}
 
 		private void AssertItem()

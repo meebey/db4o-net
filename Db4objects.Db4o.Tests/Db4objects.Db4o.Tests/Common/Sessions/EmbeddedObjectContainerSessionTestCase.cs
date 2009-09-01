@@ -9,7 +9,7 @@ using Db4objects.Db4o.Tests.Common.Sessions;
 
 namespace Db4objects.Db4o.Tests.Common.Sessions
 {
-	public class EmbeddedObjectContainerSessionTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class EmbeddedObjectContainerSessionTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public class Item
 		{

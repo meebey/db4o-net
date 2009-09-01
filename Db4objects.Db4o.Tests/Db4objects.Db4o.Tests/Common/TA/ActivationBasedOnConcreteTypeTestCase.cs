@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.TA
 	{
 		public static void Main(string[] args)
 		{
-			new ActivationBasedOnConcreteTypeTestCase().RunClientServer();
+			new ActivationBasedOnConcreteTypeTestCase().RunNetworking();
 		}
 
 		public class NonActivatableParent

@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 	{
 		public static void Main(string[] arguments)
 		{
-			new CascadeOnUpdate().RunClientServer();
+			new CascadeOnUpdate().RunNetworking();
 		}
 
 		public class Atom

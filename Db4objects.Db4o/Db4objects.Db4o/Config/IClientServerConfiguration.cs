@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Config
@@ -9,10 +8,6 @@ namespace Db4objects.Db4o.Config
 	/// <remarks>Client/Server configuration interface.</remarks>
 	public interface IClientServerConfiguration
 	{
-		/// <summary>sets the ClientServerFactory  to open C/S servers and clients</summary>
-		/// <param name="factory">the factory to be used</param>
-		void Factory(IClientServerFactory factory);
-
 		/// <summary>
 		/// Sets the number of IDs to be pre-allocated in the database for new
 		/// objects created on the client.

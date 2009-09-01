@@ -8,7 +8,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class ConfigurationSettingsTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class ConfigurationSettingsTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		/// <exception cref="System.Exception"></exception>
 		[System.ObsoleteAttribute]

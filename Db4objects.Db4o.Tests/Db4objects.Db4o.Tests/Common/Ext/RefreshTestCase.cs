@@ -46,8 +46,8 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 
 		public virtual void Test()
 		{
-			IExtObjectContainer oc1 = OpenNewClient();
-			IExtObjectContainer oc2 = OpenNewClient();
+			IExtObjectContainer oc1 = OpenNewSession();
+			IExtObjectContainer oc2 = OpenNewSession();
 			try
 			{
 				RefreshTestCase.Item r1 = GetRoot(oc1);

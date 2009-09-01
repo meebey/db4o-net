@@ -3,13 +3,15 @@
 #if !SILVERLIGHT
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
+using Db4objects.Db4o.CS;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Common.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class ServerPortUsedTestCase : Db4oClientServerTestCase
+	public class ServerPortUsedTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
 		private static readonly string DatabaseFile = "PortUsed.db";
 
@@ -27,12 +29,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void Test()
 		{
 			int port = ClientServerFixture().ServerPort();
-			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_27(port));
+			Assert.Expect(typeof(Db4oIOException), new _ICodeBlock_28(port));
 		}
 
-		private sealed class _ICodeBlock_27 : ICodeBlock
+		private sealed class _ICodeBlock_28 : ICodeBlock
 		{
-			public _ICodeBlock_27(int port)
+			public _ICodeBlock_28(int port)
 			{
 				this.port = port;
 			}
@@ -40,8 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				Db4oFactory.OpenServer(Db4oFactory.NewConfiguration(), ServerPortUsedTestCase.DatabaseFile
-					, port);
+				Db4oClientServer.OpenServer(ServerPortUsedTestCase.DatabaseFile, port);
 			}
 
 			private readonly int port;

@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Internal
 {
-	public class ClassMetadataTestCase : AbstractDb4oTestCase, IOptOutCS
+	public class ClassMetadataTestCase : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public class Item
 		{

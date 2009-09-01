@@ -225,7 +225,7 @@ namespace Db4objects.Drs.Tests
 		{
 			Db4oUUID uuid = ProduceReference(obj, null, null).Uuid();
 			_uuidsDeletedSinceLastReplication.Add(uuid);
-			Sharpen.Util.Collections.Remove(_storedObjects, obj);
+			Sharpen.Collections.Remove(_storedObjects, obj);
 		}
 
 		public virtual void DeleteAllInstances(Type clazz)
@@ -357,7 +357,7 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void ReplicateDeletion(IReplicationReference reference)
 		{
-			Sharpen.Util.Collections.Remove(_storedObjects, reference.Object());
+			Sharpen.Collections.Remove(_storedObjects, reference.Object());
 		}
 
 		private void Store(object obj, Db4oUUID uuid, long version)
@@ -552,7 +552,7 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void ReplicateDeletion(Db4oUUID uuid)
 		{
-			Sharpen.Util.Collections.Remove(_storedObjects, GetObject(uuid));
+			Sharpen.Collections.Remove(_storedObjects, GetObject(uuid));
 		}
 
 		public virtual bool IsProviderSpecific(object original)

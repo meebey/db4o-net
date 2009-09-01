@@ -1,10 +1,11 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.NativeQueries.Expr;
 using Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand;
 
 namespace Db4objects.Db4o.NativeQueries.Expr.Cmp.Operand
 {
-	public class ThreeWayComparison
+	public class ThreeWayComparison : IExpressionPart
 	{
 		private FieldValue _left;
 

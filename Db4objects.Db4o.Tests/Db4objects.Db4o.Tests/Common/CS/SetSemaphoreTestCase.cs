@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public static void Main(string[] args)
 		{
-			new SetSemaphoreTestCase().RunClientServer();
+			new SetSemaphoreTestCase().RunNetworking();
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			Assert.IsTrue(clients[0].SetSemaphore(SemaphoreName, 0));
 			for (int i = 1; i < clients.Length; i++)
 			{
-				clients[i] = OpenNewClient();
+				clients[i] = OpenNewSession();
 			}
 			Assert.IsFalse(clients[1].SetSemaphore(SemaphoreName, 0));
 			clients[0].ReleaseSemaphore(SemaphoreName);

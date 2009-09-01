@@ -2,6 +2,7 @@
 
 #if !SILVERLIGHT
 using Db4oUnit;
+using Db4objects.Db4o;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.IO;

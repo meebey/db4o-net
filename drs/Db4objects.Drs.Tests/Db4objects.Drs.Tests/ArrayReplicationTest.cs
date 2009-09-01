@@ -39,6 +39,7 @@ namespace Db4objects.Drs.Tests
 				();
 			CheckNext(objects);
 			CheckNext(objects);
+			Assert.IsFalse(objects.MoveNext());
 		}
 
 		private void CheckNext(IEnumerator objects)

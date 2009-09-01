@@ -49,8 +49,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 
 		private Collection4 _collectionPredicates = new Collection4();
 
-		private Collection4 _collectionUpdateDepths = new Collection4();
-
 		private readonly Hashtable4 _classByClass = new Hashtable4();
 
 		private Transaction _trans;
@@ -90,8 +88,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 				(null, (IReflector)_delegate.DeepClone(this));
 			myClone._collectionPredicates = (Collection4)_collectionPredicates.DeepClone(myClone
 				);
-			myClone._collectionUpdateDepths = (Collection4)_collectionUpdateDepths.DeepClone(
-				myClone);
 			// Interesting, adding the following messes things up.
 			// Keep the code, since it may make sense to carry the
 			// global reflectors into a running db4o session.
@@ -141,24 +137,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return _array;
 		}
 
-		/// <summary>Determines collection update depth for the specified class</summary>
-		/// <param name="candidate">candidate class</param>
-		/// <returns>collection update depth for the specified class</returns>
-		public virtual int CollectionUpdateDepth(IReflectClass candidate)
-		{
-			IEnumerator i = _collectionUpdateDepths.GetEnumerator();
-			while (i.MoveNext())
-			{
-				CollectionUpdateDepthEntry entry = (CollectionUpdateDepthEntry)i.Current;
-				if (entry._predicate.Match(candidate))
-				{
-					return entry._depth;
-				}
-			}
-			return 2;
-		}
-
-		//TODO: will need knowledge for .NET collections here
 		internal virtual Db4objects.Db4o.Reflect.Generic.GenericClass EnsureDelegate(IReflectClass
 			 clazz)
 		{
@@ -237,12 +215,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// 	</seealso>
 		public virtual IReflectClass ForName(string className)
 		{
-			return ((IReflectClass)WithLock(new _IClosure4_211(this, className)));
+			return ((IReflectClass)WithLock(new _IClosure4_190(this, className)));
 		}
 
-		private sealed class _IClosure4_211 : IClosure4
+		private sealed class _IClosure4_190 : IClosure4
 		{
-			public _IClosure4_211(GenericReflector _enclosing, string className)
+			public _IClosure4_190(GenericReflector _enclosing, string className)
 			{
 				this._enclosing = _enclosing;
 				this.className = className;
@@ -357,14 +335,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 		private IReflectClassPredicate ClassPredicate(Type clazz)
 		{
 			IReflectClass collectionClass = ForClass(clazz);
-			IReflectClassPredicate predicate = new _IReflectClassPredicate_311(collectionClass
+			IReflectClassPredicate predicate = new _IReflectClassPredicate_290(collectionClass
 				);
 			return predicate;
 		}
 
-		private sealed class _IReflectClassPredicate_311 : IReflectClassPredicate
+		private sealed class _IReflectClassPredicate_290 : IReflectClassPredicate
 		{
-			public _IReflectClassPredicate_311(IReflectClass collectionClass)
+			public _IReflectClassPredicate_290(IReflectClass collectionClass)
 			{
 				this.collectionClass = collectionClass;
 			}
@@ -377,33 +355,16 @@ namespace Db4objects.Db4o.Reflect.Generic
 			private readonly IReflectClass collectionClass;
 		}
 
-		/// <summary>Register update depth for a collection class</summary>
-		/// <param name="clazz">class</param>
-		/// <param name="depth">update depth</param>
-		public virtual void RegisterCollectionUpdateDepth(Type clazz, int depth)
-		{
-			RegisterCollectionUpdateDepth(ClassPredicate(clazz), depth);
-		}
-
-		/// <summary>Register update depth for a collection class</summary>
-		/// <param name="predicate">class predicate</param>
-		/// <param name="depth">update depth</param>
-		public virtual void RegisterCollectionUpdateDepth(IReflectClassPredicate predicate
-			, int depth)
-		{
-			_collectionUpdateDepths.Add(new CollectionUpdateDepthEntry(predicate, depth));
-		}
-
 		/// <summary>Register a class</summary>
 		/// <param name="clazz">class</param>
 		public virtual void Register(Db4objects.Db4o.Reflect.Generic.GenericClass clazz)
 		{
-			WithLock(new _IClosure4_342(this, clazz));
+			WithLock(new _IClosure4_303(this, clazz));
 		}
 
-		private sealed class _IClosure4_342 : IClosure4
+		private sealed class _IClosure4_303 : IClosure4
 		{
-			public _IClosure4_342(GenericReflector _enclosing, Db4objects.Db4o.Reflect.Generic.GenericClass
+			public _IClosure4_303(GenericReflector _enclosing, Db4objects.Db4o.Reflect.Generic.GenericClass
 				 clazz)
 			{
 				this._enclosing = _enclosing;
@@ -429,12 +390,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 		/// <returns>an array of classes known to the reflector</returns>
 		public virtual IReflectClass[] KnownClasses()
 		{
-			return ((IReflectClass[])WithLock(new _IClosure4_358(this)));
+			return ((IReflectClass[])WithLock(new _IClosure4_319(this)));
 		}
 
-		private sealed class _IClosure4_358 : IClosure4
+		private sealed class _IClosure4_319 : IClosure4
 		{
-			public _IClosure4_358(GenericReflector _enclosing)
+			public _IClosure4_319(GenericReflector _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -455,12 +416,12 @@ namespace Db4objects.Db4o.Reflect.Generic
 		public virtual void RegisterPrimitiveClass(int id, string name, IGenericConverter
 			 converter)
 		{
-			WithLock(new _IClosure4_372(this, id, converter, name));
+			WithLock(new _IClosure4_333(this, id, converter, name));
 		}
 
-		private sealed class _IClosure4_372 : IClosure4
+		private sealed class _IClosure4_333 : IClosure4
 		{
-			public _IClosure4_372(GenericReflector _enclosing, int id, IGenericConverter converter
+			public _IClosure4_333(GenericReflector _enclosing, int id, IGenericConverter converter
 				, string name)
 			{
 				this._enclosing = _enclosing;

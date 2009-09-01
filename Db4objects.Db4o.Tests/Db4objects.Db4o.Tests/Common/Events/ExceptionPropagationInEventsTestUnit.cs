@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		public virtual void TestEvents()
 		{
 			EventInfo @event = EventToTest();
-			if (IsClientServer() && !@event.IsClientServerEvent())
+			if (IsEmbedded())
 			{
 				return;
 			}

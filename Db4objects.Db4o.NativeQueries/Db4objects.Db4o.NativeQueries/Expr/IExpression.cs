@@ -4,7 +4,7 @@ using Db4objects.Db4o.NativeQueries.Expr;
 
 namespace Db4objects.Db4o.NativeQueries.Expr
 {
-	public interface IExpression
+	public interface IExpression : IExpressionPart
 	{
 		/// <param name="visitor">
 		/// must implement the visitor interface required
