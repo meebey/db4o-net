@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 		}
 	}
 
-	public class MultipleAssemblySupportTestCase : AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutCS
+	public class MultipleAssemblySupportTestCase : AbstractDb4oTestCase, Db4oUnit.Extensions.Fixtures.IOptOutMultiSession
 	{	
 #if !SILVERLIGHT 
 		override protected void Store()

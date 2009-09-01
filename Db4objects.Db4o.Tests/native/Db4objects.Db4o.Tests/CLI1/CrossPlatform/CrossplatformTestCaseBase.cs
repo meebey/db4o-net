@@ -8,7 +8,13 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using Db4objects.Db4o.Config;
+#if !CF && !SILVERLIGHT
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.CS.Internal.Config;
+#endif
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Tests.Util;
@@ -27,8 +33,10 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 import java.util.Date;
 import com.db4o.*;
+import com.db4o.config.*;
+import com.db4o.cs.*;
+import com.db4o.cs.config.*;
 import com.db4o.query.Query;
-import com.db4o.config.Configuration;
 
 public class ClientCrossPlatform {
 	public static void main(String[] args) throws java.text.ParseException { 
@@ -37,7 +45,7 @@ public class ClientCrossPlatform {
 			return;
 		}
 		
-		ObjectContainer db = Db4o.openClient(config(), ""localhost"", Integer.parseInt(args[0]), args[1], args[2]);
+		ObjectContainer db = Db4oClientServer.openClient(config(), ""localhost"", Integer.parseInt(args[0]), args[1], args[2]);
 		
 		if (args[3].equals(""query-movie"")) {
 			System.out.print(queryMovies(db));	
@@ -90,10 +98,11 @@ public class ClientCrossPlatform {
 		db.set(new Person(name, year, localReleaseDate));
 	}
 
-	private static Configuration config() {
-		Configuration config = Db4o.newConfiguration();" + 
+	private static ClientConfiguration config() {
+		ClientConfiguration clientConfig = Db4oClientServer.newClientConfiguration();
+		CommonConfiguration config = clientConfig.common();" + 
 		GetClientAliases() +
-@"		return config;
+@"		return clientConfig;
 	}
 
 	private static ObjectSet getPersons(ObjectContainer db, String name) {
@@ -210,24 +219,27 @@ public class ClientCrossPlatform {
 
 		private void Connect()
 		{
-			while (true)
+			const int retryCount = 10;
+			for (int i = 0; i < retryCount; ++i)
 			{
 				_client = null;
 				try
 				{
-					_client = Db4oFactory.OpenClient(Config(), "localhost", HOST_PORT, USER_NAME, USER_PWD);
+					IClientConfiguration clientConfiguration = Db4oClientServerLegacyConfigurationBridge.AsClientConfiguration(Config());
+					_client = Db4oClientServer.OpenClient(clientConfiguration, "localhost", HOST_PORT, USER_NAME, USER_PWD);
 					break;
 				}
 				catch (SocketException se)
 				{
 				}
-				catch(DatabaseClosedException dce)
+				catch (DatabaseClosedException dce)
 				{
 				}
 				catch (Exception e)
 				{
 					Console.WriteLine(e);
 				}
+				Cool.SleepIgnoringInterruption(100);
 			}
 		}
 

@@ -2,6 +2,7 @@
 #if !SILVERLIGHT
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
 
 namespace Db4objects.Db4o.Tests.CLI1
 {
@@ -17,7 +18,7 @@ namespace Db4objects.Db4o.Tests.CLI1
         {
             if (clientServer)
             {
-                _server = Db4oFactory.OpenServer(fname, 0);
+                _server = Db4oClientServer.OpenServer(fname, 0);
                 _container = _server.OpenClient();
             }
             else

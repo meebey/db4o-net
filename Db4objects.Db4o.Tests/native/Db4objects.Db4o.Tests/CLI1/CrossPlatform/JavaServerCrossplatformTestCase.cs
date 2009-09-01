@@ -329,7 +329,7 @@ public class StartServer implements MessageRecipient  {
 				int iterationsToWait = (args[3] == ""True"") ? 1200 : 40;
 				File4.delete(databaseFile);
 
-				db4oServer = Db4o.openServer(databaseFile, Integer.parseInt(args[0]));
+				db4oServer = com.db4o.cs.Db4oClientServer.openServer(databaseFile, Integer.parseInt(args[0]));
 				db4oServer.grantAccess(args[1], args[2]);
 				
 				db4oServer.ext().configure().clientServer().setMessageRecipient(this);

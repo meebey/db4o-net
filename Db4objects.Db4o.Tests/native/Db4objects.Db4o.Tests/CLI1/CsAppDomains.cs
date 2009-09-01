@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 		}
 	}
 
-    class TaskDatabase : MarshalByRefDatabase, IOptOutCS
+	class TaskDatabase : MarshalByRefDatabase, IOptOutMultiSession
     {
         public string[] QueryTaskNames()
         {
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 	/// <summary>
 	/// Tests the interaction of db4o with multiple AppDomains
 	/// </summary>
-	public class CsAppDomains : AbstractDb4oTestCase, IOptOutCS, IOptOutInMemory
+	public class CsAppDomains : AbstractDb4oTestCase, IOptOutMultiSession, IOptOutInMemory
 	{
 		// keep task objects alive to check for any identity problems
 		ArrayList _tasks = new ArrayList();

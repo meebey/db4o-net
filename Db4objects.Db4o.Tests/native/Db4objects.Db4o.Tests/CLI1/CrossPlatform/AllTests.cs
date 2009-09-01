@@ -6,11 +6,6 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 {
 	public class AllTests : Db4oTestSuite
 	{
-		private static void Main()
-		{
-			new AllTests().RunClientServer();
-		}
-
 		protected override Type[] TestCases()
 		{
 			return new Type[]

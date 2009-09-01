@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 {
-	public class ListElementByIdentity : AbstractDb4oTestCase, IOptOutCS
+	public class ListElementByIdentity : AbstractDb4oTestCase, IOptOutMultiSession
 	{
 		public IList<LebiElement> _list;
 

@@ -1,6 +1,9 @@
 ﻿/* Copyright (C) 2008   Versant Inc.   http://www.db4o.com */
 using System.IO;
 using Db4objects.Db4o.Config;
+#if !SILVERLIGHT
+using Db4objects.Db4o.CS;
+#endif
 using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform 
@@ -29,7 +32,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 		protected override void StartServer()
 		{
 			string databasePath = InitDatabaseFile();
-			_server = Db4oFactory.OpenServer(databasePath, HOST_PORT);
+			_server = Db4oClientServer.OpenServer(databasePath, HOST_PORT);
 			_server.GrantAccess(USER_NAME, USER_PWD);
 
 			_server.Ext().Configure().ClientServer().SetMessageRecipient(this);

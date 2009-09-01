@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 {
     /// <summary>
     /// </summary>
-    public class JavaFromNetAliasesTestCase : BaseAliasesTestCase, IOptOutCS, IOptOutSilverlight
+	public class JavaFromNetAliasesTestCase : BaseAliasesTestCase, IOptOutMultiSession, IOptOutSilverlight
     {
 #if !CF
         public void TestAccessingJavaFromDotnet()
