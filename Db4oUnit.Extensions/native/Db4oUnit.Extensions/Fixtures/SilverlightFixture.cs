@@ -4,9 +4,8 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.IO;
-using Db4oUnit.Extensions.Fixtures;
 
-namespace Db4oUnit.Extensions.Extensions
+namespace Db4oUnit.Extensions.Fixtures
 {
 	public class SilverlightFixture : AbstractSoloDb4oFixture
 	{
