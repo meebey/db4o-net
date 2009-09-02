@@ -20,7 +20,13 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 		{
 			try
 			{
-				Type[] testCases = new[] { typeof(Tests.Common.AllTests) };
+				Type[] testCases = new[]
+				                   	{
+				                   		typeof(Tests.Common.AllTests), 
+										typeof(Tests.CLI1.AllTests),
+										typeof(Tests.CLI2.AllTests),
+				                   	};
+
 				new TestRunner(SilverlightSuite(testCases)).Run(new SilverlightTestListener(Dispatcher));
 
 				Complete();
