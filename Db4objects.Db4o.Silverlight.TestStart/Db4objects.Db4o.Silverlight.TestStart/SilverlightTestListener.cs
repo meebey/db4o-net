@@ -11,6 +11,11 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 {
 	public class SilverlightTestListener : ITestListener
 	{
+		public SilverlightTestListener(Dispatcher dispatcher)
+		{
+			_dispatcher = dispatcher;
+		}
+
 		public void RunStarted()
 		{
 			Run("append", "Tests started...");
@@ -101,10 +106,5 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 		private DateTime _startTime;
 		private readonly IList<TestFailure> _failures = new List<TestFailure>();
 		private readonly Dispatcher _dispatcher;
-
-		public SilverlightTestListener(Dispatcher dispatcher)
-		{
-			_dispatcher = dispatcher;
-		}
 	}
 }
