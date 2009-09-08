@@ -46,16 +46,18 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		public virtual void TestUpdatingInDeletingCallback()
 		{
+			bool isNetworking = IsNetworking();
 			EventRegistryFor(FileSession()).Deleting += new System.EventHandler<Db4objects.Db4o.Events.CancellableObjectEventArgs>
-				(new _IEventListener4_40().OnEvent);
+				(new _IEventListener4_42(isNetworking).OnEvent);
 			Db().Delete(ItemByName("foo"));
 			Assert.IsNotNull(ItemByName("bar*"));
 		}
 
-		private sealed class _IEventListener4_40
+		private sealed class _IEventListener4_42
 		{
-			public _IEventListener4_40()
+			public _IEventListener4_42(bool isNetworking)
 			{
+				this.isNetworking = isNetworking;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CancellableObjectEventArgs
@@ -66,14 +68,20 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 					return;
 				}
-				UpdateInCallbackThrowsTestCase.Item foo = (UpdateInCallbackThrowsTestCase.Item)obj;
-				foo._child._name += "*";
 				Transaction transaction = (Transaction)((CancellableObjectEventArgs)args).Transaction
 					();
 				IObjectContainer container = transaction.ObjectContainer();
-				container.Store(foo._child);
-				Sharpen.Runtime.Out.WriteLine("Updating " + foo._child + " on " + container);
+				UpdateInCallbackThrowsTestCase.Item foo = (UpdateInCallbackThrowsTestCase.Item)obj;
+				UpdateInCallbackThrowsTestCase.Item child = foo._child;
+				if (isNetworking)
+				{
+					container.Activate(child, 1);
+				}
+				child._name += "*";
+				container.Store(child);
 			}
+
+			private readonly bool isNetworking;
 		}
 
 		public virtual void TestReentrantUpdateAfterActivationThrows()
@@ -81,13 +89,13 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			UpdateInCallbackThrowsTestCase.Item foo = ItemByName("foo");
 			Db().Deactivate(foo);
 			EventRegistry().Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_66(this).OnEvent);
+				(new _IEventListener4_71(this).OnEvent);
 			Db().Activate(foo, 1);
 		}
 
-		private sealed class _IEventListener4_66
+		private sealed class _IEventListener4_71
 		{
-			public _IEventListener4_66(UpdateInCallbackThrowsTestCase _enclosing)
+			public _IEventListener4_71(UpdateInCallbackThrowsTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -105,12 +113,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				{
 					return;
 				}
-				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_78(this, item));
+				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_83(this, item));
 			}
 
-			private sealed class _ICodeBlock_78 : ICodeBlock
+			private sealed class _ICodeBlock_83 : ICodeBlock
 			{
-				public _ICodeBlock_78(_IEventListener4_66 _enclosing, UpdateInCallbackThrowsTestCase.Item
+				public _ICodeBlock_83(_IEventListener4_71 _enclosing, UpdateInCallbackThrowsTestCase.Item
 					 item)
 				{
 					this._enclosing = _enclosing;
@@ -123,7 +131,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 					this._enclosing._enclosing.Store(item);
 				}
 
-				private readonly _IEventListener4_66 _enclosing;
+				private readonly _IEventListener4_71 _enclosing;
 
 				private readonly UpdateInCallbackThrowsTestCase.Item item;
 			}
@@ -142,7 +150,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			updatedTriggered.value = false;
 			IEventRegistry registry = EventRegistryFactory.ForObjectContainer(Db());
 			registry.Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_97(this, updatedTriggered).OnEvent);
+				(new _IEventListener4_102(this, updatedTriggered).OnEvent);
 			IObjectSet items = QueryItemsByName("foo");
 			Assert.AreEqual(1, items.Count);
 			Assert.IsFalse((((bool)updatedTriggered.value)));
@@ -150,9 +158,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			Assert.IsTrue((((bool)updatedTriggered.value)));
 		}
 
-		private sealed class _IEventListener4_97
+		private sealed class _IEventListener4_102
 		{
-			public _IEventListener4_97(UpdateInCallbackThrowsTestCase _enclosing, ByRef updatedTriggered
+			public _IEventListener4_102(UpdateInCallbackThrowsTestCase _enclosing, ByRef updatedTriggered
 				)
 			{
 				this._enclosing = _enclosing;
@@ -173,12 +181,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 					return;
 				}
 				updatedTriggered.value = true;
-				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_111(this, item));
+				Assert.Expect(typeof(Db4oIllegalStateException), new _ICodeBlock_116(this, item));
 			}
 
-			private sealed class _ICodeBlock_111 : ICodeBlock
+			private sealed class _ICodeBlock_116 : ICodeBlock
 			{
-				public _ICodeBlock_111(_IEventListener4_97 _enclosing, UpdateInCallbackThrowsTestCase.Item
+				public _ICodeBlock_116(_IEventListener4_102 _enclosing, UpdateInCallbackThrowsTestCase.Item
 					 item)
 				{
 					this._enclosing = _enclosing;
@@ -191,7 +199,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 					this._enclosing._enclosing.Store(item);
 				}
 
-				private readonly _IEventListener4_97 _enclosing;
+				private readonly _IEventListener4_102 _enclosing;
 
 				private readonly UpdateInCallbackThrowsTestCase.Item item;
 			}

@@ -866,7 +866,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4objects.Db4o.Db4oFactory.OpenFile(string)
 		/// 	</see>
 		/// or
-		/// <see cref="com.db4o.Db4o#openServer">com.db4o.Db4o#openServer</see>
+		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer(string, int)">Db4objects.Db4o.Db4oFactory.OpenServer(string, int)
+		/// 	</see>
 		/// .
 		/// db4o database files keep their string format after creation.<br /><br />
 		/// Turning Unicode support off reduces the file storage space for strings

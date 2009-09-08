@@ -35,6 +35,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			{
 				return;
 			}
+			if (IsNetworking() && !@event.IsClientServerEvent())
+			{
+				return;
+			}
 			AssertEventThrows(@event.EventFirerName(), ((ICodeBlock)_eventFirer[@event.EventFirerName
 				()]), @event.ListenerSetter());
 		}
@@ -55,12 +59,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private ICodeBlock NewObjectUpdater()
 		{
-			return new _ICodeBlock_46(this);
+			return new _ICodeBlock_50(this);
 		}
 
-		private sealed class _ICodeBlock_46 : ICodeBlock
+		private sealed class _ICodeBlock_50 : ICodeBlock
 		{
-			public _ICodeBlock_46(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_50(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -79,12 +83,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private ICodeBlock NewObjectDeleter()
 		{
-			return new _ICodeBlock_60(this);
+			return new _ICodeBlock_64(this);
 		}
 
-		private sealed class _ICodeBlock_60 : ICodeBlock
+		private sealed class _ICodeBlock_64 : ICodeBlock
 		{
-			public _ICodeBlock_60(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_64(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -101,12 +105,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private ICodeBlock NewQueryRunner()
 		{
-			return new _ICodeBlock_69(this);
+			return new _ICodeBlock_73(this);
 		}
 
-		private sealed class _ICodeBlock_69 : ICodeBlock
+		private sealed class _ICodeBlock_73 : ICodeBlock
 		{
-			public _ICodeBlock_69(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_73(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -121,12 +125,12 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private ICodeBlock NewObjectInserter()
 		{
-			return new _ICodeBlock_77(this);
+			return new _ICodeBlock_81(this);
 		}
 
-		private sealed class _ICodeBlock_77 : ICodeBlock
+		private sealed class _ICodeBlock_81 : ICodeBlock
 		{
-			public _ICodeBlock_77(ExceptionPropagationInEventsTestUnit _enclosing)
+			public _ICodeBlock_81(ExceptionPropagationInEventsTestUnit _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

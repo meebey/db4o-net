@@ -59,24 +59,39 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
-
-		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
-
-		private sealed class _IDeferred_72 : KeySpec.IDeferred
+		private sealed class _IDeferred_68 : KeySpec.IDeferred
 		{
-			public _IDeferred_72()
+			public _IDeferred_68()
 			{
 			}
 
 			//  TODO: consider setting default to 8, it's more efficient with freespace.
 			public object Evaluate()
 			{
+				return Config4Impl.DefaultClientServerFactory();
+			}
+		}
+
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_68
+			());
+
+		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
+
+		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
+
+		private sealed class _IDeferred_78 : KeySpec.IDeferred
+		{
+			public _IDeferred_78()
+			{
+			}
+
+			public object Evaluate()
+			{
 				return new Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor();
 			}
 		}
 
-		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_72());
+		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_78());
 
 		private static readonly KeySpec DisableCommitRecoveryKey = new KeySpec(false);
 
@@ -93,9 +108,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec EncryptKey = new KeySpec(false);
 
-		private sealed class _IDeferred_90 : KeySpec.IDeferred
+		private sealed class _IDeferred_96 : KeySpec.IDeferred
 		{
-			public _IDeferred_90()
+			public _IDeferred_96()
 			{
 			}
 
@@ -105,7 +120,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_90
+		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_96
 			());
 
 		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
@@ -149,9 +164,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchDepthKey = new KeySpec(0);
 
-		private sealed class _IDeferred_134 : KeySpec.IDeferred
+		private sealed class _IDeferred_140 : KeySpec.IDeferred
 		{
-			public _IDeferred_134()
+			public _IDeferred_140()
 			{
 			}
 
@@ -163,7 +178,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_134());
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_140());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -221,6 +236,7 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(ActivationDepthKey);
 		}
 
+		// FIXME: circular cs dependancy. Improve.
 		public void ActivationDepth(int depth)
 		{
 			_config.Put(ActivationDepthKey, depth);
@@ -1203,6 +1219,16 @@ namespace Db4objects.Db4o.Internal
 				_orig = orig;
 				_cloned = cloned;
 			}
+		}
+
+		public void Factory(ILegacyClientServerFactory factory)
+		{
+			_config.Put(ClientServerFactoryKey, factory);
+		}
+
+		public ILegacyClientServerFactory ClientServerFactory()
+		{
+			return (ILegacyClientServerFactory)_config.Get(ClientServerFactoryKey);
 		}
 
 		public ICacheConfiguration Cache()
