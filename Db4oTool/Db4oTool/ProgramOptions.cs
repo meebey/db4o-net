@@ -119,7 +119,7 @@ namespace Db4oTool
 		{
 			get
 			{
-				return StatisticsFileNames.Count > 0 ||
+				return StatisticsFileNames.Count > 0 || InstallPerformanceCounters ||
                     (Assembly != null
 					   && (NQ
 						   || TransparentPersistence
