@@ -1,4 +1,5 @@
 ﻿/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
+using System;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -40,7 +41,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 			VisitExpressionList(method.Arguments);
 			if (IsNonPrimitiveBooleanMethodCall(method))
 			{
-				return ExpandExpression(method, true);
+			    return ExpandExpression(method, true);
 			}
 			
 			return base.VisitMethodCall(method);
@@ -53,12 +54,17 @@ namespace Db4objects.Db4o.Linq.Expressions
 		
 		private static bool IsCallToNonPrimitiveMethod(MethodCallExpression expression)
 		{
-			return !IsListMethodCall(expression.Method);
+			return !IsListMethodCall(expression.Method) && !IsStringMethodCall(expression.Method);
 		}
 
 		private static bool IsListMethodCall(MethodInfo method)
 		{
 			return method.DeclaringType == typeof(IList);
+		}
+		
+		private static bool IsStringMethodCall(MethodInfo method)
+		{
+			return method.DeclaringType == typeof(String);
 		}
 
 		private static BinaryExpression ExpandExpression(Expression expression, bool value)

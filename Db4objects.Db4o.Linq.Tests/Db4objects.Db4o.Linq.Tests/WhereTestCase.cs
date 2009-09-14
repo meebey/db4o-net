@@ -199,6 +199,19 @@ namespace Db4objects.Db4o.Linq.Tests
 				});
 		}
 
+		public void TestContainsCallsOnMultipleDescend()
+		{
+			AssertQuery(from Thing t in Db()
+						where t.Owner.Name.Contains("jb") || t.Owner.Name.Contains("na")
+						select t,
+
+						@"(Thing(Owner((Name contains 'jb') or (Name contains 'na'))))",
+
+						from t in Things(People().ToList())
+						where t.Owner.Name.Contains("jb") || t.Owner.Name.Contains("na")
+						select t);
+		}
+
 		public void TestNotMethodCall()
 		{
 			AssertQuery("(Person(IsFriend == False))",

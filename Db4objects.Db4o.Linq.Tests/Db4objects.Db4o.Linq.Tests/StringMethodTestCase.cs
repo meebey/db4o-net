@@ -1,14 +1,7 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Db4objects.Db4o;
-using Db4objects.Db4o.Linq;
-
-using Db4oUnit;
-using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
@@ -23,13 +16,28 @@ namespace Db4objects.Db4o.Linq.Tests
 				Person p = obj as Person;
 				if (p == null) return false;
 
-				return p.Name == this.Name;
+				return p.Name == Name;
 			}
 
 			public override int GetHashCode()
 			{
-				return this.Name.GetHashCode();
+				return Name.GetHashCode();
 			}
+		}
+
+		private static Person[] _people = new[] 
+											{
+												new Person { Name = "BiroBiro" },
+												new Person { Name = "Luna" }, 
+												new Person { Name = "Loustic" },
+												new Person { Name = "Loupiot" },
+												new Person { Name = "LeMiro" },
+												new Person { Name = "Tounage" }
+											};
+
+		protected IEnumerable<Person> People()
+		{
+			return _people;
 		}
 
 		protected override void Store()
@@ -90,6 +98,25 @@ namespace Db4objects.Db4o.Linq.Tests
 							new Person { Name = "Luna" },
 							new Person { Name = "Tounage" }
 						}, los);
+				});
+		}
+
+		public void TestComplexContains()
+		{
+			AssertQuery("(Person((Name contains 'Duna') or (Name contains 'iro')))",
+				delegate
+				{
+					var los = from Person p in Db()
+							  where p.Name.Contains("Duna") ||
+									p.Name.Contains("iro")
+							  select p;
+
+					AssertSet(	from Person p1 in People()
+						        where	p1.Name.Contains("Duna") ||
+						              	p1.Name.Contains("iro")
+						        select p1,
+								
+								los);
 				});
 		}
 	}
