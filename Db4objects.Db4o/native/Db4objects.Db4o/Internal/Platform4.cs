@@ -344,12 +344,7 @@ namespace Db4objects.Db4o.Internal
             return true;
         }
 
-        public static bool HasLockFileThread()
-        {
-            return false;
-        }
-
-        public static bool HasNio()
+        public static bool NeedsLockFileThread()
         {
             return false;
         }
