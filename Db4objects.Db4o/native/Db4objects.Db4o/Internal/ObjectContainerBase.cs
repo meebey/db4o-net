@@ -7,29 +7,29 @@ using Db4objects.Db4o.Query;
 namespace Db4objects.Db4o.Internal
 {
     using System;
-    using Db4objects.Db4o.Internal.Query;
-    using Db4objects.Db4o.Internal.Query.Result;
-    using Db4objects.Db4o.Internal.Query.Processor;
-    using Db4objects.Db4o.Ext;
+    using Query;
+    using Query.Result;
+    using Query.Processor;
+    using Ext;
 
-    public partial class ObjectContainerBase : System.IDisposable
+    public partial class ObjectContainerBase
     {
-        void System.IDisposable.Dispose()
+        void IDisposable.Dispose()
         {
             Close();
         }
 
-        public IObjectSet Query(Db4objects.Db4o.Query.Predicate match, System.Collections.IComparer comparer)
+        public IObjectSet Query(Predicate match, System.Collections.IComparer comparer)
         {
             if (null == match) throw new ArgumentNullException("match");
             return Query(null, match, new ComparerAdaptor(comparer));
         }
 
-        class GenericComparerAdaptor<T> : Db4objects.Db4o.Query.IQueryComparator
+        class GenericComparerAdaptor<T> : IQueryComparator
         {
-            private System.Collections.Generic.IComparer<T> _comparer;
+            private readonly IComparer<T> _comparer;
 
-            public GenericComparerAdaptor(System.Collections.Generic.IComparer<T> comparer)
+            public GenericComparerAdaptor(IComparer<T> comparer)
             {
                 _comparer = comparer;
             }
@@ -40,76 +40,75 @@ namespace Db4objects.Db4o.Internal
             }
         }
 
-        class GenericComparisonAdaptor<T> : DelegateEnvelope, Db4objects.Db4o.Query.IQueryComparator
+        class GenericComparisonAdaptor<T> : DelegateEnvelope, IQueryComparator
         {
-            public GenericComparisonAdaptor(System.Comparison<T> comparer)
-                : base(comparer)
+            public GenericComparisonAdaptor(Comparison<T> comparer) : base(comparer)
             {
             }
 
             public int Compare(object first, object second)
             {
-                System.Comparison<T> _comparer = (System.Comparison<T>)GetContent();
+                Comparison<T> _comparer = (Comparison<T>)GetContent();
                 return _comparer((T)first, (T)second);
             }
         }
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match)
+        public IList<Extent> Query<Extent>(Predicate<Extent> match)
         {
             return Query(null, match);
         }
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>(Transaction trans, Predicate<Extent> match)
+        public IList<Extent> Query<Extent>(Transaction trans, Predicate<Extent> match)
         {
             return ExecuteNativeQuery(trans, match, null);
         }
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Collections.Generic.IComparer<Extent> comparer)
+        public IList<Extent> Query<Extent>(Predicate<Extent> match, IComparer<Extent> comparer)
         {
             return Query(null, match, comparer);
         }
 
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>(Transaction trans, Predicate<Extent> match, System.Collections.Generic.IComparer<Extent> comparer)
+        public IList<Extent> Query<Extent>(Transaction trans, Predicate<Extent> match, IComparer<Extent> comparer)
         {
-            Db4objects.Db4o.Query.IQueryComparator comparator = null != comparer
+            IQueryComparator comparator = null != comparer
                                                             ? new GenericComparerAdaptor<Extent>(comparer)
                                                             : null;
             return ExecuteNativeQuery(trans, match, comparator);
         }
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>(Predicate<Extent> match, System.Comparison<Extent> comparison)
+        public IList<Extent> Query<Extent>(Predicate<Extent> match, Comparison<Extent> comparison)
         {
             return Query(null, match, comparison);
         }
 
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>(Transaction trans, Predicate<Extent> match, System.Comparison<Extent> comparison)
+        public IList<Extent> Query<Extent>(Transaction trans, Predicate<Extent> match, Comparison<Extent> comparison)
         {
-            Db4objects.Db4o.Query.IQueryComparator comparator = null != comparison
+            IQueryComparator comparator = null != comparison
                                                         ? new GenericComparisonAdaptor<Extent>(comparison)
                                                         : null;
             return ExecuteNativeQuery(trans, match, comparator);
         }
 
-        public System.Collections.Generic.IList<ElementType> Query<ElementType>(System.Type extent)
+        public IList<ElementType> Query<ElementType>(Type extent)
         {
             return Query<ElementType>(null, extent, null);
         }
 
 
-        public System.Collections.Generic.IList<ElementType> Query<ElementType>(Transaction trans, System.Type extent)
+        public IList<ElementType> Query<ElementType>(Transaction trans, Type extent)
         {
             return Query<ElementType>(trans, extent, null);
         }
 
-        public System.Collections.Generic.IList<ElementType> Query<ElementType>(System.Type extent, System.Collections.Generic.IComparer<ElementType> comparer)
+        public IList<ElementType> Query<ElementType>(Type extent, IComparer<ElementType> comparer)
         {
             return Query(null, extent, comparer);
         }
 
 
-        public System.Collections.Generic.IList<ElementType> Query<ElementType>(Transaction trans, System.Type extent, System.Collections.Generic.IComparer<ElementType> comparer)
+        public IList<ElementType> Query<ElementType>(Transaction trans, Type extent, IComparer<ElementType> comparer)
         {
             lock (Lock())
             {
@@ -118,21 +117,21 @@ namespace Db4objects.Db4o.Internal
                 query.Constrain(extent);
                 if (null != comparer) query.SortBy(new GenericComparerAdaptor<ElementType>(comparer));
                 IQueryResult queryResult = query.GetQueryResult();
-                return new Db4objects.Db4o.Internal.Query.GenericObjectSetFacade<ElementType>(queryResult);
+                return new GenericObjectSetFacade<ElementType>(queryResult);
             }
         }
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>()
+        public IList<Extent> Query<Extent>()
         {
             return Query<Extent>(typeof(Extent));
         }
 
-        public System.Collections.Generic.IList<Extent> Query<Extent>(System.Collections.Generic.IComparer<Extent> comparer)
+        public IList<Extent> Query<Extent>(IComparer<Extent> comparer)
         {
             return Query<Extent>(typeof(Extent), comparer);
         }
 
-        private System.Collections.Generic.IList<Extent> ExecuteNativeQuery<Extent>(Transaction trans, Predicate<Extent> match, Db4objects.Db4o.Query.IQueryComparator comparator)
+        private IList<Extent> ExecuteNativeQuery<Extent>(Transaction trans, Predicate<Extent> match, IQueryComparator comparator)
         {
             if (null == match) throw new ArgumentNullException("match");
             lock (Lock())
