@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Monitoring.Internal
 {
@@ -65,7 +66,7 @@ namespace Db4objects.Db4o.Monitoring.Internal
                                  });
 
             PerformanceCounterCategory.Create(CategoryName, "Db4o Performance Counters",
-                                                     PerformanceCounterCategoryType.SingleInstance,
+                                                     PerformanceCounterCategoryType.MultiInstance,
                                                      collection);
         }
 
@@ -90,9 +91,19 @@ namespace Db4objects.Db4o.Monitoring.Internal
 			return NewDb4oCounter(QueriesPerSec, readOnly);
 		}
 
+		public static PerformanceCounter CounterForQueriesPerSec(IObjectContainer container)
+		{
+			return NewDb4oCounter(QueriesPerSec, container.ToString());
+		}
+
 		public static PerformanceCounter CounterForClassIndexScansPerSec(bool readOnly)
 		{
 			return NewDb4oCounter(ClassIndexScansPerSec, readOnly);
+		}
+		
+		public static PerformanceCounter CounterForClassIndexScansPerSec(IObjectContainer container)
+		{
+			return NewDb4oCounter(ClassIndexScansPerSec, container.ToString());
 		}
 
 #if NET_3_5
@@ -100,10 +111,20 @@ namespace Db4objects.Db4o.Monitoring.Internal
 		{
 			return NewDb4oCounter(LinqQueriesPerSec, readOnly);
 		}
+		
+		public static PerformanceCounter CounterForLinqQueriesPerSec(IObjectContainer container)
+		{
+			return NewDb4oCounter(LinqQueriesPerSec, container.ToString());
+		}
 
 		public static PerformanceCounter CounterForUnoptimizedLinqQueriesPerSec(bool readOnly)
 		{
 			return NewDb4oCounter(UnoptimizedLinqQueriesPerSec, readOnly);
+		}
+
+		public static PerformanceCounter CounterForUnoptimizedLinqQueriesPerSec(IObjectContainer container)
+		{
+			return NewDb4oCounter(UnoptimizedLinqQueriesPerSec, container.ToString());
 		}
 #endif
 
@@ -112,9 +133,19 @@ namespace Db4objects.Db4o.Monitoring.Internal
 			return NewDb4oCounter(NativeQueriesPerSec, readOnly);
 		}
 
+		public static PerformanceCounter CounterForNativeQueriesPerSec(IObjectContainer container)
+		{
+			return NewDb4oCounter(NativeQueriesPerSec, container.ToString());
+		}
+
 		public static PerformanceCounter CounterForUnoptimizedNativeQueriesPerSec(bool readOnly)
 		{
 			return NewDb4oCounter(UnoptimizedNativeQueriesPerSec, readOnly);
+		}
+		
+		public static PerformanceCounter CounterForUnoptimizedNativeQueriesPerSec(IObjectContainer container)
+		{
+			return NewDb4oCounter(UnoptimizedNativeQueriesPerSec, container.ToString());
 		}
 
         public static PerformanceCounter CounterForBytesReadPerSec()
@@ -134,14 +165,25 @@ namespace Db4objects.Db4o.Monitoring.Internal
        
         private static PerformanceCounter NewDb4oCounter(string counterName, bool readOnly)
         {
-        	Install();
-
-        	PerformanceCounter counter = new PerformanceCounter(CategoryName, counterName, readOnly);
-			if (readOnly) return counter;
-
-			counter.RawValue = 0;
-        	return counter;
+        	string instanceName = My<IObjectContainer>.Instance.ToString();
+        	return NewDb4oCounter(counterName, instanceName, readOnly);
         }
+
+		private static PerformanceCounter NewDb4oCounter(string counterName, string instanceName)
+		{
+			return NewDb4oCounter(counterName, instanceName, true);
+		}
+
+    	private static PerformanceCounter NewDb4oCounter(string counterName, string instanceName, bool readOnly)
+    	{
+    		Install();
+
+    		PerformanceCounter counter = new PerformanceCounter(CategoryName, counterName, instanceName, readOnly);
+    		if (readOnly) return counter;
+
+    		counter.RawValue = 0;
+    		return counter;
+    	}
     }
 }
 

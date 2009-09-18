@@ -16,14 +16,12 @@ namespace Sharpen.Net
 		}
 	}
 #else
-		IInputStream _in;
-		IOutputStream _out;
-
 		public Socket(string hostName, int port)
 		{
 		    NativeSocket socket = new NativeSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			socket.Connect(new IPEndPoint(Resolve(hostName), port));
 			Initialize(socket);
+			_toString = StringRepresentation();
 		}
 
 	    private static IPAddress Resolve(string hostName)
@@ -56,7 +54,7 @@ namespace Sharpen.Net
 
 		public int GetPort() 
 		{
-			return ((IPEndPoint)base._delegate.RemoteEndPoint).Port;
+			return ((IPEndPoint) _delegate.RemoteEndPoint).Port;
 		}
 
 		override protected void Initialize(NativeSocket socket)
@@ -72,6 +70,20 @@ namespace Sharpen.Net
 #endif
 			_out = new OutputStream(stream);
 		}
+
+		public override string ToString()
+		{
+			return _toString;
+		}
+
+		private string StringRepresentation()
+		{
+			return ((IPEndPoint)_delegate.LocalEndPoint).Port + " => "+ UnderlyingSocket.RemoteEndPoint;
+		}
+
+		private IInputStream _in;
+		private IOutputStream _out;
+		private readonly string _toString;
 	}
 #if CF
 	internal class SocketInputStream : IInputStream

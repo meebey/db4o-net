@@ -32,6 +32,10 @@ namespace Db4objects.Db4o.Monitoring
 
 		public void Apply(IInternalObjectContainer container)
 		{
+#if CF_3_5 || NET_3_5
+			My<LinqQueryMonitor>.Instance.Initialize();
+#endif
+
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
 			
 			PerformanceCounter unoptimizedNativeQueriesPerSec = Db4oPerformanceCounterCategory.CounterForUnoptimizedNativeQueriesPerSec(false);
@@ -55,7 +59,6 @@ namespace Db4objects.Db4o.Monitoring
 					My<LinqQueryMonitor>.Instance.Dispose();
 				});
 #endif
-
 			};
 		}
 
@@ -63,26 +66,40 @@ namespace Db4objects.Db4o.Monitoring
 #if CF_3_5 || NET_3_5
 		class LinqQueryMonitor : ILinqQueryMonitor
 		{
-			private readonly PerformanceCounter _queriesPerSec =
-				Db4oPerformanceCounterCategory.CounterForLinqQueriesPerSec(false);
-
-			private readonly PerformanceCounter _unoptimizedQueriesPerSec =
-				Db4oPerformanceCounterCategory.CounterForUnoptimizedLinqQueriesPerSec(false);
+		    private PerformanceCounter _queriesPerSec;
+		    private PerformanceCounter _unoptimizedQueriesPerSec;
 
 			public void OnOptimizedQuery()
 			{
-				_queriesPerSec.Increment();
+				QueriesPerSec().Increment();
 			}
 
-			public void OnUnoptimizedQuery()
+		    public void OnUnoptimizedQuery()
 			{
-				_queriesPerSec.Increment();
-				_unoptimizedQueriesPerSec.Increment();
+				QueriesPerSec().Increment();
+				UnoptimizedQueriesPerSec().Increment();
 			}
 
-			public void Dispose()
+		    public void Dispose()
 			{
-				_queriesPerSec.Dispose();
+                if (null != _queriesPerSec) _queriesPerSec.Dispose();
+                if (null != _unoptimizedQueriesPerSec) _unoptimizedQueriesPerSec.Dispose();
+			}
+            
+            private PerformanceCounter QueriesPerSec()
+            {
+                return _queriesPerSec;
+            }
+            
+            private PerformanceCounter UnoptimizedQueriesPerSec()
+            {
+                return _unoptimizedQueriesPerSec;
+            }
+
+			public void Initialize()
+			{
+				_queriesPerSec = Db4oPerformanceCounterCategory.CounterForLinqQueriesPerSec(false);
+				_unoptimizedQueriesPerSec = Db4oPerformanceCounterCategory.CounterForUnoptimizedLinqQueriesPerSec(false);
 			}
 		}
 #endif
@@ -97,14 +114,21 @@ namespace Db4objects.Db4o.Monitoring
 
 		public void Apply(IInternalObjectContainer container)
 		{
-			PerformanceCounter queriesPerSec = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(false);
+		    PerformanceCounter queriesPerSec = null;
+		    PerformanceCounter classIndexScansPerSec = null;
+
+		    container.WithEnvironment(() =>
+            {
+		        queriesPerSec = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(false);
+                classIndexScansPerSec = Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(false);
+            });
+
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
 			eventRegistry.QueryFinished += delegate
 			{
 				queriesPerSec.Increment();
 			};
-
-			PerformanceCounter classIndexScansPerSec = Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(false);
+			
 			container.Configure().Diagnostic().AddListener(new DiagnosticListener(classIndexScansPerSec));
 			
 			eventRegistry.Closing += delegate
@@ -116,7 +140,7 @@ namespace Db4objects.Db4o.Monitoring
 
 		class DiagnosticListener : IDiagnosticListener
 		{
-			private PerformanceCounter _classIndexScansPerSec;
+			private readonly PerformanceCounter _classIndexScansPerSec;
 
 			public DiagnosticListener(PerformanceCounter classIndexScansPerSec)
 			{

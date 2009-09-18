@@ -1,6 +1,6 @@
+/* Copyright (C) 2009  Versant Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
-/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 #if !CF && !SILVERLIGHT
 using Db4objects.Db4o.Monitoring.Internal;
 using Db4oUnit;
@@ -13,7 +13,7 @@ using Db4objects.Db4o.Linq;
 
 namespace Db4objects.Db4o.Tests.Monitoring
 {
-	internal class QueryMonitoringSupportTestCaseBase : AbstractDb4oTestCase
+	public class QueryMonitoringSupportTestCaseBase : AbstractDb4oTestCase
 	{
 		protected override void Db4oSetupBeforeConfigure()
 		{
@@ -51,13 +51,18 @@ namespace Db4objects.Db4o.Tests.Monitoring
 
 		protected void ExecuteOptimizedNQ()
 		{
-            Predicate<Item> match =  delegate(Item item) { return item.id == 42; };
-			Db().Query(match);
+			ExecuteOptimizedNQ(Db());
+		}
+
+		protected void ExecuteOptimizedNQ(IObjectContainer container)
+		{
+			Predicate<Item> match = delegate(Item item) { return item.id == 42; };
+			container.Query(match);
 		}
 
 		protected void ExecuteUnoptimizedNQ()
 		{
-			Db().Query((Predicate<Item>) delegate(Item item) { return item.GetType() == typeof (Item); });
+			Db().Query(delegate(Item item) { return item.GetType() == typeof (Item); });
 		}
 
 		public class Item

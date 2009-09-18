@@ -2,7 +2,7 @@
 #if !CF && !SILVERLIGHT
 using System.Diagnostics;
 using Db4objects.Db4o.Config;
-
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Monitoring.Internal;
 using Db4objects.Db4o.Query;
@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Monitoring
 {
 	class QueryMonitoringSupportTestCase : QueryMonitoringSupportTestCaseBase, ICustomClientServerConfiguration
 	{
-		protected override void Configure(Db4objects.Db4o.Config.IConfiguration config)
+		protected override void Configure(IConfiguration config)
 		{
 			config.Add(new QueryMonitoringSupport());
 		}
@@ -29,30 +29,29 @@ namespace Db4objects.Db4o.Tests.Monitoring
 
 		public void TestQueriesPerSecond()
 		{
-			using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(true))
-			{
-				Assert.AreEqual(0, counter.RawValue);
+            using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(FileSession()))
+            {
+                Assert.AreEqual(0, counter.RawValue);
 
-				ExecuteGetAllQuery();
-				ExecuteClassOnlyQuery();
-				ExecuteOptimizedNQ();
-				ExecuteUnoptimizedNQ();
+		        ExecuteGetAllQuery();
+		        ExecuteClassOnlyQuery();
+		        ExecuteOptimizedNQ();
+		        ExecuteUnoptimizedNQ();
 
 #if CF_3_5 || NET_3_5
-				ExecuteOptimizedLinq();
-				ExecuteUnoptimizedLinq();
-				Assert.AreEqual(6, counter.RawValue);
+		        ExecuteOptimizedLinq();
+		        ExecuteUnoptimizedLinq();
+		        Assert.AreEqual(6, counter.RawValue);
 #else
 				Assert.AreEqual(4, counter.RawValue);
 #endif
-
-			}
+            }
 		}
 
 		public void TestClassIndexScansPerSecond()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(true),
+				Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(FileSession()),
 				ExecuteSodaClassIndexScan);
 		}
 		
