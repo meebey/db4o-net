@@ -3,11 +3,9 @@
 
 using System;
 using System.Collections;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.IO;
 using Db4oUnit.Fixtures;
 
 namespace Db4oUnit.Extensions.Fixtures
@@ -94,7 +92,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			throw new NotImplementedException();
 		}
 
-		IExtObjectContainer IMultiSessionFixture.OpenNewSession()
+		IExtObjectContainer IMultiSessionFixture.OpenNewSession(IDb4oTestCase testInstance)
 		{
 			throw new NotImplementedException();
 		}
