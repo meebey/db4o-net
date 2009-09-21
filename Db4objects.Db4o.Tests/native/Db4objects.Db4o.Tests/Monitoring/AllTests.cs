@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Monitoring
 			return new Type[]
 			       	{
 						typeof(NativeQueryMonitoringSupportTestCase),
-						typeof(PerObjectContainerPerformanceCounterTestCase),
+						//typeof(PerObjectContainerPerformanceCounterTestCase),
 			       		typeof(QueryMonitoringSupportTestCase),
 					};
 		}
