@@ -117,7 +117,7 @@ namespace Db4objects.Db4o.Monitoring
 		    PerformanceCounter queriesPerSec = null;
 		    PerformanceCounter classIndexScansPerSec = null;
 
-		    container.WithEnvironment(() =>
+		    container.WithEnvironment(delegate
             {
 		        queriesPerSec = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(false);
                 classIndexScansPerSec = Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(false);
