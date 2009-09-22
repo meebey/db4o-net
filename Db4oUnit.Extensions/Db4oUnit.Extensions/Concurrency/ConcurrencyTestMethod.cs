@@ -159,7 +159,7 @@ namespace Db4oUnit.Extensions.Concurrency
 				IExtObjectContainer oc = null;
 				try
 				{
-					oc = this._enclosing.Fixture().OpenNewSession();
+					oc = this._enclosing.Fixture().OpenNewSession(this.toTest);
 					object[] args;
 					if (this.showSeq)
 					{

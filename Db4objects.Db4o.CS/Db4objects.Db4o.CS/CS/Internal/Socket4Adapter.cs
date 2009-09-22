@@ -63,21 +63,8 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			try
 			{
-				return new Db4objects.Db4o.CS.Internal.Socket4Adapter(_delegate.OpenParalellSocket
+				return new Db4objects.Db4o.CS.Internal.Socket4Adapter(_delegate.OpenParallelSocket
 					());
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public virtual int Read()
-		{
-			try
-			{
-				return _delegate.Read();
 			}
 			catch (IOException e)
 			{
@@ -117,19 +104,6 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public virtual void Write(int i)
-		{
-			try
-			{
-				_delegate.Write(i);
-			}
-			catch (IOException e)
-			{
-				throw new Db4oIOException(e);
-			}
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public virtual void Write(byte[] bytes)
 		{
 			try
@@ -140,6 +114,11 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				throw new Db4oIOException(e);
 			}
+		}
+
+		public override string ToString()
+		{
+			return _delegate.ToString();
 		}
 	}
 }

@@ -518,7 +518,7 @@ namespace Db4objects.Db4o.Internal
 			private readonly ObjectContainerBase _enclosing;
 		}
 
-		private object AsTopLevelSet(IFunction4 block, Transaction trans)
+		private object AsTopLevelStore(IFunction4 block, Transaction trans)
 		{
 			trans = CheckTransaction(trans);
 			object result = AsTopLevelCall(block, trans);
@@ -1363,11 +1363,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual bool NeedsLockFileThread()
 		{
-			if (!Platform4.HasLockFileThread())
-			{
-				return false;
-			}
-			if (Platform4.HasNio())
+			if (!Platform4.NeedsLockFileThread())
 			{
 				return false;
 			}
@@ -1613,13 +1609,13 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				CheckClosed();
-				return AsTopLevelCall(new _IFunction4_1255(this, obj, committed, depth), trans);
+				return AsTopLevelCall(new _IFunction4_1252(this, obj, committed, depth), trans);
 			}
 		}
 
-		private sealed class _IFunction4_1255 : IFunction4
+		private sealed class _IFunction4_1252 : IFunction4
 		{
-			public _IFunction4_1255(ObjectContainerBase _enclosing, object obj, bool committed
+			public _IFunction4_1252(ObjectContainerBase _enclosing, object obj, bool committed
 				, IActivationDepth depth)
 			{
 				this._enclosing = _enclosing;
@@ -2023,13 +2019,13 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			CheckReadOnly();
-			return (((int)AsTopLevelSet(new _IFunction4_1572(this, obj, depth, checkJustSet), 
-				trans)));
+			return (((int)AsTopLevelStore(new _IFunction4_1569(this, obj, depth, checkJustSet
+				), trans)));
 		}
 
-		private sealed class _IFunction4_1572 : IFunction4
+		private sealed class _IFunction4_1569 : IFunction4
 		{
-			public _IFunction4_1572(ObjectContainerBase _enclosing, object obj, int depth, bool
+			public _IFunction4_1569(ObjectContainerBase _enclosing, object obj, int depth, bool
 				 checkJustSet)
 			{
 				this._enclosing = _enclosing;

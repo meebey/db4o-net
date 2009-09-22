@@ -618,7 +618,6 @@ namespace Db4objects.Db4o.Config
 
 		/// <seealso cref="Db4objects.Db4o.Foundation.IEnvironment">Db4objects.Db4o.Foundation.IEnvironment
 		/// 	</seealso>
-		/// <returns></returns>
 		IEnvironmentConfiguration Environment
 		{
 			get;

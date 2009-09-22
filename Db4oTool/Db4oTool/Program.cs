@@ -43,7 +43,7 @@ namespace Db4oTool
 
 			if (options.InstallPerformanceCounters)
 			{
-				Db4objects.Db4o.Monitoring.Internal.Db4oPerformanceCounterCategory.Install();
+				Db4objects.Db4o.Monitoring.Internal.Db4oPerformanceCounterCategory.ReInstall();
 			}
 
             if (options.Assembly == null)

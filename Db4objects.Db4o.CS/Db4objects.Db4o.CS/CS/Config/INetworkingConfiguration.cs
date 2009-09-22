@@ -41,11 +41,11 @@ namespace Db4objects.Db4o.CS.Config
 			set;
 		}
 
-		/// <summary>configures the timeout of the serverside socket.</summary>
+		/// <summary>configures the timeout of the server side socket.</summary>
 		/// <remarks>
-		/// configures the timeout of the serverside socket. <br />
+		/// configures the timeout of the server side socket. <br />
 		/// <br />
-		/// The serverside handler waits for messages to arrive from the client.
+		/// The server side handler waits for messages to arrive from the client.
 		/// If no more messages arrive for the duration configured in this
 		/// setting, the client will be disconnected.
 		/// <br />
@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.CS.Config
 		/// - <code>false</code> for best asynchronous performance and fast
 		/// GUI response.
 		/// <br /><br />Default value:<br />
-		/// - .NET Compactframework: <code>true</code><br />
+		/// - .NET Compact Framework: <code>true</code><br />
 		/// - all other platforms: <code>false</code><br /><br />
 		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
@@ -134,9 +134,12 @@ namespace Db4objects.Db4o.CS.Config
 			set;
 		}
 
+		/// <since>7.11</since>
+		/// <since>7.11</since>
 		ISocket4Factory SocketFactory
 		{
 			get;
+			set;
 		}
 	}
 }

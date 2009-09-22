@@ -11,7 +11,7 @@ namespace Db4oUnit.Extensions.Tests
 {
 	public class UnhandledExceptionInThreadTestCase : ITestCase
 	{
-		public class TestCase : AbstractDb4oTestCase
+		public class ExceptionThrowingTestCase : AbstractDb4oTestCase
 		{
 			public virtual void Test()
 			{
@@ -34,7 +34,7 @@ namespace Db4oUnit.Extensions.Tests
 		public virtual void TestSolo()
 		{
 			Db4oTestSuiteBuilder suite = new Db4oTestSuiteBuilder(new Db4oInMemory(), typeof(
-				UnhandledExceptionInThreadTestCase.TestCase));
+				UnhandledExceptionInThreadTestCase.ExceptionThrowingTestCase));
 			TestResult result = new TestResult();
 			new TestRunner(suite).Run(result);
 			Assert.AreEqual(1, result.Failures.Count);

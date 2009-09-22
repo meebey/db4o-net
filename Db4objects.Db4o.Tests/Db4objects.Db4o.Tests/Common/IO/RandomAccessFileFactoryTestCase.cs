@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		public virtual void TestLockDatabaseFileTrue()
 		{
 			IObjectContainer container = OpenObjectContainer(true);
-			if (Platform4.HasNio())
+			if (!Platform4.NeedsLockFileThread())
 			{
 				Assert.Expect(typeof(DatabaseFileLockedException), new _ICodeBlock_31(this));
 			}

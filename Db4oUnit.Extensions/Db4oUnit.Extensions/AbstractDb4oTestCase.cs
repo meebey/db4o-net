@@ -48,7 +48,14 @@ namespace Db4oUnit.Extensions
 		public virtual IExtObjectContainer OpenNewSession()
 		{
 			IMultiSessionFixture fixture = (IMultiSessionFixture)Fixture();
-			return fixture.OpenNewSession();
+			try
+			{
+				return fixture.OpenNewSession(this);
+			}
+			catch (Exception e)
+			{
+				throw new Exception(string.Empty, e);
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -153,13 +160,13 @@ namespace Db4oUnit.Extensions
 
 		public virtual int RunSolo(string testLabelSubstring)
 		{
-			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_127(testLabelSubstring
+			return new ConsoleTestRunner(Iterators.Filter(SoloSuite(), new _IPredicate4_131(testLabelSubstring
 				))).Run();
 		}
 
-		private sealed class _IPredicate4_127 : IPredicate4
+		private sealed class _IPredicate4_131 : IPredicate4
 		{
-			public _IPredicate4_127(string testLabelSubstring)
+			public _IPredicate4_131(string testLabelSubstring)
 			{
 				this.testLabelSubstring = testLabelSubstring;
 			}
@@ -379,12 +386,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(oc, clazz, new _IVisitor4_310(oc));
+			Foreach(oc, clazz, new _IVisitor4_314(oc));
 		}
 
-		private sealed class _IVisitor4_310 : IVisitor4
+		private sealed class _IVisitor4_314 : IVisitor4
 		{
-			public _IVisitor4_310(IExtObjectContainer oc)
+			public _IVisitor4_314(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

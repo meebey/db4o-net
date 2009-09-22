@@ -65,14 +65,6 @@ namespace Db4objects.Db4o.Foundation.Network
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public virtual int Read()
-		{
-			int ret = _in.Read();
-			CheckEOF(ret);
-			return ret;
-		}
-
-		/// <exception cref="System.IO.IOException"></exception>
 		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
 		{
 			int ret = _in.Read(a_bytes, a_offset, a_length);
@@ -108,13 +100,7 @@ namespace Db4objects.Db4o.Foundation.Network
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public virtual void Write(int i)
-		{
-			_out.Write(i);
-		}
-
-		/// <exception cref="System.IO.IOException"></exception>
-		public virtual ISocket4 OpenParalellSocket()
+		public virtual ISocket4 OpenParallelSocket()
 		{
 			if (_hostName == null)
 			{
@@ -122,6 +108,11 @@ namespace Db4objects.Db4o.Foundation.Network
 			}
 			return new Db4objects.Db4o.Foundation.Network.NetworkSocket(_hostName, _socket.GetPort
 				());
+		}
+
+		public override string ToString()
+		{
+			return _socket.ToString();
 		}
 	}
 }

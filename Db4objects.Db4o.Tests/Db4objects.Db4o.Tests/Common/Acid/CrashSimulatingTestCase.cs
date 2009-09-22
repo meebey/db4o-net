@@ -38,19 +38,10 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		internal const bool Verbose = false;
 
-		private bool HasLockFileThread()
-		{
-			if (!Platform4.HasLockFileThread())
-			{
-				return false;
-			}
-			return !Platform4.HasNio();
-		}
-
 		/// <exception cref="System.IO.IOException"></exception>
 		private void DoTest(bool cached, bool useLogFile)
 		{
-			if (HasLockFileThread())
+			if (Platform4.NeedsLockFileThread())
 			{
 				Sharpen.Runtime.Out.WriteLine("CrashSimulatingTestCase is ignored on platforms with lock file thread."
 					);

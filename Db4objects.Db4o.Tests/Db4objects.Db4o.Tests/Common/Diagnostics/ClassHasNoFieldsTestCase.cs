@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 		public virtual void TestDiagnostic()
 		{
 			Store(new ClassHasNoFieldsTestCase.Item());
-			IList diagnostics = NativeCollections.Filter(_collector.Diagnostics(), new _IPredicate4_36
+			IList diagnostics = NativeCollections.Filter(_collector.Diagnostics(), new _IPredicate4_34
 				());
 			Assert.AreEqual(1, diagnostics.Count);
 			ClassHasNoFields diagnostic = (ClassHasNoFields)((IDiagnostic)diagnostics[0]);
@@ -42,9 +42,9 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 				)), diagnostic.Reason());
 		}
 
-		private sealed class _IPredicate4_36 : IPredicate4
+		private sealed class _IPredicate4_34 : IPredicate4
 		{
-			public _IPredicate4_36()
+			public _IPredicate4_34()
 			{
 			}
 

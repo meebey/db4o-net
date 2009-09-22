@@ -70,8 +70,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// <exception cref="System.Exception"></exception>
 		public override void Defragment()
 		{
+			Defragment(DbUri);
 		}
-		// do nothing
-		// defragment is file-based for now
 	}
 }

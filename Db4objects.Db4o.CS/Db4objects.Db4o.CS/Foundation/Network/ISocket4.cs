@@ -20,15 +20,9 @@ namespace Db4objects.Db4o.Foundation.Network
 		int Read(byte[] buffer, int offset, int count);
 
 		/// <exception cref="System.IO.IOException"></exception>
-		int Read();
-
-		/// <exception cref="System.IO.IOException"></exception>
 		void Write(byte[] bytes, int offset, int count);
 
 		/// <exception cref="System.IO.IOException"></exception>
-		void Write(int b);
-
-		/// <exception cref="System.IO.IOException"></exception>
-		ISocket4 OpenParalellSocket();
+		ISocket4 OpenParallelSocket();
 	}
 }

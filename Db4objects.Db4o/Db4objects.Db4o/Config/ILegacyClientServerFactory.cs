@@ -5,6 +5,7 @@ using Db4objects.Db4o.Config;
 
 namespace Db4objects.Db4o.Config
 {
+	/// <exclude></exclude>
 	public interface ILegacyClientServerFactory
 	{
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

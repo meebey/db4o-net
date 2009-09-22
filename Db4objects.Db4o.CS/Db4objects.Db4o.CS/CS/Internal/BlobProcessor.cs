@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			try
 			{
-				Socket4Adapter socket = stream.CreateParalellSocket();
+				Socket4Adapter socket = stream.CreateParallelSocket();
 				MsgBlob msg = null;
 				// no blobLock synchronisation here, since our first msg is valid
 				lock (queue)

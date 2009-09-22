@@ -36,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 			IQuery query = NewQuery(typeof(DescendIntoTranslatorTestCase.Item));
 			query.Descend("_name").Constrain("foo").StartsWith(true);
 			query.Execute();
-			IList diagnostics = NativeCollections.Filter(_collector.Diagnostics(), new _IPredicate4_39
+			IList diagnostics = NativeCollections.Filter(_collector.Diagnostics(), new _IPredicate4_36
 				());
 			Assert.AreEqual(1, diagnostics.Count);
 			DescendIntoTranslator diagnostic = (DescendIntoTranslator)((IDiagnostic)diagnostics
@@ -45,9 +45,9 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 				)) + "." + "_name", diagnostic.Reason());
 		}
 
-		private sealed class _IPredicate4_39 : IPredicate4
+		private sealed class _IPredicate4_36 : IPredicate4
 		{
-			public _IPredicate4_39()
+			public _IPredicate4_36()
 			{
 			}
 

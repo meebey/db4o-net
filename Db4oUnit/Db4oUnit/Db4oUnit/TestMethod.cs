@@ -53,9 +53,9 @@ namespace Db4oUnit
 			bool exceptionInTest = false;
 			try
 			{
-				SetUp();
 				try
 				{
+					SetUp();
 					Invoke();
 				}
 				catch (TargetInvocationException x)

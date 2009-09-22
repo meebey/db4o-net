@@ -49,12 +49,12 @@ namespace Db4objects.Db4o.Tests.Common.TA
 			// mock1 has only be bound by store so far
 			// client.close should have no effect on it
 			mock1.Recorder().Verify(new MethodCall[] { new MethodCall("bind", new object[] { 
-				new _IArgumentCondition_51() }) });
+				new _IArgumentCondition_50() }) });
 		}
 
-		private sealed class _IArgumentCondition_51 : MethodCall.IArgumentCondition
+		private sealed class _IArgumentCondition_50 : MethodCall.IArgumentCondition
 		{
-			public _IArgumentCondition_51()
+			public _IArgumentCondition_50()
 			{
 			}
 

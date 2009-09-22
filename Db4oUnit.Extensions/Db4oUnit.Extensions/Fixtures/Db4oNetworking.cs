@@ -117,9 +117,11 @@ namespace Db4oUnit.Extensions.Fixtures
 				, Password).Ext();
 		}
 
-		public virtual IExtObjectContainer OpenNewSession()
+		/// <exception cref="System.Exception"></exception>
+		public virtual IExtObjectContainer OpenNewSession(IDb4oTestCase testInstance)
 		{
-			return OpenClientWith(CloneConfiguration());
+			IConfiguration config = ClientConfigFor(testInstance);
+			return OpenClientWith(config);
 		}
 
 		private IExtObjectContainer OpenClientWith(IConfiguration config)
@@ -243,11 +245,6 @@ namespace Db4oUnit.Extensions.Fixtures
 		public override void Defragment()
 		{
 			Defragment(FilePath());
-		}
-
-		private IObjectContainer OpenEmbeddedClient()
-		{
-			return _server.OpenClient();
 		}
 
 		public override string Label()

@@ -109,6 +109,11 @@ namespace Db4objects.Db4o.CS.Internal.Config
 				}
 				return configuredFactory;
 			}
+			set
+			{
+				ISocket4Factory factory = value;
+				_config.EnvironmentContributions().Add(factory);
+			}
 		}
 
 		private object My(Type type)

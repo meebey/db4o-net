@@ -7,6 +7,7 @@ namespace Db4oUnit.Extensions.Fixtures
 {
 	public interface IMultiSessionFixture : IDb4oFixture
 	{
-		IExtObjectContainer OpenNewSession();
+		/// <exception cref="System.Exception"></exception>
+		IExtObjectContainer OpenNewSession(IDb4oTestCase testInstance);
 	}
 }

@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private BlobProcessor _blobTask;
 
-		private Socket4Adapter i_socket;
+		private Socket4Adapter _socket;
 
 		private BlockingQueue _synchronousMessageQueue = new BlockingQueue();
 
@@ -71,9 +71,9 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly ClassInfoHelper _classInfoHelper = new ClassInfoHelper();
 
-		private sealed class _IMessageListener_74 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_73 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_74()
+			public _IMessageListener_73()
 			{
 			}
 
@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_74
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_73
 			();
 
 		private bool _bypassSlotCache = false;
@@ -114,24 +114,24 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void SetAndConfigSocket(Socket4Adapter socket)
 		{
-			i_socket = socket;
-			i_socket.SetSoTimeout(_config.TimeoutClientSocket());
+			_socket = socket;
+			_socket.SetSoTimeout(_config.TimeoutClientSocket());
 		}
 
 		protected sealed override void OpenImpl()
 		{
 			_singleThreaded = ConfigImpl.SingleThreadedClient();
-			// TODO: Experiment with packetsize and noDelay
+			// TODO: Experiment with packet size and noDelay
 			// socket.setSendBufferSize(100);
 			// socket.setTcpNoDelay(true);
 			// System.out.println(socket.getSendBufferSize());
 			if (_login)
 			{
-				LoginToServer(i_socket);
+				LoginToServer(_socket);
 			}
 			if (!_singleThreaded)
 			{
-				StartDispatcherThread(i_socket, _userName);
+				StartDispatcherThread(_socket, _userName);
 			}
 			LogMsg(36, ToString());
 			StartHeartBeat();
@@ -217,7 +217,7 @@ namespace Db4objects.Db4o.CS.Internal
 			ShutDownCommunicationRessources();
 			try
 			{
-				i_socket.Close();
+				_socket.Close();
 			}
 			catch (Exception e)
 			{
@@ -268,11 +268,11 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		internal virtual Socket4Adapter CreateParalellSocket()
+		internal virtual Socket4Adapter CreateParallelSocket()
 		{
 			Write(Msg.GetThreadId);
 			int serverThreadID = ExpectedByteResponse(Msg.IdList).ReadInt();
-			Socket4Adapter sock = i_socket.OpenParalellSocket();
+			Socket4Adapter sock = _socket.OpenParalellSocket();
 			LoginToServer(sock);
 			if (switchedToFile != null)
 			{
@@ -448,7 +448,7 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				try
 				{
-					Msg message = Msg.ReadMessage(this, _transaction, i_socket);
+					Msg message = Msg.ReadMessage(this, _transaction, _socket);
 					if (IsClientSideMessage(message))
 					{
 						if (((IClientSideMessage)message).ProcessAtClient())
@@ -501,7 +501,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual bool IsMessageDispatcherAlive()
 		{
-			return i_socket != null;
+			return _socket != null;
 		}
 
 		public override ClassMetadata ClassMetadataForID(int clazzId)
@@ -734,14 +734,14 @@ namespace Db4objects.Db4o.CS.Internal
 			 prefetchDepth)
 		{
 			IDictionary buffers = new Hashtable(ids.Length);
-			WithEnvironment(new _IRunnable_586(this, transaction, ids, buffers, prefetchDepth
+			WithEnvironment(new _IRunnable_585(this, transaction, ids, buffers, prefetchDepth
 				));
 			return PackSlotBuffers(ids, buffers);
 		}
 
-		private sealed class _IRunnable_586 : IRunnable
+		private sealed class _IRunnable_585 : IRunnable
 		{
-			public _IRunnable_586(ClientObjectContainer _enclosing, Transaction transaction, 
+			public _IRunnable_585(ClientObjectContainer _enclosing, Transaction transaction, 
 				int[] ids, IDictionary buffers, int prefetchDepth)
 			{
 				this._enclosing = _enclosing;
@@ -774,13 +774,13 @@ namespace Db4objects.Db4o.CS.Internal
 			 id, bool lastCommitted)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_599(this, lastCommitted, result, transaction, id));
+			WithEnvironment(new _IRunnable_598(this, lastCommitted, result, transaction, id));
 			return ((ByteArrayBuffer)result.value);
 		}
 
-		private sealed class _IRunnable_599 : IRunnable
+		private sealed class _IRunnable_598 : IRunnable
 		{
-			public _IRunnable_599(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
+			public _IRunnable_598(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
 				 result, Transaction transaction, int id)
 			{
 				this._enclosing = _enclosing;
@@ -830,13 +830,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_629(this, trans, result));
+			WithEnvironment(new _IRunnable_628(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_629 : IRunnable
+		private sealed class _IRunnable_628 : IRunnable
 		{
-			public _IRunnable_629(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_628(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1008,7 +1008,7 @@ namespace Db4objects.Db4o.CS.Internal
 			// if(i_classCollection != null){
 			// return i_classCollection.toString();
 			// }
-			return "Client Connection " + _userName;
+			return "Client Connection " + _userName + "(" + _socket + ")";
 		}
 
 		public override void Shutdown()
@@ -1070,7 +1070,7 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				_messageListener.OnMessage(msg);
 			}
-			return msg.Write(i_socket);
+			return msg.Write(_socket);
 		}
 
 		public sealed override void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata
@@ -1112,7 +1112,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual Socket4Adapter Socket()
 		{
-			return i_socket;
+			return _socket;
 		}
 
 		private void EnsureIDCacheAllocated(int prefetchIDCount)
@@ -1178,13 +1178,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_898(this, trans, result));
+			WithEnvironment(new _IRunnable_897(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_898 : IRunnable
+		private sealed class _IRunnable_897 : IRunnable
 		{
-			public _IRunnable_898(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_897(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1340,7 +1340,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			MsgD msg = Msg.ClassMetadataIdForName.GetWriterForString(SystemTransaction(), name
 				);
-			msg.Write(i_socket);
+			msg.Write(_socket);
 			MsgD response = (MsgD)ExpectedResponse(Msg.ClassId);
 			return response.ReadInt();
 		}
@@ -1462,6 +1462,14 @@ namespace Db4objects.Db4o.CS.Internal
 		protected override void FatalStorageShutdown()
 		{
 			ShutdownDataStorage();
+		}
+
+		public virtual string UserName
+		{
+			get
+			{
+				return _userName;
+			}
 		}
 	}
 }

@@ -24,5 +24,11 @@ namespace Db4objects.Db4o.CS.Internal.Config
 		{
 			return ((ILegacyConfigurationProvider)config).Legacy();
 		}
+
+		public static INetworkingConfiguration AsNetworkingConfiguration(IConfiguration config
+			)
+		{
+			return AsServerConfiguration(config).Networking;
+		}
 	}
 }

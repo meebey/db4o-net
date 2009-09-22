@@ -4,9 +4,9 @@ using Db4objects.Db4o.IO;
 
 namespace Db4objects.Db4o.IO
 {
-	/// <summary>Wrapper baseclass for all classes that wrap Storage.</summary>
+	/// <summary>Wrapper base class for all classes that wrap Storage.</summary>
 	/// <remarks>
-	/// Wrapper baseclass for all classes that wrap Storage.
+	/// Wrapper base class for all classes that wrap Storage.
 	/// Each class that adds functionality to a Storage must
 	/// extend this class.
 	/// </remarks>

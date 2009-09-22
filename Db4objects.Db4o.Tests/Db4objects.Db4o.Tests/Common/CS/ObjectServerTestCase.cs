@@ -11,6 +11,7 @@ using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Tests.Common.Api;
+using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
@@ -46,12 +47,66 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		// closing is asynchronous, relying on completion is hard
 		// That's why there is no test here. 
 		// ClientProcessesTestCase tests closing.
+		public virtual void TestClientDisconnectedEvent()
+		{
+			ClientObjectContainer client = (ClientObjectContainer)OpenClient();
+			string clientName = client.UserName;
+			BooleanByRef eventRaised = new BooleanByRef();
+			IObjectServerEvents events = (IObjectServerEvents)server;
+			events.ClientDisconnected += new System.EventHandler<Db4objects.Db4o.Events.StringEventArgs>
+				(new _IEventListener4_49(eventRaised, clientName).OnEvent);
+			lock (eventRaised)
+			{
+				client.Close();
+				long startTime = Runtime.CurrentTimeMillis();
+				long currentTime = startTime;
+				int timeOut = 1000;
+				long timePassed = currentTime - startTime;
+				while (timePassed < timeOut && !eventRaised.value)
+				{
+					try
+					{
+						Sharpen.Runtime.Wait(eventRaised, timeOut - timePassed);
+					}
+					catch (Exception)
+					{
+					}
+					currentTime = Runtime.CurrentTimeMillis();
+					timePassed = currentTime - startTime;
+				}
+				Assert.IsTrue(eventRaised.value);
+			}
+		}
+
+		private sealed class _IEventListener4_49
+		{
+			public _IEventListener4_49(BooleanByRef eventRaised, string clientName)
+			{
+				this.eventRaised = eventRaised;
+				this.clientName = clientName;
+			}
+
+			public void OnEvent(object sender, Db4objects.Db4o.Events.StringEventArgs args)
+			{
+				lock (eventRaised)
+				{
+					Assert.AreEqual(clientName, ((StringEventArgs)args).Message);
+					eventRaised.value = true;
+					Sharpen.Runtime.NotifyAll(eventRaised);
+				}
+			}
+
+			private readonly BooleanByRef eventRaised;
+
+			private readonly string clientName;
+		}
+
 		public virtual void TestClientConnectedEvent()
 		{
 			ArrayList connections = new ArrayList();
 			IObjectServerEvents events = (IObjectServerEvents)server;
 			events.ClientConnected += new System.EventHandler<ClientConnectionEventArgs>(new 
-				_IEventListener4_47(connections).OnEvent);
+				_IEventListener4_83(connections).OnEvent);
 			IObjectContainer client = OpenClient();
 			try
 			{
@@ -65,9 +120,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private sealed class _IEventListener4_47
+		private sealed class _IEventListener4_83
 		{
-			public _IEventListener4_47(ArrayList connections)
+			public _IEventListener4_83(ArrayList connections)
 			{
 				this.connections = connections;
 			}
@@ -84,15 +139,15 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			BooleanByRef receivedEvent = new BooleanByRef(false);
 			IObjectServerEvents events = (IObjectServerEvents)server;
-			events.Closed += new System.EventHandler<ServerClosedEventArgs>(new _IEventListener4_65
+			events.Closed += new System.EventHandler<ServerClosedEventArgs>(new _IEventListener4_101
 				(receivedEvent).OnEvent);
 			server.Close();
 			Assert.IsTrue(receivedEvent.value);
 		}
 
-		private sealed class _IEventListener4_65
+		private sealed class _IEventListener4_101
 		{
-			public _IEventListener4_65(BooleanByRef receivedEvent)
+			public _IEventListener4_101(BooleanByRef receivedEvent)
 			{
 				this.receivedEvent = receivedEvent;
 			}

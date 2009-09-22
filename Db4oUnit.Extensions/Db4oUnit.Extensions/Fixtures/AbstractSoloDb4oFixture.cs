@@ -27,7 +27,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			ApplyFixtureConfiguration(testInstance, config);
 			_db = CreateDatabase(config).Ext();
 			ListenToUncaughtExceptions(ThreadPool());
-			PostOpen();
+			PostOpen(testInstance);
 		}
 
 		private IThreadPool4 ThreadPool()
@@ -77,7 +77,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		{
 		}
 
-		protected virtual void PostOpen()
+		protected virtual void PostOpen(IDb4oTestCase testInstance)
 		{
 		}
 

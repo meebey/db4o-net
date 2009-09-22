@@ -24,8 +24,10 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{
-			return new Type[] { typeof(ClientServerPingTestCase), typeof(PingTestCase) };
+			return new Type[] { typeof(ClientServerPingTestCase), typeof(DeepPrefetchingCacheConcurrencyTestCase
+				), typeof(PingTestCase) };
 		}
 		#endif // !SILVERLIGHT
+		// COR-1762
 	}
 }

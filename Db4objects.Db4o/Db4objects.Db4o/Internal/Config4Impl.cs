@@ -574,6 +574,11 @@ namespace Db4objects.Db4o.Internal
 				}
 				className = claxx.GetName();
 			}
+			if (ReflectPlatform.FullyQualifiedName(typeof(object)).Equals(className))
+			{
+				throw new ArgumentException("Configuration of the Object class is not supported."
+					);
+			}
 			Hashtable4 xClasses = ExceptionalClasses();
 			Config4Class c4c = (Config4Class)xClasses.Get(className);
 			if (c4c == null)

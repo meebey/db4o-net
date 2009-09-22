@@ -33,12 +33,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				return new _IPreparedComparison_34();
+				return new _IPreparedComparison_33();
 			}
 
-			private sealed class _IPreparedComparison_34 : IPreparedComparison
+			private sealed class _IPreparedComparison_33 : IPreparedComparison
 			{
-				public _IPreparedComparison_34()
+				public _IPreparedComparison_33()
 				{
 				}
 
@@ -114,12 +114,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			public IPreparedComparison PrepareComparison(IContext context, object obj)
 			{
-				return new _IPreparedComparison_88();
+				return new _IPreparedComparison_87();
 			}
 
-			private sealed class _IPreparedComparison_88 : IPreparedComparison
+			private sealed class _IPreparedComparison_87 : IPreparedComparison
 			{
-				public _IPreparedComparison_88()
+				public _IPreparedComparison_87()
 				{
 				}
 
@@ -298,13 +298,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		{
 			GenericReflector reflector = ((Config4Impl)config).Reflector();
 			IReflectClass itemClass = reflector.ForClass(clazz);
-			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_230(itemClass);
+			ITypeHandlerPredicate predicate = new _ITypeHandlerPredicate_229(itemClass);
 			config.RegisterTypeHandler(predicate, typeHandler);
 		}
 
-		private sealed class _ITypeHandlerPredicate_230 : ITypeHandlerPredicate
+		private sealed class _ITypeHandlerPredicate_229 : ITypeHandlerPredicate
 		{
-			public _ITypeHandlerPredicate_230(IReflectClass itemClass)
+			public _ITypeHandlerPredicate_229(IReflectClass itemClass)
 			{
 				this.itemClass = itemClass;
 			}

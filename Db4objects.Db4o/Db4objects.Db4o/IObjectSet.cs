@@ -22,7 +22,7 @@ namespace Db4objects.Db4o
 	/// when they are actually being used by the application.
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectSet">for extended functionality.</seealso>
-	public interface IObjectSet : IList
+	public interface IObjectSet : IList, IEnumerable
 	{
 		/// <summary>returns an ObjectSet with extended functionality.</summary>
 		/// <remarks>

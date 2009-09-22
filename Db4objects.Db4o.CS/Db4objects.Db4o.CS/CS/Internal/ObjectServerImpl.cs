@@ -7,6 +7,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
@@ -31,9 +32,9 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly Collection4 _dispatchers = new Collection4();
 
-		internal LocalObjectContainer _container;
+		private LocalObjectContainer _container;
 
-		internal ClientTransactionPool _transactionPool;
+		private ClientTransactionPool _transactionPool;
 
 		private readonly object _startupLock = new object();
 
@@ -51,6 +52,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly Db4objects.Db4o.CS.Internal.ClassInfoHelper _classInfoHelper = new 
 			Db4objects.Db4o.CS.Internal.ClassInfoHelper();
+
+		private System.EventHandler<Db4objects.Db4o.Events.StringEventArgs> _clientDisconnected;
 
 		private System.EventHandler<ClientConnectionEventArgs> _clientConnected;
 
@@ -158,7 +161,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			_config.Callbacks(false);
 			_config.IsServer(true);
-			// the minium activation depth of com.db4o.User.class should be 1.
+			// the minimum activation depth of com.db4o.User.class should be 1.
 			// Otherwise, we may get null password.
 			_config.ObjectClass(typeof(User)).MinimumActivationDepth(1);
 		}
@@ -392,6 +395,7 @@ namespace Db4objects.Db4o.CS.Internal
 				_dispatchers.Remove(dispatcher);
 				CheckCaresAboutCommitted();
 			}
+			TriggerClientDisconnected(dispatcher.Name);
 		}
 
 		public virtual void RevokeAccess(string userName)
@@ -444,26 +448,47 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			while (_serverSocket != null)
 			{
+				WithEnvironment(new _IRunnable_351(this));
+			}
+		}
+
+		private sealed class _IRunnable_351 : IRunnable
+		{
+			public _IRunnable_351(ObjectServerImpl _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
 				try
 				{
 					ServerMessageDispatcherImpl messageDispatcher = new ServerMessageDispatcherImpl(this
-						, new ClientTransactionHandle(_transactionPool), _serverSocket.Accept(), NewThreadId
-						(), false, _container.Lock());
-					AddServerMessageDispatcher(messageDispatcher);
-					TriggerClientConnected(messageDispatcher);
-					ThreadPool().Start(messageDispatcher);
+						._enclosing, new ClientTransactionHandle(this._enclosing._transactionPool), this
+						._enclosing._serverSocket.Accept(), this._enclosing.NewThreadId(), false, this._enclosing
+						._container.Lock());
+					this._enclosing.AddServerMessageDispatcher(messageDispatcher);
+					this._enclosing.ThreadPool().Start(messageDispatcher);
 				}
 				catch (Exception)
 				{
 				}
 			}
+
+			private readonly ObjectServerImpl _enclosing;
 		}
 
-		//				e.printStackTrace();
+		//e.printStackTrace();
 		private void TriggerClientConnected(IServerMessageDispatcher messageDispatcher)
 		{
 			if (null != _clientConnected) _clientConnected(null, new ClientConnectionEventArgs
 				(messageDispatcher));
+		}
+
+		private void TriggerClientDisconnected(string clientName)
+		{
+			if (null != _clientDisconnected) _clientDisconnected(null, new StringEventArgs(clientName
+				));
 		}
 
 		private void TriggerClosed()
@@ -490,13 +515,14 @@ namespace Db4objects.Db4o.CS.Internal
 			return i_threadIDGen++;
 		}
 
-		private void AddServerMessageDispatcher(IServerMessageDispatcher thread)
+		private void AddServerMessageDispatcher(IServerMessageDispatcher dispatcher)
 		{
 			lock (_dispatchers)
 			{
-				_dispatchers.Add(thread);
+				_dispatchers.Add(dispatcher);
 				CheckCaresAboutCommitted();
 			}
+			TriggerClientConnected(dispatcher);
 		}
 
 		public virtual void AddCommittedInfoMsg(MCommittedInfo message)
@@ -573,6 +599,21 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
+		public virtual event System.EventHandler<Db4objects.Db4o.Events.StringEventArgs> 
+			ClientDisconnected
+		{
+			add
+			{
+				_clientDisconnected = (System.EventHandler<Db4objects.Db4o.Events.StringEventArgs>
+					)System.Delegate.Combine(_clientDisconnected, value);
+			}
+			remove
+			{
+				_clientDisconnected = (System.EventHandler<Db4objects.Db4o.Events.StringEventArgs>
+					)System.Delegate.Remove(_clientDisconnected, value);
+			}
+		}
+
 		public virtual event System.EventHandler<ServerClosedEventArgs> Closed
 		{
 			add
@@ -585,6 +626,11 @@ namespace Db4objects.Db4o.CS.Internal
 				_closed = (System.EventHandler<ServerClosedEventArgs>)System.Delegate.Remove(_closed
 					, value);
 			}
+		}
+
+		internal virtual void WithEnvironment(IRunnable runnable)
+		{
+			_container.WithEnvironment(runnable);
 		}
 	}
 }

@@ -56,9 +56,9 @@ namespace Db4oUnit.Extensions.Fixtures
 			return true;
 		}
 
-		protected override void PostOpen()
+		protected override void PostOpen(IDb4oTestCase testInstance)
 		{
-			_session = OpenNewSession();
+			_session = OpenNewSession(testInstance);
 		}
 
 		protected override void PreClose()
@@ -69,7 +69,7 @@ namespace Db4oUnit.Extensions.Fixtures
 			}
 		}
 
-		public virtual IExtObjectContainer OpenNewSession()
+		public virtual IExtObjectContainer OpenNewSession(IDb4oTestCase testInstance)
 		{
 			return FileSession().OpenSession().Ext();
 		}

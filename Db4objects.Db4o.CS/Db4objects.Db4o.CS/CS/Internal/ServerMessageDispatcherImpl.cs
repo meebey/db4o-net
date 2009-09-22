@@ -166,12 +166,27 @@ namespace Db4objects.Db4o.CS.Internal
 			try
 			{
 				SetDispatcherName(string.Empty + _threadID);
-				MessageLoop();
+				_server.WithEnvironment(new _IRunnable_152(this));
 			}
 			finally
 			{
 				Close();
 			}
+		}
+
+		private sealed class _IRunnable_152 : IRunnable
+		{
+			public _IRunnable_152(ServerMessageDispatcherImpl _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				this._enclosing.MessageLoop();
+			}
+
+			private readonly ServerMessageDispatcherImpl _enclosing;
 		}
 
 		private void MessageLoop()
