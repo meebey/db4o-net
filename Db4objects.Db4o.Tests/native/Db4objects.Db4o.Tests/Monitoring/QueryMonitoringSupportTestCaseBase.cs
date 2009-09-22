@@ -62,7 +62,7 @@ namespace Db4objects.Db4o.Tests.Monitoring
 
 		protected void ExecuteUnoptimizedNQ()
 		{
-			Db().Query(delegate(Item item) { return item.GetType() == typeof (Item); });
+			Db().Query<Item>(delegate(Item item) { return item.GetType() == typeof (Item); });
 		}
 
 		public class Item
