@@ -130,7 +130,7 @@ namespace Db4objects.Db4o.Collections
             get { return false; }
         }
 
-        IEnumerator<E> IEnumerable<E>.GetEnumerator()
+        public IEnumerator<E> GetEnumerator()
         {
 			Activate(ActivationPurpose.Read);
             int version = modCount;
@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Collections
 			};
         }
 
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<E>) this).GetEnumerator();
         }
