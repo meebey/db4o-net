@@ -57,6 +57,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(ObjectInfoMigration52TestCase),
                     typeof(ObjectInfoMigration57TestCase),
 					typeof(ObjectSetAsListTestCase),
+					typeof(ProtectedBaseConstructorTestCase),
 				};
 		}
 	}

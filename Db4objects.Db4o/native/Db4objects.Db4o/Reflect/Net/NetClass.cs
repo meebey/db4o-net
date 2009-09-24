@@ -1,4 +1,4 @@
-/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
+/* Copyright (C) 2007 Versant Inc.   http://www.db4o.com */
 using System;
 using System.Reflection;
 using Sharpen.Lang;
@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Reflect.Net
 	{
 		protected readonly IReflector _reflector;
 		
-		protected readonly NetReflector _netReflector;
+		private readonly NetReflector _netReflector;
 
 		private readonly Type _type;
 
@@ -47,9 +47,8 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		private IReflectConstructor[] GetDeclaredConstructors()
 		{
-			System.Reflection.ConstructorInfo[] constructors = _type.GetConstructors();
-			IReflectConstructor[] reflectors = new IReflectConstructor
-				[constructors.Length];
+			ConstructorInfo[] constructors = _type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+			IReflectConstructor[] reflectors = new IReflectConstructor[constructors.Length];
 			for (int i = 0; i < constructors.Length; i++)
 			{
 				reflectors[i] = new NetConstructor(_reflector, constructors[i]);
@@ -77,8 +76,8 @@ namespace Db4objects.Db4o.Reflect.Net
 		
 		private IReflectField[] CreateDeclaredFieldsArray()
 		{	
-			System.Reflection.FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(_type);
-			Db4objects.Db4o.Reflect.IReflectField[] reflectors = new IReflectField[fields.Length];
+			FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(_type);
+			IReflectField[] reflectors = new IReflectField[fields.Length];
 			for (int i = 0; i < reflectors.Length; i++)
 			{
 				reflectors[i] = CreateField(fields[i]);
@@ -101,7 +100,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			try
 			{
 				Type[] parameterTypes = NetReflector.ToNative(paramClasses);
-				System.Reflection.MethodInfo method = GetMethod(_type, methodName, parameterTypes);
+				MethodInfo method = GetMethod(_type, methodName, parameterTypes);
 				if (method == null)
 				{
 					return null;
