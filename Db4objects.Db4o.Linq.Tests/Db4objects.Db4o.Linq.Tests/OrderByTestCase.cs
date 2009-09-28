@@ -17,10 +17,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 			public int UnoptimizableAgeProperty
 			{
-				get
-				{
-					return Age + 1;
-				}
+				get { return Age + 1; }
 			}
 
 			public string UnoptimizableNameProperty
@@ -98,84 +95,6 @@ namespace Db4objects.Db4o.Linq.Tests
 			return new Guid(value, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		}
 
-		public void TestOrderByValueType()
-		{
-			AssertQuerySequence(
-				from Person p in Db()
-				orderby p.Id
-				select p,
-
-				"(Person(orderby Id asc))",
-				
-				from p in People()
-				orderby p.Id
-				select p);
-		}
-
-		public void TestOrderByOnUnoptimizableStringProperty()
-		{
-			AssertQuerySequence(
-				from Person p in Db()
-				where p.Name != "jb"
-				orderby p.UnoptimizableNameProperty
-				select p,
-
-				"(Person(Name not 'jb'))",
-
-				from p in People()
-				where p.Name != "jb"
-				orderby p.UnoptimizableNameProperty
-				select p);
-		}
-
-		public void TestOrderByOnUnoptimizableProperty()
-		{
-			AssertQuerySequence(
-				from Person p in Db()
-				where p.Name == "jb"
-				orderby p.UnoptimizableAgeProperty
-				select p,
-
-				"(Person(Name == 'jb'))",
-
-				from p in People()
-				where p.Name == "jb"
-				orderby p.UnoptimizableAgeProperty
-				select p);
-		}
-
-		public void TestOrderByDescendingOnWhere()
-		{
-			AssertQuerySequence(
-				from Person p in Db()
-				where p.Name == "jb"
-				orderby p.Age descending
-				select p,
-
-				"(Person(Name == 'jb')(orderby Age desc))",
-
-				from p in People()
-				where p.Name == "jb"
-				orderby p.Age descending
-				select p);
-		}
-
-		public void TestOrderByDescendingOnUnoptimizableProperty()
-		{
-			AssertQuerySequence(
-				from Person p1 in Db()
-			    where p1.Name == "jb"
-			    orderby p1.UnoptimizableAgeProperty descending
-			    select p1, 
-				
-				"(Person(Name == 'jb'))", 
-				
-				from p2 in People()
-				where p2.Name == "jb"
-				orderby p2.UnoptimizableAgeProperty descending
-				select p2);
-		}
-
 		public void _TestUnoptimizableThenByOnOptimizedOrderBy()
 		{
 			var query = from Person p in Db()
@@ -241,36 +160,96 @@ namespace Db4objects.Db4o.Linq.Tests
 				select p);
 		}
 
+#if !CF
+		public void TestOrderByValueType()
+		{
+			AssertQuerySequence("(Person(orderby Id asc))",
+				queryable => from p in queryable
+							 orderby p.Id
+							 select p);
+		}
+
+		public void TestOrderByOnUnoptimizableStringProperty()
+		{
+			AssertQuerySequence(
+				"(Person(Name not 'jb'))",
+
+				queryable => from p in queryable
+							 where p.Name != "jb"
+							 orderby p.UnoptimizableNameProperty
+							 select p);
+		}
+
+		public void TestOrderByOnUnoptimizableProperty()
+		{
+			AssertQuerySequence(
+				"(Person(Name == 'jb'))",
+
+				queryable => from p in queryable
+							 where p.Name == "jb"
+							 orderby p.UnoptimizableAgeProperty
+							 select p);
+		}
+
+		public void TestOrderByDescendingOnWhere()
+		{
+			AssertQuerySequence(
+				"(Person(Name == 'jb')(orderby Age desc))",
+
+				queryable => from p in queryable
+							 where p.Name == "jb"
+							 orderby p.Age descending
+							 select p);
+		}
+
+		public void TestOrderByDescendingOnUnoptimizableProperty()
+		{
+			AssertQuerySequence(
+				"(Person(Name == 'jb'))",
+
+				queryable => from p in queryable
+							 where p.Name == "jb"
+							 orderby p.UnoptimizableAgeProperty descending
+							 select p);
+		}
+
 		public void TestSimpleOrderByDescendingThenAscending()
 		{
 			AssertQuerySequence(
-				from Person p1 in Db()
-				orderby p1.Age descending, p1.Name ascending
-				select p1,
-
 				"(Person(orderby Name asc)(orderby Age desc))",
 
-				from p2 in People()
-				orderby p2.Age descending, p2.Name ascending
-				select p2);
+				queryable => from p in queryable
+							 orderby p.Age descending, p.Name ascending
+							 select p);
 		}
+
+		private void AssertQuerySequence(string expectedQueryString, Func<IQueryable<Person>, IEnumerable<Person>> query)
+		{
+			AssertQuerySequence(
+				query(Db().Cast<Person>().AsQueryable()),
+
+				expectedQueryString,
+
+				query(People().AsQueryable()));
+		}
+#endif
 
 		public void TestOrderByDescendingThenAscendingOnCompositeFieldAccess()
 		{
 			AssertQueryTranslation(
+				"(Person(orderby Parent.Name asc)(orderby Parent.Age desc))",
 				from Person p in Db()
 				orderby p.Parent.Age descending, p.Parent.Name ascending
-				select p,
-				
-				"(Person(orderby Parent.Name asc)(orderby Parent.Age desc))");
+				select p);
 		}
 
-		private void AssertQueryTranslation<T>(IEnumerable<T> query, string expectedRepresentation)
+
+		private void AssertQueryTranslation<T>(string expectedRepresentation, IEnumerable<T> query)
 		{
 			AssertQuery(expectedRepresentation, () => query.ToList());
 		}
 		
-		private void AssertQuerySequence(IDb4oLinqQuery<Person> query, string expectedQueryString, IEnumerable<Person> expectedSequence)
+		private void AssertQuerySequence<T>(IEnumerable<T> query, string expectedQueryString, IEnumerable<T> expectedSequence)
 		{
 			AssertQuery(query, expectedQueryString, actualSequence => AssertSequence(expectedSequence, actualSequence));
 		}

@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Linq.Tests
 			AssertQuery(query, expectedQuery, actualSet => AssertSet(expectedSet, actualSet));
 		}
 		
-		protected void AssertQuery<T>(IDb4oLinqQuery<T> query, string expectedQuery, Action<IEnumerable<T>> expectation)
+		protected void AssertQuery<T>(IEnumerable<T> query, string expectedQuery, Action<IEnumerable<T>> expectation)
 		{
 			using (var recorder = new QueryStringRecorder(Db()))
 			{
