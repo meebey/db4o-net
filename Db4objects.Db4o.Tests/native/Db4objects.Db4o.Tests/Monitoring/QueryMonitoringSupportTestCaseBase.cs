@@ -2,6 +2,8 @@
 using System;
 using System.Diagnostics;
 #if !CF && !SILVERLIGHT
+using System.Security.Principal;
+using System.Threading;
 using Db4objects.Db4o.Monitoring.Internal;
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -15,9 +17,21 @@ namespace Db4objects.Db4o.Tests.Monitoring
 {
 	public class QueryMonitoringSupportTestCaseBase : AbstractDb4oTestCase
 	{
+	    private static bool _installed = false;
+
 		protected override void Db4oSetupBeforeConfigure()
 		{
-			Db4oPerformanceCounterCategory.Install();
+            if(_installed)
+            {
+                return;
+            }
+            AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+		    WindowsPrincipal principal = (WindowsPrincipal)Thread.CurrentPrincipal;
+            if(principal.IsInRole(WindowsBuiltInRole.Administrator))
+		    {
+                Db4oPerformanceCounterCategory.ReInstall();
+		        _installed = true;
+		    }
 		}
 
 #if CF_3_5 || NET_3_5
