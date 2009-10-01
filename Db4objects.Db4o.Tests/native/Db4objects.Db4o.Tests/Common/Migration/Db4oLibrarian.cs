@@ -1,7 +1,6 @@
+/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using Db4objects.Db4o.Tests.Util;
 
@@ -9,7 +8,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 {
 	public class Db4oLibrarian
 	{
-		private const double MinimumVersionToTest = 6.0;
+		private const string MinimumVersionToTest = "6.0";
 		private readonly Db4oLibraryEnvironmentProvider _provider;
 
 		public Db4oLibrarian(Db4oLibraryEnvironmentProvider provider)
@@ -33,31 +32,21 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			return libraries.ToArray();
 		}
 
-		private static bool IsVersionOrGreater(string versionName, double minimumVersion)
+		private static bool IsVersionOrGreater(string path, string minimumVersion)
 		{
-			return VersionForPath(versionName) >= minimumVersion;
-		}
-
-		private static double VersionForPath(string path)
-		{	
 #if !CF
-			double version;
-			// TryParse to deal with a possible .svn path
-			if (double.TryParse(Path.GetFileName(path), NumberStyles.AllowDecimalPoint | NumberStyles.Float, NumberFormatInfo.InvariantInfo, out version))
-				return version;
+			string folderName = Path.GetFileName(path);
+			if (folderName == ".svn") return false;
+
+			Version candidate = new Version(folderName);
+			Version minimum = new Version(minimumVersion);
+
+			if (candidate.Major > minimum.Major)
+				return true;
+
+			return candidate.Major == minimum.Major && candidate.Minor >= minimum.Minor;
 #endif
-			return 0.0;
-		}
-
-		public static bool IsLegacyVersion(string versionName)
-		{
-			return VersionFromVersionName(versionName) < MinimumVersionToTest;
-		}
-
-		private static double VersionFromVersionName(string versionName)
-		{
-			Version version = new Version(versionName);
-			return version.Major + version.Minor / 10.0;
+			return false;
 		}
 
 		public static string LibraryPath()
