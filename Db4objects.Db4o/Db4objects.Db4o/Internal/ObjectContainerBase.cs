@@ -1402,7 +1402,7 @@ namespace Db4objects.Db4o.Internal
 		private Config4Impl InitializeConfig(IConfiguration config)
 		{
 			Config4Impl impl = ((Config4Impl)config);
-			impl.Stream(this);
+			impl.Container(this);
 			impl.Reflector().SetTransaction(SystemTransaction());
 			impl.Reflector().Configuration(new ReflectorConfigurationImpl(impl));
 			impl.Taint();

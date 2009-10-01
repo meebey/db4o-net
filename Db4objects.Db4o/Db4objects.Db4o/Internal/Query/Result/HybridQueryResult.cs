@@ -98,5 +98,11 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			_delegate = _delegate.SupportSort();
 			_delegate.Sort(cmp);
 		}
+
+		public override void SortIds(IIntComparator cmp)
+		{
+			_delegate = _delegate.SupportSort();
+			_delegate.SortIds(cmp);
+		}
 	}
 }

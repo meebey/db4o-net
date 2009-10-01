@@ -37,6 +37,11 @@ namespace Db4objects.Db4o.Config
 		/// <param name="prefetchDepth"></param>
 		void PrefetchDepth(int prefetchDepth);
 
+		/// <summary>Sets the slot cache size to the given value.</summary>
+		/// <remarks>Sets the slot cache size to the given value.</remarks>
+		/// <param name="slotCacheSize"></param>
+		void PrefetchSlotCacheSize(int slotCacheSize);
+
 		/// <summary>sets the MessageRecipient to receive Client Server messages.</summary>
 		/// <remarks>
 		/// sets the MessageRecipient to receive Client Server messages. <br />

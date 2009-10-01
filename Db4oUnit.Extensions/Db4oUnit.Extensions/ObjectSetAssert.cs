@@ -16,6 +16,11 @@ namespace Db4oUnit.Extensions
 			Iterator4Assert.SameContent(Iterators.Iterate(expectedItems), Iterate(objectSet));
 		}
 
+		public static void AreEqual(IObjectSet objectSet, object[] expectedItems)
+		{
+			Iterator4Assert.AreEqual(expectedItems, Iterate(objectSet));
+		}
+
 		public static IEnumerator Iterate(IObjectSet objectSet)
 		{
 			return new ObjectSetAssert.ObjectSetIterator4(objectSet);

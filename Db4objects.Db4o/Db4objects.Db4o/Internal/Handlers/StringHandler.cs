@@ -171,11 +171,11 @@ namespace Db4objects.Db4o.Internal.Handlers
 				{
 					return 0;
 				}
-				return 1;
+				return -1;
 			}
 			if (a_with == null)
 			{
-				return -1;
+				return 1;
 			}
 			return Compare(a_compare._buffer, a_with._buffer);
 		}
@@ -188,10 +188,10 @@ namespace Db4objects.Db4o.Internal.Handlers
 			{
 				if (compare[i] != with[i])
 				{
-					return with[i] - compare[i];
+					return compare[i] - with[i];
 				}
 			}
-			return with.Length - compare.Length;
+			return compare.Length - with.Length;
 		}
 
 		public virtual void DefragIndexEntry(DefragmentContextImpl context)
@@ -282,9 +282,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 			public int CompareTo(object target)
 			{
 				ByteArrayBuffer targetBuffer = this._enclosing.Val(target, context);
-				// FIXME: Fix the compare method to return the right result  
-				//        after it is no longer referenced elsewhere.
-				return -this._enclosing.Compare(sourceBuffer, targetBuffer);
+				return this._enclosing.Compare(sourceBuffer, targetBuffer);
 			}
 
 			private readonly StringHandler _enclosing;

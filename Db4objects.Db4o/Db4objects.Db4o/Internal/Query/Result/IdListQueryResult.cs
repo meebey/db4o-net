@@ -116,6 +116,40 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			private readonly IQueryComparator cmp;
 		}
 
+		public override void SortIds(IIntComparator cmp)
+		{
+			Algorithms4.Qsort(new _IQuickSortable4_88(this, cmp));
+		}
+
+		private sealed class _IQuickSortable4_88 : IQuickSortable4
+		{
+			public _IQuickSortable4_88(IdListQueryResult _enclosing, IIntComparator cmp)
+			{
+				this._enclosing = _enclosing;
+				this.cmp = cmp;
+			}
+
+			public void Swap(int leftIndex, int rightIndex)
+			{
+				this._enclosing._ids.Swap(leftIndex, rightIndex);
+			}
+
+			public int Size()
+			{
+				return this._enclosing.Size();
+			}
+
+			public int Compare(int leftIndex, int rightIndex)
+			{
+				return cmp.Compare(this._enclosing._ids.Get(leftIndex), this._enclosing._ids.Get(
+					rightIndex));
+			}
+
+			private readonly IdListQueryResult _enclosing;
+
+			private readonly IIntComparator cmp;
+		}
+
 		public override void LoadFromClassIndex(ClassMetadata clazz)
 		{
 			IClassIndexStrategy index = clazz.Index();
@@ -124,12 +158,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 				BTree btree = ((BTreeClassIndexStrategy)index).Btree();
 				_ids = new IntArrayList(btree.Size(Transaction()));
 			}
-			index.TraverseAll(_transaction, new _IVisitor4_93(this));
+			index.TraverseAll(_transaction, new _IVisitor4_107(this));
 		}
 
-		private sealed class _IVisitor4_93 : IVisitor4
+		private sealed class _IVisitor4_107 : IVisitor4
 		{
-			public _IVisitor4_93(IdListQueryResult _enclosing)
+			public _IVisitor4_107(IdListQueryResult _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -160,15 +194,15 @@ namespace Db4objects.Db4o.Internal.Query.Result
 					if (claxx == null || !(Stream()._handlers.IclassInternal.IsAssignableFrom(claxx)))
 					{
 						IClassIndexStrategy index = classMetadata.Index();
-						index.TraverseAll(_transaction, new _IVisitor4_116(this, duplicates));
+						index.TraverseAll(_transaction, new _IVisitor4_130(this, duplicates));
 					}
 				}
 			}
 		}
 
-		private sealed class _IVisitor4_116 : IVisitor4
+		private sealed class _IVisitor4_130 : IVisitor4
 		{
-			public _IVisitor4_116(IdListQueryResult _enclosing, ByRef duplicates)
+			public _IVisitor4_130(IdListQueryResult _enclosing, ByRef duplicates)
 			{
 				this._enclosing = _enclosing;
 				this.duplicates = duplicates;

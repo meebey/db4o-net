@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.CS.Caching;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Objectexchange;
 using Db4objects.Db4o.Foundation;
@@ -32,16 +33,16 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 			return buffer;
 		}
 
-		public virtual IFixedSizeIntIterator4 Unmarshall(ClientTransaction transaction, ByteArrayBuffer
-			 reader)
+		public virtual IFixedSizeIntIterator4 Unmarshall(ClientTransaction transaction, IClientSlotCache
+			 slotCache, ByteArrayBuffer reader)
 		{
 			int size = reader.ReadInt();
-			return new _IFixedSizeIntIterator4_33(size, reader);
+			return new _IFixedSizeIntIterator4_34(size, reader);
 		}
 
-		private sealed class _IFixedSizeIntIterator4_33 : IFixedSizeIntIterator4
+		private sealed class _IFixedSizeIntIterator4_34 : IFixedSizeIntIterator4
 		{
-			public _IFixedSizeIntIterator4_33(int size, ByteArrayBuffer reader)
+			public _IFixedSizeIntIterator4_34(int size, ByteArrayBuffer reader)
 			{
 				this.size = size;
 				this.reader = reader;

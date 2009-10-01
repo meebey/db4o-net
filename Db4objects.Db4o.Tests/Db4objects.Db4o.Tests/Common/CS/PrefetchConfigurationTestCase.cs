@@ -329,6 +329,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			IQuery query = Client().Query();
 			query.Constrain(typeof(PrefetchConfigurationTestCase.Item));
 			query.Descend("child").Descend("child").Constrain(null).Not();
+			query.Descend("order").OrderAscending();
 			Assert.AreEqual(0, query.Execute().Count);
 		}
 

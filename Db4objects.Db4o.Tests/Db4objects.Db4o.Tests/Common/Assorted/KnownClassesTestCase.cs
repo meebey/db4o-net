@@ -39,28 +39,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			for (int knownClassIndex = 0; knownClassIndex < knownClassArray.Length; ++knownClassIndex)
 			{
 				IReflectClass knownClass = knownClassArray[knownClassIndex];
-				Assert.IsFalse(knownClass.IsPrimitive());
+				Assert.IsFalse(knownClass.IsPrimitive(), knownClass.GetName());
 			}
-		}
-
-		public virtual void TestNoValueTypes()
-		{
-			IReflectClass[] knownClassArray = Container().KnownClasses();
-			for (int knownClassIndex = 0; knownClassIndex < knownClassArray.Length; ++knownClassIndex)
-			{
-				IReflectClass knownClass = knownClassArray[knownClassIndex];
-				Assert.IsFalse(IsValueType(knownClass));
-			}
-		}
-
-		private bool IsValueType(IReflectClass knownClass)
-		{
-			if (Container().Handlers.IsTransient(knownClass))
-			{
-				return false;
-			}
-			ClassMetadata classMetadata = Container().ProduceClassMetadata(knownClass);
-			return classMetadata.IsValueType();
 		}
 
 		public virtual void TestInternalClassesAreNotVisible()

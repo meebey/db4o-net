@@ -425,17 +425,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				res = Evaluate(qc);
 			}
-			if (HasOrdering() && res && qc.FieldIsAvailable())
-			{
-				object cmp = qc.Value();
-				if (cmp != null && i_field != null)
-				{
-					IPreparedComparison preparedComparisonBackup = _preparedComparison;
-					_preparedComparison = i_field.PrepareComparison(Context(), qc.Value());
-					i_candidates.AddOrder(new QOrder(this, qc));
-					_preparedComparison = preparedComparisonBackup;
-				}
-			}
 			Visit1(qc.GetRoot(), this, res);
 		}
 

@@ -57,5 +57,14 @@ namespace Db4objects.Db4o.CS.Internal.Config
 				Legacy().PrefetchDepth(prefetchDepth);
 			}
 		}
+
+		public virtual int PrefetchSlotCacheSize
+		{
+			set
+			{
+				int slotCacheSize = value;
+				Legacy().PrefetchSlotCacheSize(slotCacheSize);
+			}
+		}
 	}
 }

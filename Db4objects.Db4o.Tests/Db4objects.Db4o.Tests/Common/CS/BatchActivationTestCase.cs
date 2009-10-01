@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				IQuery query = NewConstrainedQuery();
 				Client().Config().ClientServer().PrefetchDepth(0);
-				AssertBatchBehaviorFor(query, 1);
+				AssertBatchBehaviorFor(query, 2);
 			}
 
 			public virtual void TestQueryPrefetchDepth1()
@@ -75,7 +75,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				IQuery query = NewQuery(typeof(BatchActivationTestCase.BatchActivationTestUnit.Item
 					));
 				Client().Config().ClientServer().PrefetchDepth(0);
-				AssertBatchBehaviorFor(query, 1);
+				AssertBatchBehaviorFor(query, 2);
 			}
 
 			public virtual void TestQueryPrefetchDepth1ForClassOnlyQuery()
@@ -139,7 +139,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				TestUnits(new Type[] { typeof(BatchActivationTestCase.BatchActivationTestUnit) });
 				FixtureProviders(new IFixtureProvider[] { new SubjectFixtureProvider(new Pair[] { 
-					Pair.Of(0, 1), Pair.Of(1, 0) }) });
+					Pair.Of(0, 2), Pair.Of(1, 0) }) });
 			}
 		}
 	}

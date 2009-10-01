@@ -149,6 +149,11 @@ namespace Db4objects.Db4o.Internal.Query.Result
 			throw new NotImplementedException();
 		}
 
+		public virtual void SortIds(IIntComparator cmp)
+		{
+			throw new NotImplementedException();
+		}
+
 		public virtual object Get(int index)
 		{
 			throw new NotImplementedException();

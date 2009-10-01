@@ -32,8 +32,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal Collection4 i_joins;
 
-		private int i_orderID = 0;
-
 		protected Db4objects.Db4o.Internal.Query.Processor.QCon i_parent;
 
 		private bool i_removed = false;
@@ -60,9 +58,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			// ID handling for fast find of QConstraint objects in 
 			// pending OR evaluations
 			// ANDs and ORs on this constraint
-			// positive indicates ascending, negative indicates descending
-			// value indicates ID supplied by ID generator.
-			// lower IDs are applied first
 			// the parent of this constraint or null, if this is a root
 			// prevents circular calls on removal
 			// our transaction to get a stream object anywhere
@@ -115,21 +110,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual void ApplyOrdering()
-		{
-			if (HasOrdering())
-			{
-				Db4objects.Db4o.Internal.Query.Processor.QCon root = GetRoot();
-				root.i_candidates.ApplyOrdering(i_candidates.i_ordered, i_orderID);
-			}
-		}
-
 		internal virtual bool Attach(QQuery query, string a_field)
 		{
 			Db4objects.Db4o.Internal.Query.Processor.QCon qcon = this;
 			ClassMetadata yc = GetYapClass();
 			bool[] foundField = new bool[] { false };
-			ForEachChildField(a_field, new _IVisitor4_116(foundField, query));
+			ForEachChildField(a_field, new _IVisitor4_104(foundField, query));
 			if (foundField[0])
 			{
 				return true;
@@ -139,7 +125,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				int[] count = new int[] { 0 };
 				FieldMetadata[] yfs = new FieldMetadata[] { null };
-				i_trans.Container().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_134
+				i_trans.Container().ClassCollection().AttachQueryNode(a_field, new _IVisitor4_122
 					(yfs, count));
 				if (count[0] == 0)
 				{
@@ -177,9 +163,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _IVisitor4_116 : IVisitor4
+		private sealed class _IVisitor4_104 : IVisitor4
 		{
-			public _IVisitor4_116(bool[] foundField, QQuery query)
+			public _IVisitor4_104(bool[] foundField, QQuery query)
 			{
 				this.foundField = foundField;
 				this.query = query;
@@ -196,9 +182,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QQuery query;
 		}
 
-		private sealed class _IVisitor4_134 : IVisitor4
+		private sealed class _IVisitor4_122 : IVisitor4
 		{
-			public _IVisitor4_134(FieldMetadata[] yfs, int[] count)
+			public _IVisitor4_122(FieldMetadata[] yfs, int[] count)
 			{
 				this.yfs = yfs;
 				this.count = count;
@@ -362,8 +348,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				i_candidates.SetCurrentConstraint(qcon);
 				qcon.SetCandidates(i_candidates);
 				qcon.EvaluateSimpleExec(i_candidates);
-				qcon.ApplyOrdering();
-				i_candidates.ClearOrdering();
 			}
 			i_candidates.SetCurrentConstraint(null);
 		}
@@ -739,16 +723,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			i_candidates = a_candidates;
 		}
 
-		internal virtual void SetOrdering(int a_ordering)
-		{
-			i_orderID = a_ordering;
-		}
-
-		public virtual int Ordering()
-		{
-			return i_orderID;
-		}
-
 		internal virtual void SetParent(Db4objects.Db4o.Internal.Query.Processor.QCon a_newParent
 			)
 		{
@@ -781,11 +755,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		protected virtual object StreamLock()
 		{
 			return i_trans.Container().Lock();
-		}
-
-		internal virtual bool SupportsOrdering()
-		{
-			return false;
 		}
 
 		internal virtual void Unmarshall(Db4objects.Db4o.Internal.Transaction a_trans)
@@ -887,28 +856,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public virtual QE Evaluator()
 		{
 			return i_evaluator;
-		}
-
-		public virtual bool RequiresSort()
-		{
-			if (HasOrdering())
-			{
-				return true;
-			}
-			IEnumerator i = IterateChildren();
-			while (i.MoveNext())
-			{
-				if (((Db4objects.Db4o.Internal.Query.Processor.QCon)i.Current).RequiresSort())
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public virtual bool HasOrdering()
-		{
-			return i_orderID != 0;
 		}
 
 		public virtual void SetProcessedByIndex()

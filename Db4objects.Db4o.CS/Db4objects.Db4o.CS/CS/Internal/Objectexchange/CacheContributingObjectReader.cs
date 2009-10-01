@@ -15,25 +15,25 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 
 		private readonly ClientTransaction _transaction;
 
-		private readonly IClientSlotCache _slotCache = ((IClientSlotCache)Environments.My
-			(typeof(IClientSlotCache)));
+		private readonly IClientSlotCache _slotCache;
 
-		public CacheContributingObjectReader(ClientTransaction transaction, ByteArrayBuffer
-			 reader)
+		public CacheContributingObjectReader(ClientTransaction transaction, IClientSlotCache
+			 slotCache, ByteArrayBuffer reader)
 		{
 			_reader = reader;
 			_transaction = transaction;
+			_slotCache = slotCache;
 		}
 
 		public virtual IEnumerator Buffers()
 		{
 			IDictionary slots = ReadSlots();
-			return Iterators.Map(ReadRootIds(), new _IFunction4_27(slots));
+			return Iterators.Map(ReadRootIds(), new _IFunction4_28(slots));
 		}
 
-		private sealed class _IFunction4_27 : IFunction4
+		private sealed class _IFunction4_28 : IFunction4
 		{
-			public _IFunction4_27(IDictionary slots)
+			public _IFunction4_28(IDictionary slots)
 			{
 				this.slots = slots;
 			}
@@ -55,12 +55,12 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 		private IFixedSizeIntIterator4 ReadRootIds()
 		{
 			int size = _reader.ReadInt();
-			return new _FixedSizeIntIterator4Base_44(this, size);
+			return new _FixedSizeIntIterator4Base_45(this, size);
 		}
 
-		private sealed class _FixedSizeIntIterator4Base_44 : FixedSizeIntIterator4Base
+		private sealed class _FixedSizeIntIterator4Base_45 : FixedSizeIntIterator4Base
 		{
-			public _FixedSizeIntIterator4Base_44(CacheContributingObjectReader _enclosing, int
+			public _FixedSizeIntIterator4Base_45(CacheContributingObjectReader _enclosing, int
 				 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;

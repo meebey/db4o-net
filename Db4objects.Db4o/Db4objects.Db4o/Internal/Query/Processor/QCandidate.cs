@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 	/// this is doNotInclude'd.
 	/// </remarks>
 	/// <exclude></exclude>
-	public class QCandidate : TreeInt, ICandidate, IOrderable
+	public class QCandidate : TreeInt, ICandidate
 	{
 		internal ByteArrayBuffer _bytes;
 
@@ -34,8 +34,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal bool _include = true;
 
 		private object _member;
-
-		internal IOrderable _order;
 
 		internal Tree _pendingJoins;
 
@@ -54,7 +52,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			// Dependant candidates
 			// whether to include in the result set
 			// may use id for optimisation ???
-			// Comparable
 			// Possible pending joins on children
 			// The evaluation root to compare all ORs
 			// the YapClass of this object
@@ -70,7 +67,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				DTrace.CreateCandidate.Log(id);
 			}
 			_candidates = candidates;
-			_order = this;
 			_member = obj;
 			_include = true;
 			if (id == 0)
@@ -87,7 +83,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			qcan._dependants = _dependants;
 			qcan._include = _include;
 			qcan._member = _member;
-			qcan._order = _order;
 			qcan._pendingJoins = _pendingJoins;
 			qcan._root = _root;
 			qcan._classMetadata = _classMetadata;
@@ -119,21 +114,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					SetBytes(stream.ReadReaderByID(Transaction(), _key));
 				}
 			}
-		}
-
-		public override int Compare(Tree a_to)
-		{
-			return _order.CompareTo(((Db4objects.Db4o.Internal.Query.Processor.QCandidate)a_to
-				)._order);
-		}
-
-		public virtual int CompareTo(object a_object)
-		{
-			if (a_object is Order)
-			{
-				return -((Order)a_object).CompareTo(this);
-			}
-			return _key - ((TreeInt)a_object)._key;
 		}
 
 		internal virtual bool CreateChild(QCandidates a_candidates)
@@ -182,7 +162,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								candidates.Evaluate();
 								ByRef pending = ByRef.NewInstance();
 								bool[] innerRes = new bool[] { isNot };
-								candidates.Traverse(new _IVisitor4_176(innerRes, isNot, pending));
+								candidates.Traverse(new _IVisitor4_160(innerRes, isNot, pending));
 								// Collect all pending subresults.
 								// We need to change
 								// the
@@ -211,7 +191,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 								// them up to our root.
 								if (((Tree)pending.value) != null)
 								{
-									((Tree)pending.value).Traverse(new _IVisitor4_245(this));
+									((Tree)pending.value).Traverse(new _IVisitor4_229(this));
 								}
 								if (!innerRes[0])
 								{
@@ -270,9 +250,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return true;
 		}
 
-		private sealed class _IVisitor4_176 : IVisitor4
+		private sealed class _IVisitor4_160 : IVisitor4
 		{
-			public _IVisitor4_176(bool[] innerRes, bool isNot, ByRef pending)
+			public _IVisitor4_160(bool[] innerRes, bool isNot, ByRef pending)
 			{
 				this.innerRes = innerRes;
 				this.isNot = isNot;
@@ -289,13 +269,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				if (cand._pendingJoins != null)
 				{
-					cand._pendingJoins.Traverse(new _IVisitor4_189(pending));
+					cand._pendingJoins.Traverse(new _IVisitor4_173(pending));
 				}
 			}
 
-			private sealed class _IVisitor4_189 : IVisitor4
+			private sealed class _IVisitor4_173 : IVisitor4
 			{
-				public _IVisitor4_189(ByRef pending)
+				public _IVisitor4_173(ByRef pending)
 				{
 					this.pending = pending;
 				}
@@ -328,9 +308,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly ByRef pending;
 		}
 
-		private sealed class _IVisitor4_245 : IVisitor4
+		private sealed class _IVisitor4_229 : IVisitor4
 		{
-			public _IVisitor4_245(QCandidate _enclosing)
+			public _IVisitor4_229(QCandidate _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -362,13 +342,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return;
 			}
 			SlotFormat slotFormat = SlotFormat.ForHandlerVersion(_handlerVersion);
-			slotFormat.DoWithSlotIndirection(buffer, typeHandler, new _IClosure4_334(this, arrayElementHandler
+			slotFormat.DoWithSlotIndirection(buffer, typeHandler, new _IClosure4_318(this, arrayElementHandler
 				, buffer, candidates));
 		}
 
-		private sealed class _IClosure4_334 : IClosure4
+		private sealed class _IClosure4_318 : IClosure4
 		{
-			public _IClosure4_334(QCandidate _enclosing, ITypeHandler4 arrayElementHandler, IReadBuffer
+			public _IClosure4_318(QCandidate _enclosing, ITypeHandler4 arrayElementHandler, IReadBuffer
 				 buffer, QCandidates candidates)
 			{
 				this._enclosing = _enclosing;
@@ -398,7 +378,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						._enclosing._handlerVersion, buffer, 0);
 					((ICascadingTypeHandler)arrayElementHandler).CollectIDs(context);
 				}
-				Tree.Traverse(context.Ids(), new _IVisitor4_352(candidates));
+				Tree.Traverse(context.Ids(), new _IVisitor4_336(candidates));
 				IEnumerator i = context.ObjectsWithoutId();
 				while (i.MoveNext())
 				{
@@ -409,9 +389,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return null;
 			}
 
-			private sealed class _IVisitor4_352 : IVisitor4
+			private sealed class _IVisitor4_336 : IVisitor4
 			{
-				public _IVisitor4_352(QCandidates candidates)
+				public _IVisitor4_336(QCandidates candidates)
 				{
 					this.candidates = candidates;
 				}
@@ -447,11 +427,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					((Db4objects.Db4o.Internal.Query.Processor.QCandidate)i.Current).DoNotInclude();
 				}
 			}
-		}
-
-		public override bool Duplicates()
-		{
-			return _order.HasDuplicates();
 		}
 
 		internal virtual bool Evaluate(QConObject a_constraint, QE a_evaluator)
@@ -533,23 +508,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal LocalTransaction Transaction()
 		{
 			return _candidates.i_trans;
-		}
-
-		public virtual bool HasDuplicates()
-		{
-			// Subcandidates are evaluated along with their constraints
-			// in one big QCandidates object. The tree can have duplicates
-			// so evaluation can be cascaded up to different roots.
-			return _root != null;
-		}
-
-		public virtual void HintOrder(int a_order, bool a_major)
-		{
-			if (_order == this)
-			{
-				_order = new Order();
-			}
-			_order.HintOrder(a_order, a_major);
 		}
 
 		public virtual bool Include()

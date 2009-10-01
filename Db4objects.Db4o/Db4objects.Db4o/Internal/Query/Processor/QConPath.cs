@@ -84,7 +84,6 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return falseConstraint;
 			}
 			QConObject newConstraint = new QConObject(i_trans, i_parent, GetField(), obj);
-			newConstraint.SetOrdering(Ordering());
 			Morph(removeExisting, newConstraint, ReflectClassForObject(obj));
 			return newConstraint;
 		}

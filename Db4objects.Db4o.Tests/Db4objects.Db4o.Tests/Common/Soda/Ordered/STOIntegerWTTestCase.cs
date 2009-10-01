@@ -21,11 +21,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 		public override object[] CreateData()
 		{
 			return new object[] { new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
-				(1001), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(99), 
-				new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(1), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
-				(909), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(1001), 
-				new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(0), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
-				(1010), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase() };
+				(99), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(1), new 
+				Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(909), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
+				(1001), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(0), new 
+				Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase(1010), new Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
+				() };
 		}
 
 		public virtual void TestDescending()
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 			q.Constrain(typeof(Db4objects.Db4o.Tests.Common.Soda.Ordered.STOIntegerWTTestCase
 				));
 			q.Descend("i_int").OrderDescending();
-			ExpectOrdered(q, new int[] { 6, 4, 0, 3, 1, 2, 5, 7 });
+			ExpectOrdered(q, new int[] { 5, 3, 2, 0, 1, 4, 6 });
 		}
 
 		public virtual void TestAscendingGreater()
@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 			IQuery qInt = q.Descend("i_int");
 			qInt.Constrain(100).Greater();
 			qInt.OrderAscending();
-			ExpectOrdered(q, new int[] { 3, 0, 4, 6 });
+			ExpectOrdered(q, new int[] { 2, 3, 5 });
 		}
 	}
 }

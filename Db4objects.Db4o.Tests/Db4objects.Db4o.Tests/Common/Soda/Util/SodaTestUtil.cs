@@ -72,12 +72,12 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 				}
 				if (ordered)
 				{
-					Assert.IsTrue(found, "Expected '" + results[j - 1] + "' but got '" + obj + "' at index "
-						 + (j - 1));
+					Assert.IsTrue(found, "Expected '" + SafeToString(results[j - 1]) + "' but got '" 
+						+ SafeToString(obj) + "' at index " + (j - 1));
 				}
 				else
 				{
-					Assert.IsTrue(found, "Object not expected: " + obj);
+					Assert.IsTrue(found, "Object not expected: " + SafeToString(obj));
 				}
 			}
 			for (int i = 0; i < results.Length; i++)
@@ -87,6 +87,11 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Util
 					Assert.Fail("Expected object not returned: " + results[i]);
 				}
 			}
+		}
+
+		private static string SafeToString(object obj)
+		{
+			return obj != null ? obj.ToString() : string.Empty;
 		}
 
 		private SodaTestUtil()

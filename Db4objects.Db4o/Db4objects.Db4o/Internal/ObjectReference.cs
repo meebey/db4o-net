@@ -162,7 +162,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				return true;
 			}
-			if (!_class.StateOKAndAncestors())
+			if (!_class.StateOK())
+			{
+				return false;
+			}
+			if (!_class.AspectsAreInitialized())
 			{
 				return false;
 			}

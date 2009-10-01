@@ -23,5 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Result
 		int Size();
 
 		void Sort(IQueryComparator cmp);
+
+		void SortIds(IIntComparator cmp);
 	}
 }

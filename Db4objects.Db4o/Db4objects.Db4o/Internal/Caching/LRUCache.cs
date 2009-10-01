@@ -58,11 +58,13 @@ namespace Db4objects.Db4o.Internal.Caching
 
 		public virtual object Purge(object key)
 		{
-			if (!_lru.Remove(key))
+			object removed = Sharpen.Collections.Remove(_slots, key);
+			if (removed == null)
 			{
 				return null;
 			}
-			return Sharpen.Collections.Remove(_slots, key);
+			_lru.Remove(key);
+			return removed;
 		}
 	}
 }

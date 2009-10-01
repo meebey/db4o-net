@@ -59,9 +59,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private sealed class _IDeferred_68 : KeySpec.IDeferred
+		private sealed class _IDeferred_70 : KeySpec.IDeferred
 		{
-			public _IDeferred_68()
+			public _IDeferred_70()
 			{
 			}
 
@@ -72,16 +72,16 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_68
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_70
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
 
 		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
 
-		private sealed class _IDeferred_78 : KeySpec.IDeferred
+		private sealed class _IDeferred_80 : KeySpec.IDeferred
 		{
-			public _IDeferred_78()
+			public _IDeferred_80()
 			{
 			}
 
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_78());
+		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_80());
 
 		private static readonly KeySpec DisableCommitRecoveryKey = new KeySpec(false);
 
@@ -108,9 +108,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec EncryptKey = new KeySpec(false);
 
-		private sealed class _IDeferred_96 : KeySpec.IDeferred
+		private sealed class _IDeferred_98 : KeySpec.IDeferred
 		{
-			public _IDeferred_96()
+			public _IDeferred_98()
 			{
 			}
 
@@ -120,7 +120,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_96
+		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_98
 			());
 
 		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
@@ -164,9 +164,15 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchDepthKey = new KeySpec(0);
 
-		private sealed class _IDeferred_140 : KeySpec.IDeferred
+		public const int PrefetchSlotCacheSizeFactor = 10;
+
+		private const int MaximumPrefetchSlotCacheSize = 10000;
+
+		private static readonly KeySpec PrefetchSlotCacheSizeKey = new KeySpec(0);
+
+		private sealed class _IDeferred_148 : KeySpec.IDeferred
 		{
-			public _IDeferred_140()
+			public _IDeferred_148()
 			{
 			}
 
@@ -178,7 +184,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_140());
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_148());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -218,7 +224,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec TaintedKey = new KeySpec(false);
 
-		private ObjectContainerBase i_stream;
+		private ObjectContainerBase _container;
 
 		private bool _internStrings;
 
@@ -227,6 +233,10 @@ namespace Db4objects.Db4o.Internal
 		private bool _readOnly;
 
 		private Collection4 _registeredTypeHandlers;
+
+		private System.EventHandler<EventArgs> _prefetchSettingsChanged;
+
+		private bool _prefetchSlotCacheSizeModifiedExternally;
 
 		//  is null in the global configuration until deepClone is called
 		// The following are very frequently being asked for, so they show up in the profiler. 
@@ -380,9 +390,9 @@ namespace Db4objects.Db4o.Internal
 			return ret;
 		}
 
-		public void Stream(ObjectContainerBase stream)
+		public void Container(ObjectContainerBase container)
 		{
-			i_stream = stream;
+			_container = container;
 		}
 
 		public void DatabaseGrowthSize(int bytes)
@@ -512,7 +522,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void GlobalSettingOnly()
 		{
-			if (i_stream != null)
+			if (_container != null)
 			{
 				throw new GlobalOnlyConfigException();
 			}
@@ -636,7 +646,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void ReflectWith(IReflector reflect)
 		{
-			if (i_stream != null)
+			if (_container != null)
 			{
 				Exceptions4.ThrowRuntimeException(46);
 			}
@@ -674,18 +684,18 @@ namespace Db4objects.Db4o.Internal
 				reservedStorageSpace = 0;
 			}
 			_config.Put(ReservedStorageSpaceKey, reservedStorageSpace);
-			if (i_stream != null)
+			if (_container != null)
 			{
-				i_stream.Reserve(reservedStorageSpace);
+				_container.Reserve(reservedStorageSpace);
 			}
 		}
 
 		/// <summary>The ConfigImpl also is our messageSender</summary>
 		public void Send(object obj)
 		{
-			if (i_stream != null)
+			if (_container != null)
 			{
-				i_stream.Send(obj);
+				_container.Send(obj);
 			}
 		}
 
@@ -711,9 +721,9 @@ namespace Db4objects.Db4o.Internal
 		public void SetOut(TextWriter outStream)
 		{
 			_config.Put(OutstreamKey, outStream);
-			if (i_stream != null)
+			if (_container != null)
 			{
-				i_stream.LogMsg(19, Db4oFactory.Version());
+				_container.LogMsg(19, Db4oFactory.Version());
 			}
 			else
 			{
@@ -1033,6 +1043,7 @@ namespace Db4objects.Db4o.Internal
 		public void PrefetchObjectCount(int prefetchObjectCount)
 		{
 			_config.Put(PrefetchObjectCountKey, prefetchObjectCount);
+			EnsurePrefetchSlotCacheSize();
 		}
 
 		public int PrefetchObjectCount()
@@ -1282,6 +1293,16 @@ namespace Db4objects.Db4o.Internal
 		public void PrefetchDepth(int prefetchDepth)
 		{
 			_config.Put(PrefetchDepthKey, prefetchDepth);
+			EnsurePrefetchSlotCacheSize();
+		}
+
+		private void EnsurePrefetchSlotCacheSize()
+		{
+			if (!_prefetchSlotCacheSizeModifiedExternally)
+			{
+				PrefetchSlotCacheSize(CalculatedPrefetchSlotcacheSize());
+				_prefetchSlotCacheSizeModifiedExternally = false;
+			}
 		}
 
 		public int PrefetchDepth()
@@ -1292,6 +1313,43 @@ namespace Db4objects.Db4o.Internal
 		public IList EnvironmentContributions()
 		{
 			return (IList)_config.Get(EnvironmentContributionsKey);
+		}
+
+		public void PrefetchSlotCacheSize(int slotCacheSize)
+		{
+			_prefetchSlotCacheSizeModifiedExternally = true;
+			_config.Put(PrefetchSlotCacheSizeKey, slotCacheSize);
+			if (null != _prefetchSettingsChanged) _prefetchSettingsChanged(null, EventArgs.Empty
+				);
+		}
+
+		public int PrefetchSlotCacheSize()
+		{
+			return _config.GetAsInt(PrefetchSlotCacheSizeKey);
+		}
+
+		private int CalculatedPrefetchSlotcacheSize()
+		{
+			long calculated = (long)PrefetchDepth() * PrefetchObjectCount() * PrefetchSlotCacheSizeFactor;
+			if (calculated > MaximumPrefetchSlotCacheSize)
+			{
+				calculated = MaximumPrefetchSlotCacheSize;
+			}
+			return (int)calculated;
+		}
+
+		public event System.EventHandler<EventArgs> PrefetchSettingsChanged
+		{
+			add
+			{
+				_prefetchSettingsChanged = (System.EventHandler<EventArgs>)System.Delegate.Combine
+					(_prefetchSettingsChanged, value);
+			}
+			remove
+			{
+				_prefetchSettingsChanged = (System.EventHandler<EventArgs>)System.Delegate.Remove
+					(_prefetchSettingsChanged, value);
+			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.CS.Caching;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Objectexchange;
 using Db4objects.Db4o.Foundation;
@@ -22,10 +23,11 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 			return new EagerObjectWriter(_config, transaction).Write(ids, maxCount);
 		}
 
-		public virtual IFixedSizeIntIterator4 Unmarshall(ClientTransaction transaction, ByteArrayBuffer
-			 reader)
+		public virtual IFixedSizeIntIterator4 Unmarshall(ClientTransaction transaction, IClientSlotCache
+			 slotCache, ByteArrayBuffer reader)
 		{
-			return new CacheContributingObjectReader(transaction, reader).Iterator();
+			return new CacheContributingObjectReader(transaction, slotCache, reader).Iterator
+				();
 		}
 	}
 }

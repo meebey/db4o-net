@@ -143,6 +143,11 @@ namespace Db4objects.Db4o.Internal.Cluster
 			throw new NotSupportedException();
 		}
 
+		public virtual void SortIds(IIntComparator cmp)
+		{
+			throw new NotSupportedException();
+		}
+
 		/// <param name="c"></param>
 		public virtual void LoadFromClassIndex(ClassMetadata c)
 		{

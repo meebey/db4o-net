@@ -51,5 +51,13 @@ namespace Db4objects.Db4o.CS.Config
 		{
 			set;
 		}
+
+		/// <summary>Sets the slot cache size to the given value.</summary>
+		/// <remarks>Sets the slot cache size to the given value.</remarks>
+		/// <value></value>
+		int PrefetchSlotCacheSize
+		{
+			set;
+		}
 	}
 }

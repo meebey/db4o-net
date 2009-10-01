@@ -54,14 +54,6 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 			ExpectOrdered(q, new int[] { 5, 7, 9, 3, 8, 6, 4, 0, 2, 1 });
 		}
 
-		public virtual void TestOrderByNameAscending()
-		{
-			IQuery q = NewQuery();
-			q.Constrain(typeof(OrderTestSubject));
-			q.Descend("_name").OrderAscending();
-			ExpectOrdered(q, new int[] { 0, 5, 2, 7, 1, 9, 3, 8, 6, 4 });
-		}
-
 		public virtual void TestOrderByNameAndAgeAscending()
 		{
 			IQuery q = NewQuery();

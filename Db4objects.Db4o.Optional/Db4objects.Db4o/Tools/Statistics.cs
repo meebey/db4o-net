@@ -226,8 +226,8 @@ namespace Db4objects.Db4o.Tools
 
 			public override int Compare(Tree a_to)
 			{
-				return StringHandler.Compare(Const4.stringIO.Write(((Statistics.TreeString)a_to).
-					_key), Const4.stringIO.Write(_key));
+				return StringHandler.Compare(Const4.stringIO.Write(_key), Const4.stringIO.Write((
+					(Statistics.TreeString)a_to)._key));
 			}
 
 			public override object Key()

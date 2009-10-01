@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				if (i_evaluator.IsDefault())
 				{
-					if (!HasOrdering() && !HasJoins())
+					if (!HasJoins())
 					{
 						if (i_classMetadata != null && i_candidates.i_classMetadata != null)
 						{

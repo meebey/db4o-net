@@ -6,9 +6,11 @@ using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.CS.Caching;
 using Db4objects.Db4o.CS.Internal;
+using Db4objects.Db4o.CS.Internal.Caching;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.CS.Internal.Objectexchange;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
@@ -71,9 +73,11 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly ClassInfoHelper _classInfoHelper = new ClassInfoHelper();
 
-		private sealed class _IMessageListener_73 : ClientObjectContainer.IMessageListener
+		private IClientSlotCache _clientSlotCache;
+
+		private sealed class _IMessageListener_77 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_73()
+			public _IMessageListener_77()
 			{
 			}
 
@@ -85,7 +89,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_73
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_77
 			();
 
 		private bool _bypassSlotCache = false;
@@ -120,6 +124,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		protected sealed override void OpenImpl()
 		{
+			InitalizeClientSlotCache();
 			_singleThreaded = ConfigImpl.SingleThreadedClient();
 			// TODO: Experiment with packet size and noDelay
 			// socket.setSendBufferSize(100);
@@ -136,6 +141,33 @@ namespace Db4objects.Db4o.CS.Internal
 			LogMsg(36, ToString());
 			StartHeartBeat();
 			ReadThis();
+		}
+
+		private void InitalizeClientSlotCache()
+		{
+			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_127
+				(this).OnEvent);
+			if (ConfigImpl.PrefetchSlotCacheSize() > 0)
+			{
+				_clientSlotCache = new ClientSlotCacheImpl(this);
+				return;
+			}
+			_clientSlotCache = new NullClientSlotCache();
+		}
+
+		private sealed class _IEventListener4_127
+		{
+			public _IEventListener4_127(ClientObjectContainer _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void OnEvent(object sender, EventArgs args)
+			{
+				this._enclosing.InitalizeClientSlotCache();
+			}
+
+			private readonly ClientObjectContainer _enclosing;
 		}
 
 		private void StartHeartBeat()
@@ -177,11 +209,6 @@ namespace Db4objects.Db4o.CS.Internal
 		public override void Reserve(int byteCount)
 		{
 			throw new NotSupportedException();
-		}
-
-		public virtual void BlockSize(int blockSize)
-		{
-			_blockSize = blockSize;
 		}
 
 		public override byte BlockSize()
@@ -734,92 +761,26 @@ namespace Db4objects.Db4o.CS.Internal
 			 prefetchDepth)
 		{
 			IDictionary buffers = new Hashtable(ids.Length);
-			WithEnvironment(new _IRunnable_585(this, transaction, ids, buffers, prefetchDepth
-				));
+			ArrayList cacheMisses = PopulateSlotBuffersFromCache(transaction, ids, buffers);
+			FetchMissingSlotBuffers(transaction, cacheMisses, buffers, prefetchDepth);
 			return PackSlotBuffers(ids, buffers);
-		}
-
-		private sealed class _IRunnable_585 : IRunnable
-		{
-			public _IRunnable_585(ClientObjectContainer _enclosing, Transaction transaction, 
-				int[] ids, IDictionary buffers, int prefetchDepth)
-			{
-				this._enclosing = _enclosing;
-				this.transaction = transaction;
-				this.ids = ids;
-				this.buffers = buffers;
-				this.prefetchDepth = prefetchDepth;
-			}
-
-			public void Run()
-			{
-				ArrayList cacheMisses = this._enclosing.PopulateSlotBuffersFromCache(transaction, 
-					ids, buffers);
-				this._enclosing.FetchMissingSlotBuffers(transaction, cacheMisses, buffers, prefetchDepth
-					);
-			}
-
-			private readonly ClientObjectContainer _enclosing;
-
-			private readonly Transaction transaction;
-
-			private readonly int[] ids;
-
-			private readonly IDictionary buffers;
-
-			private readonly int prefetchDepth;
 		}
 
 		public sealed override ByteArrayBuffer ReadReaderByID(Transaction transaction, int
 			 id, bool lastCommitted)
 		{
-			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_598(this, lastCommitted, result, transaction, id));
-			return ((ByteArrayBuffer)result.value);
-		}
-
-		private sealed class _IRunnable_598 : IRunnable
-		{
-			public _IRunnable_598(ClientObjectContainer _enclosing, bool lastCommitted, ByRef
-				 result, Transaction transaction, int id)
+			if (lastCommitted || _bypassSlotCache)
 			{
-				this._enclosing = _enclosing;
-				this.lastCommitted = lastCommitted;
-				this.result = result;
-				this.transaction = transaction;
-				this.id = id;
+				return FetchSlotBuffer(transaction, id, lastCommitted);
 			}
-
-			public void Run()
+			ByteArrayBuffer cached = _clientSlotCache.Get(transaction, id);
+			if (cached != null)
 			{
-				if (lastCommitted || this._enclosing._bypassSlotCache)
-				{
-					result.value = this._enclosing.FetchSlotBuffer(transaction, id, lastCommitted);
-					return;
-				}
-				IClientSlotCache slotCache = ((IClientSlotCache)Environments.My(typeof(IClientSlotCache
-					)));
-				ByteArrayBuffer cached = slotCache.Get(transaction, id);
-				if (cached != null)
-				{
-					result.value = cached;
-					return;
-				}
-				ByteArrayBuffer slot = this._enclosing.FetchSlotBuffer(transaction, id, lastCommitted
-					);
-				slotCache.Add(transaction, id, slot);
-				result.value = slot;
+				return cached;
 			}
-
-			private readonly ClientObjectContainer _enclosing;
-
-			private readonly bool lastCommitted;
-
-			private readonly ByRef result;
-
-			private readonly Transaction transaction;
-
-			private readonly int id;
+			ByteArrayBuffer slot = FetchSlotBuffer(transaction, id, lastCommitted);
+			_clientSlotCache.Add(transaction, id, slot);
+			return slot;
 		}
 
 		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
@@ -830,13 +791,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_628(this, trans, result));
+			WithEnvironment(new _IRunnable_629(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_628 : IRunnable
+		private sealed class _IRunnable_629 : IRunnable
 		{
-			public _IRunnable_628(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_629(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -870,7 +831,7 @@ namespace Db4objects.Db4o.CS.Internal
 		private IFixedSizeIntIterator4 IdIteratorFor(IObjectExchangeStrategy strategy, Transaction
 			 trans, ByteArrayBuffer reader)
 		{
-			return strategy.Unmarshall((ClientTransaction)trans, reader);
+			return strategy.Unmarshall((ClientTransaction)trans, _clientSlotCache, reader);
 		}
 
 		private IObjectExchangeStrategy ObjectExchangeStrategy()
@@ -1178,13 +1139,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_897(this, trans, result));
+			WithEnvironment(new _IRunnable_898(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_897 : IRunnable
+		private sealed class _IRunnable_898 : IRunnable
 		{
-			public _IRunnable_897(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_898(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1409,7 +1370,7 @@ namespace Db4objects.Db4o.CS.Internal
 				, missing);
 			MsgD response = (MsgD)ExpectedResponse(Msg.ReadMultipleObjects);
 			IEnumerator slots = new CacheContributingObjectReader((ClientTransaction)transaction
-				, response.PayLoad()).Buffers();
+				, _clientSlotCache, response.PayLoad()).Buffers();
 			while (slots.MoveNext())
 			{
 				Pair pair = ((Pair)slots.Current);
@@ -1434,8 +1395,7 @@ namespace Db4objects.Db4o.CS.Internal
 			for (int idIndex = 0; idIndex < ids.Length; ++idIndex)
 			{
 				int id = ids[idIndex];
-				ByteArrayBuffer slot = ((IClientSlotCache)Environments.My(typeof(IClientSlotCache
-					))).Get(transaction, id);
+				ByteArrayBuffer slot = _clientSlotCache.Get(transaction, id);
 				if (null == slot)
 				{
 					missing.Add(id);

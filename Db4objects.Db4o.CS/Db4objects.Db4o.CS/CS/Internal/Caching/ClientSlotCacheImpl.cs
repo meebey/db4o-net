@@ -1,42 +1,57 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
-using Db4objects.Db4o;
 using Db4objects.Db4o.CS.Caching;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Caching;
 
 namespace Db4objects.Db4o.CS.Internal.Caching
 {
 	public class ClientSlotCacheImpl : IClientSlotCache
 	{
-		private sealed class _TransactionLocal_14 : TransactionLocal
+		private sealed class _IFunction4_14 : IFunction4
 		{
-			public _TransactionLocal_14()
+			public _IFunction4_14()
+			{
+			}
+
+			public object Apply(object arg)
+			{
+				return null;
+			}
+		}
+
+		private static readonly IFunction4 nullProducer = new _IFunction4_14();
+
+		private sealed class _TransactionLocal_20 : TransactionLocal
+		{
+			public _TransactionLocal_20()
 			{
 			}
 
 			public override object InitialValueFor(Transaction transaction)
 			{
-				return new Hashtable();
+				Config4Impl config = transaction.Container().Config();
+				return CacheFactory.NewLRUCache(config.PrefetchSlotCacheSize());
 			}
 		}
 
-		private readonly TransactionLocal _cache = new _TransactionLocal_14();
+		private readonly TransactionLocal _cache = new _TransactionLocal_20();
 
-		public ClientSlotCacheImpl()
+		public ClientSlotCacheImpl(ClientObjectContainer clientObjectContainer)
 		{
-			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(((IObjectContainer
-				)Environments.My(typeof(IObjectContainer))));
+			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(clientObjectContainer
+				);
 			eventRegistry.Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_22(this).OnEvent);
+				(new _IEventListener4_29(this).OnEvent);
 		}
 
-		private sealed class _IEventListener4_22
+		private sealed class _IEventListener4_29
 		{
-			public _IEventListener4_22(ClientSlotCacheImpl _enclosing)
+			public _IEventListener4_29(ClientSlotCacheImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -53,12 +68,29 @@ namespace Db4objects.Db4o.CS.Internal.Caching
 
 		public virtual void Add(Transaction provider, int id, ByteArrayBuffer slot)
 		{
-			CacheOn(provider)[id] = slot;
+			Purge(provider, id);
+			CacheOn(provider).Produce(id, new _IFunction4_38(slot), null);
+		}
+
+		private sealed class _IFunction4_38 : IFunction4
+		{
+			public _IFunction4_38(ByteArrayBuffer slot)
+			{
+				this.slot = slot;
+			}
+
+			public object Apply(object arg)
+			{
+				return slot;
+			}
+
+			private readonly ByteArrayBuffer slot;
 		}
 
 		public virtual ByteArrayBuffer Get(Transaction provider, int id)
 		{
-			ByteArrayBuffer buffer = ((ByteArrayBuffer)CacheOn(provider)[id]);
+			ByteArrayBuffer buffer = ((ByteArrayBuffer)CacheOn(provider).Produce(id, nullProducer
+				, null));
 			if (null == buffer)
 			{
 				return null;
@@ -69,12 +101,12 @@ namespace Db4objects.Db4o.CS.Internal.Caching
 
 		private void Purge(Transaction provider, int id)
 		{
-			Sharpen.Collections.Remove(CacheOn(provider), id);
+			CacheOn(provider).Purge(id);
 		}
 
-		private IDictionary CacheOn(Transaction provider)
+		private IPurgeableCache4 CacheOn(Transaction provider)
 		{
-			return ((IDictionary)provider.Get(_cache).value);
+			return ((IPurgeableCache4)provider.Get(_cache).value);
 		}
 	}
 }

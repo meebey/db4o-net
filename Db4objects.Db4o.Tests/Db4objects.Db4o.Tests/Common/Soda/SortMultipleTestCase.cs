@@ -115,6 +115,16 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			}
 		}
 
+		public virtual void TestSortFirstThenSecondAfterOr()
+		{
+			IQuery query = NewQuery(typeof(SortMultipleTestCase.Data));
+			query.Descend("_first").Constrain(2).Smaller().Or(query.Descend("_second").Constrain
+				(2).Greater());
+			query.Descend("_first").OrderAscending();
+			query.Descend("_second").OrderAscending();
+			AssertSortOrder(query, new int[] { 0, 1, 2, 4 });
+		}
+
 		public virtual void TestSortFirstThenSecond()
 		{
 			IQuery query = NewQuery(typeof(SortMultipleTestCase.Data));
