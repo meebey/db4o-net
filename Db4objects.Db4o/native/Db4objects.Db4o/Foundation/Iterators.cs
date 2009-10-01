@@ -19,6 +19,11 @@ namespace Db4objects.Db4o.Foundation
 
 	public partial class Iterators
 	{
+		public static IEnumerator Map(System.Array array, IFunction4 function)
+		{
+			return Map(array.GetEnumerator(), function);
+		}
+
 		public static IEnumerable<T> Cast<T>(IEnumerable source)
 		{
 			foreach (object o in source) yield return (T) o;

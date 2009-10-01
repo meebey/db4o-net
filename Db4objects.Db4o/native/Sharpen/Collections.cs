@@ -37,6 +37,12 @@ namespace Sharpen
 			return result;
 	    }
 
+		public static T[] ToArray<T>(ICollection collection, T[] result)
+		{
+			collection.CopyTo(result, 0);
+			return result;
+		}
+
 		public static T[] ToArray<T>(ICollection<T> collection, T[] result)
 		{
 			collection.CopyTo(result, 0);
