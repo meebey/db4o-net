@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		public void TestQueryableWhereOrderBy()
 		{
-			AssertQuery ("(Person(Name == 'jb')(orderby Age asc))", () =>
+			AssertQuery ("(Person(Age)(Name == 'jb'))(orderby Age asc)", () =>
 			{
 				var aggregate = Db().AsQueryable<Person>().Where(p => p.Name == "jb").OrderBy(p => p.Age).Aggregate(0, (i, p) => p.Age + i);
 

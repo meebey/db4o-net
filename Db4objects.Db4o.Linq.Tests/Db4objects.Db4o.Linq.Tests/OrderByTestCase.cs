@@ -145,7 +145,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		private void AssertOrderByNameDescAgeAsc(IDb4oLinqQuery<Person> query)
 		{
-			string expectedQuery = "(Person(orderby Name desc)(orderby Age asc))";
+			string expectedQuery = "(Person(Name)(Age))(orderby Age asc)(orderby Name desc)";
 			AssertOrderByNameDescAgeAsc(expectedQuery, query);
 		}
 
@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Linq.Tests
 #if !CF
 		public void TestOrderByValueType()
 		{
-			AssertQuerySequence("(Person(orderby Id asc))",
+			AssertQuerySequence("(Person(Id))(orderby Id asc)",
 				queryable => from p in queryable
 							 orderby p.Id
 							 select p);
@@ -194,7 +194,7 @@ namespace Db4objects.Db4o.Linq.Tests
 		public void TestOrderByDescendingOnWhere()
 		{
 			AssertQuerySequence(
-				"(Person(Name == 'jb')(orderby Age desc))",
+				"(Person(Age)(Name == 'jb'))(orderby Age desc)",
 
 				queryable => from p in queryable
 							 where p.Name == "jb"
@@ -216,7 +216,7 @@ namespace Db4objects.Db4o.Linq.Tests
 		public void TestSimpleOrderByDescendingThenAscending()
 		{
 			AssertQuerySequence(
-				"(Person(orderby Name asc)(orderby Age desc))",
+				"(Person(Name)(Age))(orderby Age desc)(orderby Name asc)",
 
 				queryable => from p in queryable
 							 orderby p.Age descending, p.Name ascending
@@ -237,7 +237,7 @@ namespace Db4objects.Db4o.Linq.Tests
 		public void TestOrderByDescendingThenAscendingOnCompositeFieldAccess()
 		{
 			AssertQueryTranslation(
-				"(Person(orderby Parent.Name asc)(orderby Parent.Age desc))",
+				"(Person(Parent(Name)(Age)))(orderby Parent.Age desc)(orderby Parent.Name asc)",
 				from Person p in Db()
 				orderby p.Parent.Age descending, p.Parent.Name ascending
 				select p);

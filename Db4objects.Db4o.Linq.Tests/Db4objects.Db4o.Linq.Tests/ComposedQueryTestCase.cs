@@ -90,7 +90,7 @@ namespace Db4objects.Db4o.Linq.Tests
 						where p.Age < 31
 						select p;
 
-			AssertQuery("(Person(Age < 31)(Age > 21)(orderby Age asc))",
+			AssertQuery("(Person(Age < 31)(Age > 21))(orderby Age asc)",
 				delegate
 				{
 					AssertSequence(new[]
@@ -100,7 +100,7 @@ namespace Db4objects.Db4o.Linq.Tests
 						}, johns);
 				});
 
-			AssertQuery("(Person(Age > 21)(orderby Age asc))",
+			AssertQuery("(Person(Age > 21))(orderby Age asc)",
 				delegate
 				{
 					AssertSequence(new[]

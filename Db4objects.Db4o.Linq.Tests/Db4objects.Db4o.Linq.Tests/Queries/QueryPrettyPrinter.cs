@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
 
@@ -14,12 +15,15 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 	internal class QueryPrettyPrinter
 	{
 		private readonly StringBuilder _builder = new StringBuilder();
-		private readonly StringBuilder _orderBy = new StringBuilder();
 		private readonly HashSet<QConJoin> _visitedJoins = new HashSet<QConJoin>();
 
 		public QueryPrettyPrinter(IQuery query)
 		{
 			VisitAll(query.Constraints().ToArray());
+			foreach (SodaQueryComparator.Ordering ordering in ((QQueryBase)query).Orderings())
+			{
+				PrintOrderBy(ordering);
+			}
 		}
 
 		private void Visit(IConstraint constraint)
@@ -54,14 +58,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			{
 				ForEach<IConstraint>(klass.IterateChildren(), cons => Visit(cons));
 			}
-			FlushOrderBy();
 			_builder.Append(")");
-		}
-
-		private void FlushOrderBy()
-		{
-			_builder.Append(_orderBy);
-			_orderBy.Length = 0;
 		}
 
 		private static void ForEach<TElement>(IEnumerator list, Action<TElement> action)
@@ -74,41 +71,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		protected virtual void Visit(QConPath path)
 		{
-			if (HasOrder(path))
-			{
-				PrintOrderBy(path);
-				return;
-			}
-
-			if (IsOrderByPath(path))
-			{
-				VisitAllChildrenOf(path);
-				return;
-			}
-
 			PrintDescend(path);
-		}
-
-		private static bool IsOrderByPath(QConPath path)
-		{
-			return Iterators.Iterable(path.IterateChildren()).Cast<QCon>().All(IsOrderByElement);
-		}
-
-		private static bool IsOrderByElement(QCon candidate)
-		{
-			if (HasOrder(candidate))
-				return true;
-			
-			var path = candidate as QConPath;
-			if (path != null)
-				return IsOrderByPath(path);
-
-			return false;
-		}
-
-		private static bool HasOrder(QCon path)
-		{
-			return path.HasOrdering();
 		}
 
 		private void PrintDescend(QConPath path)
@@ -133,27 +96,16 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			}
 		}
 
-		private void PrintOrderBy(QConObject path)
+		private void PrintOrderBy(SodaQueryComparator.Ordering ordering)
 		{
-			_orderBy.AppendFormat("(orderby {0} {1})",
-				PathFor(path),
-				OrderIdToString(path.Ordering()));
+			_builder.AppendFormat("(orderby {0} {1})",
+				ordering.fieldPath.Aggregate((current, item) => current + "." + item),
+				DirectionString(ordering.direction));
 		}
 
-		private static string PathFor(QConObject path)
+		private static string DirectionString(SodaQueryComparator.Direction direction)
 		{
-			var fieldName = path.GetField().Name();
-
-			QConPath parentField = path.Parent() as QConPath;
-			if (parentField != null)
-				return PathFor(parentField) + "." + fieldName;
-			
-			return fieldName;
-		}
-
-		private static string OrderIdToString(int order)
-		{
-			return order < 0 ? "desc" : "asc";
+			return direction.Equals(SodaQueryComparator.Direction.Descending) ? "desc" : "asc";
 		}
 
 		protected virtual void Visit(QConJoin join)
@@ -201,11 +153,6 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		private void PrintQConObject(QConObject obj)
 		{
-			if (HasOrder(obj))
-			{
-				PrintOrderBy(obj);
-			}
-			
 			_builder.AppendFormat("({0} {1} {2})",
 				                      obj.GetField().Name(),
 				                      EvaluatorToString(obj.Evaluator()),
@@ -269,7 +216,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		public override string ToString()
 		{
-			return _builder.ToString() + _orderBy;
+			return _builder.ToString();
 		}
 	}
 }

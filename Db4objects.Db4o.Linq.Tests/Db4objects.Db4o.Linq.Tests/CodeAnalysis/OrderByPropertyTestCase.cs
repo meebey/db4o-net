@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Linq.Tests.CodeAnalysis
 
 		public void TestOrderByProperty()
 		{
-			AssertQuery("(Person(orderby _age asc)(orderby _name asc))",
+			AssertQuery("(Person(_age)(_name))(orderby _name asc)(orderby _age asc)",
 				delegate
 				{
 					var pedros = from Person p in Db()
