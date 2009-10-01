@@ -9,7 +9,7 @@ using Db4objects.Db4o.Internal.Slots;
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class PersistentBase : IPersistent
+	public abstract class PersistentBase : IPersistent, ILinkLengthAware
 	{
 		protected int _id;
 

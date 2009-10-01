@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public sealed class HandlerRegistry
 	{
-		public const byte HandlerVersion = (byte)8;
+		public const byte HandlerVersion = (byte)9;
 
 		private readonly ObjectContainerBase _container;
 
@@ -292,6 +292,32 @@ namespace Db4objects.Db4o.Internal
 		public ITypeHandler4 CorrectHandlerVersion(ITypeHandler4 handler, int version)
 		{
 			return _handlerVersions.CorrectHandlerVersion(handler, version);
+		}
+
+		public static ITypeHandler4 CorrectHandlerVersion(IHandlerVersionContext context, 
+			ITypeHandler4 typeHandler, ClassMetadata classMetadata)
+		{
+			ITypeHandler4 correctHandlerVersion = CorrectHandlerVersion(context, typeHandler);
+			if (typeHandler != correctHandlerVersion)
+			{
+				CorrectClassMetadataOn(correctHandlerVersion, classMetadata);
+				if (correctHandlerVersion is ArrayHandler)
+				{
+					ArrayHandler arrayHandler = (ArrayHandler)correctHandlerVersion;
+					CorrectClassMetadataOn(arrayHandler.DelegateTypeHandler(), classMetadata);
+				}
+			}
+			return correctHandlerVersion;
+		}
+
+		private static void CorrectClassMetadataOn(ITypeHandler4 typeHandler, ClassMetadata
+			 classMetadata)
+		{
+			if (typeHandler is StandardReferenceTypeHandler)
+			{
+				StandardReferenceTypeHandler handler = (StandardReferenceTypeHandler)typeHandler;
+				handler.ClassMetadata(classMetadata);
+			}
 		}
 
 		internal Db4objects.Db4o.Internal.ArrayType ArrayType(object obj)

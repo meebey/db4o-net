@@ -114,33 +114,17 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ArgumentNullException();
 			}
-			if (handler is ITypeFamilyTypeHandler)
+			if (handler is ILinkLengthAware)
 			{
-				return ((ITypeFamilyTypeHandler)handler).LinkLength();
+				return ((ILinkLengthAware)handler).LinkLength();
 			}
-			if (handler is PersistentBase)
+			if (handler is IReferenceTypeHandler)
 			{
-				return ((PersistentBase)handler).LinkLength();
-			}
-			if (handler is PrimitiveHandler)
-			{
-				return ((PrimitiveHandler)handler).LinkLength();
+				return Const4.IdLength;
 			}
 			if (handler is IVariableLengthTypeHandler)
 			{
-				if (IsValueType(handler))
-				{
-					return Const4.IndirectionLength;
-				}
-				return Const4.IdLength;
-			}
-			if (IsUntyped(handler))
-			{
-				return Const4.IdLength;
-			}
-			if (handler is StandardReferenceTypeHandler)
-			{
-				return Const4.IdLength;
+				return Const4.IndirectionLength;
 			}
 			// TODO: For custom handlers there will have to be a way 
 			//       to calculate the length in the slot.
@@ -150,7 +134,7 @@ namespace Db4objects.Db4o.Internal
 			//            marshall the default value and check.
 			//        (3) Add a way to test the custom handler when it
 			//            is installed and remember the length there. 
-			throw new NotImplementedException("Unknown type handler type: " + handler);
+			throw new NotImplementedException("Unexpected typehandler: " + handler);
 		}
 
 		public static bool HoldsValueType(ITypeHandler4 handler)
@@ -325,7 +309,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			IClosure4 collectIDsFromQueryingContext = new _IClosure4_271(handler, queryingReadContext
+			IClosure4 collectIDsFromQueryingContext = new _IClosure4_262(handler, queryingReadContext
 				);
 			if (doWithSlotIndirection)
 			{
@@ -338,9 +322,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_271 : IClosure4
+		private sealed class _IClosure4_262 : IClosure4
 		{
-			public _IClosure4_271(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_262(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;

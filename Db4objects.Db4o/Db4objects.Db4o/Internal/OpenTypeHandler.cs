@@ -12,7 +12,7 @@ using Db4objects.Db4o.Typehandlers;
 namespace Db4objects.Db4o.Internal
 {
 	public class OpenTypeHandler : IReferenceTypeHandler, IValueTypeHandler, IBuiltinTypeHandler
-		, ICascadingTypeHandler
+		, ICascadingTypeHandler, ILinkLengthAware
 	{
 		private const int Hashcode = 1003303143;
 
@@ -134,7 +134,8 @@ namespace Db4objects.Db4o.Internal
 			try
 			{
 				int classMetadataId = context.CopyIDReturnOriginalID();
-				ITypeHandler4 typeHandler = context.TypeHandlerForId(classMetadataId);
+				ITypeHandler4 typeHandler = CorrectTypeHandlerVersionFor(context, classMetadataId
+					);
 				if (typeHandler == null)
 				{
 					return;
@@ -153,6 +154,24 @@ namespace Db4objects.Db4o.Internal
 			{
 				context.Seek(savedOffSet);
 			}
+		}
+
+		protected virtual ITypeHandler4 CorrectTypeHandlerVersionFor(IDefragmentContext context
+			, int classMetadataId)
+		{
+			ITypeHandler4 typeHandler = context.TypeHandlerForId(classMetadataId);
+			if (null == typeHandler)
+			{
+				return null;
+			}
+			ClassMetadata classMetadata = Container(context).ClassMetadataForID(classMetadataId
+				);
+			return HandlerRegistry.CorrectHandlerVersion(context, typeHandler, classMetadata);
+		}
+
+		protected virtual ObjectContainerBase Container(IDefragmentContext context)
+		{
+			return context.Transaction().Container();
 		}
 
 		protected virtual ITypeHandler4 ReadTypeHandler(IInternalReadContext context, int
@@ -228,7 +247,7 @@ namespace Db4objects.Db4o.Internal
 					readContext.Collector().AddId(readContext.ReadInt());
 					return;
 				}
-				CollectIdContext collectIdContext = new _CollectIdContext_186(readContext, readContext
+				CollectIdContext collectIdContext = new _CollectIdContext_200(readContext, readContext
 					.Transaction(), readContext.Collector(), null, readContext.Buffer());
 				Handlers4.CollectIdsInternal(collectIdContext, context.Container().Handlers.CorrectHandlerVersion
 					(typeHandler, context.HandlerVersion()), 0, false);
@@ -239,9 +258,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _CollectIdContext_186 : CollectIdContext
+		private sealed class _CollectIdContext_200 : CollectIdContext
 		{
-			public _CollectIdContext_186(QueryingReadContext readContext, Transaction baseArg1
+			public _CollectIdContext_200(QueryingReadContext readContext, Transaction baseArg1
 				, IdObjectCollector baseArg2, ObjectHeader baseArg3, IReadBuffer baseArg4) : base
 				(baseArg1, baseArg2, baseArg3, baseArg4)
 			{
@@ -255,12 +274,12 @@ namespace Db4objects.Db4o.Internal
 
 			public override SlotFormat SlotFormat()
 			{
-				return new _SlotFormatCurrent_192();
+				return new _SlotFormatCurrent_206();
 			}
 
-			private sealed class _SlotFormatCurrent_192 : SlotFormatCurrent
+			private sealed class _SlotFormatCurrent_206 : SlotFormatCurrent
 			{
-				public _SlotFormatCurrent_192()
+				public _SlotFormatCurrent_206()
 				{
 				}
 
@@ -363,6 +382,11 @@ namespace Db4objects.Db4o.Internal
 		public virtual void RegisterReflector(IReflector reflector)
 		{
 		}
+
 		// nothing to do
+		public virtual int LinkLength()
+		{
+			return Const4.IdLength;
+		}
 	}
 }

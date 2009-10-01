@@ -344,8 +344,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 				));
 		}
 
-		protected IReflectClass ClassReflector(IReflector reflector, ClassMetadata classMetadata
-			, bool isPrimitive)
+		protected IReflectClass ClassReflector(IReflector reflector, Db4objects.Db4o.Internal.ClassMetadata
+			 classMetadata, bool isPrimitive)
 		{
 			return _versionHelper.ClassReflector(reflector, classMetadata, isPrimitive);
 		}
@@ -384,7 +384,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			return _versionHelper.ClassIdToMarshalledClassId(classID, primitive);
 		}
 
-		protected bool IsPrimitive(IReflector reflector, IReflectClass claxx, ClassMetadata
+		protected bool IsPrimitive(IReflector reflector, IReflectClass claxx, Db4objects.Db4o.Internal.ClassMetadata
 			 classMetadata)
 		{
 			return _versionHelper.IsPrimitive(reflector, claxx, classMetadata);
@@ -424,10 +424,27 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 				BitMap4 bitMap = ReadNullBitmap(context, elementCount);
 				elementCount -= ReducedCountForNullBitMap(elementCount, bitMap);
 			}
+			ITypeHandler4 correctTypeHandlerVersion = CorrectHandlerVersion(context, _handler
+				, info);
 			for (int i = 0; i < elementCount; i++)
 			{
-				context.Defragment(_handler);
+				context.Defragment(correctTypeHandlerVersion);
 			}
+		}
+
+		private ITypeHandler4 CorrectHandlerVersion(IDefragmentContext context, ITypeHandler4
+			 handler, ArrayInfo info)
+		{
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = ClassMetadata(context, info
+				);
+			return HandlerRegistry.CorrectHandlerVersion(context, handler, classMetadata);
+		}
+
+		private Db4objects.Db4o.Internal.ClassMetadata ClassMetadata(IDefragmentContext context
+			, ArrayInfo info)
+		{
+			int classMetadataId = ClassIDFromInfo(Container(context), info);
+			return Container(context).ClassMetadataForID(classMetadataId);
 		}
 
 		private void DefragmentWriteMappedClassId(IDefragmentContext context, ArrayInfo info
@@ -580,7 +597,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 			// TODO: Move as much analysis as possible to ReflectArray#analyze() 
 			ArrayReflector(container).Analyze(obj, info);
 			IReflectClass claxx = ComponentType(container, obj);
-			ClassMetadata classMetadata = container.ProduceClassMetadata(claxx);
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = container.ProduceClassMetadata
+				(claxx);
 			bool primitive = IsPrimitive(container.Reflector(), claxx, classMetadata);
 			if (primitive)
 			{

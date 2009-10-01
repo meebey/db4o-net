@@ -1298,29 +1298,30 @@ namespace Db4objects.Db4o.Internal
 				throw new InvalidOperationException("Field '" + ToString() + "' cannot be defragmented at this time."
 					);
 			}
-			ITypeHandler4 typeHandler = HandlerRegistry.CorrectHandlerVersion(context, GetHandler
-				());
-			context.SlotFormat().DoWithSlotIndirection(context, typeHandler, new _IClosure4_1035
-				(context, typeHandler));
+			ITypeHandler4 correctTypeHandlerVersion = HandlerRegistry.CorrectHandlerVersion(context
+				, GetHandler(), _fieldType);
+			context.SlotFormat().DoWithSlotIndirection(context, correctTypeHandlerVersion, new 
+				_IClosure4_1035(context, correctTypeHandlerVersion));
 		}
 
 		private sealed class _IClosure4_1035 : IClosure4
 		{
-			public _IClosure4_1035(IDefragmentContext context, ITypeHandler4 typeHandler)
+			public _IClosure4_1035(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
+				)
 			{
 				this.context = context;
-				this.typeHandler = typeHandler;
+				this.correctTypeHandlerVersion = correctTypeHandlerVersion;
 			}
 
 			public object Run()
 			{
-				context.Defragment(typeHandler);
+				context.Defragment(correctTypeHandlerVersion);
 				return null;
 			}
 
 			private readonly IDefragmentContext context;
 
-			private readonly ITypeHandler4 typeHandler;
+			private readonly ITypeHandler4 correctTypeHandlerVersion;
 		}
 
 		public virtual void CreateIndex()

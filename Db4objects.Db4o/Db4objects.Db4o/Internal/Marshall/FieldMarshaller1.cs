@@ -76,8 +76,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return len;
 			}
-			int BtreeId = Const4.IdLength;
-			return len + BtreeId;
+			return len + Const4.IdLength;
 		}
 
 		public override void Defrag(ClassMetadata classMetadata, ClassAspect aspect, LatinStringIO

@@ -308,7 +308,7 @@ namespace Db4objects.Db4o.Internal
 			return Services().SystemTrans();
 		}
 
-		private ObjectContainerBase Container()
+		public ObjectContainerBase Container()
 		{
 			return Transaction().Container();
 		}

@@ -51,5 +51,7 @@ namespace Db4objects.Db4o.Internal
 		void TargetWriteBytes(int address, ByteArrayBuffer buffer);
 
 		IDefragmentServices Services();
+
+		ObjectContainerBase Container();
 	}
 }

@@ -2,9 +2,9 @@
 
 namespace Db4objects.Db4o.Internal.Convert.Conversions
 {
-	/// <exclude>*</exclude>
-	public partial class DropEnumClassIndexes_7_10
+	/// <exclude></exclude>
+	public partial class DropGuidClassIndexes_7_12
 	{
-		public const int Version = 9;
+		public const int Version = 10;
 	}
 }

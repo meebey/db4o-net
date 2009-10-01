@@ -43,6 +43,22 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			}
 		}
 
+		public virtual void TestValueTypes()
+		{
+			Container().Reflector().ForName("System.Guid, mscorlib");
+			bool found = false;
+			IReflectClass[] knownClassArray = Container().KnownClasses();
+			for (int knownClassIndex = 0; knownClassIndex < knownClassArray.Length; ++knownClassIndex)
+			{
+				IReflectClass knownClass = knownClassArray[knownClassIndex];
+				if (knownClass.GetName().Equals("System.Guid, mscorlib"))
+				{
+					found = true;
+				}
+			}
+			Assert.IsTrue(found);
+		}
+
 		public virtual void TestInternalClassesAreNotVisible()
 		{
 			IReflectClass[] knownClassArray = Container().KnownClasses();

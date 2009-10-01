@@ -18,6 +18,8 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			converter.Register(ReindexNetDateTime_7_8.Version, new ReindexNetDateTime_7_8());
 			converter.Register(DropEnumClassIndexes_7_10.Version, new DropEnumClassIndexes_7_10
 				());
+			converter.Register(DropGuidClassIndexes_7_12.Version, new DropGuidClassIndexes_7_12
+				());
 		}
 	}
 }

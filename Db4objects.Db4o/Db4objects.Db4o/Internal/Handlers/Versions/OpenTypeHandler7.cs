@@ -53,7 +53,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 			int savedOffSet = context.Offset();
 			context.Seek(payLoadOffSet);
 			int classMetadataId = context.CopyIDReturnOriginalID();
-			ITypeHandler4 typeHandler = context.TypeHandlerForId(classMetadataId);
+			ITypeHandler4 typeHandler = CorrectTypeHandlerVersionFor(context, classMetadataId
+				);
 			if (typeHandler != null)
 			{
 				if (IsPlainObject(typeHandler))
