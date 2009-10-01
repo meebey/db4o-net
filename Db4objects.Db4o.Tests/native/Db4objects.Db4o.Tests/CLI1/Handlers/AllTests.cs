@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 	{
         public static void Main(string[] args)
         {
-            new Db4objects.Db4o.Tests.CLI1.Handlers.AllTests().RunSolo();
+            new AllTests().RunSolo();
         }
 
         protected override Type[] TestCases()
@@ -19,6 +19,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
                 typeof(DecimalHandlerTestCase),
                 typeof(EnumInUntypedVariableTestCase),
                 typeof(EnumTypeHandlerTestCase),
+				typeof(GuidTypeHandlerTestCase),
                 typeof(SByteHandlerTestCase),
                 typeof(UIntHandlerTestCase),
                 typeof(ULongHandlerTestCase),

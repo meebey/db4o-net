@@ -74,9 +74,16 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             AssertAreEqual(Guid.Empty, nullItem._Guid);
             Assert.IsNull(nullItem._untyped);
             Assert.IsNull(nullItem._nullableGuid);
+
+        	AssertNoClassIndex(objectContainer);
 		}
 
-        private void AssertAreEqual(Guid expected, Guid actual)
+    	private void AssertNoClassIndex(IExtObjectContainer container)
+    	{
+			Assert.AreEqual(0, container.StoredClass(typeof (Guid)).InstanceCount());
+    	}
+
+    	private void AssertAreEqual(Guid expected, Guid actual)
         {
             Assert.AreEqual(expected.ToString(), actual.ToString());
         }

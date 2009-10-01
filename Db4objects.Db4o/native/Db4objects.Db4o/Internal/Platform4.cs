@@ -9,17 +9,17 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Attributes;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Internal.Convert.Conversions;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Internal.Query.Processor;
-using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Reflect.Net;
 using Db4objects.Db4o.Typehandlers;
-using Db4objects.Db4o.Types;
 using Sharpen.IO;
 
 namespace Db4objects.Db4o.Internal
@@ -614,7 +614,6 @@ namespace Db4objects.Db4o.Internal
 					new UIntHandler(),
 					new ULongHandler(),
 					new UShortHandler(),
-					// new DateTimeHandler(),
 				};
         }
 
@@ -666,14 +665,16 @@ namespace Db4objects.Db4o.Internal
         {
             EnumTypeHandler enumTypeHandler = new EnumTypeHandler();
             container.ConfigImpl.RegisterTypeHandler(new EnumTypeHandlerPredicate(), enumTypeHandler);
-			// container.Handlers.RegisterHandlerVersion(enumTypeHandler, 7, new StandardReferenceTypeHandler());
 			container.Handlers.RegisterHandlerVersion(enumTypeHandler, 4, new StandardReferenceTypeHandler());
 			container.Handlers.RegisterHandlerVersion(enumTypeHandler, 0, new StandardReferenceTypeHandler0());
+
+			GuidTypeHandler guidTypeHandler = new GuidTypeHandler();
+			container.ConfigImpl.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(Guid)), guidTypeHandler);
+			container.Handlers.RegisterHandlerVersion(guidTypeHandler, 8, new StandardReferenceTypeHandler());
 
             DateTimeHandler dateTimeHandler = new DateTimeHandler();
             container.Handlers.RegisterNetTypeHandler(dateTimeHandler);
             container.Handlers.RegisterHandlerVersion(dateTimeHandler, 6, new DateTimeHandler6());
-
         }
 
 		public static Type[] PrimitiveTypes()
@@ -762,7 +763,5 @@ namespace Db4objects.Db4o.Internal
         {
             throw exc;
         }
-
     }
-
 }
