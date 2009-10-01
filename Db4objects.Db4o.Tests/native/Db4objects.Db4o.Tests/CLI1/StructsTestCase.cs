@@ -33,15 +33,13 @@ namespace Db4objects.Db4o.Tests.CLI1
 	    {
 			Item item = new Item();
 			item.simpleStruct.foo = 100;
-			item.simpleStruct.bar = "hi";
+			item.simpleStruct.bar = "first";
 
 			RecursiveStruct r = new RecursiveStruct();
 			r.child = new Item();
+			r.child.simpleStruct.foo = 22;
+			r.child.simpleStruct.bar = "second";
 
-			SimpleStruct s = new SimpleStruct();
-			s.foo = 22;
-			s.bar = "jo";
-			r.child.simpleStruct = s;
 			item.recursiveStruct = r;
 
 			item.guid = new Guid(GUID);
@@ -55,11 +53,22 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 			Assert.AreEqual(GUID, item.guid.ToString());
             Assert.AreEqual(100, item.simpleStruct.foo);
-            Assert.AreEqual("hi", item.simpleStruct.bar);
+            Assert.AreEqual("first", item.simpleStruct.bar);
             Assert.AreEqual(22, item.recursiveStruct.child.simpleStruct.foo);
-            Assert.AreEqual("jo", item.recursiveStruct.child.simpleStruct.bar);
+            Assert.AreEqual("second", item.recursiveStruct.child.simpleStruct.bar);
 
 			Assert.AreSame(item.recursiveStruct.child, QuerySingleItemByStructFoo(22));
+		}
+
+		// ValueTypes are being duplicated.
+		public void _TestUpdate()
+		{
+			Assert.AreEqual(2, Db().Ext().StoredClass(typeof(SimpleStruct)).InstanceCount());
+			Item item = QuerySingleItemByStructFoo(22);
+
+			Db().Store(item, Int32.MaxValue);
+			Db().Commit();
+			Assert.AreEqual(2, Db().Ext().StoredClass(typeof(SimpleStruct)).InstanceCount());
 		}
 
 		// TODO:
