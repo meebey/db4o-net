@@ -99,8 +99,8 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 		private void PrintOrderBy(SodaQueryComparator.Ordering ordering)
 		{
 			_builder.AppendFormat("(orderby {0} {1})",
-				ordering.fieldPath.Aggregate((current, item) => current + "." + item),
-				DirectionString(ordering.direction));
+				ordering.FieldPath().Aggregate((current, item) => current + "." + item),
+				DirectionString(ordering.Direction()));
 		}
 
 		private static string DirectionString(SodaQueryComparator.Direction direction)
