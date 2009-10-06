@@ -53,6 +53,9 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(JavaDateCompatibilityTestCase),
 					typeof(JavaUUIDCompatibilityTestCase),
 					typeof(MDArrayTestCase),
+#if !CF && !SILVERLIGHT
+					typeof(Monitoring.AllTests),
+#endif
 					typeof(NonSerializedAttributeTestCase),
 					typeof(ObjectInfoMigration52TestCase),
                     typeof(ObjectInfoMigration57TestCase),

@@ -35,10 +35,6 @@ namespace Db4objects.Db4o.Tests
 #if CF_3_5 || NET_3_5
 					typeof(Linq.Tests.AllTests),
 #endif
-
-#if !CF && !SILVERLIGHT
-					typeof(Monitoring.AllTests),
-#endif
                     typeof(Common.Migration.AllTests),
                     typeof(Common.TA.AllTests),
                     typeof(Common.AllTests),
