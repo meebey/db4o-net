@@ -8,19 +8,27 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class Algorithms4
 	{
-		public static void Qsort(IQuickSortable4 sortable)
+		private const int QsortLengthThreshold = 7;
+
+		public static void Sort(ISortable4 sortable)
 		{
-			Qsort(sortable, 0, sortable.Size());
+			Sort(sortable, 0, sortable.Size());
 		}
 
-		public static void Qsort(IQuickSortable4 sortable, int start, int end)
+		public static void Sort(ISortable4 sortable, int start, int end)
 		{
 			int length = end - start;
-			if (length < 7)
+			if (length < QsortLengthThreshold)
 			{
 				InsertionSort(sortable, start, end);
 				return;
 			}
+			Qsort(sortable, start, end);
+		}
+
+		public static void Qsort(ISortable4 sortable, int start, int end)
+		{
+			int length = end - start;
 			int middle = start + length / 2;
 			if (length > 7)
 			{
@@ -76,16 +84,16 @@ namespace Db4objects.Db4o.Foundation
 			length = b - a;
 			if (length > 0)
 			{
-				Qsort(sortable, start, start + length);
+				Sort(sortable, start, start + length);
 			}
 			length = d - c;
 			if (length > 0)
 			{
-				Qsort(sortable, end - length, end);
+				Sort(sortable, end - length, end);
 			}
 		}
 
-		private static void InsertionSort(IQuickSortable4 sortable, int start, int end)
+		public static void InsertionSort(ISortable4 sortable, int start, int end)
 		{
 			for (int i = start + 1; i < end; i++)
 			{
@@ -113,8 +121,7 @@ namespace Db4objects.Db4o.Foundation
 			return oldPartionIndex;
 		}
 
-		private static int MiddleValueIndex(IQuickSortable4 sortable, int a, int b, int c
-			)
+		private static int MiddleValueIndex(ISortable4 sortable, int a, int b, int c)
 		{
 			if (sortable.Compare(a, b) < 0)
 			{
@@ -154,7 +161,7 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
-		private static void Swap(IQuickSortable4 sortable, int left, int right)
+		private static void Swap(ISortable4 sortable, int left, int right)
 		{
 			if (left == right)
 			{
@@ -163,7 +170,7 @@ namespace Db4objects.Db4o.Foundation
 			sortable.Swap(left, right);
 		}
 
-		private static void Swap(IQuickSortable4 sortable, int from, int to, int length)
+		private static void Swap(ISortable4 sortable, int from, int to, int length)
 		{
 			while (length-- > 0)
 			{

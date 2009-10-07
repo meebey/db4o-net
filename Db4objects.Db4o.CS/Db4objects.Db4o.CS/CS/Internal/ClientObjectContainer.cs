@@ -20,6 +20,7 @@ using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Reflect;
 using Sharpen;
@@ -75,9 +76,9 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private IClientSlotCache _clientSlotCache;
 
-		private sealed class _IMessageListener_77 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_78 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_77()
+			public _IMessageListener_78()
 			{
 			}
 
@@ -89,7 +90,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_77
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_78
 			();
 
 		private bool _bypassSlotCache = false;
@@ -145,7 +146,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void InitalizeClientSlotCache()
 		{
-			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_127
+			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_128
 				(this).OnEvent);
 			if (ConfigImpl.PrefetchSlotCacheSize() > 0)
 			{
@@ -155,9 +156,9 @@ namespace Db4objects.Db4o.CS.Internal
 			_clientSlotCache = new NullClientSlotCache();
 		}
 
-		private sealed class _IEventListener4_127
+		private sealed class _IEventListener4_128
 		{
-			public _IEventListener4_127(ClientObjectContainer _enclosing)
+			public _IEventListener4_128(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -199,6 +200,11 @@ namespace Db4objects.Db4o.CS.Internal
 		public override void Backup(IStorage targetStorage, string path)
 		{
 			throw new NotSupportedException();
+		}
+
+		protected override void CloseTransaction()
+		{
+			_transaction.Close(false);
 		}
 
 		protected override void CloseSystemTransaction()
@@ -322,7 +328,7 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		public sealed override Transaction NewTransaction(Transaction parentTransaction, 
-			TransactionalReferenceSystem referenceSystem)
+			IReferenceSystem referenceSystem)
 		{
 			return new ClientTransaction(this, parentTransaction, referenceSystem);
 		}
@@ -791,13 +797,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_629(this, trans, result));
+			WithEnvironment(new _IRunnable_634(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_629 : IRunnable
+		private sealed class _IRunnable_634 : IRunnable
 		{
-			public _IRunnable_629(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_634(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1139,13 +1145,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_898(this, trans, result));
+			WithEnvironment(new _IRunnable_903(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_898 : IRunnable
+		private sealed class _IRunnable_903 : IRunnable
 		{
-			public _IRunnable_898(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_903(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;

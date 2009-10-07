@@ -737,7 +737,7 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ObjectReference Hc_remove(Db4objects.Db4o.Internal.ObjectReference
+		public virtual Db4objects.Db4o.Internal.ObjectReference Hc_remove(Db4objects.Db4o.Internal.ObjectReference
 			 findRef)
 		{
 			if (this == findRef)
@@ -795,7 +795,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <summary>IDTREE</summary>
-		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
+		public virtual Db4objects.Db4o.Internal.ObjectReference Id_add(Db4objects.Db4o.Internal.ObjectReference
 			 newRef)
 		{
 			newRef.Id_init();
@@ -900,7 +900,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_find(int id)
+		public virtual Db4objects.Db4o.Internal.ObjectReference Id_find(int id)
 		{
 			int cmp = id - _id;
 			if (cmp > 0)
@@ -971,7 +971,7 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		internal virtual Db4objects.Db4o.Internal.ObjectReference Id_remove(int id)
+		public virtual Db4objects.Db4o.Internal.ObjectReference Id_remove(int id)
 		{
 			int cmp = id - _id;
 			if (cmp < 0)

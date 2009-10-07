@@ -3,7 +3,7 @@
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public interface IQuickSortable4
+	public interface ISortable4
 	{
 		int Size();
 

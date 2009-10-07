@@ -7,6 +7,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.Api;
@@ -89,12 +90,12 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestBackup()
 		{
-			Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_83(this));
+			Assert.Expect(typeof(NotSupportedException), new _ICodeBlock_84(this));
 		}
 
-		private sealed class _ICodeBlock_83 : ICodeBlock
+		private sealed class _ICodeBlock_84 : ICodeBlock
 		{
-			public _ICodeBlock_83(EmbeddedClientObjectContainerTestCase _enclosing)
+			public _ICodeBlock_84(EmbeddedClientObjectContainerTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -127,8 +128,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			BooleanByRef closed = new BooleanByRef();
 			// FIXME: Sharpen doesn't understand the null parameter (the third one), we had to add a cast
 			//        to get sharpen to run through.
-			Transaction trans = new _LocalTransaction_108(closed, _server, _server.SystemTransaction
-				(), (TransactionalReferenceSystem)null);
+			Transaction trans = new _LocalTransaction_109(closed, _server, _server.SystemTransaction
+				(), (IReferenceSystem)null);
 			ObjectContainerSession client = new ObjectContainerSession(_server, trans);
 			// FIXME: close needs to unregister reference system
 			//        also for crashed clients 
@@ -136,11 +137,10 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			Assert.IsTrue(closed.value);
 		}
 
-		private sealed class _LocalTransaction_108 : LocalTransaction
+		private sealed class _LocalTransaction_109 : LocalTransaction
 		{
-			public _LocalTransaction_108(BooleanByRef closed, ObjectContainerBase baseArg1, Transaction
-				 baseArg2, TransactionalReferenceSystem baseArg3) : base(baseArg1, baseArg2, baseArg3
-				)
+			public _LocalTransaction_109(BooleanByRef closed, ObjectContainerBase baseArg1, Transaction
+				 baseArg2, IReferenceSystem baseArg3) : base(baseArg1, baseArg2, baseArg3)
 			{
 				this.closed = closed;
 			}

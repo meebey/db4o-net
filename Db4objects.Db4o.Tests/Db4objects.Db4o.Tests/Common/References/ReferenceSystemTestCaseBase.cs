@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Tests.Common.References;
 
 namespace Db4objects.Db4o.Tests.Common.References

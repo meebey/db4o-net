@@ -79,5 +79,9 @@ namespace Db4oUnit.Extensions
 		{
 			return 0;
 		}
+
+		public override void Listener(IFreespaceListener listener)
+		{
+		}
 	}
 }

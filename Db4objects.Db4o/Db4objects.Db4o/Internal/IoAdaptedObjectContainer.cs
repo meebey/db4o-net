@@ -217,6 +217,11 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		protected override void CloseTransaction()
+		{
+			_transaction.Close(false);
+		}
+
 		protected override void CloseSystemTransaction()
 		{
 			((LocalTransaction)SystemTransaction()).Close();

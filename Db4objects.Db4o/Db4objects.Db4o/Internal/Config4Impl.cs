@@ -15,6 +15,7 @@ using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Messaging;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Core;
@@ -59,9 +60,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private sealed class _IDeferred_70 : KeySpec.IDeferred
+		private sealed class _IDeferred_71 : KeySpec.IDeferred
 		{
-			public _IDeferred_70()
+			public _IDeferred_71()
 			{
 			}
 
@@ -72,16 +73,16 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_70
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_71
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
 
 		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
 
-		private sealed class _IDeferred_80 : KeySpec.IDeferred
+		private sealed class _IDeferred_81 : KeySpec.IDeferred
 		{
-			public _IDeferred_80()
+			public _IDeferred_81()
 			{
 			}
 
@@ -91,7 +92,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_80());
+		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_81());
 
 		private static readonly KeySpec DisableCommitRecoveryKey = new KeySpec(false);
 
@@ -108,9 +109,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec EncryptKey = new KeySpec(false);
 
-		private sealed class _IDeferred_98 : KeySpec.IDeferred
+		private sealed class _IDeferred_99 : KeySpec.IDeferred
 		{
-			public _IDeferred_98()
+			public _IDeferred_99()
 			{
 			}
 
@@ -120,7 +121,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_98
+		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_99
 			());
 
 		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
@@ -170,9 +171,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchSlotCacheSizeKey = new KeySpec(0);
 
-		private sealed class _IDeferred_148 : KeySpec.IDeferred
+		private sealed class _IDeferred_149 : KeySpec.IDeferred
 		{
-			public _IDeferred_148()
+			public _IDeferred_149()
 			{
 			}
 
@@ -184,7 +185,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_148());
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_149());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -223,6 +224,21 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec SlotCacheSizeKey = new KeySpec(30);
 
 		private static readonly KeySpec TaintedKey = new KeySpec(false);
+
+		private sealed class _IReferenceSystemFactory_189 : IReferenceSystemFactory
+		{
+			public _IReferenceSystemFactory_189()
+			{
+			}
+
+			public IReferenceSystem NewReferenceSystem(IInternalObjectContainer container)
+			{
+				return new TransactionalReferenceSystem();
+			}
+		}
+
+		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_189
+			());
 
 		private ObjectContainerBase _container;
 
@@ -1350,6 +1366,17 @@ namespace Db4objects.Db4o.Internal
 				_prefetchSettingsChanged = (System.EventHandler<EventArgs>)System.Delegate.Remove
 					(_prefetchSettingsChanged, value);
 			}
+		}
+
+		public void ReferenceSystemFactory(IReferenceSystemFactory referenceSystemFactory
+			)
+		{
+			_config.Put(ReferenceSystemFactoryKey, referenceSystemFactory);
+		}
+
+		public IReferenceSystemFactory ReferenceSystemFactory()
+		{
+			return (IReferenceSystemFactory)_config.Get(ReferenceSystemFactoryKey);
 		}
 	}
 }

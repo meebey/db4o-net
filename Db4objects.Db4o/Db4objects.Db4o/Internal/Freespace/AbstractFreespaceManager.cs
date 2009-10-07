@@ -215,6 +215,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public abstract Slot GetSlot(int arg1);
 
+		public abstract void Listener(IFreespaceListener arg1);
+
 		public abstract void Read(int arg1);
 
 		public abstract int SlotCount();

@@ -2,6 +2,7 @@
 
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Tests.Common.References;
 
 namespace Db4objects.Db4o.Tests.Common.References
@@ -19,8 +20,8 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		public virtual void TestTransactionalReferenceSystem()
 		{
-			TransactionalReferenceSystem transactionalReferenceSystem = new TransactionalReferenceSystem
-				();
+			IReferenceSystem transactionalReferenceSystem = new TransactionalReferenceSystem(
+				);
 			AssertAllRerefencesAvailableOnNew(transactionalReferenceSystem);
 			transactionalReferenceSystem.Rollback();
 			AssertEmpty(transactionalReferenceSystem);

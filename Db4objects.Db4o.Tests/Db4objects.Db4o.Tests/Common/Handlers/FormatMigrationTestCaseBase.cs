@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 				//		    System.out.println("Check database: " + testFileName);
 				InvestigateFileHeaderVersion(testFileName);
-				//			runDefrag(testFileName);
+				RunDefrag(testFileName);
 				CheckDatabaseFile(testFileName);
 				// Twice, to ensure everything is fine after opening, converting and closing.
 				CheckDatabaseFile(testFileName);

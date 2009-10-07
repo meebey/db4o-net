@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Ext
 			{
 				return false;
 			}
-			return Arrays4.AreEqual(other.i_signature, this.i_signature);
+			return Arrays4.Equals(other.i_signature, this.i_signature);
 		}
 
 		public override int GetHashCode()

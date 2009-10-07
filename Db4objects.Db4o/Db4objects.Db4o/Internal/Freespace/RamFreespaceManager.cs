@@ -18,6 +18,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private Tree _freeBySize;
 
+		private IFreespaceListener _listener = NullFreespaceListener.Instance;
+
 		public RamFreespaceManager(LocalObjectContainer file) : base(file)
 		{
 		}
@@ -27,7 +29,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 			FreeSlotNode addressNode = new FreeSlotNode(address);
 			addressNode.CreatePeer(length);
 			_freeByAddress = Tree.Add(_freeByAddress, addressNode);
-			_freeBySize = Tree.Add(_freeBySize, addressNode._peer);
+			AddToFreeBySize(addressNode._peer);
+		}
+
+		private void AddToFreeBySize(FreeSlotNode node)
+		{
+			_freeBySize = Tree.Add(_freeBySize, node);
+			_listener.SlotAdded(node._key);
 		}
 
 		public override Slot AllocateTransactionLogSlot(int length)
@@ -88,7 +96,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				))
 			{
 				sizeNode = addressnode._peer;
-				_freeBySize = _freeBySize.RemoveNode(sizeNode);
+				RemoveFromFreeBySize(sizeNode);
 				sizeNode._key += length;
 				FreeSlotNode secondAddressNode = (FreeSlotNode)Tree.FindGreaterOrEqual(_freeByAddress
 					, _finder);
@@ -98,7 +106,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 					RemoveFromBothTrees(secondAddressNode._peer);
 				}
 				sizeNode.RemoveChildren();
-				_freeBySize = Tree.Add(_freeBySize, sizeNode);
+				AddToFreeBySize(sizeNode);
 			}
 			else
 			{
@@ -112,7 +120,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 					addressnode.RemoveChildren();
 					sizeNode.RemoveChildren();
 					_freeByAddress = Tree.Add(_freeByAddress, addressnode);
-					_freeBySize = Tree.Add(_freeBySize, sizeNode);
+					AddToFreeBySize(sizeNode);
 				}
 				else
 				{
@@ -148,6 +156,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				return null;
 			}
 			FreeSlotNode node = (FreeSlotNode)_finder._object;
+			_listener.SlotRemoved(node._key);
 			int blocksFound = node._key;
 			int address = node._peer._key;
 			_freeByAddress = _freeByAddress.RemoveNode(node._peer);
@@ -184,14 +193,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 			ByRef addressTree = ByRef.NewInstance();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _IVisitor4_167(addressTree));
+				_freeBySize.Traverse(new _IVisitor4_175(addressTree));
 			}
 			_freeByAddress = ((Tree)addressTree.value);
 		}
 
-		private sealed class _IVisitor4_167 : IVisitor4
+		private sealed class _IVisitor4_175 : IVisitor4
 		{
-			public _IVisitor4_167(ByRef addressTree)
+			public _IVisitor4_175(ByRef addressTree)
 			{
 				this.addressTree = addressTree;
 			}
@@ -243,8 +252,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private void RemoveFromBothTrees(FreeSlotNode sizeNode)
 		{
-			_freeBySize = _freeBySize.RemoveNode(sizeNode);
+			RemoveFromFreeBySize(sizeNode);
 			_freeByAddress = _freeByAddress.RemoveNode(sizeNode._peer);
+		}
+
+		private void RemoveFromFreeBySize(FreeSlotNode node)
+		{
+			_freeBySize = _freeBySize.RemoveNode(node);
+			_listener.SlotRemoved(node._key);
 		}
 
 		public override int SlotCount()
@@ -279,12 +294,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _IVisitor4_240(visitor));
+			_freeByAddress.Traverse(new _IVisitor4_253(visitor));
 		}
 
-		private sealed class _IVisitor4_240 : IVisitor4
+		private sealed class _IVisitor4_253 : IVisitor4
 		{
-			public _IVisitor4_240(IVisitor4 visitor)
+			public _IVisitor4_253(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -330,6 +345,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 				_sb.Append(obj);
 				_sb.Append("\n");
 			}
+		}
+
+		public override void Listener(IFreespaceListener listener)
+		{
+			_listener = listener;
 		}
 	}
 }

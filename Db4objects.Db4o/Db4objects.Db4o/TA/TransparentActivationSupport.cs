@@ -9,6 +9,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Diagnostic;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.TA;
 
@@ -56,20 +57,20 @@ namespace Db4objects.Db4o.TA
 			SetActivationDepthProvider(container, provider);
 			IEventRegistry registry = EventRegistryFor(container);
 			registry.Instantiated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_44(this).OnEvent);
+				(new _IEventListener4_45(this).OnEvent);
 			registry.Created += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_49(this).OnEvent);
+				(new _IEventListener4_50(this).OnEvent);
 			registry.Closing += new System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>
-				(new _IEventListener4_55(this).OnEvent);
+				(new _IEventListener4_56(this).OnEvent);
 			TransparentActivationSupport.TADiagnosticProcessor processor = new TransparentActivationSupport.TADiagnosticProcessor
 				(this, container);
 			registry.ClassRegistered += new System.EventHandler<Db4objects.Db4o.Events.ClassEventArgs>
-				(new _IEventListener4_66(processor).OnEvent);
+				(new _IEventListener4_67(processor).OnEvent);
 		}
 
-		private sealed class _IEventListener4_44
+		private sealed class _IEventListener4_45
 		{
-			public _IEventListener4_44(TransparentActivationSupport _enclosing)
+			public _IEventListener4_45(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -83,9 +84,9 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_49
+		private sealed class _IEventListener4_50
 		{
-			public _IEventListener4_49(TransparentActivationSupport _enclosing)
+			public _IEventListener4_50(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -99,9 +100,9 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_55
+		private sealed class _IEventListener4_56
 		{
-			public _IEventListener4_55(TransparentActivationSupport _enclosing)
+			public _IEventListener4_56(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -121,9 +122,9 @@ namespace Db4objects.Db4o.TA
 			private readonly TransparentActivationSupport _enclosing;
 		}
 
-		private sealed class _IEventListener4_66
+		private sealed class _IEventListener4_67
 		{
-			public _IEventListener4_66(TransparentActivationSupport.TADiagnosticProcessor processor
+			public _IEventListener4_67(TransparentActivationSupport.TADiagnosticProcessor processor
 				)
 			{
 				this.processor = processor;
@@ -164,12 +165,12 @@ namespace Db4objects.Db4o.TA
 				return;
 			}
 			IReferenceSystem referenceSystem = transaction.ReferenceSystem();
-			referenceSystem.TraverseReferences(new _IVisitor4_94(this));
+			referenceSystem.TraverseReferences(new _IVisitor4_95(this));
 		}
 
-		private sealed class _IVisitor4_94 : IVisitor4
+		private sealed class _IVisitor4_95 : IVisitor4
 		{
-			public _IVisitor4_94(TransparentActivationSupport _enclosing)
+			public _IVisitor4_95(TransparentActivationSupport _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

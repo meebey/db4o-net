@@ -84,12 +84,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public override void Sort(IQueryComparator cmp)
 		{
-			Algorithms4.Qsort(new _IQuickSortable4_74(this, cmp));
+			Algorithms4.Sort(new _ISortable4_74(this, cmp));
 		}
 
-		private sealed class _IQuickSortable4_74 : IQuickSortable4
+		private sealed class _ISortable4_74 : ISortable4
 		{
-			public _IQuickSortable4_74(IdListQueryResult _enclosing, IQueryComparator cmp)
+			public _ISortable4_74(IdListQueryResult _enclosing, IQueryComparator cmp)
 			{
 				this._enclosing = _enclosing;
 				this.cmp = cmp;
@@ -118,12 +118,12 @@ namespace Db4objects.Db4o.Internal.Query.Result
 
 		public override void SortIds(IIntComparator cmp)
 		{
-			Algorithms4.Qsort(new _IQuickSortable4_88(this, cmp));
+			Algorithms4.Sort(new _ISortable4_88(this, cmp));
 		}
 
-		private sealed class _IQuickSortable4_88 : IQuickSortable4
+		private sealed class _ISortable4_88 : ISortable4
 		{
-			public _IQuickSortable4_88(IdListQueryResult _enclosing, IIntComparator cmp)
+			public _ISortable4_88(IdListQueryResult _enclosing, IIntComparator cmp)
 			{
 				this._enclosing = _enclosing;
 				this.cmp = cmp;

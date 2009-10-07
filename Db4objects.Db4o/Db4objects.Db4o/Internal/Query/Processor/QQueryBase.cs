@@ -928,7 +928,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				SodaQueryComparator.Ordering ordering = ((SodaQueryComparator.Ordering)orderingIter
 					.Current);
-				if (Arrays.Equals(ordering.fieldPath, fieldPath))
+				if (Arrays.Equals(ordering.FieldPath(), fieldPath))
 				{
 					Orderings().Remove(ordering);
 					break;

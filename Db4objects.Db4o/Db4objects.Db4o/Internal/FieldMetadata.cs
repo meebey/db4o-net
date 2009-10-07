@@ -189,6 +189,7 @@ namespace Db4objects.Db4o.Internal
 			_index.Remove(trans, CreateFieldIndexKey(parentID, indexEntry));
 		}
 
+		//TODO: Split into command query separation.
 		public virtual bool Alive()
 		{
 			if (_state == FieldMetadataState.Available)
@@ -536,7 +537,7 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_453
+				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_454
 					(this, childContext));
 			}
 			catch (CorruptionException exc)
@@ -545,9 +546,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_453 : IClosure4
+		private sealed class _IClosure4_454 : IClosure4
 		{
-			public _IClosure4_453(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_454(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -744,10 +745,6 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			_config = containingClassConfig.ConfigField(name);
-			if (Debug4.configureAllFields && _config == null)
-			{
-				_config = (Config4Field)containingClassConfig.ObjectField(_name);
-			}
 		}
 
 		public virtual void Init(string name, int fieldTypeID, bool isPrimitive, bool isArray
@@ -1073,13 +1070,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_872(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_875(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_872 : IVisitor4
+		private sealed class _IVisitor4_875 : IVisitor4
 		{
-			public _IVisitor4_872(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_875(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1293,7 +1290,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
-			if (!Alive())
+			if (!Alive() && !Updating())
 			{
 				throw new InvalidOperationException("Field '" + ToString() + "' cannot be defragmented at this time."
 					);
@@ -1301,12 +1298,12 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 correctTypeHandlerVersion = HandlerRegistry.CorrectHandlerVersion(context
 				, GetHandler(), _fieldType);
 			context.SlotFormat().DoWithSlotIndirection(context, correctTypeHandlerVersion, new 
-				_IClosure4_1035(context, correctTypeHandlerVersion));
+				_IClosure4_1038(context, correctTypeHandlerVersion));
 		}
 
-		private sealed class _IClosure4_1035 : IClosure4
+		private sealed class _IClosure4_1038 : IClosure4
 		{
-			public _IClosure4_1035(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
+			public _IClosure4_1038(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
 				)
 			{
 				this.context = context;

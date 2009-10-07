@@ -6,6 +6,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Weakref;
 using Db4objects.Db4o.Reflect;
@@ -98,7 +99,7 @@ namespace Db4objects.Db4o.Internal
 
 		// do nothing here
 		public sealed override Transaction NewTransaction(Transaction parentTransaction, 
-			TransactionalReferenceSystem referenceSystem)
+			IReferenceSystem referenceSystem)
 		{
 			if (null != parentTransaction)
 			{
@@ -273,6 +274,11 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing, blocksize is always 1
+		protected override void CloseTransaction()
+		{
+		}
+
+		// do nothing
 		protected override void CloseSystemTransaction()
 		{
 		}

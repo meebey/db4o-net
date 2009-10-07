@@ -24,6 +24,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private int _delegationRequests;
 
+		private IFreespaceListener _listener = NullFreespaceListener.Instance;
+
 		public BTreeFreespaceManager(LocalObjectContainer file) : base(file)
 		{
 			_delegate = new RamFreespaceManager(file);
@@ -33,6 +35,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			_slotsByLength.Add(Transaction(), slot);
 			_slotsByAddress.Add(Transaction(), slot);
+			_listener.SlotAdded(slot.Length());
 		}
 
 		public override Slot AllocateTransactionLogSlot(int length)
@@ -228,6 +231,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			_slotsByLength.Remove(Transaction(), slot);
 			_slotsByAddress.Remove(Transaction(), slot);
+			_listener.SlotRemoved(slot.Length());
 		}
 
 		private BTreePointer SearchBTree(BTree bTree, Slot slot, SearchTarget target)
@@ -301,6 +305,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				EndDelegation();
 			}
+		}
+
+		public override void Listener(IFreespaceListener listener)
+		{
+			_listener = listener;
 		}
 	}
 }

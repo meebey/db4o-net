@@ -40,5 +40,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		Slot AllocateTransactionLogSlot(int length);
 
 		void FreeTransactionLogSlot(Slot slot);
+
+		void Listener(IFreespaceListener listener);
 	}
 }

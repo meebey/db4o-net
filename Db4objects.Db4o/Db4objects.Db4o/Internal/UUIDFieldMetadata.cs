@@ -283,7 +283,7 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			VirtualAttributes vad = hardRef._reference.VirtualAttributes(transaction, false);
-			if (!Arrays4.AreEqual(signature, vad.i_database.i_signature))
+			if (!Arrays4.Equals(signature, vad.i_database.i_signature))
 			{
 				return null;
 			}

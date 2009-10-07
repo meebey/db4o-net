@@ -21,6 +21,8 @@ namespace Db4objects.Db4o.CS
 	/// <since>7.5</since>
 	public class Db4oClientServer
 	{
+		public const int ArbitraryPort = -1;
+
 		/// <summary>
 		/// creates a new
 		/// <see cref="Db4objects.Db4o.CS.Config.IServerConfiguration">Db4objects.Db4o.CS.Config.IServerConfiguration

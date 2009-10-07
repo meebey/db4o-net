@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -41,12 +42,12 @@ namespace Db4objects.Db4o.Internal
 
 		private List4 _transactionListeners;
 
-		private readonly TransactionalReferenceSystem _referenceSystem;
+		private readonly IReferenceSystem _referenceSystem;
 
 		private readonly IDictionary _locals = new Hashtable();
 
 		public Transaction(ObjectContainerBase container, Db4objects.Db4o.Internal.Transaction
-			 systemTransaction, TransactionalReferenceSystem referenceSystem)
+			 systemTransaction, IReferenceSystem referenceSystem)
 		{
 			// contains DeleteInfo nodes
 			_container = container;
@@ -98,14 +99,19 @@ namespace Db4objects.Db4o.Internal
 			{
 				CheckSynchronization();
 				Container().ReleaseSemaphores(this);
-				if (_referenceSystem != null)
-				{
-					Container().ReferenceSystemRegistry().RemoveReferenceSystem(_referenceSystem);
-				}
+				DiscardReferenceSystem();
 			}
 			if (rollbackOnClose)
 			{
 				Rollback();
+			}
+		}
+
+		protected virtual void DiscardReferenceSystem()
+		{
+			if (_referenceSystem != null)
+			{
+				Container().ReferenceSystemRegistry().RemoveReferenceSystem(_referenceSystem);
 			}
 		}
 
@@ -397,12 +403,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_348(this);
+			return new _IContext_353(this);
 		}
 
-		private sealed class _IContext_348 : IContext
+		private sealed class _IContext_353 : IContext
 		{
-			public _IContext_348(Transaction _enclosing)
+			public _IContext_353(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
@@ -127,6 +128,60 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 						AssertSame(fm[from], fm[to]);
 					}
 				}
+			}
+		}
+
+		public virtual void TestListener()
+		{
+			for (int i = 0; i < fm.Length; i++)
+			{
+				ArrayList removed = new ArrayList();
+				ArrayList added = new ArrayList();
+				fm[i].Listener(new _IFreespaceListener_136(removed, added));
+				fm[i].Free(new Slot(5, 10));
+				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(10)));
+				fm[i].GetSlot(2);
+				Assert.IsTrue(removed.Contains(new FreespaceManagerTestCase.Freespace(10)));
+				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(8)));
+			}
+		}
+
+		private sealed class _IFreespaceListener_136 : IFreespaceListener
+		{
+			public _IFreespaceListener_136(ArrayList removed, ArrayList added)
+			{
+				this.removed = removed;
+				this.added = added;
+			}
+
+			public void SlotRemoved(int size)
+			{
+				removed.Add(new FreespaceManagerTestCase.Freespace(size));
+			}
+
+			public void SlotAdded(int size)
+			{
+				added.Add(new FreespaceManagerTestCase.Freespace(size));
+			}
+
+			private readonly ArrayList removed;
+
+			private readonly ArrayList added;
+		}
+
+		public class Freespace
+		{
+			private readonly int _size;
+
+			public Freespace(int size)
+			{
+				_size = size;
+			}
+
+			public override bool Equals(object obj)
+			{
+				FreespaceManagerTestCase.Freespace other = (FreespaceManagerTestCase.Freespace)obj;
+				return _size == other._size;
 			}
 		}
 	}

@@ -6,6 +6,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
+using Db4objects.Db4o.Internal.References;
 
 namespace Db4objects.Db4o.Internal.Classindex
 {
@@ -68,12 +69,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 				return;
 			}
 			_btreeIndex = ((LocalObjectContainer)stream).CreateBTreeClassIndex(btreeID);
-			_btreeIndex.SetRemoveListener(new _IVisitor4_61(this));
+			_btreeIndex.SetRemoveListener(new _IVisitor4_62(this));
 		}
 
-		private sealed class _IVisitor4_61 : IVisitor4
+		private sealed class _IVisitor4_62 : IVisitor4
 		{
-			public _IVisitor4_61(BTreeClassIndexStrategy _enclosing)
+			public _IVisitor4_62(BTreeClassIndexStrategy _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

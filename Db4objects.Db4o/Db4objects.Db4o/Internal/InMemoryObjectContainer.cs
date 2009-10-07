@@ -76,6 +76,11 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing, blocksize is always 1
+		protected override void CloseTransaction()
+		{
+		}
+
+		// do nothing
 		protected override void CloseSystemTransaction()
 		{
 		}

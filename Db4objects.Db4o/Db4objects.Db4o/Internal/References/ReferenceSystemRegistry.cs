@@ -3,8 +3,9 @@
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.References;
 
-namespace Db4objects.Db4o.Internal
+namespace Db4objects.Db4o.Internal.References
 {
 	/// <exclude></exclude>
 	public class ReferenceSystemRegistry
@@ -13,12 +14,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void RemoveId(int id)
 		{
-			RemoveReference(new _IReferenceSource_16(id));
+			RemoveReference(new _IReferenceSource_17(id));
 		}
 
-		private sealed class _IReferenceSource_16 : ReferenceSystemRegistry.IReferenceSource
+		private sealed class _IReferenceSource_17 : ReferenceSystemRegistry.IReferenceSource
 		{
-			public _IReferenceSource_16(int id)
+			public _IReferenceSource_17(int id)
 			{
 				this.id = id;
 			}
@@ -33,12 +34,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void RemoveObject(object obj)
 		{
-			RemoveReference(new _IReferenceSource_24(obj));
+			RemoveReference(new _IReferenceSource_25(obj));
 		}
 
-		private sealed class _IReferenceSource_24 : ReferenceSystemRegistry.IReferenceSource
+		private sealed class _IReferenceSource_25 : ReferenceSystemRegistry.IReferenceSource
 		{
-			public _IReferenceSource_24(object obj)
+			public _IReferenceSource_25(object obj)
 			{
 				this.obj = obj;
 			}
@@ -53,12 +54,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void RemoveReference(ObjectReference reference)
 		{
-			RemoveReference(new _IReferenceSource_32(reference));
+			RemoveReference(new _IReferenceSource_33(reference));
 		}
 
-		private sealed class _IReferenceSource_32 : ReferenceSystemRegistry.IReferenceSource
+		private sealed class _IReferenceSource_33 : ReferenceSystemRegistry.IReferenceSource
 		{
-			public _IReferenceSource_32(ObjectReference reference)
+			public _IReferenceSource_33(ObjectReference reference)
 			{
 				this.reference = reference;
 			}
@@ -94,6 +95,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual void RemoveReferenceSystem(IReferenceSystem referenceSystem)
 		{
 			_referenceSystems.Remove(referenceSystem);
+			referenceSystem.Discarded();
 		}
 
 		private interface IReferenceSource

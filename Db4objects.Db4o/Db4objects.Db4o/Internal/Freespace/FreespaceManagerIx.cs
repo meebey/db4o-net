@@ -91,5 +91,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public override void Commit()
 		{
 		}
+
+		public override void Listener(IFreespaceListener listener)
+		{
+		}
 	}
 }

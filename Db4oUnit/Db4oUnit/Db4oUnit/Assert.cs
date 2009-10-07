@@ -184,13 +184,13 @@ namespace Db4oUnit
 			Fail(FailureMessage(expected, actual));
 		}
 
-		public static void AreNotSame(object expected, object actual)
+		public static void AreNotSame(object unexpected, object actual)
 		{
-			if (expected != actual)
+			if (unexpected != actual)
 			{
 				return;
 			}
-			Fail("Expecting not '" + expected + "'.");
+			Fail("Expecting not '" + unexpected + "'.");
 		}
 
 		private static string FailureMessage(object expected, object actual)
@@ -269,27 +269,28 @@ namespace Db4oUnit
 			Fail(FailureMessage(expected, actual, @operator, null));
 		}
 
-		public static void AreNotEqual(long expected, long actual)
+		public static void AreNotEqual(long unexpected, long actual)
 		{
-			AreNotEqual(expected, actual, null);
+			AreNotEqual(unexpected, actual, null);
 		}
 
-		public static void AreNotEqual(long expected, long actual, string customMessage)
+		public static void AreNotEqual(long unexpected, long actual, string customMessage
+			)
 		{
-			if (actual != expected)
+			if (actual != unexpected)
 			{
 				return;
 			}
-			Fail(expected, actual, "not equal to ", customMessage);
+			Fail(unexpected, actual, "not equal to ", customMessage);
 		}
 
-		public static void AreNotEqual(object notExpected, object actual)
+		public static void AreNotEqual(object unexpected, object actual)
 		{
-			if (!Check.ObjectsAreEqual(notExpected, actual))
+			if (!Check.ObjectsAreEqual(unexpected, actual))
 			{
 				return;
 			}
-			Fail("Expecting not '" + notExpected + "'");
+			Fail("Expecting not '" + unexpected + "'");
 		}
 
 		public static void EqualsAndHashcode(object obj, object same, object other)

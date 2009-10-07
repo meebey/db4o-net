@@ -14,17 +14,27 @@ namespace Db4objects.Db4o.Internal.Query
 	{
 		public class Ordering
 		{
-			public readonly SodaQueryComparator.Direction direction;
+			private SodaQueryComparator.Direction _direction;
 
-			public readonly string[] fieldPath;
+			private string[] _fieldPath;
 
 			[System.NonSerialized]
 			internal IList _resolvedPath;
 
 			public Ordering(SodaQueryComparator.Direction direction, string[] fieldPath)
 			{
-				this.direction = direction;
-				this.fieldPath = fieldPath;
+				_direction = direction;
+				_fieldPath = fieldPath;
+			}
+
+			public virtual SodaQueryComparator.Direction Direction()
+			{
+				return _direction;
+			}
+
+			public virtual string[] FieldPath()
+			{
+				return _fieldPath;
 			}
 		}
 
@@ -91,7 +101,7 @@ namespace Db4objects.Db4o.Internal.Query
 			for (int fieldPathIndex = 0; fieldPathIndex < orderings.Length; ++fieldPathIndex)
 			{
 				SodaQueryComparator.Ordering fieldPath = orderings[fieldPathIndex];
-				fieldPath._resolvedPath = ResolveFieldPath(fieldPath.fieldPath);
+				fieldPath._resolvedPath = ResolveFieldPath(fieldPath.FieldPath());
 			}
 		}
 
@@ -140,7 +150,7 @@ namespace Db4objects.Db4o.Internal.Query
 				int result = CompareByField(x, y, ordering._resolvedPath);
 				if (result != 0)
 				{
-					return ordering.direction.Equals(SodaQueryComparator.Direction.Ascending) ? result
+					return ordering.Direction().Equals(SodaQueryComparator.Direction.Ascending) ? result
 						 : -result;
 				}
 			}

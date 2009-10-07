@@ -4,6 +4,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.References;
 
 namespace Db4objects.Db4o.Tests.Common.Internal
 {
@@ -14,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		public virtual void TestRemoveReferenceSystemOnClose()
 		{
 			LocalObjectContainer container = (LocalObjectContainer)Db();
-			TransactionalReferenceSystem referenceSystem = container.CreateReferenceSystem();
+			IReferenceSystem referenceSystem = container.CreateReferenceSystem();
 			Transaction transaction = container.NewTransaction(container.SystemTransaction(), 
 				referenceSystem);
 			referenceSystem.AddNewReference(new ObjectReference(TestId));

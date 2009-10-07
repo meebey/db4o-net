@@ -3,7 +3,7 @@
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 
-namespace Db4objects.Db4o.Internal
+namespace Db4objects.Db4o.Internal.References
 {
 	/// <exclude></exclude>
 	public interface IReferenceSystem
@@ -23,5 +23,7 @@ namespace Db4objects.Db4o.Internal
 		void Rollback();
 
 		void TraverseReferences(IVisitor4 visitor);
+
+		void Discarded();
 	}
 }

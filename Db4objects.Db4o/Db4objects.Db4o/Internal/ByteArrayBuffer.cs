@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (other != null)
 			{
-				return Arrays4.AreEqual(_buffer, other._buffer);
+				return Arrays4.Equals(_buffer, other._buffer);
 			}
 			return false;
 		}

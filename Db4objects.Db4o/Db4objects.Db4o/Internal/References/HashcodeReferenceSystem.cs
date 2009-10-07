@@ -4,8 +4,9 @@ using System.Text;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.References;
 
-namespace Db4objects.Db4o.Internal
+namespace Db4objects.Db4o.Internal.References
 {
 	/// <exclude></exclude>
 	public class HashcodeReferenceSystem : IReferenceSystem
@@ -120,14 +121,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			BooleanByRef found = new BooleanByRef();
 			StringBuilder str = new StringBuilder("HashcodeReferenceSystem {");
-			TraverseReferences(new _IVisitor4_116(found, str));
+			TraverseReferences(new _IVisitor4_117(found, str));
 			str.Append("}");
 			return str.ToString();
 		}
 
-		private sealed class _IVisitor4_116 : IVisitor4
+		private sealed class _IVisitor4_117 : IVisitor4
 		{
-			public _IVisitor4_116(BooleanByRef found, StringBuilder str)
+			public _IVisitor4_117(BooleanByRef found, StringBuilder str)
 			{
 				this.found = found;
 				this.str = str;
@@ -148,5 +149,10 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly StringBuilder str;
 		}
+
+		public virtual void Discarded()
+		{
+		}
+		// do nothing
 	}
 }

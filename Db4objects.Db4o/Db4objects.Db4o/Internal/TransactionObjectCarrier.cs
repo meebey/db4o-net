@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal
@@ -9,8 +10,8 @@ namespace Db4objects.Db4o.Internal
 	internal class TransactionObjectCarrier : LocalTransaction
 	{
 		internal TransactionObjectCarrier(ObjectContainerBase container, Transaction parentTransaction
-			, TransactionalReferenceSystem referenceSystem) : base(container, parentTransaction
-			, referenceSystem)
+			, IReferenceSystem referenceSystem) : base(container, parentTransaction, referenceSystem
+			)
 		{
 		}
 
