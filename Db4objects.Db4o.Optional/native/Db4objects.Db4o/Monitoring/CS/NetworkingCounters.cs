@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 		{
 			if (null == _bytesSent)
 			{
-				_bytesSent = Db4oPerformanceCounterCategory.CounterForNetworkingBytesSentPerSec();
+                _bytesSent = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NetBytesSentPerSec, false);
 			}
 
 			return _bytesSent;
@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 		{
 			if (null == _bytesReceived)
 			{
-				_bytesReceived = Db4oPerformanceCounterCategory.CounterForNetworkingBytesReceivedPerSec();
+                _bytesReceived = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NetBytesReceivedPerSec, false);
 			}
 
 			return _bytesReceived;
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 		{
 			if (null == _messagesSent)
 			{
-				_messagesSent = Db4oPerformanceCounterCategory.CounterForNetworkingMessagesSentPerSec();
+                _messagesSent = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NetMessagesSentPerSec, false);
 			}
 
 			return _messagesSent;

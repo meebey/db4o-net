@@ -18,7 +18,8 @@ namespace Db4objects.Db4o.Monitoring
 
 		public void Apply(IInternalObjectContainer container)
 		{
-			PerformanceCounter storedObjectsPerSec = Db4oPerformanceCounterCategory.CounterForObjectsStoredPerSec();
+		    PerformanceCounter storedObjectsPerSec =
+		        Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.ObjectsStoredPerSec, false);
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
 			eventRegistry.Created += delegate
 										{

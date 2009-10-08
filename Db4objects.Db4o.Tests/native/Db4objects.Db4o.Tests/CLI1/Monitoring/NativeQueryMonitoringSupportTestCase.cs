@@ -18,22 +18,15 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
         
         public void TestNativeQueriesPerSecondPerformanceCount()
         {
-			using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForNativeQueriesPerSec(MonitoredContainer()))
+            using (PerformanceCounter counter = PerformanceCounterSpec.NativeQueriesPerSec.PerformanceCounter(MonitoredContainer()))
 			{
 				Assert.IsTrue(counter.CounterName.Contains("native queries")); 
 			}
         }
 
-		private IExtObjectContainer MonitoredContainer()
-		{
-			return IsEmbedded() 
-				? FileSession() 
-				: Db();
-		}
-
 		public void TestUnoptimizedNativeQueriesPerSecondPerformanceCount()
         {
-			using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForUnoptimizedNativeQueriesPerSec(MonitoredContainer()))
+            using (PerformanceCounter counter = PerformanceCounterSpec.UnoptimizedNativeQueriesPerSec.PerformanceCounter(MonitoredContainer()))
 			{
 				Assert.IsTrue(counter.CounterName.Contains("native queries"));
 			}
@@ -42,21 +35,21 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		public void TestNativeQueriesPerSecondWithOptimizedQuery()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForNativeQueriesPerSec(MonitoredContainer()),
+                PerformanceCounterSpec.NativeQueriesPerSec.PerformanceCounter(MonitoredContainer()),
 				ExecuteOptimizedNQ);
 		}
 
 		public void TestNativeQueriesPerSecondWithUnoptimizedQuery()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForNativeQueriesPerSec(MonitoredContainer()),
+                PerformanceCounterSpec.NativeQueriesPerSec.PerformanceCounter(MonitoredContainer()),
 				ExecuteUnoptimizedNQ);
 		}
 
 		public void TestUnoptimizedNativeQueriesPerSecond()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForUnoptimizedNativeQueriesPerSec(MonitoredContainer()),
+                PerformanceCounterSpec.UnoptimizedNativeQueriesPerSec.PerformanceCounter(MonitoredContainer()),
 				ExecuteUnoptimizedNQ);
 		}
 
@@ -64,21 +57,21 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		public void TestLinqQueriesPerSecondWithOptimizedQuery()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForLinqQueriesPerSec(MonitoredContainer()),
+                PerformanceCounterSpec.LinqQueriesPerSec.PerformanceCounter(MonitoredContainer()),
 				ExecuteOptimizedLinq);
 		}
 
 		public void TestLinqQueriesPerSecondWithUnoptimizedQuery()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForLinqQueriesPerSec(MonitoredContainer()),
+                PerformanceCounterSpec.LinqQueriesPerSec.PerformanceCounter(MonitoredContainer()),
 				ExecuteUnoptimizedLinq);
 		}
 
 		public void TestUnoptimizedLinqQueriesPerSecond()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForUnoptimizedLinqQueriesPerSec(MonitoredContainer()),
+                PerformanceCounterSpec.UnoptimizedLinqQueriesPerSec.PerformanceCounter(MonitoredContainer()),
 				ExecuteUnoptimizedLinq);
 		}
 

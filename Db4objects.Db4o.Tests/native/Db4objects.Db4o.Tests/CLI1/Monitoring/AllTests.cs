@@ -14,9 +14,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			       	{
 						typeof(ClientConnectionsPerformanceCounterTestCase),
 						typeof(ClientNetworkingPerformanceCounterTestCase),
+                        // typeof(FreespaceMonitoringSupportTestCase),
 						typeof(NativeQueryMonitoringSupportTestCase),
 						typeof(PerObjectContainerPerformanceCounterTestCase),
 			       		typeof(QueryMonitoringSupportTestCase),
+                        // typeof(ReferenceSystemMonitoringSupportTestCase),
 						typeof(ServerNetworkingPerformanceCounterTestCase),
 					};
 		}

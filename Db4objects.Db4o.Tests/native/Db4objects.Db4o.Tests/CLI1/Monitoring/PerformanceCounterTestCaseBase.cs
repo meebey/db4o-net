@@ -2,6 +2,7 @@
 
 #if !CF && !SILVERLIGHT
 
+using Db4objects.Db4o.Ext;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI1.Monitoring
@@ -14,6 +15,14 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		{
 			Db4oPerformanceCounterInstaller.ReInstall();
 		}
+
+        protected IExtObjectContainer MonitoredContainer()
+        {
+            return IsEmbedded()
+                ? FileSession()
+                : Db();
+        }
+
 	}
 }
 

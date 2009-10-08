@@ -8,6 +8,7 @@ using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Monitoring.Internal;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4oUnit;
@@ -21,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 
 		public void TestConnectedClients() 
 		{
-			for(int i=0; i < 500; i++) 
+			for(int i=0; i < 100; i++) 
 			{
 				Assert.AreEqual(0, ConnectedClientCount(), "No client yet.");
 				IExtObjectContainer client1 = OpenNewSession();
@@ -48,7 +49,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 
 		private long ConnectedClientCount() 
 		{
-			return Db4oPerformanceCounterCategory.CounterForNetworkingClientConnections(_server.Ext().ObjectContainer()).RawValue;
+            return PerformanceCounterSpec.NetClientConnections.PerformanceCounter(_server.Ext().ObjectContainer()).RawValue;
 		}
 
 		public override void SetUp()

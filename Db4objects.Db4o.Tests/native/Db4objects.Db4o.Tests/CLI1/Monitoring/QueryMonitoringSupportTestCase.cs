@@ -28,7 +28,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 
 		public void TestQueriesPerSecond()
 		{
-            using (PerformanceCounter counter = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(FileSession()))
+            using (PerformanceCounter counter = PerformanceCounterSpec.QueriesPerSec.PerformanceCounter(FileSession()))
             {
                 Assert.AreEqual(0, counter.RawValue);
 
@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		public void TestClassIndexScansPerSecond()
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(FileSession()),
+                PerformanceCounterSpec.ClassIndexScansPerSec.PerformanceCounter(FileSession()),
 				ExecuteSodaClassIndexScan);
 		}
 		

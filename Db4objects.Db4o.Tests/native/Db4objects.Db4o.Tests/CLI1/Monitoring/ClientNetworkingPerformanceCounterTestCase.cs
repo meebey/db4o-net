@@ -7,8 +7,8 @@ using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Monitoring.CS;
-using Db4objects.Db4o.Monitoring.Internal;
 using Db4objects.Db4o.Tests.Optional.Monitoring.CS;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		{
 			Action<ISocket4> operation = delegate(ISocket4 socket) { socket.Write(null, 0, ByteCount); };
 			Func<CountingSocket4, double> expectatedValueRetriever = delegate(CountingSocket4 s) { return s.BytesSent(); };
-			Func<IObjectContainer, double> actualValueRetriever = delegate(IObjectContainer container) { return Db4oPerformanceCounterCategory.CounterForNetworkingBytesSentPerSec(container).RawValue; };
+            Func<IObjectContainer, double> actualValueRetriever = delegate(IObjectContainer container) { return PerformanceCounterSpec.NetBytesSentPerSec.PerformanceCounter(container).RawValue; };
 
 			AssertCounter(operation, expectatedValueRetriever, actualValueRetriever);
 		}
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		{
 			Action<ISocket4> operation = delegate(ISocket4 socket) { socket.Read(null, 0, ByteCount); };
 			Func<CountingSocket4, double> expectatedValueRetriever = delegate(CountingSocket4 s) { return s.BytesReceived(); };
-			Func<IObjectContainer, double> actualValueRetriever = delegate(IObjectContainer container) { return Db4oPerformanceCounterCategory.CounterForNetworkingBytesReceivedPerSec(container).RawValue; };
+            Func<IObjectContainer, double> actualValueRetriever = delegate(IObjectContainer container) { return PerformanceCounterSpec.NetBytesReceivedPerSec.PerformanceCounter(container).RawValue; };
 
 			AssertCounter(operation, expectatedValueRetriever, actualValueRetriever);
 		}

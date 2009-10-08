@@ -38,8 +38,8 @@ namespace Db4objects.Db4o.Monitoring
 
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
 			
-			PerformanceCounter unoptimizedNativeQueriesPerSec = Db4oPerformanceCounterCategory.CounterForUnoptimizedNativeQueriesPerSec(false);
-			PerformanceCounter nativeQueriesPerSec = Db4oPerformanceCounterCategory.CounterForNativeQueriesPerSec(false);
+			PerformanceCounter unoptimizedNativeQueriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.UnoptimizedNativeQueriesPerSec, false);
+			PerformanceCounter nativeQueriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NativeQueriesPerSec, false);
 			container.GetNativeQueryHandler().QueryExecution += delegate(object sender, QueryExecutionEventArgs args)
 			{
 				if (args.ExecutionKind == QueryExecutionKind.Unoptimized)
@@ -98,8 +98,8 @@ namespace Db4objects.Db4o.Monitoring
 
 			public void Initialize()
 			{
-				_queriesPerSec = Db4oPerformanceCounterCategory.CounterForLinqQueriesPerSec(false);
-				_unoptimizedQueriesPerSec = Db4oPerformanceCounterCategory.CounterForUnoptimizedLinqQueriesPerSec(false);
+				_queriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.LinqQueriesPerSec, false);
+				_unoptimizedQueriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.UnoptimizedLinqQueriesPerSec, false);
 			}
 		}
 #endif
@@ -119,8 +119,8 @@ namespace Db4objects.Db4o.Monitoring
 
 		    container.WithEnvironment(delegate
             {
-		        queriesPerSec = Db4oPerformanceCounterCategory.CounterForQueriesPerSec(false);
-                classIndexScansPerSec = Db4oPerformanceCounterCategory.CounterForClassIndexScansPerSec(false);
+		        queriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.QueriesPerSec, false);
+                classIndexScansPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.ClassIndexScansPerSec, false);
             });
 
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);

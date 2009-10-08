@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		private void AssertNativeQueriesPerSecond(IObjectContainer client)
 		{
 			AssertCounter(
-				Db4oPerformanceCounterCategory.CounterForNativeQueriesPerSec(client),
+                PerformanceCounterSpec.NativeQueriesPerSec.PerformanceCounter(client),
 				delegate { ExecuteOptimizedNQ(client); });
 		}
 	}

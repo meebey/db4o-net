@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Monitoring
 
             public MonitoredBin(IBin bin) : base(bin)
             {
-                _bytesWrittenCounter = Db4oPerformanceCounterCategory.CounterForBytesWrittenPerSec();
-                _bytesReadCounter = Db4oPerformanceCounterCategory.CounterForBytesReadPerSec();
+                _bytesWrittenCounter = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.BytesWrittenPerSec, false);
+                _bytesReadCounter = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.BytesReadPerSec, false);
             }
 
             public override void Write(long position, byte[] bytes, int bytesToWrite)
