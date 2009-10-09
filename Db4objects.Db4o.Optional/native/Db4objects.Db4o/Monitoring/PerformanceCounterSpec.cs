@@ -51,15 +51,6 @@ namespace Db4objects.Db4o.Monitoring
                                 "Number of unoptimized native queries executed per second",
                                 PerformanceCounterType.RateOfCountsPerSecond32);
 
-#if NET_3_5
-        public static readonly PerformanceCounterSpec LinqQueriesPerSec = new PerformanceCounterSpec("linq queries/sec",
-                                "Number of Linq queries executed per second",
-                                PerformanceCounterType.RateOfCountsPerSecond32);
-
-        public static readonly PerformanceCounterSpec UnoptimizedLinqQueriesPerSec = new PerformanceCounterSpec("unoptimized linq queries/sec",
-                                "Number of unoptimized Linq queries executed per second",
-                                PerformanceCounterType.RateOfCountsPerSecond32);
-
         public static readonly PerformanceCounterSpec NetBytesSentPerSec = new PerformanceCounterSpec("network bytes sent/sec",
                                 "Number of bytes sent per second through the socket layer",
                                 PerformanceCounterType.RateOfCountsPerSecond32);
@@ -76,12 +67,21 @@ namespace Db4objects.Db4o.Monitoring
                                  "Number of connected clients",
                                  PerformanceCounterType.NumberOfItems32);
 
+#if NET_3_5
+        public static readonly PerformanceCounterSpec LinqQueriesPerSec = new PerformanceCounterSpec("linq queries/sec",
+                                "Number of Linq queries executed per second",
+                                PerformanceCounterType.RateOfCountsPerSecond32);
+
+        public static readonly PerformanceCounterSpec UnoptimizedLinqQueriesPerSec = new PerformanceCounterSpec("unoptimized linq queries/sec",
+                                "Number of unoptimized Linq queries executed per second",
+                                PerformanceCounterType.RateOfCountsPerSecond32);
+#endif
+
+
         public string Id
         {
             get { return _id; }
         }
-#endif
-
 
         public static PerformanceCounterSpec[] All()
         {
@@ -94,13 +94,13 @@ namespace Db4objects.Db4o.Monitoring
                            ClassIndexScansPerSec,
                            NativeQueriesPerSec,
                            UnoptimizedNativeQueriesPerSec,
-#if NET_3_5
-                           LinqQueriesPerSec,
-                           UnoptimizedLinqQueriesPerSec,
                            NetBytesSentPerSec,
                            NetBytesReceivedPerSec,
                            NetMessagesSentPerSec,
                            NetClientConnections,
+#if NET_3_5
+                           LinqQueriesPerSec,
+                           UnoptimizedLinqQueriesPerSec,
 #endif
                        };
             
