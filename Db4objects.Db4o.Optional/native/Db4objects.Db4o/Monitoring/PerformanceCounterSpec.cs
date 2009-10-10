@@ -67,6 +67,23 @@ namespace Db4objects.Db4o.Monitoring
                                  "Number of connected clients",
                                  PerformanceCounterType.NumberOfItems32);
 
+        public static readonly PerformanceCounterSpec FreespaceAverageSlotSize = new PerformanceCounterSpec("average freespace slot size",
+                                 "Average freespace slot size in bytes",
+                                 PerformanceCounterType.NumberOfItems32);
+        public static readonly PerformanceCounterSpec FreespaceReusedSlotsPerSec = new PerformanceCounterSpec("reused freespace slots/sec",
+                                 "Reused freespace slots per second",
+                                 PerformanceCounterType.RateOfCountsPerSecond32);
+        public static readonly PerformanceCounterSpec FreespaceSlotCount = new PerformanceCounterSpec("number of freespace slots",
+                                 "Number of freespace slots",
+                                 PerformanceCounterType.NumberOfItems32);
+        public static readonly PerformanceCounterSpec TotalFreespace = new PerformanceCounterSpec("total freespace",
+                                 "Total freespace in bytes",
+                                 PerformanceCounterType.NumberOfItems32);
+        public static PerformanceCounterSpec ObjectReferenceCount = new PerformanceCounterSpec("number of object references",
+                                 "Number of object references",
+                                 PerformanceCounterType.NumberOfItems32);
+
+
 #if NET_3_5
         public static readonly PerformanceCounterSpec LinqQueriesPerSec = new PerformanceCounterSpec("linq queries/sec",
                                 "Number of Linq queries executed per second",
@@ -75,6 +92,8 @@ namespace Db4objects.Db4o.Monitoring
         public static readonly PerformanceCounterSpec UnoptimizedLinqQueriesPerSec = new PerformanceCounterSpec("unoptimized linq queries/sec",
                                 "Number of unoptimized Linq queries executed per second",
                                 PerformanceCounterType.RateOfCountsPerSecond32);
+
+        
 #endif
 
 
@@ -98,6 +117,11 @@ namespace Db4objects.Db4o.Monitoring
                            NetBytesReceivedPerSec,
                            NetMessagesSentPerSec,
                            NetClientConnections,
+                           FreespaceAverageSlotSize,
+                           FreespaceReusedSlotsPerSec,
+                           FreespaceSlotCount,
+                           TotalFreespace,
+                           ObjectReferenceCount,
 #if NET_3_5
                            LinqQueriesPerSec,
                            UnoptimizedLinqQueriesPerSec,
