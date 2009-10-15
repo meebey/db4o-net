@@ -9,7 +9,6 @@ using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Monitoring;
-using Db4objects.Db4o.Monitoring.Internal;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4oUnit;
 
@@ -62,7 +61,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			ObjectContainerBase container = (ObjectContainerBase) _server.Ext().ObjectContainer();
 			container.WithEnvironment(delegate
 			{
-				_clientConnections = Db4oPerformanceCounterCategory.CounterForNetworkingClientConnections(_server);
+				_clientConnections = Db4oPerformanceCounters.CounterForNetworkingClientConnections(_server);
 			});
 
 			RegisterForClientDisconnectionEvents((IObjectServerEvents)_server);

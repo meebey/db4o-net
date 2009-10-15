@@ -4,7 +4,6 @@
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Monitoring;
-using Db4objects.Db4o.Monitoring.Internal;
 using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI1.Monitoring

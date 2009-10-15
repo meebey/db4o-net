@@ -4,7 +4,6 @@
 
 using System.Diagnostics;
 using Db4objects.Db4o.IO;
-using Db4objects.Db4o.Monitoring.Internal;
 
 namespace Db4objects.Db4o.Monitoring
 {
@@ -29,8 +28,8 @@ namespace Db4objects.Db4o.Monitoring
 
             public MonitoredBin(IBin bin) : base(bin)
             {
-                _bytesWrittenCounter = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.BytesWrittenPerSec, false);
-                _bytesReadCounter = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.BytesReadPerSec, false);
+                _bytesWrittenCounter = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.BytesWrittenPerSec, false);
+                _bytesReadCounter = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.BytesReadPerSec, false);
             }
 
             public override void Write(long position, byte[] bytes, int bytesToWrite)
@@ -56,8 +55,11 @@ namespace Db4objects.Db4o.Monitoring
             public override void Close()
             {
                 base.Close();
-                _bytesReadCounter.Dispose();
-                _bytesWrittenCounter.Dispose();
+
+				_bytesReadCounter.RemoveInstance();
+
+            	_bytesReadCounter.Dispose();
+            	_bytesWrittenCounter.Dispose();
             }
         }
     }

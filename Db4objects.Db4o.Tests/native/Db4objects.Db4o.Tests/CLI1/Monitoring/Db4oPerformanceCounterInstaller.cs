@@ -4,7 +4,7 @@
 using System;
 using System.Security.Principal;
 using System.Threading;
-using Db4objects.Db4o.Monitoring.Internal;
+using Db4objects.Db4o.Monitoring;
 
 namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 {
@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 
 			if (IsCurrentUserAnAdministrator())
 			{
-				Db4oPerformanceCounterCategory.ReInstall();
+				Db4oPerformanceCounters.ReInstall();
 				_installed = true;
 			}
 		}

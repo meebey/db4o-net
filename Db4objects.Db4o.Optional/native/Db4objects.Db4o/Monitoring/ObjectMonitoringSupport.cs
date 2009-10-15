@@ -6,7 +6,6 @@ using System.Diagnostics;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Monitoring.Internal;
 
 namespace Db4objects.Db4o.Monitoring
 {
@@ -19,7 +18,7 @@ namespace Db4objects.Db4o.Monitoring
 		public void Apply(IInternalObjectContainer container)
 		{
 		    PerformanceCounter storedObjectsPerSec =
-		        Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.ObjectsStoredPerSec, false);
+		        Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.ObjectsStoredPerSec, false);
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
 			eventRegistry.Created += delegate
 										{

@@ -1,7 +1,6 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 #if !CF && !SILVERLIGHT
 
-using System;
 using System.Diagnostics;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
@@ -9,7 +8,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
-using Db4objects.Db4o.Monitoring.Internal;
 
 namespace Db4objects.Db4o.Monitoring
 {
@@ -21,7 +19,8 @@ namespace Db4objects.Db4o.Monitoring
 
         public void Apply(IInternalObjectContainer container)
         {
-            if(! (container is LocalObjectContainer) || container.ConfigImpl.IsReadOnly()){
+            if(! (container is LocalObjectContainer) || container.ConfigImpl.IsReadOnly())
+			{
 			    return;
 		    }
 		    LocalObjectContainer localObjectContainer = (LocalObjectContainer) container;
@@ -33,13 +32,15 @@ namespace Db4objects.Db4o.Monitoring
             eventRegistry.Closing += delegate
             {
                 freespaceListener.Dispose();
+				freespaceManager.Listener(NullFreespaceListener.Instance);
             };
+
             freespaceManager.Listener(freespaceListener);
         }
 
         private class FreespaceInitializingVisitor : IVisitor4
         {
-            private IFreespaceListener _freespaceListener;
+            private readonly IFreespaceListener _freespaceListener;
 
             public FreespaceInitializingVisitor(IFreespaceListener listener)
             {
@@ -48,31 +49,19 @@ namespace Db4objects.Db4o.Monitoring
 
             public void Visit(object obj)
             {
-                Slot slot = obj as Slot;
+            	Slot slot = (Slot) obj; 
                 _freespaceListener.SlotAdded(slot.Length());
             }
         }
 
         private class FreespaceListener : IFreespaceListener
         {
-            private PerformanceCounter _totalFreespaceCounter;
-            private PerformanceCounter _averageSlotSizeCounter;
-            private PerformanceCounter _freespaceSlotsCounter;
-            private PerformanceCounter _reusedSlotsCounter;
-
-            private int _slotCount;
-            private int _totalFreespace;
-
-            public FreespaceListener(LocalObjectContainer container)
+            public FreespaceListener(IObjectContainer container)
             {
-                _totalFreespaceCounter = Db4oPerformanceCounterCategory.CounterFor(
-                    PerformanceCounterSpec.TotalFreespace, container, false);
-                _averageSlotSizeCounter = Db4oPerformanceCounterCategory.CounterFor(
-                    PerformanceCounterSpec.FreespaceAverageSlotSize, container, false);
-                _freespaceSlotsCounter = Db4oPerformanceCounterCategory.CounterFor(
-                    PerformanceCounterSpec.FreespaceSlotCount, container, false);
-                _reusedSlotsCounter = Db4oPerformanceCounterCategory.CounterFor(
-                    PerformanceCounterSpec.FreespaceReusedSlotsPerSec, container, false);
+                _totalFreespaceCounter = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.TotalFreespace, container, false);
+                _averageSlotSizeCounter = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.FreespaceAverageSlotSize, container, false);
+                _freespaceSlotsCounter = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.FreespaceSlotCount, container, false);
+                _reusedSlotsCounter = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.FreespaceReusedSlotsPerSec, container, false);
             }
 
             public void SlotAdded(int size)
@@ -93,20 +82,33 @@ namespace Db4objects.Db4o.Monitoring
             private void AdjustCounters()
             {
                 _totalFreespaceCounter.RawValue = _totalFreespace;
-                int slotCount = _slotCount;
-                int averageSlotSize = slotCount == 0 ? 0 : _totalFreespace / slotCount;
-                _averageSlotSizeCounter.RawValue = averageSlotSize;
+            	_averageSlotSizeCounter.RawValue = AverageSlotSize(_slotCount);
                 _freespaceSlotsCounter.RawValue = _slotCount;
             }
 
-            public void Dispose()
+        	private int AverageSlotSize(int slotCount)
+        	{
+        		return slotCount == 0 ? 0 : _totalFreespace / slotCount;
+        	}
+
+        	public void Dispose()
             {
+				_totalFreespaceCounter.RemoveInstance();
+
                 _totalFreespaceCounter.Dispose();
                 _averageSlotSizeCounter.Dispose();
                 _freespaceSlotsCounter.Dispose();
                 _reusedSlotsCounter.Dispose();
             }
-        }
+
+			private readonly PerformanceCounter _totalFreespaceCounter;
+			private readonly PerformanceCounter _averageSlotSizeCounter;
+			private readonly PerformanceCounter _freespaceSlotsCounter;
+			private readonly PerformanceCounter _reusedSlotsCounter;
+
+			private int _slotCount;
+			private int _totalFreespace;
+		}
     }
 }
 #endif

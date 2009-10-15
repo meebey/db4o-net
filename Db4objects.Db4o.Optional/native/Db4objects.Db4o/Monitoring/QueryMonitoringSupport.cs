@@ -2,6 +2,7 @@
 
 #if !CF && !SILVERLIGHT
 
+using System;
 using System.Diagnostics;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
@@ -10,9 +11,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Query;
-using Db4objects.Db4o.Monitoring.Internal;
-
-#if CF_3_5 || NET_3_5
+#if NET_3_5
 
 using Db4objects.Db4o.Linq;
 
@@ -24,7 +23,7 @@ namespace Db4objects.Db4o.Monitoring
 	{
 		public void Prepare(IConfiguration configuration)
 		{
-#if CF_3_5 || NET_3_5
+#if NET_3_5
 			var common = Db4oLegacyConfigurationBridge.AsCommonConfiguration(configuration);
 			common.Environment.Add(new LinqQueryMonitor());
 #endif
@@ -32,14 +31,14 @@ namespace Db4objects.Db4o.Monitoring
 
 		public void Apply(IInternalObjectContainer container)
 		{
-#if CF_3_5 || NET_3_5
+#if NET_3_5
 			My<LinqQueryMonitor>.Instance.Initialize();
 #endif
 
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
 			
-			PerformanceCounter unoptimizedNativeQueriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.UnoptimizedNativeQueriesPerSec, false);
-			PerformanceCounter nativeQueriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NativeQueriesPerSec, false);
+			PerformanceCounter unoptimizedNativeQueriesPerSec = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.UnoptimizedNativeQueriesPerSec, false);
+			PerformanceCounter nativeQueriesPerSec = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.NativeQueriesPerSec, false);
 			container.GetNativeQueryHandler().QueryExecution += delegate(object sender, QueryExecutionEventArgs args)
 			{
 				if (args.ExecutionKind == QueryExecutionKind.Unoptimized)
@@ -50,10 +49,12 @@ namespace Db4objects.Db4o.Monitoring
 
 			eventRegistry.Closing += delegate
 			{
+				nativeQueriesPerSec.RemoveInstance();
+
 				nativeQueriesPerSec.Dispose();
 				unoptimizedNativeQueriesPerSec.Dispose();
-			
-#if CF_3_5 || NET_3_5
+
+#if NET_3_5
 				container.WithEnvironment(delegate
 				{
 					My<LinqQueryMonitor>.Instance.Dispose();
@@ -63,7 +64,7 @@ namespace Db4objects.Db4o.Monitoring
 		}
 
 
-#if CF_3_5 || NET_3_5
+#if NET_3_5
 		class LinqQueryMonitor : ILinqQueryMonitor
 		{
 		    private PerformanceCounter _queriesPerSec;
@@ -82,11 +83,19 @@ namespace Db4objects.Db4o.Monitoring
 
 		    public void Dispose()
 			{
-                if (null != _queriesPerSec) _queriesPerSec.Dispose();
-                if (null != _unoptimizedQueriesPerSec) _unoptimizedQueriesPerSec.Dispose();
+		    	Close(_queriesPerSec);
+                Close(_unoptimizedQueriesPerSec);
 			}
-            
-            private PerformanceCounter QueriesPerSec()
+
+			private static void Close(IDisposable counter)
+			{
+				if (null != counter)
+				{
+					counter.Dispose();
+				}
+			}
+
+			private PerformanceCounter QueriesPerSec()
             {
                 return _queriesPerSec;
             }
@@ -98,8 +107,8 @@ namespace Db4objects.Db4o.Monitoring
 
 			public void Initialize()
 			{
-				_queriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.LinqQueriesPerSec, false);
-				_unoptimizedQueriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.UnoptimizedLinqQueriesPerSec, false);
+				_queriesPerSec = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.LinqQueriesPerSec, false);
+				_unoptimizedQueriesPerSec = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.UnoptimizedLinqQueriesPerSec, false);
 			}
 		}
 #endif
@@ -109,7 +118,6 @@ namespace Db4objects.Db4o.Monitoring
 	{
 		public void Prepare(IConfiguration configuration)
 		{
-
 		}
 
 		public void Apply(IInternalObjectContainer container)
@@ -119,8 +127,8 @@ namespace Db4objects.Db4o.Monitoring
 
 		    container.WithEnvironment(delegate
             {
-		        queriesPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.QueriesPerSec, false);
-                classIndexScansPerSec = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.ClassIndexScansPerSec, false);
+		        queriesPerSec = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.QueriesPerSec, false);
+                classIndexScansPerSec = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.ClassIndexScansPerSec, false);
             });
 
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(container);
@@ -133,6 +141,9 @@ namespace Db4objects.Db4o.Monitoring
 			
 			eventRegistry.Closing += delegate
 			{
+				queriesPerSec.RemoveInstance();
+				classIndexScansPerSec.RemoveInstance();
+
 				queriesPerSec.Dispose();
 				classIndexScansPerSec.Dispose();
 			};

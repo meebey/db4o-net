@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 			_counters.Close();
 		}
 
-		protected override NetworkingCounters  Counters()
+		protected override NetworkingCounters Counters()
 		{
 			if (null == _counters)
 			{

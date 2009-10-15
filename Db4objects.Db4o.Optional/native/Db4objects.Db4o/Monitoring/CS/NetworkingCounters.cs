@@ -3,7 +3,6 @@
 #if !CF && !SILVERLIGHT
 
 using System.Diagnostics;
-using Db4objects.Db4o.Monitoring.Internal;
 
 namespace Db4objects.Db4o.Monitoring.CS
 {
@@ -13,7 +12,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 		{
 			if (null == _bytesSent)
 			{
-                _bytesSent = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NetBytesSentPerSec, false);
+                _bytesSent = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.NetBytesSentPerSec, false);
 			}
 
 			return _bytesSent;
@@ -23,7 +22,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 		{
 			if (null == _bytesReceived)
 			{
-                _bytesReceived = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NetBytesReceivedPerSec, false);
+                _bytesReceived = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.NetBytesReceivedPerSec, false);
 			}
 
 			return _bytesReceived;
@@ -33,7 +32,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 		{
 			if (null == _messagesSent)
 			{
-                _messagesSent = Db4oPerformanceCounterCategory.CounterFor(PerformanceCounterSpec.NetMessagesSentPerSec, false);
+                _messagesSent = Db4oPerformanceCounters.CounterFor(PerformanceCounterSpec.NetMessagesSentPerSec, false);
 			}
 
 			return _messagesSent;
@@ -50,6 +49,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 		{
 			if (null != counter)
 			{
+				counter.RemoveInstance();
 				counter.Dispose();
 			}
 		}
