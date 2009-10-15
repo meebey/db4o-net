@@ -360,5 +360,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			ShutdownDataStorage();
 		}
+
+		public override IReferenceSystem CreateReferenceSystem()
+		{
+			return new HashcodeReferenceSystem();
+		}
 	}
 }

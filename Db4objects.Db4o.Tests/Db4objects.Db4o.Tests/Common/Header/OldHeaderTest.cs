@@ -8,7 +8,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class OldHeaderTest : ITestCase, IOptOutNoFileSystemData
+	public class OldHeaderTest : ITestLifeCycle, IOptOutNoFileSystemData
 	{
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Test()
@@ -45,6 +45,21 @@ namespace Db4objects.Db4o.Tests.Common.Header
 		private static string DbFilePath()
 		{
 			return WorkspaceServices.WorkspaceTestFilePath("db4oVersions/db4o_5.5.2.db4o");
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		public virtual void SetUp()
+		{
+		}
+
+		/// <exception cref="System.Exception"></exception>
+		public virtual void TearDown()
+		{
+			string tempTestFilePath = DbFilePath();
+			if (System.IO.File.Exists(tempTestFilePath))
+			{
+				File4.Delete(tempTestFilePath);
+			}
 		}
 	}
 }

@@ -118,10 +118,10 @@ namespace Db4objects.Db4o.CS.Internal.Config
 
 		private object My(Type type)
 		{
-			for (IEnumerator oIter = _config.EnvironmentContributions().GetEnumerator(); oIter
-				.MoveNext(); )
+			IList environmentContributions = _config.EnvironmentContributions();
+			for (int i = environmentContributions.Count - 1; i >= 0; i--)
 			{
-				object o = oIter.Current;
+				object o = environmentContributions[i];
 				if (type.IsInstanceOfType(o))
 				{
 					return (object)o;

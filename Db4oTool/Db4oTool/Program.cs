@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2006  Versant Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
+using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Tools;
 using Db4oTool.Core;
 using Db4oTool.NQ;
@@ -43,7 +44,7 @@ namespace Db4oTool
 
 			if (options.InstallPerformanceCounters)
 			{
-				Db4objects.Db4o.Monitoring.Internal.Db4oPerformanceCounterCategory.ReInstall();
+				Db4oPerformanceCounters.ReInstall();
 			}
 
             if (options.Assembly == null)

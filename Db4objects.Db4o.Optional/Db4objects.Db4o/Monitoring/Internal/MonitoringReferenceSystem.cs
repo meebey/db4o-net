@@ -105,6 +105,10 @@ namespace Db4objects.Db4o.Monitoring.Internal
 
 		private void ReferenceCountChanged(int changedBy)
 		{
+			if (changedBy == 0)
+			{
+				return;
+			}
 			_referenceCount += changedBy;
 			_referenceSystemListener.NotifyReferenceCountChanged(changedBy);
 		}

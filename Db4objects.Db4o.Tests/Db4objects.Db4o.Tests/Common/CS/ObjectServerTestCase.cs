@@ -53,9 +53,47 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			string clientName = client.UserName;
 			BooleanByRef eventRaised = new BooleanByRef();
 			IObjectServerEvents events = (IObjectServerEvents)server;
+			Lock4 Lock = new Lock4();
 			events.ClientDisconnected += new System.EventHandler<Db4objects.Db4o.Events.StringEventArgs>
-				(new _IEventListener4_49(eventRaised, clientName).OnEvent);
-			lock (eventRaised)
+				(new _IEventListener4_51(clientName, eventRaised, Lock).OnEvent);
+			Lock.Run(new _IClosure4_58(client, eventRaised, Lock));
+		}
+
+		private sealed class _IEventListener4_51
+		{
+			public _IEventListener4_51(string clientName, BooleanByRef eventRaised, Lock4 Lock
+				)
+			{
+				this.clientName = clientName;
+				this.eventRaised = eventRaised;
+				this.Lock = Lock;
+			}
+
+			public void OnEvent(object sender, Db4objects.Db4o.Events.StringEventArgs args)
+			{
+				Assert.AreEqual(clientName, ((StringEventArgs)args).Message);
+				eventRaised.value = true;
+				Lock.Awake();
+			}
+
+			private readonly string clientName;
+
+			private readonly BooleanByRef eventRaised;
+
+			private readonly Lock4 Lock;
+		}
+
+		private sealed class _IClosure4_58 : IClosure4
+		{
+			public _IClosure4_58(ClientObjectContainer client, BooleanByRef eventRaised, Lock4
+				 Lock)
+			{
+				this.client = client;
+				this.eventRaised = eventRaised;
+				this.Lock = Lock;
+			}
+
+			public object Run()
 			{
 				client.Close();
 				long startTime = Runtime.CurrentTimeMillis();
@@ -64,41 +102,19 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				long timePassed = currentTime - startTime;
 				while (timePassed < timeOut && !eventRaised.value)
 				{
-					try
-					{
-						Sharpen.Runtime.Wait(eventRaised, timeOut - timePassed);
-					}
-					catch (Exception)
-					{
-					}
+					Lock.Snooze(timeOut - timePassed);
 					currentTime = Runtime.CurrentTimeMillis();
 					timePassed = currentTime - startTime;
 				}
 				Assert.IsTrue(eventRaised.value);
-			}
-		}
-
-		private sealed class _IEventListener4_49
-		{
-			public _IEventListener4_49(BooleanByRef eventRaised, string clientName)
-			{
-				this.eventRaised = eventRaised;
-				this.clientName = clientName;
+				return null;
 			}
 
-			public void OnEvent(object sender, Db4objects.Db4o.Events.StringEventArgs args)
-			{
-				lock (eventRaised)
-				{
-					Assert.AreEqual(clientName, ((StringEventArgs)args).Message);
-					eventRaised.value = true;
-					Sharpen.Runtime.NotifyAll(eventRaised);
-				}
-			}
+			private readonly ClientObjectContainer client;
 
 			private readonly BooleanByRef eventRaised;
 
-			private readonly string clientName;
+			private readonly Lock4 Lock;
 		}
 
 		public virtual void TestClientConnectedEvent()

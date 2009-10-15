@@ -13,12 +13,13 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Threading;
+using Db4objects.Db4o.Types;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.CS.Internal
 {
 	public class ObjectServerImpl : IObjectServerEvents, IObjectServer, IExtObjectServer
-		, IRunnable
+		, IRunnable, ITransientClass
 	{
 		private const int StartThreadWaitTimeout = 5000;
 
@@ -448,13 +449,13 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			while (_serverSocket != null)
 			{
-				WithEnvironment(new _IRunnable_351(this));
+				WithEnvironment(new _IRunnable_352(this));
 			}
 		}
 
-		private sealed class _IRunnable_351 : IRunnable
+		private sealed class _IRunnable_352 : IRunnable
 		{
-			public _IRunnable_351(ObjectServerImpl _enclosing)
+			public _IRunnable_352(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -1,6 +1,7 @@
-﻿using System;
+﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
+using System;
 using System.Diagnostics;
-using Db4objects.Db4o.Monitoring.Internal;
+using Db4objects.Db4o.Monitoring;
 using Db4oUnit;
 
 namespace Db4oTool.Tests.Core
@@ -17,7 +18,7 @@ namespace Db4oTool.Tests.Core
 
 			if (Db4oCategoryExists())
 			{
-				PerformanceCounterCategory.Delete(Db4oPerformanceCounterCategory.CategoryName);
+				PerformanceCounterCategory.Delete(Db4oPerformanceCounters.CategoryName);
 			}
 
 			ProgramOptions options = new ProgramOptions();
@@ -35,7 +36,7 @@ namespace Db4oTool.Tests.Core
 
 		private bool Db4oCategoryExists()
 		{
-			return PerformanceCounterCategory.Exists(Db4oPerformanceCounterCategory.CategoryName);
+			return PerformanceCounterCategory.Exists(Db4oPerformanceCounters.CategoryName);
 		}
 	}
 }

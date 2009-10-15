@@ -1427,7 +1427,7 @@ namespace Db4objects.Db4o.Internal
 			Initialize2NObjectCarrier();
 		}
 
-		public IReferenceSystem CreateReferenceSystem()
+		public virtual IReferenceSystem CreateReferenceSystem()
 		{
 			IReferenceSystem referenceSystem = _referenceSystemFactory.NewReferenceSystem(this
 				);

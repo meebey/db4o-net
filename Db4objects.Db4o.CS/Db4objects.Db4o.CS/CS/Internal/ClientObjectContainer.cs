@@ -965,17 +965,9 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public virtual string Name()
-		{
-			return ToString();
-		}
-
 		public override string ToString()
 		{
-			// if(i_classCollection != null){
-			// return i_classCollection.toString();
-			// }
-			return "Client Connection " + _userName + "(" + _socket + ")";
+			return "Client connection " + _userName + "(" + _socket + ")";
 		}
 
 		public override void Shutdown()
@@ -1145,13 +1137,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_903(this, trans, result));
+			WithEnvironment(new _IRunnable_896(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_903 : IRunnable
+		private sealed class _IRunnable_896 : IRunnable
 		{
-			public _IRunnable_903(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_896(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
