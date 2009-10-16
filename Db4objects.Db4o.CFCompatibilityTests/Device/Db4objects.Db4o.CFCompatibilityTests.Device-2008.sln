@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4oUnit.Extensions-CF-2008
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Subject-CF-2008", "..\Db4objects.Db4o.CFCompatibilityTests.Subject\Tests.Subject-CF-2008.csproj", "{7F388726-A3A0-4CF7-89F4-52926EA02D55}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.CS-CF-2008", "..\..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-CF-2008.csproj", "{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7F388726-A3A0-4CF7-89F4-52926EA02D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F388726-A3A0-4CF7-89F4-52926EA02D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F388726-A3A0-4CF7-89F4-52926EA02D55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
