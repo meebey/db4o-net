@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			{
 				db.Store(new Item("foo"));
 
-				foreach (Item item in db.Query(delegate(Item candidate) { return candidate.Name == "foo";}))
+				foreach (Item item in db.Query(new ItemNameQuery()))
 				{
 				}
 			});
@@ -62,11 +62,21 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			{
 				db.Store(new Item("foo"));
 
-				foreach (Item item in db.Query(delegate(Item candidate) { return candidate.name == "foo"; }))
+				foreach (Item item in db.Query(new ItemNameQuery()))
 				{
 				}
 			});
 		}
+
+        public class ItemNameQuery : Predicate
+        {
+
+            public bool Match(Item candidate)
+            {
+                return candidate.name == "foo";
+            }
+            
+        }
 
         public void TestObjectLifecycleCounters()
         {
