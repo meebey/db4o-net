@@ -16,6 +16,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 						typeof(ClientNetworkingPerformanceCounterTestCase),
                         typeof(FreespaceMonitoringSupportTestCase),
 						typeof(NativeQueryMonitoringSupportTestCase),
+                        typeof(ObjectLifecycleMonitoringSupportTestCase),
 						typeof(PerformanceCounterLifetimeTestCase),
 						typeof(PerObjectContainerPerformanceCounterTestCase),
 			       		typeof(QueryMonitoringSupportTestCase),

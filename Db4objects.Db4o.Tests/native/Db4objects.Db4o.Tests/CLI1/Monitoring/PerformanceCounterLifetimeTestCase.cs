@@ -68,6 +68,18 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			});
 		}
 
+        public void TestObjectLifecycleCounters()
+        {
+            AssertPerformanceCounterInstanceLifetime(new ObjectLifecycleMonitoringSupport(), delegate(IObjectContainer db)
+            {
+                Item item = new Item("foo");
+                db.Store(item);
+                db.Deactivate(item,1);
+                db.Activate(item,1);
+                db.Delete(item);
+            });
+        }
+
 #if NET_3_5
 		public void TestOptimizedLINQCounters()
 		{

@@ -34,6 +34,18 @@ namespace Db4objects.Db4o.Monitoring
                                 "Number of objects stored per second",
                                 PerformanceCounterType.RateOfCountsPerSecond32);
 
+        public static readonly PerformanceCounterSpec ObjectsDeletedPerSec = new PerformanceCounterSpec("objects deleted/sec",
+                                "Number of objects deleted per second",
+                                PerformanceCounterType.RateOfCountsPerSecond32);
+
+        public static readonly PerformanceCounterSpec ObjectsActivatedPerSec = new PerformanceCounterSpec("objects activated/sec",
+                                "Number of objects activated per second",
+                                PerformanceCounterType.RateOfCountsPerSecond32);
+
+        public static readonly PerformanceCounterSpec ObjectsDeactivatedPerSec = new PerformanceCounterSpec("objects deactivated/sec",
+                        "Number of objects deactivated per second",
+                        PerformanceCounterType.RateOfCountsPerSecond32);
+
         public static readonly PerformanceCounterSpec QueriesPerSec = new PerformanceCounterSpec("queries/sec",
                                 "Number of queries executed per second",
                                 PerformanceCounterType.RateOfCountsPerSecond32);
@@ -113,6 +125,9 @@ namespace Db4objects.Db4o.Monitoring
                            BytesWrittenPerSec,
                            BytesReadPerSec,
                            ObjectsStoredPerSec,
+                           ObjectsDeletedPerSec,
+                           ObjectsActivatedPerSec,
+                           ObjectsDeactivatedPerSec,
                            QueriesPerSec,
                            ClassIndexScansPerSec,
                            NativeQueriesPerSec,
