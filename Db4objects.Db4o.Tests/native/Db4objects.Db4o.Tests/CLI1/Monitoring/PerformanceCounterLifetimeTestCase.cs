@@ -14,7 +14,6 @@ using Db4oUnit;
 
 #if NET_3_5
 using Db4objects.Db4o.Linq;
-
 #endif
 
 namespace Db4objects.Db4o.Tests.CLI1.Monitoring
@@ -50,7 +49,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			{
 				db.Store(new Item("foo"));
 
-				foreach (Item item in db.Query(new ItemNameQuery()))
+                foreach (Item item in db.Query<Item>(delegate(Item candidate) { return candidate.Name == "foo"; }))
 				{
 				}
 			});
@@ -62,21 +61,11 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			{
 				db.Store(new Item("foo"));
 
-				foreach (Item item in db.Query(new ItemNameQuery()))
-				{
+                foreach (Item item in db.Query<Item>(delegate(Item candidate) { return candidate.name == "foo"; }))
+                {
 				}
 			});
 		}
-
-        public class ItemNameQuery : Predicate
-        {
-
-            public bool Match(Item candidate)
-            {
-                return candidate.name == "foo";
-            }
-            
-        }
 
         public void TestObjectLifecycleCounters()
         {
