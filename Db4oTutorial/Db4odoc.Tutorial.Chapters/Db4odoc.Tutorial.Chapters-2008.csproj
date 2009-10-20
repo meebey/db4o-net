@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0194A3AA-0EDE-46FE-BF3B-BA9B25C815E3}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -216,9 +216,6 @@
     <Compile Include="F1\Chapter10\Car.cs" />
     <Compile Include="F1\Chapter10\LinqExample.cs" />
     <Compile Include="F1\Chapter10\Pilot.cs" />
-    <Compile Include="F1\Chapter11\Item.cs" />
-    <Compile Include="F1\Chapter11\BenchmarkExample.cs" />
-    <Compile Include="F1\Chapter11\CrudApplication.cs" />
     <Compile Include="F1\Chapter3\OmeExample.cs" />
     <Compile Include="F1\Chapter3\Pilot.cs" />
     <Compile Include="F1\Util.cs">

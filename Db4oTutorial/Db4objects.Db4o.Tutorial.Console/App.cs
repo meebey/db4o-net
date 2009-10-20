@@ -15,7 +15,6 @@ namespace Db4objects.Db4o.Tutorial.Console
             Db4odoc.Tutorial.F1.Chapter6.ClientServerExample.Main(args);
             Db4odoc.Tutorial.F1.Chapter8.TransparentActivationExample.Main(args);
             Db4odoc.Tutorial.F1.Chapter9.TransparentPersistenceExample.Main(args);
-            Db4odoc.Tutorial.F1.Chapter11.BenchmarkExample.Main(args);
         }
 	}
 }

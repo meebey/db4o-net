@@ -78,10 +78,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\..\Db4oBench\Db4oBench-2005.csproj">
-      <Project>{D8AB00B9-7769-4136-98FA-920F89B12653}</Project>
-      <Name>Db4oBench-2005</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-2005.csproj">
       <Project>{3028DD51-034F-495B-8970-2F27BA021B85}</Project>
       <Name>Db4objects.Db4o.CS-2005</Name>
@@ -92,9 +88,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="F1\Chapter11\BenchmarkExample.cs" />
-    <Compile Include="F1\Chapter11\CrudApplication.cs" />
-    <Compile Include="F1\Chapter11\Item.cs" />
     <Compile Include="F1\Chapter1\ArbitraryQuery.cs">
       <SubType>Code</SubType>
     </Compile>
