@@ -1,13 +1,10 @@
 ﻿/* Copyright (C) 2008   Versant Inc.   http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Query;
-using Sharpen.Lang;
 #if !SILVERLIGHT
-using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using ClassInfo=Db4objects.Db4o.Reflect.Self.ClassInfo;
 using FieldInfo=Db4objects.Db4o.Reflect.Self.FieldInfo;
