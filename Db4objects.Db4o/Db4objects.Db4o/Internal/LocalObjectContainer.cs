@@ -822,7 +822,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void SyncFiles();
 
-		public override string ToString()
+		protected override string DefaultToString()
 		{
 			return FileName();
 		}

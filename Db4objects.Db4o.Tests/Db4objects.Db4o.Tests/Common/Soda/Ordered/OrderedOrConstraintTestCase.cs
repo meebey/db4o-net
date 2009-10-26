@@ -4,9 +4,9 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tests.Common.Staging;
+using Db4objects.Db4o.Tests.Common.Soda.Ordered;
 
-namespace Db4objects.Db4o.Tests.Common.Staging
+namespace Db4objects.Db4o.Tests.Common.Soda.Ordered
 {
 	/// <summary>COR-1062</summary>
 	public class OrderedOrConstraintTestCase : AbstractDb4oTestCase

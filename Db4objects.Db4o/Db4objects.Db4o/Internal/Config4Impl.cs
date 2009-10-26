@@ -240,6 +240,21 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_189
 			());
 
+		private sealed class _INameProvider_195 : INameProvider
+		{
+			public _INameProvider_195()
+			{
+			}
+
+			public string Name(IObjectContainer db)
+			{
+				return null;
+			}
+		}
+
+		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_195
+			());
+
 		private ObjectContainerBase _container;
 
 		private bool _internStrings;
@@ -1377,6 +1392,16 @@ namespace Db4objects.Db4o.Internal
 		public IReferenceSystemFactory ReferenceSystemFactory()
 		{
 			return (IReferenceSystemFactory)_config.Get(ReferenceSystemFactoryKey);
+		}
+
+		public void NameProvider(INameProvider provider)
+		{
+			_config.Put(NameProviderKey, provider);
+		}
+
+		public INameProvider NameProvider()
+		{
+			return (INameProvider)_config.Get(NameProviderKey);
 		}
 	}
 }

@@ -622,5 +622,14 @@ namespace Db4objects.Db4o.Config
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Registers a
+		/// <see cref="INameProvider">INameProvider</see>
+		/// that assigns a custom name to the database to be used in
+		/// <see cref="object.ToString()">object.ToString()</see>
+		/// .
+		/// </summary>
+		void NameProvider(INameProvider provider);
 	}
 }

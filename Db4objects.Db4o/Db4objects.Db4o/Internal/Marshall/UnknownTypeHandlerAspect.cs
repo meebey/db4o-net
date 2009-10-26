@@ -17,5 +17,10 @@ namespace Db4objects.Db4o.Internal.Marshall
 			throw new InvalidOperationException("Type handler for '" + ContainingClass() + "' could not be found. Defragment cannot proceed. "
 				 + " Please ensure all required types are available and try again.");
 		}
+
+		public override bool Alive()
+		{
+			return false;
+		}
 	}
 }

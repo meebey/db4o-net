@@ -17,10 +17,11 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		{
 			return ComposeTests(new Type[] { typeof(ActivateDepthTestCase), typeof(InterfaceQueryTestCase
 				), typeof(LazyQueryDeleteTestCase), typeof(SODAClassTypeDescend), typeof(StoredClassUnknownClassQueryTestCase
-				) });
+				), typeof(UntypedFieldSortingTestCase) });
 		}
 
 		// COR-1131
+		// COR-1542
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{

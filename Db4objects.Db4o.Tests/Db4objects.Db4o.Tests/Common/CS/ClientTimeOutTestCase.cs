@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 {
 	public class ClientTimeOutTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
 	{
-		private const int Timeout = 1000;
+		private const int Timeout = 4000;
 
 		internal static bool _clientWasBlocked;
 

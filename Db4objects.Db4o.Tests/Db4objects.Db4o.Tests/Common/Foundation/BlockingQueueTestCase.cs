@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				try
 				{
-					Thread.Sleep(1000);
+					Thread.Sleep(2000);
 				}
 				catch (Exception)
 				{
@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			{
 				try
 				{
-					Thread.Sleep(1000);
+					Thread.Sleep(2000);
 				}
 				catch (Exception)
 				{

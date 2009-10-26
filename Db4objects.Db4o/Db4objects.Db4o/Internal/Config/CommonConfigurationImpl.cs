@@ -254,5 +254,10 @@ namespace Db4objects.Db4o.Internal.Config
 
 			private readonly CommonConfigurationImpl _enclosing;
 		}
+
+		public virtual void NameProvider(INameProvider provider)
+		{
+			_config.NameProvider(provider);
+		}
 	}
 }

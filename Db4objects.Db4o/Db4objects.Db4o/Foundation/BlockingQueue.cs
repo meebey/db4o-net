@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 
@@ -16,12 +17,16 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Add(object obj)
 		{
-			_lock.Run(new _IClosure4_16(this, obj));
+			if (obj == null)
+			{
+				throw new ArgumentException();
+			}
+			_lock.Run(new _IClosure4_19(this, obj));
 		}
 
-		private sealed class _IClosure4_16 : IClosure4
+		private sealed class _IClosure4_19 : IClosure4
 		{
-			public _IClosure4_16(BlockingQueue _enclosing, object obj)
+			public _IClosure4_19(BlockingQueue _enclosing, object obj)
 			{
 				this._enclosing = _enclosing;
 				this.obj = obj;
@@ -41,13 +46,13 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool HasNext()
 		{
-			bool hasNext = (bool)_lock.Run(new _IClosure4_26(this));
+			bool hasNext = (bool)_lock.Run(new _IClosure4_29(this));
 			return hasNext;
 		}
 
-		private sealed class _IClosure4_26 : IClosure4
+		private sealed class _IClosure4_29 : IClosure4
 		{
-			public _IClosure4_26(BlockingQueue _enclosing)
+			public _IClosure4_29(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -62,12 +67,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IEnumerator Iterator()
 		{
-			return (IEnumerator)_lock.Run(new _IClosure4_35(this));
+			return (IEnumerator)_lock.Run(new _IClosure4_38(this));
 		}
 
-		private sealed class _IClosure4_35 : IClosure4
+		private sealed class _IClosure4_38 : IClosure4
 		{
-			public _IClosure4_35(BlockingQueue _enclosing)
+			public _IClosure4_38(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -83,33 +88,30 @@ namespace Db4objects.Db4o.Foundation
 		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
 		public virtual object Next()
 		{
-			return _lock.Run(new _IClosure4_43(this));
+			return _lock.Run(new _IClosure4_46(this));
 		}
 
-		private sealed class _IClosure4_43 : IClosure4
+		private sealed class _IClosure4_46 : IClosure4
 		{
-			public _IClosure4_43(BlockingQueue _enclosing)
+			public _IClosure4_46(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public object Run()
 			{
-				if (this._enclosing._queue.HasNext())
+				while (true)
 				{
-					return this._enclosing._queue.Next();
+					if (this._enclosing._queue.HasNext())
+					{
+						return this._enclosing._queue.Next();
+					}
+					if (this._enclosing._stopped)
+					{
+						throw new BlockingQueueStoppedException();
+					}
+					this._enclosing._lock.Snooze(int.MaxValue);
 				}
-				if (this._enclosing._stopped)
-				{
-					throw new BlockingQueueStoppedException();
-				}
-				this._enclosing._lock.Snooze(int.MaxValue);
-				object obj = this._enclosing._queue.Next();
-				if (obj == null)
-				{
-					throw new BlockingQueueStoppedException();
-				}
-				return obj;
 			}
 
 			private readonly BlockingQueue _enclosing;

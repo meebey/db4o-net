@@ -18,13 +18,13 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			return new Type[] { typeof(CascadedDeleteUpdate), typeof(CascadeDeleteArray), typeof(
 				CascadeDeleteDeleted), typeof(CascadeDeleteFalse), typeof(CascadeOnActivate), typeof(
 				CascadeOnDeleteTestCase), typeof(CascadeOnDeleteHierarchyTestCase), typeof(CascadeOnUpdate
-				), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase), typeof(DescendIndexQueryTestCase
-				), typeof(IdentityQueryForNotStoredTestCase), typeof(IdListQueryResultTestCase), 
-				typeof(IndexedJoinQueriesTestCase), typeof(IndexOnParentFieldTestCase), typeof(IndexedQueriesTestCase
-				), typeof(InvalidFieldNameConstraintTestCase), typeof(LazyQueryResultTestCase), 
-				typeof(MultiFieldIndexQueryTestCase), typeof(NullConstraintQueryTestCase), typeof(
-				ObjectSetTestCase), typeof(OrderedQueryTestCase), typeof(QueryByExampleTestCase)
-				, typeof(QueryingVersionFieldTestCase) };
+				), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase), typeof(DeepMultifieldSortingTestCase
+				), typeof(DescendIndexQueryTestCase), typeof(IdentityQueryForNotStoredTestCase), 
+				typeof(IdListQueryResultTestCase), typeof(IndexedJoinQueriesTestCase), typeof(IndexOnParentFieldTestCase
+				), typeof(IndexedQueriesTestCase), typeof(InvalidFieldNameConstraintTestCase), typeof(
+				LazyQueryResultTestCase), typeof(MultiFieldIndexQueryTestCase), typeof(NullConstraintQueryTestCase
+				), typeof(ObjectSetTestCase), typeof(OrderedQueryTestCase), typeof(QueryByExampleTestCase
+				), typeof(QueryingForAllObjectsTestCase), typeof(QueryingVersionFieldTestCase) };
 		}
 	}
 }

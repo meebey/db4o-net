@@ -868,7 +868,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return null;
 			}
-			return Handlers4.ErasedFieldType(Container(), _reflectField.GetFieldType());
+			IReflectClass fieldType = _reflectField.GetFieldType();
+			if (fieldType == null)
+			{
+				return null;
+			}
+			return Handlers4.ErasedFieldType(Container(), fieldType);
 		}
 
 		protected virtual ITypeHandler4 TypeHandlerForClass(ObjectContainerBase container
@@ -1070,13 +1075,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_875(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_879(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_875 : IVisitor4
+		private sealed class _IVisitor4_879 : IVisitor4
 		{
-			public _IVisitor4_875(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_879(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1298,12 +1303,12 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 correctTypeHandlerVersion = HandlerRegistry.CorrectHandlerVersion(context
 				, GetHandler(), _fieldType);
 			context.SlotFormat().DoWithSlotIndirection(context, correctTypeHandlerVersion, new 
-				_IClosure4_1038(context, correctTypeHandlerVersion));
+				_IClosure4_1042(context, correctTypeHandlerVersion));
 		}
 
-		private sealed class _IClosure4_1038 : IClosure4
+		private sealed class _IClosure4_1042 : IClosure4
 		{
-			public _IClosure4_1038(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
+			public _IClosure4_1042(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
 				)
 			{
 				this.context = context;

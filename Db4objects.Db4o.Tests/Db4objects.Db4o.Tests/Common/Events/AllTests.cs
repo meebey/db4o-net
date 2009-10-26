@@ -19,8 +19,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				), typeof(CreationEventsTestCase), typeof(DeleteOnDeletingCallbackTestCase), typeof(
 				DeletionEventExceptionTestCase), typeof(DeletionEventsTestCase), typeof(EventArgsTransactionTestCase
 				), typeof(InstantiationEventsTestCase), typeof(ObjectContainerEventsTestCase), typeof(
-				EventCountTestCase), typeof(DeleteEventOnClientTestCase), typeof(ExceptionPropagationInEventsTestSuite
-				), typeof(UpdateInCallbackThrowsTestCase) };
+				ObjectContainerOpenEventTestCase), typeof(EventCountTestCase), typeof(DeleteEventOnClientTestCase
+				), typeof(ExceptionPropagationInEventsTestSuite), typeof(UpdateInCallbackThrowsTestCase
+				) };
 		}
 	}
 }

@@ -965,7 +965,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public override string ToString()
+		protected override string DefaultToString()
 		{
 			return "Client connection " + _userName + "(" + _socket + ")";
 		}

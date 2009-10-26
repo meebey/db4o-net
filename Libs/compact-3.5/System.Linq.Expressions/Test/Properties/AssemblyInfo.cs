@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle ("System.Linq.Expressions.Tests")]
-[assembly: AssemblyDescription ("")]
-[assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("Versant, Inc.")]
-[assembly: AssemblyProduct ("System.Linq.Expressions.Tests")]
-[assembly: AssemblyCopyright ("Copyright © Versant, Inc. 2008")]
+[assembly: AssemblyDescription("Test 7.12.118.13900 (.NET)")]
+[assembly: AssemblyConfiguration(".NET")]
+[assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
+[assembly: AssemblyProduct("db4o - database for objects")]
+[assembly: AssemblyCopyright("Versant Corp. 2000 - 2009")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("7.11.117.13787")]
+// [assembly: AssemblyVersion("7.12.118.13900")]
 [assembly: AssemblyVersion ("1.0.0.0")]
-[assembly: AssemblyFileVersion ("1.0.0.0")]
+[assembly: AssemblyFileVersion("7.12.118.13900")]

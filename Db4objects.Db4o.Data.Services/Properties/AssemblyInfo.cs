@@ -1,18 +1,25 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
+using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security;
 
 [assembly: AssemblyTitle ("Db4objects.Db4o.Data.Services")]
-[assembly: AssemblyDescription ("Db4objects.Db4o.Data.Services 7.8.85.12705 (.NET)")]
-[assembly: AssemblyConfiguration (".NET")]
-[assembly: AssemblyCompany ("Versant Inc., San Mateo, CA, USA")]
-[assembly: AssemblyProduct ("db4o - database for objects")]
-[assembly: AssemblyCopyright ("db4o 2005 - 2009")]
+[assembly: AssemblyDescription("Db4objects.Db4o.Data.Services 7.12.118.13900 (.NET)")]
+[assembly: AssemblyConfiguration(".NET")]
+[assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
+[assembly: AssemblyProduct("db4o - database for objects")]
+[assembly: AssemblyCopyright("Versant Corp. 2000 - 2009")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
 [assembly: ComVisible (false)]
 
-[assembly: AssemblyVersion ("7.8.85.12705")]
+[assembly: AssemblyVersion("7.12.118.13900")]
+
+#if !CF && !SILVERLIGHT
+[assembly: AllowPartiallyTrustedCallers]
+#endif
+
+[assembly: CLSCompliant(true)]

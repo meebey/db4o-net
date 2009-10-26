@@ -51,6 +51,8 @@ namespace Db4objects.Db4o.Internal.Callbacks
 
 		bool CaresAboutDeleted();
 
+		void OpenOnFinished(IObjectContainer container);
+
 		void CloseOnStarted(IObjectContainer container);
 	}
 }

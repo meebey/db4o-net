@@ -271,5 +271,14 @@ namespace Db4objects.Db4o.Events
 		/// </summary>
 		/// <returns>event</returns>
 		event System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs> Closing;
+
+		/// <summary>
+		/// This event is fired when the
+		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
+		/// has
+		/// finished its startup procedure.
+		/// </summary>
+		/// <returns>event</returns>
+		event System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs> Opened;
 	}
 }

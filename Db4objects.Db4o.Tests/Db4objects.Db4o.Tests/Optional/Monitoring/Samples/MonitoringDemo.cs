@@ -1,6 +1,6 @@
 /* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
 
-#if !SILVERLIGHT
+#if !CF && !SILVERLIGHT
 using Db4objects.Db4o;
 using Db4objects.Db4o.CS;
 using Db4objects.Db4o.CS.Config;
@@ -78,12 +78,14 @@ namespace Db4objects.Db4o.Tests.Optional.Monitoring.Samples
 			string user = "db4o";
 			string password = "db4o";
 			_server = Db4oClientServer.OpenServer(((IServerConfiguration)Configure(Db4oClientServer
-				.NewServerConfiguration())), DatabaseFileName, Db4oClientServer.ArbitraryPort);
+				.NewServerConfiguration(), "db4o server(" + DatabaseFileName + ")")), DatabaseFileName
+				, Db4oClientServer.ArbitraryPort);
 			_server.GrantAccess(user, password);
 			return Db4oClientServer.OpenClient(((IClientConfiguration)Configure(Db4oClientServer
-				.NewClientConfiguration())), "localhost", _server.Ext().Port(), user, password);
+				.NewClientConfiguration(), "db4o client(localhost:" + _server.Ext().Port() + ")"
+				)), "localhost", _server.Ext().Port(), user, password);
 			return Db4oEmbedded.OpenFile(((IEmbeddedConfiguration)Configure(Db4oEmbedded.NewConfiguration
-				())), DatabaseFileName);
+				(), "db4o(" + DatabaseFileName + ")")), DatabaseFileName);
 		}
 
 		private void ExecuteQueries(IObjectContainer objectContainer)
@@ -170,13 +172,15 @@ namespace Db4objects.Db4o.Tests.Optional.Monitoring.Samples
 		}
 
 		private ICommonConfigurationProvider Configure(ICommonConfigurationProvider config
-			)
+			, string name)
 		{
 			((ICommonConfigurationProvider)config).Common.ObjectClass(typeof(MonitoringDemo.Item
 				)).ObjectField("name").Indexed(true);
+			((ICommonConfigurationProvider)config).Common.NameProvider(new SimpleNameProvider
+				(name));
 			new AllMonitoringSupport().Apply(config);
 			return config;
 		}
 	}
 }
-#endif // !SILVERLIGHT
+#endif // !CF && !SILVERLIGHT

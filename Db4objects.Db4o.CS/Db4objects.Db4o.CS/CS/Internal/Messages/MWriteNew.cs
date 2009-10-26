@@ -11,23 +11,23 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public void ProcessAtServer()
 		{
 			int classMetadataId = _payLoad.ReadInt();
-			LocalObjectContainer stream = (LocalObjectContainer)Stream();
+			LocalObjectContainer container = (LocalObjectContainer)Stream();
 			Unmarshall(_payLoad._offset);
 			lock (StreamLock())
 			{
-				ClassMetadata classMetadata = classMetadataId == 0 ? null : stream.ClassMetadataForID
+				ClassMetadata classMetadata = classMetadataId == 0 ? null : container.ClassMetadataForID
 					(classMetadataId);
 				int id = _payLoad.GetID();
-				stream.PrefetchedIDConsumed(id);
+				container.PrefetchedIDConsumed(id);
 				Transaction().SlotFreePointerOnRollback(id);
-				Slot slot = stream.GetSlot(_payLoad.Length());
+				Slot slot = container.GetSlot(_payLoad.Length());
 				_payLoad.Address(slot.Address());
 				Transaction().SlotFreeOnRollback(id, slot);
 				if (classMetadata != null)
 				{
 					classMetadata.AddFieldIndices(_payLoad, null);
 				}
-				stream.WriteNew(Transaction(), _payLoad.Pointer(), classMetadata, _payLoad);
+				container.WriteNew(Transaction(), _payLoad.Pointer(), classMetadata, _payLoad);
 				ServerTransaction().WritePointer(id, slot);
 			}
 		}

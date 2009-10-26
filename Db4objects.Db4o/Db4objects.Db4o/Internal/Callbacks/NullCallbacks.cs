@@ -107,5 +107,9 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		public virtual void CloseOnStarted(IObjectContainer container)
 		{
 		}
+
+		public virtual void OpenOnFinished(IObjectContainer container)
+		{
+		}
 	}
 }

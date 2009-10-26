@@ -18,9 +18,10 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			return ComposeTests(new Type[] { typeof(ClassConfigOverridesGlobalConfigTestSuite
 				), typeof(ConfigurationItemTestCase), typeof(ConfigurationOfObjectClassNotSupportedTestCase
 				), typeof(Config4ImplTestCase), typeof(CustomStringEncodingTestCase), typeof(GlobalVsNonStaticConfigurationTestCase
-				), typeof(LatinStringEncodingTestCase), typeof(ObjectTranslatorTestCase), typeof(
-				TransientConfigurationTestSuite), typeof(UnicodeStringEncodingTestCase), typeof(
-				UTF8StringEncodingTestCase), typeof(VersionNumbersTestCase) });
+				), typeof(LatinStringEncodingTestCase), typeof(ObjectContainerCustomNameTestCase
+				), typeof(ObjectTranslatorTestCase), typeof(TransientConfigurationTestSuite), typeof(
+				UnicodeStringEncodingTestCase), typeof(UTF8StringEncodingTestCase), typeof(VersionNumbersTestCase
+				) });
 		}
 
 		#if !SILVERLIGHT

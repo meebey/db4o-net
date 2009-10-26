@@ -4,16 +4,16 @@ using System.Runtime.CompilerServices;
 using System.Security;
 
 [assembly: AssemblyTitle("db4o - database for objects")]
-[assembly: AssemblyCompany("Versant Inc., San Mateo, CA, USA")]
+[assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
-[assembly: AssemblyCopyright("db4o 2005 - 2009")]
+[assembly: AssemblyCopyright("Versant Corp. 2000 - 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyName("")]
 
 // attributes are automatically set by the build
-[assembly: AssemblyVersion("7.11.117.13787")]
+[assembly: AssemblyVersion("7.12.118.13900")]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
-[assembly: AssemblyDescription("Db4oUnit 7.11.117.13787 (.NET)")]
+[assembly: AssemblyDescription("Db4oUnit 7.12.118.13900 (.NET)")]
