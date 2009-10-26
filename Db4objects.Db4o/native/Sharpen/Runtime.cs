@@ -195,21 +195,27 @@ namespace Sharpen
 
 		public static void Wait(object obj, long timeout) 
 		{
-#if !CF
+#if CF
+			throw new NotImplementedException();
+#else
 			Monitor.Wait(obj, (int) timeout);
 #endif
 		}
 
 		public static void Notify(object obj) 
 		{
-#if !CF
+#if CF
+			throw new NotImplementedException();
+#else
 			Monitor.Pulse(obj);
 #endif
 		}
 
 		public static void NotifyAll(object obj) 
 		{
-#if !CF
+#if CF
+			throw new NotImplementedException();
+#else
 			Monitor.PulseAll(obj);
 #endif
 		}
