@@ -9,8 +9,6 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Config.Attributes;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal.Convert;
-using Db4objects.Db4o.Internal.Convert.Conversions;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query;
@@ -27,21 +25,11 @@ namespace Db4objects.Db4o.Internal
     /// <exclude />
     public class Platform4
     {
-        private static readonly string[] OldAssemblyNames = new String[] { "db4o", "db4o-4.0-net1", "db4o-4.0-compact1" };
-
-        private static readonly string[][] NamespaceRenamings = new string[][]
-                {
-                    new string[] { "com.db4o.ext", "Db4objects.Db4o.Ext"},
-                    new string[] { "com.db4o.inside", "Db4objects.Db4o.Internal"},
-                    new string[] { "com.db4o", "Db4objects.Db4o"}, 
-                };
-
+		private static readonly LecacyDb4oAssemblyNameMapper _assemlbyNameMapper = new LecacyDb4oAssemblyNameMapper();
 
         private static List<ObjectContainerBase> _containersToBeShutdown;
 
 		private static readonly object _shutdownStreamsLock = new object();
-
-        private static readonly byte[][] oldAssemblies;
 
 		public static object[] CollectionToArray(ObjectContainerBase stream, object obj)
         {
@@ -49,16 +37,6 @@ namespace Db4objects.Db4o.Internal
             object[] ret = new object[col.Size()];
             col.ToArray(ret);
             return ret;
-        }
-
-        static Platform4()
-        {   
-            LatinStringIO stringIO = new UnicodeStringIO();
-            oldAssemblies = new byte[OldAssemblyNames.Length][];
-            for (int i = 0; i < OldAssemblyNames.Length; i++)
-            {
-                oldAssemblies[i] = stringIO.Write(OldAssemblyNames[i]);
-            }
         }
 
     	internal static void AddShutDownHook(ObjectContainerBase container)
@@ -500,49 +478,14 @@ namespace Db4objects.Db4o.Internal
             return false;
         }
 
-		private static void Translate(Config4Impl config, object obj, IObjectTranslator translator)
+		private static void Translate(IConfiguration config, object obj, IObjectTranslator translator)
 		{
 			config.ObjectClass(obj).Translate(translator);
 		}
 
-        internal static byte[] UpdateClassName(byte[] bytes)
+        public static byte[] UpdateClassName(byte[] nameBytes)
         {
-            for (int i = 0; i < OldAssemblyNames.Length; i++)
-            {
-                int j = oldAssemblies[i].Length - 1;
-                for (int k = bytes.Length - 1; k >= 0; k--)
-                {
-                    if (bytes[k] != oldAssemblies[i][j])
-                    {
-                        break;
-                    }
-                    j--;
-                    if (j < 0)
-                    {
-                        return UpdateInternalClassName(bytes);
-                    }
-                }
-            }
-            return bytes;
-        }
-
-        private static byte[] UpdateInternalClassName(byte[] bytes)
-        {
-            StringBuilder typeNameBuffer = new StringBuilder();
-            UnicodeStringIO io = new UnicodeStringIO();
-            typeNameBuffer.Append(io.Read(bytes).Split(',')[0]);
-            foreach (string[] renaming in NamespaceRenamings)
-            {
-                typeNameBuffer.Replace(renaming[0], renaming[1]);
-            }
-            typeNameBuffer.Append(", ");
-            typeNameBuffer.Append(GetCurrentAssemblyName());
-            return io.Write(typeNameBuffer.ToString());
-        }
-
-        private static string GetCurrentAssemblyName()
-        {
-            return typeof(Platform4).Assembly.GetName().Name;
+            return _assemlbyNameMapper.MappedNameFor(nameBytes);
         }
 
         public static Object WeakReferenceTarget(Object weakRef)
