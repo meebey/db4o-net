@@ -10,7 +10,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside
 			return new System.Type[]
 				{   
 				    typeof(Query.QueryExpressionBuilderTestCase),
+#if !SILVERLIGHT
 					typeof(OldDb4oAssemblyNameRenamingTestCase),
+#endif
 				};
 		}
 	}
