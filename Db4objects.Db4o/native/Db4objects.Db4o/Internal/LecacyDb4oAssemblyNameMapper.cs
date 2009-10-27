@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
+using System.Text;
 using Db4objects.Db4o.Internal.Encoding;
 
 namespace Db4objects.Db4o.Internal
