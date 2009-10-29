@@ -271,9 +271,6 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 		{
 			config.Add(new JavaSupport());
 
-			//AddAlias(config, "java.lang.Throwable", typeof(Throwable));
-			//AddAlias(config, "java.lang.StackTraceElement", typeof(StackTraceElement));
-
 #if RUNNING_OUTSIDE_SERVER
 			AddAlias(config, "com.db4odoc.crossplatform.server.StartServer$Person", typeof(Person));
 			AddAlias(config, "com.db4odoc.crossplatform.server.StartServer$Movies", typeof(Movies));
@@ -409,35 +406,4 @@ public class StartServer implements MessageRecipient  {
 }");
 #endif
 	}
-
-	//internal class StackTraceElement
-	//{
-	//    public string declaringClass;
-	//    public string fileName;
-	//    public int lineNumber;
-	//    public string methodName;
-	//}
-
-	//internal class Throwable : Exception
-	//{
-	//    public override string Message
-	//    {
-	//        get
-	//        {
-	//            return detailMessage;
-	//        }
-	//    }
-
-	//    public override string StackTrace
-	//    {
-	//        get
-	//        {
-	//            return stackStrace != null ? stackStrace[0].methodName : "na";
-	//        }
-	//    }
-
-	//    private Throwable cause;
-	//    private string detailMessage;
-	//    private StackTraceElement[] stackStrace;
-	//}
 }
