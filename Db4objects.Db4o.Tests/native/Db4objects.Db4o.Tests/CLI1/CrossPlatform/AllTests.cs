@@ -13,6 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 #if !SILVERLIGHT
 						typeof(DotnetServerCrossplatformTestCase),
 			       		typeof(JavaServerCrossplatformTestCase),
+						typeof(JavaSupporAliasesTestCase),
 #endif
 			       	};
 		}
