@@ -1,5 +1,5 @@
 ﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
-#if NET_3_5 && ! CF
+#if NET_3_5 && !CF
 
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 {
     public class UnavailableGenericClassCollectionTestCase : UnavailableClassTestCaseBase
     {
-
-
         public class ListHolder
         {
             private LinkedList<ListItem> _list = new LinkedList<ListItem>();
@@ -21,7 +19,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
             {
                 return _list;
             }
-
         }
         
         public class ListItem
@@ -49,20 +46,20 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         public void Test()
         {
-            var originalName = "UnavailableGenericClassCollectionTestCase";
-            var modifiedName = "FooBar";
+            const string originalName = "UnavailableGenericClassCollectionTestCase";
+            const string modifiedName = "FooBar";
 
-            ReopenHidingClasses(new Type[]{typeof(ListHolder), typeof(ListItem)});
+            ReopenHidingClasses(new[]{typeof(ListHolder), typeof(ListItem)});
 
             RenameClasses(originalName, modifiedName);
 
-            ReopenHidingClasses(new Type[] { typeof(ListHolder), typeof(ListItem) });
+            ReopenHidingClasses(new[] { typeof(ListHolder), typeof(ListItem) });
 
             RenameClasses(modifiedName, originalName);
 
             ReopenHidingClasses(new Type[] { });
 
-            ListHolder listHolder = (ListHolder)RetrieveOnlyInstance(typeof(ListHolder));
+            var listHolder = (ListHolder)RetrieveOnlyInstance(typeof(ListHolder));
 
             var item = listHolder.List().First();
 
@@ -71,10 +68,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
         private void RenameClasses(string originalName, string modifiedName)
         {
-            var classes = from storedClass in Db().StoredClasses()
+            var classes = from storedClass in FileSession().StoredClasses()
                           let name = storedClass.GetName()
                           where name != null && name.Contains(originalName)
                           select new { StoredClass = storedClass, Name = name };
+
             foreach(var clazz in classes)
             {
                 var newName = clazz.Name.Replace(originalName, modifiedName);
