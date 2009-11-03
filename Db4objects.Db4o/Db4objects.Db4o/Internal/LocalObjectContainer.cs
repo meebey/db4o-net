@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -35,7 +35,9 @@ namespace Db4objects.Db4o.Internal
 
 		private Tree i_prefetchedIDs;
 
-		private Hashtable4 i_semaphores;
+		private Lock4 _semaphoresLock = new Lock4();
+
+		private Hashtable4 _semaphores;
 
 		private int _blockEndAddress;
 
@@ -228,14 +230,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (i_prefetchedIDs != null)
 			{
-				i_prefetchedIDs.Traverse(new _IVisitor4_208(this));
+				i_prefetchedIDs.Traverse(new _IVisitor4_209(this));
 			}
 			i_prefetchedIDs = null;
 		}
 
-		private sealed class _IVisitor4_208 : IVisitor4
+		private sealed class _IVisitor4_209 : IVisitor4
 		{
-			public _IVisitor4_208(LocalObjectContainer _enclosing)
+			public _IVisitor4_209(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -693,48 +695,89 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				if (i_semaphores == null)
+				if (_semaphores == null)
 				{
 					return;
 				}
 			}
-			lock (i_semaphores)
+			_semaphoresLock.Run(new _IClosure4_609(this, trans, name));
+		}
+
+		private sealed class _IClosure4_609 : IClosure4
+		{
+			public _IClosure4_609(LocalObjectContainer _enclosing, Transaction trans, string 
+				name)
 			{
-				trans = CheckTransaction(trans);
-				if (i_semaphores != null && trans == i_semaphores.Get(name))
-				{
-					i_semaphores.Remove(name);
-				}
-				Sharpen.Runtime.NotifyAll(i_semaphores);
+				this._enclosing = _enclosing;
+				this.trans = trans;
+				this.name = name;
 			}
+
+			public object Run()
+			{
+				Transaction transaction = this._enclosing.CheckTransaction(trans);
+				if (this._enclosing._semaphores != null && transaction == this._enclosing._semaphores
+					.Get(name))
+				{
+					this._enclosing._semaphores.Remove(name);
+				}
+				this._enclosing._semaphoresLock.Awake();
+				return null;
+			}
+
+			private readonly LocalObjectContainer _enclosing;
+
+			private readonly Transaction trans;
+
+			private readonly string name;
 		}
 
 		public override void ReleaseSemaphores(Transaction ta)
 		{
-			if (i_semaphores != null)
+			if (_semaphores != null)
 			{
-				Hashtable4 semaphores = i_semaphores;
-				lock (semaphores)
-				{
-					semaphores.ForEachKeyForIdentity(new _IVisitor4_621(semaphores), ta);
-					Sharpen.Runtime.NotifyAll(semaphores);
-				}
+				Hashtable4 semaphores = _semaphores;
+				_semaphoresLock.Run(new _IClosure4_623(this, semaphores, ta));
 			}
 		}
 
-		private sealed class _IVisitor4_621 : IVisitor4
+		private sealed class _IClosure4_623 : IClosure4
 		{
-			public _IVisitor4_621(Hashtable4 semaphores)
+			public _IClosure4_623(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
+				 ta)
 			{
+				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
+				this.ta = ta;
 			}
 
-			public void Visit(object a_object)
+			public object Run()
 			{
-				semaphores.Remove(a_object);
+				semaphores.ForEachKeyForIdentity(new _IVisitor4_624(semaphores), ta);
+				this._enclosing._semaphoresLock.Awake();
+				return null;
 			}
+
+			private sealed class _IVisitor4_624 : IVisitor4
+			{
+				public _IVisitor4_624(Hashtable4 semaphores)
+				{
+					this.semaphores = semaphores;
+				}
+
+				public void Visit(object a_object)
+				{
+					semaphores.Remove(a_object);
+				}
+
+				private readonly Hashtable4 semaphores;
+			}
+
+			private readonly LocalObjectContainer _enclosing;
 
 			private readonly Hashtable4 semaphores;
+
+			private readonly Transaction ta;
 		}
 
 		public sealed override void Rollback1(Transaction trans)
@@ -761,58 +804,83 @@ namespace Db4objects.Db4o.Internal
 			}
 			lock (_lock)
 			{
-				if (i_semaphores == null)
+				if (_semaphores == null)
 				{
-					i_semaphores = new Hashtable4(10);
+					_semaphores = new Hashtable4(10);
 				}
 			}
-			lock (i_semaphores)
+			BooleanByRef acquired = new BooleanByRef();
+			_semaphoresLock.Run(new _IClosure4_660(this, trans, name, acquired, timeout));
+			return acquired.value;
+		}
+
+		private sealed class _IClosure4_660 : IClosure4
+		{
+			public _IClosure4_660(LocalObjectContainer _enclosing, Transaction trans, string 
+				name, BooleanByRef acquired, int timeout)
+			{
+				this._enclosing = _enclosing;
+				this.trans = trans;
+				this.name = name;
+				this.acquired = acquired;
+				this.timeout = timeout;
+			}
+
+			public object Run()
 			{
 				try
 				{
-					trans = CheckTransaction(trans);
-					object obj = i_semaphores.Get(name);
-					if (obj == null)
+					Transaction transaction = this._enclosing.CheckTransaction(trans);
+					object candidateTransaction = this._enclosing._semaphores.Get(name);
+					if (trans == candidateTransaction)
 					{
-						i_semaphores.Put(name, trans);
-						return true;
+						acquired.value = true;
+						return null;
 					}
-					if (trans == obj)
+					if (candidateTransaction == null)
 					{
-						return true;
+						this._enclosing._semaphores.Put(name, transaction);
+						acquired.value = true;
+						return null;
 					}
 					long endtime = Runtime.CurrentTimeMillis() + timeout;
 					long waitTime = timeout;
 					while (waitTime > 0)
 					{
-						try
+						this._enclosing._semaphoresLock.Awake();
+						this._enclosing._semaphoresLock.Snooze(waitTime);
+						if (this._enclosing.ClassCollection() == null)
 						{
-							Sharpen.Runtime.NotifyAll(i_semaphores);
-							Sharpen.Runtime.Wait(i_semaphores, waitTime);
+							acquired.value = false;
+							return null;
 						}
-						catch (Exception)
+						candidateTransaction = this._enclosing._semaphores.Get(name);
+						if (candidateTransaction == null)
 						{
-						}
-						// ignore
-						if (ClassCollection() == null)
-						{
-							return false;
-						}
-						obj = i_semaphores.Get(name);
-						if (obj == null)
-						{
-							i_semaphores.Put(name, trans);
-							return true;
+							this._enclosing._semaphores.Put(name, transaction);
+							acquired.value = true;
+							return null;
 						}
 						waitTime = endtime - Runtime.CurrentTimeMillis();
 					}
-					return false;
+					acquired.value = false;
+					return null;
 				}
 				finally
 				{
-					Sharpen.Runtime.NotifyAll(i_semaphores);
+					this._enclosing._semaphoresLock.Awake();
 				}
 			}
+
+			private readonly LocalObjectContainer _enclosing;
+
+			private readonly Transaction trans;
+
+			private readonly string name;
+
+			private readonly BooleanByRef acquired;
+
+			private readonly int timeout;
 		}
 
 		public virtual void SetServer(bool flag)
@@ -974,13 +1042,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_824(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_837(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_824 : IVisitor4
+		private sealed class _IVisitor4_837 : IVisitor4
 		{
-			public _IVisitor4_824(IntArrayList ids)
+			public _IVisitor4_837(IntArrayList ids)
 			{
 				this.ids = ids;
 			}

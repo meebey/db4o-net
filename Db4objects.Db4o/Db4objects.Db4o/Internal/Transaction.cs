@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4objects.Db4o;
@@ -346,6 +346,11 @@ namespace Db4objects.Db4o.Internal
 			ObjectReference @ref = ReferenceSystem().ReferenceForId(id);
 			if (@ref != null)
 			{
+				if (@ref.GetObject() == null)
+				{
+					RemoveReference(@ref);
+					return null;
+				}
 				return @ref;
 			}
 			if (ParentTransaction() != null)
@@ -403,12 +408,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_353(this);
+			return new _IContext_357(this);
 		}
 
-		private sealed class _IContext_353 : IContext
+		private sealed class _IContext_357 : IContext
 		{
-			public _IContext_353(Transaction _enclosing)
+			public _IContext_357(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

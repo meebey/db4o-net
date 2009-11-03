@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.IO;
@@ -112,9 +112,6 @@ namespace Db4objects.Db4o.Internal
 				{
 					lock (this._enclosing._lock)
 					{
-						// Let the database engine continue to do 
-						// some work if it likes to.
-						Cool.SleepIgnoringInterruption(1);
 						int read = this._enclosing._file.Read(pos, buffer);
 						if (read <= 0)
 						{
@@ -123,6 +120,9 @@ namespace Db4objects.Db4o.Internal
 						this._enclosing._backupFile.Write(pos, buffer, read);
 						pos += read;
 					}
+					// Let the database engine continue to do 
+					// some work if it likes to.
+					Cool.SleepIgnoringInterruption(1);
 				}
 				lock (this._enclosing._lock)
 				{

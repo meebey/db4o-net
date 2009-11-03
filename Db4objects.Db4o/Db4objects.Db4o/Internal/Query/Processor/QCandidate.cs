@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4objects.Db4o;
@@ -811,6 +811,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			return Db4objects.Db4o.Internal.Marshall.MarshallerFamily.Version(_handlerVersion
 				);
+		}
+
+		public override bool Duplicates()
+		{
+			return _root != null;
 		}
 	}
 }

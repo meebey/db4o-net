@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit.Extensions;
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				), typeof(RollbackUpdateTestCase), typeof(RollbackUpdateCascadeTestCase), typeof(
 				SimplestPossibleNullMemberTestCase), typeof(SimplestPossibleTestCase), typeof(SimplestPossibleParentChildTestCase
 				), typeof(SystemInfoTestCase), typeof(TransientCloneTestCase), typeof(UnknownReferenceDeactivationTestCase
-				) });
+				), typeof(WithTransactionTestCase) });
 		}
 
 		// FIXME: COR-1060

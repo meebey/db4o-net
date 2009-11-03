@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -176,12 +176,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private IEnumerator SingleObjectSodaProcessor(IEnumerator indexIterator)
 		{
-			return Iterators.Map(indexIterator, new _IFunction4_152(this));
+			return Iterators.Map(indexIterator, new _IFunction4_157(this));
 		}
 
-		private sealed class _IFunction4_152 : IFunction4
+		private sealed class _IFunction4_157 : IFunction4
 		{
-			public _IFunction4_152(QCandidates _enclosing)
+			public _IFunction4_157(QCandidates _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -238,14 +238,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			while (executionPathIterator.MoveNext())
 			{
 				string fieldName = (string)executionPathIterator.Current;
-				res = Iterators.Concat(Iterators.Map(res, new _IFunction4_198(this, fieldName)));
+				res = Iterators.Concat(Iterators.Map(res, new _IFunction4_203(this, fieldName)));
 			}
 			return res;
 		}
 
-		private sealed class _IFunction4_198 : IFunction4
+		private sealed class _IFunction4_203 : IFunction4
 		{
-			public _IFunction4_198(QCandidates _enclosing, string fieldName)
+			public _IFunction4_203(QCandidates _enclosing, string fieldName)
 			{
 				this._enclosing = _enclosing;
 				this.fieldName = fieldName;
@@ -293,17 +293,17 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return;
 			}
-			ForEachConstraint(new _IProcedure4_236(this));
-			ForEachConstraint(new _IProcedure4_244());
-			ForEachConstraint(new _IProcedure4_250());
-			ForEachConstraint(new _IProcedure4_256());
-			ForEachConstraint(new _IProcedure4_262());
-			ForEachConstraint(new _IProcedure4_268());
+			ForEachConstraint(new _IProcedure4_241(this));
+			ForEachConstraint(new _IProcedure4_249());
+			ForEachConstraint(new _IProcedure4_255());
+			ForEachConstraint(new _IProcedure4_261());
+			ForEachConstraint(new _IProcedure4_267());
+			ForEachConstraint(new _IProcedure4_273());
 		}
 
-		private sealed class _IProcedure4_236 : IProcedure4
+		private sealed class _IProcedure4_241 : IProcedure4
 		{
-			public _IProcedure4_236(QCandidates _enclosing)
+			public _IProcedure4_241(QCandidates _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -318,9 +318,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private readonly QCandidates _enclosing;
 		}
 
-		private sealed class _IProcedure4_244 : IProcedure4
+		private sealed class _IProcedure4_249 : IProcedure4
 		{
-			public _IProcedure4_244()
+			public _IProcedure4_249()
 			{
 			}
 
@@ -330,9 +330,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _IProcedure4_250 : IProcedure4
+		private sealed class _IProcedure4_255 : IProcedure4
 		{
-			public _IProcedure4_250()
+			public _IProcedure4_255()
 			{
 			}
 
@@ -342,9 +342,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _IProcedure4_256 : IProcedure4
+		private sealed class _IProcedure4_261 : IProcedure4
 		{
-			public _IProcedure4_256()
+			public _IProcedure4_261()
 			{
 			}
 
@@ -354,9 +354,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _IProcedure4_262 : IProcedure4
+		private sealed class _IProcedure4_267 : IProcedure4
 		{
-			public _IProcedure4_262()
+			public _IProcedure4_267()
 			{
 			}
 
@@ -366,9 +366,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _IProcedure4_268 : IProcedure4
+		private sealed class _IProcedure4_273 : IProcedure4
 		{
-			public _IProcedure4_268()
+			public _IProcedure4_273()
 			{
 			}
 
@@ -394,13 +394,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal bool IsEmpty()
 		{
 			bool[] ret = new bool[] { true };
-			Traverse(new _IVisitor4_288(ret));
+			Traverse(new _IVisitor4_293(ret));
 			return ret[0];
 		}
 
-		private sealed class _IVisitor4_288 : IVisitor4
+		private sealed class _IVisitor4_293 : IVisitor4
 		{
-			public _IVisitor4_288(bool[] ret)
+			public _IVisitor4_293(bool[] ret)
 			{
 				this.ret = ret;
 			}
@@ -421,14 +421,14 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			if (i_root != null)
 			{
 				i_root.Traverse(a_host);
-				i_root = i_root.Filter(new _IPredicate4_301());
+				i_root = i_root.Filter(new _IPredicate4_306());
 			}
 			return i_root != null;
 		}
 
-		private sealed class _IPredicate4_301 : IPredicate4
+		private sealed class _IPredicate4_306 : IPredicate4
 		{
-			public _IPredicate4_301()
+			public _IPredicate4_306()
 			{
 			}
 
@@ -474,7 +474,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			QCandidates.TreeIntBuilder result = new QCandidates.TreeIntBuilder();
 			IClassIndexStrategy index = i_classMetadata.Index();
-			index.TraverseAll(i_trans, new _IVisitor4_339(this, result));
+			index.TraverseAll(i_trans, new _IVisitor4_344(this, result));
 			i_root = result.tree;
 			DiagnosticProcessor dp = i_trans.Container()._handlers._diagnosticProcessor;
 			if (dp.Enabled() && !IsClassOnlyQuery())
@@ -484,9 +484,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_loadedFromClassIndex = true;
 		}
 
-		private sealed class _IVisitor4_339 : IVisitor4
+		private sealed class _IVisitor4_344 : IVisitor4
 		{
-			public _IVisitor4_339(QCandidates _enclosing, QCandidates.TreeIntBuilder result)
+			public _IVisitor4_344(QCandidates _enclosing, QCandidates.TreeIntBuilder result)
 			{
 				this._enclosing = _enclosing;
 				this.result = result;
@@ -579,13 +579,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override string ToString()
 		{
 			StringBuilder sb = new StringBuilder();
-			i_root.Traverse(new _IVisitor4_423(sb));
+			i_root.Traverse(new _IVisitor4_428(sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_423 : IVisitor4
+		private sealed class _IVisitor4_428 : IVisitor4
 		{
-			public _IVisitor4_423(StringBuilder sb)
+			public _IVisitor4_428(StringBuilder sb)
 			{
 				this.sb = sb;
 			}

@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
 using Db4objects.Db4o.Internal;
@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		public virtual void TestRemoveId()
 		{
-			AddTestReference();
+			AddTestReferenceToBothSystems();
 			_registry.RemoveId(TestId);
 			AssertTestReferenceNotPresent();
 		}
@@ -45,23 +45,34 @@ namespace Db4objects.Db4o.Tests.Common.References
 
 		public virtual void TestRemoveObject()
 		{
-			ObjectReference testReference = AddTestReference();
+			ObjectReference testReference = AddTestReferenceToBothSystems();
 			_registry.RemoveObject(testReference.GetObject());
 			AssertTestReferenceNotPresent();
 		}
 
 		public virtual void TestRemoveReference()
 		{
-			ObjectReference testReference = AddTestReference();
+			ObjectReference testReference = AddTestReferenceToBothSystems();
 			_registry.RemoveReference(testReference);
 			AssertTestReferenceNotPresent();
 		}
 
 		public virtual void TestRemoveReferenceSystem()
 		{
-			AddTestReference();
+			AddTestReferenceToBothSystems();
 			_registry.RemoveReferenceSystem(_referenceSystem1);
 			_registry.RemoveId(TestId);
+			Assert.IsNotNull(_referenceSystem1.ReferenceForId(TestId));
+			Assert.IsNull(_referenceSystem2.ReferenceForId(TestId));
+		}
+
+		public virtual void TestRemoveByObjectReference()
+		{
+			ObjectReference ref1 = NewObjectReference();
+			_referenceSystem1.AddExistingReference(ref1);
+			ObjectReference ref2 = NewObjectReference();
+			_referenceSystem2.AddExistingReference(ref2);
+			_registry.RemoveReference(ref2);
 			Assert.IsNotNull(_referenceSystem1.ReferenceForId(TestId));
 			Assert.IsNull(_referenceSystem2.ReferenceForId(TestId));
 		}
@@ -72,12 +83,18 @@ namespace Db4objects.Db4o.Tests.Common.References
 			Assert.IsNull(_referenceSystem2.ReferenceForId(TestId));
 		}
 
-		private ObjectReference AddTestReference()
+		private ObjectReference AddTestReferenceToBothSystems()
+		{
+			ObjectReference @ref = NewObjectReference();
+			_referenceSystem1.AddExistingReference(@ref);
+			_referenceSystem2.AddExistingReference(@ref);
+			return @ref;
+		}
+
+		private ObjectReference NewObjectReference()
 		{
 			ObjectReference @ref = new ObjectReference(TestId);
 			@ref.SetObject(new object());
-			_referenceSystem1.AddExistingReference(@ref);
-			_referenceSystem2.AddExistingReference(@ref);
 			return @ref;
 		}
 	}

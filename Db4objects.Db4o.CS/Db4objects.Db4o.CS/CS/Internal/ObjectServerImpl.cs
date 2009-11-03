@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private ClientTransactionPool _transactionPool;
 
-		private readonly object _startupLock = new object();
+		private readonly Lock4 _startupLock = new Lock4();
 
 		private Config4Impl _config;
 
@@ -101,32 +101,59 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				return;
 			}
-			lock (_startupLock)
+			_startupLock.Run(new _IClosure4_92(this));
+		}
+
+		private sealed class _IClosure4_92 : IClosure4
+		{
+			public _IClosure4_92(ObjectServerImpl _enclosing)
 			{
-				StartServerSocket();
-				StartServerThread();
+				this._enclosing = _enclosing;
+			}
+
+			public object Run()
+			{
+				this._enclosing.StartServerSocket();
+				this._enclosing.StartServerThread();
 				bool started = false;
 				while (!started)
 				{
 					try
 					{
-						Sharpen.Runtime.Wait(_startupLock, StartThreadWaitTimeout);
+						this._enclosing._startupLock.Snooze(Db4objects.Db4o.CS.Internal.ObjectServerImpl.
+							StartThreadWaitTimeout);
 						started = true;
 					}
 					catch (Exception)
 					{
 					}
 				}
+				// not specialized to InterruptException for .NET conversion
+				return null;
 			}
+
+			private readonly ObjectServerImpl _enclosing;
 		}
 
-		// not specialized to InterruptException for .NET conversion
 		private void StartServerThread()
 		{
-			lock (_startupLock)
+			_startupLock.Run(new _IClosure4_111(this));
+		}
+
+		private sealed class _IClosure4_111 : IClosure4
+		{
+			public _IClosure4_111(ObjectServerImpl _enclosing)
 			{
-				ThreadPool().Start(this);
+				this._enclosing = _enclosing;
 			}
+
+			public object Run()
+			{
+				this._enclosing.ThreadPool().Start(this._enclosing);
+				return null;
+			}
+
+			private readonly ObjectServerImpl _enclosing;
 		}
 
 		private IThreadPool4 ThreadPool()
@@ -449,13 +476,13 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			while (_serverSocket != null)
 			{
-				WithEnvironment(new _IRunnable_352(this));
+				WithEnvironment(new _IRunnable_355(this));
 			}
 		}
 
-		private sealed class _IRunnable_352 : IRunnable
+		private sealed class _IRunnable_355 : IRunnable
 		{
-			public _IRunnable_352(ObjectServerImpl _enclosing)
+			public _IRunnable_355(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -464,10 +491,10 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				try
 				{
+					ISocket4 socket = this._enclosing._serverSocket.Accept();
 					ServerMessageDispatcherImpl messageDispatcher = new ServerMessageDispatcherImpl(this
-						._enclosing, new ClientTransactionHandle(this._enclosing._transactionPool), this
-						._enclosing._serverSocket.Accept(), this._enclosing.NewThreadId(), false, this._enclosing
-						._container.Lock());
+						._enclosing, new ClientTransactionHandle(this._enclosing._transactionPool), socket
+						, this._enclosing.NewThreadId(), false, this._enclosing._container.Lock());
 					this._enclosing.AddServerMessageDispatcher(messageDispatcher);
 					this._enclosing.ThreadPool().Start(messageDispatcher);
 				}
@@ -479,6 +506,10 @@ namespace Db4objects.Db4o.CS.Internal
 			private readonly ObjectServerImpl _enclosing;
 		}
 
+		// CatchAll because we can get expected timeout exceptions
+		// although we still want to continue to use the ServerSocket.
+		// No nice way to catch a specific exception because 
+		// SocketTimeOutException is JDK 1.4 and above.
 		//e.printStackTrace();
 		private void TriggerClientConnected(IServerMessageDispatcher messageDispatcher)
 		{
@@ -499,10 +530,23 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void NotifyThreadStarted()
 		{
-			lock (_startupLock)
+			_startupLock.Run(new _IClosure4_392(this));
+		}
+
+		private sealed class _IClosure4_392 : IClosure4
+		{
+			public _IClosure4_392(ObjectServerImpl _enclosing)
 			{
-				Sharpen.Runtime.NotifyAll(_startupLock);
+				this._enclosing = _enclosing;
 			}
+
+			public object Run()
+			{
+				this._enclosing._startupLock.Awake();
+				return null;
+			}
+
+			private readonly ObjectServerImpl _enclosing;
 		}
 
 		private void LogListeningOnPort()
@@ -632,6 +676,11 @@ namespace Db4objects.Db4o.CS.Internal
 		internal virtual void WithEnvironment(IRunnable runnable)
 		{
 			_container.WithEnvironment(runnable);
+		}
+
+		public virtual int TransactionCount()
+		{
+			return _transactionPool.OpenTransactionCount();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 #if !SILVERLIGHT
 using System;
@@ -23,9 +23,10 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				), typeof(CloseServerBeforeClientTestCase), typeof(CsCascadedDeleteReaddChildReferenceTestCase
 				), typeof(CsDeleteReaddTestCase), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase
 				), typeof(ObjectServerTestCase), typeof(PrefetchConfigurationTestCase), typeof(PrimitiveMessageTestCase
-				), typeof(QueryConsistencyTestCase), typeof(SendMessageToClientTestCase), typeof(
-				ServerClosedTestCase), typeof(ServerPortUsedTestCase), typeof(ServerQueryEventsTestCase
-				), typeof(ServerRevokeAccessTestCase), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase
+				), typeof(QueryConsistencyTestCase), typeof(ReferenceSystemIsolationTestCase), typeof(
+				SendMessageToClientTestCase), typeof(ServerClosedTestCase), typeof(ServerObjectContainerIsolationTestCase
+				), typeof(ServerPortUsedTestCase), typeof(ServerQueryEventsTestCase), typeof(ServerRevokeAccessTestCase
+				), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase), typeof(ServerTransactionCountTestCase
 				), typeof(SetSemaphoreTestCase), typeof(SwitchingFilesFromClientTestCase), typeof(
 				SwitchingFilesFromMultipleClientsTestCase), typeof(SwitchingToFileWithDifferentClassesTestCase
 				) };

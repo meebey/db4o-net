@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit;
@@ -17,15 +17,20 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		private const long WaitTime = 10;
 
-		private IntByRef _activated = new IntByRef(0);
+		private EventCountTestCase.SafeCounter _activated = new EventCountTestCase.SafeCounter
+			();
 
-		private IntByRef _updated = new IntByRef(0);
+		private EventCountTestCase.SafeCounter _updated = new EventCountTestCase.SafeCounter
+			();
 
-		private IntByRef _deleted = new IntByRef(0);
+		private EventCountTestCase.SafeCounter _deleted = new EventCountTestCase.SafeCounter
+			();
 
-		private IntByRef _created = new IntByRef(0);
+		private EventCountTestCase.SafeCounter _created = new EventCountTestCase.SafeCounter
+			();
 
-		private IntByRef _committed = new IntByRef(0);
+		private EventCountTestCase.SafeCounter _committed = new EventCountTestCase.SafeCounter
+			();
 
 		/// <param name="args"></param>
 		public static void Main(string[] args)
@@ -71,20 +76,10 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		}
 
 		/// <exception cref="System.Exception"></exception>
-		private void AssertCount(IntByRef @ref, int expected, string name)
+		private void AssertCount(EventCountTestCase.SafeCounter actual, int expected, string
+			 name)
 		{
-			for (int checkCount = 0; checkCount < MaxChecks; checkCount++)
-			{
-				lock (@ref)
-				{
-					if (@ref.value == expected)
-					{
-						break;
-					}
-					Sharpen.Runtime.Wait(@ref, WaitTime);
-				}
-			}
-			Assert.AreEqual(expected, @ref.value, "Incorrect count for " + name);
+			Assert.IsTrue(actual.IsEqual(expected, MaxChecks));
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -108,20 +103,20 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				);
 			// No dedicated IncrementListener class due to sharpen event semantics
 			deletionEventRegistry.Deleted += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_99(this).OnEvent);
+				(new _IEventListener4_91(this).OnEvent);
 			eventRegistry.Activated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_104(this).OnEvent);
+				(new _IEventListener4_96(this).OnEvent);
 			eventRegistry.Committed += new System.EventHandler<Db4objects.Db4o.Events.CommitEventArgs>
-				(new _IEventListener4_109(this).OnEvent);
+				(new _IEventListener4_101(this).OnEvent);
 			eventRegistry.Created += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_114(this).OnEvent);
+				(new _IEventListener4_106(this).OnEvent);
 			eventRegistry.Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_119(this).OnEvent);
+				(new _IEventListener4_111(this).OnEvent);
 		}
 
-		private sealed class _IEventListener4_99
+		private sealed class _IEventListener4_91
 		{
-			public _IEventListener4_99(EventCountTestCase _enclosing)
+			public _IEventListener4_91(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -129,15 +124,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
 				)
 			{
-				EventCountTestCase.Increment(this._enclosing._deleted);
+				this._enclosing._deleted.Increment();
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_104
+		private sealed class _IEventListener4_96
 		{
-			public _IEventListener4_104(EventCountTestCase _enclosing)
+			public _IEventListener4_96(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -145,30 +140,30 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
 				)
 			{
-				EventCountTestCase.Increment(this._enclosing._activated);
+				this._enclosing._activated.Increment();
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_109
+		private sealed class _IEventListener4_101
 		{
-			public _IEventListener4_109(EventCountTestCase _enclosing)
+			public _IEventListener4_101(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CommitEventArgs args)
 			{
-				EventCountTestCase.Increment(this._enclosing._committed);
+				this._enclosing._committed.Increment();
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_114
+		private sealed class _IEventListener4_106
 		{
-			public _IEventListener4_114(EventCountTestCase _enclosing)
+			public _IEventListener4_106(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -176,15 +171,15 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
 				)
 			{
-				EventCountTestCase.Increment(this._enclosing._created);
+				this._enclosing._created.Increment();
 			}
 
 			private readonly EventCountTestCase _enclosing;
 		}
 
-		private sealed class _IEventListener4_119
+		private sealed class _IEventListener4_111
 		{
-			public _IEventListener4_119(EventCountTestCase _enclosing)
+			public _IEventListener4_111(EventCountTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -192,7 +187,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
 				)
 			{
-				EventCountTestCase.Increment(this._enclosing._updated);
+				this._enclosing._updated.Increment();
 			}
 
 			private readonly EventCountTestCase _enclosing;
@@ -208,12 +203,69 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			public int _value;
 		}
 
-		internal static void Increment(IntByRef @ref)
+		private class SafeCounter
 		{
-			lock (@ref)
+			private int _value;
+
+			private Lock4 _lock = new Lock4();
+
+			public virtual void Increment()
 			{
-				@ref.value++;
-				Sharpen.Runtime.NotifyAll(@ref);
+				_lock.Run(new _IClosure4_131(this));
+			}
+
+			private sealed class _IClosure4_131 : IClosure4
+			{
+				public _IClosure4_131(SafeCounter _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+
+				public object Run()
+				{
+					this._enclosing._value++;
+					return null;
+				}
+
+				private readonly SafeCounter _enclosing;
+			}
+
+			public virtual bool IsEqual(int expected, int maxChecks)
+			{
+				BooleanByRef ret = new BooleanByRef();
+				for (int checkCount = 0; checkCount < MaxChecks && ret.value == false; checkCount
+					++)
+				{
+					_lock.Run(new _IClosure4_140(this, expected, ret));
+				}
+				return ret.value;
+			}
+
+			private sealed class _IClosure4_140 : IClosure4
+			{
+				public _IClosure4_140(SafeCounter _enclosing, int expected, BooleanByRef ret)
+				{
+					this._enclosing = _enclosing;
+					this.expected = expected;
+					this.ret = ret;
+				}
+
+				public object Run()
+				{
+					if (this._enclosing._value == expected)
+					{
+						ret.value = true;
+						return null;
+					}
+					this._enclosing._lock.Snooze(EventCountTestCase.WaitTime);
+					return null;
+				}
+
+				private readonly SafeCounter _enclosing;
+
+				private readonly int expected;
+
+				private readonly BooleanByRef ret;
 			}
 		}
 	}

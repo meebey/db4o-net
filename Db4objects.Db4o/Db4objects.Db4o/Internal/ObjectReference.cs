@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4objects.Db4o;
@@ -971,14 +971,15 @@ namespace Db4objects.Db4o.Internal
 			return this;
 		}
 
-		public virtual Db4objects.Db4o.Internal.ObjectReference Id_remove(int id)
+		public virtual Db4objects.Db4o.Internal.ObjectReference Id_remove(Db4objects.Db4o.Internal.ObjectReference
+			 @ref)
 		{
-			int cmp = id - _id;
+			int cmp = @ref._id - _id;
 			if (cmp < 0)
 			{
 				if (_idPreceding != null)
 				{
-					_idPreceding = _idPreceding.Id_remove(id);
+					_idPreceding = _idPreceding.Id_remove(@ref);
 				}
 			}
 			else
@@ -987,12 +988,16 @@ namespace Db4objects.Db4o.Internal
 				{
 					if (_idSubsequent != null)
 					{
-						_idSubsequent = _idSubsequent.Id_remove(id);
+						_idSubsequent = _idSubsequent.Id_remove(@ref);
 					}
 				}
 				else
 				{
-					return Id_remove();
+					if (this == @ref)
+					{
+						return Id_remove();
+					}
+					return this;
 				}
 			}
 			Id_calculateSize();

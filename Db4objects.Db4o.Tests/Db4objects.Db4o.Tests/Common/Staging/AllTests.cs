@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit.Extensions;
@@ -16,8 +16,9 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		protected override Type[] TestCases()
 		{
 			return ComposeTests(new Type[] { typeof(ActivateDepthTestCase), typeof(InterfaceQueryTestCase
-				), typeof(LazyQueryDeleteTestCase), typeof(SODAClassTypeDescend), typeof(StoredClassUnknownClassQueryTestCase
-				), typeof(UntypedFieldSortingTestCase) });
+				), typeof(LazyQueryDeleteTestCase), typeof(RemovedFieldDefragmentTestCase), typeof(
+				SODAClassTypeDescend), typeof(StoredClassUnknownClassQueryTestCase), typeof(UntypedFieldSortingTestCase
+				) });
 		}
 
 		// COR-1131
