@@ -1,11 +1,9 @@
-#if !SILVERLIGHT
 using System;
 
-namespace Db4objects.Db4o.Tests.Common.CS.Config
+namespace Db4oUnit.Extensions.Dbmock
 {
 	public partial class MockServer : IDisposable {
 		public void Dispose() {
 		}
 	}
 }
-#endif // !SILVERLIGHT
