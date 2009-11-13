@@ -1,14 +1,15 @@
 ﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
 #if !CF && !SILVERLIGHT
 
-using System.Diagnostics;
+using System;
 using System.Threading;
 using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Monitoring;
+using Db4objects.Db4o.Monitoring.CS;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4oUnit;
 
@@ -21,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 
 		public void TestConnectedClients() 
 		{
-			for(int i=0; i < 100; i++) 
+			for(int i=0; i < 10; i++)
 			{
 				Assert.AreEqual(0, ConnectedClientCount(), "No client yet.");
 				IExtObjectContainer client1 = OpenNewSession();
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 			}		
 		}
 
-		private void EnsureClose(IExtObjectContainer client) 
+		private void EnsureClose(IObjectContainer client) 
 		{
 			client.Close();
 			_clientDisconnectedEvent.WaitOne();
@@ -54,41 +55,48 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 		public override void SetUp()
 		{
 			Db4oPerformanceCounterInstaller.ReInstall();
-			//_server = Db4oClientServer.OpenServer(TempFile(), Db4oClientServer.ArbitraryPort);
-			_server = Db4oClientServer.OpenServer(TempFile(), -1);
+
+			IServerConfiguration serverConfiguration = Db4oClientServer.NewServerConfiguration();
+			serverConfiguration.AddConfigurationItem(new ClientConnectionsMonitoringSupport());
+			serverConfiguration.AddConfigurationItem(new ConnectionCloseEventSupport(ClientDisconnected));
+
+			_server = Db4oClientServer.OpenServer(serverConfiguration, TempFile(), Db4oClientServer.ArbitraryPort);
 			_server.GrantAccess(UserName, Password);
-
-			ObjectContainerBase container = (ObjectContainerBase) _server.Ext().ObjectContainer();
-			container.WithEnvironment(delegate
-			{
-				_clientConnections = Db4oPerformanceCounters.CounterForNetworkingClientConnections(_server);
-			});
-
-			RegisterForClientDisconnectionEvents((IObjectServerEvents)_server);
 		}
 
 		public override void TearDown()
 		{
-			_clientConnections.Dispose();
 			_clientDisconnectedEvent.Close();
 			_server.Close();
 
 			base.TearDown();
 		}
-
-		private void RegisterForClientDisconnectionEvents(IObjectServerEvents serverEvents)
-		{
-			serverEvents.ClientDisconnected += ClientDisconnected;
-		}
-
+	
 		void ClientDisconnected(object sender, StringEventArgs e)
 		{
 			_clientDisconnectedEvent.Set();
 		}
 
 		private IObjectServer _server;
-		private PerformanceCounter _clientConnections;
 		private readonly EventWaitHandle _clientDisconnectedEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+	}
+
+	class ConnectionCloseEventSupport : IServerConfigurationItem 
+	{
+		private readonly EventHandler<StringEventArgs> _handler;
+		
+		public ConnectionCloseEventSupport(EventHandler<StringEventArgs> handler) {
+			_handler = handler;
+		}
+		
+		public void Prepare(IServerConfiguration configuration) 
+		{
+		}
+
+		public void Apply(IObjectServer server)
+		{
+			((IObjectServerEvents)server).ClientDisconnected += _handler;
+		}
 	}
 }
 
