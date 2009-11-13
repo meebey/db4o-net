@@ -20,6 +20,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 						new UntypedLinkedListItemFactory(),
 						new StackItemFactory(),
 						new QueueItemFactory(),
+						new ObjectModelCollectionItemFactory(),
 					});
 
 		public static readonly GenericCollectionTestElementSpec<string> StringElementSpec = new GenericCollectionTestElementSpec<string>(new string[] { "zero", "one" }, "two", "zzz");
@@ -118,6 +119,29 @@ namespace Db4objects.Db4o.Tests.CLI2.Handlers
 			public class Item<T>
 			{
 				public List<T> _coll = new List<T>();
+			}
+		}
+
+		public class ObjectModelCollectionItemFactory : GenericCollectionTestFactory
+		{
+			public override object NewItem<T>()
+			{
+				return new Item<T>();
+			}
+
+			public override Type ContainerType()
+			{
+				return typeof(System.Collections.ObjectModel.Collection<>);
+			}
+
+			public override string Label()
+			{
+				return "ObjectModel.Collection<>";
+			}
+
+			public class Item<T>
+			{
+				public System.Collections.ObjectModel.Collection<T> _coll = new System.Collections.ObjectModel.Collection<T>();
 			}
 		}
 

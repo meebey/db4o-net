@@ -10,7 +10,6 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Marshall;
-using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Typehandlers
 {
@@ -212,6 +211,7 @@ namespace Db4objects.Db4o.Typehandlers
 													typeof(LinkedList<>),
 													typeof(Stack<>),
 													typeof(Queue<>),
+													typeof(System.Collections.ObjectModel.Collection<>),
 #if NET_3_5 && ! CF
 													typeof(HashSet<>),
 #endif
