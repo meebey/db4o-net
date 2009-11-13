@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Reflector().RegisterCollection(new GenericCollectionTypePredicate(typeof(HashSet<>)));
 #endif 
 
-			System.Type[] dictionaryTypes = new Type[] {
+			Type[] dictionaryTypes = new Type[] {
 				typeof(Dictionary<,>),
 #if !SILVERLIGHT
 				typeof(SortedList<,>),
