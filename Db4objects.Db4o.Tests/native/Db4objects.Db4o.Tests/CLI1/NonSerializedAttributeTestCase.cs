@@ -7,6 +7,23 @@ namespace Db4objects.Db4o.Tests.CLI1
 {
     public class NonSerializedAttributeTestCase : AbstractDb4oTestCase
     {
+		public struct Pair
+		{
+			public Pair(string name, int value)
+			{
+				Value = value;
+				Name = name;
+			}
+
+			public override string ToString()
+			{
+				return string.Format("Pair({0}, {1}", Name, Value);
+			}
+
+			public int Value;
+			public string Name;
+		}
+
         public class Item
         {
             [NonSerialized]
@@ -14,18 +31,22 @@ namespace Db4objects.Db4o.Tests.CLI1
 
             [Transient]
             public int TransientValue;
-            
+
+        	[Transient]
+			public Pair Pair;
+
             public int Value;
             
             public Item()
             {   
             }
             
-            public Item(int value_)
+            public Item(int value)
             {
-                Value = value_;
-                NonSerializedValue = value_;
-                TransientValue = value_;
+                Value = value;
+                NonSerializedValue = value;
+                TransientValue = value;
+				Pair = new Pair("p1", value);
             }
         }
         
@@ -35,7 +56,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             {   
             }
             
-            public DerivedItem(int value_) : base(value_)
+            public DerivedItem(int value) : base(value)
             {
             }
         }
@@ -54,6 +75,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             {
                 Assert.AreEqual(0, item.NonSerializedValue);
                 Assert.AreEqual(0, item.TransientValue);
+				Assert.AreEqual(new Pair(), item.Pair);
                 Assert.AreEqual(42, item.Value);
             }
         }
