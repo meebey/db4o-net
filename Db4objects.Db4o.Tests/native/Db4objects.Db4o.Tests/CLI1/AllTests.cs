@@ -19,6 +19,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 #endif
                     typeof(EnumTestCase),
 					typeof(Events.EventRegistryTestCase),
+					typeof(Foundation.AllTests),
                     typeof(Handlers.AllTests),
 					typeof(Inside.AllTests),
 					typeof(NativeQueries.AllTests),
