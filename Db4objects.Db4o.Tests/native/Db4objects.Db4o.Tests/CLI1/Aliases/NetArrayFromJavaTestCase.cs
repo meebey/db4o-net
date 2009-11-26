@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
@@ -13,10 +14,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 #if !CF
 		public class Item
 		{
-			private string _description;
-			private byte[] _byteArray;
-			private int[] _intArray;
-			private float[] _floatArray;
+			private readonly string _description;
+			private readonly byte[] _byteArray;
+			private readonly int[] _intArray;
+			private readonly float[] _floatArray;
 
 			public Item(string description, byte[] byteArray, int[] intArray, float[] floatArray)
 			{
@@ -39,7 +40,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 			static string ToString(System.Collections.IEnumerable items)
 			{
 				if (items == null) return "null";
-				return new Foundation.Collection4(items).ToString();
+				return new Collection4(items).ToString();
 			}
 
 		}
@@ -56,7 +57,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 			AssertJavaOutput(output);
 		}
 
-		private void DumpDataFile()
+		private static void DumpDataFile()
 		{
 			using (IObjectContainer container = Db4oFactory.OpenFile(DataFile))
 			{
@@ -67,14 +68,14 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
 			}
 		}
 
-		private void DeleteDataFile()
+		private static void DeleteDataFile()
 		{
 			File4.Delete(DataFile);
 		}
 
-		private void AssertJavaOutput(string output)
+		private static void AssertJavaOutput(string output)
 		{
-			string expected = @"**
+			const string expected = @"**
 Item(1) all null arrays, null, null, null)
 Item(2) non null arrays, [0, 1, 127], [-2147483648, 0, 2147483647], [-3.4028235E38, 0.0, 3.4028235E38, NaN])
 **";
@@ -86,7 +87,7 @@ Item(2) non null arrays, [0, 1, 127], [-2147483648, 0, 2147483647], [-3.4028235E
 			return s.Trim().Replace("\r\n", Environment.NewLine);
 		}
 
-		private string CompileAndRunJavaApplication()
+		private static string CompileAndRunJavaApplication()
 		{
 			CompileJavaApplication();
 			return RunJavaApplication();
@@ -102,7 +103,7 @@ Item(2) non null arrays, [0, 1, 127], [-2147483648, 0, 2147483647], [-3.4028235E
 
 		private static void CompileJavaApplication()
 		{
-			string code = @"
+			const string code = @"
 package NetArrayFromJava;
 
 import com.db4o.*;
@@ -184,7 +185,7 @@ public class Program {
 			JavaServices.CompileJavaCode("NetArrayFromJava/Program.java", code);
 		}
 
-		private void GenerateNetDataFile()
+		private static void GenerateNetDataFile()
 		{
 			using (IObjectContainer container = Db4oFactory.OpenFile(DataFile))
 			{
