@@ -321,9 +321,10 @@ public class StartServer implements MessageRecipient  {
 		synchronized (this) {
 			ObjectServer db4oServer	= null;
 
-			String databaseFile = Path4.combine(Path4.getTempPath(),""CrossPlatformJavaServer.odb""); 
+			String databaseFile = Path4.combine(Path4.getTempPath(),""CrossPlatformJavaServer_"" + this.hashCode() + "".odb""); 
 			try {
-				int iterationsToWait = (args[3] == ""True"") ? 1200 : 40;
+				int waitTime = 50;
+				int iterationsToWait = ((args[3] == ""True"") ? toMiliseconds(300) : toMiliseconds(30)) / waitTime;
 				File4.delete(databaseFile);
 
 				db4oServer = com.db4o.cs.Db4oClientServer.openServer(databaseFile, Integer.parseInt(args[0]));
@@ -335,10 +336,9 @@ public class StartServer implements MessageRecipient  {
 
 				int count = 0;
 				while(!stop && count < iterationsToWait) {
-					this.wait(500);
+					this.wait(waitTime);
 					count++;
 				}
-
 			} catch (Exception e) {
 				System.out.println(e);
 				e.printStackTrace();
@@ -346,6 +346,10 @@ public class StartServer implements MessageRecipient  {
 
 			if (db4oServer != null) db4oServer.close();
 		}
+	}
+
+	private int toMiliseconds(int seconds) {
+		return 1000 * seconds;
 	}
 
 	public void processMessage(MessageContext con, Object message) {
@@ -357,7 +361,7 @@ public class StartServer implements MessageRecipient  {
 	public void close() {
 		synchronized (this) {
 			stop = true;
-			this.notify();
+			this.notifyAll();
 		}
 	}
 
