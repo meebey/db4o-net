@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.Tests.Common.References
 		{
 			return new Type[] { typeof(HardObjectReferenceTestCase), typeof(ReferenceSystemIntegrationTestCase
 				), typeof(ReferenceSystemRegistryTestCase), typeof(HashcodeReferenceSystemTestCase
-				), typeof(TransactionalReferenceSystemTestCase) };
+				), typeof(TransactionalReferenceSystemTestCase), typeof(WeakReferenceCollectionTestCase
+				) };
 		}
 	}
 }

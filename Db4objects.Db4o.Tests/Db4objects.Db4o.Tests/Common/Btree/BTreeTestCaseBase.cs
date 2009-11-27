@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			_btree.Commit(trans);
 		}
 
-		protected virtual void Commit()
+		protected override void Commit()
 		{
 			Commit(Trans());
 		}

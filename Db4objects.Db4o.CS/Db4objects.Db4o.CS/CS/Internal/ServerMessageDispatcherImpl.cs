@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private Socket4Adapter _socket;
 
-		private ClientTransactionHandle _transactionHandle;
+		private readonly ClientTransactionHandle _transactionHandle;
 
 		private Hashtable4 _queryResults;
 
@@ -41,8 +41,6 @@ namespace Db4objects.Db4o.CS.Internal
 		private readonly object _mainLock;
 
 		private System.EventHandler<MessageEventArgs> _messageReceived;
-
-		private Tree _prefetchedIDs;
 
 		private Sharpen.Lang.Thread _thread;
 
@@ -137,7 +135,7 @@ namespace Db4objects.Db4o.CS.Internal
 			try
 			{
 				_server.RemoveThread(this);
-				FreePrefetchedPointers();
+				FreePrefetchedIDs();
 			}
 			catch (Exception e)
 			{
@@ -169,7 +167,7 @@ namespace Db4objects.Db4o.CS.Internal
 			try
 			{
 				SetDispatcherName(string.Empty + _threadID);
-				_server.WithEnvironment(new _IRunnable_155(this));
+				_server.WithEnvironment(new _IRunnable_153(this));
 			}
 			finally
 			{
@@ -177,9 +175,9 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private sealed class _IRunnable_155 : IRunnable
+		private sealed class _IRunnable_153 : IRunnable
 		{
-			public _IRunnable_155(ServerMessageDispatcherImpl _enclosing)
+			public _IRunnable_153(ServerMessageDispatcherImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -473,41 +471,17 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public int PrefetchID()
 		{
-			int id = ((LocalObjectContainer)_server.ObjectContainer()).GetPointerSlot();
-			_prefetchedIDs = Tree.Add(_prefetchedIDs, new TreeInt(id));
-			return id;
+			return _transactionHandle.PrefetchID();
 		}
 
 		public void PrefetchedIDConsumed(int id)
 		{
-			_prefetchedIDs = _prefetchedIDs.RemoveLike(new TreeIntObject(id));
+			_transactionHandle.PrefetchedIDConsumed(id);
 		}
 
-		internal void FreePrefetchedPointers()
+		internal void FreePrefetchedIDs()
 		{
-			if (_prefetchedIDs != null)
-			{
-				LocalObjectContainer container = ((LocalObjectContainer)_server.ObjectContainer()
-					);
-				_prefetchedIDs.Traverse(new _IVisitor4_406(container));
-			}
-			_prefetchedIDs = null;
-		}
-
-		private sealed class _IVisitor4_406 : IVisitor4
-		{
-			public _IVisitor4_406(LocalObjectContainer container)
-			{
-				this.container = container;
-			}
-
-			public void Visit(object node)
-			{
-				TreeInt intNode = (TreeInt)node;
-				container.Free(intNode._key, Const4.PointerLength);
-			}
-
-			private readonly LocalObjectContainer container;
+			_transactionHandle.FreePrefetchedIDs();
 		}
 	}
 }

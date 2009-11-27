@@ -325,7 +325,7 @@ namespace Db4objects.Db4o.Internal
             return false;
         }
 
-        internal static bool HasWeakReferences()
+        public static bool HasWeakReferences()
         {
             return true;
         }
@@ -432,9 +432,9 @@ namespace Db4objects.Db4o.Internal
             return false;
         }
 
-        internal static void PollReferenceQueue(Object stream, Object referenceQueue)
+        internal static void PollReferenceQueue(Object container, Object referenceQueue)
         {
-            ((WeakReferenceHandlerQueue)referenceQueue).Poll((IExtObjectContainer)stream);
+            ((WeakReferenceHandlerQueue)referenceQueue).Poll((ObjectContainerBase)container);
         }
 
         public static void RegisterCollections(GenericReflector reflector)

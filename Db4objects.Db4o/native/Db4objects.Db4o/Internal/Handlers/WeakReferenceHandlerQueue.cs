@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Handlers
             }
         }
 
-        internal void Poll(IExtObjectContainer objectContainer) {
+        internal void Poll(ObjectContainerBase objectContainer) {
             List4 remove = null;
             lock(this){
                 System.Collections.IEnumerator i = new Iterator4Impl(_list);
@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal.Handlers
                     {
                         return;
                     }
-                    objectContainer.Purge(j.Current);
+                    objectContainer.RemoveFromAllReferenceSystems(j.Current);
                 }
             }
         }

@@ -469,5 +469,10 @@ namespace Db4oUnit.Extensions
 		{
 			return Trans().Context();
 		}
+
+		protected virtual void Commit()
+		{
+			Db().Commit();
+		}
 	}
 }

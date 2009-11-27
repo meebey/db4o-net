@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.CS.Internal;
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal
 {
@@ -14,6 +16,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private bool _rollbackOnClose;
 
+		private Tree _prefetchedIDs;
+
 		public ClientTransactionHandle(ClientTransactionPool transactionPool)
 		{
 			_transactionPool = transactionPool;
@@ -23,6 +27,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual void AcquireTransactionForFile(string fileName)
 		{
+			CleanUpCurrentTransaction();
 			_transaction = _transactionPool.Acquire(fileName);
 		}
 
@@ -30,6 +35,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			if (_transaction != null)
 			{
+				CleanUpCurrentTransaction();
 				_transactionPool.Release(mode, _transaction, _rollbackOnClose);
 				_transaction = null;
 			}
@@ -59,6 +65,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual void Transaction(Db4objects.Db4o.Internal.Transaction transaction)
 		{
+			CleanUpCurrentTransaction();
 			if (_transaction != null)
 			{
 				_transaction = transaction;
@@ -68,6 +75,55 @@ namespace Db4objects.Db4o.CS.Internal
 				_mainTransaction = transaction;
 			}
 			_rollbackOnClose = false;
+		}
+
+		private void CleanUpCurrentTransaction()
+		{
+			FreePrefetchedIDs();
+		}
+
+		public virtual int PrefetchID()
+		{
+			int id = Container().GetPointerSlot();
+			_prefetchedIDs = Tree.Add(_prefetchedIDs, new TreeInt(id));
+			return id;
+		}
+
+		private LocalObjectContainer Container()
+		{
+			return ((LocalObjectContainer)Transaction().Container());
+		}
+
+		public virtual void PrefetchedIDConsumed(int id)
+		{
+			_prefetchedIDs = _prefetchedIDs.RemoveLike(new TreeIntObject(id));
+		}
+
+		internal void FreePrefetchedIDs()
+		{
+			if (_prefetchedIDs == null)
+			{
+				return;
+			}
+			LocalObjectContainer container = Container();
+			_prefetchedIDs.Traverse(new _IVisitor4_88(container));
+			_prefetchedIDs = null;
+		}
+
+		private sealed class _IVisitor4_88 : IVisitor4
+		{
+			public _IVisitor4_88(LocalObjectContainer container)
+			{
+				this.container = container;
+			}
+
+			public void Visit(object node)
+			{
+				TreeInt intNode = (TreeInt)node;
+				container.Free(intNode._key, Const4.PointerLength);
+			}
+
+			private readonly LocalObjectContainer container;
 		}
 	}
 }
