@@ -3,12 +3,12 @@
 
 using System;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.CS.Monitoring;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Monitoring;
-using Db4objects.Db4o.Monitoring.CS;
 using Db4objects.Db4o.Tests.Optional.Monitoring.CS;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;

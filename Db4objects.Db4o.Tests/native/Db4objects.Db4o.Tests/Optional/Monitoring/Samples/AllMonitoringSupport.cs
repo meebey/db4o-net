@@ -4,7 +4,6 @@
 
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Monitoring;
-using Db4objects.Db4o.Monitoring.CS;
 
 namespace Db4objects.Db4o.Tests.Optional.Monitoring.Samples
 {
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Optional.Monitoring.Samples
             config.Common.Add(new NativeQueryMonitoringSupport());
             config.Common.Add(new ReferenceSystemMonitoringSupport());
             config.Common.Add(new FreespaceMonitoringSupport());
-            config.Common.Add(new NetworkingMonitoringSupport());
+            //config.Common.Add(new NetworkingMonitoringSupport());
             config.Common.Add(new ObjectLifecycleMonitoringSupport());
 		}
 	}

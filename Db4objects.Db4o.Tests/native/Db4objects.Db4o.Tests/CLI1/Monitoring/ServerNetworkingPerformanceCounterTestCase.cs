@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Db4objects.Db4o.CS.Monitoring;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Monitoring;
-using Db4objects.Db4o.Monitoring.CS;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit;
 

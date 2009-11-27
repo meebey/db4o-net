@@ -6,10 +6,10 @@ using System.Threading;
 using Db4objects.Db4o.CS;
 using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
+using Db4objects.Db4o.CS.Monitoring;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Monitoring;
-using Db4objects.Db4o.Monitoring.CS;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4oUnit;
 

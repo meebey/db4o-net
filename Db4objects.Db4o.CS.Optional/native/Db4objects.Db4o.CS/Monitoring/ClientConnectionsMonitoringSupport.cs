@@ -6,7 +6,7 @@ using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Internal;
 
-namespace Db4objects.Db4o.Monitoring.CS
+namespace Db4objects.Db4o.CS.Monitoring
 {
 	public class ClientConnectionsMonitoringSupport : IServerConfigurationItem
 	{
@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Monitoring.CS
 			ObjectContainerBase container = (ObjectContainerBase) server.Ext().ObjectContainer();
 			container.WithEnvironment(delegate
 			{
-				clientConnections = Db4oPerformanceCounters.CounterForNetworkingClientConnections(server);
+				clientConnections = Db4oClientServerPerformanceCounters.CounterForNetworkingClientConnections(server);
 			});
 
 			ServerEventsFor(server).Closed += delegate { clientConnections.RemoveInstance();};

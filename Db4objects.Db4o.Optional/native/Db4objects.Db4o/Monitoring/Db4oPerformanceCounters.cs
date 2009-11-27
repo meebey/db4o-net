@@ -3,7 +3,6 @@
 #if !CF && !SILVERLIGHT
 
 using System.Diagnostics;
-using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Monitoring
@@ -41,7 +40,7 @@ namespace Db4objects.Db4o.Monitoring
 			Install();
 		}
 
-		internal static PerformanceCounter CounterFor(PerformanceCounterSpec spec, bool readOnly)
+		public static PerformanceCounter CounterFor(PerformanceCounterSpec spec, bool readOnly)
 		{
 			return CounterFor(spec, My<IObjectContainer>.Instance, readOnly);
 		}
@@ -56,27 +55,7 @@ namespace Db4objects.Db4o.Monitoring
 			return NewDb4oCounter(spec.Id, container.ToString(), true);
 		}
 
-		/*
-         * TODO: Remove 
-         */
-		public static PerformanceCounter CounterForNetworkingClientConnections(IObjectServer server)
-		{
-			PerformanceCounter clientConnections = NewDb4oCounter(PerformanceCounterSpec.NetClientConnections.Id, false);
-			
-			IObjectServerEvents serverEvents = (IObjectServerEvents) server;
-			serverEvents.ClientConnected += delegate { clientConnections.Increment(); };
-			serverEvents.ClientDisconnected += delegate { clientConnections.Decrement(); };
-
-			return clientConnections;
-		}
-
-		private static PerformanceCounter NewDb4oCounter(string counterName, bool readOnly)
-		{
-			string instanceName = My<IObjectContainer>.Instance.ToString();
-			return NewDb4oCounter(counterName, instanceName, readOnly);
-		}
-
-		private static PerformanceCounter NewDb4oCounter(string counterName, string instanceName, bool readOnly)
+		protected static PerformanceCounter NewDb4oCounter(string counterName, string instanceName, bool readOnly)
 		{
 			Install();
 

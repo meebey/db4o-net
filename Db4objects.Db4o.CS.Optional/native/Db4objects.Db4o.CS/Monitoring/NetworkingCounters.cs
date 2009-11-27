@@ -3,8 +3,9 @@
 #if !CF && !SILVERLIGHT
 
 using System.Diagnostics;
+using Db4objects.Db4o.Monitoring;
 
-namespace Db4objects.Db4o.Monitoring.CS
+namespace Db4objects.Db4o.CS.Monitoring
 {
 	public class NetworkingCounters
 	{

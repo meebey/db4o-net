@@ -4,7 +4,7 @@
 
 using Db4objects.Db4o.Foundation.Network;
 
-namespace Db4objects.Db4o.Monitoring.CS
+namespace Db4objects.Db4o.CS.Monitoring
 {
 	public class MonitoredServerSideClientSocket4 : MonitoredSocket4Base
 	{
