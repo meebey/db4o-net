@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Foundation;
 using Sharpen;
 
 namespace Db4objects.Db4o.Foundation
@@ -122,6 +123,16 @@ namespace Db4objects.Db4o.Foundation
 			{
 				array[i] = value;
 			}
+		}
+
+		public static Collection4 AsList(object[] arr)
+		{
+			Collection4 coll = new Collection4();
+			for (int arrIdx = 0; arrIdx < arr.Length; arrIdx++)
+			{
+				coll.Add(arr[arrIdx]);
+			}
+			return coll;
 		}
 	}
 }

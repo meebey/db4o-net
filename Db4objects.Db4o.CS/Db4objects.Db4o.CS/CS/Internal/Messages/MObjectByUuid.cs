@@ -18,7 +18,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				try
 				{
-					HardObjectReference hardRef = trans.GetHardReferenceBySignature(uuid, signature);
+					HardObjectReference hardRef = Stream().GetHardReferenceBySignature(trans, uuid, signature
+						);
 					if (hardRef._reference != null)
 					{
 						id = hardRef._reference.GetID();

@@ -1,41 +1,48 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 #if !SILVERLIGHT
-using Db4oUnit.Extensions;
-using Db4oUnit.Extensions.Fixtures;
+using Db4oUnit;
+using Db4objects.Db4o;
+using Db4objects.Db4o.CS;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.CS;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public class CloseServerBeforeClientTestCase : Db4oClientServerTestCase, IOptOutAllButNetworkingCS
+	public class CloseServerBeforeClientTestCase : TestWithTempFile
 	{
 		public static void Main(string[] arguments)
 		{
-			new CloseServerBeforeClientTestCase().RunNetworking();
+			for (int i = 0; i < 1000; i++)
+			{
+				new ConsoleTestRunner(typeof(CloseServerBeforeClientTestCase)).Run();
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
-			IExtObjectContainer client = OpenNewSession();
+			IObjectServer server = Db4oClientServer.OpenServer(TempFile(), Db4oClientServer.ArbitraryPort
+				);
+			server.GrantAccess(string.Empty, string.Empty);
+			IObjectContainer client = Db4oClientServer.OpenClient("localhost", ((ObjectServerImpl
+				)server).Port(), string.Empty, string.Empty);
+			IObjectContainer client2 = Db4oClientServer.OpenClient("localhost", ((ObjectServerImpl
+				)server).Port(), string.Empty, string.Empty);
+			client.Commit();
+			client2.Commit();
 			try
 			{
-				ClientServerFixture().Server().Close();
+				server.Close();
 			}
 			finally
 			{
 				try
 				{
 					client.Close();
-				}
-				catch (Db4oException)
-				{
-				}
-				// database may have been closed
-				try
-				{
-					Fixture().Close();
+					client2.Close();
 				}
 				catch (Db4oException)
 				{

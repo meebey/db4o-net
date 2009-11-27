@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Internal;
 
@@ -16,10 +17,17 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				for (int i = 0; i < prefetchIDCount; i++)
 				{
-					reply.WriteInt(((LocalObjectContainer)Stream()).PrefetchID());
+					reply.WriteInt(PrefetchID());
 				}
 			}
 			return reply;
+		}
+
+		private int PrefetchID()
+		{
+			ServerMessageDispatcherImpl serverMessageDispatcher = (ServerMessageDispatcherImpl
+				)ServerMessageDispatcher();
+			return serverMessageDispatcher.PrefetchID();
 		}
 	}
 }

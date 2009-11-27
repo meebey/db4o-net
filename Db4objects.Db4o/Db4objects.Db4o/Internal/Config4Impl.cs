@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec BtreeNodeSizeKey = new KeySpec(119);
 
-		private static readonly KeySpec CallbacksKey = new KeySpec(true);
+		private static readonly KeySpec CallbacksKey = new KeySpec(CallBackMode.All);
 
 		private static readonly KeySpec CallConstructorsKey = new KeySpec(TernaryBool.Unspecified
 			);
@@ -141,8 +141,6 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(ConfigScope
 			.Individually);
 
-		private static readonly KeySpec IsServerKey = new KeySpec(false);
-
 		private static readonly KeySpec QueryEvaluationModeKey = new KeySpec(QueryEvaluationMode
 			.Immediate);
 
@@ -171,9 +169,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchSlotCacheSizeKey = new KeySpec(0);
 
-		private sealed class _IDeferred_149 : KeySpec.IDeferred
+		private sealed class _IDeferred_147 : KeySpec.IDeferred
 		{
-			public _IDeferred_149()
+			public _IDeferred_147()
 			{
 			}
 
@@ -185,7 +183,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_149());
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_147());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -225,9 +223,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec TaintedKey = new KeySpec(false);
 
-		private sealed class _IReferenceSystemFactory_189 : IReferenceSystemFactory
+		private sealed class _IReferenceSystemFactory_187 : IReferenceSystemFactory
 		{
-			public _IReferenceSystemFactory_189()
+			public _IReferenceSystemFactory_187()
 			{
 			}
 
@@ -237,12 +235,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_189
+		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_187
 			());
 
-		private sealed class _INameProvider_195 : INameProvider
+		private sealed class _INameProvider_193 : INameProvider
 		{
-			public _INameProvider_195()
+			public _INameProvider_193()
 			{
 			}
 
@@ -252,7 +250,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_195
+		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_193
 			());
 
 		private ObjectContainerBase _container;
@@ -372,7 +370,12 @@ namespace Db4objects.Db4o.Internal
 
 		public void Callbacks(bool turnOn)
 		{
-			_config.Put(CallbacksKey, turnOn);
+			CallbackMode(turnOn ? CallBackMode.All : CallBackMode.None);
+		}
+
+		public void CallbackMode(CallBackMode mode)
+		{
+			_config.Put(CallbacksKey, mode);
 		}
 
 		public void CallConstructors(bool flag)
@@ -933,9 +936,9 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsString(BlobPathKey);
 		}
 
-		public bool Callbacks()
+		public CallBackMode CallbackMode()
 		{
-			return _config.GetAsBoolean(CallbacksKey);
+			return (CallBackMode)_config.Get(CallbacksKey);
 		}
 
 		public TernaryBool CallConstructors()
@@ -1024,16 +1027,6 @@ namespace Db4objects.Db4o.Internal
 		public bool InternStrings()
 		{
 			return _internStrings;
-		}
-
-		public void IsServer(bool flag)
-		{
-			_config.Put(IsServerKey, flag);
-		}
-
-		internal bool IsServer()
-		{
-			return _config.GetAsBoolean(IsServerKey);
 		}
 
 		public bool LockFile()
@@ -1303,7 +1296,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(FileBasedTransactionLogKey, flag);
 		}
 
-		public bool IsTainted()
+		private bool IsTainted()
 		{
 			return _config.GetAsBoolean(TaintedKey);
 		}

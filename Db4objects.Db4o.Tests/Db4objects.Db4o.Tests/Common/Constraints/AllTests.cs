@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 	{
 		public static void Main(string[] args)
 		{
-			new Db4objects.Db4o.Tests.Common.Constraints.AllTests().RunSolo();
+			new Db4objects.Db4o.Tests.Common.Constraints.AllTests().RunAll();
 		}
 
 		protected override Type[] TestCases()

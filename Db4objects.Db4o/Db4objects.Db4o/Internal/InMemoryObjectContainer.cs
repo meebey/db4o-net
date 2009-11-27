@@ -86,11 +86,6 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing
-		protected override void FreeInternalResources()
-		{
-		}
-
-		// nothing to do here
 		protected override void ShutdownDataStorage()
 		{
 			if (!_closed)

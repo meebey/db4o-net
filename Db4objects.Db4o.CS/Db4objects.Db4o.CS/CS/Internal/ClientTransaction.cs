@@ -89,34 +89,16 @@ namespace Db4objects.Db4o.CS.Internal
 			return res == 1;
 		}
 
-		public sealed override HardObjectReference GetHardReferenceBySignature(long a_uuid
-			, byte[] a_signature)
-		{
-			int messageLength = Const4.LongLength + Const4.IntLength + a_signature.Length;
-			MsgD message = Msg.ObjectByUuid.GetWriterForLength(this, messageLength);
-			message.WriteLong(a_uuid);
-			message.WriteInt(a_signature.Length);
-			message.WriteBytes(a_signature);
-			_client.Write(message);
-			message = (MsgD)_client.ExpectedResponse(Msg.ObjectByUuid);
-			int id = message.ReadInt();
-			if (id > 0)
-			{
-				return Container().GetHardObjectReferenceById(this, id);
-			}
-			return HardObjectReference.Invalid;
-		}
-
 		public override void ProcessDeletes()
 		{
-			IVisitor4 deleteVisitor = new _IVisitor4_86(this);
+			IVisitor4 deleteVisitor = new _IVisitor4_71(this);
 			TraverseDelete(deleteVisitor);
 			_client.WriteBatchedMessage(Msg.ProcessDeletes);
 		}
 
-		private sealed class _IVisitor4_86 : IVisitor4
+		private sealed class _IVisitor4_71 : IVisitor4
 		{
-			public _IVisitor4_86(ClientTransaction _enclosing)
+			public _IVisitor4_71(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

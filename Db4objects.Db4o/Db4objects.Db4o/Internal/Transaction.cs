@@ -180,14 +180,6 @@ namespace Db4objects.Db4o.Internal
 			_delete = TreeInt.RemoveLike((TreeInt)_delete, a_id);
 		}
 
-		public virtual HardObjectReference GetHardReferenceBySignature(long a_uuid, byte[]
-			 a_signature)
-		{
-			CheckSynchronization();
-			return Container().UUIDIndex().GetHardObjectReferenceBySignature(this, a_uuid, a_signature
-				);
-		}
-
 		public abstract void ProcessDeletes();
 
 		public virtual IReferenceSystem ReferenceSystem()
@@ -199,7 +191,7 @@ namespace Db4objects.Db4o.Internal
 			return ParentTransaction().ReferenceSystem();
 		}
 
-		public virtual IReflector Reflector()
+		public IReflector Reflector()
 		{
 			return Container().Reflector();
 		}
@@ -408,12 +400,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_357(this);
+			return new _IContext_352(this);
 		}
 
-		private sealed class _IContext_357 : IContext
+		private sealed class _IContext_352 : IContext
 		{
-			public _IContext_357(Transaction _enclosing)
+			public _IContext_352(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Foundation;
@@ -109,7 +110,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private int PrefetchCount()
 		{
-			return Stream().Config().PrefetchObjectCount();
+			return Math.Max(Stream().Config().PrefetchObjectCount(), 1);
 		}
 
 		private ClientObjectContainer Stream()

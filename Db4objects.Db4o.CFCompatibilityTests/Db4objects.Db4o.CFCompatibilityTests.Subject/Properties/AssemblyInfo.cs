@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Db4objects.Db4o.CFCompatibilityTests.Subject")]
-[assembly: AssemblyDescription("Db4objects.Db4o.CFCompatibilityTests.Subject 7.12.119.13900 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Db4o.CFCompatibilityTests.Subject 7.12.123.14040 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("7.12.119.13900")]
+[assembly: AssemblyVersion("7.12.123.14040")]
 

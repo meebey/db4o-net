@@ -10,5 +10,17 @@ namespace Db4objects.Db4o.Config
 	public interface IEmbeddedConfiguration : IFileConfigurationProvider, ICommonConfigurationProvider
 		, ICacheConfigurationProvider
 	{
+		/// <summary>
+		/// adds ConfigurationItems to be applied when
+		/// a networking
+		/// <see cref="EmbeddedObjectContainer">EmbeddedObjectContainer</see>
+		/// is opened.
+		/// </summary>
+		/// <param name="configItem">
+		/// the
+		/// <see cref="IEmbeddedConfigurationItem">IEmbeddedConfigurationItem</see>
+		/// </param>
+		/// <since>7.12</since>
+		void AddConfigurationItem(IEmbeddedConfigurationItem configItem);
 	}
 }

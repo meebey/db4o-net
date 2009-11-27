@@ -21,7 +21,8 @@ namespace Db4objects.Db4o.Tests.Jre5.Collections.Typehandler
 				.IntElementsSpec, ListTypeHandlerTestVariables.ObjectElementsSpec };
 			return new IFixtureProvider[] { new Db4oFixtureProvider(), ListTypeHandlerTestVariables
 				.ListFixtureProvider, new SimpleFixtureProvider(ListTypeHandlerTestVariables.ElementsSpec
-				, elementSpecs), ListTypeHandlerTestVariables.TypehandlerFixtureProvider };
+				, (object[])elementSpecs), ListTypeHandlerTestVariables.TypehandlerFixtureProvider
+				 };
 		}
 
 		public override Type[] TestUnits()

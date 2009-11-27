@@ -12,6 +12,11 @@ namespace Db4objects.Db4o.Internal.Caching
 			return new LRU2QCache(size);
 		}
 
+		public static ICache4 New2QLongCache(int size)
+		{
+			return new LRU2QLongCache(size);
+		}
+
 		public static ICache4 New2QXCache(int size)
 		{
 			return new LRU2QXCache(size);
@@ -20,6 +25,11 @@ namespace Db4objects.Db4o.Internal.Caching
 		public static IPurgeableCache4 NewLRUCache(int size)
 		{
 			return new LRUCache(size);
+		}
+
+		public static IPurgeableCache4 NewLRUIntCache(int size)
+		{
+			return new LRUIntCache(size);
 		}
 	}
 }

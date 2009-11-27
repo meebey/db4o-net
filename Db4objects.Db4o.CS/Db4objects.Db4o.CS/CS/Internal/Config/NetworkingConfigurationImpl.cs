@@ -51,24 +51,6 @@ namespace Db4objects.Db4o.CS.Internal.Config
 			}
 		}
 
-		public virtual int TimeoutClientSocket
-		{
-			set
-			{
-				int milliseconds = value;
-				_config.TimeoutClientSocket(milliseconds);
-			}
-		}
-
-		public virtual int TimeoutServerSocket
-		{
-			set
-			{
-				int milliseconds = value;
-				_config.TimeoutServerSocket(milliseconds);
-			}
-		}
-
 		public virtual IMessageRecipient MessageRecipient
 		{
 			set

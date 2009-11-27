@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		public virtual void Test()
 		{
 			IServerConfiguration config = Db4oClientServer.NewServerConfiguration();
-			config.Networking.TimeoutServerSocket = Timeout;
+			config.TimeoutServerSocket = Timeout;
 			config.File.Storage = new MemoryStorage();
 			ObjectServerImpl server = (ObjectServerImpl)Db4oClientServer.OpenServer(config, string.Empty
 				, Db4oClientServer.ArbitraryPort);

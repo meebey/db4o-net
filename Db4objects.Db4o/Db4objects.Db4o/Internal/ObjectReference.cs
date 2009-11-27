@@ -311,10 +311,10 @@ namespace Db4objects.Db4o.Internal
 			return _virtualAttributes;
 		}
 
-		internal object PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
+		internal void PeekPersisted(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
 			 depth)
 		{
-			return Read(trans, depth, Const4.Transient, false);
+			SetObject(Read(trans, depth, Const4.Transient, false));
 		}
 
 		internal object Read(Db4objects.Db4o.Internal.Transaction trans, IActivationDepth
@@ -445,7 +445,7 @@ namespace Db4objects.Db4o.Internal
 		public virtual Db4objects.Db4o.Internal.VirtualAttributes VirtualAttributes(Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
-			return VirtualAttributes(trans, true);
+			return VirtualAttributes(trans, false);
 		}
 
 		public virtual void SetVirtualAttributes(Db4objects.Db4o.Internal.VirtualAttributes

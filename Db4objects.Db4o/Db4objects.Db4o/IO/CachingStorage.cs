@@ -88,7 +88,7 @@ namespace Db4objects.Db4o.IO
 		/// </remarks>
 		protected virtual ICache4 NewCache()
 		{
-			return CacheFactory.New2QCache(_pageCount);
+			return CacheFactory.New2QLongCache(_pageCount);
 		}
 
 		private sealed class NonFlushingCachingBin : CachingBin

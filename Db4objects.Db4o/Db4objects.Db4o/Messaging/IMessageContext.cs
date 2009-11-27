@@ -11,7 +11,6 @@ namespace Db4objects.Db4o.Messaging
 	{
 		/// <summary>The container the message was dispatched to.</summary>
 		/// <remarks>The container the message was dispatched to.</remarks>
-		/// <returns></returns>
 		IObjectContainer Container
 		{
 			get;
@@ -22,8 +21,14 @@ namespace Db4objects.Db4o.Messaging
 		/// The sender of the current message.
 		/// The reference can be used to send a reply to it.
 		/// </remarks>
-		/// <returns></returns>
 		IMessageSender Sender
+		{
+			get;
+		}
+
+		/// <summary>The transaction the current message has been sent with.</summary>
+		/// <remarks>The transaction the current message has been sent with.</remarks>
+		Db4objects.Db4o.Internal.Transaction Transaction
 		{
 			get;
 		}

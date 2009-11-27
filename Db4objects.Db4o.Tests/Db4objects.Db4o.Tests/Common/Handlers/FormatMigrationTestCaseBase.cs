@@ -94,6 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			{
 				//		    System.out.println("Check database: " + testFileName);
 				InvestigateFileHeaderVersion(testFileName);
+				RunDeletionTests(testFileName);
 				RunDefrag(testFileName);
 				CheckDatabaseFile(testFileName);
 				// Twice, to ensure everything is fine after opening, converting and closing.
@@ -113,8 +114,37 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		// FIXME: The following fails the CC build since not all files are there on .NET.
 		//        Change back when we have all files.
 		// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
-		/// <summary>Can be overriden to disable the test for specific db4o versions.</summary>
-		/// <remarks>Can be overriden to disable the test for specific db4o versions.</remarks>
+		/// <exception cref="System.IO.IOException"></exception>
+		private void RunDeletionTests(string testFileName)
+		{
+			WithDatabase(testFileName, new _IFunction4_122(this));
+			CheckDatabaseFile(testFileName);
+		}
+
+		private sealed class _IFunction4_122 : IFunction4
+		{
+			public _IFunction4_122(FormatMigrationTestCaseBase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Apply(object db)
+			{
+				this._enclosing.AssertObjectDeletion(((IObjectContainer)db).Ext());
+				return null;
+			}
+
+			private readonly FormatMigrationTestCaseBase _enclosing;
+		}
+
+		/// <summary>Override to provide tests for deletion.</summary>
+		/// <remarks>Override to provide tests for deletion.</remarks>
+		protected virtual void AssertObjectDeletion(IExtObjectContainer objectContainer)
+		{
+		}
+
+		/// <summary>Can be overridden to disable the test for specific db4o versions.</summary>
+		/// <remarks>Can be overridden to disable the test for specific db4o versions.</remarks>
 		protected virtual bool IsApplicableForDb4oVersion()
 		{
 			return true;
@@ -122,12 +152,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_127(this));
+			WithDatabase(testFile, new _IFunction4_144(this));
 		}
 
-		private sealed class _IFunction4_127 : IFunction4
+		private sealed class _IFunction4_144 : IFunction4
 		{
-			public _IFunction4_127(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_144(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -143,12 +173,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckUpdatedDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_136(this));
+			WithDatabase(testFile, new _IFunction4_153(this));
 		}
 
-		private sealed class _IFunction4_136 : IFunction4
+		private sealed class _IFunction4_153 : IFunction4
 		{
-			public _IFunction4_136(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_153(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -230,12 +260,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_197(this));
+			WithDatabase(testFile, new _IFunction4_214(this));
 		}
 
-		private sealed class _IFunction4_197 : IFunction4
+		private sealed class _IFunction4_214 : IFunction4
 		{
-			public _IFunction4_197(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_214(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

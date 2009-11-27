@@ -94,8 +94,7 @@ namespace Db4objects.Db4o
 			{
 				throw new ArgumentNullException();
 			}
-			return ObjectContainerFactory.OpenObjectContainer(((ILegacyConfigurationProvider)
-				config).Legacy(), databaseFileName);
+			return ObjectContainerFactory.OpenObjectContainer(config, databaseFileName);
 		}
 
 		/// <summary>

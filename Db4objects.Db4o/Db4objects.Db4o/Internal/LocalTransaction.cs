@@ -6,6 +6,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Freespace;
@@ -43,14 +44,14 @@ namespace Db4objects.Db4o.Internal
 		{
 			_file = (LocalObjectContainer)container;
 			i_pointerIo = new StatefulBuffer(this, Const4.PointerLength);
-			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_43(this);
+			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_44(this);
 			_slotCache = CreateSlotCache();
 			InitializeTransactionLogHandler();
 		}
 
-		private sealed class _ICommittedCallbackDispatcher_43 : ICommittedCallbackDispatcher
+		private sealed class _ICommittedCallbackDispatcher_44 : ICommittedCallbackDispatcher
 		{
-			public _ICommittedCallbackDispatcher_43(LocalTransaction _enclosing)
+			public _ICommittedCallbackDispatcher_44(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -200,7 +201,7 @@ namespace Db4objects.Db4o.Internal
 
 		public void FreeSlotChanges(bool forFreespace)
 		{
-			IVisitor4 visitor = new _IVisitor4_175(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_176(this, forFreespace);
 			if (IsSystemTransaction())
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -213,9 +214,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IVisitor4_175 : IVisitor4
+		private sealed class _IVisitor4_176 : IVisitor4
 		{
-			public _IVisitor4_175(LocalTransaction _enclosing, bool forFreespace)
+			public _IVisitor4_176(LocalTransaction _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -317,12 +318,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void RollbackSlotChanges()
 		{
-			_slotChanges.TraverseLocked(new _IVisitor4_264(this));
+			_slotChanges.TraverseLocked(new _IVisitor4_265(this));
 		}
 
-		private sealed class _IVisitor4_264 : IVisitor4
+		private sealed class _IVisitor4_265 : IVisitor4
 		{
-			public _IVisitor4_264(LocalTransaction _enclosing)
+			public _IVisitor4_265(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -371,13 +372,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual bool WriteSlots()
 		{
 			BooleanByRef ret = new BooleanByRef();
-			TraverseSlotChanges(new _IVisitor4_306(this, ret));
+			TraverseSlotChanges(new _IVisitor4_307(this, ret));
 			return ret.value;
 		}
 
-		private sealed class _IVisitor4_306 : IVisitor4
+		private sealed class _IVisitor4_307 : IVisitor4
 		{
-			public _IVisitor4_306(LocalTransaction _enclosing, BooleanByRef ret)
+			public _IVisitor4_307(LocalTransaction _enclosing, BooleanByRef ret)
 			{
 				this._enclosing = _enclosing;
 				this.ret = ret;
@@ -670,7 +671,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_573(this));
+				delete.Traverse(new _IVisitor4_574(this));
 			}
 			// if the object has been deleted
 			// We need to hold a hard reference here, otherwise we can get 
@@ -681,9 +682,9 @@ namespace Db4objects.Db4o.Internal
 			_writtenUpdateAdjustedIndexes = null;
 		}
 
-		private sealed class _IVisitor4_573 : IVisitor4
+		private sealed class _IVisitor4_574 : IVisitor4
 		{
-			public _IVisitor4_573(LocalTransaction _enclosing)
+			public _IVisitor4_574(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -733,13 +734,13 @@ namespace Db4objects.Db4o.Internal
 		private Collection4 CollectCommittedCallbackDeletedInfo()
 		{
 			Collection4 deleted = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_623(this, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_624(this, deleted));
 			return deleted;
 		}
 
-		private sealed class _ISlotChangeCollector_623 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_624 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_623(LocalTransaction _enclosing, Collection4 deleted
+			public _ISlotChangeCollector_624(LocalTransaction _enclosing, Collection4 deleted
 				)
 			{
 				this._enclosing = _enclosing;
@@ -748,7 +749,11 @@ namespace Db4objects.Db4o.Internal
 
 			public void Deleted(int id)
 			{
-				deleted.Add(this._enclosing.FrozenReferenceFor(id));
+				IObjectInfo @ref = this._enclosing.FrozenReferenceFor(id);
+				if (@ref != null)
+				{
+					deleted.Add(@ref);
+				}
 			}
 
 			public void Updated(int id)
@@ -773,13 +778,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			Collection4 added = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_644(this, added, updated));
+			CollectSlotChanges(new _ISlotChangeCollector_648(this, added, updated));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_644 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_648 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_644(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_648(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -817,13 +822,13 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectSlotChanges(new _ISlotChangeCollector_667(this, added, updated, deleted));
+			CollectSlotChanges(new _ISlotChangeCollector_671(this, added, updated, deleted));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ISlotChangeCollector_667 : ISlotChangeCollector
+		private sealed class _ISlotChangeCollector_671 : ISlotChangeCollector
 		{
-			public _ISlotChangeCollector_667(LocalTransaction _enclosing, Collection4 added, 
+			public _ISlotChangeCollector_671(LocalTransaction _enclosing, Collection4 added, 
 				Collection4 updated, Collection4 deleted)
 			{
 				this._enclosing = _enclosing;
@@ -844,7 +849,11 @@ namespace Db4objects.Db4o.Internal
 
 			public void Deleted(int id)
 			{
-				deleted.Add(this._enclosing.FrozenReferenceFor(id));
+				IObjectInfo @ref = this._enclosing.FrozenReferenceFor(id);
+				if (@ref != null)
+				{
+					deleted.Add(@ref);
+				}
 			}
 
 			private readonly LocalTransaction _enclosing;
@@ -869,12 +878,12 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			_slotChanges.TraverseLocked(new _IVisitor4_697(collector));
+			_slotChanges.TraverseLocked(new _IVisitor4_704(collector));
 		}
 
-		private sealed class _IVisitor4_697 : IVisitor4
+		private sealed class _IVisitor4_704 : IVisitor4
 		{
-			public _IVisitor4_697(ISlotChangeCollector collector)
+			public _IVisitor4_704(ISlotChangeCollector collector)
 			{
 				this.collector = collector;
 			}
@@ -885,7 +894,10 @@ namespace Db4objects.Db4o.Internal
 				int id = slotChange._key;
 				if (slotChange.IsDeleted())
 				{
-					collector.Deleted(id);
+					if (!slotChange.IsNew())
+					{
+						collector.Deleted(id);
+					}
 				}
 				else
 				{
@@ -905,7 +917,18 @@ namespace Db4objects.Db4o.Internal
 
 		private IObjectInfo FrozenReferenceFor(int id)
 		{
-			return new FrozenObjectInfo(this, ReferenceForId(id));
+			ObjectReference @ref = ReferenceForId(id);
+			if (@ref != null)
+			{
+				return new FrozenObjectInfo(this, @ref, true);
+			}
+			@ref = Container().PeekReference(SystemTransaction(), id, new FixedActivationDepth
+				(0), true);
+			if (@ref == null || @ref.GetObject() == null)
+			{
+				return null;
+			}
+			return new FrozenObjectInfo(SystemTransaction(), @ref, true);
 		}
 
 		public static Transaction ReadInterruptedTransaction(LocalObjectContainer file, ByteArrayBuffer

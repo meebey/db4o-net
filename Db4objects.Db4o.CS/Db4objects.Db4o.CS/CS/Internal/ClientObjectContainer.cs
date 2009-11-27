@@ -5,8 +5,10 @@ using System.Collections;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.CS.Caching;
+using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Caching;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.CS.Internal.Objectexchange;
 using Db4objects.Db4o.Config;
@@ -76,9 +78,9 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private IClientSlotCache _clientSlotCache;
 
-		private sealed class _IMessageListener_78 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_80 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_78()
+			public _IMessageListener_80()
 			{
 			}
 
@@ -90,7 +92,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_78
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_80
 			();
 
 		private bool _bypassSlotCache = false;
@@ -105,8 +107,15 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 		}
 
-		public ClientObjectContainer(IConfiguration config, Socket4Adapter socket, string
-			 user, string password, bool login) : base(config)
+		public ClientObjectContainer(IClientConfiguration config, Socket4Adapter socket, 
+			string user, string password, bool login) : this((ClientConfigurationImpl)config
+			, socket, user, password, login)
+		{
+		}
+
+		public ClientObjectContainer(ClientConfigurationImpl config, Socket4Adapter socket
+			, string user, string password, bool login) : base(Db4oClientServerLegacyConfigurationBridge
+			.AsLegacy(config))
 		{
 			// Db4o.registerClientConstructor(new ClientConstructor());
 			_userName = user;
@@ -115,6 +124,7 @@ namespace Db4objects.Db4o.CS.Internal
 			_heartbeat = new ClientHeartbeat(this);
 			SetAndConfigSocket(socket);
 			Open();
+			config.ApplyConfigurationItems(this);
 		}
 
 		private void SetAndConfigSocket(Socket4Adapter socket)
@@ -146,7 +156,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void InitalizeClientSlotCache()
 		{
-			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_128
+			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_135
 				(this).OnEvent);
 			if (ConfigImpl.PrefetchSlotCacheSize() > 0)
 			{
@@ -156,9 +166,9 @@ namespace Db4objects.Db4o.CS.Internal
 			_clientSlotCache = new NullClientSlotCache();
 		}
 
-		private sealed class _IEventListener4_128
+		private sealed class _IEventListener4_135
 		{
-			public _IEventListener4_128(ClientObjectContainer _enclosing)
+			public _IEventListener4_135(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -450,6 +460,24 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchCount() });
 			Write(msg);
 			return ReadQueryResult(trans);
+		}
+
+		public sealed override HardObjectReference GetHardReferenceBySignature(Transaction
+			 trans, long uuid, byte[] signature)
+		{
+			int messageLength = Const4.LongLength + Const4.IntLength + signature.Length;
+			MsgD message = Msg.ObjectByUuid.GetWriterForLength(trans, messageLength);
+			message.WriteLong(uuid);
+			message.WriteInt(signature.Length);
+			message.WriteBytes(signature);
+			Write(message);
+			message = (MsgD)ExpectedResponse(Msg.ObjectByUuid);
+			int id = message.ReadInt();
+			if (id > 0)
+			{
+				return GetHardObjectReferenceById(trans, id);
+			}
+			return HardObjectReference.Invalid;
 		}
 
 		/// <summary>may return null, if no message is returned.</summary>
@@ -797,13 +825,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_634(this, trans, result));
+			WithEnvironment(new _IRunnable_656(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_634 : IRunnable
+		private sealed class _IRunnable_656 : IRunnable
 		{
-			public _IRunnable_634(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_656(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1137,13 +1165,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_896(this, trans, result));
+			WithEnvironment(new _IRunnable_918(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_896 : IRunnable
+		private sealed class _IRunnable_918 : IRunnable
 		{
-			public _IRunnable_896(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_918(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;

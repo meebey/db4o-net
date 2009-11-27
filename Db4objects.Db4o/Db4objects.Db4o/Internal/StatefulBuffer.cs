@@ -19,32 +19,30 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public sealed class StatefulBuffer : ByteArrayBuffer
 	{
-		private int i_address;
+		internal Db4objects.Db4o.Internal.Transaction _trans;
+
+		private int _address;
 
 		private int _addressOffset;
 
-		private int i_cascadeDelete;
+		private int _cascadeDelete;
 
-		private int i_id;
+		private int _id;
 
-		private int i_length;
+		private int _length;
 
-		internal Db4objects.Db4o.Internal.Transaction i_trans;
-
-		public int _payloadOffset;
-
-		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction a_trans, int a_initialBufferSize
+		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction trans, int initialBufferSize
 			)
 		{
-			i_trans = a_trans;
-			i_length = a_initialBufferSize;
-			_buffer = new byte[i_length];
+			_trans = trans;
+			_length = initialBufferSize;
+			_buffer = new byte[_length];
 		}
 
-		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction a_trans, int address, 
-			int length) : this(a_trans, length)
+		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction trans, int address, int
+			 length) : this(trans, length)
 		{
-			i_address = address;
+			_address = address;
 		}
 
 		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction trans, Db4objects.Db4o.Internal.Slots.Slot
@@ -55,7 +53,7 @@ namespace Db4objects.Db4o.Internal
 		public StatefulBuffer(Db4objects.Db4o.Internal.Transaction trans, Pointer4 pointer
 			) : this(trans, pointer._slot)
 		{
-			i_id = pointer._id;
+			_id = pointer._id;
 		}
 
 		public void DebugCheckBytes()
@@ -67,32 +65,32 @@ namespace Db4objects.Db4o.Internal
 		// slot is possibly reserved by it's own pointer.
 		public int GetAddress()
 		{
-			return i_address;
+			return _address;
 		}
 
 		public int GetID()
 		{
-			return i_id;
+			return _id;
 		}
 
 		public override int Length()
 		{
-			return i_length;
+			return _length;
 		}
 
 		public ObjectContainerBase Container()
 		{
-			return i_trans.Container();
+			return _trans.Container();
 		}
 
 		public LocalObjectContainer File()
 		{
-			return ((LocalTransaction)i_trans).File();
+			return ((LocalTransaction)_trans).File();
 		}
 
 		public Db4objects.Db4o.Internal.Transaction Transaction()
 		{
-			return i_trans;
+			return _trans;
 		}
 
 		public byte[] GetWrittenBytes()
@@ -105,7 +103,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public void Read()
 		{
-			Container().ReadBytes(_buffer, i_address, _addressOffset, i_length);
+			Container().ReadBytes(_buffer, _address, _addressOffset, _length);
 		}
 
 		public Db4objects.Db4o.Internal.StatefulBuffer ReadStatefulBuffer()
@@ -116,7 +114,7 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			Db4objects.Db4o.Internal.StatefulBuffer yb = new Db4objects.Db4o.Internal.StatefulBuffer
-				(i_trans, length);
+				(_trans, length);
 			System.Array.Copy(_buffer, _offset, yb._buffer, 0, length);
 			_offset += length;
 			return yb;
@@ -124,9 +122,9 @@ namespace Db4objects.Db4o.Internal
 
 		public void RemoveFirstBytes(int aLength)
 		{
-			i_length -= aLength;
-			byte[] temp = new byte[i_length];
-			System.Array.Copy(_buffer, aLength, temp, 0, i_length);
+			_length -= aLength;
+			byte[] temp = new byte[_length];
+			System.Array.Copy(_buffer, aLength, temp, 0, _length);
 			_buffer = temp;
 			_offset -= aLength;
 			if (_offset < 0)
@@ -135,29 +133,29 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void Address(int a_address)
+		public void Address(int address)
 		{
-			i_address = a_address;
+			_address = address;
 		}
 
-		public void SetID(int a_id)
+		public void SetID(int id)
 		{
-			i_id = a_id;
+			_id = id;
 		}
 
 		public void SetTransaction(Db4objects.Db4o.Internal.Transaction aTrans)
 		{
-			i_trans = aTrans;
+			_trans = aTrans;
 		}
 
 		public void SlotDelete()
 		{
-			i_trans.SlotDelete(i_id, Slot());
+			_trans.SlotDelete(_id, Slot());
 		}
 
-		public void UseSlot(int a_adress)
+		public void UseSlot(int adress)
 		{
-			i_address = a_adress;
+			_address = adress;
 			_offset = 0;
 		}
 
@@ -169,36 +167,36 @@ namespace Db4objects.Db4o.Internal
 
 		public void UseSlot(Db4objects.Db4o.Internal.Slots.Slot slot)
 		{
-			i_address = slot.Address();
+			_address = slot.Address();
 			_offset = 0;
 			if (slot.Length() > _buffer.Length)
 			{
 				_buffer = new byte[slot.Length()];
 			}
-			i_length = slot.Length();
+			_length = slot.Length();
 		}
 
 		// FIXME: FB remove
-		public void UseSlot(int a_id, int a_adress, int a_length)
+		public void UseSlot(int id, int adress, int length)
 		{
-			i_id = a_id;
-			UseSlot(a_adress, a_length);
+			_id = id;
+			UseSlot(adress, length);
 		}
 
 		public void Write()
 		{
-			File().WriteBytes(this, i_address, _addressOffset);
+			File().WriteBytes(this, _address, _addressOffset);
 		}
 
 		public void WriteEncrypt()
 		{
-			File().WriteEncrypt(this, i_address, _addressOffset);
+			File().WriteEncrypt(this, _address, _addressOffset);
 		}
 
 		public ByteArrayBuffer ReadPayloadWriter(int offset, int length)
 		{
 			Db4objects.Db4o.Internal.StatefulBuffer payLoad = new Db4objects.Db4o.Internal.StatefulBuffer
-				(i_trans, 0, length);
+				(_trans, 0, length);
 			System.Array.Copy(_buffer, offset, payLoad._buffer, 0, length);
 			TransferPayLoadAddress(payLoad, offset);
 			return payLoad;
@@ -208,8 +206,8 @@ namespace Db4objects.Db4o.Internal
 			, int offset)
 		{
 			int blockedOffset = offset / Container().BlockSize();
-			toWriter.i_address = i_address + blockedOffset;
-			toWriter.i_id = toWriter.i_address;
+			toWriter._address = _address + blockedOffset;
+			toWriter._id = toWriter._address;
 			toWriter._addressOffset = _addressOffset;
 		}
 
@@ -220,7 +218,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override string ToString()
 		{
-			return "id " + i_id + " adr " + i_address + " len " + i_length;
+			return "id " + _id + " adr " + _address + " len " + _length;
 		}
 
 		public void NoXByteCheck()
@@ -233,22 +231,22 @@ namespace Db4objects.Db4o.Internal
 
 		public Db4objects.Db4o.Internal.Slots.Slot Slot()
 		{
-			return new Db4objects.Db4o.Internal.Slots.Slot(i_address, i_length);
+			return new Db4objects.Db4o.Internal.Slots.Slot(_address, _length);
 		}
 
 		public Pointer4 Pointer()
 		{
-			return new Pointer4(i_id, Slot());
+			return new Pointer4(_id, Slot());
 		}
 
 		public int CascadeDeletes()
 		{
-			return i_cascadeDelete;
+			return _cascadeDelete;
 		}
 
 		public void SetCascadeDeletes(int depth)
 		{
-			i_cascadeDelete = depth;
+			_cascadeDelete = depth;
 		}
 	}
 }

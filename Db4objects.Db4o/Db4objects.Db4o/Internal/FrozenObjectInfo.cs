@@ -30,13 +30,20 @@ namespace Db4objects.Db4o.Internal
 		private FrozenObjectInfo(ObjectReference @ref, VirtualAttributes virtualAttributes
 			) : this(@ref == null ? null : @ref.GetObject(), @ref == null ? -1 : @ref.GetID(
 			), virtualAttributes == null ? null : virtualAttributes.i_database, virtualAttributes
-			 == null ? -1 : virtualAttributes.i_uuid, @ref == null ? 0 : @ref.GetVersion())
+			 == null ? -1 : virtualAttributes.i_uuid, virtualAttributes == null ? 0 : virtualAttributes
+			.i_version)
 		{
 		}
 
-		public FrozenObjectInfo(Transaction trans, ObjectReference @ref) : this(@ref, @ref
-			 == null ? null : @ref.VirtualAttributes(trans, true))
+		public FrozenObjectInfo(Transaction trans, ObjectReference @ref, bool committed) : 
+			this(@ref, IsInstantiatedReference(@ref) ? @ref.VirtualAttributes(trans, committed
+			) : null)
 		{
+		}
+
+		private static bool IsInstantiatedReference(ObjectReference @ref)
+		{
+			return @ref != null && @ref.GetObject() != null;
 		}
 
 		public virtual long GetInternalID()

@@ -254,11 +254,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void ReleaseSemaphore(string name)
 		{
-			lock (Lock())
-			{
-				CheckClosed();
-				_server.ReleaseSemaphore(_transaction, name);
-			}
+			CheckClosed();
+			_server.ReleaseSemaphore(_transaction, name);
 		}
 
 		/// <param name="peerB"></param>

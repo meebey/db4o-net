@@ -18,64 +18,6 @@ namespace Db4objects.Db4o.CS.Config
 		}
 
 		/// <summary>
-		/// configures the time a client waits for a message response
-		/// from the server.
-		/// </summary>
-		/// <remarks>
-		/// configures the time a client waits for a message response
-		/// from the server. <br />
-		/// <br />
-		/// Default value: 600000ms (10 minutes)<br />
-		/// <br />
-		/// It is recommended to use the same values for
-		/// <see cref="TimeoutClientSocket(int)">TimeoutClientSocket(int)</see>
-		/// and
-		/// <see cref="TimeoutServerSocket(int)">TimeoutServerSocket(int)</see>
-		/// .
-		/// <br />
-		/// This setting can be used on both client and server.<br /><br />
-		/// </remarks>
-		/// <value>time in milliseconds</value>
-		int TimeoutClientSocket
-		{
-			set;
-		}
-
-		/// <summary>configures the timeout of the server side socket.</summary>
-		/// <remarks>
-		/// configures the timeout of the server side socket. <br />
-		/// <br />
-		/// The server side handler waits for messages to arrive from the client.
-		/// If no more messages arrive for the duration configured in this
-		/// setting, the client will be disconnected.
-		/// <br />
-		/// Clients send PING messages to the server at an interval of
-		/// Math.min(timeoutClientSocket(), timeoutServerSocket()) / 2
-		/// and the server will respond to keep connections alive.
-		/// <br />
-		/// Decrease this setting if you want clients to disconnect faster.
-		/// <br />
-		/// Increase this setting if you have a large number of clients and long
-		/// running queries and you are getting disconnected clients that you
-		/// would like to wait even longer for a response from the server.
-		/// <br />
-		/// Default value: 600000ms (10 minutes)<br />
-		/// <br />
-		/// It is recommended to use the same values for
-		/// <see cref="TimeoutClientSocket(int)">TimeoutClientSocket(int)</see>
-		/// and
-		/// <see cref="TimeoutServerSocket(int)">TimeoutServerSocket(int)</see>
-		/// .
-		/// <br />
-		/// This setting can be used on both client and server.<br /><br />
-		/// </remarks>
-		/// <value>time in milliseconds</value>
-		int TimeoutServerSocket
-		{
-			set;
-		}
-
-		/// <summary>
 		/// configures the client messaging system to be single threaded
 		/// or multithreaded.
 		/// </summary>

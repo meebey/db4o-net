@@ -28,7 +28,8 @@ namespace Db4objects.Db4o.CS.Internal.Config
 				(config);
 			Socket4Adapter networkSocket = new Socket4Adapter(clientConfig.Networking.SocketFactory
 				, hostName, port);
-			return new ClientObjectContainer(config, networkSocket, user, password, true);
+			return new ClientObjectContainer(clientConfig, networkSocket, user, password, true
+				);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -49,8 +50,7 @@ namespace Db4objects.Db4o.CS.Internal.Config
 				(config);
 			lock (container.Lock())
 			{
-				return new ObjectServerImpl(container, serverConfig.Networking.SocketFactory, port
-					);
+				return new ObjectServerImpl(container, serverConfig, port);
 			}
 		}
 	}

@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Config
 			return new CommonConfigurationImpl((Config4Impl)config);
 		}
 
-		public static Config4Impl LegacyFrom(object config)
+		public static Config4Impl AsLegacy(object config)
 		{
 			return ((ILegacyConfigurationProvider)config).Legacy();
 		}

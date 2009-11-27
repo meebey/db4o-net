@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal const int CanUpdate = 9;
 
-		internal const int ServerCount = 2;
+		internal const int DeleteCount = 2;
 
 		internal const int Count = 10;
 
@@ -161,13 +161,14 @@ namespace Db4objects.Db4o.Internal
 
 		private static int EventCountFor(ObjectContainerBase container)
 		{
-			if (container.ConfigImpl.Callbacks())
+			CallBackMode callbackMode = container.ConfigImpl.CallbackMode();
+			if (callbackMode == CallBackMode.All)
 			{
 				return Count;
 			}
-			if (container.ConfigImpl.IsServer())
+			if (callbackMode == CallBackMode.DeleteOnly)
 			{
-				return ServerCount;
+				return DeleteCount;
 			}
 			return 0;
 		}

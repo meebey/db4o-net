@@ -1180,11 +1180,16 @@ namespace Db4objects.Db4o.Internal
 				{
 					return null;
 				}
-				trans = CheckTransaction(trans);
-				HardObjectReference hardRef = trans.GetHardReferenceBySignature(uuid.GetLongPart(
-					), uuid.GetSignaturePart());
+				HardObjectReference hardRef = GetHardReferenceBySignature(CheckTransaction(trans)
+					, uuid.GetLongPart(), uuid.GetSignaturePart());
 				return hardRef._object;
 			}
+		}
+
+		public virtual HardObjectReference GetHardReferenceBySignature(Transaction trans, 
+			long uuid, byte[] signature)
+		{
+			return UUIDIndex().GetHardObjectReferenceBySignature(trans, uuid, signature);
 		}
 
 		public int GetID(Transaction trans, object obj)
@@ -1628,13 +1633,13 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				CheckClosed();
-				return AsTopLevelCall(new _IFunction4_1267(this, obj, committed, depth), trans);
+				return AsTopLevelCall(new _IFunction4_1270(this, obj, committed, depth), trans);
 			}
 		}
 
-		private sealed class _IFunction4_1267 : IFunction4
+		private sealed class _IFunction4_1270 : IFunction4
 		{
-			public _IFunction4_1267(ObjectContainerBase _enclosing, object obj, bool committed
+			public _IFunction4_1270(ObjectContainerBase _enclosing, object obj, bool committed
 				, IActivationDepth depth)
 			{
 				this._enclosing = _enclosing;
@@ -1682,12 +1687,20 @@ namespace Db4objects.Db4o.Internal
 					return tio._object;
 				}
 			}
-			object res = new ObjectReference(id).PeekPersisted(trans, depth);
+			ObjectReference @ref = PeekReference(trans, id, depth, resetJustPeeked);
+			return @ref.GetObject();
+		}
+
+		public virtual ObjectReference PeekReference(Transaction trans, int id, IActivationDepth
+			 depth, bool resetJustPeeked)
+		{
+			ObjectReference @ref = new ObjectReference(id);
+			@ref.PeekPersisted(trans, depth);
 			if (resetJustPeeked)
 			{
 				_justPeeked = null;
 			}
-			return res;
+			return @ref;
 		}
 
 		internal virtual void Peeked(int id, object obj)
@@ -2038,13 +2051,13 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			CheckReadOnly();
-			return (((int)AsTopLevelStore(new _IFunction4_1584(this, obj, depth, checkJustSet
+			return (((int)AsTopLevelStore(new _IFunction4_1593(this, obj, depth, checkJustSet
 				), trans)));
 		}
 
-		private sealed class _IFunction4_1584 : IFunction4
+		private sealed class _IFunction4_1593 : IFunction4
 		{
-			public _IFunction4_1584(ObjectContainerBase _enclosing, object obj, int depth, bool
+			public _IFunction4_1593(ObjectContainerBase _enclosing, object obj, int depth, bool
 				 checkJustSet)
 			{
 				this._enclosing = _enclosing;

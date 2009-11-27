@@ -12,6 +12,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 	public class SwitchingFilesFromMultipleClientsTestCase : StandaloneCSTestCaseBase
 		, ITestLifeCycle
 	{
+		/// <exception cref="System.Exception"></exception>
+		public static void Main(string[] args)
+		{
+			new ConsoleTestRunner(typeof(SwitchingFilesFromMultipleClientsTestCase)).Run();
+		}
+
 		public class Data
 		{
 			public int _id;
@@ -30,7 +36,6 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				)));
 		}
 
-		[System.ObsoleteAttribute(@"using deprecated api")]
 		protected override void RunTest()
 		{
 			_counter = 0;

@@ -155,11 +155,6 @@ namespace Db4objects.Db4o.Internal
 			return (byte)_file.BlockSize();
 		}
 
-		protected override void FreeInternalResources()
-		{
-			FreePrefetchedPointers();
-		}
-
 		protected override void ShutdownDataStorage()
 		{
 			lock (_fileLock)

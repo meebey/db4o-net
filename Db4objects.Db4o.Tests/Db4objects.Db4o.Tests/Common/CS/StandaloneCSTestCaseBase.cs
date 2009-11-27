@@ -23,8 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			// TODO fix db4ounit call logic - this should actually be run in C/S mode
 		}
 
-		/// <exception cref="System.Exception">System.Exception</exception>
-		[System.ObsoleteAttribute(@"using deprecated api")]
+		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
 			string fileName = DatabaseFile();

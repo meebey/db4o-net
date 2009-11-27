@@ -3,20 +3,23 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
 
 namespace Db4objects.Db4o.Internal
 {
 	public class ObjectContainerFactory
 	{
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
-		public static IEmbeddedObjectContainer OpenObjectContainer(IConfiguration config, 
-			string databaseFileName)
+		public static IEmbeddedObjectContainer OpenObjectContainer(IEmbeddedConfiguration
+			 config, string databaseFileName)
 		{
-			Config4Impl.AssertIsNotTainted(config);
+			IConfiguration legacyConfig = Db4oLegacyConfigurationBridge.AsLegacy(config);
+			Config4Impl.AssertIsNotTainted(legacyConfig);
 			EmitDebugInfo();
-			IEmbeddedObjectContainer oc = new IoAdaptedObjectContainer(config, databaseFileName
+			IEmbeddedObjectContainer oc = new IoAdaptedObjectContainer(legacyConfig, databaseFileName
 				);
-			Db4objects.Db4o.Internal.Messages.LogMsg(config, 5, databaseFileName);
+			((EmbeddedConfigurationImpl)config).ApplyConfigurationItems(oc);
+			Db4objects.Db4o.Internal.Messages.LogMsg(legacyConfig, 5, databaseFileName);
 			return oc;
 		}
 

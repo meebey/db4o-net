@@ -10,7 +10,7 @@ using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Config
 {
-	internal class CommonConfigurationImpl : ICommonConfiguration
+	public class CommonConfigurationImpl : ICommonConfiguration
 	{
 		private readonly Config4Impl _config;
 
@@ -81,6 +81,11 @@ namespace Db4objects.Db4o.Internal.Config
 				bool flag = value;
 				_config.Callbacks(flag);
 			}
+		}
+
+		public virtual void CallbackMode(CallBackMode mode)
+		{
+			_config.CallbackMode(mode);
 		}
 
 		public virtual bool CallConstructors
@@ -236,13 +241,13 @@ namespace Db4objects.Db4o.Internal.Config
 		{
 			get
 			{
-				return new _IEnvironmentConfiguration_135(this);
+				return new _IEnvironmentConfiguration_139(this);
 			}
 		}
 
-		private sealed class _IEnvironmentConfiguration_135 : IEnvironmentConfiguration
+		private sealed class _IEnvironmentConfiguration_139 : IEnvironmentConfiguration
 		{
-			public _IEnvironmentConfiguration_135(CommonConfigurationImpl _enclosing)
+			public _IEnvironmentConfiguration_139(CommonConfigurationImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

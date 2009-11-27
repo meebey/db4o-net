@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			public virtual void Test()
 			{
 				ICommonConfigurationProvider config = ((ICommonConfigurationProvider)Subject());
-				Config4Impl legacy = Db4oLegacyConfigurationBridge.LegacyFrom(config);
+				Config4Impl legacy = Db4oLegacyConfigurationBridge.AsLegacy(config);
 				ICommonConfiguration common = config.Common;
 				common.ActivationDepth = 42;
 				Assert.AreEqual(42, legacy.ActivationDepth());
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				common.BTreeNodeSize = 42;
 				Assert.AreEqual(42, legacy.BTreeNodeSize());
 				common.Callbacks = false;
-				Assert.IsFalse(legacy.Callbacks());
+				Assert.AreEqual(CallBackMode.None, legacy.CallbackMode());
 				common.CallConstructors = false;
 				Assert.IsTrue(legacy.CallConstructors().DefiniteNo());
 				common.DetectSchemaChanges = false;
@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				}
 				IFileConfigurationProvider config = ((IFileConfigurationProvider)Subject());
 				IFileConfiguration fileConfig = config.File;
-				Config4Impl legacyConfig = Db4oLegacyConfigurationBridge.LegacyFrom(config);
+				Config4Impl legacyConfig = Db4oLegacyConfigurationBridge.AsLegacy(config);
 				fileConfig.BlockSize = 42;
 				Assert.AreEqual(42, legacyConfig.BlockSize());
 				fileConfig.DatabaseGrowthSize = 42;

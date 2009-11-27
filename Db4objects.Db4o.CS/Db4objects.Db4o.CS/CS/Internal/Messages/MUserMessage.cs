@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				public void Send(object message)
 				{
 					this._enclosing._enclosing.ServerMessageDispatcher().Write(Msg.UserMessage.MarshallUserMessage
-						(this._enclosing._enclosing.Transaction(), message));
+						(this._enclosing.Transaction, message));
 				}
 
 				private readonly MessageContextImpl _enclosing;
@@ -50,7 +50,15 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				get
 				{
-					return this._enclosing.Transaction().ObjectContainer();
+					return this.Transaction.ObjectContainer();
+				}
+			}
+
+			public virtual Db4objects.Db4o.Internal.Transaction Transaction
+			{
+				get
+				{
+					return this._enclosing.Transaction();
 				}
 			}
 

@@ -5,6 +5,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o
@@ -372,7 +373,8 @@ namespace Db4objects.Db4o
 		public static IObjectContainer OpenFile(IConfiguration config, string databaseFileName
 			)
 		{
-			return ObjectContainerFactory.OpenObjectContainer(config, databaseFileName);
+			return ObjectContainerFactory.OpenObjectContainer(Db4oLegacyConfigurationBridge.AsEmbeddedConfiguration
+				(config), databaseFileName);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

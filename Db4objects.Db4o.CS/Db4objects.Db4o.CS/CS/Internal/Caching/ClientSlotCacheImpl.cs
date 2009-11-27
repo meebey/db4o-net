@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.CS.Internal.Caching
 			public override object InitialValueFor(Transaction transaction)
 			{
 				Config4Impl config = transaction.Container().Config();
-				return CacheFactory.NewLRUCache(config.PrefetchSlotCacheSize());
+				return CacheFactory.NewLRUIntCache(config.PrefetchSlotCacheSize());
 			}
 		}
 

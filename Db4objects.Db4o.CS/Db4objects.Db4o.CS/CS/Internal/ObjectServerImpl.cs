@@ -4,7 +4,9 @@ using System;
 using System.Collections;
 using System.IO;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
+using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
@@ -12,6 +14,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Threading;
 using Db4objects.Db4o.Types;
 using Sharpen.Lang;
@@ -39,7 +42,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly Lock4 _startupLock = new Lock4();
 
-		private Config4Impl _config;
+		private ServerConfigurationImpl _serverConfig;
 
 		private BlockingQueue _committedInfosQueue = new BlockingQueue();
 
@@ -60,20 +63,21 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private System.EventHandler<ServerClosedEventArgs> _closed;
 
-		public ObjectServerImpl(LocalObjectContainer container, ISocket4Factory socketFactory
-			, int port) : this(container, socketFactory, (port < 0 ? 0 : port), port == 0)
+		public ObjectServerImpl(LocalObjectContainer container, IServerConfiguration serverConfig
+			, int port) : this(container, (ServerConfigurationImpl)serverConfig, (port < 0 ? 
+			0 : port), port == 0)
 		{
 		}
 
-		private ObjectServerImpl(LocalObjectContainer container, ISocket4Factory socketFactory
-			, int port, bool isEmbeddedServer)
+		private ObjectServerImpl(LocalObjectContainer container, ServerConfigurationImpl 
+			serverConfig, int port, bool isEmbeddedServer)
 		{
 			_isEmbeddedServer = isEmbeddedServer;
-			_socketFactory = socketFactory;
 			_container = container;
+			_serverConfig = serverConfig;
+			_socketFactory = serverConfig.Networking.SocketFactory;
 			_transactionPool = new ClientTransactionPool(container);
 			_port = port;
-			_config = _container.ConfigImpl;
 			_name = "db4o ServerSocket FILE: " + container.ToString() + "  PORT:" + _port;
 			_container.SetServer(true);
 			ConfigureObjectServer();
@@ -84,6 +88,10 @@ namespace Db4objects.Db4o.CS.Internal
 				EnsureLoadStaticClass();
 				StartCommittedCallbackThread(_committedInfosQueue);
 				StartServer();
+				if (_serverConfig != null)
+				{
+					_serverConfig.ApplyConfigurationItems(this);
+				}
 				ok = true;
 			}
 			finally
@@ -101,12 +109,12 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				return;
 			}
-			_startupLock.Run(new _IClosure4_92(this));
+			_startupLock.Run(new _IClosure4_98(this));
 		}
 
-		private sealed class _IClosure4_92 : IClosure4
+		private sealed class _IClosure4_98 : IClosure4
 		{
-			public _IClosure4_92(ObjectServerImpl _enclosing)
+			public _IClosure4_98(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -137,12 +145,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void StartServerThread()
 		{
-			_startupLock.Run(new _IClosure4_111(this));
+			_startupLock.Run(new _IClosure4_117(this));
 		}
 
-		private sealed class _IClosure4_111 : IClosure4
+		private sealed class _IClosure4_117 : IClosure4
 		{
-			public _IClosure4_111(ObjectServerImpl _enclosing)
+			public _IClosure4_117(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -172,7 +180,7 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				throw new Db4oIOException(e);
 			}
-			_serverSocket.SetSoTimeout(_config.TimeoutServerSocket());
+			_serverSocket.SetSoTimeout(_serverConfig.TimeoutServerSocket);
 		}
 
 		private bool IsEmbeddedServer()
@@ -187,11 +195,11 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void ConfigureObjectServer()
 		{
-			_config.Callbacks(false);
-			_config.IsServer(true);
+			((CommonConfigurationImpl)_serverConfig.Common).CallbackMode(CallBackMode.DeleteOnly
+				);
 			// the minimum activation depth of com.db4o.User.class should be 1.
 			// Otherwise, we may get null password.
-			_config.ObjectClass(typeof(User)).MinimumActivationDepth(1);
+			_serverConfig.Common.ObjectClass(typeof(User)).MinimumActivationDepth(1);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -274,18 +282,6 @@ namespace Db4objects.Db4o.CS.Internal
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
 			}
-			i = IterateDispatchers();
-			while (i.MoveNext())
-			{
-				try
-				{
-					((IServerMessageDispatcher)i.Current).Join();
-				}
-				catch (Exception e)
-				{
-					Sharpen.Runtime.PrintStackTrace(e);
-				}
-			}
 		}
 
 		public virtual IEnumerator IterateDispatchers()
@@ -313,7 +309,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual IConfiguration Configure()
 		{
-			return _config;
+			return Db4oClientServerLegacyConfigurationBridge.AsLegacy(_serverConfig);
 		}
 
 		public virtual IExtObjectServer Ext()
@@ -476,13 +472,13 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			while (_serverSocket != null)
 			{
-				WithEnvironment(new _IRunnable_355(this));
+				WithEnvironment(new _IRunnable_352(this));
 			}
 		}
 
-		private sealed class _IRunnable_355 : IRunnable
+		private sealed class _IRunnable_352 : IRunnable
 		{
-			public _IRunnable_355(ObjectServerImpl _enclosing)
+			public _IRunnable_352(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -530,12 +526,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void NotifyThreadStarted()
 		{
-			_startupLock.Run(new _IClosure4_392(this));
+			_startupLock.Run(new _IClosure4_389(this));
 		}
 
-		private sealed class _IClosure4_392 : IClosure4
+		private sealed class _IClosure4_389 : IClosure4
 		{
-			public _IClosure4_392(ObjectServerImpl _enclosing)
+			public _IClosure4_389(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
