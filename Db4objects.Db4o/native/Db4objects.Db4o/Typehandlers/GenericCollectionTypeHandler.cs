@@ -187,11 +187,6 @@ namespace Db4objects.Db4o.Typehandlers
 			return type.IsGenericType && Array.IndexOf(_supportedCollections, type.GetGenericTypeDefinition()) >= 0;
 		}
 
-		public bool IsSimple()
-		{
-			return false;
-		}
-
 		public bool DescendsIntoMembers()
 		{
 			return true;

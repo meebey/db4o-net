@@ -70,11 +70,6 @@ namespace Db4objects.Db4o.Typehandlers
 			return false;
 		}
 
-		public bool IsSimple()
-		{
-			return true;
-		}
-
 		#endregion
 
 		#region IIndexableTypeHandler Members 
