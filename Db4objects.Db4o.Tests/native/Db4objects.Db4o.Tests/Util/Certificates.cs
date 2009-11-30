@@ -13,15 +13,12 @@ namespace Db4objects.Db4o.Tests.Util
 	{
 		private const int ENCODING = 0x00010001; // X509_ASN_ENCODING | PKCS_7_ASN_ENCODING
 		private const int PROV_RSA_FULL = 1;
-		private const int CRYPT_NEWKEYSET = 8;
 		private const int AT_KEYEXCHANGE = 1;
-		private const int CRYPT_EXPORTABLE = 1;
 		private const int CERT_X500_NAME_STR = 3;
 		private const string sz_CERT_STORE_PROV_MEMORY = "Memory";
 		private const int CERT_STORE_CREATE_NEW_FLAG = 0x2000;
 		private const int CERT_STORE_ADD_NEW = 1;
 		private const int CERT_KEY_PROV_INFO_PROP_ID = 2;
-		private const int CRYPT_DELETEKEYSET = 0x10;
 
 		public static byte[] CreateSelfSignCertificate(string distinguishedName, DateTime startTime, DateTime endTime)
 		{
@@ -73,8 +70,8 @@ namespace Db4objects.Db4o.Tests.Util
 			RuntimeHelpers.PrepareConstrainedRegions();
 			try
 			{
-				providerContext = AcquireProviderContext(containerName, PROV_RSA_FULL, CRYPT_NEWKEYSET);
-				cryptKey = GenerateKey(providerContext, AT_KEYEXCHANGE, CRYPT_EXPORTABLE);
+				providerContext = AcquireProviderContext(containerName, PROV_RSA_FULL, NativeMethods.CRYPT_NEWKEYSET + NativeMethods.CRYPT_MACHINE_KEYSET);
+				cryptKey = GenerateKey(providerContext, AT_KEYEXCHANGE, NativeMethods.CRYPT_EXPORTABLE);
 
 				CryptKeyProviderInformation kpi = NewProviderInformationFor(containerName, PROV_RSA_FULL, AT_KEYEXCHANGE);
 
@@ -113,7 +110,7 @@ namespace Db4objects.Db4o.Tests.Util
 				if (providerContext != IntPtr.Zero)
 				{
 					NativeMethods.CryptReleaseContext(providerContext, 0);
-					NativeMethods.CryptAcquireContextW(out providerContext, containerName, null, PROV_RSA_FULL, CRYPT_DELETEKEYSET);
+					NativeMethods.CryptAcquireContextW(out providerContext, containerName, null, PROV_RSA_FULL, NativeMethods.CRYPT_DELETEKEYSET);
 				}
 			}
 		}
@@ -203,6 +200,7 @@ namespace Db4objects.Db4o.Tests.Util
 			kpi.ContainerName = containerName;
 			kpi.ProviderType = providerType;
 			kpi.KeySpec = keyexchange;
+			kpi.Flags = NativeMethods.CRYPT_MACHINE_KEYSET;
 
 			return kpi;
 		}
@@ -333,6 +331,11 @@ namespace Db4objects.Db4o.Tests.Util
 
 		private static class NativeMethods
 		{
+			internal const int CRYPT_NEWKEYSET = 8;
+			internal const int CRYPT_EXPORTABLE = 1;
+			internal const int CRYPT_MACHINE_KEYSET = 0x00000020;
+			internal const int CRYPT_DELETEKEYSET = 0x10;
+
 			[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
 			[return: MarshalAs(UnmanagedType.Bool)]
 			public static extern bool FileTimeToSystemTime([In] ref long fileTime, out SystemTime systemTime);
