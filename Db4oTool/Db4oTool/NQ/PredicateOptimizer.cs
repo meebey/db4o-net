@@ -1,4 +1,5 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
+using System;
 using System.Diagnostics;
 using Db4objects.Db4o.NativeQueries.Expr;
 using Mono.Cecil;
@@ -7,21 +8,6 @@ namespace Db4oTool.NQ
 {
 	public class PredicateOptimizer : AbstractOptimizer
 	{
-		int _predicateCount;
-
-		protected override void BeforeAssemblyProcessing()
-		{
-			_predicateCount = 0;
-		}
-		
-		protected override void  AfterAssemblyProcessing()
-		{
-			string format = _predicateCount == 1
-			                	? "{0} predicate class processed."
-			                	: "{0} predicate classes processed.";
-			TraceInfo(format, _predicateCount);
-		}
-		
 		protected override void ProcessType(TypeDefinition type)
 		{
 			if (IsPredicateClass(type))
@@ -32,7 +18,7 @@ namespace Db4oTool.NQ
 
 		private void InstrumentPredicateClass(TypeDefinition type)
 		{
-			++_predicateCount;
+			++_processedCount;
 			
 			MethodDefinition match = GetMatchMethod(type);
 			IExpression e = GetExpression(match);
@@ -56,6 +42,11 @@ namespace Db4oTool.NQ
 			if (null == baseType) return false;
 			if (typeof(Db4objects.Db4o.Query.Predicate).FullName == baseType.FullName) return true;
 			return IsPredicateClass(baseType);
+		}
+
+		protected override string TargetName(int processedCount)
+		{
+			return string.Format("predicate class{0}", processedCount == 1 ? "" : "es");
 		}
 	}
 }

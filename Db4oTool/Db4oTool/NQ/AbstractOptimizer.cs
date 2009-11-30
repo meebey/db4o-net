@@ -1,3 +1,4 @@
+/* Copyright (C) 2009  Versant Inc.   http://www.db4o.com */
 using System;
 using Db4objects.Db4o.Instrumentation.Cecil;
 using Db4objects.Db4o.NativeQueries;
@@ -8,7 +9,7 @@ using Mono.Cecil;
 
 namespace Db4oTool.NQ
 {
-	public class AbstractOptimizer : AbstractAssemblyInstrumentation
+	public abstract class AbstractOptimizer : AbstractAssemblyInstrumentation
 	{
 		public void OptimizePredicate(TypeDefinition type, MethodDefinition match, IExpression e)
 		{
@@ -30,5 +31,19 @@ namespace Db4oTool.NQ
 			}
 			return null;
 		}
+
+		protected override void BeforeAssemblyProcessing()
+		{
+			_processedCount = 0;
+		}
+
+		protected override void AfterAssemblyProcessing()
+		{
+			TraceInfo("{0} {1} processed.", _processedCount, TargetName(_processedCount));
+		}
+
+		protected abstract string TargetName(int count);
+
+		protected int _processedCount;
 	}
 }

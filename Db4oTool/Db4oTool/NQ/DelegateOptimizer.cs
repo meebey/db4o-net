@@ -27,6 +27,7 @@ namespace Db4oTool.NQ
 		void ProcessQueryInvocation(MethodDefinition parent, Instruction queryInvocation)
 		{
 			if (null == _processor) _processor = new DelegateQueryProcessor(_context, this);
+			_processedCount++;
 			_processor.Process(parent, queryInvocation);
 		}
 
@@ -61,6 +62,11 @@ namespace Db4oTool.NQ
 			GenericInstanceType genericType = type as GenericInstanceType;
 			if (null == genericType) return false;
 			return genericType.FullName.StartsWith("System.Predicate");
+		}
+
+		protected override string TargetName(int processedCount)
+		{
+			return processedCount == 1 ? "delegate" : "delegates";
 		}
 	}
 }
