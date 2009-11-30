@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 {
 	public class GuidTypeHandlerTestCase : AbstractDb4oTestCase
 	{
-		private const int ItemCount = 255;
+		protected const int ItemCount = 255;
 
 		protected override void Configure(IConfiguration config)
 		{
@@ -23,10 +23,15 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 			objectClass.ObjectField("Guid").Indexed(true);
 			objectClass.CascadeOnDelete(true);
 		}
-
-		protected override void Store()
+		
+		public void TestNonIndexedGuidQuery()
 		{
-			ForAllHolders(delegate(GuidHolder holder) { Store(holder); });
+			IQuery query = Db().Query();
+			query.Constrain(typeof(GuidHolder));
+
+			query.Descend("NotIndexed").Constrain(NewGuidFor(1));
+			IObjectSet result = query.Execute();
+			Assert.AreEqual(1, result.Count);
 		}
 
 		public void TestOrderBySucceedingFieldDoesNotThrow()
@@ -136,7 +141,30 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 			return actual;
 		}
 
-		private void AssertQuery(Guid expected, params GuidHolder[] expectedHolders)
+		protected override void Store()
+		{
+			ForAllHolders(delegate(GuidHolder holder) { Store(holder); });
+		}
+
+		protected static void ForAllHolders(Action<GuidHolder> action)
+		{
+			for (int i = 0; i < ItemCount; i++)
+			{
+				action(NewHolderFor(i));
+			}
+		}
+
+		protected static GuidHolder NewHolderFor(int i)
+		{
+			return new GuidHolder("#" + i, NewGuidFor(i));
+		}
+
+		protected static Guid NewGuidFor(int i)
+		{
+			return new Guid(126 + i, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte)i);
+		}
+
+		protected void AssertQuery(Guid expected, params GuidHolder[] expectedHolders)
 		{
 			IObjectSet result = RetrieveHoldersWith(expected);
 
@@ -144,7 +172,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 			Iterator4Assert.SameContent(expectedHolders, result.GetEnumerator());
 		}
 
-		private IObjectSet RetrieveHoldersWith(params Guid[] ids)
+		protected IObjectSet RetrieveHoldersWith(params Guid[] ids)
 		{
 			IConstraint lastConstraint = null;
 			
@@ -163,31 +191,20 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 
 			return query.Execute();
 		}
-
-		private static void ForAllHolders(Action<GuidHolder> action)
-		{
-			for (int i = 0; i < ItemCount; i++)
-			{
-				action(new GuidHolder("#" + i, NewGuidFor(i)));
-			}
-		}
-
-		private static Guid NewGuidFor(int i)
-		{
-			return new Guid(126 + i, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte)i);
-		}
 	}
 
 	public class GuidHolder
 	{
 		public String NoIdea;
 		public Guid Guid;
+		public Guid NotIndexed;
 		public GuidHolder Myself;
 		public string Name;
 
 		public GuidHolder(string name, Guid guid)
 		{
 			Guid = guid;
+			NotIndexed = guid;
 			Name = name;
 			Myself = this;
 		}

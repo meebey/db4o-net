@@ -72,7 +72,7 @@ namespace Db4objects.Db4o.Typehandlers
 
 		public bool IsSimple()
 		{
-			return false;
+			return true;
 		}
 
 		#endregion
