@@ -166,16 +166,15 @@ namespace Db4objects.Db4o.Linq.Expressions
 			}
 		}
 
-		private delegate void Block();
 		private void VisitPreservingQuery(Expression expression)
 		{
 			PreservingQuery(() => Visit(expression));
 		}
 
-		private void PreservingQuery(Block block)
+		private void PreservingQuery(Action action)
 		{
 			Recorder.Add(ctx => ctx.SaveQuery());
-			block();
+			action();
 			Recorder.Add(ctx => ctx.RestoreQuery());
 		}
 
