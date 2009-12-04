@@ -11,11 +11,6 @@ namespace Db4objects.Db4o.Linq.Internals
 {
 	internal static class Extensions
 	{
-		public static IEnumerable<T> Cast<T>(this IEnumerable self)
-		{
-			return new ObjectSequence<T>(self);
-		}
-
 		public static Type[] GetParameterTypes(this MethodBase self)
 		{
 			return self.GetParameters().Select(p => p.ParameterType).ToArray();
