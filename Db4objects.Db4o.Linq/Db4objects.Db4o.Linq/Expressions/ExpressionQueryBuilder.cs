@@ -70,12 +70,12 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected static bool IsFieldAccessExpression(MemberExpression m)
 		{
-			return m.Member is FieldInfo;
+			return m.Member.MemberType == MemberTypes.Field;
 		}
 
 		protected static bool IsPropertyAccessExpression(MemberExpression m)
 		{
-			return m.Member is PropertyInfo;
+			return m.Member.MemberType == MemberTypes.Property;
 		}
 
 		protected static MethodInfo GetGetMethod(MemberExpression m)
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 				_recorder.Add(ctx => ctx.Descend(m.Member.Name));
 				return;
 			}
-			
+
 			if (IsPropertyAccessExpression(m))
 			{
 				AnalyseMethod(_recorder, GetGetMethod(m));
