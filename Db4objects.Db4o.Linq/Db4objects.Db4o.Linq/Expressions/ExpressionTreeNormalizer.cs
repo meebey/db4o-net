@@ -20,12 +20,12 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected override Expression VisitUnary(UnaryExpression u)
 		{
-			if ((IsBooleanMemberAccess(u.Operand) || IsNonPrimitiveBooleanMethodCall(u.Operand)) 
+			if ((IsBooleanMemberAccess(u.Operand) || IsNonPrimitiveBooleanMethodCall(u.Operand))
 				&& u.NodeType == ExpressionType.Not)
 			{
 				return ExpandExpression(u.Operand, false);
 			}
-			
+
 			return base.VisitUnary(u);
 		}
 
@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 			{
 			    return ExpandExpression(method, true);
 			}
-			
+
 			return base.VisitMethodCall(method);
 		}
 
@@ -51,7 +51,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 		{
 			return expression.NodeType == ExpressionType.Call && expression.Type == typeof(bool) && IsCallToNonPrimitiveMethod((MethodCallExpression) expression);
 		}
-		
+
 		private static bool IsCallToNonPrimitiveMethod(MethodCallExpression expression)
 		{
 			return !IsListMethodCall(expression.Method) && !IsStringMethodCall(expression.Method);
@@ -61,7 +61,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 		{
 			return method.DeclaringType == typeof(IList);
 		}
-		
+
 		private static bool IsStringMethodCall(MethodInfo method)
 		{
 			return method.DeclaringType == typeof(String);
@@ -107,7 +107,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 			}
 		}
 
-		private Expression NormalizeVisualBasicOperator(BinaryExpression b)
+		private static Expression NormalizeVisualBasicOperator(BinaryExpression b)
 		{
 			var call = b.Left as MethodCallExpression;
 			if (call == null) return null;
@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 			return null;
 		}
 
-		private MethodCallExpression ToStringEquals(MethodCallExpression call)
+		private static MethodCallExpression ToStringEquals(MethodCallExpression call)
 		{
 			var stringEquals = typeof(string).GetMethod("Equals", new[] {typeof(string)});
 			return Expression.Call(call.Arguments[0], stringEquals, call.Arguments[1]);
