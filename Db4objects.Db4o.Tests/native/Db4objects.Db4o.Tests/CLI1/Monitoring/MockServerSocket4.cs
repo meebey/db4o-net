@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.Tests.Optional.Monitoring.CS;
 
 namespace Db4objects.Db4o.Tests.CLI1.Monitoring

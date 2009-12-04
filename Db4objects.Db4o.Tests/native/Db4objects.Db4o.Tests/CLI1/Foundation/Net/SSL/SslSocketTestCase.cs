@@ -6,8 +6,7 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using Db4objects.Db4o.CS.Foundation.Network;
-using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Tests.Util;
@@ -44,7 +43,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Foundation.Net.SSL
 			
 			ThreadPool.QueueUserWorkItem(delegate
 			{
-				serverSocket.Accept();                             		
+				serverSocket.Accept();
 			});
 
 			SslSocketFactory clientSocketFactory = new SslSocketFactory(new StandardSocket4Factory(), delegate { return false; });

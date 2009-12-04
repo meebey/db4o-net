@@ -3,8 +3,8 @@
 
 using System;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.CS.Monitoring;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.IO;

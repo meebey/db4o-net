@@ -1,7 +1,7 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 #if !CF && !SILVERLIGHT
 
-using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.CS.Foundation;
 
 namespace Db4objects.Db4o.CS.Monitoring
 {

@@ -3,10 +3,9 @@
 #if !CF && !SILVERLIGHT
 
 using System.Security.Cryptography.X509Certificates;
-using Db4objects.Db4o.CS.Config;
-using Db4objects.Db4o.CS.Foundation.Network;
+using Db4objects.Db4o.CS.Foundation;
 
-namespace Db4objects.Db4o.CS.CS.Config
+namespace Db4objects.Db4o.CS.Config
 {
 	public class ServerSslSupport : IServerConfigurationItem
 	{

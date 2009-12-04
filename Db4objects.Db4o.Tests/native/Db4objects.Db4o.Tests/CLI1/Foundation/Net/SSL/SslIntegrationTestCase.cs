@@ -7,7 +7,6 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.CS.Config;
-using Db4objects.Db4o.CS.CS.Config;
 using Db4objects.Db4o.CS.Internal.Config;
 using Db4objects.Db4o.Tests.Common.CS;
 using Db4objects.Db4o.Tests.Util;

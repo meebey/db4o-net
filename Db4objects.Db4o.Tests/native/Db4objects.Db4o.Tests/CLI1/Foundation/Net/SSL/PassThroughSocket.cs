@@ -2,7 +2,7 @@
 #if !CF && !SILVERLIGHT
 
 using System.IO;
-using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.CS.Foundation;
 
 namespace Db4objects.Db4o.Tests.CLI1.Foundation.Net.SSL
 {

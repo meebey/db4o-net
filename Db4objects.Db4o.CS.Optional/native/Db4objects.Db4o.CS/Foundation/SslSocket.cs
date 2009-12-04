@@ -6,7 +6,7 @@ using System;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Db4objects.Db4o.Foundation.Network
+namespace Db4objects.Db4o.CS.Foundation
 {
 	internal class SslSocket : ISocket4
 	{

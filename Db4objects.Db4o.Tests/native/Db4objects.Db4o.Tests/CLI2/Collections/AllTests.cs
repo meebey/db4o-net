@@ -22,7 +22,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 #if NET_3_5 && ! CF
                 typeof(HashSetTestCase),
-                typeof(UnavailableGenericClassCollectionTestCase),
 #endif 
 
             };

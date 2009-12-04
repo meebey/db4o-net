@@ -4,7 +4,7 @@
 
 using System.Security.Cryptography.X509Certificates;
 
-namespace Db4objects.Db4o.Foundation.Network
+namespace Db4objects.Db4o.CS.Foundation
 {
 	internal class ServerSslSocket : ServerSocket4Decorator
 	{
