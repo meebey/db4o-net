@@ -142,10 +142,5 @@ namespace Db4objects.Db4o.Typehandlers
 		{
 			return true;
 		}
-
-		public virtual bool IsSimple()
-		{
-			return false;
-		}
 	}
 }

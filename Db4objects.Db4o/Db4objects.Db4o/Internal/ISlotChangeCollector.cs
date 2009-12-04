@@ -2,7 +2,7 @@
 
 namespace Db4objects.Db4o.Internal
 {
-	internal interface ISlotChangeCollector
+	public interface ISlotChangeCollector
 	{
 		void Added(int id);
 

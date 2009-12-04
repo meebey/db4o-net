@@ -3,8 +3,8 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o.CS.Config;
+using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.CS.Internal.Config;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Messaging;
 

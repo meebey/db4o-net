@@ -52,11 +52,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Platform4.NullableTypeFor(PrimitiveJavaClass());
 		}
 
-		public virtual bool IsSimple()
-		{
-			return true;
-		}
-
 		public virtual bool DescendsIntoMembers()
 		{
 			return false;

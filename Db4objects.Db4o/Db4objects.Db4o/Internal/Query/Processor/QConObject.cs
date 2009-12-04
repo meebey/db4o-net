@@ -160,7 +160,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		internal override void EvaluateEvaluationsExec(QCandidates a_candidates, bool rereadObject
 			)
 		{
-			if (i_field.IsSimple())
+			if (i_field.IsQueryLeaf())
 			{
 				bool hasEvaluation = false;
 				IEnumerator i = IterateChildren();
@@ -226,7 +226,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			// TODO: The following can be skipped if we used the index on
 			//       this field to load the objects, if hasOrdering() is false
-			if (i_field.IsSimple() || IsNullConstraint())
+			if (i_field.IsQueryLeaf() || IsNullConstraint())
 			{
 				a_candidates.Traverse(i_field);
 				PrepareComparison(i_field);

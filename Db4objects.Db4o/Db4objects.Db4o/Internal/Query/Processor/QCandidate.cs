@@ -210,7 +210,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					// We may get simple types here too, if the YapField was null
 					// in the higher level simple evaluation. Evaluate these
 					// immediately.
-					if (Handlers4.HandlesSimple(handler))
+					if (Handlers4.IsQueryLeaf(handler))
 					{
 						a_candidates.i_currentConstraint.Visit(this);
 						return true;

@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.IO;
+using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation.Network;
 
 namespace Db4objects.Db4o.CS.Internal
 {

@@ -3,10 +3,10 @@
 #if !SILVERLIGHT
 using System;
 using Db4oUnit;
+using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Tests.Common.Foundation.Network;
 using Sharpen.Lang;
 

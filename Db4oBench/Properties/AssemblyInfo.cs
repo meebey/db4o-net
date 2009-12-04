@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Db4oBench")]
-[assembly: AssemblyDescription("Db4oBench 7.12.123.14061 (.NET)")]
+[assembly: AssemblyDescription("Db4oBench 7.12.124.14040 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible (false)]
 
-[assembly: AssemblyVersion("7.12.123.14061")]
+[assembly: AssemblyVersion("7.12.124.14040")]

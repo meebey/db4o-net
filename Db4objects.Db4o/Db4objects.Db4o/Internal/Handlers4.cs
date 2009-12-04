@@ -41,14 +41,18 @@ namespace Db4objects.Db4o.Internal
 
 		public const int AnyArrayNId = 13;
 
-		public static bool HandlesSimple(ITypeHandler4 handler)
+		public static bool IsQueryLeaf(ITypeHandler4 handler)
 		{
 			ITypeHandler4 baseTypeHandler = BaseTypeHandler(handler);
 			if (!(baseTypeHandler is IQueryableTypeHandler))
 			{
 				return false;
 			}
-			return ((IQueryableTypeHandler)baseTypeHandler).IsSimple();
+			if (baseTypeHandler is ArrayHandler)
+			{
+				return false;
+			}
+			return baseTypeHandler is IValueTypeHandler;
 		}
 
 		public static bool HandlesArray(ITypeHandler4 handler)
@@ -309,7 +313,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			IClosure4 collectIDsFromQueryingContext = new _IClosure4_262(handler, queryingReadContext
+			IClosure4 collectIDsFromQueryingContext = new _IClosure4_267(handler, queryingReadContext
 				);
 			if (doWithSlotIndirection)
 			{
@@ -322,9 +326,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_262 : IClosure4
+		private sealed class _IClosure4_267 : IClosure4
 		{
-			public _IClosure4_262(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_267(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;

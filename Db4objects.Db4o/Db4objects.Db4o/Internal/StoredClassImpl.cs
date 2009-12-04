@@ -2,6 +2,7 @@
 
 using System;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal
@@ -63,7 +64,28 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string newName)
 		{
-			_classMetadata.Rename(newName);
+			IInternalObjectContainer container = (IInternalObjectContainer)_transaction.ObjectContainer
+				();
+			container.SyncExec(new _IClosure4_56(this, newName));
+		}
+
+		private sealed class _IClosure4_56 : IClosure4
+		{
+			public _IClosure4_56(StoredClassImpl _enclosing, string newName)
+			{
+				this._enclosing = _enclosing;
+				this.newName = newName;
+			}
+
+			public object Run()
+			{
+				this._enclosing._classMetadata.Rename(newName);
+				return null;
+			}
+
+			private readonly StoredClassImpl _enclosing;
+
+			private readonly string newName;
 		}
 
 		public virtual IStoredField StoredField(string name, object type)

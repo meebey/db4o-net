@@ -398,7 +398,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			if (Handlers4.HandlesSimple(_handler))
+			if (Handlers4.IsPrimitive(_handler))
 			{
 				context.IncrementOffset(LinkLength());
 			}
@@ -684,11 +684,6 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 		public virtual bool DescendsIntoMembers()
 		{
 			return true;
-		}
-
-		public virtual bool IsSimple()
-		{
-			return false;
 		}
 	}
 }

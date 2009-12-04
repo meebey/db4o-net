@@ -76,11 +76,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			_classReflector = reflector.ForClass(_clazz);
 		}
 
-		public virtual bool IsSimple()
-		{
-			return true;
-		}
-
 		public virtual bool DescendsIntoMembers()
 		{
 			return false;

@@ -2,11 +2,11 @@
 
 using System;
 using Db4objects.Db4o;
+using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Foundation.Network;
 using Db4objects.Db4o.Internal;
 using Sharpen.Lang;
 

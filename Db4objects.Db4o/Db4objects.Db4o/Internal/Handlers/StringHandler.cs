@@ -36,11 +36,6 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return Const4.Yapstring;
 		}
 
-		public virtual bool IsSimple()
-		{
-			return true;
-		}
-
 		public virtual bool DescendsIntoMembers()
 		{
 			return false;
@@ -266,12 +261,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_234(this, context, sourceBuffer);
+			return new _IPreparedComparison_230(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_234 : IPreparedComparison
+		private sealed class _IPreparedComparison_230 : IPreparedComparison
 		{
-			public _IPreparedComparison_234(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_230(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

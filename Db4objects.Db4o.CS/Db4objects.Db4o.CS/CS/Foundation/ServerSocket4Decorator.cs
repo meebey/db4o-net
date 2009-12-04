@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation.Network;
+using Db4objects.Db4o.CS.Foundation;
 
-namespace Db4objects.Db4o.Foundation.Network
+namespace Db4objects.Db4o.CS.Foundation
 {
 	/// <since>7.12</since>
 	public class ServerSocket4Decorator : IServerSocket4

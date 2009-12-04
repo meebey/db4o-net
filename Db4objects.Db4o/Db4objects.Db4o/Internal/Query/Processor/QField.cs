@@ -103,10 +103,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				());
 		}
 
-		internal virtual bool IsSimple()
+		internal virtual bool IsQueryLeaf()
 		{
-			return _fieldMetadata != null && Handlers4.HandlesSimple(_fieldMetadata.GetHandler
-				());
+			return _fieldMetadata != null && Handlers4.IsQueryLeaf(_fieldMetadata.GetHandler(
+				));
 		}
 
 		internal virtual IPreparedComparison PrepareComparison(IContext context, object obj
