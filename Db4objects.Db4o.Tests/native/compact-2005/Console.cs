@@ -137,9 +137,7 @@ namespace Db4objects.Db4o.Tests
         public static void WriteLine(string s)
         {
             TextBox console = staticThis._console;
-            //console.SelectedText = s.Replace("\r", "").Replace("\n", "\r\n");
-            //console.SelectedText = "\r\n";
-            console.Text = s.Replace("\r", "").Replace("\n", "\r\n");
+			console.Text = s.Replace("\r", "").Replace("\n", "\r\n");
             Application.DoEvents();
         }
 
@@ -154,9 +152,8 @@ namespace Db4objects.Db4o.Tests
         }
 
         static Console staticThis;
-        static int entry = 0;
 
-        private void _menuItem2_Click(object sender, System.EventArgs e)
+    	private void _menuItem2_Click(object sender, System.EventArgs e)
         {
             _console.Text = "";
             AllTests.Main(null);
