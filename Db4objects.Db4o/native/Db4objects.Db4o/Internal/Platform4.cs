@@ -254,7 +254,6 @@ namespace Db4objects.Db4o.Internal
             if (IsCompact())
             {
                 config.SingleThreadedClient(true);
-                config.WeakReferenceCollectionInterval(0);
             }
 
             Translate(config, typeof(Delegate), new TNull());
