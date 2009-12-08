@@ -6,23 +6,15 @@ namespace Db4objects.Db4o.CS.Foundation
 {
 	public class NetworkSocket : NetworkSocketBase
 	{
-		private Sharpen.Net.Socket _socket;
-
 		/// <exception cref="System.IO.IOException"></exception>
-		public NetworkSocket(string hostName, int port) : base(hostName)
+		public NetworkSocket(string hostName, int port) : base(new Sharpen.Net.Socket(hostName
+			, port), hostName)
 		{
-			_socket = new Sharpen.Net.Socket(hostName, port);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public NetworkSocket(Sharpen.Net.Socket socket)
+		public NetworkSocket(Sharpen.Net.Socket socket) : base(socket)
 		{
-			_socket = socket;
-		}
-
-		protected override Sharpen.Net.Socket Socket()
-		{
-			return _socket;
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>

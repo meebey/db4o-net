@@ -1,9 +1,9 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4oUnit.Data;
 using Db4objects.Db4o.Foundation;
-using Sharpen.Util;
 
 namespace Db4oUnit.Data
 {
@@ -26,7 +26,7 @@ namespace Db4oUnit.Data
 
 			public object Apply(object arg)
 			{
-				return Streams.random.NextInt();
+				return Streams.random.Next();
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace Db4oUnit.Data
 
 			public object Apply(object arg)
 			{
-				return Streams.random.NextInt(ceiling);
+				return Streams.random.Next(ceiling);
 			}
 
 			private readonly int ceiling;

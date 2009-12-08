@@ -17,15 +17,21 @@ namespace Db4objects.Db4o.Tests.Common.References
 		{
 		}
 
+		//COR-1839
+		#if !SILVERLIGHT
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
+			if (!Platform4.HasWeakReferences())
+			{
+				return;
+			}
 			WeakReferenceCollectionTestCase.Item item = new WeakReferenceCollectionTestCase.Item
 				();
 			Store(item);
 			Commit();
 			ByRef reference = new ByRef();
-			ReferenceSystem().TraverseReferences(new _IVisitor4_23(reference));
+			ReferenceSystem().TraverseReferences(new _IVisitor4_30(reference));
 			Assert.IsNotNull(((ObjectReference)reference.value));
 			item = null;
 			long timeout = 10000;
@@ -55,7 +61,7 @@ namespace Db4objects.Db4o.Tests.Common.References
 						);
 				}
 				BooleanByRef found = new BooleanByRef();
-				ReferenceSystem().TraverseReferences(new _IVisitor4_56(reference, found));
+				ReferenceSystem().TraverseReferences(new _IVisitor4_63(reference, found));
 				if (!found.value)
 				{
 					return;
@@ -63,10 +69,11 @@ namespace Db4objects.Db4o.Tests.Common.References
 				Thread.Sleep(10);
 			}
 		}
+		#endif // !SILVERLIGHT
 
-		private sealed class _IVisitor4_23 : IVisitor4
+		private sealed class _IVisitor4_30 : IVisitor4
 		{
-			public _IVisitor4_23(ByRef reference)
+			public _IVisitor4_30(ByRef reference)
 			{
 				this.reference = reference;
 			}
@@ -82,9 +89,9 @@ namespace Db4objects.Db4o.Tests.Common.References
 			private readonly ByRef reference;
 		}
 
-		private sealed class _IVisitor4_56 : IVisitor4
+		private sealed class _IVisitor4_63 : IVisitor4
 		{
-			public _IVisitor4_56(ByRef reference, BooleanByRef found)
+			public _IVisitor4_63(ByRef reference, BooleanByRef found)
 			{
 				this.reference = reference;
 				this.found = found;

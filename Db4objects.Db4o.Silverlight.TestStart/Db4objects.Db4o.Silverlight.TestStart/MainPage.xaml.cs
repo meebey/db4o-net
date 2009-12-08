@@ -2,6 +2,7 @@
 using System;
 using System.Threading;
 using System.Windows.Browser;
+using Db4objects.Db4o.Tests.Common.References;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;

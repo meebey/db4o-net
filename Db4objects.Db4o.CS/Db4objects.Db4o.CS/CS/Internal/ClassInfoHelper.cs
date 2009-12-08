@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
 
@@ -15,12 +16,11 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual ClassInfo GetClassMeta(IReflectClass claxx)
 		{
-			string className = claxx.GetName();
-			if (IsSystemClass(className))
+			if (IsObjectClass(claxx))
 			{
-				return ClassInfo.NewSystemClass(className);
+				return ClassInfo.NewSystemClass(claxx.GetName());
 			}
-			ClassInfo existing = LookupClassMeta(className);
+			ClassInfo existing = LookupClassMeta(claxx.GetName());
 			if (existing != null)
 			{
 				return existing;
@@ -64,14 +64,15 @@ namespace Db4objects.Db4o.CS.Internal
 			return fieldsMeta;
 		}
 
-		private static bool IsSystemClass(string className)
+		private static bool IsObjectClass(IReflectClass claxx)
 		{
 			// TODO: We should send the whole class meta if we'd like to support
 			// java and .net communication (We have this request in our user forum
 			// http://developer.db4o.com/forums/thread/31504.aspx). If we only want
 			// to support java & .net platform separately, then this method should
 			// be moved to Platform4.
-			return className.StartsWith("java");
+			//return className.startsWith("java.lang.Object") || className.startsWith("System.Object");
+			return claxx.Reflector().ForClass(Const4.ClassObject) == claxx;
 		}
 
 		private ClassInfo LookupClassMeta(string className)

@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Sockets;
 using Db4objects.Db4o.CS.Foundation;
 using Db4objects.Db4o.Internal;
+using Sharpen.IO;
 
 namespace Db4objects.Db4o.CS.Foundation
 {
@@ -12,36 +13,47 @@ namespace Db4objects.Db4o.CS.Foundation
 	{
 		private string _hostName;
 
-		public NetworkSocketBase() : this(null)
+		private Sharpen.Net.Socket _socket;
+
+		private IInputStream _in;
+
+		private IOutputStream _out;
+
+		/// <exception cref="System.IO.IOException"></exception>
+		public NetworkSocketBase(Sharpen.Net.Socket socket) : this(socket, null)
 		{
 		}
 
-		public NetworkSocketBase(string hostName)
+		/// <exception cref="System.IO.IOException"></exception>
+		public NetworkSocketBase(Sharpen.Net.Socket socket, string hostName)
 		{
+			_socket = socket;
 			_hostName = hostName;
+			_in = _socket.GetInputStream();
+			_out = _socket.GetOutputStream();
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Close()
 		{
-			Socket().Close();
+			_socket.Close();
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Flush()
 		{
-			Socket().GetOutputStream().Flush();
+			_out.Flush();
 		}
 
 		public virtual bool IsConnected()
 		{
-			return Platform4.IsConnected(Socket());
+			return Platform4.IsConnected(_socket);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual int Read(byte[] a_bytes, int a_offset, int a_length)
 		{
-			int ret = Socket().GetInputStream().Read(a_bytes, a_offset, a_length);
+			int ret = _in.Read(a_bytes, a_offset, a_length);
 			CheckEOF(ret);
 			return ret;
 		}
@@ -59,7 +71,7 @@ namespace Db4objects.Db4o.CS.Foundation
 		{
 			try
 			{
-				Socket().SetSoTimeout(timeout);
+				_socket.SetSoTimeout(timeout);
 			}
 			catch (SocketException e)
 			{
@@ -70,7 +82,7 @@ namespace Db4objects.Db4o.CS.Foundation
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Write(byte[] bytes, int off, int len)
 		{
-			Socket().GetOutputStream().Write(bytes, off, len);
+			_out.Write(bytes, off, len);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -80,7 +92,7 @@ namespace Db4objects.Db4o.CS.Foundation
 			{
 				throw new InvalidOperationException();
 			}
-			return CreateParallelSocket(_hostName, Socket().GetPort());
+			return CreateParallelSocket(_hostName, _socket.GetPort());
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -88,9 +100,7 @@ namespace Db4objects.Db4o.CS.Foundation
 
 		public override string ToString()
 		{
-			return Socket().ToString();
+			return _socket.ToString();
 		}
-
-		protected abstract Sharpen.Net.Socket Socket();
 	}
 }

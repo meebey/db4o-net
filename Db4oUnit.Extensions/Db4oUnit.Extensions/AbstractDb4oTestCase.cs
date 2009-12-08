@@ -54,7 +54,7 @@ namespace Db4oUnit.Extensions
 			}
 			catch (Exception e)
 			{
-				throw new Exception(string.Empty, e);
+				throw new Db4oException(e);
 			}
 		}
 

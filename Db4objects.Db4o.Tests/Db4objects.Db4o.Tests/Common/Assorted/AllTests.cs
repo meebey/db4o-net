@@ -18,8 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			return ComposeTests(new Type[] { typeof(AliasesTestCase), typeof(CallbackTestCase
 				), typeof(CanUpdateFalseRefreshTestCase), typeof(CascadeDeleteDeletedTestCase), 
 				typeof(CascadedDeleteReadTestCase), typeof(ChangeIdentity), typeof(CloseUnlocksFileTestCase
-				), typeof(ConcurrentRenameTestCase), typeof(ComparatorSortTestCase), typeof(DatabaseGrowthSizeTestCase
-				), typeof(DatabaseUnicityTest), typeof(DbPathDoesNotExistTestCase), typeof(DeleteReaddChildReferenceTestSuite
+				), typeof(ComparatorSortTestCase), typeof(DatabaseGrowthSizeTestCase), typeof(DatabaseUnicityTest
+				), typeof(DbPathDoesNotExistTestCase), typeof(DeleteReaddChildReferenceTestSuite
 				), typeof(DeleteUpdateTestCase), typeof(DescendToNullFieldTestCase), typeof(DualDeleteTestCase
 				), typeof(ExceptionsOnNotStorableFalseTestCase), typeof(ExceptionsOnNotStorableIsDefaultTestCase
 				), typeof(GetSingleSimpleArrayTestCase), typeof(HandlerRegistryTestCase), typeof(
@@ -42,7 +42,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{
-			return new Type[] { typeof(PersistTypeTestCase) };
+			return new Type[] { typeof(PersistTypeTestCase), typeof(ConcurrentRenameTestCase)
+				 };
 		}
 		#endif // !SILVERLIGHT
 	}
