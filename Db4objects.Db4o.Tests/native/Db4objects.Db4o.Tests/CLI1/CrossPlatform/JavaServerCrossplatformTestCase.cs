@@ -13,6 +13,7 @@ using Db4oUnit;
 using Db4objects.Db4o.Query;
 using Sharpen.Lang;
 
+//TODO: Move TransportObjectContainer to CS project
 namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 {
 	class JavaServerCrossplatformTestCase : CrossplatformTestCaseBase
@@ -23,7 +24,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 			AssertQuery(
 				new Person[0],
 				FindAllJoes,
-				"I doubt you'd name your baby like this, but who knows? ;)");
+				"Robert');DROP TABLE Students;");
 		}
 
 		public void TestCrossplatform()
@@ -32,10 +33,10 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 			//ReconnectAndRun(AssertSort());
 
-			AddPersons(persons);
+			AddPersons(Persons);
 
 			AssertQuery(
-				Array.FindAll(persons, FindAllJoes),
+				Array.FindAll(Persons, FindAllJoes),
 				FindAllJoes,
 				JOE_NAME);
 
@@ -67,6 +68,22 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 					string result = RunJavaQuery("query-movie", String.Empty);
 					Assert.AreEqual(movies.ToString(), result);
 				});
+		}
+
+		public void TestQueryByIdentity()
+		{
+			ReconnectAndRun(
+				delegate
+					{
+						ByExample foo = new ByExample("foo", new ByExample("foo.child"));
+						_client.Store(foo);
+						_client.Commit();
+
+						IObjectSet result = _client.QueryByExample(new ByExample("foo", foo.Child));
+						Assert.AreEqual(1, result.Count);
+						ByExample actual = (ByExample)result[0];
+						Assert.AreSame(foo, actual);
+					});
 		}
 
 		private void AssertQuery(Person[] expected, Predicate<Person> predicate, string name)
@@ -136,13 +153,13 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 		private void AssertDelete()
 		{
-			AssertDelete(JOE_NAME, Array.FindAll(persons, FindAllJoes).Length);
+			AssertDelete(JOE_NAME, Array.FindAll(Persons, FindAllJoes).Length);
 
 			DeleteAll();
 
 			AssertNotFound(WOODY_NAME);
 
-			AddPersons(persons);
+			AddPersons(Persons);
 		}
 
 		private void AssertDelete(string name, int count)
@@ -159,11 +176,11 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 			int createdCount = 0;
 			RegisterEvents(delegate { createdCount++; } );
 
-			AddPersons(persons);
-			Assert.AreEqual(persons.Length, createdCount);
+			AddPersons(Persons);
+			Assert.AreEqual(Persons.Length, createdCount);
 		}
 
-		private void RegisterEvents(System.EventHandler<ObjectInfoEventArgs> createdHandler)
+		private void RegisterEvents(EventHandler<ObjectInfoEventArgs> createdHandler)
 		{
 			IEventRegistry eventRegistry = EventRegistryFactory.ForObjectContainer(_client);
 
@@ -172,7 +189,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 
 		private void AssertSort()
 		{
-			Person[] expectedOrder = (Person[])persons.Clone();
+			Person[] expectedOrder = (Person[])Persons.Clone();
 			Array.Sort(expectedOrder, Person.SortByYear);
 
 			Iterator4Assert.AreEqual(
@@ -254,10 +271,10 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 			ThreadPool.QueueUserWorkItem(delegate
 			{
 				JavaServices.CompileJavaCode(JavaServerCode.MainClassFile, JavaServerCode.SourceCode);
-				string output = JavaServices.java(JavaServerCode.MainClassName, HOST_PORT.ToString(), USER_NAME, USER_PWD, Debugger.IsAttached.ToString());
+				string output = JavaServices.java(JavaServerCode.MainClassName, Port.ToString(), USER_NAME, USER_PWD, Debugger.IsAttached.ToString());
 				if (output.Length > 0)
 				{
-					Assert.Fail(output);
+					Assert.Fail("\r\n\r\n****** Java Server returned an error ********\r\n\r\n" + output);
 				}
 			});
 		}
@@ -271,19 +288,12 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 		{
 			config.Add(new JavaSupport());
 
-#if RUNNING_OUTSIDE_SERVER
-			AddAlias(config, "com.db4odoc.crossplatform.server.StartServer$Person", typeof(Person));
-			AddAlias(config, "com.db4odoc.crossplatform.server.StartServer$Movies", typeof(Movies));
-			AddAlias(config, "com.db4odoc.crossplatform.server.StartServer$StopServer", typeof(StopServer));
-			AddAlias(config, "com.db4odoc.crossplatform.server.StartServer$PersonEvaluator", typeof(PersonEvaluator));
-			AddAlias(config, "com.db4odoc.crossplatform.server.StartServer$UnoptimizideJoeFinder", typeof(UnoptimizideJoeFinder));
-#else
+			AddAlias(config, "com.db4o.crossplatform.test.server.StartServer$ByExample", typeof(ByExample));
 			AddAlias(config, "com.db4o.crossplatform.test.server.StartServer$Person", typeof(Person));
 			AddAlias(config, "com.db4o.crossplatform.test.server.StartServer$Movies", typeof(Movies));
 			AddAlias(config, "com.db4o.crossplatform.test.server.StartServer$UnoptimizideJoeFinder", typeof(UnoptimizideJoeFinder));
 			AddAlias(config, "com.db4o.crossplatform.test.server.StartServer$StopServer", typeof(StopServer));
 			AddAlias(config, "com.db4o.crossplatform.test.server.StartServer$PersonEvaluator", typeof(PersonEvaluator));
-#endif
 
 			//config.AddAlias((new TypeAlias("com.db4o.crossplatform.test.server.StartServer$SortByYear", "Db4objects.Db4o.Tests.CLI1.CrossPlatform.Person+SortByYearImpl, Db4objects.Db4o.Tests")));
 		}
@@ -293,7 +303,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 			config.AddAlias(new TypeAlias(storedType, TypeReference.FromType(runtimeType).GetUnversionedName()));
 		}
 
-		private static TrackQueryOptimization _queryStatus = new TrackQueryOptimization();
+		private static readonly TrackQueryOptimization _queryStatus = new TrackQueryOptimization();
 
 		private readonly JavaSnippet JavaServerCode = new JavaSnippet("com.db4o.crossplatform.test.server.StartServer",
 																	  @"package com.db4o.crossplatform.test.server;
@@ -324,7 +334,7 @@ public class StartServer implements MessageRecipient  {
 			String databaseFile = Path4.combine(Path4.getTempPath(),""CrossPlatformJavaServer_"" + this.hashCode() + "".odb""); 
 			try {
 				int waitTime = 50;
-				int iterationsToWait = ((args[3] == ""True"") ? toMiliseconds(300) : toMiliseconds(30)) / waitTime;
+				int iterationsToWait = ((args[3] == ""True"") ? toMiliseconds(600) : toMiliseconds(120)) / waitTime;
 				File4.delete(databaseFile);
 
 				db4oServer = com.db4o.cs.Db4oClientServer.openServer(databaseFile, Integer.parseInt(args[0]));
@@ -366,6 +376,21 @@ public class StartServer implements MessageRecipient  {
 	}
 
 	public static class StopServer {
+	}
+
+	private static class ByExample {
+		public String Name;
+		public ByExample Child;
+
+		public ByExample(String name) {
+			Name = name;
+		}
+
+		public ByExample(String name, ByExample child)
+		{
+			this(name);
+			Child = child;
+		}
 	}
 
 	private static class Movies {

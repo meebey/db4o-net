@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 #if !CF && !SILVERLIGHT
 		public void Test()
 		{
-			foreach (Person p in persons)
+			foreach (Person p in Persons)
 			{
 				InsertFromJavaClient(p.Year, p.Name, p.LocalReleaseDate);
 			}
@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 		protected override void StartServer()
 		{
 			string databasePath = InitDatabaseFile();
-			_server = Db4oClientServer.OpenServer(databasePath, HOST_PORT);
+			_server = Db4oClientServer.OpenServer(databasePath, Port);
 			_server.GrantAccess(USER_NAME, USER_PWD);
 
 			_server.Ext().Configure().ClientServer().SetMessageRecipient(this);

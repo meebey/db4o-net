@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using Db4objects.Db4o.Config;
@@ -152,12 +153,25 @@ public class ClientCrossPlatform {
 }");
 		}
 
+		protected int Port
+		{
+			get
+			{
+				if (_port == -1)
+				{
+					_port = new Random().Next(IPEndPoint.MinPort, IPEndPoint.MaxPort);
+				}
+
+				return _port;
+			}
+		}
+
 		protected string RunJavaQuery(string type, string tbf)
 		{
 			JavaSnippet javaClient = JavaClientQuery();
 			CompileJava(javaClient);
 
-			string queryResult = JavaServices.java(javaClient.MainClassName, HOST_PORT.ToString(), USER_NAME, USER_PWD, type, tbf);
+			string queryResult = JavaServices.java(javaClient.MainClassName, Port.ToString(), USER_NAME, USER_PWD, type, tbf);
 			Assert.IsGreater(0, queryResult.Length);
 
 			return queryResult;
@@ -226,7 +240,7 @@ public class ClientCrossPlatform {
 				try
 				{
 					IClientConfiguration clientConfiguration = Db4oClientServerLegacyConfigurationBridge.AsClientConfiguration(Config());
-					_client = Db4oClientServer.OpenClient(clientConfiguration, "localhost", HOST_PORT, USER_NAME, USER_PWD);
+					_client = Db4oClientServer.OpenClient(clientConfiguration, "localhost", Port, USER_NAME, USER_PWD);
 					break;
 				}
 				catch (SocketException se)
@@ -241,6 +255,7 @@ public class ClientCrossPlatform {
 				}
 				Cool.SleepIgnoringInterruption(100);
 			}
+			Assert.IsNotNull(_client);
 		}
 
 		protected void ShutdownServer()
@@ -290,7 +305,7 @@ public class ClientCrossPlatform {
 			JavaSnippet javaClient = JavaClientQuery();
 			CompileJava(javaClient);
 
-			string insertResult = JavaServices.java(javaClient.MainClassName, HOST_PORT.ToString(), USER_NAME, USER_PWD, year.ToString(), name, localReleaseDate.ToShortDateString());
+			string insertResult = JavaServices.java(javaClient.MainClassName, Port.ToString(), USER_NAME, USER_PWD, year.ToString(), name, localReleaseDate.ToShortDateString());
 			Assert.AreEqual("", insertResult);
 		}
 
@@ -305,7 +320,7 @@ public class ClientCrossPlatform {
 		{
 			Iterator4Assert.SameContent(
 				Array.FindAll(
-					persons,
+					Persons,
 					delegate(Person candidate) { return candidate.Name.StartsWith(WOODY_NAME); }),
 				ParseJavaClientResults(RunJavaQuery("query-person", WOODY_NAME)));
 		}
@@ -330,13 +345,14 @@ public class ClientCrossPlatform {
 		protected abstract void StartServer();
 		protected abstract IConfiguration Config();
 
-		protected const int HOST_PORT = 3739;
+		private int _port = -1;
+
 		protected const string USER_NAME = "db4o_cpt";
 		protected const string USER_PWD = "test";
 		protected const string JOE_NAME = "Joe";
 		protected const string WOODY_NAME = "Woody";
 
-		protected static readonly Person[] persons = new Person[]
+		protected static readonly Person[] Persons = new Person[]
 		                                           	{
 		                                           		new Person("Viktor Navorski", 2004, new DateTime(2004, 09, 10)),
 		                                           		new Person(JOE_NAME, 1, new DateTime(1971, 05, 01)),
