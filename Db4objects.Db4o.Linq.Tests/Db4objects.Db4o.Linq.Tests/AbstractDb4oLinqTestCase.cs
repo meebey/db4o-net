@@ -44,7 +44,7 @@ namespace Db4objects.Db4o.Linq.Tests
 			}
 		}
 
-		private class QueryStringRecorder : IDisposable
+		protected class QueryStringRecorder : IDisposable
 		{
 			private string _queryString;
 			private IEventRegistry _registry;

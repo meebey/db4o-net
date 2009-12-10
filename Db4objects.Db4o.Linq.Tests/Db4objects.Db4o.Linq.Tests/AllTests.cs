@@ -21,6 +21,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(Expressions.AllTests),
 				typeof(Queries.AllTests),
 				typeof(EnumComparisonTestCase),
+				typeof(CollectionContainsOptimizationTestCase),
 				typeof(CollectionContainsTestCase),
 				typeof(ComposedQueryTestCase),
 				typeof(CountTestCase),

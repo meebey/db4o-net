@@ -1,9 +1,7 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections;
 using System.Linq.Expressions;
-using System.Reflection;
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Linq.Internals;
 using Db4objects.Db4o.Query;
@@ -12,7 +10,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 {
 	internal class WhereClauseVisitor : ExpressionQueryBuilder
 	{
-		private static ICache4<Expression, IQueryBuilderRecord> _cache = ExpressionCacheFactory.NewInstance(42);
+		private static readonly ICache4<Expression, IQueryBuilderRecord> _cache = ExpressionCacheFactory.NewInstance(42);
 
 		protected override ICache4<Expression, IQueryBuilderRecord> GetCachingStrategy()
 		{
@@ -24,24 +22,19 @@ namespace Db4objects.Db4o.Linq.Expressions
 			Visit(m.Object);
 			VisitExpressionList(m.Arguments);
 
-			if (IsStringMethod(m.Method))
+			if (OptimizeableMethodConstrains.IsStringMethod(m.Method))
 			{
 				ProcessStringMethod(m);
 				return;
 			}
 
-			if (IsIListMethod(m.Method))
+			if (OptimizeableMethodConstrains.IsIListOrICollectionOfTMethod(m.Method))
 			{
-				ProcessIListMethod(m);
+				ProcessCollectionMethod(m);
 				return;
 			}
 
 			AnalyseMethod(Recorder, m.Method);
-		}
-
-		private static bool IsStringMethod(MethodInfo method)
-		{
-			return method.DeclaringType == typeof(string);
 		}
 
 		private void ProcessStringMethod(MethodCallExpression call)
@@ -69,12 +62,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 			Recorder.Add(ctx => ctx.ApplyConstraint(application));
 		}
 
-		private static bool IsIListMethod(MethodInfo method)
-		{
-			return method.DeclaringType == typeof(IList);
-		}
-
-		private void ProcessIListMethod(MethodCallExpression call)
+		private void ProcessCollectionMethod(MethodCallExpression call)
 		{
 			switch (call.Method.Name)
 			{

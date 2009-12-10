@@ -1,8 +1,6 @@
 ﻿/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
-using System;
-using System.Collections;
 using System.Linq.Expressions;
-using System.Reflection;
+using Db4objects.Db4o.Linq.Internals;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
@@ -20,8 +18,12 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected override Expression VisitUnary(UnaryExpression u)
 		{
-			if ((IsBooleanMemberAccess(u.Operand) || IsNonPrimitiveBooleanMethodCall(u.Operand))
-				&& u.NodeType == ExpressionType.Not)
+			if (u.NodeType != ExpressionType.Not)
+			{
+				return base.VisitUnary(u);
+			}
+
+			if (IsBooleanMemberAccess(u.Operand) || IsNonOptimizeableBooleanMethodCall(u.Operand))
 			{
 				return ExpandExpression(u.Operand, false);
 			}
@@ -39,32 +41,24 @@ namespace Db4objects.Db4o.Linq.Expressions
 		{
 			Visit(method.Object);
 			VisitExpressionList(method.Arguments);
-			if (IsNonPrimitiveBooleanMethodCall(method))
+			if (IsNonOptimizeableBooleanMethodCall(method))
 			{
-			    return ExpandExpression(method, true);
+				return ExpandExpression(method, true); 
 			}
 
-			return base.VisitMethodCall(method);
+			return base.VisitMethodCall(method); 
 		}
 
-		private static bool IsNonPrimitiveBooleanMethodCall(Expression expression)
+		private static bool IsNonOptimizeableBooleanMethodCall(Expression expression)
 		{
-			return expression.NodeType == ExpressionType.Call && expression.Type == typeof(bool) && IsCallToNonPrimitiveMethod((MethodCallExpression) expression);
+			return expression.NodeType == ExpressionType.Call 
+					&& expression.Type == typeof(bool) 
+					&& !IsOptimizeableMethodCall((MethodCallExpression) expression);
 		}
 
-		private static bool IsCallToNonPrimitiveMethod(MethodCallExpression expression)
+		private static bool IsOptimizeableMethodCall(MethodCallExpression expression)
 		{
-			return !IsListMethodCall(expression.Method) && !IsStringMethodCall(expression.Method);
-		}
-
-		private static bool IsListMethodCall(MethodInfo method)
-		{
-			return method.DeclaringType == typeof(IList);
-		}
-
-		private static bool IsStringMethodCall(MethodInfo method)
-		{
-			return method.DeclaringType == typeof(String);
+			return OptimizeableMethodConstrains.CanBeOptimized(expression.Method);
 		}
 
 		private static BinaryExpression ExpandExpression(Expression expression, bool value)
