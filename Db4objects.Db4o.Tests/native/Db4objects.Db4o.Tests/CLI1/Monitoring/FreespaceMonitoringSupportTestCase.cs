@@ -24,6 +24,8 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 
 	
 	    public void Test(){
+            // ensure client is fully connected to the server already
+            Db().Commit();
 		    AssertMonitoredFreespaceIsCorrect();
 		    Item item = new Item();
 		    Store(item);
