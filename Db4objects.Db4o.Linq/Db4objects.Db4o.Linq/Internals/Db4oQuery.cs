@@ -4,10 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Query;
 
@@ -59,7 +56,7 @@ namespace Db4objects.Db4o.Linq.Internals
 			return ExecuteQuery(query, MonitorOptimizedQuery);
 		}
 
-		private IObjectSet ExecuteQuery(IQuery query, Action4 monitorAction)
+		private static IObjectSet ExecuteQuery(IQuery query, Action4 monitorAction)
 		{
 			var result = query.Execute();
 			((IInternalQuery)query).Container.WithEnvironment(monitorAction);

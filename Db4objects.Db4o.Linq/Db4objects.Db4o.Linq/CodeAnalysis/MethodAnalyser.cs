@@ -9,7 +9,6 @@ using Cecil.FlowAnalysis.ActionFlow;
 using Cecil.FlowAnalysis.CodeStructure;
 
 using Mono.Cecil;
-using Db4objects.Db4o.Linq.Internals;
 
 namespace Db4objects.Db4o.Linq.CodeAnalysis
 {
