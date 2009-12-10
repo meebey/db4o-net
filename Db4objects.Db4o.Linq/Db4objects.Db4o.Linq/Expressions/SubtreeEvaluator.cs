@@ -46,8 +46,8 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		class Nominator : ExpressionTransformer
 		{
-			Func<Expression, bool> _predicate;
-			HashSet<Expression> _candidates = new HashSet<Expression>();
+			readonly Func<Expression, bool> _predicate;
+			readonly HashSet<Expression> _candidates = new HashSet<Expression>();
 			bool cannotBeEvaluated;
 
 			public HashSet<Expression> Candidates
