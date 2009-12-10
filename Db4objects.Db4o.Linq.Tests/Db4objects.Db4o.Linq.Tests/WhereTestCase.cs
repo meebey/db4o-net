@@ -37,16 +37,8 @@ namespace Db4objects.Db4o.Linq.Tests
 			}
 		}
 
-		public enum Kind
-		{
-			Other = 0,
-			Plane = 1,
-			Car = 2,
-		}
-
 		public class Thing
 		{
-			public Kind Kind;
 			public Person Owner;
 
 			public override bool Equals(object obj)
@@ -54,12 +46,12 @@ namespace Db4objects.Db4o.Linq.Tests
 				Thing t = obj as Thing;
 				if (t == null) return false;
 
-				return t.Kind == Kind;
+				return t.Owner.Equals(Owner);
 			}
 
 			public override int GetHashCode()
 			{
-				return Kind.GetHashCode();
+				return Owner.GetHashCode();
 			}
 
 			public Person GetOwner()
@@ -87,10 +79,10 @@ namespace Db4objects.Db4o.Linq.Tests
 		{
 			return new []
 			       	{ 
-						new Thing { Kind = Kind.Plane, Owner = people[0] },
-						new Thing { Kind = Kind.Car, Owner = people[1] },
-						new Thing { Kind = Kind.Plane, Owner = people[2] },
-						new Thing { Kind = Kind.Other, Owner = people[3] }
+						new Thing { Owner = people[0] },
+						new Thing { Owner = people[1] },
+						new Thing { Owner = people[2] },
+						new Thing { Owner = people[3] }
 					};
 		}
 
@@ -118,23 +110,6 @@ namespace Db4objects.Db4o.Linq.Tests
 							  select p;
 
 					AssertSet(People().Where(p => p.Name == "jb"), jbs);
-				});
-		}
-
-		//TODO: not working
-		public void _TestEqualsEnum()
-		{
-			AssertQuery ("(Thing(Kind = 1))",
-				delegate {
-					var planes = from Thing t in Db ()
-								 where t.Kind == Kind.Plane
-								 select t;
-
-					AssertSet (new []
-					    {
-					        new Thing { Kind = Kind.Plane },
-					        new Thing { Kind = Kind.Plane },
-					    }, planes);
 				});
 		}
 

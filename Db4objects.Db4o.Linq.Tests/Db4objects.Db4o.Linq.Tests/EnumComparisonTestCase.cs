@@ -2,13 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
     class EnumComparisonTestCase : AbstractDb4oLinqTestCase
     {
-
         #region Test Subject
 
         internal enum Sex
@@ -25,7 +23,7 @@ namespace Db4objects.Db4o.Linq.Tests
             Old,
             Traditional,
         }
-
+        
         internal class Person
         {
             public Person(string name, Sex sex, Style style)
@@ -33,6 +31,8 @@ namespace Db4objects.Db4o.Linq.Tests
                 _name = name;
                 _sex = sex;
                 _style = style;
+
+            	StyleField = _style;
             }
 
             public string Name
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
             public override bool Equals(object obj)
             {
-                Person other = obj as Person;
+                var other = obj as Person;
                 if (other == null) return false;
 
                 if (other.GetType() != GetType()) return false;
@@ -70,9 +70,11 @@ namespace Db4objects.Db4o.Linq.Tests
                 return _name.GetHashCode() ^ _sex.GetHashCode() ^ _style.GetHashCode();
             }
 
-            private string _name;
-            private Sex _sex;
-            private Style _style;
+        	public Style StyleField;
+
+            private readonly string _name;
+            private readonly Sex _sex;
+            private readonly Style _style;
         }
 
         private static Person[] Persons = new[] 
@@ -124,6 +126,20 @@ namespace Db4objects.Db4o.Linq.Tests
         {
             AssertStyleOrName(Style.Fashion, "Adriano");
         }
+
+		public void _TestDirectFieldAccess()
+		{
+			AssertQuery("(Person(StyleField == Fashion))",
+				delegate
+				{
+					var actual = from Person p in Db()
+								 where p.StyleField == Style.Fashion
+								 select p;
+
+					AssertSet(MatchingPersons(p => p.StyleField == Style.Fashion), actual);
+				});
+			
+		}
 
         #endregion
 
