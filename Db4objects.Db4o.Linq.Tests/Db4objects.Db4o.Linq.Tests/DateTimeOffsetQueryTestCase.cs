@@ -109,6 +109,6 @@ namespace Db4objects.Db4o.Linq.Tests
 											new Item(DateTimeOffset.Now.AddHours(2)), 
 											new Item(DateTimeOffset.Now.AddHours(3)), 
 										};
-	}
 #endif
+	}
 }
