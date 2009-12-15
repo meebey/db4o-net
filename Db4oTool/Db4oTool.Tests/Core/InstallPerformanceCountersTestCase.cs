@@ -1,6 +1,8 @@
 ﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
+using System.Security.Principal;
+using System.Threading;
 using Db4objects.Db4o.Monitoring;
 using Db4oUnit;
 
@@ -10,9 +12,9 @@ namespace Db4oTool.Tests.Core
 	{
 		public void Test()
 		{
-			if (!UnrestrictedRegistryAccess())
+			if (!IsCurrentUserAnAdministrator() && IsLenientPerformanceCounterInstallTest())
 			{
-				Console.Error.WriteLine("WARNING: {0} requires unrestricted access to the registry to run.", GetType());
+				Console.Error.WriteLine("WARNING: {0} requires administrator access rights to run.", GetType());
 				return;
 			}
 
@@ -29,14 +31,21 @@ namespace Db4oTool.Tests.Core
 			Assert.IsTrue(Db4oCategoryExists());
 		}
 
-		private bool UnrestrictedRegistryAccess()
+		private static bool IsLenientPerformanceCounterInstallTest()
 		{
-			return System.Security.SecurityManager.IsGranted(new System.Security.Permissions.RegistryPermission(System.Security.Permissions.PermissionState.Unrestricted));
+			return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("LENIENT_PERFCOUNTER_INSTALL_TEST"));
 		}
 
-		private bool Db4oCategoryExists()
+		private static bool Db4oCategoryExists()
 		{
 			return PerformanceCounterCategory.Exists(Db4oPerformanceCounters.CategoryName);
+		}
+
+		private static bool IsCurrentUserAnAdministrator()
+		{
+			AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+			WindowsPrincipal principal = (WindowsPrincipal)Thread.CurrentPrincipal;
+			return principal.IsInRole(WindowsBuiltInRole.Administrator);
 		}
 	}
 }
