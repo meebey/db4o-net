@@ -1,10 +1,10 @@
 ﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
 using System.Collections.Generic;
-using System.Text;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Diagnostic;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI2.NQ
 {
@@ -57,35 +57,6 @@ namespace Db4objects.Db4o.Tests.CLI2.NQ
 
 		private DiagnosticCollector<NativeQueryNotOptimized> _collector = new DiagnosticCollector<NativeQueryNotOptimized>();
 	}
-}
-
-internal class DiagnosticCollector<T> : IDiagnosticListener
-{
-	public void OnDiagnostic(IDiagnostic d)
-	{
-		if (typeof(T) == d.GetType())
-		{
-			_diagnostics.Add(d);
-		}
-	}
-
-	public IList<IDiagnostic> Diagnostics
-	{
-		get { return _diagnostics; }
-	}
-
-	public override string ToString()
-	{
-		StringBuilder sb = new StringBuilder();
-		foreach (IDiagnostic diagnostic in _diagnostics)
-		{
-			sb.Append(diagnostic + "\r\n");
-		}
-
-		return sb.ToString();
-	}
-
-	private readonly IList<IDiagnostic> _diagnostics = new List<IDiagnostic>();
 }
 
 public class GenericClassHelper<T> where T : Item

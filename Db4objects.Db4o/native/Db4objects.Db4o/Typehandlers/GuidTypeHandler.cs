@@ -5,6 +5,7 @@
 using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Marshall;
+using Db4objects.Db4o.native.Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Internal.Delete;
@@ -58,7 +59,7 @@ namespace Db4objects.Db4o.Typehandlers
 
         public IPreparedComparison PrepareComparison(IContext context, object obj)
         {
-            return new PreparedGuidComparison(obj);
+            return new ComparablePreparedComparison<Guid>(obj);
         }
 
         #endregion
@@ -122,43 +123,15 @@ namespace Db4objects.Db4o.Typehandlers
 			return new Guid(guidBytes);
 		}
 
-		private void WriteGuid(object obj, IWriteBuffer context)
+		private static void WriteGuid(object obj, IWriteBuffer context)
 		{
 			Guid id = (Guid)obj;
 			context.WriteBytes(id.ToByteArray());
 		}
 
-		private void IncrementOffset(IDefragmentContext context)
+		private static void IncrementOffset(IDefragmentContext context)
 		{
 			context.IncrementOffset(GuidSize);
 		}
-
-		#region nested types
-
-		private class PreparedGuidComparison : IPreparedComparison
-		{
-			private Guid _id;
-			public PreparedGuidComparison(object obj)
-			{
-				if (obj is TransactionContext)
-				{
-					obj = ((TransactionContext)obj)._object;
-				}
-
-				if (obj == null) return;
-				_id = (Guid)obj;
-			}
-
-			#region IPreparedComparison Members
-
-			int IPreparedComparison.CompareTo(object obj)
-			{
-				return _id.CompareTo((Guid)obj);
-			}
-
-			#endregion
-		}
-
-		#endregion
 	}
 }

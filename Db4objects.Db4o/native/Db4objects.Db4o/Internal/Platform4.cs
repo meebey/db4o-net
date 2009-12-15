@@ -615,6 +615,12 @@ namespace Db4objects.Db4o.Internal
             DateTimeHandler dateTimeHandler = new DateTimeHandler();
             container.Handlers.RegisterNetTypeHandler(dateTimeHandler);
             container.Handlers.RegisterHandlerVersion(dateTimeHandler, 6, new DateTimeHandler6());
+
+#if !CF && !SILVERLIGHT
+        	DateTimeOffsetTypeHandler dateTimeOffsetHandler = new DateTimeOffsetTypeHandler();
+        	container.ConfigImpl.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(DateTimeOffset)), dateTimeOffsetHandler);
+			container.Handlers.RegisterHandlerVersion(dateTimeOffsetHandler, 9, new StandardReferenceTypeHandler());
+#endif
         }
 
 		public static Type[] PrimitiveTypes()

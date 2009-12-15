@@ -1,10 +1,12 @@
-﻿using System;
+﻿/* Copyright (C) 2009   Versant Inc.   http://www.db4o.com */
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
 using Db4oUnit;
+using Db4oUnit.Extensions.Util;
 
 class GenericClassTestSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 {
@@ -62,25 +64,6 @@ class GenericClassTestSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 		
 		return configuration;
 	}
-}
-
-internal class DiagnosticCollector<T> : IDiagnosticListener
-{
-	public void OnDiagnostic(IDiagnostic d)
-	{
-		if (typeof(T) == d.GetType())
-		{
-			_diagnostics.Add(d);
-			Console.WriteLine(d);
-		}
-	}
-
-	public IList<IDiagnostic> Diagnostics
-	{
-		get { return _diagnostics; }
-	}
-
-	private IList<IDiagnostic> _diagnostics = new List<IDiagnostic>();
 }
 
 public class GenericClassHelper<T> where T : Item

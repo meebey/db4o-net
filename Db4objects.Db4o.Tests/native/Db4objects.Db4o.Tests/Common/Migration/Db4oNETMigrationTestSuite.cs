@@ -1,9 +1,8 @@
+/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
 using System;
 using System.Collections;
-using System.Text;
 using Db4objects.Db4o.Tests.CLI1.Handlers;
 using System.IO;
-using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
 using Db4objects.Db4o.Tests.CLI2.Handlers;
@@ -39,6 +38,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
                 typeof(GenericListVersionUpdateTestCase),
                 typeof(GenericDictionaryVersionUpdateTestCase),
                 typeof(DateTimeHandlerUpdateTestCase),
+				typeof(DateTimeOffsetHandlerUpdateTestCase),
                 typeof(IndexedDateTimeUpdateTestCase),
                 typeof(DecimalHandlerUpdateTestCase),
 				typeof(EnumHandlerUpdateTestCase),

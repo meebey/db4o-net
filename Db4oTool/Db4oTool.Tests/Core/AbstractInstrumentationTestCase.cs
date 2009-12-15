@@ -8,6 +8,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Query;
 using Db4oUnit;
+using Db4oUnit.Extensions.Util;
 
 namespace Db4oTool.Tests.Core
 {
@@ -257,6 +258,7 @@ namespace Db4oTool.Tests.Core
 					{
 						typeof(IObjectContainer).Assembly,
 						typeof(Assert).Assembly,
+						typeof(DiagnosticCollector<>).Assembly,
 						GetType().Assembly
 					};
 			}

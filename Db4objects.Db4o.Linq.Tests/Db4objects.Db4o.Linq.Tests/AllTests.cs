@@ -35,6 +35,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(WhereTestCase),
 				typeof(QueryTranslationPerformanceTestCase),
 #if !CF
+				typeof(DateTimeOffsetQueryTestCase),
 				typeof(GenericQueryTestCase),
 #endif
 			};
