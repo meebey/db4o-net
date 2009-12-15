@@ -20,6 +20,8 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 				());
 			converter.Register(DropGuidClassIndexes_7_12.Version, new DropGuidClassIndexes_7_12
 				());
+			converter.Register(DropDateTimeOffsetClassIndexes_7_12.Version, new DropDateTimeOffsetClassIndexes_7_12
+				());
 		}
 	}
 }
