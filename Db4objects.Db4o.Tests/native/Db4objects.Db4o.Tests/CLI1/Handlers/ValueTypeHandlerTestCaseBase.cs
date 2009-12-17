@@ -1,6 +1,5 @@
 ﻿/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Diagnostic;
@@ -21,6 +20,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
         	public ValueTypeHolder(T value)
             {
 				Value = value;
+        		UntypedValue = value;
             }
 
 			public ValueTypeHolder(T value, ValueTypeHolder parent) : this(value)
@@ -56,6 +56,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             }
 
 			public T Value;
+			public object UntypedValue;
 			public ValueTypeHolder Parent;
 		}
 
@@ -131,7 +132,39 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 			Assert.AreEqual(0, storedClass.InstanceCount());
 		}
 
-    	public void TestDefragment()
+		public void TestQueryOnUntypedField()
+		{
+			IList<ValueTypeHolder> holders = new List<ValueTypeHolder>(Flatten(ObjectsToStore()));
+
+			ValueTypeHolder greatest = holders[0];
+			ValueTypeHolder secondGreatest = holders[0];
+
+			foreach (ValueTypeHolder holder in holders)
+			{
+			    IComparable actual = (IComparable) holder.Value;
+				if (actual.CompareTo(greatest.Value) > 0)
+				{
+					secondGreatest = greatest;
+					greatest = holder;
+				}
+				else if (actual.CompareTo(secondGreatest.Value) > 0)
+				{
+					secondGreatest = holder;
+				}
+			}
+
+			Assert.AreNotEqual(greatest, secondGreatest);
+
+			IQuery query = NewQuery(typeof (ValueTypeHolder));
+			query.Descend("UntypedValue").Constrain(secondGreatest.Value).Greater();
+
+			IObjectSet result = query.Execute();
+
+			Assert.AreEqual(1, result.Count);
+			Assert.AreEqual(greatest, result[0]);
+		}
+
+		public void TestDefragment()
         {
             Defragment();
             AssertCanRetrieveAll();
@@ -213,10 +246,10 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 			IObjectSet result = query.Execute();
 
 			ValueTypeHolder[] expected = ObjectsToStore();
-			Iterator4Assert.SameContent(Flatten(expected), result.GetEnumerator());
+			Iterator4Assert.SameContent(Flatten(expected).GetEnumerator(), result.GetEnumerator());
 		}
 
-		private static IEnumerator Flatten(IEnumerable<ValueTypeHolder> holders)
+		private static IEnumerable<ValueTypeHolder> Flatten(IEnumerable<ValueTypeHolder> holders)
 		{
 			foreach (ValueTypeHolder holder in holders)
 			{

@@ -2,8 +2,6 @@
 using System;
 using System.Linq;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Query;
-using Db4oUnit;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
@@ -41,18 +39,13 @@ namespace Db4objects.Db4o.Linq.Tests
 				from candidate in Items where candidate.NonIndexed > now select candidate);
 		}	
 		
-		//TODO: Not working yet. Improve ValueTypeHandlerTestCaseBase to include this scenario.
-		public void _TestUntyped()
+		public void TestUntyped()
 		{
-			IQuery query = NewQuery(typeof (Item));
-			query.Descend("untyped").Constrain(DateTimeOffset.Now).Greater();
-
-			Assert.AreEqual(3, query.Execute().Count);
-			//DateTimeOffset now = DateTimeOffset.Now;
-			//AssertQuery(
-			//    from Item item in Db() where ((DateTimeOffset) item.Untyped) > now select item,
-			//    string.Format("(Item(untyped > {0}))", now),
-			//    from candidate in Items where ((DateTimeOffset) candidate.Untyped) > now select candidate);
+			DateTimeOffset now = DateTimeOffset.Now;
+			AssertQuery(
+				from Item item in Db() where ((DateTimeOffset)item.Untyped) > now select item,
+				string.Format("(Item(untyped > {0}))", now),
+				from candidate in Items where ((DateTimeOffset)candidate.Untyped) > now select candidate);
 		}
 
 		private class Item
