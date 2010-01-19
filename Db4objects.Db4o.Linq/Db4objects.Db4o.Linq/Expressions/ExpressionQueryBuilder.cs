@@ -3,10 +3,11 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Linq.CodeAnalysis;
 using Db4objects.Db4o.Linq.Internals;
+using Expression=System.Linq.Expressions.Expression;
+using UnaryExpression=System.Linq.Expressions.UnaryExpression;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
@@ -88,7 +89,14 @@ namespace Db4objects.Db4o.Linq.Expressions
 			Visit(m.Expression);
 			if (IsFieldAccessExpression(m))
 			{
-				_recorder.Add(ctx => ctx.Descend(m.Member.Name));
+				Type descendingEnumType = ResolveDescendingEnumType(m);
+				_recorder.Add(
+					ctx =>
+					{
+						ctx.Descend(m.Member.Name);
+						ctx.PushDescendigFieldEnumType(descendingEnumType);
+					});
+
 				return;
 			}
 
@@ -99,6 +107,12 @@ namespace Db4objects.Db4o.Linq.Expressions
 			}
 
 			CannotOptimize(m);
+		}
+
+		private static Type ResolveDescendingEnumType(Expression expression)
+		{
+			if (!expression.Type.IsEnum) return null;
+			return expression.Type;
 		}
 
 		protected void AnalyseMethod(QueryBuilderRecorder recorder, MethodInfo method)

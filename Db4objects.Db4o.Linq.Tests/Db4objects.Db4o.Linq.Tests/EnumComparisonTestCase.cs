@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Linq.Tests
             AssertStyleOrName(Style.Fashion, "Adriano");
         }
 
-		public void _TestDirectFieldAccess()
+		public void TestDirectFieldAccess()
 		{
 			AssertQuery("(Person(StyleField == Fashion))",
 				delegate
