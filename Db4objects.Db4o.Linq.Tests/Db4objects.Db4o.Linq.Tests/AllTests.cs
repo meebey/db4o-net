@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.Linq.Tests
 	{
 		public static int Main(string[] args)
 		{
-			var res = new AllTests().RunSolo();
+			var res = new AllTests().RunAll();
 			return res;
 		}
 
@@ -31,10 +31,11 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(PartiallyOptimizedQueryTestCase),
 				typeof(QueryableTestCase),
 				typeof(QueryReuseTestCase),
+				typeof(QueryTranslationPerformanceTestCase),
 				typeof(StringMethodTestCase),
+				typeof(UntypedQueryTestCase),
 				typeof(VisualBasicTestCase),
 				typeof(WhereTestCase),
-				typeof(QueryTranslationPerformanceTestCase),
 #if !CF
 				typeof(DateTimeOffsetQueryTestCase),
 				typeof(GenericQueryTestCase),

@@ -44,12 +44,16 @@ namespace Db4objects.Db4o.Linq
 			FallbackProcessor<TSource> fallbackProcessor)
 		{
 			if (query == null)
+			{
 				throw new ArgumentNullException("query");
+			}
 
 			var candidate = query as Db4oQuery<TSource>;
 
 			if (candidate == null)
-				return new UnoptimizedQuery<TSource>(fallbackProcessor((IDb4oLinqQueryInternal<TSource>)query));
+			{
+				return new UnoptimizedQuery<TSource>(fallbackProcessor((IDb4oLinqQueryInternal<TSource>) EnsureDb4oQuery(query)));
+			}
 
 			try
 			{
@@ -60,6 +64,17 @@ namespace Db4objects.Db4o.Linq
 			{
 				return new UnoptimizedQuery<TSource>(fallbackProcessor(candidate));
 			}
+		}
+
+		private static IDb4oLinqQuery<TSource> EnsureDb4oQuery<TSource>(IDb4oLinqQuery<TSource> query)
+		{
+			var placeHolderQuery = query as PlaceHolderQuery<TSource>;
+			if (placeHolderQuery == null)
+			{
+				return query;
+			}
+
+			return new Db4oQuery<TSource>(placeHolderQuery.QueryFactory);
 		}
 
 		private static IDb4oLinqQuery<TSource> ProcessOrderBy<TSource, TKey>(IDb4oLinqQuery<TSource> query, OrderByClauseVisitorBase visitor, Expression<Func<TSource, TKey>> expression, FallbackProcessor<TSource> fallbackProcessor)

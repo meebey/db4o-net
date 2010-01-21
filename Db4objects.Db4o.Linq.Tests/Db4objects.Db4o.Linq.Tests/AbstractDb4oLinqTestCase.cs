@@ -3,12 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Db4objects.Db4o;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Linq;
-using Db4objects.Db4o.Query;
 
 using Db4oUnit;
 using Db4oUnit.Extensions;
@@ -51,7 +47,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 			public string QueryString
 			{
-				get { return _queryString; }
+				get { return string.IsNullOrEmpty(_queryString) ? null : _queryString; }
 			}
 
 			public QueryStringRecorder(IObjectContainer container)
@@ -81,7 +77,6 @@ namespace Db4objects.Db4o.Linq.Tests
 			using (var recorder = new QueryStringRecorder(Db()))
 			{
 				List<T> actualSet = query.ToList();
-
 				Assert.AreEqual(expectedQuery, recorder.QueryString);
 				expectation(actualSet);
 			}

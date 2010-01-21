@@ -1,15 +1,5 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Db4objects.Db4o;
-using Db4objects.Db4o.Linq;
-
-using Db4oUnit;
-using Db4oUnit.Extensions;
-
 namespace Db4objects.Db4o.Linq.Tests
 {
 	public class VisualBasicTestCase : AbstractDb4oLinqTestCase
@@ -24,12 +14,12 @@ namespace Db4objects.Db4o.Linq.Tests
 				Person p = obj as Person;
 				if (p == null) return false;
 
-				return p.Name == this.Name && p.Age == this.Age;
+				return p.Name == Name && p.Age == Age;
 			}
 
 			public override int GetHashCode()
 			{
-				return this.Age ^ this.Name.GetHashCode();
+				return Age ^ Name.GetHashCode();
 			}
 		}
 
@@ -50,9 +40,9 @@ namespace Db4objects.Db4o.Linq.Tests
 				delegate
 				{
 					var jbs = Db ().Cast<object> ()
-								   .Select<object, Person>(o => (Person)o)
+								   .Select(o => (Person)o)
 								   .Where(p => p.Name == "jb")
-								   .Select<Person, Person>(p => p);
+								   .Select(p => p);
 
 					AssertSet(new[]
 						{
@@ -66,7 +56,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		public void TestRetrieveAllObjects()
 		{
-			AssertQuery("",
+			AssertQuery(null,
 				delegate
 				{
 					var all = from object o in Db ()
