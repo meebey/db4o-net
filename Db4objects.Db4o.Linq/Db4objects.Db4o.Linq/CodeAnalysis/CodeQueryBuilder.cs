@@ -39,7 +39,6 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		public override void Visit(FieldReferenceExpression node)
 		{
             Type descendingEnumType = ResolveDescendingEnumType(node);
-
             _recorder.Add(
                 ctx =>
                     {
@@ -88,7 +87,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 			throw new QueryOptimizationException(ExpressionPrinter.ToString(expression));
 		}
 
-        private Type ResolveDescendingEnumType(FieldReferenceExpression node)
+        private static Type ResolveDescendingEnumType(FieldReferenceExpression node)
         {
 			var type = ResolveType(node.Field.FieldType);
 			if (type == null) return null;
