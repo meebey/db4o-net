@@ -1,7 +1,10 @@
-﻿using System.IO;
-using Db4oTool.Tests.Core;
+﻿using System;
+using System.IO;
 using System.Reflection;
-using System;
+
+using Db4oTool;
+using Db4oTool.Core;
+using Db4oTool.Tests.Core;
 
 namespace Db4objects.Db4o.Linq.Instrumentation.Tests
 {
@@ -30,11 +33,15 @@ namespace Db4objects.Db4o.Linq.Instrumentation.Tests
 
 		private static void InstrumentAssembly(string testAssemblyFile)
 		{
-			var options = new Db4oTool.ProgramOptions()
+			var options = new ProgramOptions()
 			{
 				Assembly = testAssemblyFile,
 				TransparentPersistence = true,
 			};
+
+			const string attribute_type = "Db4objects.Db4o.Linq.Tests.CodeAnalysis.DoNotInstrumentAttribute";
+
+			options.Filters.Add(delegate { return new NotFilter(new ByAttributeFilter(attribute_type)); });
 			Db4oTool.Program.Run(options);
 		}
 
