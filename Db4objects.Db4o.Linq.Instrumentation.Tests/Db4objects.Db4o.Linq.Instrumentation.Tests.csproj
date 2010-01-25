@@ -59,6 +59,10 @@
       <Project>{22AB6F58-39BF-4580-821B-5900E31AC33A}</Project>
       <Name>Db4objects.Db4o.Linq.Tests-2008</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Db4objects.Db4o.Optional\Db4objects.Db4o.Optional-2008.csproj">
+      <Project>{E9588FE7-C19D-445E-BB53-AE539EA4F0E6}</Project>
+      <Name>Db4objects.Db4o.Optional-2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Db4oTool\Db4oTool.Tests\Db4oTool.Tests-2008.csproj">
       <Project>{69859DB2-4DE3-4DE4-A0BB-13861418378F}</Project>
       <Name>Db4oTool.Tests-2008</Name>
