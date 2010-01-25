@@ -14,8 +14,11 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Linq.Tests.CodeAnalysis
 {
+	public class DoNotInstrumentAttribute : Attribute {}
+
 	public class ActivatedPropertyQueryTestCase : AbstractDb4oLinqTestCase
 	{
+		[DoNotInstrument]
 		public class Person : IActivatable
 		{
 			private string _name;
