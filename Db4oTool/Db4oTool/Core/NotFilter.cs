@@ -2,7 +2,7 @@ using Mono.Cecil;
 
 namespace Db4oTool.Core
 {
-	class NotFilter : ITypeFilter
+	public class NotFilter : ITypeFilter
 	{
 		private ITypeFilter _filter;
 
