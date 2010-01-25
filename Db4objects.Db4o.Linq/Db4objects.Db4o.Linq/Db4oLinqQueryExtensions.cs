@@ -36,12 +36,10 @@ namespace Db4objects.Db4o.Linq
 			return Enumerable.Count(self);
 		}
 
-		delegate IEnumerable<T> FallbackProcessor<T>(IDb4oLinqQueryInternal<T> query);
-
 		private static IDb4oLinqQuery<TSource> Process<TSource>(
 			IDb4oLinqQuery<TSource> query,
 			Func<Db4oQuery<TSource>, IQueryBuilderRecord> queryProcessor,
-			FallbackProcessor<TSource> fallbackProcessor)
+			Func<IDb4oLinqQueryInternal<TSource>, IEnumerable<TSource>> fallbackProcessor)
 		{
 			if (query == null)
 			{
@@ -54,7 +52,6 @@ namespace Db4objects.Db4o.Linq
 			{
 				return new UnoptimizedQuery<TSource>(fallbackProcessor((IDb4oLinqQueryInternal<TSource>) EnsureDb4oQuery(query)));
 			}
-
 			try
 			{
 				IQueryBuilderRecord record = queryProcessor(candidate);
@@ -77,7 +74,11 @@ namespace Db4objects.Db4o.Linq
 			return new Db4oQuery<TSource>(placeHolderQuery.QueryFactory);
 		}
 
-		private static IDb4oLinqQuery<TSource> ProcessOrderBy<TSource, TKey>(IDb4oLinqQuery<TSource> query, OrderByClauseVisitorBase visitor, Expression<Func<TSource, TKey>> expression, FallbackProcessor<TSource> fallbackProcessor)
+		private static IDb4oLinqQuery<TSource> ProcessOrderBy<TSource, TKey>(
+			IDb4oLinqQuery<TSource> query,
+			OrderByClauseVisitorBase visitor,
+			Expression<Func<TSource, TKey>> expression,
+			Func<IDb4oLinqQueryInternal<TSource>, IEnumerable<TSource>> fallbackProcessor)
 		{
 			return Process(query, q => visitor.Process(expression), fallbackProcessor);
 		}
@@ -113,8 +114,8 @@ namespace Db4objects.Db4o.Linq
 		public static IDb4oLinqQuery<TRet> Select<TSource, TRet>(this IDb4oLinqQuery<TSource> self, Func<TSource, TRet> selector)
 		{
 			var placeHolderQuery = self as PlaceHolderQuery<TSource>;
-			if (placeHolderQuery != null)
-				return new Db4oQuery<TRet>(placeHolderQuery.QueryFactory);
+			if (placeHolderQuery != null) return new Db4oQuery<TRet>(placeHolderQuery.QueryFactory);
+
 			return new UnoptimizedQuery<TRet>(Enumerable.Select(self, selector));
 		}
 #if !CF_3_5

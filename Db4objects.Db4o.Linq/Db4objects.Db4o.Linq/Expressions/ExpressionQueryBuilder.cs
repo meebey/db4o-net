@@ -119,11 +119,8 @@ namespace Db4objects.Db4o.Linq.Expressions
 		{
 			try
 			{
-				MethodAnalyser analyser = MethodAnalyser.FromMethod(method);
-				if (analyser.QueryExpression == null)
-					throw new QueryOptimizationException("No query expression");
-
-				analyser.QueryExpression.Accept(new CodeQueryBuilder(recorder));
+				var analyser = MethodAnalyser.FromMethod(method);
+				analyser.Run(recorder);
 			}
 			catch (Exception e)
 			{

@@ -1,5 +1,7 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
+#if CF
+
 using System;
 using Cecil.FlowAnalysis.CodeStructure;
 using Mono.Cecil;
@@ -111,3 +113,5 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		}
 	}
 }
+
+#endif
