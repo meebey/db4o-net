@@ -2,17 +2,17 @@
 
 using System;
 using System.IO;
-using Db4objects.Db4o.Ext;
+using System.Runtime.InteropServices;
 
 namespace Sharpen.IO
 {
     public class RandomAccessFile
     {
-        private FileStream _stream;
+        private readonly FileStream _stream;
 
 #if !CF && !MONO && !SILVERLIGHT
-        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
-        static extern int FlushFileBuffers(IntPtr fileHandle);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern int FlushFileBuffers(Microsoft.Win32.SafeHandles.SafeFileHandle fileHandle);
 #endif
         public RandomAccessFile(String file, bool readOnly, bool lockFile)
         {
@@ -62,7 +62,7 @@ namespace Sharpen.IO
             _stream.Flush();
 
 #if !CF && !MONO && !SILVERLIGHT
-            FlushFileBuffers(_stream.SafeFileHandle.DangerousGetHandle());
+            FlushFileBuffers(_stream.SafeFileHandle);
 #endif
         }
 
@@ -82,7 +82,7 @@ namespace Sharpen.IO
             {
                 _stream.Write(bytes, offset, length);
             }
-            catch (System.NotSupportedException e)
+            catch (NotSupportedException e)
             {
                 throw new IOException("Not supported", e);
             }
