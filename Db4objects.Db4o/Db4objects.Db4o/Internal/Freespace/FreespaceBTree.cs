@@ -22,5 +22,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			return true;
 		}
+
+		public override Db4objects.Db4o.Internal.Slots.SlotChangeFactory SlotChangeFactory
+			()
+		{
+			return Db4objects.Db4o.Internal.Slots.SlotChangeFactory.FreeSpace;
+		}
 	}
 }

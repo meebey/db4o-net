@@ -43,14 +43,14 @@ namespace Db4objects.Db4o
 			if (enabled)
 			{
 				// breakOnEvent(395);
-				BreakOnEvent(57);
-				// addRange(4874);
-				// addRangeWithEnd(3835808, 3836267);
-				// breakOnEvent(5);
-				AddRangeWithLength(1068, 1);
+				AddRangeWithLength(49, 1);
 			}
 		}
 
+		// addRange(4874);
+		// addRangeWithEnd(3835808, 3836267);
+		// breakOnEvent(5);
+		// addRangeWithLength(1068, 1);
 		// addRangeWithLength(1722, 1);
 		//            trackEventsWithoutRange();
 		//            turnAllOffExceptFor(new DTrace[] {WRITE_BYTES});
@@ -123,6 +123,12 @@ namespace Db4objects.Db4o
 				IoCopy = new Db4objects.Db4o.DTrace(true, true, "io copy", true);
 				JustSet = new Db4objects.Db4o.DTrace(true, true, "just set", true);
 				NewInstance = new Db4objects.Db4o.DTrace(true, true, "newInstance", true);
+				NotifySlotCreated = new Db4objects.Db4o.DTrace(true, true, "notifySlotCreated", true
+					);
+				NotifySlotChanged = new Db4objects.Db4o.DTrace(true, true, "notifySlotChanged", true
+					);
+				NotifySlotDeleted = new Db4objects.Db4o.DTrace(true, true, "notifySlotDeleted", true
+					);
 				ObjectReferenceCreated = new Db4objects.Db4o.DTrace(true, true, "new ObjectReference"
 					, true);
 				PersistentOwnLength = new Db4objects.Db4o.DTrace(true, true, "Persistent own length"
@@ -289,6 +295,12 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.DTrace JustSet;
 
 		public static Db4objects.Db4o.DTrace NewInstance;
+
+		public static Db4objects.Db4o.DTrace NotifySlotCreated;
+
+		public static Db4objects.Db4o.DTrace NotifySlotChanged;
+
+		public static Db4objects.Db4o.DTrace NotifySlotDeleted;
 
 		public static Db4objects.Db4o.DTrace ObjectReferenceCreated;
 

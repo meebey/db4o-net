@@ -14,6 +14,10 @@ namespace Db4objects.Db4o.Internal.Slots
 		public static readonly Db4objects.Db4o.Internal.Slots.Slot Zero = new Db4objects.Db4o.Internal.Slots.Slot
 			(0, 0);
 
+		public const int New = -1;
+
+		public const int Update = -2;
+
 		public Slot(int address, int length)
 		{
 			_address = address;
@@ -108,6 +112,16 @@ namespace Db4objects.Db4o.Internal.Slots
 		public virtual bool IsNull()
 		{
 			return Address() == 0 || Length() == 0;
+		}
+
+		public virtual bool IsNew()
+		{
+			return _address == New;
+		}
+
+		public virtual bool IsUpdate()
+		{
+			return _address == Update;
 		}
 	}
 }

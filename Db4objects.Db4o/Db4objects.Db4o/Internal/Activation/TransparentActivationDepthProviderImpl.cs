@@ -203,6 +203,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			{
 				ObjectContainerBase container = _transaction.Container();
 				container.StoreAll(_transaction, _modified.ValuesIterator());
+				_transaction.ProcessDeletes();
 			}
 
 			public void Rollback(IRollbackStrategy rollbackStrategy)

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 #if !SILVERLIGHT
+using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
@@ -47,6 +48,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				)RetrieveOnlyInstance(client1, typeof(CsDeleteReaddTestCase.Item)));
 			CsDeleteReaddTestCase.Item item2 = (CsDeleteReaddTestCase.Item)((CsDeleteReaddTestCase.Item
 				)RetrieveOnlyInstance(client2, typeof(CsDeleteReaddTestCase.Item)));
+			long idBeforeDelete = client1.GetID(item1);
 			client1.Delete(item1);
 			client1.Commit();
 			client2.Store(item2);
@@ -55,6 +57,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			CsDeleteReaddTestCase.Item item3 = ((CsDeleteReaddTestCase.Item)RetrieveOnlyInstance
 				(client1, typeof(CsDeleteReaddTestCase.Item)));
 			long idAfterUpdate = client1.GetID(item3);
+			Assert.AreEqual(idBeforeDelete, idAfterUpdate);
 			new FieldIndexAssert(typeof(CsDeleteReaddTestCase.Item), "name").AssertSingleEntry
 				(FileSession(), idAfterUpdate);
 		}
