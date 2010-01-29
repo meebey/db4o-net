@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public virtual Msg ReplyFromServer()
 		{
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				int id = queryResult.IndexOf(ReadInt());
 				return Msg.ObjectsetIndexof.GetWriterForInt(Transaction(), id);

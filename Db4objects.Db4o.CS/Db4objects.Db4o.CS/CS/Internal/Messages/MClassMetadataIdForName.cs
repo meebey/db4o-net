@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
@@ -12,14 +11,12 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public Msg ReplyFromServer()
 		{
 			string name = ReadString();
-			ObjectContainerBase stream = Stream();
-			Transaction trans = stream.SystemTransaction();
 			try
 			{
-				lock (StreamLock())
+				lock (ContainerLock())
 				{
-					int id = stream.ClassMetadataIdForName(name);
-					return Msg.ClassId.GetWriterForInt(trans, id);
+					int id = Container().ClassMetadataIdForName(name);
+					return Msg.ClassId.GetWriterForInt(SystemTransaction(), id);
 				}
 			}
 			catch (Db4oException)

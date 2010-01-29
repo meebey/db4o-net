@@ -212,14 +212,18 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		protected override void CloseTransaction()
+		public override void CloseTransaction(Transaction transaction, bool isSystemTransaction
+			, bool rollbackOnClose)
 		{
-			_transaction.Close(false);
-		}
-
-		protected override void CloseSystemTransaction()
-		{
-			((LocalTransaction)SystemTransaction()).Close();
+			transaction.Close(rollbackOnClose);
+			if (!isSystemTransaction)
+			{
+				IdSystem().RemoveTransaction((LocalTransaction)transaction);
+			}
+			else
+			{
+				IdSystem().Close();
+			}
 		}
 
 		public override void Commit1(Transaction trans)
@@ -295,7 +299,7 @@ namespace Db4objects.Db4o.Internal
 			CheckReadOnly();
 			lock (_lock)
 			{
-				Slot slot = GetSlot(byteCount);
+				Slot slot = AllocateSlot(byteCount);
 				ZeroReservedSlot(slot);
 				Free(slot);
 			}

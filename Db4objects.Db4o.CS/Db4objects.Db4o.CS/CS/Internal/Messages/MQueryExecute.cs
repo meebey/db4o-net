@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 			Unmarshall(_payLoad._offset);
 			ObjectByRef result = new ObjectByRef();
-			Stream().WithTransaction(Transaction(), new _IRunnable_15(this, result));
+			Container().WithTransaction(Transaction(), new _IRunnable_15(this, result));
 			return ((Msg)result.value);
 		}
 

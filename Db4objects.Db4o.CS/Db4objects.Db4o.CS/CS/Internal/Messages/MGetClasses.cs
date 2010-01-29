@@ -10,15 +10,14 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public Msg ReplyFromServer()
 		{
-			ObjectContainerBase stream = Stream();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				try
 				{
 					// Since every new Client reads the class
 					// collection from the file, we have to 
 					// make sure, it has been written.
-					stream.ClassCollection().Write(Transaction());
+					Container().ClassCollection().Write(Transaction());
 				}
 				catch (Exception)
 				{
@@ -27,8 +26,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			MsgD message = Msg.GetClasses.GetWriterForLength(Transaction(), Const4.IntLength 
 				+ 1);
 			ByteArrayBuffer writer = message.PayLoad();
-			writer.WriteInt(stream.ClassCollection().GetID());
-			writer.WriteByte(stream.StringIO().EncodingByte());
+			writer.WriteInt(Container().ClassCollection().GetID());
+			writer.WriteByte(Container().StringIO().EncodingByte());
 			return message;
 		}
 	}

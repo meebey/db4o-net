@@ -78,9 +78,9 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private IClientSlotCache _clientSlotCache;
 
-		private sealed class _IMessageListener_80 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_81 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_80()
+			public _IMessageListener_81()
 			{
 			}
 
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_80
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_81
 			();
 
 		private bool _bypassSlotCache = false;
@@ -156,7 +156,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void InitalizeClientSlotCache()
 		{
-			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_135
+			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_136
 				(this).OnEvent);
 			if (ConfigImpl.PrefetchSlotCacheSize() > 0)
 			{
@@ -166,9 +166,9 @@ namespace Db4objects.Db4o.CS.Internal
 			_clientSlotCache = new NullClientSlotCache();
 		}
 
-		private sealed class _IEventListener4_135
+		private sealed class _IEventListener4_136
 		{
-			public _IEventListener4_135(ClientObjectContainer _enclosing)
+			public _IEventListener4_136(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -212,16 +212,16 @@ namespace Db4objects.Db4o.CS.Internal
 			throw new NotSupportedException();
 		}
 
-		protected override void CloseTransaction()
+		public override void CloseTransaction(Transaction transaction, bool isSystemTransaction
+			, bool rollbackOnClose)
 		{
-			_transaction.Close(false);
+			if (isSystemTransaction)
+			{
+				return;
+			}
+			_transaction.Close(rollbackOnClose);
 		}
 
-		protected override void CloseSystemTransaction()
-		{
-		}
-
-		// do nothing for clients
 		public override void Reserve(int byteCount)
 		{
 			throw new NotSupportedException();
@@ -338,7 +338,7 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		public sealed override Transaction NewTransaction(Transaction parentTransaction, 
-			IReferenceSystem referenceSystem)
+			IReferenceSystem referenceSystem, bool isSystemTransaction)
 		{
 			return new ClientTransaction(this, parentTransaction, referenceSystem);
 		}
@@ -668,7 +668,7 @@ namespace Db4objects.Db4o.CS.Internal
 			return false;
 		}
 
-		public sealed override int NewUserObject()
+		public sealed override int IdForNewUserObject(Transaction trans)
 		{
 			int prefetchIDCount = Config().PrefetchIDCount();
 			EnsureIDCacheAllocated(prefetchIDCount);
@@ -707,7 +707,10 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public override void RaiseVersion(long a_minimumVersion)
 		{
-			Write(Msg.RaiseVersion.GetWriterForLong(_transaction, a_minimumVersion));
+			lock (Lock())
+			{
+				Write(Msg.RaiseVersion.GetWriterForLong(_transaction, a_minimumVersion));
+			}
 		}
 
 		public override void ReadBytes(byte[] bytes, int address, int addressOffset, int 
@@ -825,13 +828,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_656(this, trans, result));
+			WithEnvironment(new _IRunnable_658(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_656 : IRunnable
+		private sealed class _IRunnable_658 : IRunnable
 		{
-			public _IRunnable_656(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_658(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1165,13 +1168,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_918(this, trans, result));
+			WithEnvironment(new _IRunnable_920(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_918 : IRunnable
+		private sealed class _IRunnable_920 : IRunnable
 		{
-			public _IRunnable_918(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_920(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1456,6 +1459,18 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				return _userName;
 			}
+		}
+
+		public override bool IsDeleted(Transaction trans, int id)
+		{
+			// This one really is a hack.
+			// It only helps to get information about the current
+			// transaction.
+			// We need a better strategy for C/S concurrency behaviour.
+			MsgD msg = Msg.TaIsDeleted.GetWriterForInt(trans, id);
+			Write(msg);
+			int res = ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();
+			return res == 1;
 		}
 	}
 }

@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public void ProcessAtServer()
 		{
-			Stream().WithTransaction(Transaction(), new _IRunnable_12(this));
+			Container().WithTransaction(Transaction(), new _IRunnable_12(this));
 		}
 
 		private sealed class _IRunnable_12 : IRunnable

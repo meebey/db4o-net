@@ -54,9 +54,9 @@ namespace Db4objects.Db4o.Internal.Collections
 			bTree = null;
 		}
 
-		private static Transaction SystemTransaction(IContext context)
+		private static LocalTransaction SystemTransaction(IContext context)
 		{
-			return context.Transaction().SystemTransaction();
+			return (LocalTransaction)context.Transaction().SystemTransaction();
 		}
 
 		private BTree NewBTree(IContext context, int id)

@@ -12,27 +12,34 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			Transaction originalTransaction = Container().Transaction;
-			Transaction transaction = Container().NewUserTransaction();
-			Container().WithTransaction(transaction, new _IRunnable_15(this, transaction));
+			Transaction transaction = null;
+			lock (Container().Lock())
+			{
+				transaction = Container().NewUserTransaction();
+			}
+			Transaction finalTransaction = transaction;
+			Container().WithTransaction(transaction, new _IRunnable_19(this, finalTransaction
+				));
 			Assert.AreSame(originalTransaction, Container().Transaction);
 		}
 
-		private sealed class _IRunnable_15 : IRunnable
+		private sealed class _IRunnable_19 : IRunnable
 		{
-			public _IRunnable_15(WithTransactionTestCase _enclosing, Transaction transaction)
+			public _IRunnable_19(WithTransactionTestCase _enclosing, Transaction finalTransaction
+				)
 			{
 				this._enclosing = _enclosing;
-				this.transaction = transaction;
+				this.finalTransaction = finalTransaction;
 			}
 
 			public void Run()
 			{
-				Assert.AreSame(transaction, this._enclosing.Container().Transaction);
+				Assert.AreSame(finalTransaction, this._enclosing.Container().Transaction);
 			}
 
 			private readonly WithTransactionTestCase _enclosing;
 
-			private readonly Transaction transaction;
+			private readonly Transaction finalTransaction;
 		}
 	}
 }

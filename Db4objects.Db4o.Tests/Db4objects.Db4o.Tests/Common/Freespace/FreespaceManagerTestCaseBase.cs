@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			Slot slot = null;
 			do
 			{
-				slot = freespaceManager.GetSlot(1);
+				slot = freespaceManager.AllocateSlot(1);
 			}
 			while (slot != null);
 			Assert.AreEqual(0, freespaceManager.SlotCount());
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			IFreespaceManager fm = CurrentFreespaceManager();
 			int length = 300;
-			Slot slot = LocalContainer().GetSlot(length);
+			Slot slot = LocalContainer().AllocateSlot(length);
 			ByteArrayBuffer buffer = new ByteArrayBuffer(length);
 			LocalContainer().WriteBytes(buffer, slot.Address(), 0);
 			fm.Free(slot);

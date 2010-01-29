@@ -79,8 +79,8 @@ namespace Db4objects.Db4o.Internal.Threading
 
 		private void ActivateThread(Thread thread)
 		{
-			thread.Start();
 			AddActiveThread(thread);
+			thread.Start();
 		}
 
 		private Thread[] ActiveThreads()

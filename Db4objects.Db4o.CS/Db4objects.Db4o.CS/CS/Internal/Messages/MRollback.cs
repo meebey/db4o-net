@@ -8,7 +8,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public void ProcessAtServer()
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				Transaction().Rollback();
 			}

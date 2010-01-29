@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public virtual Msg ReplyFromServer()
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				string userName = ReadString();
 				string password = ReadString();
@@ -23,8 +23,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					{
 						ServerMessageDispatcher().SetDispatcherName(userName);
 						LogMsg(32, userName);
-						int blockSize = Stream().BlockSize();
-						int encrypt = Stream()._handlers.i_encrypt ? 1 : 0;
+						int blockSize = Container().BlockSize();
+						int encrypt = Container()._handlers.i_encrypt ? 1 : 0;
 						ServerMessageDispatcher().Login();
 						return Msg.LoginOk.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt
 							 });

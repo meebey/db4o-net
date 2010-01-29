@@ -14,9 +14,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			// and object was deleted by another client
 			int id = _payLoad.ReadInt();
 			int lastCommitted = _payLoad.ReadInt();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				bytes = Stream().ReadWriterByID(Transaction(), id, lastCommitted == 1);
+				bytes = Container().ReadWriterByID(Transaction(), id, lastCommitted == 1);
 			}
 			if (bytes == null)
 			{

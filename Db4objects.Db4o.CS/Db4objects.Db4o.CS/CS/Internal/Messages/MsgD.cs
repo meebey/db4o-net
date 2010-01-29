@@ -188,7 +188,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		public virtual object ReadObjectFromPayLoad()
 		{
-			return Serializer.Unmarshall(Stream(), _payLoad);
+			return Serializer.Unmarshall(Container(), _payLoad);
 		}
 
 		internal sealed override Msg ReadPayLoad(IMessageDispatcher messageDispatcher, Transaction
@@ -212,7 +212,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		public virtual object ReadSingleObject()
 		{
-			return Serializer.Unmarshall(Stream(), SerializedGraph.Read(_payLoad));
+			return Serializer.Unmarshall(Container(), SerializedGraph.Read(_payLoad));
 		}
 
 		public void WriteBytes(byte[] aBytes)

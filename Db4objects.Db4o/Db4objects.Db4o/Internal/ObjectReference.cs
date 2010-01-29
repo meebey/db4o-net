@@ -75,28 +75,57 @@ namespace Db4objects.Db4o.Internal
 		public virtual void ActivateOn(Db4objects.Db4o.Internal.Transaction transaction, 
 			ActivationPurpose purpose)
 		{
-			ObjectContainerBase container = transaction.Container();
-			if (!(container.ActivationDepthProvider() is ITransparentActivationDepthProvider))
+			if (Activating())
 			{
 				return;
 			}
-			ITransparentActivationDepthProvider provider = (ITransparentActivationDepthProvider
-				)container.ActivationDepthProvider();
-			if (ActivationPurpose.Write == purpose)
+			try
 			{
+				Activating(true);
+				ObjectContainerBase container = transaction.Container();
+				if (!(container.ActivationDepthProvider() is ITransparentActivationDepthProvider))
+				{
+					return;
+				}
+				ITransparentActivationDepthProvider provider = (ITransparentActivationDepthProvider
+					)container.ActivationDepthProvider();
+				if (ActivationPurpose.Write == purpose)
+				{
+					lock (container.Lock())
+					{
+						provider.AddModified(GetObject(), transaction);
+					}
+				}
+				if (IsActive())
+				{
+					return;
+				}
 				lock (container.Lock())
 				{
-					provider.AddModified(GetObject(), transaction);
+					Activate(transaction, GetObject(), new DescendingActivationDepth(provider, ActivationMode
+						.Activate));
 				}
 			}
-			if (IsActive())
+			finally
 			{
-				return;
+				Activating(false);
 			}
-			lock (container.Lock())
+		}
+
+		private bool Activating()
+		{
+			return BitIsTrue(Const4.Activating);
+		}
+
+		private void Activating(bool isActivating)
+		{
+			if (isActivating)
 			{
-				Activate(transaction, GetObject(), new DescendingActivationDepth(provider, ActivationMode
-					.Activate));
+				BitTrue(Const4.Activating);
+			}
+			else
+			{
+				BitFalse(Const4.Activating);
 			}
 		}
 
@@ -368,8 +397,7 @@ namespace Db4objects.Db4o.Internal
 			_object = obj;
 			_class = classMetadata;
 			WriteObjectBegin();
-			int id = trans.Container().NewUserObject();
-			trans.SlotFreePointerOnRollback(id);
+			int id = trans.Container().IdForNewUserObject(trans);
 			SetID(id);
 			// will be ended in continueset()
 			BeginProcessing();

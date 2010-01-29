@@ -327,7 +327,10 @@ namespace Db4oUnit.Extensions
 
 		protected virtual Transaction NewTransaction()
 		{
-			return Container().NewUserTransaction();
+			lock (Container().Lock())
+			{
+				return Container().NewUserTransaction();
+			}
 		}
 
 		public virtual object RetrieveOnlyInstance(Type clazz)
@@ -386,12 +389,12 @@ namespace Db4oUnit.Extensions
 
 		protected void DeleteAll(IExtObjectContainer oc, Type clazz)
 		{
-			Foreach(oc, clazz, new _IVisitor4_314(oc));
+			Foreach(oc, clazz, new _IVisitor4_316(oc));
 		}
 
-		private sealed class _IVisitor4_314 : IVisitor4
+		private sealed class _IVisitor4_316 : IVisitor4
 		{
-			public _IVisitor4_314(IExtObjectContainer oc)
+			public _IVisitor4_316(IExtObjectContainer oc)
 			{
 				this.oc = oc;
 			}

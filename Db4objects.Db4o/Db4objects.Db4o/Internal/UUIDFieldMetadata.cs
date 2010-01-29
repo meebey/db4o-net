@@ -25,28 +25,31 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
-		public override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot)
+		public override void AddFieldIndex(ObjectIdContextImpl context)
 		{
-			bool isnew = (oldSlot == null);
-			int offset = context.Offset();
+			LocalTransaction transaction = (LocalTransaction)context.Transaction();
+			LocalObjectContainer localContainer = (LocalObjectContainer)transaction.Container
+				();
+			Slot oldSlot = localContainer.IdSystem().GetCommittedSlotOfID(context.Id());
+			int savedOffset = context.Offset();
 			int db4oDatabaseIdentityID = context.ReadInt();
 			long uuid = context.ReadLong();
-			context.Seek(offset);
-			LocalObjectContainer yf = (LocalObjectContainer)context.Transaction().Container();
+			context.Seek(savedOffset);
+			bool isnew = (oldSlot.IsNull());
 			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && context.Id() > 0 && !isnew)
 			{
 				UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID = ReadDatabaseIdentityIDAndUUID
-					(yf, context.ClassMetadata(), oldSlot, false);
+					(localContainer, context.ClassMetadata(), oldSlot, false);
 				db4oDatabaseIdentityID = identityAndUUID.databaseIdentityID;
 				uuid = identityAndUUID.uuid;
 			}
 			if (db4oDatabaseIdentityID == 0)
 			{
-				db4oDatabaseIdentityID = yf.Identity().GetID(context.Transaction());
+				db4oDatabaseIdentityID = localContainer.Identity().GetID(transaction);
 			}
 			if (uuid == 0)
 			{
-				uuid = yf.GenerateTimeStampId();
+				uuid = localContainer.GenerateTimeStampId();
 			}
 			StatefulBuffer writer = (StatefulBuffer)context.Buffer();
 			writer.WriteInt(db4oDatabaseIdentityID);
@@ -128,17 +131,18 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
-		protected override void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
+		protected override void RebuildIndexForObject(LocalObjectContainer container, ClassMetadata
 			 classMetadata, int objectId)
 		{
+			Slot slot = container.IdSystem().GetCurrentSlotOfID((LocalTransaction)container.SystemTransaction
+				(), objectId);
 			UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID(
-				stream, classMetadata, ((LocalTransaction)stream.SystemTransaction()).GetCurrentSlotOfID
-				(objectId), true);
+				container, classMetadata, slot, true);
 			if (null == data)
 			{
 				return;
 			}
-			AddIndexEntry(stream.GetLocalSystemTransaction(), objectId, data.uuid);
+			AddIndexEntry(container.GetLocalSystemTransaction(), objectId, data.uuid);
 		}
 
 		private void EnsureIndex(Transaction transaction)

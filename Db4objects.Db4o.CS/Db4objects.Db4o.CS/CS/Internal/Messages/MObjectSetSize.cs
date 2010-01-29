@@ -9,7 +9,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public virtual Msg ReplyFromServer()
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				AbstractQueryResult queryResult = QueryResult(ReadInt());
 				return Msg.ObjectsetSize.GetWriterForInt(Transaction(), queryResult.Size());

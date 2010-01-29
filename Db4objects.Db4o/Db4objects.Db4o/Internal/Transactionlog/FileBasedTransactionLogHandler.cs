@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Transactionlog;
 
@@ -19,7 +20,8 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 
 		private readonly string _fileName;
 
-		public FileBasedTransactionLogHandler(LocalTransaction trans, string fileName)
+		public FileBasedTransactionLogHandler(StandardIdSystem idSystem, string fileName)
+			 : base(idSystem)
 		{
 			_fileName = fileName;
 		}
@@ -34,26 +36,64 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			return fileName + ".lock";
 		}
 
-		private IBin OpenBin(LocalTransaction trans, string fileName)
+		private IBin OpenBin(string fileName)
 		{
-			return new FileStorage().Open(new BinConfiguration(fileName, trans.Config().LockFile
+			return new FileStorage().Open(new BinConfiguration(fileName, _idSystem.Config().LockFile
 				(), 0, false));
 		}
 
-		public override bool CheckForInterruptedTransaction(LocalTransaction trans, ByteArrayBuffer
+		public override IInterruptedTransactionHandler InterruptedTransactionHandler(ByteArrayBuffer
 			 reader)
 		{
 			reader.IncrementOffset(Const4.IntLength * 2);
 			if (!System.IO.File.Exists(LockFileName(_fileName)))
 			{
-				return false;
+				return null;
 			}
-			return LockFileSignalsInterruptedTransaction(trans);
+			if (!LockFileSignalsInterruptedTransaction())
+			{
+				return null;
+			}
+			return new _IInterruptedTransactionHandler_50(this);
 		}
 
-		private bool LockFileSignalsInterruptedTransaction(LocalTransaction trans)
+		private sealed class _IInterruptedTransactionHandler_50 : IInterruptedTransactionHandler
 		{
-			OpenLockFile(trans);
+			public _IInterruptedTransactionHandler_50(FileBasedTransactionLogHandler _enclosing
+				)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void CompleteInterruptedTransaction()
+			{
+				ByteArrayBuffer buffer = new ByteArrayBuffer(Const4.IntLength);
+				this._enclosing.OpenLogFile();
+				this._enclosing.Read(this._enclosing._logFile, buffer);
+				int length = buffer.ReadInt();
+				if (length > 0)
+				{
+					buffer = new ByteArrayBuffer(length);
+					this._enclosing.Read(this._enclosing._logFile, buffer);
+					buffer.IncrementOffset(Const4.IntLength);
+					this._enclosing._idSystem.ReadWriteSlotChanges(buffer);
+					this._enclosing.DeleteLockFile();
+					this._enclosing._idSystem.FreeAndClearSystemSlotChanges();
+				}
+				else
+				{
+					this._enclosing.DeleteLockFile();
+				}
+				this._enclosing.CloseLogFile();
+				this._enclosing.DeleteLogFile();
+			}
+
+			private readonly FileBasedTransactionLogHandler _enclosing;
+		}
+
+		private bool LockFileSignalsInterruptedTransaction()
+		{
+			OpenLockFile();
 			ByteArrayBuffer buffer = NewLockFileBuffer();
 			Read(_lockFile, buffer);
 			for (int i = 0; i < 2; i++)
@@ -84,6 +124,7 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 		private void CloseLockFile()
 		{
 			SyncAndClose(_lockFile);
+			_lockFile = null;
 		}
 
 		private void SyncAndClose(IBin bin)
@@ -101,6 +142,7 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 		private void CloseLogFile()
 		{
 			SyncAndClose(_logFile);
+			_logFile = null;
 		}
 
 		private void DeleteLockFile()
@@ -113,32 +155,33 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			File4.Delete(LogFileName(_fileName));
 		}
 
-		public override Slot AllocateSlot(LocalTransaction trans, bool append)
+		public override Slot AllocateSlot(LocalTransaction transaction, bool append)
 		{
 			// do nothing
 			return null;
 		}
 
-		public override void ApplySlotChanges(LocalTransaction trans, Slot reservedSlot)
+		public override void ApplySlotChanges(LocalTransaction transaction, Slot reservedSlot
+			)
 		{
-			int slotChangeCount = CountSlotChanges(trans);
+			int slotChangeCount = CountSlotChanges(transaction);
 			if (slotChangeCount < 1)
 			{
 				return;
 			}
-			FlushDatabaseFile(trans);
-			EnsureLogAndLock(trans);
-			int length = TransactionLogSlotLength(trans);
+			FlushDatabaseFile();
+			EnsureLogAndLock();
+			int length = TransactionLogSlotLength(transaction);
 			ByteArrayBuffer logBuffer = new ByteArrayBuffer(length);
 			logBuffer.WriteInt(length);
 			logBuffer.WriteInt(slotChangeCount);
-			AppendSlotChanges(trans, logBuffer);
+			AppendSlotChanges(transaction, logBuffer);
 			Write(_logFile, logBuffer);
 			_logFile.Sync();
 			WriteToLockFile(LockInt);
-			if (trans.WriteSlots())
+			if (_idSystem.WriteSlots(transaction))
 			{
-				FlushDatabaseFile(trans);
+				FlushDatabaseFile();
 			}
 			WriteToLockFile(0);
 		}
@@ -162,9 +205,9 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			return Const4.LongLength * 2;
 		}
 
-		private void EnsureLogAndLock(LocalTransaction trans)
+		private void EnsureLogAndLock()
 		{
-			if (trans.Config().IsReadOnly())
+			if (_idSystem.IsReadOnly())
 			{
 				return;
 			}
@@ -172,50 +215,23 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			{
 				return;
 			}
-			OpenLockFile(trans);
-			OpenLogFile(trans);
+			OpenLockFile();
+			OpenLogFile();
 		}
 
-		private void OpenLogFile(LocalTransaction trans)
+		private void OpenLogFile()
 		{
-			_logFile = OpenBin(trans, LogFileName(_fileName));
+			_logFile = OpenBin(LogFileName(_fileName));
 		}
 
-		private void OpenLockFile(LocalTransaction trans)
+		private void OpenLockFile()
 		{
-			_lockFile = OpenBin(trans, LockFileName(_fileName));
+			_lockFile = OpenBin(LockFileName(_fileName));
 		}
 
 		private bool LogsOpened()
 		{
 			return _lockFile != null;
-		}
-
-		public override void CompleteInterruptedTransaction(LocalTransaction trans)
-		{
-			ByteArrayBuffer buffer = new ByteArrayBuffer(Const4.IntLength);
-			OpenLogFile(trans);
-			Read(_logFile, buffer);
-			int length = buffer.ReadInt();
-			if (length > 0)
-			{
-				buffer = new ByteArrayBuffer(length);
-				Read(_logFile, buffer);
-				buffer.IncrementOffset(Const4.IntLength);
-				trans.ReadSlotChanges(buffer);
-				if (trans.WriteSlots())
-				{
-					FlushDatabaseFile(trans);
-				}
-				DeleteLockFile();
-				trans.FreeSlotChanges(false);
-			}
-			else
-			{
-				DeleteLockFile();
-			}
-			CloseLogFile();
-			DeleteLogFile();
 		}
 
 		private void Read(IBin storage, ByteArrayBuffer buffer)

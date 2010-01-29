@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		protected virtual AbstractQueryResult NewQueryResult(QueryEvaluationMode mode)
 		{
-			return Stream().NewQueryResult(Transaction(), mode);
+			return Container().NewQueryResult(Transaction(), mode);
 		}
 	}
 }

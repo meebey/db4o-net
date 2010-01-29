@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			int id = _payLoad.ReadInt();
 			int cascade = _payLoad.ReadInt();
 			Transaction trans = Transaction();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				trans.Delete(null, id, cascade);
 			}

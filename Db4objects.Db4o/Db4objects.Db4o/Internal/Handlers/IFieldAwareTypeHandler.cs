@@ -5,7 +5,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Typehandlers;
 
 namespace Db4objects.Db4o.Internal.Handlers
@@ -14,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 	public interface IFieldAwareTypeHandler : IReferenceTypeHandler, IVersionedTypeHandler
 		, ICascadingTypeHandler, IVirtualAttributeHandler
 	{
-		void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot);
+		void AddFieldIndices(ObjectIdContextImpl context);
 
 		void CollectIDs(CollectIdContext context, IPredicate4 predicate);
 

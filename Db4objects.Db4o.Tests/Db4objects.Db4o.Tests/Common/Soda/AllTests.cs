@@ -30,8 +30,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 				STOStringTestCase), typeof(STOIntegerTestCase), typeof(STOIntegerWTTestCase), typeof(
 				STRTH1TestCase), typeof(STSDFT1TestCase), typeof(STShortTestCase), typeof(STShortWUTestCase
 				), typeof(STStringUTestCase), typeof(STRUH1TestCase), typeof(STTH1TestCase), typeof(
-				STUH1TestCase), typeof(UntypedEvaluationTestCase), typeof(JointEqualsIdentityTestCase
-				) };
+				STUH1TestCase), typeof(TopLevelOrderExceptionTestCase), typeof(UntypedEvaluationTestCase
+				), typeof(JointEqualsIdentityTestCase) };
 		}
 
 		public static void Main(string[] args)

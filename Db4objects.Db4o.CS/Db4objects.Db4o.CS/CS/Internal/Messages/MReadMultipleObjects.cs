@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		private ByteArrayBuffer MarshallObjects(int prefetchDepth, int prefetchCount, IIntIterator4
 			 ids)
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				IObjectExchangeStrategy strategy = ObjectExchangeStrategyFactory.ForConfig(new ObjectExchangeConfiguration
 					(prefetchDepth, prefetchCount));

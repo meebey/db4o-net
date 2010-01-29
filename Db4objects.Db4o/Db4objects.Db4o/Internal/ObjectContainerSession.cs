@@ -38,7 +38,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public ObjectContainerSession(LocalObjectContainer server) : this(server, server.
-			NewTransaction(server.SystemTransaction(), server.CreateReferenceSystem()))
+			NewUserTransaction())
 		{
 		}
 
@@ -369,7 +369,7 @@ namespace Db4objects.Db4o.Internal
 					}
 				}
 				_server.Callbacks().CloseOnStarted(this);
-				_transaction.Close(false);
+				_server.CloseTransaction(_transaction, false, false);
 				_closed = true;
 				return true;
 			}

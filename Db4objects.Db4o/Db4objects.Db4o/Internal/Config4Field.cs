@@ -67,7 +67,7 @@ namespace Db4objects.Db4o.Internal
 			TernaryBool indexedFlag = _config.GetAsTernaryBool(IndexedKey);
 			if (indexedFlag.DefiniteNo())
 			{
-				fieldMetadata.DropIndex(systemTrans);
+				fieldMetadata.DropIndex((LocalTransaction)systemTrans);
 				return;
 			}
 			if (UseExistingIndex(systemTrans, fieldMetadata))

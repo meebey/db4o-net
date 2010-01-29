@@ -217,7 +217,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual Slot AllocateTargetSlot(int length)
 		{
-			return _targetDb.GetSlot(length);
+			return _targetDb.AllocateSlot(length);
 		}
 
 		public virtual void TargetWriteBytes(DefragmentContextImpl context, int address)

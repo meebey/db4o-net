@@ -2,32 +2,41 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal.Transactionlog
 {
 	/// <exclude></exclude>
 	public abstract class TransactionLogHandler
 	{
-		protected virtual LocalObjectContainer File(LocalTransaction trans)
+		protected readonly StandardIdSystem _idSystem;
+
+		protected TransactionLogHandler(StandardIdSystem idSystem)
 		{
-			return trans.File();
+			_idSystem = idSystem;
 		}
 
-		protected virtual void FlushDatabaseFile(LocalTransaction trans)
+		protected virtual LocalObjectContainer LocalContainer()
 		{
-			trans.FlushFile();
+			return _idSystem.LocalContainer();
 		}
 
-		protected virtual void AppendSlotChanges(LocalTransaction trans, ByteArrayBuffer 
-			writer)
+		protected void FlushDatabaseFile()
 		{
-			trans.TraverseSlotChanges(new _IVisitor4_25(writer));
+			_idSystem.FlushFile();
 		}
 
-		private sealed class _IVisitor4_25 : IVisitor4
+		protected void AppendSlotChanges(LocalTransaction transaction, ByteArrayBuffer writer
+			)
 		{
-			public _IVisitor4_25(ByteArrayBuffer writer)
+			_idSystem.TraverseSlotChanges(transaction, new _IVisitor4_31(writer));
+		}
+
+		private sealed class _IVisitor4_31 : IVisitor4
+		{
+			public _IVisitor4_31(ByteArrayBuffer writer)
 			{
 				this.writer = writer;
 			}
@@ -40,23 +49,23 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			private readonly ByteArrayBuffer writer;
 		}
 
-		protected virtual int TransactionLogSlotLength(LocalTransaction trans)
+		protected int TransactionLogSlotLength(LocalTransaction transaction)
 		{
 			// slotchanges * 3 for ID, address, length
 			// 2 ints for slotlength and count
-			return ((CountSlotChanges(trans) * 3) + 2) * Const4.IntLength;
+			return ((CountSlotChanges(transaction) * 3) + 2) * Const4.IntLength;
 		}
 
-		protected virtual int CountSlotChanges(LocalTransaction trans)
+		protected int CountSlotChanges(LocalTransaction transaction)
 		{
 			IntByRef count = new IntByRef();
-			trans.TraverseSlotChanges(new _IVisitor4_40(count));
+			_idSystem.TraverseSlotChanges(transaction, new _IVisitor4_46(count));
 			return count.value;
 		}
 
-		private sealed class _IVisitor4_40 : IVisitor4
+		private sealed class _IVisitor4_46 : IVisitor4
 		{
-			public _IVisitor4_40(IntByRef count)
+			public _IVisitor4_46(IntByRef count)
 			{
 				this.count = count;
 			}
@@ -64,7 +73,7 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			public void Visit(object obj)
 			{
 				SlotChange slot = (SlotChange)obj;
-				if (slot.IsSetPointer())
+				if (slot.SlotModified())
 				{
 					count.value++;
 				}
@@ -73,14 +82,13 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			private readonly IntByRef count;
 		}
 
-		public abstract Slot AllocateSlot(LocalTransaction trans, bool append);
+		public abstract Slot AllocateSlot(LocalTransaction transaction, bool append);
 
-		public abstract void ApplySlotChanges(LocalTransaction trans, Slot reservedSlot);
+		public abstract void ApplySlotChanges(LocalTransaction transaction, Slot reservedSlot
+			);
 
-		public abstract bool CheckForInterruptedTransaction(LocalTransaction trans, ByteArrayBuffer
+		public abstract IInterruptedTransactionHandler InterruptedTransactionHandler(ByteArrayBuffer
 			 reader);
-
-		public abstract void CompleteInterruptedTransaction(LocalTransaction trans);
 
 		public abstract void Close();
 	}

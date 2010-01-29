@@ -8,9 +8,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public Msg ReplyFromServer()
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				bool isDeleted = Transaction().IsDeleted(ReadInt());
+				bool isDeleted = Container().IsDeleted(Transaction(), ReadInt());
 				int ret = isDeleted ? 1 : 0;
 				return Msg.TaIsDeleted.GetWriterForInt(Transaction(), ret);
 			}

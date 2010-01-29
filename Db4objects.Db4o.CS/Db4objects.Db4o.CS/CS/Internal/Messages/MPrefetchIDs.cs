@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
@@ -13,21 +13,15 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			int prefetchIDCount = ReadInt();
 			MsgD reply = Msg.IdList.GetWriterForLength(Transaction(), Const4.IntLength * prefetchIDCount
 				);
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
+				IIdSystem idSystem = LocalContainer().IdSystem();
 				for (int i = 0; i < prefetchIDCount; i++)
 				{
-					reply.WriteInt(PrefetchID());
+					reply.WriteInt(idSystem.PrefetchID(Transaction()));
 				}
 			}
 			return reply;
-		}
-
-		private int PrefetchID()
-		{
-			ServerMessageDispatcherImpl serverMessageDispatcher = (ServerMessageDispatcherImpl
-				)ServerMessageDispatcher();
-			return serverMessageDispatcher.PrefetchID();
 		}
 	}
 }

@@ -72,19 +72,19 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public static int InitSlot(LocalObjectContainer file)
 		{
-			int address = file.GetSlot(SlotLength()).Address();
+			int address = file.AllocateSlot(SlotLength()).Address();
 			SlotEntryToZeroes(file, address);
 			return address;
 		}
 
 		public virtual void MigrateTo(IFreespaceManager fm)
 		{
-			Traverse(new _IVisitor4_57(fm));
+			Traverse(new _IVisitor4_58(fm));
 		}
 
-		private sealed class _IVisitor4_57 : IVisitor4
+		private sealed class _IVisitor4_58 : IVisitor4
 		{
-			public _IVisitor4_57(IFreespaceManager fm)
+			public _IVisitor4_58(IFreespaceManager fm)
 			{
 				this.fm = fm;
 			}
@@ -117,13 +117,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public virtual int TotalFreespace()
 		{
 			IntByRef mint = new IntByRef();
-			Traverse(new _IVisitor4_82(mint));
+			Traverse(new _IVisitor4_83(mint));
 			return mint.value;
 		}
 
-		private sealed class _IVisitor4_82 : IVisitor4
+		private sealed class _IVisitor4_83 : IVisitor4
 		{
-			public _IVisitor4_82(IntByRef mint)
+			public _IVisitor4_83(IntByRef mint)
 			{
 				this.mint = mint;
 			}
@@ -164,12 +164,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			IntByRef lastStart = new IntByRef();
 			IntByRef lastEnd = new IntByRef();
-			Traverse(new _IVisitor4_113(lastEnd, lastStart));
+			Traverse(new _IVisitor4_114(lastEnd, lastStart));
 		}
 
-		private sealed class _IVisitor4_113 : IVisitor4
+		private sealed class _IVisitor4_114 : IVisitor4
 		{
-			public _IVisitor4_113(IntByRef lastEnd, IntByRef lastStart)
+			public _IVisitor4_114(IntByRef lastEnd, IntByRef lastStart)
 			{
 				this.lastEnd = lastEnd;
 				this.lastStart = lastStart;
@@ -201,6 +201,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return systemType == FmLegacyRam || systemType == FmIx;
 		}
 
+		public abstract Slot AllocateSlot(int arg1);
+
 		public abstract Slot AllocateTransactionLogSlot(int arg1);
 
 		public abstract void Commit();
@@ -212,8 +214,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public abstract void FreeSelf();
 
 		public abstract void FreeTransactionLogSlot(Slot arg1);
-
-		public abstract Slot GetSlot(int arg1);
 
 		public abstract void Listener(IFreespaceListener arg1);
 

@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			/// <exception cref="System.Exception"></exception>
 			public void Run()
 			{
-				this._enclosing._btree.Free(this._enclosing.SystemTrans());
+				this._enclosing._btree.Free((LocalTransaction)this._enclosing.SystemTrans());
 				this._enclosing.SystemTrans().Commit();
 			}
 

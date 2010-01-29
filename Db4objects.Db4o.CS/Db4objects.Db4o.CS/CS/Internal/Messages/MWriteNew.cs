@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
@@ -12,32 +11,23 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public void ProcessAtServer()
 		{
 			int classMetadataId = _payLoad.ReadInt();
-			LocalObjectContainer container = (LocalObjectContainer)Stream();
 			Unmarshall(_payLoad._offset);
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				ClassMetadata classMetadata = classMetadataId == 0 ? null : container.ClassMetadataForID
+				ClassMetadata classMetadata = classMetadataId == 0 ? null : LocalContainer().ClassMetadataForID
 					(classMetadataId);
 				int id = _payLoad.GetID();
-				PrefetchedIDConsumed(id);
-				Transaction().SlotFreePointerOnRollback(id);
-				Slot slot = container.GetSlot(_payLoad.Length());
+				LocalContainer().IdSystem().PrefetchedIDConsumed(Transaction(), id);
+				Slot slot = LocalContainer().AllocateSlotForNewUserObject(Transaction(), id, _payLoad
+					.Length());
 				_payLoad.Address(slot.Address());
-				Transaction().SlotFreeOnRollback(id, slot);
 				if (classMetadata != null)
 				{
-					classMetadata.AddFieldIndices(_payLoad, null);
+					classMetadata.AddFieldIndices(_payLoad);
 				}
-				container.WriteNew(Transaction(), _payLoad.Pointer(), classMetadata, _payLoad);
-				Transaction().SetPointer(id, slot);
+				LocalContainer().WriteNew(Transaction(), _payLoad.Pointer(), classMetadata, _payLoad
+					);
 			}
-		}
-
-		private void PrefetchedIDConsumed(int id)
-		{
-			ServerMessageDispatcherImpl serverMessageDispatcher = (ServerMessageDispatcherImpl
-				)ServerMessageDispatcher();
-			serverMessageDispatcher.PrefetchedIDConsumed(id);
 		}
 	}
 }

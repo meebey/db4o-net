@@ -32,12 +32,12 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 			int address = ReadInt();
 			int length = ReadInt();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				StatefulBuffer bytes = new StatefulBuffer(this.Transaction(), address, length);
 				try
 				{
-					Stream().ReadBytes(bytes._buffer, address, length);
+					Container().ReadBytes(bytes._buffer, address, length);
 					return GetWriter(bytes);
 				}
 				catch (Exception)

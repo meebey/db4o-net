@@ -4,6 +4,7 @@ using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
+using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -68,7 +69,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public abstract void InitNew(LocalObjectContainer file);
 
-		public abstract Transaction InterruptedTransaction();
+		public abstract IInterruptedTransactionHandler InterruptedTransactionHandler();
 
 		public abstract int Length();
 

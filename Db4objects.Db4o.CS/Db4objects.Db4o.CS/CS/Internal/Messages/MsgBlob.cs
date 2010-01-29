@@ -35,11 +35,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 			BlobImpl blobImpl = null;
 			int id = _payLoad.ReadInt();
-			ObjectContainerBase stream = Stream();
-			lock (stream.Lock())
+			lock (ContainerLock())
 			{
-				blobImpl = (BlobImpl)stream.GetByID(Transaction(), id);
-				stream.Activate(Transaction(), blobImpl, new FixedActivationDepth(3));
+				blobImpl = (BlobImpl)Container().GetByID(Transaction(), id);
+				Container().Activate(Transaction(), blobImpl, new FixedActivationDepth(3));
 			}
 			return blobImpl;
 		}

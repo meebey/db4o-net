@@ -8,11 +8,11 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CFNativeQueriesEnabler.Example")]
-[assembly: AssemblyDescription("Db4oTool.Example 7.12.125.14100 (.NET)")]
+[assembly: AssemblyDescription("Db4oTool.Example 7.13.132.14181 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
-[assembly: AssemblyCopyright("Versant Corp. 2000 - 2009")]
+[assembly: AssemblyCopyright("Versant Corp. 2000 - 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,4 +31,4 @@ using System.Security;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("7.12.125.14100")]
+[assembly: AssemblyVersion("7.13.132.14181")]

@@ -337,7 +337,7 @@ namespace Db4objects.Db4o.CS.Internal
 		internal virtual Transaction FindTransaction(int threadID)
 		{
 			ServerMessageDispatcherImpl dispatcher = FindThread(threadID);
-			return (dispatcher == null ? null : dispatcher.GetTransaction());
+			return (dispatcher == null ? null : dispatcher.Transaction());
 		}
 
 		public virtual void GrantAccess(string userName, string password)
@@ -526,12 +526,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void NotifyThreadStarted()
 		{
-			_startupLock.Run(new _IClosure4_389(this));
+			_startupLock.Run(new _IClosure4_395(this));
 		}
 
-		private sealed class _IClosure4_389 : IClosure4
+		private sealed class _IClosure4_395 : IClosure4
 		{
-			public _IClosure4_389(ObjectServerImpl _enclosing)
+			public _IClosure4_395(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

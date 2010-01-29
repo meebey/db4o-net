@@ -65,7 +65,7 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 					buffer.WriteInt(0);
 					continue;
 				}
-				ByteArrayBuffer slotBuffer = _transaction.File().ReadSlotBuffer(slot);
+				ByteArrayBuffer slotBuffer = _transaction.LocalContainer().ReadSlotBuffer(slot);
 				buffer.WriteInt(id);
 				buffer.WriteInt(slot.Length());
 				buffer.WriteBytes(slotBuffer._buffer);

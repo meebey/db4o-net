@@ -35,13 +35,13 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private object _member;
 
-		internal Tree _pendingJoins;
+		private Tree _pendingJoins;
 
 		private Db4objects.Db4o.Internal.Query.Processor.QCandidate _root;
 
-		internal ClassMetadata _classMetadata;
+		private Db4objects.Db4o.Internal.ClassMetadata _classMetadata;
 
-		internal FieldMetadata _fieldMetadata;
+		private FieldMetadata _fieldMetadata;
 
 		private int _handlerVersion;
 
@@ -49,25 +49,25 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			// db4o ID is stored in _key;
 			// db4o byte stream storing the object
-			// Dependant candidates
+			// Dependent candidates
 			// whether to include in the result set
 			// may use id for optimisation ???
 			// Possible pending joins on children
 			// The evaluation root to compare all ORs
-			// the YapClass of this object
+			// the ClassMetadata of this object
 			// temporary field and member for one field during evaluation
 			// null denotes null object
 			_candidates = qcandidates;
 		}
 
-		public QCandidate(QCandidates candidates, object obj, int id) : base(id)
+		public QCandidate(QCandidates candidates, object member, int id) : base(id)
 		{
 			if (DTrace.enabled)
 			{
 				DTrace.CreateCandidate.Log(id);
 			}
 			_candidates = candidates;
-			_member = obj;
+			_member = member;
 			_include = true;
 			if (id == 0)
 			{
@@ -326,7 +326,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private ITypeHandler4 TypeHandlerFor(Db4objects.Db4o.Internal.Query.Processor.QCandidate
 			 candidate)
 		{
-			ClassMetadata classMetadata = candidate.ReadClassMetadata();
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = candidate.ReadClassMetadata
+				();
 			if (classMetadata != null)
 			{
 				return classMetadata.TypeHandler();
@@ -502,7 +503,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal LocalObjectContainer Container()
 		{
-			return Transaction().File();
+			return Transaction().LocalContainer();
 		}
 
 		internal LocalTransaction Transaction()
@@ -551,7 +552,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				return _classMetadata.PrepareComparison(context, constraint);
 			}
 			IReflector reflector = container.Reflector();
-			ClassMetadata classMetadata = null;
+			Db4objects.Db4o.Internal.ClassMetadata classMetadata = null;
 			if (_bytes != null)
 			{
 				classMetadata = container.ProduceClassMetadata(reflector.ForObject(constraint));
@@ -659,7 +660,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		internal virtual ClassMetadata ReadClassMetadata()
+		internal virtual Db4objects.Db4o.Internal.ClassMetadata ReadClassMetadata()
 		{
 			if (_classMetadata == null)
 			{
@@ -746,7 +747,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_handlerVersion = handlerVersion._number;
 		}
 
-		private FieldMetadata FieldMetadataFrom(QField qField, ClassMetadata type)
+		private FieldMetadata FieldMetadataFrom(QField qField, Db4objects.Db4o.Internal.ClassMetadata
+			 type)
 		{
 			FieldMetadata existingField = qField.GetFieldMetadata();
 			if (existingField != null)
@@ -816,6 +818,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		public override bool Duplicates()
 		{
 			return _root != null;
+		}
+
+		public virtual void ClassMetadata(Db4objects.Db4o.Internal.ClassMetadata classMetadata
+			)
+		{
+			_classMetadata = classMetadata;
 		}
 	}
 }

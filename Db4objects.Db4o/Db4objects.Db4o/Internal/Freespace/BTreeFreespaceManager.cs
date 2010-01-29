@@ -148,7 +148,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_delegate.FreeTransactionLogSlot(slot);
 		}
 
-		public override Slot GetSlot(int length)
+		public override Slot AllocateSlot(int length)
 		{
 			if (!Started())
 			{
@@ -156,7 +156,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			if (IsDelegating())
 			{
-				return _delegate.GetSlot(length);
+				return _delegate.AllocateSlot(length);
 			}
 			try
 			{
@@ -198,10 +198,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 			CreateBTrees(addressId, lengthID);
 			_slotsByAddress.Read(Transaction());
 			_slotsByLength.Read(Transaction());
-			Pointer4 delegatePointer = Transaction().ReadPointer(_delegateIndirectionID);
-			Transaction().WriteZeroPointer(_delegateIndirectionID);
-			Transaction().FlushFile();
-			_delegate.Read(delegatePointer._slot);
+			Pointer4 pointer = _file.ReadPointer(_delegateIndirectionID);
+			_file.WritePointer(_delegateIndirectionID, Slot.Zero);
+			_file.SyncFiles();
+			_delegate.Read(pointer._slot);
 		}
 
 		private void InitializeNew()
@@ -209,7 +209,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			CreateBTrees(0, 0);
 			_slotsByAddress.Write(Transaction());
 			_slotsByLength.Write(Transaction());
-			_delegateIndirectionID = _file.GetPointerSlot();
+			_delegateIndirectionID = _file.AllocatePointerSlot();
 			int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID(), _delegateIndirectionID
 				 };
 			_idArray = new PersistentIntegerArray(ids);
@@ -296,7 +296,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			try
 			{
 				BeginDelegation();
-				Slot slot = _file.GetSlot(_delegate.MarshalledLength());
+				Slot slot = _file.AllocateSlot(_delegate.MarshalledLength());
 				Pointer4 pointer = new Pointer4(_delegateIndirectionID, slot);
 				_delegate.Write(pointer);
 				return _idArray.GetID();

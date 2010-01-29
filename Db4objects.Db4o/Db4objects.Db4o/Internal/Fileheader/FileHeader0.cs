@@ -3,6 +3,7 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
+using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -129,9 +130,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
-		public override Transaction InterruptedTransaction()
+		public override IInterruptedTransactionHandler InterruptedTransactionHandler()
 		{
-			return _configBlock.GetTransactionToCommit();
+			return _configBlock.InterruptedTransactionHandler();
 		}
 
 		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionAddress

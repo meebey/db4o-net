@@ -2,7 +2,7 @@
 
 namespace Db4objects.Db4o.Internal
 {
-	public interface ISlotChangeCollector
+	public interface ICallbackInfoCollector
 	{
 		void Added(int id);
 

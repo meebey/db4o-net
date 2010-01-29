@@ -57,8 +57,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				Db4oDatabase sourceDatabase = null;
 				if (sourceDatabaseId > 0)
 				{
-					sourceDatabase = (Db4oDatabase)this._enclosing.Stream().GetByID(this._enclosing.Transaction
-						(), sourceDatabaseId);
+					sourceDatabase = (Db4oDatabase)this._enclosing.Container().GetByID(this._enclosing
+						.Transaction(), sourceDatabaseId);
 				}
 				long uuidLongPart = this._enclosing.ReadLong(@is);
 				long version = this._enclosing.ReadLong(@is);
@@ -166,7 +166,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public virtual bool ProcessAtClient()
 		{
 			CallbackObjectInfoCollections callbackInfos = Decode();
-			Stream().ThreadPool().Start(new _IRunnable_125(this, callbackInfos));
+			Container().ThreadPool().Start(new _IRunnable_125(this, callbackInfos));
 			return true;
 		}
 
@@ -181,11 +181,11 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 			public void Run()
 			{
-				if (this._enclosing.Stream().IsClosed())
+				if (this._enclosing.Container().IsClosed())
 				{
 					return;
 				}
-				this._enclosing.Stream().Callbacks().CommitOnCompleted(this._enclosing.Transaction
+				this._enclosing.Container().Callbacks().CommitOnCompleted(this._enclosing.Transaction
 					(), callbackInfos);
 			}
 

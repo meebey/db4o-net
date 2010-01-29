@@ -59,23 +59,23 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			for (int i = 0; i < fm.Length; i++)
 			{
-				Slot slot = fm[i].GetSlot(1);
+				Slot slot = fm[i].AllocateSlot(1);
 				Assert.IsNull(slot);
 				Assert.AreEqual(0, fm[i].SlotCount());
 				fm[i].Free(new Slot(10, 1));
-				slot = fm[i].GetSlot(1);
+				slot = fm[i].AllocateSlot(1);
 				Assert.AreEqual(slot.Address(), 10);
 				Assert.AreEqual(0, fm[i].SlotCount());
-				slot = fm[i].GetSlot(1);
+				slot = fm[i].AllocateSlot(1);
 				Assert.IsNull(slot);
 				fm[i].Free(new Slot(10, 1));
 				fm[i].Free(new Slot(20, 2));
-				slot = fm[i].GetSlot(1);
+				slot = fm[i].AllocateSlot(1);
 				Assert.AreEqual(1, fm[i].SlotCount());
 				Assert.AreEqual(slot.Address(), 10);
-				slot = fm[i].GetSlot(3);
+				slot = fm[i].AllocateSlot(3);
 				Assert.IsNull(slot);
-				slot = fm[i].GetSlot(1);
+				slot = fm[i].AllocateSlot(1);
 				Assert.IsNotNull(slot);
 				Assert.AreEqual(1, fm[i].SlotCount());
 			}
@@ -100,9 +100,9 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				fm[i].Free(new Slot(100, 5));
 				fm[i].Free(new Slot(140, 27));
 				Assert.AreEqual(42, fm[i].TotalFreespace());
-				fm[i].GetSlot(8);
+				fm[i].AllocateSlot(8);
 				Assert.AreEqual(34, fm[i].TotalFreespace());
-				fm[i].GetSlot(6);
+				fm[i].AllocateSlot(6);
 				Assert.AreEqual(28, fm[i].TotalFreespace());
 				fm[i].Free(new Slot(120, 14));
 				Assert.AreEqual(42, fm[i].TotalFreespace());
@@ -140,7 +140,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				fm[i].Listener(new _IFreespaceListener_136(removed, added));
 				fm[i].Free(new Slot(5, 10));
 				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(10)));
-				fm[i].GetSlot(2);
+				fm[i].AllocateSlot(2);
 				Assert.IsTrue(removed.Contains(new FreespaceManagerTestCase.Freespace(10)));
 				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(8)));
 			}

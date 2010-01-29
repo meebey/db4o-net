@@ -14,12 +14,12 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			byte[] signature = ReadBytes();
 			int id = 0;
 			Transaction trans = Transaction();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				try
 				{
-					HardObjectReference hardRef = Stream().GetHardReferenceBySignature(trans, uuid, signature
-						);
+					HardObjectReference hardRef = Container().GetHardReferenceBySignature(trans, uuid
+						, signature);
 					if (hardRef._reference != null)
 					{
 						id = hardRef._reference.GetID();

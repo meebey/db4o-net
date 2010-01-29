@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
@@ -14,17 +15,38 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			int classMetadataID = _payLoad.ReadInt();
 			int arrayTypeValue = _payLoad.ReadInt();
 			ArrayType arrayType = ArrayType.ForValue(arrayTypeValue);
-			LocalObjectContainer container = (LocalObjectContainer)Stream();
 			Unmarshall(_payLoad._offset);
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				ClassMetadata classMetadata = container.ClassMetadataForID(classMetadataID);
+				ClassMetadata classMetadata = LocalContainer().ClassMetadataForID(classMetadataID
+					);
 				int id = _payLoad.GetID();
-				Transaction().WriteUpdateAdjustIndexes(id, classMetadata, arrayType, 0);
 				Transaction().DontDelete(id);
-				Slot oldSlot = ((LocalTransaction)Transaction()).GetCommittedSlotOfID(id);
-				container.GetSlotForUpdate(_payLoad);
-				classMetadata.AddFieldIndices(_payLoad, oldSlot);
+				Slot clientSlot = _payLoad.Slot();
+				Slot newSlot = null;
+				if (clientSlot.IsUpdate())
+				{
+					Transaction().WriteUpdateAdjustIndexes(id, classMetadata, arrayType, 0);
+					newSlot = LocalContainer().AllocateSlotForUserObjectUpdate(_payLoad.Transaction()
+						, _payLoad.GetID(), _payLoad.Length());
+				}
+				else
+				{
+					if (clientSlot.IsNew())
+					{
+						// Just one known usecase for this one: For updating plain objects from old versions, since
+						// they didnt't have own slots that could be freed.
+						// Logic that got us here in OpenTypeHandler7#addReference()#writeUpdate()
+						newSlot = LocalContainer().AllocateSlotForNewUserObject(_payLoad.Transaction(), _payLoad
+							.GetID(), _payLoad.Length());
+					}
+					else
+					{
+						throw new InvalidOperationException();
+					}
+				}
+				_payLoad.Address(newSlot.Address());
+				classMetadata.AddFieldIndices(_payLoad);
 				_payLoad.WriteEncrypt();
 				DeactivateCacheFor(id);
 			}
@@ -32,7 +54,12 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		private void DeactivateCacheFor(int id)
 		{
-			Transaction().Deactivate(id, new FixedActivationDepth(1));
+			ObjectReference reference = Transaction().ReferenceForId(id);
+			if (null == reference)
+			{
+				return;
+			}
+			reference.Deactivate(Transaction(), new FixedActivationDepth(1));
 		}
 	}
 }

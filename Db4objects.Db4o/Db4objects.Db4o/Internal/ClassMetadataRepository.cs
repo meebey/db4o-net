@@ -734,7 +734,7 @@ namespace Db4objects.Db4o.Internal
 
 		private SystemData SystemData()
 		{
-			return LocalSystemTransaction().File().SystemData();
+			return LocalSystemTransaction().LocalContainer().SystemData();
 		}
 
 		private LocalTransaction LocalSystemTransaction()

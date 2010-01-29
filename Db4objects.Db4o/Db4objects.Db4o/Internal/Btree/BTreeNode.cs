@@ -410,7 +410,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return false;
 			}
-			Free(trans);
+			Free((LocalTransaction)trans);
 			return true;
 		}
 
@@ -439,7 +439,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return GetID();
 		}
 
-		public override void Free(Transaction trans)
+		public override void Free(LocalTransaction trans)
 		{
 			_dead = true;
 			if (!IsRoot())
@@ -449,7 +449,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			PointPreviousTo(trans, _nextID);
 			PointNextTo(trans, _previousID);
-			base.Free(trans);
+			base.Free((LocalTransaction)trans);
 			_btree.RemoveNode(this);
 			_btree.NotifyDeleted(trans, this);
 		}
@@ -1411,6 +1411,12 @@ namespace Db4objects.Db4o.Internal.Btree
 				}
 			}
 			return size;
+		}
+
+		public override Db4objects.Db4o.Internal.Slots.SlotChangeFactory SlotChangeFactory
+			()
+		{
+			return _btree.SlotChangeFactory();
 		}
 	}
 }

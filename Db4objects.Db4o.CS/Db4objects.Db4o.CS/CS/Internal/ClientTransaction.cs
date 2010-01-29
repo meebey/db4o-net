@@ -77,28 +77,16 @@ namespace Db4objects.Db4o.CS.Internal
 			return true;
 		}
 
-		public override bool IsDeleted(int a_id)
-		{
-			// This one really is a hack.
-			// It only helps to get information about the current
-			// transaction.
-			// We need a better strategy for C/S concurrency behaviour.
-			MsgD msg = Msg.TaIsDeleted.GetWriterForInt(this, a_id);
-			_client.Write(msg);
-			int res = _client.ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();
-			return res == 1;
-		}
-
 		public override void ProcessDeletes()
 		{
-			IVisitor4 deleteVisitor = new _IVisitor4_71(this);
+			IVisitor4 deleteVisitor = new _IVisitor4_58(this);
 			TraverseDelete(deleteVisitor);
 			_client.WriteBatchedMessage(Msg.ProcessDeletes);
 		}
 
-		private sealed class _IVisitor4_71 : IVisitor4
+		private sealed class _IVisitor4_58 : IVisitor4
 		{
-			public _IVisitor4_71(ClientTransaction _enclosing)
+			public _IVisitor4_58(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -118,9 +106,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public override void Rollback()
 		{
-			_objectRefrencesToGC = null;
-			RollBackTransactionListeners();
-			ClearAll();
+			lock (Container().Lock())
+			{
+				_objectRefrencesToGC = null;
+				RollBackTransactionListeners();
+				ClearAll();
+			}
 		}
 
 		public override void WriteUpdateAdjustIndexes(int id, ClassMetadata classMetadata

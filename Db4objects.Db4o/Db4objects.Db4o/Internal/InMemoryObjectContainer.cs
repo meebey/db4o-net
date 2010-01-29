@@ -76,16 +76,12 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		// do nothing, blocksize is always 1
-		protected override void CloseTransaction()
+		public override void CloseTransaction(Transaction transaction, bool isSystemTransaction
+			, bool rollbackOnClose)
 		{
 		}
 
-		// do nothing
-		protected override void CloseSystemTransaction()
-		{
-		}
-
-		// do nothing
+		// do nothing	
 		protected override void ShutdownDataStorage()
 		{
 			if (!_closed)

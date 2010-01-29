@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private void ReadIdentity(LocalTransaction trans, int identityID)
 		{
-			LocalObjectContainer file = trans.File();
+			LocalObjectContainer file = trans.LocalContainer();
 			Db4oDatabase identity = Debug4.staticIdentity ? Db4oDatabase.StaticIdentity : (Db4oDatabase
 				)file.GetByID(trans, identityID);
 			if (null != identity)

@@ -27,14 +27,13 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					FileInputStream inBlob = this._blob.GetClientInputStream();
 					Copy(inBlob, sock, true);
 					sock.Flush();
-					ObjectContainerBase stream = Stream();
 					message = Msg.ReadMessage(MessageDispatcher(), Transaction(), sock);
 					if (message.Equals(Msg.Ok))
 					{
 						// make sure to load the filename to i_blob
 						// to allow client databasefile switching
-						stream.Deactivate(Transaction(), _blob, int.MaxValue);
-						stream.Activate(Transaction(), _blob, new FullActivationDepth());
+						Container().Deactivate(Transaction(), _blob, int.MaxValue);
+						Container().Activate(Transaction(), _blob, new FullActivationDepth());
 						this._blob.SetStatus(Status.Completed);
 					}
 					else

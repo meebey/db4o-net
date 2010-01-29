@@ -135,7 +135,6 @@ namespace Db4objects.Db4o.CS.Internal
 			try
 			{
 				_server.RemoveThread(this);
-				FreePrefetchedIDs();
 			}
 			catch (Exception e)
 			{
@@ -156,7 +155,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public Transaction GetTransaction()
+		public Db4objects.Db4o.Internal.Transaction Transaction()
 		{
 			return _transactionHandle.Transaction();
 		}
@@ -167,7 +166,7 @@ namespace Db4objects.Db4o.CS.Internal
 			try
 			{
 				SetDispatcherName(string.Empty + _threadID);
-				_server.WithEnvironment(new _IRunnable_153(this));
+				_server.WithEnvironment(new _IRunnable_152(this));
 			}
 			finally
 			{
@@ -175,9 +174,9 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private sealed class _IRunnable_153 : IRunnable
+		private sealed class _IRunnable_152 : IRunnable
 		{
-			public _IRunnable_153(ServerMessageDispatcherImpl _enclosing)
+			public _IRunnable_152(ServerMessageDispatcherImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -215,7 +214,7 @@ namespace Db4objects.Db4o.CS.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		private bool MessageProcessor()
 		{
-			Msg message = Msg.ReadMessage(this, GetTransaction(), _socket);
+			Msg message = Msg.ReadMessage(this, Transaction(), _socket);
 			if (message == null)
 			{
 				return true;
@@ -363,7 +362,8 @@ namespace Db4objects.Db4o.CS.Internal
 		public void UseTransaction(MUseTransaction message)
 		{
 			int threadID = message.ReadInt();
-			Transaction transToUse = _server.FindTransaction(threadID);
+			Db4objects.Db4o.Internal.Transaction transToUse = _server.FindTransaction(threadID
+				);
 			_transactionHandle.Transaction(transToUse);
 		}
 
@@ -467,21 +467,6 @@ namespace Db4objects.Db4o.CS.Internal
 				throw new InvalidOperationException();
 			}
 			return _thread;
-		}
-
-		public int PrefetchID()
-		{
-			return _transactionHandle.PrefetchID();
-		}
-
-		public void PrefetchedIDConsumed(int id)
-		{
-			_transactionHandle.PrefetchedIDConsumed(id);
-		}
-
-		internal void FreePrefetchedIDs()
-		{
-			_transactionHandle.FreePrefetchedIDs();
 		}
 	}
 }

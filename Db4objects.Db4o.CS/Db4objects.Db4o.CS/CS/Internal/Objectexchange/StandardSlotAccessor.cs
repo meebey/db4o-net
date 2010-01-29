@@ -17,7 +17,8 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 
 		public virtual Slot CurrentSlotOfID(int id)
 		{
-			return _transaction.GetCurrentSlotOfID(id);
+			return _transaction.LocalContainer().IdSystem().GetCurrentSlotOfID(_transaction, 
+				id);
 		}
 	}
 }

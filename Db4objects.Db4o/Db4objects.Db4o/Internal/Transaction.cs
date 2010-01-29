@@ -4,9 +4,7 @@ using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.References;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 
@@ -131,8 +129,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public abstract bool IsDeleted(int id);
-
 		protected virtual bool IsSystemTransaction()
 		{
 			return _systemTransaction == null;
@@ -210,65 +206,6 @@ namespace Db4objects.Db4o.Internal
 				}
 				_transactionListeners = null;
 			}
-		}
-
-		public void SetPointer(Pointer4 pointer)
-		{
-			SetPointer(pointer._id, pointer._slot);
-		}
-
-		/// <param name="id"></param>
-		/// <param name="slot"></param>
-		public virtual void SetPointer(int id, Slot slot)
-		{
-		}
-
-		/// <param name="id"></param>
-		/// <param name="slot"></param>
-		public virtual void SlotDelete(int id, Slot slot)
-		{
-		}
-
-		/// <param name="id"></param>
-		/// <param name="slot"></param>
-		public virtual void SlotFreeOnCommit(int id, Slot slot)
-		{
-		}
-
-		/// <param name="id"></param>
-		/// <param name="slot"></param>
-		public virtual void SlotFreeOnRollback(int id, Slot slot)
-		{
-		}
-
-		/// <param name="id"></param>
-		/// <param name="slot"></param>
-		/// <param name="forFreespace"></param>
-		internal virtual void SlotFreeOnRollbackCommitSetPointer(int id, Slot slot, bool 
-			forFreespace)
-		{
-		}
-
-		/// <param name="id"></param>
-		/// <param name="slot"></param>
-		internal virtual void ProduceUpdateSlotChange(int id, Slot slot)
-		{
-		}
-
-		/// <param name="id"></param>
-		public virtual void SlotFreePointerOnCommit(int id)
-		{
-		}
-
-		/// <param name="id"></param>
-		/// <param name="slot"></param>
-		internal virtual void SlotFreePointerOnCommit(int id, Slot slot)
-		{
-		}
-
-		/// <param name="id"></param>
-		public virtual void SlotFreePointerOnRollback(int id)
-		{
 		}
 
 		internal virtual bool SupportsVirtualFields()
@@ -400,12 +337,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_352(this);
+			return new _IContext_287(this);
 		}
 
-		private sealed class _IContext_352 : IContext
+		private sealed class _IContext_287 : IContext
 		{
-			public _IContext_352(Transaction _enclosing)
+			public _IContext_287(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -421,17 +358,6 @@ namespace Db4objects.Db4o.Internal
 			}
 
 			private readonly Transaction _enclosing;
-		}
-
-		public virtual void Deactivate(int id, IActivationDepth activationDepth)
-		{
-			//FIXME: JavaServerCrossplatformTestCase crashes with we remove
-			//		  null test.
-			ObjectReference reference = ReferenceForId(id);
-			if (null != reference)
-			{
-				reference.Deactivate(this, activationDepth);
-			}
 		}
 
 		protected virtual void TraverseDelete(IVisitor4 deleteVisitor)

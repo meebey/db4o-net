@@ -7,6 +7,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Handlers;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4oUnit.Extensions
@@ -39,12 +40,12 @@ namespace Db4oUnit.Extensions
 
 		public static void DumpKeys(Transaction trans, BTree tree)
 		{
-			tree.TraverseKeys(trans, new _IVisitor4_35());
+			tree.TraverseKeys(trans, new _IVisitor4_36());
 		}
 
-		private sealed class _IVisitor4_35 : IVisitor4
+		private sealed class _IVisitor4_36 : IVisitor4
 		{
-			public _IVisitor4_35()
+			public _IVisitor4_36()
 			{
 			}
 
@@ -97,27 +98,28 @@ namespace Db4oUnit.Extensions
 		public static void AssertAllSlotsFreed(LocalTransaction trans, BTree bTree, ICodeBlock
 			 block)
 		{
+			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
+			IIdSystem idSystem = container.IdSystem();
 			IEnumerator allSlotIDs = bTree.AllNodeIds(trans.SystemTransaction());
 			Collection4 allSlots = new Collection4();
 			while (allSlotIDs.MoveNext())
 			{
 				int slotID = ((int)allSlotIDs.Current);
-				Slot slot = trans.GetCurrentSlotOfID(slotID);
+				Slot slot = idSystem.GetCurrentSlotOfID(trans, slotID);
 				allSlots.Add(slot);
 			}
-			Slot bTreeSlot = trans.GetCurrentSlotOfID(bTree.GetID());
+			Slot bTreeSlot = idSystem.GetCurrentSlotOfID(trans, bTree.GetID());
 			allSlots.Add(bTreeSlot);
-			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 			Collection4 freedSlots = new Collection4();
 			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(container, new 
-				_ISlotListener_95(freedSlots, container)));
+				_ISlotListener_97(freedSlots, container)));
 			block.Run();
 			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
 		}
 
-		private sealed class _ISlotListener_95 : ISlotListener
+		private sealed class _ISlotListener_97 : ISlotListener
 		{
-			public _ISlotListener_95(Collection4 freedSlots, LocalObjectContainer container)
+			public _ISlotListener_97(Collection4 freedSlots, LocalObjectContainer container)
 			{
 				this.freedSlots = freedSlots;
 				this.container = container;

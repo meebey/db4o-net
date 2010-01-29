@@ -61,9 +61,10 @@ namespace Db4objects.Db4o.Internal
 			BitFalse(Const4.Processing);
 		}
 
-		public virtual void Free(Transaction trans)
+		public virtual void Free(LocalTransaction trans)
 		{
-			trans.SystemTransaction().SlotFreePointerOnCommit(GetID());
+			trans.LocalContainer().IdSystem().NotifySlotDeleted(trans.SystemTransaction(), GetID
+				(), SlotChangeFactory());
 		}
 
 		public virtual int GetID()
@@ -170,26 +171,26 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				LocalObjectContainer stream = (LocalObjectContainer)trans.Container();
+				LocalObjectContainer container = (LocalObjectContainer)trans.Container();
 				if (DTrace.enabled)
 				{
 					DTrace.PersistentOwnLength.Log(GetID());
 				}
 				int length = OwnLength();
-				length = stream.BlockAlignedBytes(length);
+				length = container.BlockAlignedBytes(length);
 				Slot slot;
 				if (IsNew())
 				{
-					Pointer4 pointer = stream.NewSlot(length);
+					Pointer4 pointer = container.NewSlot(length);
 					SetID(pointer._id);
 					slot = pointer._slot;
-					trans.SetPointer(pointer);
+					container.IdSystem().NotifySlotCreated(trans, pointer._id, slot, SlotChangeFactory
+						());
 				}
 				else
 				{
-					// FIXME: Free everything on rollback here too?
-					slot = stream.GetSlot(length);
-					trans.SlotFreeOnRollbackCommitSetPointer(_id, slot, IsFreespaceComponent());
+					slot = container.AllocateSlot(length);
+					container.IdSystem().NotifySlotChanged(trans, _id, slot, SlotChangeFactory());
 				}
 				ByteArrayBuffer writer = ProduceWriteBuffer(trans, length);
 				WriteToFile(trans, writer, slot);
@@ -253,6 +254,12 @@ namespace Db4objects.Db4o.Internal
 				throw new InvalidOperationException();
 			}
 			return GetID();
+		}
+
+		public virtual Db4objects.Db4o.Internal.Slots.SlotChangeFactory SlotChangeFactory
+			()
+		{
+			return Db4objects.Db4o.Internal.Slots.SlotChangeFactory.SystemObjects;
 		}
 
 		public abstract byte GetIdentifier();

@@ -10,7 +10,10 @@ using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Ids;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.CS;
 
@@ -40,30 +43,37 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				), Db4oClientServer.ArbitraryPort);
 			Lock4 Lock = new Lock4();
 			server.ClientDisconnected += new System.EventHandler<Db4objects.Db4o.Events.StringEventArgs>
-				(new _IEventListener4_33(Lock).OnEvent);
+				(new _IEventListener4_38(Lock).OnEvent);
 			server.GrantAccess(User, Password);
 			IObjectContainer client = OpenClient(server.Port());
-			client.Store(new PrefetchIDCountTestCase.Item());
 			ServerMessageDispatcherImpl msgDispatcher = FirstMessageDispatcherFor(server);
-			Lock.Run(new _IClosure4_47(client, Lock, server, msgDispatcher));
+			Transaction transaction = msgDispatcher.Transaction();
+			LocalObjectContainer container = (LocalObjectContainer)server.ObjectContainer();
+			StandardIdSystem standardIdSystem = (StandardIdSystem)container.IdSystem();
+			int prefetchedID = standardIdSystem.PrefetchID(transaction);
+			Assert.IsGreater(0, prefetchedID);
+			PrefetchIDCountTestCase.DebugFreespaceManager freespaceManager = new PrefetchIDCountTestCase.DebugFreespaceManager
+				(container);
+			container.InstallDebugFreespaceManager(freespaceManager);
+			Lock.Run(new _IClosure4_60(client, Lock, freespaceManager, prefetchedID));
 			server.Close();
 		}
 
-		private sealed class _IEventListener4_33
+		private sealed class _IEventListener4_38
 		{
-			public _IEventListener4_33(Lock4 Lock)
+			public _IEventListener4_38(Lock4 Lock)
 			{
 				this.Lock = Lock;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.StringEventArgs args)
 			{
-				Lock.Run(new _IClosure4_34(Lock));
+				Lock.Run(new _IClosure4_39(Lock));
 			}
 
-			private sealed class _IClosure4_34 : IClosure4
+			private sealed class _IClosure4_39 : IClosure4
 			{
-				public _IClosure4_34(Lock4 Lock)
+				public _IClosure4_39(Lock4 Lock)
 				{
 					this.Lock = Lock;
 				}
@@ -80,31 +90,22 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			private readonly Lock4 Lock;
 		}
 
-		private sealed class _IClosure4_47 : IClosure4
+		private sealed class _IClosure4_60 : IClosure4
 		{
-			public _IClosure4_47(IObjectContainer client, Lock4 Lock, ObjectServerImpl server
-				, ServerMessageDispatcherImpl msgDispatcher)
+			public _IClosure4_60(IObjectContainer client, Lock4 Lock, PrefetchIDCountTestCase.DebugFreespaceManager
+				 freespaceManager, int prefetchedID)
 			{
 				this.client = client;
 				this.Lock = Lock;
-				this.server = server;
-				this.msgDispatcher = msgDispatcher;
+				this.freespaceManager = freespaceManager;
+				this.prefetchedID = prefetchedID;
 			}
 
 			public object Run()
 			{
 				client.Close();
-				try
-				{
-					Lock.Snooze(100000);
-					IReflectClass reflector = server.ObjectContainer().Ext().Reflector().ForClass(typeof(
-						ServerMessageDispatcherImpl));
-					IReflectField prefetchedIdsField = reflector.GetDeclaredField("_prefetchedIDs");
-					Assert.IsNull(prefetchedIdsField.Get(msgDispatcher));
-				}
-				catch (Exception)
-				{
-				}
+				Lock.Snooze(100000);
+				Assert.IsTrue(freespaceManager.WasFreed(prefetchedID));
 				return null;
 			}
 
@@ -112,9 +113,9 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 			private readonly Lock4 Lock;
 
-			private readonly ObjectServerImpl server;
+			private readonly PrefetchIDCountTestCase.DebugFreespaceManager freespaceManager;
 
-			private readonly ServerMessageDispatcherImpl msgDispatcher;
+			private readonly int prefetchedID;
 		}
 
 		private ServerMessageDispatcherImpl FirstMessageDispatcherFor(ObjectServerImpl server
@@ -132,6 +133,109 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			IClientConfiguration config = Db4oClientServer.NewClientConfiguration();
 			config.PrefetchIDCount = PrefetchIdCount;
 			return Db4oClientServer.OpenClient(config, "localhost", port, User, Password);
+		}
+
+		public class DebugFreespaceManager : AbstractFreespaceManager
+		{
+			public DebugFreespaceManager(LocalObjectContainer file) : base(file)
+			{
+			}
+
+			private readonly IList _freedSlots = new ArrayList();
+
+			public virtual bool WasFreed(int id)
+			{
+				return _freedSlots.Contains(id);
+			}
+
+			public override Slot AllocateSlot(int length)
+			{
+				return null;
+			}
+
+			public override Slot AllocateTransactionLogSlot(int length)
+			{
+				return null;
+			}
+
+			public override void BeginCommit()
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override void Commit()
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override void EndCommit()
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override void Free(Slot slot)
+			{
+				_freedSlots.Add(slot.Address());
+			}
+
+			public override void FreeSelf()
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override void FreeTransactionLogSlot(Slot slot)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override void Listener(IFreespaceListener listener)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override void MigrateTo(IFreespaceManager fm)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override void Read(int freeSpaceID)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override int SlotCount()
+			{
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public override void Start(int slotAddress)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override byte SystemType()
+			{
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public override int TotalFreespace()
+			{
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			public override void Traverse(IVisitor4 visitor)
+			{
+			}
+
+			// TODO Auto-generated method stub
+			public override int Write()
+			{
+				// TODO Auto-generated method stub
+				return 0;
+			}
 		}
 	}
 }

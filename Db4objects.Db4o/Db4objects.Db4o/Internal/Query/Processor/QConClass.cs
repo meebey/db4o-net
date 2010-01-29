@@ -29,10 +29,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			// C/S
 			if (claxx != null)
 			{
-				i_classMetadata = a_trans.Container().ProduceClassMetadata(claxx);
+				_classMetadata = a_trans.Container().ProduceClassMetadata(claxx);
 				if (claxx.Equals(a_trans.Container()._handlers.IclassObject))
 				{
-					i_classMetadata = (ClassMetadata)i_classMetadata.TypeHandler();
+					_classMetadata = (ClassMetadata)_classMetadata.TypeHandler();
 				}
 			}
 			_claxx = claxx;
@@ -81,9 +81,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					if (!HasJoins())
 					{
-						if (i_classMetadata != null && i_candidates.i_classMetadata != null)
+						if (_classMetadata != null && i_candidates.i_classMetadata != null)
 						{
-							if (i_classMetadata.GetHigherHierarchy(i_candidates.i_classMetadata) == i_classMetadata)
+							if (_classMetadata.GetHigherHierarchy(i_candidates.i_classMetadata) == _classMetadata)
 							{
 								return;
 							}

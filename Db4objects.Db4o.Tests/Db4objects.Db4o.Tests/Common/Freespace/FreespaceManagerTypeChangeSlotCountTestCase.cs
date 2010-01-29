@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void CreateFreeSpace()
 		{
-			Slot slot = _container.GetSlot(Size);
+			Slot slot = _container.AllocateSlot(Size);
 			_container.Free(slot);
 		}
 

@@ -6,7 +6,6 @@ using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Replication;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Typehandlers;
@@ -38,8 +37,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
-		public abstract override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot
-			);
+		public abstract override void AddFieldIndex(ObjectIdContextImpl context);
 
 		public override bool Alive()
 		{

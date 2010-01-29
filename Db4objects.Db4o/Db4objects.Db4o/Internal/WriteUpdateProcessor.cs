@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	internal class WriteUpdateProcessor
 	{
-		private readonly Db4objects.Db4o.Internal.LocalTransaction _localTransaction;
+		private readonly LocalTransaction _transaction;
 
 		private readonly int _id;
 
@@ -22,10 +22,10 @@ namespace Db4objects.Db4o.Internal
 
 		private int _cascade;
 
-		public WriteUpdateProcessor(Db4objects.Db4o.Internal.LocalTransaction localTransaction
-			, int id, ClassMetadata clazz, ArrayType typeInfo, int cascade)
+		public WriteUpdateProcessor(LocalTransaction transaction, int id, ClassMetadata clazz
+			, ArrayType typeInfo, int cascade)
 		{
-			_localTransaction = localTransaction;
+			_transaction = transaction;
 			_id = id;
 			_clazz = clazz;
 			_typeInfo = typeInfo;
@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Run()
 		{
-			_localTransaction.CheckSynchronization();
+			_transaction.CheckSynchronization();
 			if (DTrace.enabled)
 			{
 				DTrace.WriteUpdateAdjustIndexes.Log(_id);
@@ -43,36 +43,33 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			Slot slot = _localTransaction.GetCurrentSlotOfID(_id);
+			// TODO: Try to get rid of getting the slot here because it 
+			//       will invoke reading a pointer from the file system.
+			//       It may be possible to figure out the readd case
+			//       by asking the IdSystem in a smarter way.
+			Slot slot = Container().IdSystem().GetCurrentSlotOfID(_transaction, _id);
 			if (HandledAsReAdd(slot))
 			{
 				return;
 			}
-			if (HandledWithNoChildIndexModification(slot))
+			if (_clazz.CanUpdateFast())
 			{
 				return;
 			}
 			StatefulBuffer objectBytes = (StatefulBuffer)Container().ReadReaderOrWriterBySlot
-				(LocalTransaction(), _id, false, slot);
-			UpdateChildIndexes(objectBytes);
-			FreeSlotOnCommit(objectBytes);
+				(_transaction, _id, false, slot);
+			DeleteMembers(objectBytes);
 		}
 
 		private LocalObjectContainer Container()
 		{
-			return _localTransaction.File();
+			return _transaction.LocalContainer();
 		}
 
-		private void FreeSlotOnCommit(StatefulBuffer objectBytes)
-		{
-			_localTransaction.SlotFreeOnCommit(_id, new Slot(objectBytes.GetAddress(), objectBytes
-				.Length()));
-		}
-
-		private void UpdateChildIndexes(StatefulBuffer objectBytes)
+		private void DeleteMembers(StatefulBuffer objectBytes)
 		{
 			ObjectHeader oh = new ObjectHeader(Container(), _clazz, objectBytes);
-			DeleteInfo info = (DeleteInfo)TreeInt.Find(_localTransaction._delete, _id);
+			DeleteInfo info = (DeleteInfo)TreeInt.Find(_transaction._delete, _id);
 			if (info != null)
 			{
 				if (info._cascade > _cascade)
@@ -92,31 +89,16 @@ namespace Db4objects.Db4o.Internal
 			{
 				return false;
 			}
-			_clazz.AddToIndex(LocalTransaction(), _id);
+			_clazz.AddToIndex(_transaction, _id);
 			return true;
 		}
 
 		private bool AlreadyHandled()
 		{
 			TreeInt newNode = new TreeInt(_id);
-			_localTransaction._writtenUpdateAdjustedIndexes = Tree.Add(_localTransaction._writtenUpdateAdjustedIndexes
+			_transaction._writtenUpdateAdjustedIndexes = Tree.Add(_transaction._writtenUpdateAdjustedIndexes
 				, newNode);
 			return !newNode.WasAddedToTree();
-		}
-
-		private bool HandledWithNoChildIndexModification(Slot slot)
-		{
-			if (!_clazz.CanUpdateFast())
-			{
-				return false;
-			}
-			_localTransaction.SlotFreeOnCommit(_id, slot);
-			return true;
-		}
-
-		private Db4objects.Db4o.Internal.LocalTransaction LocalTransaction()
-		{
-			return _localTransaction;
 		}
 	}
 }

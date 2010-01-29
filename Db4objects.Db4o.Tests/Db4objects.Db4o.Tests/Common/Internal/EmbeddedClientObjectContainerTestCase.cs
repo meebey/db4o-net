@@ -5,7 +5,6 @@ using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Query;
@@ -125,33 +124,20 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 
 		public virtual void TestClose()
 		{
-			BooleanByRef closed = new BooleanByRef();
-			// FIXME: Sharpen doesn't understand the null parameter (the third one), we had to add a cast
-			//        to get sharpen to run through.
-			Transaction trans = new _LocalTransaction_109(closed, _server, _server.SystemTransaction
-				(), (IReferenceSystem)null);
+			Transaction trans = null;
+			lock (_server.Lock())
+			{
+				trans = _server.NewUserTransaction();
+			}
+			IReferenceSystem referenceSystem = trans.ReferenceSystem();
 			ObjectContainerSession client = new ObjectContainerSession(_server, trans);
 			// FIXME: close needs to unregister reference system
 			//        also for crashed clients 
 			client.Close();
-			Assert.IsTrue(closed.value);
-		}
-
-		private sealed class _LocalTransaction_109 : LocalTransaction
-		{
-			public _LocalTransaction_109(BooleanByRef closed, ObjectContainerBase baseArg1, Transaction
-				 baseArg2, IReferenceSystem baseArg3) : base(baseArg1, baseArg2, baseArg3)
-			{
-				this.closed = closed;
-			}
-
-			public override void Close(bool rollbackOnClose)
-			{
-				base.Close(rollbackOnClose);
-				closed.value = true;
-			}
-
-			private readonly BooleanByRef closed;
+			// should have been removed on close.
+			bool wasNotRemovedYet = _server.ReferenceSystemRegistry().RemoveReferenceSystem(referenceSystem
+				);
+			Assert.IsFalse(wasNotRemovedYet);
 		}
 
 		public virtual void TestCommitOnClose()
@@ -467,8 +453,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			config.Common.ObjectClass(typeof(EmbeddedClientObjectContainerTestCase.Item)).GenerateUUIDs
 				(true);
 			_server = (LocalObjectContainer)Db4oEmbedded.OpenFile(config, TempFile());
-			_client1 = new ObjectContainerSession(_server);
-			_client2 = new ObjectContainerSession(_server);
+			_client1 = _server.OpenSession().Ext();
+			_client2 = _server.OpenSession().Ext();
 		}
 
 		/// <exception cref="System.Exception"></exception>

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public Msg ReplyFromServer()
 		{
 			IServerMessageDispatcher dispatcher = ServerMessageDispatcher();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				ServerTransaction().Commit(dispatcher);
 				committedInfo = dispatcher.CommittedInfo();
@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		private void AddCommittedInfoMsg(CallbackObjectInfoCollections committedInfo, LocalTransaction
 			 serverTransaction)
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				Msg.CommittedInfo.SetTransaction(serverTransaction);
 				MCommittedInfo message = Msg.CommittedInfo.Encode(committedInfo);

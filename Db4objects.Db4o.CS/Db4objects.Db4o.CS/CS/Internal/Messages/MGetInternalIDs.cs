@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		private ByteArrayBuffer MarshallIDsFor(int classMetadataID, int prefetchDepth, int
 			 prefetchCount, bool triggerQueryEvents)
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				long[] ids = GetIDs(classMetadataID, triggerQueryEvents);
 				return ObjectExchangeStrategyFactory.ForConfig(new ObjectExchangeConfiguration(prefetchDepth
@@ -38,9 +38,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		private long[] GetIDs(int classMetadataID, bool triggerQueryEvents)
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				ClassMetadata classMetadata = Stream().ClassMetadataForID(classMetadataID);
+				ClassMetadata classMetadata = Container().ClassMetadataForID(classMetadataID);
 				if (!triggerQueryEvents)
 				{
 					return classMetadata.GetIDs(Transaction());
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		private QQuery NewQuery(ClassMetadata classMetadata)
 		{
-			QQuery query = (QQuery)File().Query();
+			QQuery query = (QQuery)LocalContainer().Query();
 			query.Constrain(classMetadata);
 			return query;
 		}

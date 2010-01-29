@@ -86,11 +86,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal void Free(StatefulBuffer a_bytes, int a_id)
-		{
-			a_bytes.Transaction().SlotFreePointerOnCommit(a_id, a_bytes.Slot());
-		}
-
 		public override bool HasClassIndex()
 		{
 			return false;
@@ -233,12 +228,12 @@ namespace Db4objects.Db4o.Internal
 
 		protected override IAspectTraversalStrategy DetectAspectTraversalStrategy()
 		{
-			return new _IAspectTraversalStrategy_186();
+			return new _IAspectTraversalStrategy_182();
 		}
 
-		private sealed class _IAspectTraversalStrategy_186 : IAspectTraversalStrategy
+		private sealed class _IAspectTraversalStrategy_182 : IAspectTraversalStrategy
 		{
-			public _IAspectTraversalStrategy_186()
+			public _IAspectTraversalStrategy_182()
 			{
 			}
 

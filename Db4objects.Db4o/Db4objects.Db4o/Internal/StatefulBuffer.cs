@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Internal
 
 		public LocalObjectContainer File()
 		{
-			return ((LocalTransaction)_trans).File();
+			return ((LocalTransaction)_trans).LocalContainer();
 		}
 
 		public Db4objects.Db4o.Internal.Transaction Transaction()
@@ -146,11 +146,6 @@ namespace Db4objects.Db4o.Internal
 		public void SetTransaction(Db4objects.Db4o.Internal.Transaction aTrans)
 		{
 			_trans = aTrans;
-		}
-
-		public void SlotDelete()
-		{
-			_trans.SlotDelete(_id, Slot());
 		}
 
 		public void UseSlot(int adress)

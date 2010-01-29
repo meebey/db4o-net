@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			QueryEvaluationMode evaluationMode = QueryEvaluationMode.FromInt(ReadInt());
 			int prefetchDepth = ReadInt();
 			int prefetchCount = ReadInt();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				return WriteQueryResult(GetAll(evaluationMode), evaluationMode, new ObjectExchangeConfiguration
 					(prefetchDepth, prefetchCount));
@@ -42,7 +42,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				try
 				{
-					return this._enclosing.File().GetAll(this._enclosing.Transaction(), mode);
+					return this._enclosing.LocalContainer().GetAll(this._enclosing.Transaction(), mode
+						);
 				}
 				catch (Exception e)
 				{
@@ -57,7 +58,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		private QQuery NewQuery(QueryEvaluationMode mode)
 		{
-			QQuery query = (QQuery)File().Query();
+			QQuery query = (QQuery)LocalContainer().Query();
 			query.EvaluationMode(mode);
 			return query;
 		}

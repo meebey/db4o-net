@@ -11,16 +11,15 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public void ProcessAtServer()
 		{
 			ByteArrayBuffer bytes = this.GetByteLoad();
-			ObjectContainerBase stream = Stream();
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				object obj = stream.TryGetByID(Transaction(), bytes.ReadInt());
+				object obj = Container().TryGetByID(Transaction(), bytes.ReadInt());
 				bool userCall = bytes.ReadInt() == 1;
 				if (obj != null)
 				{
 					try
 					{
-						stream.Delete1(Transaction(), obj, userCall);
+						Container().Delete1(Transaction(), obj, userCall);
 					}
 					catch (Exception e)
 					{

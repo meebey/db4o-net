@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
+using Db4objects.Db4o.Internal.Transactionlog;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal.Fileheader
@@ -31,7 +32,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private TimerFileLock _timerFileLock;
 
-		private Transaction _interruptedTransaction;
+		private IInterruptedTransactionHandler _interruptedTransactionHandler;
 
 		private FileHeaderVariablePart1 _variablePart;
 
@@ -84,9 +85,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_timerFileLock.SetAddresses(0, OpenTimeOffset, AccessTimeOffset);
 		}
 
-		public override Transaction InterruptedTransaction()
+		public override IInterruptedTransactionHandler InterruptedTransactionHandler()
 		{
-			return _interruptedTransaction;
+			return _interruptedTransactionHandler;
 		}
 
 		public override int Length()
@@ -100,7 +101,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			CommonTasksForNewAndRead(file);
 			CheckThreadFileLock(file, reader);
 			reader.Seek(TransactionPointerOffset);
-			_interruptedTransaction = LocalTransaction.ReadInterruptedTransaction(file, reader
+			_interruptedTransactionHandler = file.IdSystem().InterruptedTransactionHandler(reader
 				);
 			reader.Seek(BlocksizeOffset);
 			file.BlockSizeReadFromFile(reader.ReadInt());

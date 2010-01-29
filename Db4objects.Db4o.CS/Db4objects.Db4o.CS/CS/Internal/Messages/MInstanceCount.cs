@@ -9,9 +9,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public virtual Msg ReplyFromServer()
 		{
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				ClassMetadata clazz = File().ClassMetadataForID(ReadInt());
+				ClassMetadata clazz = LocalContainer().ClassMetadataForID(ReadInt());
 				return Msg.InstanceCount.GetWriterForInt(Transaction(), clazz.IndexEntryCount(Transaction
 					()));
 			}

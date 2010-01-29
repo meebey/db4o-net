@@ -6,14 +6,14 @@ using System.Security;
 [assembly: AssemblyTitle("db4o - database for objects")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
-[assembly: AssemblyCopyright("Versant Corp. 2000 - 2009")]
+[assembly: AssemblyCopyright("Versant Corp. 2000 - 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyName("")]
 
 // attributes are automatically set by the build
-[assembly: AssemblyVersion("7.12.125.14100")]
+[assembly: AssemblyVersion("7.13.132.14181")]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
-[assembly: AssemblyDescription("Db4oUnit.Extensions 7.12.125.14100 (.NET)")]
+[assembly: AssemblyDescription("Db4oUnit.Extensions 7.13.132.14181 (.NET)")]

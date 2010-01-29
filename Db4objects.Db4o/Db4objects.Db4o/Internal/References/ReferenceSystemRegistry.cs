@@ -92,10 +92,11 @@ namespace Db4objects.Db4o.Internal.References
 			_referenceSystems.Add(referenceSystem);
 		}
 
-		public virtual void RemoveReferenceSystem(IReferenceSystem referenceSystem)
+		public virtual bool RemoveReferenceSystem(IReferenceSystem referenceSystem)
 		{
-			_referenceSystems.Remove(referenceSystem);
+			bool res = _referenceSystems.Remove(referenceSystem);
 			referenceSystem.Discarded();
+			return res;
 		}
 
 		private interface IReferenceSource

@@ -9,23 +9,35 @@ namespace Db4objects.Db4o.Internal.Slots
 	/// <exclude></exclude>
 	public class SlotChange : TreeInt
 	{
-		private int _action;
+		private class SlotChangeOperation
+		{
+			private readonly string _type;
+
+			public SlotChangeOperation(string type)
+			{
+				_type = type;
+			}
+
+			internal static readonly SlotChange.SlotChangeOperation create = new SlotChange.SlotChangeOperation
+				("create");
+
+			internal static readonly SlotChange.SlotChangeOperation update = new SlotChange.SlotChangeOperation
+				("update");
+
+			internal static readonly SlotChange.SlotChangeOperation delete = new SlotChange.SlotChangeOperation
+				("delete");
+
+			public override string ToString()
+			{
+				return _type;
+			}
+		}
+
+		private SlotChange.SlotChangeOperation _firstOperation;
+
+		private SlotChange.SlotChangeOperation _currentOperation;
 
 		private Slot _newSlot;
-
-		private ReferencedSlot _shared;
-
-		private const int FreeOnCommitBit = 1;
-
-		private const int FreeOnRollbackBit = 2;
-
-		private const int SetPointerBit = 3;
-
-		private const int FreePointerOnCommitBit = 4;
-
-		private const int FreePointerOnRollbackBit = 5;
-
-		private const int FreespaceBit = 6;
 
 		public SlotChange(int id) : base(id)
 		{
@@ -33,97 +45,51 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public override object ShallowClone()
 		{
-			Db4objects.Db4o.Internal.Slots.SlotChange sc = new Db4objects.Db4o.Internal.Slots.SlotChange
-				(0);
-			sc._action = _action;
-			sc._newSlot = _newSlot;
-			sc._shared = _shared;
+			SlotChange sc = new SlotChange(0);
+			sc.NewSlot(_newSlot);
 			return base.ShallowCloneInternal(sc);
-		}
-
-		private void DoFreeOnCommit()
-		{
-			SetBit(FreeOnCommitBit);
-		}
-
-		private void DoFreeOnRollback()
-		{
-			SetBit(FreeOnRollbackBit);
-		}
-
-		private void DoFreePointerOnCommit()
-		{
-			SetBit(FreePointerOnCommitBit);
-		}
-
-		private void DoFreePointerOnRollback()
-		{
-			SetBit(FreePointerOnRollbackBit);
-		}
-
-		private void DoSetPointer()
-		{
-			SetBit(SetPointerBit);
 		}
 
 		public virtual void FreeDuringCommit(LocalObjectContainer file, bool forFreespace
 			)
 		{
-			if (IsFreeOnCommit() && (IsForFreeSpace() == forFreespace))
+			if (IsForFreespace() != forFreespace)
 			{
-				file.FreeDuringCommit(_shared, _newSlot);
-			}
-		}
-
-		public void FreeOnCommit(LocalObjectContainer file, Slot slot)
-		{
-			if (_shared != null)
-			{
-				// second call or later.
-				// The object has already been rewritten once, so we can free
-				// directly
-				file.Free(slot);
 				return;
 			}
-			DoFreeOnCommit();
-			ReferencedSlot refSlot = file.ProduceFreeOnCommitEntry(_key);
-			if (refSlot.AddReferenceIsFirst())
+			if (_firstOperation == SlotChange.SlotChangeOperation.create)
 			{
-				refSlot.PointTo(slot);
+				return;
 			}
-			_shared = refSlot;
+			if (_currentOperation == SlotChange.SlotChangeOperation.update || _currentOperation
+				 == SlotChange.SlotChangeOperation.delete)
+			{
+				Slot slot = file.IdSystem().GetCommittedSlotOfID(_key);
+				// If we don't get a valid slot, the object may have just 
+				// been stored by the SystemTransaction and not committed yet.
+				if (slot == null || slot.IsNull())
+				{
+					slot = FindCurrentSlotInSystemTransaction(file);
+				}
+				// No old slot at all can be the case if the object
+				// has been deleted by another transaction and we add it again.
+				if (slot != null && !slot.IsNull())
+				{
+					file.Free(slot);
+				}
+			}
 		}
 
-		public virtual void FreeOnRollback(Slot slot)
+		protected virtual Slot FindCurrentSlotInSystemTransaction(LocalObjectContainer file
+			)
 		{
-			DoFreeOnRollback();
-			_newSlot = slot;
-		}
-
-		public virtual void FreeOnRollbackSetPointer(Slot slot)
-		{
-			DoSetPointer();
-			FreeOnRollback(slot);
-		}
-
-		public virtual void FreePointerOnCommit()
-		{
-			DoFreePointerOnCommit();
-		}
-
-		public virtual void FreePointerOnRollback()
-		{
-			DoFreePointerOnRollback();
-		}
-
-		private bool IsBitSet(int bitPos)
-		{
-			return (_action | (1 << bitPos)) == _action;
+			return file.IdSystem().GetCurrentSlotOfID((LocalTransaction)file.SystemTransaction
+				(), _key);
 		}
 
 		public virtual bool IsDeleted()
 		{
-			return IsSetPointer() && _newSlot.IsNull();
+			return SlotModified() && _newSlot.IsNull();
 		}
 
 		public virtual bool IsNew()
@@ -131,24 +97,14 @@ namespace Db4objects.Db4o.Internal.Slots
 			return IsFreePointerOnRollback();
 		}
 
-		private bool IsForFreeSpace()
-		{
-			return IsBitSet(FreespaceBit);
-		}
-
-		private bool IsFreeOnCommit()
-		{
-			return IsBitSet(FreeOnCommitBit);
-		}
-
 		private bool IsFreeOnRollback()
 		{
-			return IsBitSet(FreeOnRollbackBit);
+			return _newSlot != null && !_newSlot.IsNull();
 		}
 
-		public bool IsSetPointer()
+		public bool SlotModified()
 		{
-			return IsBitSet(SetPointerBit);
+			return _newSlot != null;
 		}
 
 		/// <summary>FIXME:	Check where pointers should be freed on commit.</summary>
@@ -161,7 +117,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			//	private final boolean isFreePointerOnCommit() {
 			//		return isBitSet(FREE_POINTER_ON_COMMIT_BIT);
 			//	}
-			return IsBitSet(FreePointerOnRollbackBit);
+			return _firstOperation == SlotChange.SlotChangeOperation.create;
 		}
 
 		public virtual Slot NewSlot()
@@ -169,30 +125,16 @@ namespace Db4objects.Db4o.Internal.Slots
 			return _newSlot;
 		}
 
-		public virtual Slot OldSlot()
-		{
-			if (_shared == null)
-			{
-				return null;
-			}
-			return _shared.Slot();
-		}
-
 		public override object Read(ByteArrayBuffer reader)
 		{
-			Db4objects.Db4o.Internal.Slots.SlotChange change = new Db4objects.Db4o.Internal.Slots.SlotChange
-				(reader.ReadInt());
-			change._newSlot = new Slot(reader.ReadInt(), reader.ReadInt());
-			change.DoSetPointer();
+			SlotChange change = new SlotChange(reader.ReadInt());
+			Slot newSlot = new Slot(reader.ReadInt(), reader.ReadInt());
+			change.NewSlot(newSlot);
 			return change;
 		}
 
 		public virtual void Rollback(LocalObjectContainer container)
 		{
-			if (_shared != null)
-			{
-				container.ReduceFreeOnCommitReferences(_shared);
-			}
 			if (IsFreeOnRollback())
 			{
 				container.Free(_newSlot);
@@ -207,20 +149,9 @@ namespace Db4objects.Db4o.Internal.Slots
 			}
 		}
 
-		private void SetBit(int bitPos)
-		{
-			_action |= (1 << bitPos);
-		}
-
-		public virtual void SetPointer(Slot slot)
-		{
-			DoSetPointer();
-			_newSlot = slot;
-		}
-
 		public override void Write(ByteArrayBuffer writer)
 		{
-			if (IsSetPointer())
+			if (SlotModified())
 			{
 				writer.WriteInt(_key);
 				writer.WriteInt(_newSlot.Address());
@@ -228,20 +159,88 @@ namespace Db4objects.Db4o.Internal.Slots
 			}
 		}
 
-		public void WritePointer(LocalTransaction trans)
+		public void WritePointer(LocalObjectContainer container)
 		{
-			if (IsSetPointer())
+			if (SlotModified())
 			{
-				trans.WritePointer(_key, _newSlot);
+				container.WritePointer(_key, _newSlot);
 			}
 		}
 
-		public virtual void ForFreespace(bool flag)
+		private void NewSlot(Slot slot)
 		{
-			if (flag)
+			_newSlot = slot;
+		}
+
+		public virtual void NotifySlotChanged(LocalObjectContainer file, Slot slot)
+		{
+			if (DTrace.enabled)
 			{
-				SetBit(FreespaceBit);
+				DTrace.NotifySlotChanged.Log(_key);
+				DTrace.NotifySlotChanged.LogLength(slot);
 			}
+			FreePreviouslyModifiedSlot(file);
+			_newSlot = slot;
+			Operation(SlotChange.SlotChangeOperation.update);
+		}
+
+		protected virtual void FreePreviouslyModifiedSlot(LocalObjectContainer file)
+		{
+			if (_newSlot == null)
+			{
+				return;
+			}
+			if (_newSlot.IsNull())
+			{
+				return;
+			}
+			Free(file, _newSlot);
+			_newSlot = null;
+		}
+
+		protected virtual void Free(LocalObjectContainer file, Slot slot)
+		{
+			if (slot.IsNull())
+			{
+				return;
+			}
+			file.Free(slot);
+		}
+
+		private void Operation(SlotChange.SlotChangeOperation operation)
+		{
+			if (_firstOperation == null)
+			{
+				_firstOperation = operation;
+			}
+			_currentOperation = operation;
+		}
+
+		public virtual void NotifySlotCreated(Slot slot)
+		{
+			if (DTrace.enabled)
+			{
+				DTrace.NotifySlotCreated.Log(_key);
+				DTrace.NotifySlotCreated.LogLength(slot);
+			}
+			Operation(SlotChange.SlotChangeOperation.create);
+			_newSlot = slot;
+		}
+
+		public virtual void NotifyDeleted(LocalObjectContainer file)
+		{
+			if (DTrace.enabled)
+			{
+				DTrace.NotifySlotDeleted.Log(_key);
+			}
+			Operation(SlotChange.SlotChangeOperation.delete);
+			FreePreviouslyModifiedSlot(file);
+			_newSlot = Slot.Zero;
+		}
+
+		protected virtual bool IsForFreespace()
+		{
+			return false;
 		}
 	}
 }

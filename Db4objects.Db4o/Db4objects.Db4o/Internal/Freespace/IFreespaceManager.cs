@@ -21,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		int TotalFreespace();
 
-		Slot GetSlot(int length);
+		Slot AllocateSlot(int length);
 
 		void MigrateTo(IFreespaceManager fm);
 

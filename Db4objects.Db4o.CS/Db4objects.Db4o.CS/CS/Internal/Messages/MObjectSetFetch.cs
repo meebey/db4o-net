@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			int fetchSize = ReadInt();
 			int fetchDepth = ReadInt();
 			MsgD message = null;
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				IIntIterator4 idIterator = Stub(queryResultID).IdIterator();
 				ByteArrayBuffer payload = ObjectExchangeStrategyFactory.ForConfig(new ObjectExchangeConfiguration

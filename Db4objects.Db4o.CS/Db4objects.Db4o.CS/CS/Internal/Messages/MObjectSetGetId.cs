@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 			AbstractQueryResult queryResult = QueryResult(ReadInt());
 			int id = 0;
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
 				id = queryResult.GetId(ReadInt());
 			}

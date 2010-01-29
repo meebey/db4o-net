@@ -84,32 +84,35 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return _transaction;
 		}
 
-		private Slot CreateNewSlot(int length)
+		public virtual Slot AllocateNewSlot(int length)
 		{
-			Slot slot = new Slot(-1, length);
 			if (_transaction is LocalTransaction)
 			{
-				slot = ((LocalTransaction)_transaction).File().GetSlot(length);
-				_transaction.SlotFreeOnRollback(ObjectID(), slot);
+				return LocalContainer().AllocateSlotForNewUserObject(_transaction, ObjectID(), length
+					);
 			}
-			_transaction.SetPointer(ObjectID(), slot);
-			return slot;
+			return new Slot(Slot.New, length);
 		}
 
-		private Slot CreateUpdateSlot(int length)
+		private Slot AllocateUpdateSlot(int length)
 		{
-			if (Transaction() is LocalTransaction)
+			if (_transaction is LocalTransaction)
 			{
-				return ((LocalTransaction)Transaction()).File().GetSlotForUpdate(Transaction(), ObjectID
-					(), length);
+				return LocalContainer().AllocateSlotForUserObjectUpdate(Transaction(), ObjectID()
+					, length);
 			}
-			return new Slot(0, length);
+			return new Slot(Slot.Update, length);
+		}
+
+		private LocalObjectContainer LocalContainer()
+		{
+			return ((LocalTransaction)Transaction()).LocalContainer();
 		}
 
 		public virtual Pointer4 AllocateSlot()
 		{
 			int length = Container().BlockAlignedBytes(MarshalledLength());
-			Slot slot = IsNew() ? CreateNewSlot(length) : CreateUpdateSlot(length);
+			Slot slot = IsNew() ? AllocateNewSlot(length) : AllocateUpdateSlot(length);
 			return new Pointer4(ObjectID(), slot);
 		}
 
@@ -130,7 +133,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return HeaderLength + _nullBitMap.MarshalledLength();
 		}
 
-		private int MarshalledLength()
+		public virtual int MarshalledLength()
 		{
 			int length = WriteBufferOffset();
 			_writeBuffer.CheckBlockAlignment(this, null, new IntByRef(length));

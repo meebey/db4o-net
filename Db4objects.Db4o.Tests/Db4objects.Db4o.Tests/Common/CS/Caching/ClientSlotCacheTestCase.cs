@@ -52,7 +52,10 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 				((IClientSlotCache)cache).Add(t1, 42, slot);
 				Assert.AreSame(slot, ((IClientSlotCache)cache).Get(t1, 42));
 				Assert.IsNull(((IClientSlotCache)cache).Get(t2, 42));
-				t1.Commit();
+				lock (t1.Container().Lock())
+				{
+					t1.Commit();
+				}
 				Assert.IsNull(((IClientSlotCache)cache).Get(t1, 42));
 			}
 
@@ -61,12 +64,12 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 
 		public virtual void TestCacheIsCleanUponTransactionCommit()
 		{
-			AssertCacheIsCleanAfterTransactionOperation(new _IProcedure4_47());
+			AssertCacheIsCleanAfterTransactionOperation(new _IProcedure4_48());
 		}
 
-		private sealed class _IProcedure4_47 : IProcedure4
+		private sealed class _IProcedure4_48 : IProcedure4
 		{
-			public _IProcedure4_47()
+			public _IProcedure4_48()
 			{
 			}
 
@@ -78,12 +81,12 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 
 		public virtual void TestCacheIsCleanUponTransactionRollback()
 		{
-			AssertCacheIsCleanAfterTransactionOperation(new _IProcedure4_55());
+			AssertCacheIsCleanAfterTransactionOperation(new _IProcedure4_56());
 		}
 
-		private sealed class _IProcedure4_55 : IProcedure4
+		private sealed class _IProcedure4_56 : IProcedure4
 		{
-			public _IProcedure4_55()
+			public _IProcedure4_56()
 			{
 			}
 
@@ -95,12 +98,12 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 
 		private void AssertCacheIsCleanAfterTransactionOperation(IProcedure4 operation)
 		{
-			WithCache(new _IProcedure4_63(this, operation));
+			WithCache(new _IProcedure4_64(this, operation));
 		}
 
-		private sealed class _IProcedure4_63 : IProcedure4
+		private sealed class _IProcedure4_64 : IProcedure4
 		{
-			public _IProcedure4_63(ClientSlotCacheTestCase _enclosing, IProcedure4 operation)
+			public _IProcedure4_64(ClientSlotCacheTestCase _enclosing, IProcedure4 operation)
 			{
 				this._enclosing = _enclosing;
 				this.operation = operation;
@@ -126,12 +129,12 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 			int id = (int)Db().GetID(item);
 			Db().Purge(item);
 			Db().Configure().ClientServer().PrefetchDepth(1);
-			WithCache(new _IProcedure4_82(this, id));
+			WithCache(new _IProcedure4_83(this, id));
 		}
 
-		private sealed class _IProcedure4_82 : IProcedure4
+		private sealed class _IProcedure4_83 : IProcedure4
 		{
-			public _IProcedure4_82(ClientSlotCacheTestCase _enclosing, int id)
+			public _IProcedure4_83(ClientSlotCacheTestCase _enclosing, int id)
 			{
 				this._enclosing = _enclosing;
 				this.id = id;
@@ -154,12 +157,12 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 
 		public virtual void TestAddOverridesExistingEntry()
 		{
-			WithCache(new _IProcedure4_93(this));
+			WithCache(new _IProcedure4_94(this));
 		}
 
-		private sealed class _IProcedure4_93 : IProcedure4
+		private sealed class _IProcedure4_94 : IProcedure4
 		{
-			public _IProcedure4_93(ClientSlotCacheTestCase _enclosing)
+			public _IProcedure4_94(ClientSlotCacheTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -179,12 +182,12 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 
 		public virtual void TestCacheSizeIsBounded()
 		{
-			WithCache(new _IProcedure4_103(this));
+			WithCache(new _IProcedure4_104(this));
 		}
 
-		private sealed class _IProcedure4_103 : IProcedure4
+		private sealed class _IProcedure4_104 : IProcedure4
 		{
-			public _IProcedure4_103(ClientSlotCacheTestCase _enclosing)
+			public _IProcedure4_104(ClientSlotCacheTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

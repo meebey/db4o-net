@@ -651,7 +651,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				return null;
 			}
-			ClassMetadata clazz = clazzconstr.i_classMetadata;
+			ClassMetadata clazz = clazzconstr._classMetadata;
 			if (clazz == null)
 			{
 				return null;
@@ -884,6 +884,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual IQuery OrderAscending()
 		{
+			if (i_parent == null)
+			{
+				throw new InvalidOperationException("Cannot apply ordering at top level.");
+			}
 			lock (StreamLock())
 			{
 				AddOrdering(SodaQueryComparator.Direction.Ascending);
@@ -893,6 +897,10 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual IQuery OrderDescending()
 		{
+			if (i_parent == null)
+			{
+				throw new InvalidOperationException("Cannot apply ordering at top level.");
+			}
 			lock (StreamLock())
 			{
 				AddOrdering(SodaQueryComparator.Direction.Descending);
@@ -1077,12 +1085,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool HasOrJoins()
 		{
-			return ForEachConstraintRecursively(new _IFunction4_845());
+			return ForEachConstraintRecursively(new _IFunction4_851());
 		}
 
-		private sealed class _IFunction4_845 : IFunction4
+		private sealed class _IFunction4_851 : IFunction4
 		{
-			public _IFunction4_845()
+			public _IFunction4_851()
 			{
 			}
 
@@ -1104,12 +1112,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void RemoveJoins()
 		{
-			ForEachConstraintRecursively(new _IFunction4_861());
+			ForEachConstraintRecursively(new _IFunction4_867());
 		}
 
-		private sealed class _IFunction4_861 : IFunction4
+		private sealed class _IFunction4_867 : IFunction4
 		{
-			public _IFunction4_861()
+			public _IFunction4_867()
 			{
 			}
 

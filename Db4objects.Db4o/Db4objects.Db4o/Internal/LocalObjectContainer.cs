@@ -11,10 +11,12 @@ using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Fileheader;
 using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Internal.Transactionlog;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -39,18 +41,39 @@ namespace Db4objects.Db4o.Internal
 
 		private int _blockEndAddress;
 
-		private Tree _freeOnCommit;
-
 		private Db4objects.Db4o.Internal.SystemData _systemData;
+
+		private readonly IIdSystem _idSystem;
+
+		private readonly byte[] _pointerBuffer = new byte[Const4.PointerLength];
+
+		protected readonly ByteArrayBuffer _pointerIo = new ByteArrayBuffer(Const4.PointerLength
+			);
 
 		internal LocalObjectContainer(IConfiguration config) : base(config)
 		{
+			_idSystem = NewIdSystem();
 		}
 
 		public override Transaction NewTransaction(Transaction parentTransaction, IReferenceSystem
-			 referenceSystem)
+			 referenceSystem, bool isSystemTransaction)
 		{
-			return new LocalTransaction(this, parentTransaction, referenceSystem);
+			LocalTransaction transaction = new LocalTransaction(this, parentTransaction, referenceSystem
+				);
+			if (isSystemTransaction)
+			{
+				IdSystem().SystemTransaction(transaction);
+			}
+			else
+			{
+				IdSystem().AddTransaction(transaction);
+			}
+			return transaction;
+		}
+
+		protected virtual IIdSystem NewIdSystem()
+		{
+			return new StandardIdSystem(this);
 		}
 
 		public virtual IFreespaceManager FreespaceManager()
@@ -155,11 +178,11 @@ namespace Db4objects.Db4o.Internal
 			return new HybridQueryResult(trans, mode);
 		}
 
-		public sealed override bool Delete4(Transaction ta, ObjectReference yo, object obj
-			, int a_cascade, bool userCall)
+		public sealed override bool Delete4(Transaction transaction, ObjectReference @ref
+			, object obj, int cascade, bool userCall)
 		{
-			int id = yo.GetID();
-			StatefulBuffer reader = ReadWriterByID(ta, id);
+			int id = @ref.GetID();
+			StatefulBuffer reader = ReadWriterByID(transaction, id);
 			if (reader != null)
 			{
 				if (obj != null)
@@ -170,10 +193,10 @@ namespace Db4objects.Db4o.Internal
 						return false;
 					}
 				}
-				reader.SetCascadeDeletes(a_cascade);
-				reader.SlotDelete();
-				ClassMetadata yc = yo.ClassMetadata();
-				yc.Delete(reader, obj);
+				reader.SetCascadeDeletes(cascade);
+				IdSystem().NotifySlotDeleted(transaction, id, SlotChangeFactory.UserObjects);
+				ClassMetadata classMetadata = @ref.ClassMetadata();
+				classMetadata.Delete(reader, obj);
 				return true;
 			}
 			return false;
@@ -242,16 +265,16 @@ namespace Db4objects.Db4o.Internal
 			return queryResult;
 		}
 
-		public virtual int GetPointerSlot()
+		public virtual int AllocatePointerSlot()
 		{
-			int id = GetSlot(Const4.PointerLength).Address();
+			int id = AllocateSlot(Const4.PointerLength).Address();
 			if (!IsValidPointer(id))
 			{
-				return GetPointerSlot();
+				return AllocatePointerSlot();
 			}
 			// write a zero pointer first
 			// to prevent delete interaction trouble
-			WriteZeroPointer(id);
+			WritePointer(id, Slot.Zero);
 			if (DTrace.enabled)
 			{
 				DTrace.GetPointerSlot.Log(id);
@@ -266,15 +289,10 @@ namespace Db4objects.Db4o.Internal
 			return !_handlers.IsSystemHandler(id);
 		}
 
-		private void WriteZeroPointer(int id)
-		{
-			((LocalTransaction)SystemTransaction()).WriteZeroPointer(id);
-		}
-
-		public virtual Slot GetSlot(int length)
+		public virtual Slot AllocateSlot(int length)
 		{
 			int blocks = BytesToBlocks(length);
-			Slot slot = GetBlockedSlot(blocks);
+			Slot slot = AllocateBlockedSlot(blocks);
 			if (DTrace.enabled)
 			{
 				DTrace.GetSlot.LogLength(slot.Address(), slot.Length());
@@ -282,7 +300,7 @@ namespace Db4objects.Db4o.Internal
 			return ToNonBlockedLength(slot);
 		}
 
-		private Slot GetBlockedSlot(int blocks)
+		private Slot AllocateBlockedSlot(int blocks)
 		{
 			if (blocks <= 0)
 			{
@@ -290,14 +308,14 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (_freespaceManager != null)
 			{
-				Slot slot = _freespaceManager.GetSlot(blocks);
+				Slot slot = _freespaceManager.AllocateSlot(blocks);
 				if (slot != null)
 				{
 					return slot;
 				}
 				while (GrowDatabaseByConfiguredSize())
 				{
-					slot = _freespaceManager.GetSlot(blocks);
+					slot = _freespaceManager.AllocateSlot(blocks);
 					if (slot != null)
 					{
 						return slot;
@@ -407,37 +425,12 @@ namespace Db4objects.Db4o.Internal
 
 		public Pointer4 NewSlot(int length)
 		{
-			return new Pointer4(GetPointerSlot(), GetSlot(length));
+			return new Pointer4(AllocatePointerSlot(), AllocateSlot(length));
 		}
 
-		public sealed override int NewUserObject()
+		public sealed override int IdForNewUserObject(Transaction trans)
 		{
-			return GetPointerSlot();
-		}
-
-		public virtual ReferencedSlot ProduceFreeOnCommitEntry(int id)
-		{
-			Tree node = TreeInt.Find(_freeOnCommit, id);
-			if (node != null)
-			{
-				return (ReferencedSlot)node;
-			}
-			ReferencedSlot slot = new ReferencedSlot(id);
-			_freeOnCommit = Tree.Add(_freeOnCommit, slot);
-			return slot;
-		}
-
-		public virtual void ReduceFreeOnCommitReferences(ReferencedSlot slot)
-		{
-			if (slot.RemoveReferenceIsLast())
-			{
-				_freeOnCommit = _freeOnCommit.RemoveNode(slot);
-			}
-		}
-
-		public virtual void FreeDuringCommit(ReferencedSlot referencedSlot, Slot slot)
-		{
-			_freeOnCommit = referencedSlot.Free(this, _freeOnCommit, slot);
+			return IdSystem().NewId(trans, SlotChangeFactory.UserObjects);
 		}
 
 		public override void RaiseVersion(long a_minimumVersion)
@@ -448,10 +441,11 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id, bool lastCommitted
-			)
+		public override StatefulBuffer ReadWriterByID(Transaction transaction, int id, bool
+			 lastCommitted)
 		{
-			return (StatefulBuffer)ReadReaderOrWriterByID(a_ta, a_id, false, lastCommitted);
+			return (StatefulBuffer)ReadReaderOrWriterByID((LocalTransaction)transaction, id, 
+				false, lastCommitted);
 		}
 
 		public override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id)
@@ -459,7 +453,8 @@ namespace Db4objects.Db4o.Internal
 			return ReadWriterByID(a_ta, a_id, false);
 		}
 
-		public override ByteArrayBuffer[] ReadSlotBuffers(Transaction a_ta, int[] ids)
+		public override ByteArrayBuffer[] ReadSlotBuffers(Transaction transaction, int[] 
+			ids)
 		{
 			ByteArrayBuffer[] buffers = new ByteArrayBuffer[ids.Length];
 			for (int i = 0; i < ids.Length; ++i)
@@ -470,16 +465,17 @@ namespace Db4objects.Db4o.Internal
 				}
 				else
 				{
-					buffers[i] = ReadReaderOrWriterByID(a_ta, ids[i], true);
+					buffers[i] = ReadReaderOrWriterByID((LocalTransaction)transaction, ids[i], true);
 				}
 			}
 			return buffers;
 		}
 
-		public override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id, bool lastCommitted
-			)
+		public override ByteArrayBuffer ReadReaderByID(Transaction transaction, int id, bool
+			 lastCommitted)
 		{
-			return ReadReaderOrWriterByID(a_ta, a_id, true, lastCommitted);
+			return ReadReaderOrWriterByID((LocalTransaction)transaction, id, true, lastCommitted
+				);
 		}
 
 		public override ByteArrayBuffer ReadReaderByID(Transaction trans, int id)
@@ -487,26 +483,26 @@ namespace Db4objects.Db4o.Internal
 			return ReadReaderByID(trans, id, false);
 		}
 
-		private ByteArrayBuffer ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader
-			)
+		private ByteArrayBuffer ReadReaderOrWriterByID(LocalTransaction transaction, int 
+			id, bool useReader)
 		{
-			return ReadReaderOrWriterByID(a_ta, a_id, useReader, false);
+			return ReadReaderOrWriterByID(transaction, id, useReader, false);
 		}
 
-		private ByteArrayBuffer ReadReaderOrWriterByID(Transaction a_ta, int a_id, bool useReader
-			, bool lastCommitted)
+		private ByteArrayBuffer ReadReaderOrWriterByID(LocalTransaction trans, int id, bool
+			 useReader, bool lastCommitted)
 		{
-			if (a_id <= 0)
+			if (id <= 0)
 			{
 				throw new ArgumentException();
 			}
 			if (DTrace.enabled)
 			{
-				DTrace.ReadId.Log(a_id);
+				DTrace.ReadId.Log(id);
 			}
-			Slot slot = lastCommitted ? ((LocalTransaction)a_ta).GetCommittedSlotOfID(a_id) : 
-				((LocalTransaction)a_ta).GetCurrentSlotOfID(a_id);
-			return ReadReaderOrWriterBySlot(a_ta, a_id, useReader, slot);
+			Slot slot = lastCommitted ? IdSystem().GetCommittedSlotOfID(id) : IdSystem().GetCurrentSlotOfID
+				(trans, id);
+			return ReadReaderOrWriterBySlot(trans, id, useReader, slot);
 		}
 
 		public virtual ByteArrayBuffer ReadSlotBuffer(Slot slot)
@@ -575,12 +571,13 @@ namespace Db4objects.Db4o.Internal
 				MigrateFreespace();
 			}
 			WriteHeader(true, false);
-			LocalTransaction trans = (LocalTransaction)_fileHeader.InterruptedTransaction();
-			if (trans != null)
+			IInterruptedTransactionHandler interruptedTransactionHandler = _fileHeader.InterruptedTransactionHandler
+				();
+			if (interruptedTransactionHandler != null)
 			{
 				if (!ConfigImpl.CommitRecoveryDisabled())
 				{
-					trans.CompleteInterruptedTransaction();
+					interruptedTransactionHandler.CompleteInterruptedTransaction();
 				}
 			}
 			if (Converter.Convert(new ConversionStage.SystemUpStage(this)))
@@ -659,12 +656,12 @@ namespace Db4objects.Db4o.Internal
 					return;
 				}
 			}
-			_semaphoresLock.Run(new _IClosure4_583(this, trans, name));
+			_semaphoresLock.Run(new _IClosure4_576(this, trans, name));
 		}
 
-		private sealed class _IClosure4_583 : IClosure4
+		private sealed class _IClosure4_576 : IClosure4
 		{
-			public _IClosure4_583(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_576(LocalObjectContainer _enclosing, Transaction trans, string 
 				name)
 			{
 				this._enclosing = _enclosing;
@@ -691,35 +688,35 @@ namespace Db4objects.Db4o.Internal
 			private readonly string name;
 		}
 
-		public override void ReleaseSemaphores(Transaction ta)
+		public override void ReleaseSemaphores(Transaction trans)
 		{
 			if (_semaphores != null)
 			{
 				Hashtable4 semaphores = _semaphores;
-				_semaphoresLock.Run(new _IClosure4_597(this, semaphores, ta));
+				_semaphoresLock.Run(new _IClosure4_590(this, semaphores, trans));
 			}
 		}
 
-		private sealed class _IClosure4_597 : IClosure4
+		private sealed class _IClosure4_590 : IClosure4
 		{
-			public _IClosure4_597(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
-				 ta)
+			public _IClosure4_590(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
+				 trans)
 			{
 				this._enclosing = _enclosing;
 				this.semaphores = semaphores;
-				this.ta = ta;
+				this.trans = trans;
 			}
 
 			public object Run()
 			{
-				semaphores.ForEachKeyForIdentity(new _IVisitor4_598(semaphores), ta);
+				semaphores.ForEachKeyForIdentity(new _IVisitor4_591(semaphores), trans);
 				this._enclosing._semaphoresLock.Awake();
 				return null;
 			}
 
-			private sealed class _IVisitor4_598 : IVisitor4
+			private sealed class _IVisitor4_591 : IVisitor4
 			{
-				public _IVisitor4_598(Hashtable4 semaphores)
+				public _IVisitor4_591(Hashtable4 semaphores)
 				{
 					this.semaphores = semaphores;
 				}
@@ -736,7 +733,7 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly Hashtable4 semaphores;
 
-			private readonly Transaction ta;
+			private readonly Transaction trans;
 		}
 
 		public sealed override void Rollback1(Transaction trans)
@@ -769,13 +766,13 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			BooleanByRef acquired = new BooleanByRef();
-			_semaphoresLock.Run(new _IClosure4_634(this, trans, name, acquired, timeout));
+			_semaphoresLock.Run(new _IClosure4_627(this, trans, name, acquired, timeout));
 			return acquired.value;
 		}
 
-		private sealed class _IClosure4_634 : IClosure4
+		private sealed class _IClosure4_627 : IClosure4
 		{
-			public _IClosure4_634(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_627(LocalObjectContainer _enclosing, Transaction trans, string 
 				name, BooleanByRef acquired, int timeout)
 			{
 				this._enclosing = _enclosing;
@@ -946,17 +943,18 @@ namespace Db4objects.Db4o.Internal
 			_fileHeader.WriteTransactionPointer(SystemTransaction(), address);
 		}
 
-		public void GetSlotForUpdate(StatefulBuffer buffer)
+		public Slot AllocateSlotForUserObjectUpdate(Transaction trans, int id, int length
+			)
 		{
-			Slot slot = GetSlotForUpdate(buffer.Transaction(), buffer.GetID(), buffer.Length(
-				));
-			buffer.Address(slot.Address());
+			Slot slot = AllocateSlot(length);
+			IdSystem().NotifySlotChanged(trans, id, slot, SlotChangeFactory.UserObjects);
+			return slot;
 		}
 
-		public Slot GetSlotForUpdate(Transaction trans, int id, int length)
+		public Slot AllocateSlotForNewUserObject(Transaction trans, int id, int length)
 		{
-			Slot slot = GetSlot(length);
-			trans.ProduceUpdateSlotChange(id, slot);
+			Slot slot = AllocateSlot(length);
+			IdSystem().NotifySlotCreated(trans, id, slot, SlotChangeFactory.UserObjects);
 			return slot;
 		}
 
@@ -966,7 +964,8 @@ namespace Db4objects.Db4o.Internal
 			int address = pointer.Address();
 			if (address == 0)
 			{
-				address = GetSlotForUpdate(trans, pointer.Id(), pointer.Length()).Address();
+				address = AllocateSlotForUserObjectUpdate(trans, pointer.Id(), pointer.Length()).
+					Address();
 			}
 			WriteEncrypt(buffer, address, 0);
 		}
@@ -1001,13 +1000,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_811(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_805(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_811 : IVisitor4
+		private sealed class _IVisitor4_805 : IVisitor4
 		{
-			public _IVisitor4_811(IntArrayList ids)
+			public _IVisitor4_805(IntArrayList ids)
 			{
 				this.ids = ids;
 			}
@@ -1059,7 +1058,71 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IObjectContainer OpenSession()
 		{
-			return new ObjectContainerSession(this);
+			lock (Lock())
+			{
+				return new ObjectContainerSession(this);
+			}
+		}
+
+		public virtual IIdSystem IdSystem()
+		{
+			return _idSystem;
+		}
+
+		public override bool IsDeleted(Transaction trans, int id)
+		{
+			return IdSystem().IsDeleted(trans, id);
+		}
+
+		public virtual void WritePointer(int id, Slot slot)
+		{
+			if (DTrace.enabled)
+			{
+				DTrace.WritePointer.Log(id);
+				DTrace.WritePointer.LogLength(slot);
+			}
+			_pointerIo.Seek(0);
+			_pointerIo.WriteInt(slot.Address());
+			_pointerIo.WriteInt(slot.Length());
+			WriteBytes(_pointerIo, id, 0);
+		}
+
+		public virtual Pointer4 DebugReadPointer(int id)
+		{
+			return null;
+		}
+
+		public virtual Pointer4 ReadPointer(int id)
+		{
+			if (!IsValidId(id))
+			{
+				throw new InvalidIDException(id);
+			}
+			ReadBytes(_pointerBuffer, id, Const4.PointerLength);
+			int address = (_pointerBuffer[3] & 255) | (_pointerBuffer[2] & 255) << 8 | (_pointerBuffer
+				[1] & 255) << 16 | _pointerBuffer[0] << 24;
+			int length = (_pointerBuffer[7] & 255) | (_pointerBuffer[6] & 255) << 8 | (_pointerBuffer
+				[5] & 255) << 16 | _pointerBuffer[4] << 24;
+			if (!IsValidSlot(address, length))
+			{
+				throw new InvalidSlotException(address, length, id);
+			}
+			return new Pointer4(id, new Slot(address, length));
+		}
+
+		private bool IsValidId(int id)
+		{
+			return FileLength() >= id;
+		}
+
+		private bool IsValidSlot(int address, int length)
+		{
+			// just in case overflow 
+			long fileLength = FileLength();
+			bool validAddress = fileLength >= address;
+			bool validLength = fileLength >= length;
+			bool validSlot = fileLength >= (address + length);
+			return validAddress && validLength && validSlot;
 		}
 	}
 }

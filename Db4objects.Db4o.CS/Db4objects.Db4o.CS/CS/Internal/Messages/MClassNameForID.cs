@@ -12,9 +12,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 			int id = _payLoad.ReadInt();
 			string name = string.Empty;
-			lock (StreamLock())
+			lock (ContainerLock())
 			{
-				ClassMetadata classMetadata = Stream().ClassMetadataForID(id);
+				ClassMetadata classMetadata = Container().ClassMetadataForID(id);
 				if (classMetadata != null)
 				{
 					name = classMetadata.GetName();

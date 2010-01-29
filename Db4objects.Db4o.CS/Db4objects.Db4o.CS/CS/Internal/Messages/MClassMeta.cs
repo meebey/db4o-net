@@ -12,27 +12,27 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public virtual Msg ReplyFromServer()
 		{
-			ObjectContainerBase stream = Stream();
 			Unmarshall();
 			try
 			{
-				lock (StreamLock())
+				lock (ContainerLock())
 				{
 					ClassInfo classInfo = (ClassInfo)ReadObjectFromPayLoad();
 					ClassInfoHelper classInfoHelper = ServerMessageDispatcher().ClassInfoHelper();
-					GenericClass genericClass = classInfoHelper.ClassMetaToGenericClass(Stream().Reflector
+					GenericClass genericClass = classInfoHelper.ClassMetaToGenericClass(Container().Reflector
 						(), classInfo);
 					if (genericClass != null)
 					{
-						Transaction trans = stream.SystemTransaction();
-						ClassMetadata classMetadata = stream.ProduceClassMetadata(genericClass);
+						Transaction trans = Container().SystemTransaction();
+						ClassMetadata classMetadata = Container().ProduceClassMetadata(genericClass);
 						if (classMetadata != null)
 						{
-							stream.CheckStillToSet();
+							Container().CheckStillToSet();
 							classMetadata.SetStateDirty();
 							classMetadata.Write(trans);
 							trans.Commit();
-							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, classMetadata.GetID());
+							StatefulBuffer returnBytes = Container().ReadWriterByID(trans, classMetadata.GetID
+								());
 							return Msg.ObjectToClient.GetWriter(returnBytes);
 						}
 					}

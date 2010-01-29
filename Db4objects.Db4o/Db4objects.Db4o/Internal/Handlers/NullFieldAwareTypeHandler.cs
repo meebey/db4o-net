@@ -5,7 +5,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Typehandlers;
 
@@ -17,7 +16,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public static readonly IFieldAwareTypeHandler Instance = new NullFieldAwareTypeHandler
 			();
 
-		public virtual void AddFieldIndices(ObjectIdContextImpl context, Slot oldSlot)
+		public virtual void AddFieldIndices(ObjectIdContextImpl context)
 		{
 		}
 

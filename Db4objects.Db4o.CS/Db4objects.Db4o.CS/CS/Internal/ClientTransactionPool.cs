@@ -60,11 +60,12 @@ namespace Db4objects.Db4o.CS.Internal
 		public virtual void Release(ShutdownMode mode, Transaction transaction, bool rollbackOnClose
 			)
 		{
-			transaction.Close(mode.IsFatal() ? false : rollbackOnClose);
 			lock (_mainContainer.Lock())
 			{
 				ClientTransactionPool.ContainerCount entry = (ClientTransactionPool.ContainerCount
 					)_transaction2Container.Get(transaction);
+				entry._container.CloseTransaction(transaction, false, mode.IsFatal() ? false : rollbackOnClose
+					);
 				_transaction2Container.Remove(transaction);
 				entry.Release();
 				if (entry.IsEmpty())
@@ -133,7 +134,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private class ContainerCount
 		{
-			private LocalObjectContainer _container;
+			public LocalObjectContainer _container;
 
 			private int _count;
 

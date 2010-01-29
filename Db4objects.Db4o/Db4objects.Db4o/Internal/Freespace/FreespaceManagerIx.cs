@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		}
 
 		// do nothing, freespace is dropped.
-		public override Slot GetSlot(int length)
+		public override Slot AllocateSlot(int length)
 		{
 			// implementation is no longer present, no freespace returned.
 			return null;

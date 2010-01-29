@@ -5,7 +5,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Delete;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Marshall;
-using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal
@@ -19,7 +18,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.FieldIndexException"></exception>
-		public override void AddFieldIndex(ObjectIdContextImpl context, Slot oldSlot)
+		public override void AddFieldIndex(ObjectIdContextImpl context)
 		{
 			StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 			buffer.WriteLong(context.Transaction().Container().GenerateTimeStampId());

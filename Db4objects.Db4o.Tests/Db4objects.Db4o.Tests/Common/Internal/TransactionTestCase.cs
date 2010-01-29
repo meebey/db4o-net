@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			LocalObjectContainer container = (LocalObjectContainer)Db();
 			IReferenceSystem referenceSystem = container.CreateReferenceSystem();
 			Transaction transaction = container.NewTransaction(container.SystemTransaction(), 
-				referenceSystem);
+				referenceSystem, false);
 			referenceSystem.AddNewReference(new ObjectReference(TestId));
 			referenceSystem.AddNewReference(new ObjectReference(TestId + 1));
 			container.ReferenceSystemRegistry().RemoveId(TestId);

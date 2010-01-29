@@ -9,9 +9,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public virtual void ProcessAtServer()
 		{
-			lock (Stream().Lock())
+			lock (ContainerLock())
 			{
-				if (Stream().IsClosed())
+				if (Container().IsClosed())
 				{
 					return;
 				}

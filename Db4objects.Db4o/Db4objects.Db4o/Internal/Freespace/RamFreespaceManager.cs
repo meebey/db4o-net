@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			int limit = length + 100;
 			if (sizeNode._key > limit)
 			{
-				return GetSlot(limit);
+				return AllocateSlot(limit);
 			}
 			RemoveFromBothTrees(sizeNode);
 			return new Slot(sizeNode._peer._key, sizeNode._key);
@@ -145,7 +145,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_file.Free(reader.GetAddress(), reader.Length());
 		}
 
-		public override Slot GetSlot(int length)
+		public override Slot AllocateSlot(int length)
 		{
 			_finder._key = length;
 			_finder._object = null;
@@ -327,8 +327,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			StatefulBuffer buffer = new StatefulBuffer(Transaction(), pointer);
 			TreeInt.Write(buffer, (TreeInt)_freeBySize);
 			buffer.WriteEncrypt();
-			Transaction().FlushFile();
-			Transaction().WritePointer(pointer);
+			_file.SyncFiles();
+			_file.WritePointer(pointer.Id(), pointer._slot);
 		}
 
 		internal sealed class ToStringVisitor : IVisitor4

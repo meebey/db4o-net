@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			if (a_field != null)
 			{
-				i_classMetadata = a_field.GetFieldType();
+				_classMetadata = a_field.GetFieldType();
 			}
 		}
 

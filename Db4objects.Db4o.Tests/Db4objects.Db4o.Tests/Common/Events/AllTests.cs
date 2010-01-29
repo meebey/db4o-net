@@ -16,11 +16,11 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(ActivationEventsTestCase), typeof(ClassRegistrationEventsTestCase
-				), typeof(CreationEventsTestCase), typeof(DeleteOnDeletingCallbackTestCase), typeof(
-				DeletionEventExceptionTestCase), typeof(DeletionEventsTestCase), typeof(EventArgsTransactionTestCase
+				), typeof(CreationEventsTestCase), typeof(DeleteEventOnClientTestCase), typeof(DeleteOnDeletingCallbackTestCase
+				), typeof(DeletionEventExceptionTestCase), typeof(DeletionEventsTestCase), typeof(
+				EventArgsTransactionTestCase), typeof(EventCountTestCase), typeof(ExceptionPropagationInEventsTestSuite
 				), typeof(InstantiationEventsTestCase), typeof(ObjectContainerEventsTestCase), typeof(
-				ObjectContainerOpenEventTestCase), typeof(EventCountTestCase), typeof(DeleteEventOnClientTestCase
-				), typeof(ExceptionPropagationInEventsTestSuite), typeof(UpdateInCallbackThrowsTestCase
+				ObjectContainerOpenEventTestCase), typeof(QueryEventsTestCase), typeof(UpdateInCallbackThrowsTestCase
 				) };
 		}
 	}

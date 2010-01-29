@@ -6,6 +6,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Query;
@@ -22,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private int i_objectID;
 
 		[System.NonSerialized]
-		internal ClassMetadata i_classMetadata;
+		internal ClassMetadata _classMetadata;
 
 		private int i_classMetadataID;
 
@@ -34,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		private IObjectAttribute i_attributeProvider;
 
 		[System.NonSerialized]
-		private bool i_selfComparison = false;
+		private bool _checkClassMetadataOnly = false;
 
 		public QConObject()
 		{
@@ -75,20 +76,20 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				//            if(i_field != null){
 				//                i_classMetadata = i_field.getYapClass();
 				//            }
-				i_classMetadata = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
+				_classMetadata = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
 					(a_object));
-				if (i_classMetadata != null)
+				if (_classMetadata != null)
 				{
-					i_object = i_classMetadata.GetComparableObject(a_object);
+					i_object = _classMetadata.GetComparableObject(a_object);
 					if (a_object != i_object)
 					{
-						i_attributeProvider = i_classMetadata.Config().QueryAttributeProvider();
-						i_classMetadata = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
+						i_attributeProvider = _classMetadata.Config().QueryAttributeProvider();
+						_classMetadata = a_trans.Container().ProduceClassMetadata(a_trans.Reflector().ForObject
 							(i_object));
 					}
-					if (i_classMetadata != null)
+					if (_classMetadata != null)
 					{
-						i_classMetadata.CollectConstraints(a_trans, this, i_object, new _IVisitor4_83(this
+						_classMetadata.CollectConstraints(a_trans, this, i_object, new _IVisitor4_84(this
 							));
 					}
 					else
@@ -103,9 +104,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 		}
 
-		private sealed class _IVisitor4_83 : IVisitor4
+		private sealed class _IVisitor4_84 : IVisitor4
 		{
-			public _IVisitor4_83(QConObject _enclosing)
+			public _IVisitor4_84(QConObject _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -120,7 +121,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public override bool CanBeIndexLeaf()
 		{
-			return i_object == null || ((i_classMetadata != null && i_classMetadata.IsValueType
+			return i_object == null || ((_classMetadata != null && _classMetadata.IsValueType
 				()) || Evaluator().Identity());
 		}
 
@@ -190,22 +191,23 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				DTrace.EvaluateSelf.Log(Id());
 			}
-			if (i_classMetadata != null)
+			if (_classMetadata != null)
 			{
-				if (!(i_classMetadata is PrimitiveTypeMetadata))
+				if (!(_classMetadata is PrimitiveTypeMetadata))
 				{
-					if (!i_evaluator.Identity())
+					if (!i_evaluator.Identity() && (_classMetadata.TypeHandler() is StandardReferenceTypeHandler
+						))
 					{
-						i_selfComparison = true;
+						_checkClassMetadataOnly = true;
 					}
-					object transactionalObject = i_classMetadata.WrapWithTransactionContext(Transaction
+					object transactionalObject = _classMetadata.WrapWithTransactionContext(Transaction
 						(), i_object);
-					_preparedComparison = i_classMetadata.PrepareComparison(Context(), transactionalObject
+					_preparedComparison = _classMetadata.PrepareComparison(Context(), transactionalObject
 						);
 				}
 			}
 			base.EvaluateSelf();
-			i_selfComparison = false;
+			_checkClassMetadataOnly = false;
 		}
 
 		private IContext Context()
@@ -245,7 +247,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal override ClassMetadata GetYapClass()
 		{
-			return i_classMetadata;
+			return _classMetadata;
 		}
 
 		public override QField GetField()
@@ -309,9 +311,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 		{
 			base.Marshall();
 			GetObjectID();
-			if (i_classMetadata != null)
+			if (_classMetadata != null)
 			{
-				i_classMetadataID = i_classMetadata.GetID();
+				i_classMetadataID = _classMetadata.GetID();
 			}
 		}
 
@@ -391,7 +393,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			if (i_classMetadataID != 0)
 			{
-				i_classMetadata = trans.Container().ClassMetadataForID(i_classMetadataID);
+				_classMetadata = trans.Container().ClassMetadataForID(i_classMetadataID);
 			}
 			if (i_field != null)
 			{
@@ -412,12 +414,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			QCandidate qc = (QCandidate)obj;
 			bool res = true;
 			bool processed = false;
-			if (i_selfComparison)
+			if (_checkClassMetadataOnly)
 			{
 				ClassMetadata yc = qc.ReadClassMetadata();
 				if (yc != null)
 				{
-					res = i_evaluator.Not(i_classMetadata.GetHigherHierarchy(yc) == i_classMetadata);
+					res = i_evaluator.Not(_classMetadata.GetHigherHierarchy(yc) == _classMetadata);
 					processed = true;
 				}
 			}
@@ -499,7 +501,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			}
 			else
 			{
-				i_classMetadata = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
+				_classMetadata = i_trans.Container().ProduceClassMetadata(i_trans.Reflector().ForObject
 					(i_object));
 				Identity();
 			}
@@ -507,7 +509,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		internal virtual bool EvaluationModeAlreadySet()
 		{
-			return i_classMetadata != null;
+			return _classMetadata != null;
 		}
 
 		public override IConstraint Like()

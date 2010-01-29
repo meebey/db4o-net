@@ -182,6 +182,8 @@ namespace Db4objects.Db4o.Internal
 
 		public const int Reading = 8;
 
+		public const int Activating = 9;
+
 		public const int Old = -1;
 
 		public const int New = 1;
@@ -212,7 +214,7 @@ namespace Db4objects.Db4o.Internal
 		// 70 MB   
 		// 7 Million 
 		// 70 MB for byte arrays
-		// bits in YapMeta.i_state
+		// bits in PersistentBase.i_state
 		// and reuse in other classes 
 		// system classes that need to get loaded first
 		// StaticClass should load Staticfield

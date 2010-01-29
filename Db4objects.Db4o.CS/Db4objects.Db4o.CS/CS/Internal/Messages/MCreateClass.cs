@@ -11,20 +11,19 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	{
 		public Msg ReplyFromServer()
 		{
-			ObjectContainerBase stream = Stream();
-			Transaction trans = stream.SystemTransaction();
 			try
 			{
-				lock (StreamLock())
+				lock (ContainerLock())
 				{
-					IReflectClass claxx = trans.Reflector().ForName(ReadString());
+					IReflectClass claxx = SystemTransaction().Reflector().ForName(ReadString());
 					if (claxx != null)
 					{
-						ClassMetadata classMetadata = stream.ProduceClassMetadata(claxx);
+						ClassMetadata classMetadata = Container().ProduceClassMetadata(claxx);
 						if (classMetadata != null)
 						{
-							stream.CheckStillToSet();
-							StatefulBuffer returnBytes = stream.ReadWriterByID(trans, classMetadata.GetID());
+							Container().CheckStillToSet();
+							StatefulBuffer returnBytes = Container().ReadWriterByID(SystemTransaction(), classMetadata
+								.GetID());
 							MsgD createdClass = Msg.ObjectToClient.GetWriter(returnBytes);
 							return createdClass;
 						}

@@ -53,7 +53,7 @@ namespace Db4oUnit.Extensions
 		{
 		}
 
-		public override Slot GetSlot(int length)
+		public override Slot AllocateSlot(int length)
 		{
 			return null;
 		}

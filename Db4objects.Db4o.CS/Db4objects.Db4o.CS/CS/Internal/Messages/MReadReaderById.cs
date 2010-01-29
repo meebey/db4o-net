@@ -16,9 +16,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			// and object was deleted by another client
 			try
 			{
-				lock (StreamLock())
+				lock (ContainerLock())
 				{
-					bytes = Stream().ReadReaderByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
+					bytes = Container().ReadReaderByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
 						() == 1);
 				}
 				if (bytes == null)

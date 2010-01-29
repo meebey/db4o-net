@@ -237,24 +237,24 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			return _trans;
 		}
 
-		protected virtual LocalObjectContainer File()
+		protected virtual LocalObjectContainer LocalContainer()
 		{
-			return (LocalObjectContainer)Stream();
+			return (LocalObjectContainer)Container();
 		}
 
-		protected virtual ObjectContainerBase Stream()
+		protected virtual ObjectContainerBase Container()
 		{
 			return Transaction().Container();
 		}
 
-		protected virtual object StreamLock()
+		protected virtual object ContainerLock()
 		{
-			return Stream().Lock();
+			return Container().Lock();
 		}
 
 		protected virtual Config4Impl Config()
 		{
-			return Stream().Config();
+			return Container().Config();
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
@@ -401,7 +401,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		public virtual void LogMsg(int msgCode, string msg)
 		{
-			Stream().LogMsg(msgCode, msg);
+			Container().LogMsg(msgCode, msg);
 		}
 
 		/// <summary>to be overridden by implementors of MessageWithResponse</summary>
@@ -409,10 +409,15 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 		}
 
+		// do nothing by default
+		protected virtual Db4objects.Db4o.Internal.Transaction SystemTransaction()
+		{
+			return Container().SystemTransaction();
+		}
+
 		object System.ICloneable.Clone()
 		{
 			return MemberwiseClone();
 		}
-		// do nothing by default
 	}
 }
