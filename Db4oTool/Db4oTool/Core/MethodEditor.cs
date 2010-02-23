@@ -1,4 +1,4 @@
-﻿using System;
+﻿/* Copyright (C) 2010 Versant Inc.   http://www.db4o.com */
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
