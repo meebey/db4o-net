@@ -8,11 +8,12 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI1.Inside
 {
-	public class OldDb4oAssemblyNameRenamingTestCase : TestWithTempFile
+	public class LegacyDb4oAssemblyNameRenamingTestCase : TestWithTempFile
 	{
 		public void TestAssemblyNameEndingWithDb4o()
 		{
 			AssertNameRead("SomeType, exdb4o");
+			AssertNameRead("SomeType, ex.db4o");
 		}
 
 		public void TestSimpleAssemblyName()
@@ -20,7 +21,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside
 			AssertNameRead("SomeType, some assembly");
 		}
 
-		public void TestOldDb4oAssemblyNames()
+		public void TestLegacyDb4oAssemblyNames()
 		{
 			AssertNameRead("desktop, db4o", "desktop, Db4objects.Db4o");
 			AssertNameRead("desktop.1, db4o-4.0-net1", "desktop.1, Db4objects.Db4o");

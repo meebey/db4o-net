@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside
 				{   
 				    typeof(Query.QueryExpressionBuilderTestCase),
 #if !SILVERLIGHT
-					typeof(OldDb4oAssemblyNameRenamingTestCase),
+					typeof(LegacyDb4oAssemblyNameRenamingTestCase),
 #endif
 				};
 		}
