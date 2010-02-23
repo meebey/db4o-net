@@ -15,5 +15,24 @@ namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
 		{
 			Child = child;
 		}
+
+		public override string ToString()
+		{
+			return string.Format("ByExample(Name='{0}', Child=[{1}])", Name, Child);
+		}
+
+		public override bool Equals(object obj)
+		{
+			ByExample other = obj as ByExample;
+			if (obj == null) return false;
+
+			if (other.Name != Name)
+				return false;
+
+			if (Child == null)
+				return other.Child == null;
+
+			return  other.Child.Equals(Child);
+		}
 	}
 }
