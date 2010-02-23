@@ -1,6 +1,5 @@
 ﻿/* Copyright (C) 2007 - 2010  Versant Inc.  http://www.db4o.com */
 
-using System;
 using System.Reflection;
 
 namespace Db4objects.Db4o.Linq.CodeAnalysis
