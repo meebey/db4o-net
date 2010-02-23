@@ -1,6 +1,6 @@
+/* Copyright (C) 2010   Versant Inc.   http://www.db4o.com */
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Reflection;
 

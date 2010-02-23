@@ -1,3 +1,5 @@
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
+
 using System;
 using System.Reflection;
 using Db4oTool.Core;
