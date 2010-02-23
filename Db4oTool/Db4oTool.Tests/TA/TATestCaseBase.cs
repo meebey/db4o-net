@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
 
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using Db4oTool.Core;
 using Db4oTool.Tests.Core;
@@ -29,24 +31,47 @@ namespace Db4oTool.Tests.TA
 {
 	internal abstract class TATestCaseBase : ITestCase
 	{
-		protected AssemblyDefinition GenerateAssembly(string resourceName, params Assembly[] references)
+		protected static AssemblyDefinition GenerateAssembly(string resourceName, params Assembly[] references)
 		{
 			return AssemblyFactory.GetAssembly(
 						CompilationServices.EmitAssemblyFromResource(
 							ResourceServices.CompleteResourceName(
-													GetType(),
+													typeof(TATestCaseBase),
 													resourceName), references));
 		}
 
-		protected static void InstrumentAssembly(AssemblyDefinition testAssembly)
+		protected static string InstrumentAssembly(AssemblyDefinition testAssembly)
 		{
-			InstrumentationContext context = new InstrumentationContext(Configuration(testAssembly.MainModule.Image.FileInformation.FullName), testAssembly);
-			new Db4oTool.TA.TAInstrumentation().Run(context);
+			return InstrumentAssembly(testAssembly, false);
+		}
+
+		protected static string InstrumentAssembly(AssemblyDefinition testAssembly, bool instrumentCollections)
+		{
+			StringWriter output = new StringWriter();
+			Trace.Listeners.Add(new TextWriterTraceListener(output));
+
+			string assemblyFullPath = testAssembly.MainModule.Image.FileInformation.FullName;
+			InstrumentationContext context = new InstrumentationContext(Configuration(assemblyFullPath), testAssembly);
+
+			new Db4oTool.TA.TAInstrumentation(instrumentCollections).Run(context);
+			context.SaveAssembly();
+
+			VerifyAssembly(assemblyFullPath);
+
+			return output.ToString();
+		}
+
+		protected static void VerifyAssembly(string assemblyPath)
+		{
+			new VerifyAssemblyTest(assemblyPath).Run();
 		}
 
 		protected static Configuration Configuration(string assemblyLocation)
 		{
-			return new Configuration(assemblyLocation);
+			Configuration configuration = new Configuration(assemblyLocation);
+			configuration.TraceSwitch.Level = TraceLevel.Info;
+ 
+			return configuration;
 		}
 	}
 }

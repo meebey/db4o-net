@@ -1,5 +1,5 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
-using Db4oTool.Core;
+
 using Db4oUnit;
 
 namespace Db4oTool.Tests.Core

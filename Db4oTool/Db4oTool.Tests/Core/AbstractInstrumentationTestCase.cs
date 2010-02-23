@@ -47,12 +47,12 @@ namespace Db4oTool.Tests.Core
 
 			private void SetUpAssemblyResolver()
 			{
-				AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 			}
 
 			private void TearDownAssemblyResolver()
 			{
-				AppDomain.CurrentDomain.AssemblyResolve -= new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+				AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
 			}
 
 			private void SetUpContainer()

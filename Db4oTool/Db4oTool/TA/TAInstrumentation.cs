@@ -19,15 +19,26 @@ namespace Db4oTool.TA
 	{
 		public static readonly string CompilerGeneratedAttribute = typeof(CompilerGeneratedAttribute).FullName;
 
-		private const string IT_TRANSPARENT_ACTIVATION = "TA";
+		private const string ITTransparentActivation = "TA";
 
         private CustomAttribute _instrumentationAttribute;
 
 		private CecilReflector _reflector;
 
+		private readonly ITAInstrumentationStep _collectionsStep = NullTAInstrumentationStep.Instance;
+
+		public TAInstrumentation(bool instrumentCollections)
+		{
+			if (instrumentCollections)
+			{
+				_collectionsStep = new TACollectionsStep();
+			}
+		}
+
 		protected override void BeforeAssemblyProcessing()
 		{
 			_reflector = new CecilReflector(_context);
+			_collectionsStep.Context = _context;
             CreateTagAttribute();
         }
 
@@ -47,7 +58,7 @@ namespace Db4oTool.TA
 		private void CreateTagAttribute()
         {
             _instrumentationAttribute = new CustomAttribute(ImportConstructor(typeof(TagAttribute)));
-            _instrumentationAttribute.ConstructorParameters.Add(IT_TRANSPARENT_ACTIVATION);
+            _instrumentationAttribute.ConstructorParameters.Add(ITTransparentActivation);
         }
 
         private MethodReference ImportConstructor(Type type)
@@ -121,7 +132,7 @@ namespace Db4oTool.TA
 
         private TypeDefinition ResolveTypeReference(TypeReference typeRef)
         {
-        	return _reflector.ResolveTypeReference(typeRef);
+			return _reflector.ResolveTypeReference(typeRef);
         }
 
 		private bool RequiresTA(TypeDefinition type)
@@ -201,15 +212,25 @@ namespace Db4oTool.TA
 		{
 			if (!method.HasBody || method.IsCompilerControlled) return;
 
-			if (!HasFieldAccesses(method)) return;
-			
-			method.Body.Simplify();
+			try
+			{
+				method.Body.Simplify();
 
-			InstrumentFieldAccesses(method);
+				_collectionsStep.Process(method);
+				//InstrumentListInstantiation(method);
 
-			PatchBaseConstructorInvocationOrderIfRequired(method);
+				//InstrumentListCasts(method);
+				
+				if (!HasFieldAccesses(method)) return;
+				
+				InstrumentFieldAccesses(method);
 
-			method.Body.Optimize();
+				PatchBaseConstructorInvocationOrderIfRequired(method);
+			}
+			finally
+			{
+				method.Body.Optimize();
+			}
 		}
 
 		private static void PatchBaseConstructorInvocationOrderIfRequired(MethodDefinition method)
@@ -222,7 +243,7 @@ namespace Db4oTool.TA
 
 		private static void PatchBaseConstructorInvocationOrder(MethodDefinition method)
 		{
-			Instruction ctorInvocation = (Instruction) Iterators.Next(Where(method.Body, IsBaseConstructorInvocation).GetEnumerator());
+			Instruction ctorInvocation = (Instruction) Iterators.Next(InstrumentationUtil.Where(method.Body, IsBaseConstructorInvocation).GetEnumerator());
 			Instruction loadThis = GetLoadThisReferenceFor(ctorInvocation);
 
 			MoveInstructions(loadThis, ctorInvocation, method.Body.Instructions[0], method.Body.CilWorker);
@@ -279,18 +300,17 @@ namespace Db4oTool.TA
 
 		private static IEnumerable<Instruction> BaseConstructorInvocationOrFieldAccesses(MethodDefinition ctor)
 		{
-			return Where(
-						ctor.Body, 
-						delegate(Instruction instruction)
-						{
-							return IsFieldAccess(instruction) || IsBaseConstructorInvocation(instruction);
-						});
+			return InstrumentationUtil.Where(
+						 ctor.Body,
+						 delegate(Instruction instruction)
+						 {
+							 return IsFieldAccess(instruction) || IsBaseConstructorInvocation(instruction);
+						 });
 		}
 
 		private static bool IsBaseConstructorInvocation(Instruction instruction)
 		{
-			return IsCallInstruction(instruction) 
-				&& HasConstructorOperand(instruction);
+			return InstrumentationUtil.IsCallInstruction(instruction) && HasConstructorOperand(instruction);
 		}
 
 		private static bool IsLoadThis(Instruction instruction)
@@ -315,11 +335,6 @@ namespace Db4oTool.TA
 			return methodReference.Name == ".ctor";
 		}
 
-		private static bool IsCallInstruction(Instruction instruction)
-		{
-			return instruction.OpCode == OpCodes.Call;
-		}
-
 		private bool HasFieldAccesses(MethodDefinition method)
 		{
 			return FieldAccesses(method.Body).GetEnumerator().MoveNext();
@@ -336,18 +351,7 @@ namespace Db4oTool.TA
 
 		private IEnumerable<Instruction> FieldAccesses(MethodBody body)
 		{
-			return Where(body, IsActivatableFieldAccess);
-		}
-
-		private static IEnumerable<Instruction> Where(MethodBody body, Predicate<Instruction> predicate)
-		{
-			for(Instruction instruction = body.Instructions[0]; instruction != null; instruction = instruction.Next)
-			{
-				if (predicate(instruction))
-				{
-					yield return instruction;
-				}
-			}
+			return InstrumentationUtil.Where(body, IsActivatableFieldAccess);
 		}
 
 		private bool IsActivatableFieldAccess(Instruction instruction)

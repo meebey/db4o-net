@@ -17,6 +17,9 @@ namespace Db4oTool
 
 		[Option("Implement Transparent Persistence Support", "tp")]
 		public bool TransparentPersistence;
+		
+		[Option("Instrument native collections for transparent activation/persistence", "collections")]
+		public bool Collections;
 
 		[Option("Case sensitive queries", "case-sensitive")]
 		public bool CaseSensitive;

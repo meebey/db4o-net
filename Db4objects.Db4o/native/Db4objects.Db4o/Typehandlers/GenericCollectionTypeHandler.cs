@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.Collections;
 using Db4objects.Db4o.Internal;
@@ -207,6 +208,7 @@ namespace Db4objects.Db4o.Typehandlers
 													typeof(Stack<>),
 													typeof(Queue<>),
 													typeof(System.Collections.ObjectModel.Collection<>),
+													typeof(ActivatableList<>),
 #if NET_3_5 && ! CF
 													typeof(HashSet<>),
 #endif

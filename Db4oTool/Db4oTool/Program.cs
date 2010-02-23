@@ -68,7 +68,7 @@ namespace Db4oTool
 			}
 			if (options.TransparentPersistence)
 			{
-				pipeline.Add(new TAInstrumentation());
+				pipeline.Add(new TAInstrumentation(options.Collections));
 			}
 			foreach (IAssemblyInstrumentation instr in Factory.Instantiate<IAssemblyInstrumentation>(options.CustomInstrumentations))
 			{

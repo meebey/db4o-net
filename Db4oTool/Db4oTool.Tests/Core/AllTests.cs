@@ -1,3 +1,4 @@
+/* Copyright (C) 2010 Versant Inc.   http://www.db4o.com */
 using System;
 using Db4oUnit;
 
@@ -9,16 +10,17 @@ namespace Db4oTool.Tests.Core
 		{
 			return new Type[]
 				{
-					typeof(Core.ByNameTestCase),
-					typeof(Core.ByAttributeTestCase),
-					typeof(Core.ByFilterTestCase),
-					typeof(Core.ByNotAttributeTestCase),
-					typeof(Core.ContextVariableTestCase),
-					typeof(Core.ILPatternTestCase),
-					typeof(Core.InstallPerformanceCountersTestCase),
-					typeof(Core.CustomInstrumentationTestCase),
-					typeof(Core.PreserveDebugInfoTestCase),
-					typeof(Core.InstrumentingCFAssemblyTestCase),
+					typeof(ByNameTestCase),
+					typeof(ByAttributeTestCase),
+					typeof(ByFilterTestCase),
+					typeof(ByNotAttributeTestCase),
+					typeof(ContextVariableTestCase),
+					typeof(ILPatternTestCase),
+					typeof(InstallPerformanceCountersTestCase),
+					typeof(CustomInstrumentationTestCase),
+					typeof(PreserveDebugInfoTestCase),
+					typeof(InstrumentingCFAssemblyTestCase),
+					typeof(StackAnalyzerTestCase),
 				};
 		}
 	}
