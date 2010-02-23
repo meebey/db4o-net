@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal
     /// <exclude />
     public class Platform4
     {
-		private static readonly LecacyDb4oAssemblyNameMapper _assemlbyNameMapper = new LecacyDb4oAssemblyNameMapper();
+		private static readonly LegacyDb4oAssemblyNameMapper _assemlbyNameMapper = new LegacyDb4oAssemblyNameMapper();
 
         private static List<ObjectContainerBase> _containersToBeShutdown;
 

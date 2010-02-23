@@ -4,9 +4,9 @@ using Db4objects.Db4o.Internal.Encoding;
 
 namespace Db4objects.Db4o.Internal
 {
-	internal class LecacyDb4oAssemblyNameMapper
+	internal class LegacyDb4oAssemblyNameMapper
 	{
-		static LecacyDb4oAssemblyNameMapper()
+		static LegacyDb4oAssemblyNameMapper()
         {   
             LatinStringIO stringIO = new UnicodeStringIO();
             oldAssemblies = new byte[oldAssemblyNames.Length][];
