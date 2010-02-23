@@ -2,27 +2,26 @@
 
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Collections;
 using Db4oTool.Tests.Core;
 using Db4oUnit;
 using Mono.Cecil;
-using Mono.Reflection;
+using Mono.Cecil.Cil;
 
 namespace Db4oTool.Tests.TA
 {
 	partial class TACollectionsTestCase : ITestLifeCycle
 	{
-		private static void AssertInstruction(Instruction actual, OpCode opCode, ConstructorInfo expectedCtor)
+		private static void AssertInstruction(Instruction actual, OpCode opCode, IMemberReference expectedCtor)
 		{
 			Assert.AreEqual(opCode, actual.OpCode);
-			ConstructorInfo actualCtor = (ConstructorInfo) actual.Operand;
+			MethodReference actualCtor = (MethodReference)actual.Operand;
 			Assert.AreEqual(expectedCtor.DeclaringType.Name, actualCtor.DeclaringType.Name, opCode.ToString());
-			Assert.AreEqual(expectedCtor, actualCtor, opCode.ToString());
+			Assert.AreEqual(expectedCtor, actualCtor.Resolve(), opCode.ToString());
 		}
 
-		protected void AssertWarning(Action<Assembly> action, string expectedWarning)
+		protected void AssertWarning(Action<AssemblyDefinition> action, string expectedWarning)
 		{
 			string output = InstrumentAndRunInIsolatedAppDomain(action);
 			Assert.IsTrue(
@@ -47,15 +46,12 @@ namespace Db4oTool.Tests.TA
 			return assembly.GetType(TestResource).GetMethod(name);
 		}
 
-		protected static ConstructorInfo ParameterLessContructorFor(Type type)
+		private static MethodReference ParameterLessContructorFor(TypeReference type)
 		{
-			ConstructorInfo constructor = type.GetConstructor(new Type[0]);
-			Assert.AreEqual(0, constructor.GetParameters().Length);
-
-			return constructor;
+			return type.Resolve().Constructors.GetConstructor(false, new Type[0]);
 		}
 
-		private static string InstrumentAndRunInIsolatedAppDomain(Action<Assembly> action)
+		private static string InstrumentAndRunInIsolatedAppDomain(Action<AssemblyDefinition> action)
 		{
 			AssemblyDefinition assembly = GenerateAssembly(TestResource);
 			string instrumentationOutput = InstrumentAssembly(assembly, true);
@@ -110,12 +106,12 @@ namespace Db4oTool.Tests.TA
 		{
 		}
 
-		public static Instruction FindInstruction(Assembly assembly, string testMethodName, OpCode testInstruction)
+		public static Instruction FindInstruction(AssemblyDefinition assembly, string testMethodName, OpCode testInstruction)
 		{
-			DelegatingILPattern pattern = new DelegatingILPattern(ILPattern.Sequence(ILPattern.Optional(OpCodes.Nop), ILPattern.OpCode(OpCodes.Ldarg_0)));
+			TypeDefinition testType = assembly.MainModule.Types["TACollectionsScenarios"];
+			MethodDefinition testMethod = SingleMethod(testType.Methods.GetMethod(testMethodName));
 
-			MatchContext result = ILPattern.Match(InstrumentedMethod(assembly, testMethodName), pattern);
-			Instruction current = pattern.LastMatchingInstruction(result);
+			Instruction current = testMethod.Body.Instructions[0];
 
 			Instruction instruction = current;
 			while (instruction != null && instruction.OpCode != testInstruction)
@@ -128,8 +124,24 @@ namespace Db4oTool.Tests.TA
 			current = instruction;
 			return current;
 		}
+
+		private static MethodDefinition SingleMethod(MethodDefinition[] candidates)
+		{
+			if (candidates == null || candidates.Length > 1)
+			{
+				throw new ArgumentException("Must be exactly one method");
+			}
+
+			return candidates[0];
+		}
+
+		private static TypeReference Import(AssemblyDefinition assembly, Type type)
+		{
+			return assembly.MainModule.Import(type);
+		}
 		
 		private const string TestResource = "TACollectionsScenarios";
+
 	}
 
 	[Serializable]
@@ -140,12 +152,12 @@ namespace Db4oTool.Tests.TA
 			_testMethodName = testMethodName;
 		}
 		
-		public void AssertIt(Assembly assembly)
+		public void AssertIt(AssemblyDefinition assembly)
 		{
 			Instruction current = TACollectionsTestCase.FindInstruction(assembly, _testMethodName, OpCodes.Castclass);
 
-			Type castTarget = ((Type)current.Operand).GetGenericTypeDefinition();
-			Assert.AreEqual(typeof(ActivatableList<>), castTarget);
+			TypeReference castTarget = ((TypeReference) current.Operand).Resolve();
+			Assert.AreEqual(assembly.MainModule.Import(typeof(ActivatableList<>)).Resolve(), castTarget);
 		}
 		
 		private readonly string _testMethodName;
@@ -154,7 +166,7 @@ namespace Db4oTool.Tests.TA
 	[Serializable]
 	class IsolatedAppDomainTestRunner
 	{
-		public IsolatedAppDomainTestRunner(string assemblyPath, Action<Assembly> test)
+		public IsolatedAppDomainTestRunner(string assemblyPath, Action<AssemblyDefinition> test)
 		{
 			_assemblyPath = assemblyPath;
 			_test = test;
@@ -162,31 +174,11 @@ namespace Db4oTool.Tests.TA
 
 		public void Run()
 		{
-			Assembly instrumentedAssembly = Assembly.LoadFrom(_assemblyPath);
+			AssemblyDefinition instrumentedAssembly = AssemblyFactory.GetAssembly(_assemblyPath);
 			_test(instrumentedAssembly);
 		}
 
 		private readonly string _assemblyPath;
-		private readonly Action<Assembly> _test;
-	}
-
-	class DelegatingILPattern : ILPattern
-	{
-		public DelegatingILPattern(ILPattern delegating)
-		{
-			_delegating = delegating;
-		}
-
-		public Instruction LastMatchingInstruction(MatchContext context)
-		{
-			return GetLastMatchingInstruction(context);
-		}
-
-		public override void Match(MatchContext context)
-		{
-			_delegating.Match(context);
-		}
-
-		private readonly ILPattern _delegating;
+		private readonly Action<AssemblyDefinition> _test;
 	}
 }
