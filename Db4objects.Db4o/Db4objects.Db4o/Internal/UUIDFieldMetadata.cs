@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Internal
 			LocalTransaction transaction = (LocalTransaction)context.Transaction();
 			LocalObjectContainer localContainer = (LocalObjectContainer)transaction.Container
 				();
-			Slot oldSlot = localContainer.IdSystem().GetCommittedSlotOfID(context.Id());
+			Slot oldSlot = transaction.IdSystem().CommittedSlot(context.Id());
 			int savedOffset = context.Offset();
 			int db4oDatabaseIdentityID = context.ReadInt();
 			long uuid = context.ReadLong();
@@ -134,8 +134,7 @@ namespace Db4objects.Db4o.Internal
 		protected override void RebuildIndexForObject(LocalObjectContainer container, ClassMetadata
 			 classMetadata, int objectId)
 		{
-			Slot slot = container.IdSystem().GetCurrentSlotOfID((LocalTransaction)container.SystemTransaction
-				(), objectId);
+			Slot slot = container.SystemTransaction().IdSystem().CurrentSlot(objectId);
 			UUIDFieldMetadata.DatabaseIdentityIDAndUUID data = ReadDatabaseIdentityIDAndUUID(
 				container, classMetadata, slot, true);
 			if (null == data)

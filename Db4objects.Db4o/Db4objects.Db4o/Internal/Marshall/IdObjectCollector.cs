@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual void AddId(int id)
 		{
-			_ids = (TreeInt)Tree.Add(_ids, new TreeInt(id));
+			_ids = (TreeInt)((TreeInt)Tree.Add(_ids, new TreeInt(id)));
 		}
 
 		public virtual TreeInt Ids()

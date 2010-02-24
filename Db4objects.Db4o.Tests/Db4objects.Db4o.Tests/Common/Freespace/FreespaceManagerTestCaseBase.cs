@@ -17,9 +17,11 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		protected override void Db4oSetupAfterStore()
 		{
 			LocalObjectContainer container = (LocalObjectContainer)Db();
-			BTreeFreespaceManager btreeFm = new BTreeFreespaceManager(container);
+			BTreeFreespaceManager btreeFm = new BTreeFreespaceManager(container, null, container
+				.ConfigImpl.DiscardFreeSpace());
 			btreeFm.Start(0);
-			fm = new IFreespaceManager[] { new RamFreespaceManager(container), btreeFm };
+			fm = new IFreespaceManager[] { new RamFreespaceManager(null, container.ConfigImpl
+				.DiscardFreeSpace()), btreeFm };
 		}
 
 		protected virtual void Clear(IFreespaceManager freespaceManager)

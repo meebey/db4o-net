@@ -20,8 +20,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda
 			return new Type[] { typeof(STOrderingTestCase), typeof(Db4objects.Db4o.Tests.Common.Soda.Arrays.AllTests
 				), typeof(AndJoinOptimizationTestCase), typeof(CollectionIndexedJoinTestCase), typeof(
 				InterfaceFieldConstraintTestCase), typeof(NullIdentityConstraintTestCase), typeof(
-				OrderedOrConstraintTestCase), typeof(OrderFollowedByConstraintTestCase), typeof(
-				QueryUnknownClassTestCase), typeof(SortMultipleTestCase), typeof(STBooleanTestCase
+				OrderByParentFieldTestCase), typeof(OrderedOrConstraintTestCase), typeof(OrderFollowedByConstraintTestCase
+				), typeof(QueryUnknownClassTestCase), typeof(SortMultipleTestCase), typeof(STBooleanTestCase
 				), typeof(STBooleanWUTestCase), typeof(STByteTestCase), typeof(STByteWUTestCase)
 				, typeof(STCharTestCase), typeof(STCharWUTestCase), typeof(STDoubleTestCase), typeof(
 				STDoubleWUTestCase), typeof(STETH1TestCase), typeof(STFloatTestCase), typeof(STFloatWUTestCase

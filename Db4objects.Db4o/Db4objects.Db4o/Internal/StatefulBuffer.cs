@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
 using Sharpen;
@@ -214,14 +213,6 @@ namespace Db4objects.Db4o.Internal
 		public override string ToString()
 		{
 			return "id " + _id + " adr " + _address + " len " + _length;
-		}
-
-		public void NoXByteCheck()
-		{
-			if (Debug4.xbytes && Deploy.overwrite)
-			{
-				SetID(Const4.IgnoreId);
-			}
 		}
 
 		public Db4objects.Db4o.Internal.Slots.Slot Slot()

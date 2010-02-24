@@ -1230,8 +1230,8 @@ namespace Db4objects.Db4o.Internal
 		protected virtual void RebuildIndexForObject(LocalObjectContainer stream, ClassMetadata
 			 classMetadata, int objectId)
 		{
-			StatefulBuffer writer = stream.ReadWriterByID(stream.SystemTransaction(), objectId
-				);
+			StatefulBuffer writer = stream.ReadStatefulBufferById(stream.SystemTransaction(), 
+				objectId);
 			if (writer != null)
 			{
 				RebuildIndexForWriter(stream, writer, objectId);

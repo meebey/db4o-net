@@ -93,8 +93,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		public virtual void TestSelectByFields()
 		{
 			PersistentEntry existing = CatEntries[0];
-			PersistentEntry newEntry = new PersistentEntry(CatClass, existing.uid, new object
-				[] { existing.fieldValues[0], 10 });
+			PersistentEntry newEntry = new PersistentEntry(CatClass, 3, new object[] { existing
+				.fieldValues[0], 10 });
 			Insert(newEntry);
 			IEnumerator found = SelectByField(existing.className, CatFieldNames[0], existing.
 				fieldValues[0]);

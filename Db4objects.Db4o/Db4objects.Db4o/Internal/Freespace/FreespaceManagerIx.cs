@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 	/// </remarks>
 	public class FreespaceManagerIx : AbstractFreespaceManager
 	{
-		public FreespaceManagerIx(LocalObjectContainer file) : base(file)
+		public FreespaceManagerIx(int discardLimit) : base(null, discardLimit)
 		{
 		}
 
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			throw new InvalidOperationException();
 		}
 
-		public override void Read(int freespaceID)
+		public override void Read(LocalObjectContainer container, int freespaceID)
 		{
 		}
 
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return FmIx;
 		}
 
-		public override int Write()
+		public override int Write(LocalObjectContainer container)
 		{
 			return 0;
 		}

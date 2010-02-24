@@ -15,10 +15,10 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				);
 			lock (ContainerLock())
 			{
-				IIdSystem idSystem = LocalContainer().IdSystem();
+				IIdSystem idSystem = Transaction().IdSystem();
 				for (int i = 0; i < prefetchIDCount; i++)
 				{
-					reply.WriteInt(idSystem.PrefetchID(Transaction()));
+					reply.WriteInt(idSystem.PrefetchID());
 				}
 			}
 			return reply;

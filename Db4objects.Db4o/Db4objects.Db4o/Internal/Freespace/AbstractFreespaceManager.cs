@@ -10,8 +10,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 {
 	public abstract class AbstractFreespaceManager : IFreespaceManager
 	{
-		internal readonly LocalObjectContainer _file;
-
 		public const byte FmDebug = 127;
 
 		public const byte FmDefault = 0;
@@ -26,11 +24,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private const int IntsInSlot = 12;
 
-		public AbstractFreespaceManager(LocalObjectContainer file)
-		{
-			_file = file;
-		}
-
 		public static byte CheckType(byte systemType)
 		{
 			if (systemType == FmDefault)
@@ -38,6 +31,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 				return FmRam;
 			}
 			return systemType;
+		}
+
+		private readonly IProcedure4 _slotFreedCallback;
+
+		private readonly int _discardLimit;
+
+		public AbstractFreespaceManager(IProcedure4 slotFreedCallback, int discardLimit)
+		{
+			_slotFreedCallback = slotFreedCallback;
+			_discardLimit = discardLimit;
 		}
 
 		public static Db4objects.Db4o.Internal.Freespace.AbstractFreespaceManager CreateNew
@@ -50,24 +53,43 @@ namespace Db4objects.Db4o.Internal.Freespace
 			(LocalObjectContainer file, byte systemType)
 		{
 			systemType = CheckType(systemType);
+			int unblockedDiscardLimit = file.ConfigImpl.DiscardFreeSpace();
+			int blockedDiscardLimit = unblockedDiscardLimit == int.MaxValue ? unblockedDiscardLimit
+				 : file.BlockConverter().BytesToBlocks(unblockedDiscardLimit);
+			IProcedure4 slotFreedCallback = new _IProcedure4_47(file);
 			switch (systemType)
 			{
 				case FmIx:
 				{
-					return new FreespaceManagerIx(file);
+					return new FreespaceManagerIx(blockedDiscardLimit);
 				}
 
 				case FmBtree:
 				{
-					return new BTreeFreespaceManager(file);
+					return new BTreeFreespaceManager(file, slotFreedCallback, blockedDiscardLimit);
 				}
 
 				default:
 				{
-					return new RamFreespaceManager(file);
+					return new RamFreespaceManager(slotFreedCallback, blockedDiscardLimit);
 					break;
 				}
 			}
+		}
+
+		private sealed class _IProcedure4_47 : IProcedure4
+		{
+			public _IProcedure4_47(LocalObjectContainer file)
+			{
+				this.file = file;
+			}
+
+			public void Apply(object slot)
+			{
+				file.OverwriteDeletedBlockedSlot(((Slot)slot));
+			}
+
+			private readonly LocalObjectContainer file;
 		}
 
 		public static int InitSlot(LocalObjectContainer file)
@@ -79,12 +101,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual void MigrateTo(IFreespaceManager fm)
 		{
-			Traverse(new _IVisitor4_58(fm));
+			Traverse(new _IVisitor4_69(fm));
 		}
 
-		private sealed class _IVisitor4_58 : IVisitor4
+		private sealed class _IVisitor4_69 : IVisitor4
 		{
-			public _IVisitor4_58(IFreespaceManager fm)
+			public _IVisitor4_69(IFreespaceManager fm)
 			{
 				this.fm = fm;
 			}
@@ -105,7 +127,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				writer.WriteInt(0);
 			}
-			// no XBytes check
 			writer.WriteEncrypt();
 		}
 
@@ -117,13 +138,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public virtual int TotalFreespace()
 		{
 			IntByRef mint = new IntByRef();
-			Traverse(new _IVisitor4_83(mint));
+			Traverse(new _IVisitor4_94(mint));
 			return mint.value;
 		}
 
-		private sealed class _IVisitor4_83 : IVisitor4
+		private sealed class _IVisitor4_94 : IVisitor4
 		{
-			public _IVisitor4_83(IntByRef mint)
+			public _IVisitor4_94(IntByRef mint)
 			{
 				this.mint = mint;
 			}
@@ -137,21 +158,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly IntByRef mint;
 		}
 
-		public abstract void BeginCommit();
-
-		protected int BlockedDiscardLimit()
-		{
-			return _file.BlocksToBytes(DiscardLimit());
-		}
-
 		protected virtual int DiscardLimit()
 		{
-			return _file.ConfigImpl.DiscardFreeSpace();
+			return _discardLimit;
 		}
 
 		internal bool CanDiscard(int blocks)
 		{
-			return blocks == 0 || blocks < BlockedDiscardLimit();
+			return blocks == 0 || blocks < DiscardLimit();
 		}
 
 		public static void Migrate(IFreespaceManager oldFM, IFreespaceManager newFM)
@@ -164,12 +178,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			IntByRef lastStart = new IntByRef();
 			IntByRef lastEnd = new IntByRef();
-			Traverse(new _IVisitor4_114(lastEnd, lastStart));
+			Traverse(new _IVisitor4_119(lastEnd, lastStart));
 		}
 
-		private sealed class _IVisitor4_114 : IVisitor4
+		private sealed class _IVisitor4_119 : IVisitor4
 		{
-			public _IVisitor4_114(IntByRef lastEnd, IntByRef lastStart)
+			public _IVisitor4_119(IntByRef lastEnd, IntByRef lastStart)
 			{
 				this.lastEnd = lastEnd;
 				this.lastStart = lastStart;
@@ -191,19 +205,25 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly IntByRef lastStart;
 		}
 
-		protected LocalTransaction Transaction()
-		{
-			return (LocalTransaction)_file.SystemTransaction();
-		}
-
 		public static bool MigrationRequired(byte systemType)
 		{
 			return systemType == FmLegacyRam || systemType == FmIx;
 		}
 
+		protected virtual void SlotFreed(Slot slot)
+		{
+			if (_slotFreedCallback == null)
+			{
+				return;
+			}
+			_slotFreedCallback.Apply(slot);
+		}
+
 		public abstract Slot AllocateSlot(int arg1);
 
 		public abstract Slot AllocateTransactionLogSlot(int arg1);
+
+		public abstract void BeginCommit();
 
 		public abstract void Commit();
 
@@ -217,7 +237,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public abstract void Listener(IFreespaceListener arg1);
 
-		public abstract void Read(int arg1);
+		public abstract void Read(LocalObjectContainer arg1, int arg2);
 
 		public abstract int SlotCount();
 
@@ -227,6 +247,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public abstract void Traverse(IVisitor4 arg1);
 
-		public abstract int Write();
+		public abstract int Write(LocalObjectContainer arg1);
 	}
 }

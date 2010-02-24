@@ -395,7 +395,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual BTreeNode ProduceNode(int id)
 		{
 			TreeIntObject addtio = new TreeIntObject(id);
-			_nodes = (TreeIntObject)Tree.Add(_nodes, addtio);
+			_nodes = (TreeIntObject)((TreeIntObject)Tree.Add(_nodes, addtio));
 			TreeIntObject tio = (TreeIntObject)addtio.AddedOrExisting();
 			BTreeNode node = (BTreeNode)tio.GetObject();
 			if (node == null)
@@ -409,7 +409,8 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		internal virtual void AddNode(BTreeNode node)
 		{
-			_nodes = (TreeIntObject)Tree.Add(_nodes, new TreeIntObject(node.GetID(), node));
+			_nodes = (TreeIntObject)((TreeIntObject)Tree.Add(_nodes, new TreeIntObject(node.GetID
+				(), node)));
 			AddToProcessing(node);
 		}
 
@@ -423,7 +424,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		internal virtual void RemoveNode(BTreeNode node)
 		{
-			_nodes = (TreeIntObject)_nodes.RemoveLike(new TreeInt(node.GetID()));
+			_nodes = (TreeIntObject)((TreeInt)_nodes.RemoveLike(new TreeInt(node.GetID())));
 		}
 
 		internal virtual void NotifyRemoveListener(object obj)
@@ -609,11 +610,11 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void FreeAllNodeIds(LocalTransaction systemTrans, IEnumerator allNodeIDs)
 		{
-			IIdSystem idSystem = systemTrans.LocalContainer().IdSystem();
+			IIdSystem idSystem = systemTrans.IdSystem();
 			while (allNodeIDs.MoveNext())
 			{
 				int id = ((int)allNodeIDs.Current);
-				idSystem.NotifySlotDeleted(systemTrans, id, SlotChangeFactory());
+				idSystem.NotifySlotDeleted(id, SlotChangeFactory());
 			}
 		}
 

@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
-using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Transactionlog;
 
@@ -11,79 +11,47 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 	/// <exclude></exclude>
 	public class EmbeddedTransactionLogHandler : TransactionLogHandler
 	{
-		public EmbeddedTransactionLogHandler(StandardIdSystem idSystem) : base(idSystem)
-		{
-		}
-
-		public override IInterruptedTransactionHandler InterruptedTransactionHandler(ByteArrayBuffer
-			 reader)
-		{
-			int transactionID1 = reader.ReadInt();
-			int transactionID2 = reader.ReadInt();
-			if ((transactionID1 > 0) && (transactionID1 == transactionID2))
-			{
-				return new _IInterruptedTransactionHandler_23(this, transactionID1);
-			}
-			return null;
-		}
-
-		private sealed class _IInterruptedTransactionHandler_23 : IInterruptedTransactionHandler
-		{
-			public _IInterruptedTransactionHandler_23(EmbeddedTransactionLogHandler _enclosing
-				, int transactionID1)
-			{
-				this._enclosing = _enclosing;
-				this.transactionID1 = transactionID1;
-				this._addressOfIncompleteCommit = transactionID1;
-			}
-
-			private int _addressOfIncompleteCommit;
-
-			public void CompleteInterruptedTransaction()
-			{
-				StatefulBuffer bytes = new StatefulBuffer(this._enclosing._idSystem.SystemTransaction
-					(), this._addressOfIncompleteCommit, Const4.IntLength);
-				bytes.Read();
-				int length = bytes.ReadInt();
-				if (length > 0)
-				{
-					bytes = new StatefulBuffer(this._enclosing._idSystem.SystemTransaction(), this._addressOfIncompleteCommit
-						, length);
-					bytes.Read();
-					bytes.IncrementOffset(Const4.IntLength);
-					this._enclosing._idSystem.ReadWriteSlotChanges(bytes);
-					this._enclosing.LocalContainer().WriteTransactionPointer(0);
-					this._enclosing.FlushDatabaseFile();
-					this._enclosing._idSystem.FreeAndClearSystemSlotChanges();
-				}
-				else
-				{
-					this._enclosing.LocalContainer().WriteTransactionPointer(0);
-					this._enclosing.FlushDatabaseFile();
-				}
-			}
-
-			private readonly EmbeddedTransactionLogHandler _enclosing;
-
-			private readonly int transactionID1;
-		}
-
-		public override Slot AllocateSlot(LocalTransaction transaction, bool appendToFile
+		public EmbeddedTransactionLogHandler(LocalObjectContainer container) : base(container
 			)
 		{
-			int transactionLogByteCount = TransactionLogSlotLength(transaction);
-			IFreespaceManager freespaceManager = transaction.FreespaceManager();
+		}
+
+		public override void CompleteInterruptedTransaction(int transactionId1, int transactionId2
+			)
+		{
+			if (transactionId1 <= 0 || transactionId1 != transactionId2)
+			{
+				return;
+			}
+			StatefulBuffer bytes = new StatefulBuffer(_container.SystemTransaction(), transactionId1
+				, Const4.IntLength);
+			bytes.Read();
+			int length = bytes.ReadInt();
+			if (length > 0)
+			{
+				bytes = new StatefulBuffer(_container.SystemTransaction(), transactionId1, length
+					);
+				bytes.Read();
+				bytes.IncrementOffset(Const4.IntLength);
+				ReadWriteSlotChanges(bytes);
+			}
+			_container.WriteTransactionPointer(0);
+			FlushDatabaseFile();
+		}
+
+		public override Slot AllocateSlot(bool appendToFile, int slotChangeCount)
+		{
+			int transactionLogByteCount = TransactionLogSlotLength(slotChangeCount);
+			IFreespaceManager freespaceManager = _container.FreespaceManager();
 			if (!appendToFile && freespaceManager != null)
 			{
-				int blockedLength = transaction.LocalContainer().BytesToBlocks(transactionLogByteCount
-					);
-				Slot slot = freespaceManager.AllocateTransactionLogSlot(blockedLength);
+				Slot slot = freespaceManager.AllocateTransactionLogSlot(transactionLogByteCount);
 				if (slot != null)
 				{
-					return transaction.LocalContainer().ToNonBlockedLength(slot);
+					return slot;
 				}
 			}
-			return transaction.LocalContainer().AppendBytes(transactionLogByteCount);
+			return _container.AppendBytes(transactionLogByteCount);
 		}
 
 		private void FreeSlot(Slot slot)
@@ -92,36 +60,34 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			{
 				return;
 			}
-			if (_idSystem.FreespaceManager() == null)
+			if (_container.FreespaceManager() == null)
 			{
 				return;
 			}
-			_idSystem.FreespaceManager().FreeTransactionLogSlot(LocalContainer().ToBlockedLength
-				(slot));
+			_container.FreespaceManager().FreeTransactionLogSlot(slot);
 		}
 
-		public override void ApplySlotChanges(LocalTransaction transaction, Slot reservedSlot
-			)
+		public override void ApplySlotChanges(IVisitable slotChangeTree, int slotChangeCount
+			, Slot reservedSlot)
 		{
-			int slotChangeCount = CountSlotChanges(transaction);
 			if (slotChangeCount > 0)
 			{
-				Slot transactionLogSlot = SlotLongEnoughForLog(transaction, reservedSlot) ? reservedSlot
-					 : AllocateSlot(transaction, true);
-				StatefulBuffer buffer = new StatefulBuffer(transaction.SystemTransaction(), transactionLogSlot
+				Slot transactionLogSlot = SlotLongEnoughForLog(slotChangeCount, reservedSlot) ? reservedSlot
+					 : AllocateSlot(true, slotChangeCount);
+				StatefulBuffer buffer = new StatefulBuffer(_container.SystemTransaction(), transactionLogSlot
 					);
 				buffer.WriteInt(transactionLogSlot.Length());
 				buffer.WriteInt(slotChangeCount);
-				AppendSlotChanges(transaction, buffer);
+				AppendSlotChanges(buffer, slotChangeTree);
 				buffer.Write();
 				FlushDatabaseFile();
-				LocalContainer().WriteTransactionPointer(transactionLogSlot.Address());
+				_container.WriteTransactionPointer(transactionLogSlot.Address());
 				FlushDatabaseFile();
-				if (_idSystem.WriteSlots(transaction))
+				if (WriteSlots(slotChangeTree))
 				{
 					FlushDatabaseFile();
 				}
-				LocalContainer().WriteTransactionPointer(0);
+				_container.WriteTransactionPointer(0);
 				FlushDatabaseFile();
 				if (transactionLogSlot != reservedSlot)
 				{
@@ -131,9 +97,9 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			FreeSlot(reservedSlot);
 		}
 
-		private bool SlotLongEnoughForLog(LocalTransaction transaction, Slot slot)
+		private bool SlotLongEnoughForLog(int slotChangeCount, Slot slot)
 		{
-			return slot != null && slot.Length() >= TransactionLogSlotLength(transaction);
+			return slot != null && slot.Length() >= TransactionLogSlotLength(slotChangeCount);
 		}
 
 		public override void Close()

@@ -239,7 +239,7 @@ namespace Db4objects.Db4o.Internal.Query
 			{
 				return cachedBuffer;
 			}
-			ByteArrayBuffer buffer = _container.ReadReaderByID(_transaction, id);
+			ByteArrayBuffer buffer = _container.ReadBufferById(_transaction, id);
 			_bufferCache[id] = buffer;
 			return buffer;
 		}

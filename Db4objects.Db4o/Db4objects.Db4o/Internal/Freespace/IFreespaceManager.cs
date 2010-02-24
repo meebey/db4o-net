@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
 
@@ -25,7 +26,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		void MigrateTo(IFreespaceManager fm);
 
-		void Read(int freeSpaceID);
+		void Read(LocalObjectContainer container, int freeSpaceID);
 
 		void Start(int slotAddress);
 
@@ -33,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		void Traverse(IVisitor4 visitor);
 
-		int Write();
+		int Write(LocalObjectContainer container);
 
 		void Commit();
 

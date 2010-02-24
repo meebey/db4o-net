@@ -176,7 +176,7 @@ namespace Db4objects.Db4o.Tools
 				{
 					if (((Tree)ids.value).Find(new TreeInt((int)newIDs[j])) == null)
 					{
-						ids.value = ((Tree)ids.value).Add(new TreeInt((int)newIDs[j]));
+						ids.value = ((TreeInt)((Tree)ids.value).Add(new TreeInt((int)newIDs[j])));
 					}
 				}
 				Sharpen.Runtime.Out.WriteLine(node._key + ": " + newIDs.Length);

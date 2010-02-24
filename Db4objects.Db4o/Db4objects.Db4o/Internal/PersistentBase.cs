@@ -63,8 +63,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Free(LocalTransaction trans)
 		{
-			trans.LocalContainer().IdSystem().NotifySlotDeleted(trans.SystemTransaction(), GetID
-				(), SlotChangeFactory());
+			trans.SystemTransaction().IdSystem().NotifySlotDeleted(GetID(), SlotChangeFactory
+				());
 		}
 
 		public virtual int GetID()
@@ -122,7 +122,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual ByteArrayBuffer ReadBufferById(Transaction trans)
 		{
-			return trans.Container().ReadReaderByID(trans, GetID());
+			return trans.Container().ReadBufferById(trans, GetID());
 		}
 
 		public virtual void SetID(int a_id)
@@ -163,7 +163,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public void Write(Transaction trans)
+		public virtual void Write(Transaction trans)
 		{
 			if (!WriteObjectBegin())
 			{
@@ -177,20 +177,16 @@ namespace Db4objects.Db4o.Internal
 					DTrace.PersistentOwnLength.Log(GetID());
 				}
 				int length = OwnLength();
-				length = container.BlockAlignedBytes(length);
-				Slot slot;
+				length = container.BlockConverter().BlockAlignedBytes(length);
+				Slot slot = container.AllocateSlot(length);
 				if (IsNew())
 				{
-					Pointer4 pointer = container.NewSlot(length);
-					SetID(pointer._id);
-					slot = pointer._slot;
-					container.IdSystem().NotifySlotCreated(trans, pointer._id, slot, SlotChangeFactory
-						());
+					SetID(trans.IdSystem().NewId(SlotChangeFactory()));
+					trans.IdSystem().NotifySlotCreated(_id, slot, SlotChangeFactory());
 				}
 				else
 				{
-					slot = container.AllocateSlot(length);
-					container.IdSystem().NotifySlotChanged(trans, _id, slot, SlotChangeFactory());
+					trans.IdSystem().NotifySlotUpdated(_id, slot, SlotChangeFactory());
 				}
 				ByteArrayBuffer writer = ProduceWriteBuffer(trans, length);
 				WriteToFile(trans, writer, slot);
@@ -210,11 +206,6 @@ namespace Db4objects.Db4o.Internal
 		protected virtual ByteArrayBuffer NewWriteBuffer(int length)
 		{
 			return new ByteArrayBuffer(length);
-		}
-
-		public virtual bool IsFreespaceComponent()
-		{
-			return false;
 		}
 
 		private void WriteToFile(Transaction trans, ByteArrayBuffer writer, Slot slot)

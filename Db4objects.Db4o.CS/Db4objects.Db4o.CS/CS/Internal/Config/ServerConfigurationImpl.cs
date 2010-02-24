@@ -83,5 +83,13 @@ namespace Db4objects.Db4o.CS.Internal.Config
 				configItem.Apply(server);
 			}
 		}
+
+		public virtual IIdSystemConfiguration IdSystem
+		{
+			get
+			{
+				return new IdSystemConfigurationImpl(Legacy());
+			}
+		}
 	}
 }

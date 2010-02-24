@@ -7,7 +7,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Fileheader;
 using Db4objects.Db4o.Internal.Handlers;
-using Db4objects.Db4o.Internal.Transactionlog;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -31,9 +30,11 @@ namespace Db4objects.Db4o.Internal
 
 		private int _address;
 
-		private IInterruptedTransactionHandler _interruptedTransactionHandler;
-
 		public int _bootRecordID;
+
+		private int _transactionId1;
+
+		private int _transactionId2;
 
 		private const int MinimumLength = Const4.IntLength + (Const4.LongLength * 2) + 1;
 
@@ -120,9 +121,10 @@ namespace Db4objects.Db4o.Internal
 			return TimerFileLock().OpenTime();
 		}
 
-		public IInterruptedTransactionHandler InterruptedTransactionHandler()
+		public void CompleteInterruptedTransaction()
 		{
-			return _interruptedTransactionHandler;
+			_container.GlobalIdSystem().CompleteInterruptedTransaction(_transactionId1, _transactionId2
+				);
 		}
 
 		private byte[] PasswordToken()
@@ -163,8 +165,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			AddressChanged(address);
 			TimerFileLock().WriteOpenTime();
-			StatefulBuffer reader = _container.GetWriter(_container.SystemTransaction(), _address
-				, Length);
+			StatefulBuffer reader = _container.CreateStatefulBuffer(_container.SystemTransaction
+				(), _address, Length);
 			_container.ReadBytes(reader._buffer, _address, Length);
 			int oldLength = reader.ReadInt();
 			if (oldLength > Length || oldLength < MinimumLength)
@@ -190,10 +192,8 @@ namespace Db4objects.Db4o.Internal
 			SystemData().StringEncoding(reader.ReadByte());
 			if (oldLength > TransactionOffset)
 			{
-				int savedOffset = reader.Offset();
-				_interruptedTransactionHandler = _container.IdSystem().InterruptedTransactionHandler
-					(reader);
-				reader.Seek(savedOffset + Const4.IntLength * 2);
+				_transactionId1 = reader.ReadInt();
+				_transactionId2 = reader.ReadInt();
 			}
 			if (oldLength > BootrecordOffset)
 			{
@@ -294,8 +294,8 @@ namespace Db4objects.Db4o.Internal
 		{
 			TimerFileLock().CheckHeaderLock();
 			AddressChanged(_container.AllocateSlot(Length).Address());
-			StatefulBuffer writer = _container.GetWriter(_container.Transaction, _address, Length
-				);
+			StatefulBuffer writer = _container.CreateStatefulBuffer(_container.Transaction, _address
+				, Length);
 			IntHandler.WriteInt(Length, writer);
 			for (int i = 0; i < 2; i++)
 			{
@@ -327,11 +327,10 @@ namespace Db4objects.Db4o.Internal
 		private void WritePointer()
 		{
 			TimerFileLock().CheckHeaderLock();
-			StatefulBuffer writer = _container.GetWriter(_container.Transaction, 0, Const4.IdLength
-				);
+			StatefulBuffer writer = _container.CreateStatefulBuffer(_container.Transaction, 0
+				, Const4.IdLength);
 			writer.MoveForward(2);
 			IntHandler.WriteInt(_address, writer);
-			writer.NoXByteCheck();
 			writer.Write();
 			TimerFileLock().WriteHeaderLock();
 		}

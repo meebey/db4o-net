@@ -419,6 +419,10 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
+				if (slot == null)
+				{
+					return;
+				}
 				LogLength(slot.Address(), slot.Length());
 			}
 		}

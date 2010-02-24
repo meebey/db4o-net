@@ -34,6 +34,17 @@ namespace Db4oUnit
 			AreEqual(v.GetEnumerator(), iterator);
 		}
 
+		public static void SameContent(object[] expected, IEnumerable actual)
+		{
+			IList expectedList = new ArrayList();
+			for (int expectedObjectIndex = 0; expectedObjectIndex < expected.Length; ++expectedObjectIndex)
+			{
+				object expectedObject = expected[expectedObjectIndex];
+				expectedList.Add(expectedObject);
+			}
+			SameContent(expectedList, actual);
+		}
+
 		public static void SameContent(IEnumerable expected, IEnumerable actual)
 		{
 			SameContent(expected.GetEnumerator(), actual.GetEnumerator());

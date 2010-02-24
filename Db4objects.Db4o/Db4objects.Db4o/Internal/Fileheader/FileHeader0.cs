@@ -3,7 +3,6 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
-using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -62,8 +61,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
-		protected override void ReadFixedPart(LocalObjectContainer file, ByteArrayBuffer 
-			reader)
+		protected override void Read(LocalObjectContainer file, ByteArrayBuffer reader)
 		{
 			_configBlock = ConfigBlock.ForExistingFile(file, reader.ReadInt());
 			SkipConfigurationLockTime(reader);
@@ -73,25 +71,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private void SkipConfigurationLockTime(ByteArrayBuffer reader)
 		{
 			reader.IncrementOffset(Const4.IdLength);
-		}
-
-		public override void ReadVariablePart(LocalObjectContainer file)
-		{
-			if (_configBlock._bootRecordID <= 0)
-			{
-				return;
-			}
-			object bootRecord = Debug4.readBootRecord ? GetBootRecord(file) : null;
-			if (!(bootRecord is PBootRecord))
-			{
-				InitBootRecord(file);
-				file.GenerateNewIdentity();
-				return;
-			}
-			_bootRecord = (PBootRecord)bootRecord;
-			file.Activate(bootRecord, int.MaxValue);
-			file.SetNextTimeStampId(_bootRecord.i_versionGenerator);
-			file.SystemData().Identity(_bootRecord.i_db);
 		}
 
 		private object GetBootRecord(LocalObjectContainer file)
@@ -130,9 +109,10 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
-		public override IInterruptedTransactionHandler InterruptedTransactionHandler()
+		public override void CompleteInterruptedTransaction(LocalObjectContainer container
+			)
 		{
-			return _configBlock.InterruptedTransactionHandler();
+			_configBlock.CompleteInterruptedTransaction();
 		}
 
 		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionAddress
@@ -161,10 +141,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt((int)TimeToWrite(_configBlock.OpenTime(), shuttingDown));
 			writer.WriteInt(file.SystemData().ClassCollectionID());
 			writer.WriteInt(freespaceID);
-			if (Debug4.xbytes && Deploy.overwrite)
-			{
-				writer.SetID(Const4.IgnoreId);
-			}
 			writer.Write();
 			file.SyncFiles();
 		}
@@ -182,6 +158,25 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					_bootRecord.Write(file);
 				}
 			}
+		}
+
+		public override void ReadIdentity(LocalObjectContainer container)
+		{
+			if (_configBlock._bootRecordID <= 0)
+			{
+				return;
+			}
+			object bootRecord = Debug4.readBootRecord ? GetBootRecord(container) : null;
+			if (!(bootRecord is PBootRecord))
+			{
+				InitBootRecord(container);
+				container.GenerateNewIdentity();
+				return;
+			}
+			_bootRecord = (PBootRecord)bootRecord;
+			container.Activate(bootRecord, int.MaxValue);
+			container.SetNextTimeStampId(_bootRecord.i_versionGenerator);
+			container.SystemData().Identity(_bootRecord.i_db);
 		}
 	}
 }

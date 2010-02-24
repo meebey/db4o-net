@@ -303,7 +303,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				// TODO: Code is similar to QCandidate.readArrayCandidates. Try to refactor to one place.
 				int collectionID = context.ReadInt();
-				ByteArrayBuffer collectionBuffer = container.ReadReaderByID(context.Transaction()
+				ByteArrayBuffer collectionBuffer = container.ReadBufferById(context.Transaction()
 					, collectionID);
 				ObjectHeader objectHeader = new ObjectHeader(container, collectionBuffer);
 				QueryingReadContext subContext = new QueryingReadContext(context.Transaction(), context

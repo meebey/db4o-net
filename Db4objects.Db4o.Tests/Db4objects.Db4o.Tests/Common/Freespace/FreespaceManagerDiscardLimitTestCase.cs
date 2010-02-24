@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
@@ -9,7 +10,8 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public class FreespaceManagerDiscardLimitTestCase : FreespaceManagerTestCaseBase
+	public class FreespaceManagerDiscardLimitTestCase : FreespaceManagerTestCaseBase, 
+		IOptOutNonStandardBlockSize
 	{
 		public static void Main(string[] args)
 		{

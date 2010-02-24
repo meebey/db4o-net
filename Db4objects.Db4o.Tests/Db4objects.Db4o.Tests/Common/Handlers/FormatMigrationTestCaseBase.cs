@@ -16,6 +16,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	public abstract partial class FormatMigrationTestCaseBase : ITestLifeCycle, IOptOutNoFileSystemData
 		, IOptOutMultiSession
 	{
+		private static readonly string Host = "127.0.0.1";
+
+		private static readonly string Username = "db4o";
+
+		private static readonly string Password = Username;
+
 		private string _db4oVersion;
 
 		public virtual void Configure()
@@ -90,40 +96,69 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				return;
 			}
 			string testFileName = FileName(versionName);
-			if (System.IO.File.Exists(testFileName))
+			if (!System.IO.File.Exists(testFileName))
 			{
-				//		    System.out.println("Check database: " + testFileName);
-				InvestigateFileHeaderVersion(testFileName);
+				Sharpen.Runtime.Out.WriteLine("Version upgrade check failed. File not found:" + testFileName
+					);
+				// FIXME: The following fails the CC build since not all files are there on .NET.
+				//        Change back when we have all files.
+				// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
+				return;
+			}
+			//      System.out.println("Checking database file: " + testFileName);
+			InvestigateFileHeaderVersion(testFileName);
+			PrepareClientServerTest(testFileName);
+			try
+			{
 				RunDeletionTests(testFileName);
-				RunDefrag(testFileName);
+				DefragmentSoloAndCS(testFileName);
 				CheckDatabaseFile(testFileName);
 				// Twice, to ensure everything is fine after opening, converting and closing.
 				CheckDatabaseFile(testFileName);
 				UpdateDatabaseFile(testFileName);
 				CheckUpdatedDatabaseFile(testFileName);
-				RunDefrag(testFileName);
+				DefragmentSoloAndCS(testFileName);
 				CheckUpdatedDatabaseFile(testFileName);
 			}
-			else
+			finally
 			{
-				Sharpen.Runtime.Out.WriteLine("Version upgrade check failed. File not found:" + testFileName
-					);
+				TearDownClientServer(testFileName);
 			}
 		}
 
-		// FIXME: The following fails the CC build since not all files are there on .NET.
-		//        Change back when we have all files.
-		// Assert.fail("Version upgrade check failed. File not found:" + testFileName);
+		/// <exception cref="System.IO.IOException"></exception>
+		private void DefragmentSoloAndCS(string fileName)
+		{
+			RunDefrag(fileName);
+			RunDefrag(ClientServerFileName(fileName));
+		}
+
+		private void TearDownClientServer(string testFileName)
+		{
+			File4.Delete(ClientServerFileName(testFileName));
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		private void PrepareClientServerTest(string fileName)
+		{
+			File4.Copy(fileName, ClientServerFileName(fileName));
+		}
+
+		private string ClientServerFileName(string fileName)
+		{
+			return fileName + ".CS";
+		}
+
 		/// <exception cref="System.IO.IOException"></exception>
 		private void RunDeletionTests(string testFileName)
 		{
-			WithDatabase(testFileName, new _IFunction4_122(this));
+			WithDatabase(testFileName, new _IFunction4_155(this));
 			CheckDatabaseFile(testFileName);
 		}
 
-		private sealed class _IFunction4_122 : IFunction4
+		private sealed class _IFunction4_155 : IFunction4
 		{
-			public _IFunction4_122(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_155(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -152,12 +187,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_144(this));
+			WithDatabase(testFile, new _IFunction4_177(this));
 		}
 
-		private sealed class _IFunction4_144 : IFunction4
+		private sealed class _IFunction4_177 : IFunction4
 		{
-			public _IFunction4_144(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_177(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -173,12 +208,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckUpdatedDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_153(this));
+			WithDatabase(testFile, new _IFunction4_186(this));
 		}
 
-		private sealed class _IFunction4_153 : IFunction4
+		private sealed class _IFunction4_186 : IFunction4
 		{
-			public _IFunction4_153(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_186(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -260,12 +295,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_214(this));
+			WithDatabase(testFile, new _IFunction4_247(this));
 		}
 
-		private sealed class _IFunction4_214 : IFunction4
+		private sealed class _IFunction4_247 : IFunction4
 		{
-			public _IFunction4_214(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_247(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -290,6 +325,19 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			finally
 			{
 				objectContainer.Close();
+			}
+			IObjectServer server = Db4oFactory.OpenServer(ClientServerFileName(file), -1);
+			server.GrantAccess(Username, Password);
+			objectContainer = Db4oFactory.OpenClient("localhost", server.Ext().Port(), Username
+				, Password).Ext();
+			try
+			{
+				function.Apply(objectContainer);
+			}
+			finally
+			{
+				objectContainer.Close();
+				server.Close();
 			}
 		}
 
@@ -378,7 +426,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		protected virtual void StoreObject(IExtObjectContainer objectContainer, object obj
 			)
 		{
-			// code MUST use the deprecated API here
+			// code MUST use the deprecated ObjectContainer#set() API here
+			// instead of ObjectContainer#store()
 			// because it will be run against old db4o versions
 			objectContainer.Set(obj);
 		}

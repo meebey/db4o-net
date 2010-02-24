@@ -31,8 +31,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 							classMetadata.SetStateDirty();
 							classMetadata.Write(trans);
 							trans.Commit();
-							StatefulBuffer returnBytes = Container().ReadWriterByID(trans, classMetadata.GetID
-								());
+							StatefulBuffer returnBytes = Container().ReadStatefulBufferById(trans, classMetadata
+								.GetID());
 							return Msg.ObjectToClient.GetWriter(returnBytes);
 						}
 					}

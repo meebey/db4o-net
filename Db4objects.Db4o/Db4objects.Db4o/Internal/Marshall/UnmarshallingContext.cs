@@ -145,7 +145,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			if (Buffer() == null && id > 0)
 			{
-				Buffer(Container().ReadReaderByID(Transaction(), id));
+				Buffer(Container().ReadBufferById(Transaction(), id));
 			}
 		}
 

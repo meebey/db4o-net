@@ -14,6 +14,7 @@ using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Tests.Common.Api;
 
 namespace Db4objects.Db4o.Tests.Common.Api
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(42, legacy.ActivationDepth());
 				Assert.AreEqual(42, common.ActivationDepth);
 				// TODO: assert
-				common.Add(new _IConfigurationItem_39());
+				common.Add(new _IConfigurationItem_40());
 				TypeAlias alias = new TypeAlias("foo", "bar");
 				common.AddAlias(alias);
 				Assert.AreEqual("bar", legacy.ResolveAliasStoredName("foo"));
@@ -85,7 +86,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				TextWriter outStream = Sharpen.Runtime.Out;
 				common.OutStream = outStream;
 				Assert.AreEqual(outStream, legacy.OutStream());
-				IStringEncoding stringEncoding = new _IStringEncoding_113();
+				IStringEncoding stringEncoding = new _IStringEncoding_114();
 				common.StringEncoding = stringEncoding;
 				Assert.AreEqual(stringEncoding, legacy.StringEncoding());
 				common.TestConstructors = false;
@@ -100,9 +101,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(1024, legacy.WeakReferenceCollectionInterval());
 			}
 
-			private sealed class _IConfigurationItem_39 : IConfigurationItem
+			private sealed class _IConfigurationItem_40 : IConfigurationItem
 			{
-				public _IConfigurationItem_39()
+				public _IConfigurationItem_40()
 				{
 				}
 
@@ -115,9 +116,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				}
 			}
 
-			private sealed class _IStringEncoding_113 : IStringEncoding
+			private sealed class _IStringEncoding_114 : IStringEncoding
 			{
-				public _IStringEncoding_113()
+				public _IStringEncoding_114()
 				{
 				}
 
@@ -135,12 +136,12 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			// TODO: test registerTypeHandler()
 			private DiagnosticBase DummyDiagnostic()
 			{
-				return new _DiagnosticBase_143();
+				return new _DiagnosticBase_144();
 			}
 
-			private sealed class _DiagnosticBase_143 : DiagnosticBase
+			private sealed class _DiagnosticBase_144 : DiagnosticBase
 			{
-				public _DiagnosticBase_143()
+				public _DiagnosticBase_144()
 				{
 				}
 
@@ -202,6 +203,14 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				ICacheConfiguration cache = cacheProvider.Cache;
 				cache.SlotCacheSize = 30;
 				Assert.AreEqual(30, legacyConfig.SlotCacheSize());
+				IIdSystemConfigurationProvider idSystemConfigurationProvider = ((IIdSystemConfigurationProvider
+					)Subject());
+				IIdSystemConfiguration idSystemConfiguration = idSystemConfigurationProvider.IdSystem;
+				Assert.AreEqual(GlobalIdSystemFactory.Default, legacyConfig.IdSystemType());
+				idSystemConfiguration.UseBTreeSystem();
+				Assert.AreEqual(GlobalIdSystemFactory.Btree, legacyConfig.IdSystemType());
+				idSystemConfiguration.UsePointerBasedSystem();
+				Assert.AreEqual(GlobalIdSystemFactory.PointerBased, legacyConfig.IdSystemType());
 			}
 		}
 

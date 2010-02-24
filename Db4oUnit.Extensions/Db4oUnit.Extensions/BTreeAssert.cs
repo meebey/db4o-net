@@ -99,40 +99,37 @@ namespace Db4oUnit.Extensions
 			 block)
 		{
 			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
-			IIdSystem idSystem = container.IdSystem();
+			IIdSystem idSystem = trans.IdSystem();
 			IEnumerator allSlotIDs = bTree.AllNodeIds(trans.SystemTransaction());
 			Collection4 allSlots = new Collection4();
 			while (allSlotIDs.MoveNext())
 			{
 				int slotID = ((int)allSlotIDs.Current);
-				Slot slot = idSystem.GetCurrentSlotOfID(trans, slotID);
+				Slot slot = idSystem.CurrentSlot(slotID);
 				allSlots.Add(slot);
 			}
-			Slot bTreeSlot = idSystem.GetCurrentSlotOfID(trans, bTree.GetID());
+			Slot bTreeSlot = idSystem.CurrentSlot(bTree.GetID());
 			allSlots.Add(bTreeSlot);
 			Collection4 freedSlots = new Collection4();
-			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(container, new 
-				_ISlotListener_97(freedSlots, container)));
+			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(new _ISlotListener_97
+				(freedSlots)));
 			block.Run();
 			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
 		}
 
 		private sealed class _ISlotListener_97 : ISlotListener
 		{
-			public _ISlotListener_97(Collection4 freedSlots, LocalObjectContainer container)
+			public _ISlotListener_97(Collection4 freedSlots)
 			{
 				this.freedSlots = freedSlots;
-				this.container = container;
 			}
 
 			public void OnFree(Slot slot)
 			{
-				freedSlots.Add(container.ToNonBlockedLength(slot));
+				freedSlots.Add(slot);
 			}
 
 			private readonly Collection4 freedSlots;
-
-			private readonly LocalObjectContainer container;
 		}
 	}
 }

@@ -22,8 +22,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 						if (classMetadata != null)
 						{
 							Container().CheckStillToSet();
-							StatefulBuffer returnBytes = Container().ReadWriterByID(SystemTransaction(), classMetadata
-								.GetID());
+							StatefulBuffer returnBytes = Container().ReadStatefulBufferById(SystemTransaction
+								(), classMetadata.GetID());
 							MsgD createdClass = Msg.ObjectToClient.GetWriter(returnBytes);
 							return createdClass;
 						}

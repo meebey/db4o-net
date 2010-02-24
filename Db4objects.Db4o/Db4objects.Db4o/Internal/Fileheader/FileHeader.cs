@@ -1,10 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
-using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -25,7 +23,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
-		public static FileHeader ReadFixedPart(LocalObjectContainer file)
+		public static FileHeader Read(LocalObjectContainer file)
 		{
 			ByteArrayBuffer reader = PrepareFileHeaderReader(file);
 			FileHeader header = DetectFileHeader(file, reader);
@@ -36,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 			else
 			{
-				header.ReadFixedPart(file, reader);
+				header.Read(file, reader);
 			}
 			return header;
 		}
@@ -69,7 +67,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public abstract void InitNew(LocalObjectContainer file);
 
-		public abstract IInterruptedTransactionHandler InterruptedTransactionHandler();
+		public abstract void CompleteInterruptedTransaction(LocalObjectContainer container
+			);
 
 		public abstract int Length();
 
@@ -81,10 +80,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return shuttingDown ? 0 : time;
 		}
 
-		protected abstract void ReadFixedPart(LocalObjectContainer file, ByteArrayBuffer 
-			reader);
-
-		public abstract void ReadVariablePart(LocalObjectContainer file);
+		protected abstract void Read(LocalObjectContainer file, ByteArrayBuffer reader);
 
 		protected virtual bool SignatureMatches(ByteArrayBuffer reader, byte[] signature, 
 			byte version)
@@ -114,17 +110,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			bytes.MoveForward(offset);
 			bytes.WriteInt(transactionAddress);
 			bytes.WriteInt(transactionAddress);
-			if (Debug4.xbytes && Deploy.overwrite)
-			{
-				bytes.SetID(Const4.IgnoreId);
-			}
 			bytes.Write();
 		}
 
 		public abstract void WriteVariablePart(LocalObjectContainer file, int part);
 
-		protected virtual void ReadClassCollectionAndFreeSpace(LocalObjectContainer file, 
-			ByteArrayBuffer reader)
+		protected void ReadClassCollectionAndFreeSpace(LocalObjectContainer file, ByteArrayBuffer
+			 reader)
 		{
 			SystemData systemData = file.SystemData();
 			systemData.ClassCollectionID(reader.ReadInt());
@@ -136,5 +128,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			return container.NeedsLockFileThread() && (lastAccessTime != 0);
 		}
+
+		public abstract void ReadIdentity(LocalObjectContainer container);
 	}
 }

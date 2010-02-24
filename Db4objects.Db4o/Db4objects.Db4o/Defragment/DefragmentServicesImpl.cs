@@ -98,6 +98,7 @@ namespace Db4objects.Db4o.Defragment
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
 			_sourceDb.ShowInternalClasses(true);
+			defragConfig.Db4oConfig().BlockSize(_sourceDb.BlockSize());
 			_targetDb = FreshTargetFile(defragConfig);
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
@@ -304,12 +305,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_224(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_225(this, collector));
 		}
 
-		private sealed class _IVisitor4_224 : IVisitor4
+		private sealed class _IVisitor4_225 : IVisitor4
 		{
-			public _IVisitor4_224(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_225(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -431,16 +432,16 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata curClazz = clazz;
 			while (!hasFieldIndex.value && curClazz != null)
 			{
-				curClazz.TraverseDeclaredFields(new _IProcedure4_320(hasFieldIndex));
+				curClazz.TraverseDeclaredFields(new _IProcedure4_321(hasFieldIndex));
 				curClazz = curClazz.GetAncestor();
 			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_320 : IProcedure4
+		private sealed class _IProcedure4_321 : IProcedure4
 		{
-			public _IProcedure4_320(BooleanByRef hasFieldIndex)
+			public _IProcedure4_321(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}
@@ -459,7 +460,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual int BlockSize()
 		{
-			return _sourceDb.Config().BlockSize();
+			return _sourceDb.BlockSize();
 		}
 
 		public virtual int SourceAddressByID(int sourceID)

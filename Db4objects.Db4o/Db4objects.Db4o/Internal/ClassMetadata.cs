@@ -228,7 +228,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (HasClassIndex() || HasVirtualAttributes())
 			{
-				ObjectHeader oh = new ObjectHeader(_container, this, buffer);
+				ObjectHeader oh = new ObjectHeader(this, buffer);
 				ObjectIdContextImpl context = new ObjectIdContextImpl(buffer.Transaction(), buffer
 					, oh, buffer.GetID());
 				Handlers4.FieldAwareTypeHandler(CorrectHandlerVersion(context)).AddFieldIndices(context
@@ -969,7 +969,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void CascadeDeletion(StatefulBuffer buffer, object obj)
 		{
-			ObjectHeader oh = new ObjectHeader(_container, this, buffer);
+			ObjectHeader oh = new ObjectHeader(this, buffer);
 			DeleteContextImpl context = new DeleteContextImpl(buffer, oh, ClassReflector(), null
 				);
 			DeleteMembers(context, ArrayTypeFor(buffer, obj), false);
@@ -1101,8 +1101,9 @@ namespace Db4objects.Db4o.Internal
 				return HandlerVersion.Invalid;
 			}
 			buffer.Seek(0);
-			ObjectHeader oh = new ObjectHeader(_container, this, buffer);
-			bool res = SeekToField(new ObjectHeaderContext(trans, buffer, oh), field);
+			ObjectHeader oh = new ObjectHeader(_container, buffer);
+			bool res = oh.ClassMetadata().SeekToField(new ObjectHeaderContext(trans, buffer, 
+				oh), field);
 			if (!res)
 			{
 				return HandlerVersion.Invalid;
@@ -1840,7 +1841,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual byte[] ReadName(Transaction a_trans)
 		{
-			i_reader = a_trans.Container().ReadReaderByID(a_trans, GetID());
+			i_reader = a_trans.Container().ReadBufferById(a_trans, GetID());
 			return ReadName1(a_trans, i_reader);
 		}
 
@@ -1877,9 +1878,9 @@ namespace Db4objects.Db4o.Internal
 			, bool lastCommitted)
 		{
 			int id = @ref.GetID();
-			ObjectContainerBase stream = trans.Container();
-			ByteArrayBuffer buffer = stream.ReadReaderByID(trans, id, lastCommitted);
-			ObjectHeader oh = new ObjectHeader(stream, this, buffer);
+			ObjectContainerBase container = trans.Container();
+			ByteArrayBuffer buffer = container.ReadBufferById(trans, id, lastCommitted);
+			ObjectHeader oh = new ObjectHeader(this, buffer);
 			ObjectReferenceContext context = new ObjectReferenceContext(trans, buffer, oh, @ref
 				);
 			Handlers4.FieldAwareTypeHandler(CorrectHandlerVersion(context)).ReadVirtualAttributes
@@ -2647,7 +2648,7 @@ namespace Db4objects.Db4o.Internal
 				}
 				IInstantiatingTypeHandler customTypeHandler = (IInstantiatingTypeHandler)_customTypeHandlerAspect
 					._typeHandler;
-				return context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_2064(customTypeHandler
+				return context.SlotFormat().DoWithSlotIndirection(context, new _IClosure4_2061(customTypeHandler
 					, context));
 			}
 			finally
@@ -2656,9 +2657,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_2064 : IClosure4
+		private sealed class _IClosure4_2061 : IClosure4
 		{
-			public _IClosure4_2064(IInstantiatingTypeHandler customTypeHandler, UnmarshallingContext
+			public _IClosure4_2061(IInstantiatingTypeHandler customTypeHandler, UnmarshallingContext
 				 context)
 			{
 				this.customTypeHandler = customTypeHandler;

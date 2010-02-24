@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			{
 				lock (ContainerLock())
 				{
-					bytes = Container().ReadReaderByID(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
+					bytes = Container().ReadBufferById(Transaction(), _payLoad.ReadInt(), _payLoad.ReadInt
 						() == 1);
 				}
 				if (bytes == null)

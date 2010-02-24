@@ -46,14 +46,18 @@ namespace Db4objects.Db4o.Internal
 			_classCollection = _parent.ClassCollection();
 			_config = _parent.ConfigImpl;
 			_references = WeakReferenceSupportFactory.DisabledWeakReferenceSupport();
-			Initialize2();
 		}
 
-		internal override void Initialize2NObjectCarrier()
+		protected override void InitializeClassMetadataRepository()
 		{
 		}
 
-		// do nothing
+		// do nothing, it's passed from the parent ObjectContainer
+		protected override void InitalizeWeakReferenceSupport()
+		{
+		}
+
+		// do nothing, no Weak references
 		internal override void InitializeEssentialClasses()
 		{
 		}
@@ -106,7 +110,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return parentTransaction;
 			}
-			return new TransactionObjectCarrier(this, null, referenceSystem);
+			return new TransactionObjectCarrier(this, null, new TransportIdSystem(this), referenceSystem
+				);
 		}
 
 		public override long CurrentVersion()
@@ -141,7 +146,7 @@ namespace Db4objects.Db4o.Internal
 		// do nothing
 		public override Slot AllocateSlot(int length)
 		{
-			return AppendBlocks(length);
+			return AppendBytes(length);
 		}
 
 		protected override bool IsValidPointer(int id)
@@ -252,6 +257,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		protected sealed override void OpenImpl()
 		{
+			CreateIdSystem();
 			if (_memoryBin.Length() == 0)
 			{
 				ConfigureNewFile();
@@ -358,9 +364,9 @@ namespace Db4objects.Db4o.Internal
 			return new HashcodeReferenceSystem();
 		}
 
-		protected override IIdSystem NewIdSystem()
+		protected override void CreateIdSystem()
 		{
-			return new TransportStandardIdSystem(this);
 		}
+		// do nothing
 	}
 }

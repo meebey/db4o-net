@@ -6,7 +6,7 @@ using Db4oUnit;
 namespace Db4oUnit
 {
 	[System.Serializable]
-	public class AssertionException : TestException
+	public partial class AssertionException : TestException
 	{
 		private const long serialVersionUID = 900088031151055525L;
 

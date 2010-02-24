@@ -6,7 +6,7 @@ using Db4objects.Db4o.Foundation;
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public abstract class Tree : IShallowClone, IDeepClone
+	public abstract class Tree : IShallowClone, IDeepClone, IVisitable
 	{
 		public Tree _preceding;
 
@@ -14,18 +14,18 @@ namespace Db4objects.Db4o.Foundation
 
 		public Tree _subsequent;
 
-		public static Tree Add(Tree a_old, Tree a_new)
+		public static Tree Add(Tree oldTree, Tree newTree)
 		{
-			if (a_old == null)
+			if (oldTree == null)
 			{
-				return a_new;
+				return newTree;
 			}
-			return a_old.Add(a_new);
+			return (Tree)((Tree)oldTree).Add(newTree);
 		}
 
-		public virtual Tree Add(Tree a_new)
+		public Tree Add(Tree newNode)
 		{
-			return Add(a_new, Compare(a_new));
+			return Add(newNode, Compare(newNode));
 		}
 
 		/// <summary>
@@ -40,50 +40,50 @@ namespace Db4objects.Db4o.Foundation
 		/// prevails in the tree using #duplicateOrThis(). This mechanism
 		/// allows doing find() and add() in one run.
 		/// </remarks>
-		public virtual Tree Add(Tree a_new, int a_cmp)
+		public virtual Tree Add(Tree newNode, int cmp)
 		{
-			if (a_cmp < 0)
+			if (cmp < 0)
 			{
 				if (_subsequent == null)
 				{
-					_subsequent = a_new;
+					_subsequent = newNode;
 					_size++;
 				}
 				else
 				{
-					_subsequent = _subsequent.Add(a_new);
+					_subsequent = _subsequent.Add(newNode);
 					if (_preceding == null)
 					{
-						return RotateLeft();
+						return (Tree)RotateLeft();
 					}
-					return Balance();
+					return (Tree)Balance();
 				}
 			}
 			else
 			{
-				if (a_cmp > 0 || a_new.Duplicates())
+				if (cmp > 0 || ((Tree)newNode).Duplicates())
 				{
 					if (_preceding == null)
 					{
-						_preceding = a_new;
+						_preceding = newNode;
 						_size++;
 					}
 					else
 					{
-						_preceding = _preceding.Add(a_new);
+						_preceding = _preceding.Add(newNode);
 						if (_subsequent == null)
 						{
-							return RotateRight();
+							return (Tree)RotateRight();
 						}
-						return Balance();
+						return (Tree)Balance();
 					}
 				}
 				else
 				{
-					a_new.OnAttemptToAddDuplicate(this);
+					((Tree)newNode).OnAttemptToAddDuplicate(this);
 				}
 			}
-			return this;
+			return (Tree)this;
 		}
 
 		/// <summary>
@@ -402,7 +402,7 @@ namespace Db4objects.Db4o.Foundation
 			int cmp = Compare(a_find);
 			if (cmp == 0)
 			{
-				return Remove();
+				return (Tree)Remove();
 			}
 			if (cmp > 0)
 			{
@@ -419,7 +419,7 @@ namespace Db4objects.Db4o.Foundation
 				}
 			}
 			CalculateSize();
-			return this;
+			return (Tree)this;
 		}
 
 		public Tree RemoveNode(Tree a_tree)
@@ -545,16 +545,16 @@ namespace Db4objects.Db4o.Foundation
 			tree.Traverse(visitor);
 		}
 
-		public void Traverse(IVisitor4 a_visitor)
+		public void Traverse(IVisitor4 visitor)
 		{
 			if (_preceding != null)
 			{
-				_preceding.Traverse(a_visitor);
+				_preceding.Traverse(visitor);
 			}
-			a_visitor.Visit((Tree)this);
+			visitor.Visit((Tree)this);
 			if (_subsequent != null)
 			{
-				_subsequent.Traverse(a_visitor);
+				_subsequent.Traverse(visitor);
 			}
 		}
 
@@ -607,6 +607,27 @@ namespace Db4objects.Db4o.Foundation
 		public virtual object Root()
 		{
 			return this;
+		}
+
+		public virtual void Accept(IVisitor4 visitor)
+		{
+			Traverse(new _IVisitor4_471(visitor));
+		}
+
+		private sealed class _IVisitor4_471 : IVisitor4
+		{
+			public _IVisitor4_471(IVisitor4 visitor)
+			{
+				this.visitor = visitor;
+			}
+
+			public void Visit(object obj)
+			{
+				Tree tree = (Tree)obj;
+				visitor.Visit(tree.Key());
+			}
+
+			private readonly IVisitor4 visitor;
 		}
 	}
 }

@@ -2,41 +2,39 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
-using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal.Transactionlog
 {
 	/// <exclude></exclude>
 	public abstract class TransactionLogHandler
 	{
-		protected readonly StandardIdSystem _idSystem;
+		protected readonly LocalObjectContainer _container;
 
-		protected TransactionLogHandler(StandardIdSystem idSystem)
+		protected TransactionLogHandler(LocalObjectContainer container)
 		{
-			_idSystem = idSystem;
+			_container = container;
 		}
 
 		protected virtual LocalObjectContainer LocalContainer()
 		{
-			return _idSystem.LocalContainer();
+			return _container;
 		}
 
 		protected void FlushDatabaseFile()
 		{
-			_idSystem.FlushFile();
+			_container.SyncFiles();
 		}
 
-		protected void AppendSlotChanges(LocalTransaction transaction, ByteArrayBuffer writer
+		protected void AppendSlotChanges(ByteArrayBuffer writer, IVisitable slotChangeVisitable
 			)
 		{
-			_idSystem.TraverseSlotChanges(transaction, new _IVisitor4_31(writer));
+			slotChangeVisitable.Accept(new _IVisitor4_30(writer));
 		}
 
-		private sealed class _IVisitor4_31 : IVisitor4
+		private sealed class _IVisitor4_30 : IVisitor4
 		{
-			public _IVisitor4_31(ByteArrayBuffer writer)
+			public _IVisitor4_30(ByteArrayBuffer writer)
 			{
 				this.writer = writer;
 			}
@@ -49,47 +47,72 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			private readonly ByteArrayBuffer writer;
 		}
 
-		protected int TransactionLogSlotLength(LocalTransaction transaction)
+		protected virtual bool WriteSlots(IVisitable slotChangeTree)
 		{
-			// slotchanges * 3 for ID, address, length
-			// 2 ints for slotlength and count
-			return ((CountSlotChanges(transaction) * 3) + 2) * Const4.IntLength;
+			BooleanByRef ret = new BooleanByRef();
+			slotChangeTree.Accept(new _IVisitor4_39(this, ret));
+			return ret.value;
 		}
 
-		protected int CountSlotChanges(LocalTransaction transaction)
+		private sealed class _IVisitor4_39 : IVisitor4
 		{
-			IntByRef count = new IntByRef();
-			_idSystem.TraverseSlotChanges(transaction, new _IVisitor4_46(count));
-			return count.value;
-		}
-
-		private sealed class _IVisitor4_46 : IVisitor4
-		{
-			public _IVisitor4_46(IntByRef count)
+			public _IVisitor4_39(TransactionLogHandler _enclosing, BooleanByRef ret)
 			{
-				this.count = count;
+				this._enclosing = _enclosing;
+				this.ret = ret;
 			}
 
 			public void Visit(object obj)
 			{
-				SlotChange slot = (SlotChange)obj;
-				if (slot.SlotModified())
-				{
-					count.value++;
-				}
+				((SlotChange)obj).WritePointer(this._enclosing._container);
+				ret.value = true;
 			}
 
-			private readonly IntByRef count;
+			private readonly TransactionLogHandler _enclosing;
+
+			private readonly BooleanByRef ret;
 		}
 
-		public abstract Slot AllocateSlot(LocalTransaction transaction, bool append);
+		protected int TransactionLogSlotLength(int slotChangeCount)
+		{
+			// slotchanges * 3 for ID, address, length
+			// 2 ints for slotlength and count
+			return ((slotChangeCount * 3) + 2) * Const4.IntLength;
+		}
 
-		public abstract void ApplySlotChanges(LocalTransaction transaction, Slot reservedSlot
+		public abstract Slot AllocateSlot(bool append, int slotChangeCount);
+
+		public abstract void ApplySlotChanges(IVisitable slotChangeTree, int slotChangeCount
+			, Slot reservedSlot);
+
+		public abstract void CompleteInterruptedTransaction(int transactionId1, int transactionId2
 			);
 
-		public abstract IInterruptedTransactionHandler InterruptedTransactionHandler(ByteArrayBuffer
-			 reader);
-
 		public abstract void Close();
+
+		protected virtual void ReadWriteSlotChanges(ByteArrayBuffer buffer)
+		{
+			LockedTree slotChanges = new LockedTree();
+			slotChanges.Read(buffer, new SlotChange(0));
+			if (WriteSlots(new _IVisitable_65(slotChanges)))
+			{
+				FlushDatabaseFile();
+			}
+		}
+
+		private sealed class _IVisitable_65 : IVisitable
+		{
+			public _IVisitable_65(LockedTree slotChanges)
+			{
+				this.slotChanges = slotChanges;
+			}
+
+			public void Accept(IVisitor4 visitor)
+			{
+				slotChanges.TraverseMutable(visitor);
+			}
+
+			private readonly LockedTree slotChanges;
+		}
 	}
 }

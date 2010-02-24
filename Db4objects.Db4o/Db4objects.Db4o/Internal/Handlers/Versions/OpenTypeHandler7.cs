@@ -116,7 +116,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 				MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
 					, false);
 				Handlers4.Write(this.ClassMetadata().TypeHandler(), context, this.GetObject());
-				int length = this.Container().BlockAlignedBytes(context.MarshalledLength());
+				int length = this.Container().BlockConverter().BlockAlignedBytes(context.MarshalledLength
+					());
 				Slot slot = context.AllocateNewSlot(length);
 				Pointer4 pointer = new Pointer4(this.GetID(), slot);
 				ByteArrayBuffer buffer = context.ToWriteBuffer(pointer);

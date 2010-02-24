@@ -25,6 +25,34 @@ namespace Db4objects.Db4o.Internal
 
 		private int _uuidIndexId;
 
+		private byte _idSystemType;
+
+		private int _idSystemID;
+
+		public SystemData()
+		{
+		}
+
+		public virtual void IdSystemType(byte idSystem)
+		{
+			_idSystemType = idSystem;
+		}
+
+		public virtual byte IdSystemType()
+		{
+			return _idSystemType;
+		}
+
+		public virtual void IdSystemID(int idSystemID)
+		{
+			_idSystemID = idSystemID;
+		}
+
+		public virtual int IdSystemID()
+		{
+			return _idSystemID;
+		}
+
 		public virtual int ClassCollectionID()
 		{
 			return _classCollectionID;

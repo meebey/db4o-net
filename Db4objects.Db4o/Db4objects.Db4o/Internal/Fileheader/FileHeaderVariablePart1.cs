@@ -4,19 +4,24 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
 	/// <exclude></exclude>
 	public class FileHeaderVariablePart1 : PersistentBase
 	{
-		private const int Length = 1 + (Const4.IntLength * 4) + Const4.LongLength + Const4
+		private const int Length = 2 + (Const4.IntLength * 5) + Const4.LongLength + Const4
 			.AddedLength;
 
-		private readonly Db4objects.Db4o.Internal.SystemData _systemData;
+		private readonly LocalObjectContainer _container;
 
-		public FileHeaderVariablePart1(int id, Db4objects.Db4o.Internal.SystemData systemData
-			)
+		private readonly SystemData _systemData;
+
+		private int _identityId;
+
+		public FileHeaderVariablePart1(LocalObjectContainer container, int id, SystemData
+			 systemData)
 		{
 			// The variable part format is:
 			// (int) converter version
@@ -25,13 +30,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			// (int) identity ID
 			// (long) versionGenerator
 			// (int) uuid index ID
+			// (byte) idSystem
+			// (int) idSystem ID
 			SetID(id);
+			_container = container;
 			_systemData = systemData;
-		}
-
-		internal virtual Db4objects.Db4o.Internal.SystemData SystemData()
-		{
-			return _systemData;
 		}
 
 		public override byte GetIdentifier()
@@ -49,9 +52,16 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_systemData.ConverterVersion(reader.ReadInt());
 			_systemData.FreespaceSystem(reader.ReadByte());
 			_systemData.FreespaceAddress(reader.ReadInt());
-			ReadIdentity((LocalTransaction)trans, reader.ReadInt());
+			_identityId = reader.ReadInt();
 			_systemData.LastTimeStampID(reader.ReadLong());
 			_systemData.UuidIndexId(reader.ReadInt());
+			if (reader.Eof())
+			{
+				// older versions of the file header don't have IdSystem information.
+				return;
+			}
+			_systemData.IdSystemType(reader.ReadByte());
+			_systemData.IdSystemID(reader.ReadInt());
 		}
 
 		public override void WriteThis(Transaction trans, ByteArrayBuffer writer)
@@ -62,19 +72,27 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt(_systemData.Identity().GetID(trans));
 			writer.WriteLong(_systemData.LastTimeStampID());
 			writer.WriteInt(_systemData.UuidIndexId());
+			writer.WriteByte(_systemData.IdSystemType());
+			writer.WriteInt(_systemData.IdSystemID());
 		}
 
-		private void ReadIdentity(LocalTransaction trans, int identityID)
+		public virtual void ReadIdentity(LocalTransaction trans)
 		{
 			LocalObjectContainer file = trans.LocalContainer();
 			Db4oDatabase identity = Debug4.staticIdentity ? Db4oDatabase.StaticIdentity : (Db4oDatabase
-				)file.GetByID(trans, identityID);
+				)file.GetByID(trans, _identityId);
 			if (null != identity)
 			{
 				// TODO: what?
 				file.Activate(trans, identity, new FixedActivationDepth(2));
 				_systemData.Identity(identity);
 			}
+		}
+
+		protected override ByteArrayBuffer ReadBufferById(Transaction trans)
+		{
+			Slot slot = _container.ReadPointerSlot(_id);
+			return _container.ReadBufferBySlot(slot);
 		}
 	}
 }

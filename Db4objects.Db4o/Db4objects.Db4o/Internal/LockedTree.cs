@@ -78,5 +78,10 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly Collection4 currentContent;
 		}
+
+		public virtual bool IsEmpty()
+		{
+			return _tree == null;
+		}
 	}
 }

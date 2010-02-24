@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 			while (i.MoveNext())
 			{
 				FieldIndexKey composite = (FieldIndexKey)i.Current;
-				tree = (TreeInt)Tree.Add(tree, new TreeInt(composite.ParentID()));
+				tree = (TreeInt)((TreeInt)Tree.Add(tree, new TreeInt(composite.ParentID())));
 			}
 			return tree;
 		}

@@ -18,11 +18,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return false;
 		}
 
-		public override bool IsFreespaceComponent()
-		{
-			return true;
-		}
-
 		public override Db4objects.Db4o.Internal.Slots.SlotChangeFactory SlotChangeFactory
 			()
 		{

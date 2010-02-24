@@ -2,54 +2,40 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
-using Db4objects.Db4o.Internal.Transactionlog;
 
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
 	public interface IIdSystem
 	{
-		void AddTransaction(LocalTransaction transaction);
+		void CollectCallBackInfo(ICallbackInfoCollector collector);
 
-		void RemoveTransaction(LocalTransaction trans);
+		bool IsDirty();
 
-		void CollectCallBackInfo(Transaction transaction, ICallbackInfoCollector collector
-			);
+		void Commit();
 
-		bool IsDirty(Transaction transaction);
+		Slot CommittedSlot(int id);
 
-		void Commit(LocalTransaction transaction);
+		Slot CurrentSlot(int id);
 
-		IInterruptedTransactionHandler InterruptedTransactionHandler(ByteArrayBuffer reader
-			);
+		void Rollback();
 
-		Slot GetCommittedSlotOfID(int id);
+		void Clear();
 
-		Slot GetCurrentSlotOfID(LocalTransaction transaction, int id);
+		bool IsDeleted(int id);
 
-		void Rollback(Transaction transaction);
+		void NotifySlotUpdated(int id, Slot slot, SlotChangeFactory slotChangeFactory);
 
-		void Clear(Transaction transaction);
+		void NotifySlotCreated(int id, Slot slot, SlotChangeFactory slotChangeFactory);
 
-		bool IsDeleted(Transaction transaction, int id);
+		void NotifySlotDeleted(int id, SlotChangeFactory slotChangeFactory);
 
-		void NotifySlotChanged(Transaction transaction, int id, Slot slot, SlotChangeFactory
-			 slotChangeFactory);
+		int NewId(SlotChangeFactory slotChangeFactory);
 
-		void NotifySlotCreated(Transaction transaction, int id, Slot slot, SlotChangeFactory
-			 slotChangeFactory);
+		int PrefetchID();
 
-		void NotifySlotDeleted(Transaction transaction, int id, SlotChangeFactory slotChangeFactory
-			);
-
-		void SystemTransaction(LocalTransaction transaction);
+		void PrefetchedIDConsumed(int id);
 
 		void Close();
-
-		int NewId(Transaction trans, SlotChangeFactory slotChangeFactory);
-
-		int PrefetchID(Transaction transaction);
-
-		void PrefetchedIDConsumed(Transaction transaction, int id);
 	}
 }

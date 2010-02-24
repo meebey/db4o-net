@@ -4,6 +4,7 @@ using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.References;
 
 namespace Db4objects.Db4o.CS.Internal
@@ -45,14 +46,14 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			if (_objectRefrencesToGC != null)
 			{
-				_objectRefrencesToGC.Traverse(new _IVisitor4_38(this));
+				_objectRefrencesToGC.Traverse(new _IVisitor4_39(this));
 			}
 			_objectRefrencesToGC = null;
 		}
 
-		private sealed class _IVisitor4_38 : IVisitor4
+		private sealed class _IVisitor4_39 : IVisitor4
 		{
-			public _IVisitor4_38(ClientTransaction _enclosing)
+			public _IVisitor4_39(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -79,14 +80,14 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public override void ProcessDeletes()
 		{
-			IVisitor4 deleteVisitor = new _IVisitor4_58(this);
+			IVisitor4 deleteVisitor = new _IVisitor4_59(this);
 			TraverseDelete(deleteVisitor);
 			_client.WriteBatchedMessage(Msg.ProcessDeletes);
 		}
 
-		private sealed class _IVisitor4_58 : IVisitor4
+		private sealed class _IVisitor4_59 : IVisitor4
 		{
-			public _IVisitor4_58(ClientTransaction _enclosing)
+			public _IVisitor4_59(ClientTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -118,6 +119,11 @@ namespace Db4objects.Db4o.CS.Internal
 			, ArrayType arrayType, int cascade)
 		{
 		}
+
 		// do nothing
+		public override IIdSystem IdSystem()
+		{
+			return null;
+		}
 	}
 }

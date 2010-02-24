@@ -76,5 +76,13 @@ namespace Db4objects.Db4o.Internal.Config
 				configItem.Apply(container);
 			}
 		}
+
+		public virtual IIdSystemConfiguration IdSystem
+		{
+			get
+			{
+				return new IdSystemConfigurationImpl(_legacy);
+			}
+		}
 	}
 }

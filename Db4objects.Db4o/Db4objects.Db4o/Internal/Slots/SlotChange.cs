@@ -2,6 +2,8 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Slots
@@ -50,8 +52,8 @@ namespace Db4objects.Db4o.Internal.Slots
 			return base.ShallowCloneInternal(sc);
 		}
 
-		public virtual void FreeDuringCommit(LocalObjectContainer file, bool forFreespace
-			)
+		public virtual void FreeDuringCommit(TransactionalIdSystem idSystem, IFreespaceManager
+			 freespaceManager, bool forFreespace)
 		{
 			if (IsForFreespace() != forFreespace)
 			{
@@ -64,27 +66,26 @@ namespace Db4objects.Db4o.Internal.Slots
 			if (_currentOperation == SlotChange.SlotChangeOperation.update || _currentOperation
 				 == SlotChange.SlotChangeOperation.delete)
 			{
-				Slot slot = file.IdSystem().GetCommittedSlotOfID(_key);
+				Slot slot = idSystem.CommittedSlot(_key);
 				// If we don't get a valid slot, the object may have just 
 				// been stored by the SystemTransaction and not committed yet.
 				if (slot == null || slot.IsNull())
 				{
-					slot = FindCurrentSlotInSystemTransaction(file);
+					slot = ModifiedSlotInUnderlyingIdSystem(idSystem);
 				}
 				// No old slot at all can be the case if the object
 				// has been deleted by another transaction and we add it again.
 				if (slot != null && !slot.IsNull())
 				{
-					file.Free(slot);
+					freespaceManager.Free(slot);
 				}
 			}
 		}
 
-		protected virtual Slot FindCurrentSlotInSystemTransaction(LocalObjectContainer file
+		protected virtual Slot ModifiedSlotInUnderlyingIdSystem(TransactionalIdSystem idSystem
 			)
 		{
-			return file.IdSystem().GetCurrentSlotOfID((LocalTransaction)file.SystemTransaction
-				(), _key);
+			return idSystem.ModifiedSlotInUnderlyingIdSystem(_key);
 		}
 
 		public virtual bool IsDeleted()
@@ -133,11 +134,11 @@ namespace Db4objects.Db4o.Internal.Slots
 			return change;
 		}
 
-		public virtual void Rollback(LocalObjectContainer container)
+		public virtual void Rollback(IFreespaceManager freespaceManager)
 		{
 			if (IsFreeOnRollback())
 			{
-				container.Free(_newSlot);
+				freespaceManager.Free(_newSlot);
 			}
 			if (IsFreePointerOnRollback())
 			{
@@ -145,7 +146,7 @@ namespace Db4objects.Db4o.Internal.Slots
 				{
 					DTrace.FreePointerOnRollback.LogLength(_key, Const4.PointerLength);
 				}
-				container.Free(_key, Const4.PointerLength);
+				freespaceManager.Free(new Slot(_key, Const4.PointerLength));
 			}
 		}
 
@@ -172,19 +173,21 @@ namespace Db4objects.Db4o.Internal.Slots
 			_newSlot = slot;
 		}
 
-		public virtual void NotifySlotChanged(LocalObjectContainer file, Slot slot)
+		public virtual void NotifySlotUpdated(IFreespaceManager freespaceManager, Slot slot
+			)
 		{
 			if (DTrace.enabled)
 			{
 				DTrace.NotifySlotChanged.Log(_key);
 				DTrace.NotifySlotChanged.LogLength(slot);
 			}
-			FreePreviouslyModifiedSlot(file);
+			FreePreviouslyModifiedSlot(freespaceManager);
 			_newSlot = slot;
 			Operation(SlotChange.SlotChangeOperation.update);
 		}
 
-		protected virtual void FreePreviouslyModifiedSlot(LocalObjectContainer file)
+		protected virtual void FreePreviouslyModifiedSlot(IFreespaceManager freespaceManager
+			)
 		{
 			if (_newSlot == null)
 			{
@@ -194,17 +197,21 @@ namespace Db4objects.Db4o.Internal.Slots
 			{
 				return;
 			}
-			Free(file, _newSlot);
+			Free(freespaceManager, _newSlot);
 			_newSlot = null;
 		}
 
-		protected virtual void Free(LocalObjectContainer file, Slot slot)
+		protected virtual void Free(IFreespaceManager freespaceManager, Slot slot)
 		{
 			if (slot.IsNull())
 			{
 				return;
 			}
-			file.Free(slot);
+			if (freespaceManager == null)
+			{
+				return;
+			}
+			freespaceManager.Free(slot);
 		}
 
 		private void Operation(SlotChange.SlotChangeOperation operation)
@@ -227,14 +234,14 @@ namespace Db4objects.Db4o.Internal.Slots
 			_newSlot = slot;
 		}
 
-		public virtual void NotifyDeleted(LocalObjectContainer file)
+		public virtual void NotifyDeleted(IFreespaceManager freespaceManager)
 		{
 			if (DTrace.enabled)
 			{
 				DTrace.NotifySlotDeleted.Log(_key);
 			}
 			Operation(SlotChange.SlotChangeOperation.delete);
-			FreePreviouslyModifiedSlot(file);
+			FreePreviouslyModifiedSlot(freespaceManager);
 			_newSlot = Slot.Zero;
 		}
 

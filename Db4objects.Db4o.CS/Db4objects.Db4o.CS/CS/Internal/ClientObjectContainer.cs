@@ -135,6 +135,8 @@ namespace Db4objects.Db4o.CS.Internal
 
 		protected sealed override void OpenImpl()
 		{
+			InitializeClassMetadataRepository();
+			InitalizeWeakReferenceSupport();
 			InitalizeClientSlotCache();
 			_singleThreaded = ConfigImpl.SingleThreadedClient();
 			// TODO: Experiment with packet size and noDelay
@@ -156,7 +158,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void InitalizeClientSlotCache()
 		{
-			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_136
+			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_138
 				(this).OnEvent);
 			if (ConfigImpl.PrefetchSlotCacheSize() > 0)
 			{
@@ -166,9 +168,9 @@ namespace Db4objects.Db4o.CS.Internal
 			_clientSlotCache = new NullClientSlotCache();
 		}
 
-		private sealed class _IEventListener4_136
+		private sealed class _IEventListener4_138
 		{
-			public _IEventListener4_136(ClientObjectContainer _enclosing)
+			public _IEventListener4_138(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -641,7 +643,7 @@ namespace Db4objects.Db4o.CS.Internal
 			message.Write(iSocket);
 			Msg msg = ReadLoginMessage(iSocket);
 			ByteArrayBuffer payLoad = msg.PayLoad();
-			_blockSize = payLoad.ReadInt();
+			BlockSize(payLoad.ReadInt());
 			int doEncrypt = payLoad.ReadInt();
 			if (doEncrypt == 0)
 			{
@@ -734,13 +736,14 @@ namespace Db4objects.Db4o.CS.Internal
 			return false;
 		}
 
-		public sealed override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id)
+		public sealed override StatefulBuffer ReadStatefulBufferById(Transaction a_ta, int
+			 a_id)
 		{
-			return ReadWriterByID(a_ta, a_id, false);
+			return ReadStatefulBufferById(a_ta, a_id, false);
 		}
 
-		public sealed override StatefulBuffer ReadWriterByID(Transaction a_ta, int a_id, 
-			bool lastCommitted)
+		public sealed override StatefulBuffer ReadStatefulBufferById(Transaction a_ta, int
+			 a_id, bool lastCommitted)
 		{
 			MsgD msg = Msg.ReadObject.GetWriterForInts(a_ta, new int[] { a_id, lastCommitted ? 
 				1 : 0 });
@@ -803,7 +806,7 @@ namespace Db4objects.Db4o.CS.Internal
 			return PackSlotBuffers(ids, buffers);
 		}
 
-		public sealed override ByteArrayBuffer ReadReaderByID(Transaction transaction, int
+		public sealed override ByteArrayBuffer ReadBufferById(Transaction transaction, int
 			 id, bool lastCommitted)
 		{
 			if (lastCommitted || _bypassSlotCache)
@@ -820,21 +823,21 @@ namespace Db4objects.Db4o.CS.Internal
 			return slot;
 		}
 
-		public sealed override ByteArrayBuffer ReadReaderByID(Transaction a_ta, int a_id)
+		public sealed override ByteArrayBuffer ReadBufferById(Transaction a_ta, int a_id)
 		{
-			return ReadReaderByID(a_ta, a_id, false);
+			return ReadBufferById(a_ta, a_id, false);
 		}
 
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_658(this, trans, result));
+			WithEnvironment(new _IRunnable_660(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_658 : IRunnable
+		private sealed class _IRunnable_660 : IRunnable
 		{
-			public _IRunnable_658(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_660(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -915,6 +918,8 @@ namespace Db4objects.Db4o.CS.Internal
 			remainingIDs = 0;
 			Initialize1(config);
 			InitializeTransactions();
+			InitializeClassMetadataRepository();
+			InitalizeWeakReferenceSupport();
 			ReadThis();
 		}
 
@@ -1168,13 +1173,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_920(this, trans, result));
+			WithEnvironment(new _IRunnable_924(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_920 : IRunnable
+		private sealed class _IRunnable_924 : IRunnable
 		{
-			public _IRunnable_920(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_924(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1472,5 +1477,16 @@ namespace Db4objects.Db4o.CS.Internal
 			int res = ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();
 			return res == 1;
 		}
+
+		public override void BlockSize(int size)
+		{
+			CreateBlockConverter(size);
+			_blockSize = size;
+		}
+
+		protected override void CloseIdSystem()
+		{
+		}
+		// do nothing
 	}
 }

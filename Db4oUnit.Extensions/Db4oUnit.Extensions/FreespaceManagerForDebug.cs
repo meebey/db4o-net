@@ -8,80 +8,90 @@ using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4oUnit.Extensions
 {
-	public class FreespaceManagerForDebug : AbstractFreespaceManager
+	public class FreespaceManagerForDebug : IFreespaceManager
 	{
 		private readonly ISlotListener _listener;
 
-		public FreespaceManagerForDebug(LocalObjectContainer file, ISlotListener listener
-			) : base(file)
+		public FreespaceManagerForDebug(ISlotListener listener)
 		{
 			_listener = listener;
 		}
 
-		public override Slot AllocateTransactionLogSlot(int length)
+		public virtual Slot AllocateTransactionLogSlot(int length)
 		{
 			return null;
 		}
 
-		public override void FreeTransactionLogSlot(Slot slot)
+		public virtual void FreeTransactionLogSlot(Slot slot)
 		{
 		}
 
-		public override void BeginCommit()
+		public virtual void BeginCommit()
 		{
 		}
 
-		public override void Commit()
+		public virtual void Commit()
 		{
 		}
 
-		public override void EndCommit()
+		public virtual void EndCommit()
 		{
 		}
 
-		public override int SlotCount()
+		public virtual int SlotCount()
 		{
 			return 0;
 		}
 
-		public override void Free(Slot slot)
+		public virtual void Free(Slot slot)
 		{
 			_listener.OnFree(slot);
 		}
 
-		public override void FreeSelf()
+		public virtual void FreeSelf()
 		{
 		}
 
-		public override Slot AllocateSlot(int length)
+		public virtual Slot AllocateSlot(int length)
 		{
 			return null;
 		}
 
-		public override void Read(int freeSlotsID)
+		public virtual void Read(LocalObjectContainer container, int freeSlotsID)
 		{
 		}
 
-		public override void Start(int slotAddress)
+		public virtual void Start(int slotAddress)
 		{
 		}
 
-		public override byte SystemType()
+		public virtual byte SystemType()
 		{
-			return FmDebug;
+			return AbstractFreespaceManager.FmDebug;
 		}
 
-		public override void Traverse(IVisitor4 visitor)
+		public virtual void Traverse(IVisitor4 visitor)
 		{
 		}
 
-		public override int Write()
+		public virtual int Write(LocalObjectContainer container)
 		{
 			return 0;
 		}
 
-		public override void Listener(IFreespaceListener listener)
+		public virtual void Listener(IFreespaceListener listener)
 		{
+		}
+
+		public virtual void MigrateTo(IFreespaceManager fm)
+		{
+		}
+
+		// TODO Auto-generated method stub
+		public virtual int TotalFreespace()
+		{
+			// TODO Auto-generated method stub
+			return 0;
 		}
 	}
 }

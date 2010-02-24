@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
@@ -12,7 +13,7 @@ using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class InvalidSlotExceptionTestCase : AbstractDb4oTestCase
+	public class InvalidSlotExceptionTestCase : AbstractDb4oTestCase, IOptOutNonStandardBlockSize
 	{
 		private const int InvalidId = 3;
 
@@ -32,13 +33,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
-			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_29(this));
+			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_30(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_29 : ICodeBlock
+		private sealed class _ICodeBlock_30 : ICodeBlock
 		{
-			public _ICodeBlock_29(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_30(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -55,13 +56,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDbNotClosedOnOutOfMemory()
 		{
 			Assert.Expect(typeof(Db4oRecoverableException), typeof(OutOfMemoryException), new 
-				_ICodeBlock_38(this));
+				_ICodeBlock_39(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_38 : ICodeBlock
+		private sealed class _ICodeBlock_39 : ICodeBlock
 		{
-			public _ICodeBlock_38(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_39(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

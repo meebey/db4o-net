@@ -11,7 +11,7 @@ using Db4objects.Db4o.Tests.Common.Freespace;
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
 	public class FreespaceManagerTypeChangeTestCase : FreespaceManagerTestCaseBase, IOptOutMultiSession
-		, IOptOutDefragSolo
+		, IOptOutDefragSolo, IOptOutNonStandardBlockSize
 	{
 		private const bool Verbose = false;
 

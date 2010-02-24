@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual Pointer4 AllocateSlot()
 		{
-			int length = Container().BlockAlignedBytes(MarshalledLength());
+			int length = Container().BlockConverter().BlockAlignedBytes(MarshalledLength());
 			Slot slot = IsNew() ? AllocateNewSlot(length) : AllocateUpdateSlot(length);
 			return new Pointer4(ObjectID(), slot);
 		}
@@ -146,7 +146,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return buffer.Length();
 			}
-			return Container().BlockAlignedBytes(buffer.Length());
+			return Container().BlockConverter().BlockAlignedBytes(buffer.Length());
 		}
 
 		private void WriteObjectClassID(ByteArrayBuffer reader, int id)

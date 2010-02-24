@@ -49,8 +49,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			ServerMessageDispatcherImpl msgDispatcher = FirstMessageDispatcherFor(server);
 			Transaction transaction = msgDispatcher.Transaction();
 			LocalObjectContainer container = (LocalObjectContainer)server.ObjectContainer();
-			StandardIdSystem standardIdSystem = (StandardIdSystem)container.IdSystem();
-			int prefetchedID = standardIdSystem.PrefetchID(transaction);
+			IIdSystem idSystem = transaction.IdSystem();
+			int prefetchedID = idSystem.PrefetchID();
 			Assert.IsGreater(0, prefetchedID);
 			PrefetchIDCountTestCase.DebugFreespaceManager freespaceManager = new PrefetchIDCountTestCase.DebugFreespaceManager
 				(container);
@@ -137,7 +137,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public class DebugFreespaceManager : AbstractFreespaceManager
 		{
-			public DebugFreespaceManager(LocalObjectContainer file) : base(file)
+			public DebugFreespaceManager(LocalObjectContainer file) : base(null, 0)
 			{
 			}
 
@@ -198,7 +198,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 
 			// TODO Auto-generated method stub
-			public override void Read(int freeSpaceID)
+			public override void Read(LocalObjectContainer container, int freeSpaceID)
 			{
 			}
 
@@ -231,7 +231,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 
 			// TODO Auto-generated method stub
-			public override int Write()
+			public override int Write(LocalObjectContainer container)
 			{
 				// TODO Auto-generated method stub
 				return 0;

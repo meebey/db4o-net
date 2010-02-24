@@ -20,7 +20,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private IFreespaceListener _listener = NullFreespaceListener.Instance;
 
-		public RamFreespaceManager(LocalObjectContainer file) : base(file)
+		public RamFreespaceManager(IProcedure4 slotFreedCallback, int discardLimit) : base
+			(slotFreedCallback, discardLimit)
 		{
 		}
 
@@ -131,7 +132,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 					AddFreeSlotNodes(address, length);
 				}
 			}
-			_file.OverwriteDeletedBlockedSlot(slot);
+			SlotFreed(slot);
 		}
 
 		public override void FreeSelf()
@@ -140,11 +141,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		// Do nothing.
 		// The RAM manager frees itself on reading.
-		private void FreeReader(StatefulBuffer reader)
-		{
-			_file.Free(reader.GetAddress(), reader.Length());
-		}
-
 		public override Slot AllocateSlot(int length)
 		{
 			_finder._key = length;
@@ -181,26 +177,26 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return TreeInt.MarshalledLength((TreeInt)_freeBySize);
 		}
 
-		public override void Read(int freeSlotsID)
+		public override void Read(LocalObjectContainer container, int freeSlotsID)
 		{
-			ReadById(freeSlotsID);
+			ReadById(container, freeSlotsID);
 		}
 
-		private void Read(StatefulBuffer reader)
+		private void Read(ByteArrayBuffer reader)
 		{
-			FreeSlotNode.sizeLimit = BlockedDiscardLimit();
+			FreeSlotNode.sizeLimit = DiscardLimit();
 			_freeBySize = new TreeReader(reader, new FreeSlotNode(0), true).Read();
 			ByRef addressTree = ByRef.NewInstance();
 			if (_freeBySize != null)
 			{
-				_freeBySize.Traverse(new _IVisitor4_175(addressTree));
+				_freeBySize.Traverse(new _IVisitor4_169(addressTree));
 			}
 			_freeByAddress = ((Tree)addressTree.value);
 		}
 
-		private sealed class _IVisitor4_175 : IVisitor4
+		private sealed class _IVisitor4_169 : IVisitor4
 		{
-			public _IVisitor4_175(ByRef addressTree)
+			public _IVisitor4_169(ByRef addressTree)
 			{
 				this.addressTree = addressTree;
 			}
@@ -214,23 +210,22 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly ByRef addressTree;
 		}
 
-		internal virtual void Read(Slot slot)
+		internal virtual void Read(LocalObjectContainer container, Slot slot)
 		{
 			if (slot.IsNull())
 			{
 				return;
 			}
-			StatefulBuffer reader = _file.ReadWriterByAddress(Transaction(), slot.Address(), 
-				slot.Length());
-			if (reader == null)
+			ByteArrayBuffer buffer = container.ReadBufferBySlot(slot);
+			if (buffer == null)
 			{
 				return;
 			}
-			Read(reader);
-			FreeReader(reader);
+			Read(buffer);
+			container.Free(slot);
 		}
 
-		private void ReadById(int freeSlotsID)
+		private void ReadById(LocalObjectContainer container, int freeSlotsID)
 		{
 			if (freeSlotsID <= 0)
 			{
@@ -240,14 +235,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			StatefulBuffer reader = _file.ReadWriterByID(Transaction(), freeSlotsID);
-			if (reader == null)
-			{
-				return;
-			}
-			Read(reader);
-			_file.Free(freeSlotsID, Const4.PointerLength);
-			FreeReader(reader);
+			Read(container, container.ReadPointerSlot(freeSlotsID));
+			container.Free(freeSlotsID, Const4.PointerLength);
 		}
 
 		private void RemoveFromBothTrees(FreeSlotNode sizeNode)
@@ -294,12 +283,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _IVisitor4_253(visitor));
+			_freeByAddress.Traverse(new _IVisitor4_242(visitor));
 		}
 
-		private sealed class _IVisitor4_253 : IVisitor4
+		private sealed class _IVisitor4_242 : IVisitor4
 		{
-			public _IVisitor4_253(IVisitor4 visitor)
+			public _IVisitor4_242(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -315,20 +304,22 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly IVisitor4 visitor;
 		}
 
-		public override int Write()
+		public override int Write(LocalObjectContainer container)
 		{
-			Pointer4 pointer = _file.NewSlot(MarshalledLength());
-			Write(pointer);
+			int pointerSlot = container.AllocatePointerSlot();
+			Slot slot = container.AllocateSlot(MarshalledLength());
+			Pointer4 pointer = new Pointer4(pointerSlot, slot);
+			Write(container, pointer);
 			return pointer._id;
 		}
 
-		internal virtual void Write(Pointer4 pointer)
+		internal virtual void Write(LocalObjectContainer container, Pointer4 pointer)
 		{
-			StatefulBuffer buffer = new StatefulBuffer(Transaction(), pointer);
+			ByteArrayBuffer buffer = new ByteArrayBuffer(pointer.Length());
 			TreeInt.Write(buffer, (TreeInt)_freeBySize);
-			buffer.WriteEncrypt();
-			_file.SyncFiles();
-			_file.WritePointer(pointer.Id(), pointer._slot);
+			container.WriteEncrypt(buffer, pointer.Address(), 0);
+			container.SyncFiles();
+			container.WritePointer(pointer.Id(), pointer._slot);
 		}
 
 		internal sealed class ToStringVisitor : IVisitor4

@@ -500,8 +500,8 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				public void Visit(object treeInt)
 				{
 					int id = ((TreeInt)treeInt)._key;
-					StatefulBuffer reader = stream.ReadWriterByID(this._enclosing._enclosing._trans, 
-						id);
+					StatefulBuffer reader = stream.ReadStatefulBufferById(this._enclosing._enclosing.
+						_trans, id);
 					if (reader != null)
 					{
 						ObjectHeader oh = new ObjectHeader(stream, reader);
@@ -753,7 +753,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					return false;
 				}
-				this.ids = (TreeInt)this.ids.Add(new TreeInt(id));
+				this.ids = (TreeInt)((TreeInt)this.ids.Add(new TreeInt(id)));
 				return true;
 			}
 		}

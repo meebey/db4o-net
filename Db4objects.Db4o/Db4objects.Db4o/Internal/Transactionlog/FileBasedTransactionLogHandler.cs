@@ -1,9 +1,9 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Transactionlog;
 
@@ -20,8 +20,8 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 
 		private readonly string _fileName;
 
-		public FileBasedTransactionLogHandler(StandardIdSystem idSystem, string fileName)
-			 : base(idSystem)
+		public FileBasedTransactionLogHandler(LocalObjectContainer container, string fileName
+			) : base(container)
 		{
 			_fileName = fileName;
 		}
@@ -38,57 +38,35 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 
 		private IBin OpenBin(string fileName)
 		{
-			return new FileStorage().Open(new BinConfiguration(fileName, _idSystem.Config().LockFile
-				(), 0, false));
+			return new FileStorage().Open(new BinConfiguration(fileName, _container.Config().
+				LockFile(), 0, false));
 		}
 
-		public override IInterruptedTransactionHandler InterruptedTransactionHandler(ByteArrayBuffer
-			 reader)
+		public override void CompleteInterruptedTransaction(int transactionId1, int transactionId2
+			)
 		{
-			reader.IncrementOffset(Const4.IntLength * 2);
 			if (!System.IO.File.Exists(LockFileName(_fileName)))
 			{
-				return null;
+				return;
 			}
 			if (!LockFileSignalsInterruptedTransaction())
 			{
-				return null;
+				return;
 			}
-			return new _IInterruptedTransactionHandler_50(this);
-		}
-
-		private sealed class _IInterruptedTransactionHandler_50 : IInterruptedTransactionHandler
-		{
-			public _IInterruptedTransactionHandler_50(FileBasedTransactionLogHandler _enclosing
-				)
+			ByteArrayBuffer buffer = new ByteArrayBuffer(Const4.IntLength);
+			OpenLogFile();
+			Read(_logFile, buffer);
+			int length = buffer.ReadInt();
+			if (length > 0)
 			{
-				this._enclosing = _enclosing;
+				buffer = new ByteArrayBuffer(length);
+				Read(_logFile, buffer);
+				buffer.IncrementOffset(Const4.IntLength);
+				ReadWriteSlotChanges(buffer);
 			}
-
-			public void CompleteInterruptedTransaction()
-			{
-				ByteArrayBuffer buffer = new ByteArrayBuffer(Const4.IntLength);
-				this._enclosing.OpenLogFile();
-				this._enclosing.Read(this._enclosing._logFile, buffer);
-				int length = buffer.ReadInt();
-				if (length > 0)
-				{
-					buffer = new ByteArrayBuffer(length);
-					this._enclosing.Read(this._enclosing._logFile, buffer);
-					buffer.IncrementOffset(Const4.IntLength);
-					this._enclosing._idSystem.ReadWriteSlotChanges(buffer);
-					this._enclosing.DeleteLockFile();
-					this._enclosing._idSystem.FreeAndClearSystemSlotChanges();
-				}
-				else
-				{
-					this._enclosing.DeleteLockFile();
-				}
-				this._enclosing.CloseLogFile();
-				this._enclosing.DeleteLogFile();
-			}
-
-			private readonly FileBasedTransactionLogHandler _enclosing;
+			DeleteLockFile();
+			CloseLogFile();
+			DeleteLogFile();
 		}
 
 		private bool LockFileSignalsInterruptedTransaction()
@@ -155,31 +133,30 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			File4.Delete(LogFileName(_fileName));
 		}
 
-		public override Slot AllocateSlot(LocalTransaction transaction, bool append)
+		public override Slot AllocateSlot(bool append, int slotChangeCount)
 		{
 			// do nothing
 			return null;
 		}
 
-		public override void ApplySlotChanges(LocalTransaction transaction, Slot reservedSlot
-			)
+		public override void ApplySlotChanges(IVisitable slotChangeTree, int slotChangeCount
+			, Slot reservedSlot)
 		{
-			int slotChangeCount = CountSlotChanges(transaction);
 			if (slotChangeCount < 1)
 			{
 				return;
 			}
 			FlushDatabaseFile();
 			EnsureLogAndLock();
-			int length = TransactionLogSlotLength(transaction);
+			int length = TransactionLogSlotLength(slotChangeCount);
 			ByteArrayBuffer logBuffer = new ByteArrayBuffer(length);
 			logBuffer.WriteInt(length);
 			logBuffer.WriteInt(slotChangeCount);
-			AppendSlotChanges(transaction, logBuffer);
+			AppendSlotChanges(logBuffer, slotChangeTree);
 			Write(_logFile, logBuffer);
 			_logFile.Sync();
 			WriteToLockFile(LockInt);
-			if (_idSystem.WriteSlots(transaction))
+			if (WriteSlots(slotChangeTree))
 			{
 				FlushDatabaseFile();
 			}
@@ -207,7 +184,7 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 
 		private void EnsureLogAndLock()
 		{
-			if (_idSystem.IsReadOnly())
+			if (_container.Config().IsReadOnly())
 			{
 				return;
 			}

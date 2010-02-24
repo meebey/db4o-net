@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Util
 			IObjectInfo objectInfo = objectContainer.GetObjectInfo(obj);
 			ObjectContainerBase container = (ObjectContainerBase)objectContainer;
 			Transaction trans = container.Transaction;
-			ByteArrayBuffer buffer = container.ReadReaderByID(trans, id);
+			ByteArrayBuffer buffer = container.ReadBufferById(trans, id);
 			UnmarshallingContext context = new UnmarshallingContext(trans, (ObjectReference)objectInfo
 				, Const4.Transient, false);
 			context.Buffer(buffer);

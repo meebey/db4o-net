@@ -26,13 +26,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 		}
 
-		public ObjectHeader(ObjectContainerBase stream, Db4objects.Db4o.Internal.ClassMetadata
+		private ObjectHeader(ObjectContainerBase container, Db4objects.Db4o.Internal.ClassMetadata
 			 classMetadata, IReadWriteBuffer reader)
 		{
 			int classID = reader.ReadInt();
 			_marshallerFamily = ReadMarshallerFamily(reader, classID);
 			classID = NormalizeID(classID);
-			_classMetadata = (classMetadata != null ? classMetadata : stream.ClassMetadataForID
+			_classMetadata = (classMetadata != null ? classMetadata : container.ClassMetadataForID
 				(classID));
 			// This check has been added to cope with defragment in debug mode: SlotDefragment#setIdentity()
 			// will trigger calling this constructor with a source db class metadata and a target db stream,

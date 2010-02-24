@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal
 			//       will invoke reading a pointer from the file system.
 			//       It may be possible to figure out the readd case
 			//       by asking the IdSystem in a smarter way.
-			Slot slot = Container().IdSystem().GetCurrentSlotOfID(_transaction, _id);
+			Slot slot = _transaction.IdSystem().CurrentSlot(_id);
 			if (HandledAsReAdd(slot))
 			{
 				return;
@@ -56,8 +56,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			StatefulBuffer objectBytes = (StatefulBuffer)Container().ReadReaderOrWriterBySlot
-				(_transaction, _id, false, slot);
+			StatefulBuffer objectBytes = Container().ReadStatefulBufferBySlot(_transaction, _id
+				, slot);
 			DeleteMembers(objectBytes);
 		}
 
@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal
 
 		private void DeleteMembers(StatefulBuffer objectBytes)
 		{
-			ObjectHeader oh = new ObjectHeader(Container(), _clazz, objectBytes);
+			ObjectHeader oh = new ObjectHeader(_clazz, objectBytes);
 			DeleteInfo info = (DeleteInfo)TreeInt.Find(_transaction._delete, _id);
 			if (info != null)
 			{

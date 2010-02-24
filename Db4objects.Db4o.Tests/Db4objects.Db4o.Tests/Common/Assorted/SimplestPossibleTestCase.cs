@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public static void Main(string[] args)
 		{
-			new SimplestPossibleTestCase().RunSolo();
+			new SimplestPossibleTestCase().RunNetworking();
 		}
 
 		protected override void Store()

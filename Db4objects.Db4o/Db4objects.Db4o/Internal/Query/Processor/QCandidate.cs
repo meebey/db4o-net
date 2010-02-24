@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				}
 				else
 				{
-					SetBytes(stream.ReadReaderByID(Transaction(), _key));
+					SetBytes(stream.ReadBufferById(Transaction(), _key));
 				}
 			}
 		}
@@ -365,7 +365,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					// TODO: Code is similar to FieldMetadata.collectIDs. Try to refactor to one place.
 					int collectionID = buffer.ReadInt();
-					ByteArrayBuffer arrayElementBuffer = this._enclosing.Container().ReadReaderByID(this
+					ByteArrayBuffer arrayElementBuffer = this._enclosing.Container().ReadBufferById(this
 						._enclosing.Transaction(), collectionID);
 					ObjectHeader objectHeader = ObjectHeader.ScrollBufferToContent(this._enclosing.Container
 						(), arrayElementBuffer);
@@ -596,7 +596,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						{
 							DTrace.CandidateRead.Log(_key);
 						}
-						SetBytes(Container().ReadReaderByID(Transaction(), _key));
+						SetBytes(Container().ReadBufferById(Transaction(), _key));
 						if (_bytes == null)
 						{
 							Include(false);

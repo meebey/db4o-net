@@ -106,8 +106,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			StatefulBuffer checker = trans.Container().GetWriter(trans, node._peer._key, node
-				._key);
+			StatefulBuffer checker = trans.Container().CreateStatefulBuffer(trans, node._peer
+				._key, node._key);
 			checker.Read();
 			for (int i = 0; i < node._key; i++)
 			{

@@ -14,8 +14,8 @@ namespace Db4objects.Db4o.Internal
 		public static Db4objects.Db4o.Internal.TreeInt Add(Db4objects.Db4o.Internal.TreeInt
 			 tree, int value)
 		{
-			return (Db4objects.Db4o.Internal.TreeInt)Tree.Add(tree, new Db4objects.Db4o.Internal.TreeInt
-				(value));
+			return (Db4objects.Db4o.Internal.TreeInt)((Db4objects.Db4o.Internal.TreeInt)Tree.
+				Add(tree, new Db4objects.Db4o.Internal.TreeInt(value)));
 		}
 
 		public static Db4objects.Db4o.Internal.TreeInt RemoveLike(Db4objects.Db4o.Internal.TreeInt

@@ -3,6 +3,8 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Ids
@@ -11,28 +13,22 @@ namespace Db4objects.Db4o.Internal.Ids
 	{
 		private readonly LockedTree _slotChanges = new LockedTree();
 
-		private readonly LocalObjectContainer _container;
+		private readonly TransactionalIdSystem _idSystem;
 
-		private Tree _prefetchedIDs;
+		private readonly IClosure4 _freespaceManager;
 
-		public StandardIdSlotChanges(LocalObjectContainer container)
+		private TreeInt _prefetchedIDs;
+
+		public StandardIdSlotChanges(TransactionalIdSystem idSystem, IClosure4 freespaceManager
+			)
 		{
-			_container = container;
-		}
-
-		public virtual Config4Impl Config()
-		{
-			return LocalContainer().Config();
-		}
-
-		private LocalObjectContainer LocalContainer()
-		{
-			return _container;
+			_idSystem = idSystem;
+			_freespaceManager = freespaceManager;
 		}
 
 		public void FreeSlotChanges(bool forFreespace, bool traverseMutable)
 		{
-			IVisitor4 visitor = new _IVisitor4_31(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_27(this, forFreespace);
 			if (traverseMutable)
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -43,9 +39,9 @@ namespace Db4objects.Db4o.Internal.Ids
 			}
 		}
 
-		private sealed class _IVisitor4_31 : IVisitor4
+		private sealed class _IVisitor4_27 : IVisitor4
 		{
-			public _IVisitor4_31(StandardIdSlotChanges _enclosing, bool forFreespace)
+			public _IVisitor4_27(StandardIdSlotChanges _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -53,8 +49,8 @@ namespace Db4objects.Db4o.Internal.Ids
 
 			public void Visit(object obj)
 			{
-				((SlotChange)obj).FreeDuringCommit(this._enclosing.LocalContainer(), forFreespace
-					);
+				((SlotChange)obj).FreeDuringCommit(this._enclosing._idSystem, this._enclosing.FreespaceManager
+					(), forFreespace);
 			}
 
 			private readonly StandardIdSlotChanges _enclosing;
@@ -69,19 +65,19 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual void Rollback()
 		{
-			_slotChanges.TraverseLocked(new _IVisitor4_48(this));
+			_slotChanges.TraverseLocked(new _IVisitor4_44(this));
 		}
 
-		private sealed class _IVisitor4_48 : IVisitor4
+		private sealed class _IVisitor4_44 : IVisitor4
 		{
-			public _IVisitor4_48(StandardIdSlotChanges _enclosing)
+			public _IVisitor4_44(StandardIdSlotChanges _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Visit(object slotChange)
 			{
-				((SlotChange)slotChange).Rollback(this._enclosing.LocalContainer());
+				((SlotChange)slotChange).Rollback(this._enclosing.FreespaceManager());
 			}
 
 			private readonly StandardIdSlotChanges _enclosing;
@@ -89,7 +85,12 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual bool IsDeleted(int id)
 		{
-			return SlotChangeIsFlaggedDeleted(id);
+			SlotChange slot = FindSlotChange(id);
+			if (slot == null)
+			{
+				return false;
+			}
+			return slot.IsDeleted();
 		}
 
 		public virtual SlotChange ProduceSlotChange(int id, SlotChangeFactory slotChangeFactory
@@ -109,16 +110,6 @@ namespace Db4objects.Db4o.Internal.Ids
 			return (SlotChange)_slotChanges.Find(id);
 		}
 
-		private bool SlotChangeIsFlaggedDeleted(int id)
-		{
-			SlotChange slot = FindSlotChange(id);
-			if (slot != null)
-			{
-				return slot.IsDeleted();
-			}
-			return false;
-		}
-
 		public virtual void TraverseSlotChanges(IVisitor4 visitor)
 		{
 			_slotChanges.TraverseLocked(visitor);
@@ -126,50 +117,7 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual bool IsDirty()
 		{
-			return _slotChanges != null;
-		}
-
-		public virtual void CollectSlotChanges(ICallbackInfoCollector collector)
-		{
-			if (!IsDirty())
-			{
-				return;
-			}
-			_slotChanges.TraverseLocked(new _IVisitor4_92(collector));
-		}
-
-		private sealed class _IVisitor4_92 : IVisitor4
-		{
-			public _IVisitor4_92(ICallbackInfoCollector collector)
-			{
-				this.collector = collector;
-			}
-
-			public void Visit(object obj)
-			{
-				SlotChange slotChange = ((SlotChange)obj);
-				int id = slotChange._key;
-				if (slotChange.IsDeleted())
-				{
-					if (!slotChange.IsNew())
-					{
-						collector.Deleted(id);
-					}
-				}
-				else
-				{
-					if (slotChange.IsNew())
-					{
-						collector.Added(id);
-					}
-					else
-					{
-						collector.Updated(id);
-					}
-				}
-			}
-
-			private readonly ICallbackInfoCollector collector;
+			return !_slotChanges.IsEmpty();
 		}
 
 		public virtual void ReadSlotChanges(ByteArrayBuffer buffer)
@@ -177,46 +125,24 @@ namespace Db4objects.Db4o.Internal.Ids
 			_slotChanges.Read(buffer, new SlotChange(0));
 		}
 
-		public virtual LocalTransaction SystemTransaction()
-		{
-			return (LocalTransaction)LocalContainer().SystemTransaction();
-		}
-
 		public virtual void AddPrefetchedID(int id)
 		{
-			_prefetchedIDs = Tree.Add(_prefetchedIDs, new TreeInt(id));
+			_prefetchedIDs = ((TreeInt)Tree.Add(_prefetchedIDs, new TreeInt(id)));
 		}
 
 		public virtual void PrefetchedIDConsumed(int id)
 		{
-			_prefetchedIDs = _prefetchedIDs.RemoveLike(new TreeInt(id));
+			_prefetchedIDs = ((TreeInt)_prefetchedIDs.RemoveLike(new TreeInt(id)));
 		}
 
-		internal void FreePrefetchedIDs()
+		internal void FreePrefetchedIDs(IGlobalIdSystem idSystem)
 		{
 			if (_prefetchedIDs == null)
 			{
 				return;
 			}
-			LocalObjectContainer container = LocalContainer();
-			_prefetchedIDs.Traverse(new _IVisitor4_131(container));
+			idSystem.ReturnUnusedIds(_prefetchedIDs);
 			_prefetchedIDs = null;
-		}
-
-		private sealed class _IVisitor4_131 : IVisitor4
-		{
-			public _IVisitor4_131(LocalObjectContainer container)
-			{
-				this.container = container;
-			}
-
-			public void Visit(object node)
-			{
-				TreeInt intNode = (TreeInt)node;
-				container.Free(intNode._key, Const4.PointerLength);
-			}
-
-			private readonly LocalObjectContainer container;
 		}
 
 		public virtual void NotifySlotCreated(int id, Slot slot, SlotChangeFactory slotChangeFactory
@@ -225,17 +151,22 @@ namespace Db4objects.Db4o.Internal.Ids
 			ProduceSlotChange(id, slotChangeFactory).NotifySlotCreated(slot);
 		}
 
-		internal virtual void NotifySlotChanged(int id, Slot slot, SlotChangeFactory slotChangeFactory
+		internal virtual void NotifySlotUpdated(int id, Slot slot, SlotChangeFactory slotChangeFactory
 			)
 		{
-			ProduceSlotChange(id, slotChangeFactory).NotifySlotChanged(LocalContainer(), slot
+			ProduceSlotChange(id, slotChangeFactory).NotifySlotUpdated(FreespaceManager(), slot
 				);
 		}
 
 		public virtual void NotifySlotDeleted(int id, SlotChangeFactory slotChangeFactory
 			)
 		{
-			ProduceSlotChange(id, slotChangeFactory).NotifyDeleted(LocalContainer());
+			ProduceSlotChange(id, slotChangeFactory).NotifyDeleted(FreespaceManager());
+		}
+
+		private IFreespaceManager FreespaceManager()
+		{
+			return ((IFreespaceManager)_freespaceManager.Run());
 		}
 	}
 }

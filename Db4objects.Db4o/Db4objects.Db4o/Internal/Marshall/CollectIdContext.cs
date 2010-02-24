@@ -31,7 +31,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public static Db4objects.Db4o.Internal.Marshall.CollectIdContext ForID(Transaction
 			 transaction, IdObjectCollector collector, int id)
 		{
-			StatefulBuffer reader = transaction.Container().ReadWriterByID(transaction, id);
+			StatefulBuffer reader = transaction.Container().ReadStatefulBufferById(transaction
+				, id);
 			if (reader == null)
 			{
 				return null;

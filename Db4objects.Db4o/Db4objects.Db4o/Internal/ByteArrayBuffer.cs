@@ -1,16 +1,21 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public class ByteArrayBuffer : IReadWriteBuffer
 	{
+		private static readonly ThreadLocal _checkXBytes = Debug4.xbytes ? new ThreadLocal
+			() : null;
+
 		public byte[] _buffer;
 
 		public int _offset;
@@ -19,13 +24,13 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		public ByteArrayBuffer(int length)
+		public ByteArrayBuffer(int length) : this()
 		{
 			// for coding convenience, we allow objects to grab into the buffer
 			_buffer = new byte[length];
 		}
 
-		public ByteArrayBuffer(byte[] buffer)
+		public ByteArrayBuffer(byte[] buffer) : this()
 		{
 			_buffer = buffer;
 		}
@@ -276,6 +281,20 @@ namespace Db4objects.Db4o.Internal
 		public virtual void Skip(int length)
 		{
 			Seek(_offset + length);
+		}
+
+		public virtual void CheckXBytes(bool flag)
+		{
+		}
+
+		public virtual bool CheckXBytes()
+		{
+			throw new InvalidOperationException();
+		}
+
+		public virtual bool Eof()
+		{
+			return _offset == _buffer.Length;
 		}
 	}
 }

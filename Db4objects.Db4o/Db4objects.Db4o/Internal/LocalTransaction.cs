@@ -9,7 +9,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Internal.Callbacks;
-using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.References;
 
@@ -28,18 +27,21 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ICache4 _slotCache;
 
+		private readonly IIdSystem _idSystem;
+
 		public LocalTransaction(ObjectContainerBase container, Transaction parentTransaction
-			, IReferenceSystem referenceSystem) : base(container, parentTransaction, referenceSystem
-			)
+			, IIdSystem idSystem, IReferenceSystem referenceSystem) : base(container, parentTransaction
+			, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
-			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_33(this);
+			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_35(this);
 			_slotCache = CreateSlotCache();
+			_idSystem = idSystem;
 		}
 
-		private sealed class _ICommittedCallbackDispatcher_33 : ICommittedCallbackDispatcher
+		private sealed class _ICommittedCallbackDispatcher_35 : ICommittedCallbackDispatcher
 		{
-			public _ICommittedCallbackDispatcher_33(LocalTransaction _enclosing)
+			public _ICommittedCallbackDispatcher_35(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -160,7 +162,7 @@ namespace Db4objects.Db4o.Internal
 			Commit3Stream();
 			CommitParticipants();
 			Container().WriteDirty();
-			IdSystem().Commit(this);
+			IdSystem().Commit();
 		}
 
 		private void CommitListeners()
@@ -213,7 +215,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected override void Clear()
 		{
-			IdSystem().Clear(this);
+			IdSystem().Clear();
 			DisposeParticipants();
 			_participants.Clear();
 		}
@@ -232,7 +234,7 @@ namespace Db4objects.Db4o.Internal
 			lock (Container().Lock())
 			{
 				RollbackParticipants();
-				IdSystem().Rollback(this);
+				IdSystem().Rollback();
 				RollBackTransactionListeners();
 				ClearAll();
 			}
@@ -267,7 +269,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_229(this));
+				delete.Traverse(new _IVisitor4_232(this));
 			}
 			// if the object has been deleted
 			// We need to hold a hard reference here, otherwise we can get 
@@ -278,9 +280,9 @@ namespace Db4objects.Db4o.Internal
 			_writtenUpdateAdjustedIndexes = null;
 		}
 
-		private sealed class _IVisitor4_229 : IVisitor4
+		private sealed class _IVisitor4_232 : IVisitor4
 		{
-			public _IVisitor4_229(LocalTransaction _enclosing)
+			public _IVisitor4_232(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -330,13 +332,13 @@ namespace Db4objects.Db4o.Internal
 		private Collection4 CollectCommittedCallbackDeletedInfo()
 		{
 			Collection4 deleted = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_279(this, deleted));
+			CollectCallBackInfo(new _ICallbackInfoCollector_282(this, deleted));
 			return deleted;
 		}
 
-		private sealed class _ICallbackInfoCollector_279 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_282 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_279(LocalTransaction _enclosing, Collection4 deleted
+			public _ICallbackInfoCollector_282(LocalTransaction _enclosing, Collection4 deleted
 				)
 			{
 				this._enclosing = _enclosing;
@@ -368,19 +370,19 @@ namespace Db4objects.Db4o.Internal
 		private CallbackObjectInfoCollections CollectCommittedCallbackInfo(Collection4 deleted
 			)
 		{
-			if (!IdSystem().IsDirty(this))
+			if (!IdSystem().IsDirty())
 			{
 				return CallbackObjectInfoCollections.Emtpy;
 			}
 			Collection4 added = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_302(this, added, updated));
+			CollectCallBackInfo(new _ICallbackInfoCollector_305(this, added, updated));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ICallbackInfoCollector_302 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_305 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_302(LocalTransaction _enclosing, Collection4 added
+			public _ICallbackInfoCollector_305(LocalTransaction _enclosing, Collection4 added
 				, Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -411,21 +413,21 @@ namespace Db4objects.Db4o.Internal
 
 		private CallbackObjectInfoCollections CollectCommittingCallbackInfo()
 		{
-			if (!IdSystem().IsDirty(this))
+			if (!IdSystem().IsDirty())
 			{
 				return CallbackObjectInfoCollections.Emtpy;
 			}
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_325(this, added, updated, deleted
+			CollectCallBackInfo(new _ICallbackInfoCollector_328(this, added, updated, deleted
 				));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ICallbackInfoCollector_325 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_328 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_325(LocalTransaction _enclosing, Collection4 added
+			public _ICallbackInfoCollector_328(LocalTransaction _enclosing, Collection4 added
 				, Collection4 updated, Collection4 deleted)
 			{
 				this._enclosing = _enclosing;
@@ -471,12 +473,12 @@ namespace Db4objects.Db4o.Internal
 
 		private void CollectCallBackInfo(ICallbackInfoCollector collector)
 		{
-			IdSystem().CollectCallBackInfo(this, collector);
+			IdSystem().CollectCallBackInfo(collector);
 		}
 
-		private IIdSystem IdSystem()
+		public override IIdSystem IdSystem()
 		{
-			return LocalContainer().IdSystem();
+			return _idSystem;
 		}
 
 		public virtual IObjectInfo FrozenReferenceFor(int id)
@@ -493,11 +495,6 @@ namespace Db4objects.Db4o.Internal
 				return null;
 			}
 			return new FrozenObjectInfo(SystemTransaction(), @ref, true);
-		}
-
-		public virtual IFreespaceManager FreespaceManager()
-		{
-			return _file.FreespaceManager();
 		}
 
 		public virtual LazyObjectReference LazyReferenceFor(int id)

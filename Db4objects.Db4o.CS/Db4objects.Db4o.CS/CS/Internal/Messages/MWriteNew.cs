@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				ClassMetadata classMetadata = classMetadataId == 0 ? null : LocalContainer().ClassMetadataForID
 					(classMetadataId);
 				int id = _payLoad.GetID();
-				LocalContainer().IdSystem().PrefetchedIDConsumed(Transaction(), id);
+				Transaction().IdSystem().PrefetchedIDConsumed(id);
 				Slot slot = LocalContainer().AllocateSlotForNewUserObject(Transaction(), id, _payLoad
 					.Length());
 				_payLoad.Address(slot.Address());

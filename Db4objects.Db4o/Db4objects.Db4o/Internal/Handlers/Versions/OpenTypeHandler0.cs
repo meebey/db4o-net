@@ -39,8 +39,8 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 			context.Seek(offset);
 			if (id != 0)
 			{
-				StatefulBuffer reader = context.Container().ReadWriterByID(context.Transaction(), 
-					id);
+				StatefulBuffer reader = context.Container().ReadStatefulBufferById(context.Transaction
+					(), id);
 				if (reader != null)
 				{
 					ObjectHeader oh = new ObjectHeader(context.Container(), reader);

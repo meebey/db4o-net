@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		public static void Main(string[] args)
 		{
-			new IndexedBlockSizeQueryTestCase().RunSolo();
+			new IndexedBlockSizeQueryTestCase().RunNetworking();
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -25,13 +25,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 		public class Item
 		{
-			public object _untypedMember;
-
 			public string _name;
 
 			public Item(string name)
 			{
-				_untypedMember = name;
+				// public Object _untypedMember;
+				// _untypedMember = name;
 				_name = name;
 			}
 		}

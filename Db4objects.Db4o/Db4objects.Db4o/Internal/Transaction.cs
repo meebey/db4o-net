@@ -4,6 +4,7 @@ using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Marshall;
 using Db4objects.Db4o.Reflect;
@@ -102,6 +103,11 @@ namespace Db4objects.Db4o.Internal
 			if (rollbackOnClose)
 			{
 				Rollback();
+			}
+			IIdSystem idSystem = IdSystem();
+			if (idSystem != null)
+			{
+				idSystem.Close();
 			}
 		}
 
@@ -337,12 +343,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_287(this);
+			return new _IContext_292(this);
 		}
 
-		private sealed class _IContext_287 : IContext
+		private sealed class _IContext_292 : IContext
 		{
-			public _IContext_287(Transaction _enclosing)
+			public _IContext_292(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -378,5 +384,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			return new TransactionContext(this, value);
 		}
+
+		public abstract IIdSystem IdSystem();
 	}
 }

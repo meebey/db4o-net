@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 			 bTree)
 		{
 			Transaction trans = container.SystemTransaction();
-			ByteArrayBuffer reader = container.ReadReaderByID(trans, classIndexId);
+			ByteArrayBuffer reader = container.ReadBufferById(trans, classIndexId);
 			if (reader == null)
 			{
 				return;

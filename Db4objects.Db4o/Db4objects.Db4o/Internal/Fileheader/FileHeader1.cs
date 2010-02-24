@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
-using Db4objects.Db4o.Internal.Transactionlog;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal.Fileheader
@@ -32,9 +31,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private TimerFileLock _timerFileLock;
 
-		private IInterruptedTransactionHandler _interruptedTransactionHandler;
-
 		private FileHeaderVariablePart1 _variablePart;
+
+		private int _transactionId1;
+
+		private int _transactionId2;
 
 		// The header format is:
 		// (byte) 'd'
@@ -65,7 +66,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void InitNew(LocalObjectContainer file)
 		{
 			CommonTasksForNewAndRead(file);
-			_variablePart = new FileHeaderVariablePart1(0, file.SystemData());
+			_variablePart = new FileHeaderVariablePart1(file, 0, file.SystemData());
 			WriteVariablePart(file, 0);
 		}
 
@@ -85,9 +86,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_timerFileLock.SetAddresses(0, OpenTimeOffset, AccessTimeOffset);
 		}
 
-		public override IInterruptedTransactionHandler InterruptedTransactionHandler()
+		public override void CompleteInterruptedTransaction(LocalObjectContainer container
+			)
 		{
-			return _interruptedTransactionHandler;
+			container.GlobalIdSystem().CompleteInterruptedTransaction(_transactionId1, _transactionId2
+				);
 		}
 
 		public override int Length()
@@ -95,18 +98,19 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return HeaderLength;
 		}
 
-		protected override void ReadFixedPart(LocalObjectContainer file, ByteArrayBuffer 
-			reader)
+		protected override void Read(LocalObjectContainer file, ByteArrayBuffer reader)
 		{
 			CommonTasksForNewAndRead(file);
 			CheckThreadFileLock(file, reader);
 			reader.Seek(TransactionPointerOffset);
-			_interruptedTransactionHandler = file.IdSystem().InterruptedTransactionHandler(reader
-				);
+			_transactionId1 = reader.ReadInt();
+			_transactionId2 = reader.ReadInt();
 			reader.Seek(BlocksizeOffset);
 			file.BlockSizeReadFromFile(reader.ReadInt());
 			ReadClassCollectionAndFreeSpace(file, reader);
-			_variablePart = new FileHeaderVariablePart1(reader.ReadInt(), file.SystemData());
+			_variablePart = new FileHeaderVariablePart1(file, reader.ReadInt(), file.SystemData
+				());
+			_variablePart.Read(file.SystemTransaction());
 		}
 
 		private void CheckThreadFileLock(LocalObjectContainer container, ByteArrayBuffer 
@@ -127,11 +131,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			file._handlers.OldEncryptionOff();
 		}
 
-		public override void ReadVariablePart(LocalObjectContainer file)
-		{
-			_variablePart.Read(file.SystemTransaction());
-		}
-
 		public override void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
 			, bool shuttingDown, StatefulBuffer writer, int blockSize, int freespaceID)
 		{
@@ -148,7 +147,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			writer.WriteInt(file.SystemData().ClassCollectionID());
 			writer.WriteInt(freespaceID);
 			writer.WriteInt(_variablePart.GetID());
-			writer.NoXByteCheck();
 			writer.Write();
 			file.SyncFiles();
 			if (startFileLockingThread)
@@ -168,6 +166,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			_variablePart.SetStateDirty();
 			_variablePart.Write(file.SystemTransaction());
+		}
+
+		public override void ReadIdentity(LocalObjectContainer container)
+		{
+			_variablePart.ReadIdentity((LocalTransaction)container.SystemTransaction());
 		}
 	}
 }

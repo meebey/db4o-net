@@ -147,6 +147,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void BlockSize(int size)
 		{
+			CreateBlockConverter(size);
 			_file.BlockSize(size);
 		}
 
@@ -216,14 +217,6 @@ namespace Db4objects.Db4o.Internal
 			, bool rollbackOnClose)
 		{
 			transaction.Close(rollbackOnClose);
-			if (!isSystemTransaction)
-			{
-				IdSystem().RemoveTransaction((LocalTransaction)transaction);
-			}
-			else
-			{
-				IdSystem().Close();
-			}
 		}
 
 		public override void Commit1(Transaction trans)
@@ -346,18 +339,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (Debug4.xbytes && Deploy.overwrite)
 			{
-				bool doCheck = true;
-				if (buffer is StatefulBuffer)
-				{
-					StatefulBuffer writer = (StatefulBuffer)buffer;
-					if (writer.GetID() == Const4.IgnoreId)
-					{
-						doCheck = false;
-					}
-				}
-				if (doCheck)
+				if (buffer.CheckXBytes())
 				{
 					CheckXBytes(blockedAddress, addressOffset, buffer.Length());
+				}
+				else
+				{
+					buffer.CheckXBytes(true);
 				}
 			}
 			if (DTrace.enabled)

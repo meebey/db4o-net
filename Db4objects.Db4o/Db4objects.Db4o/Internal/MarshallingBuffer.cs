@@ -256,7 +256,8 @@ namespace Db4objects.Db4o.Internal
 				// for now this is a String index only, it takes the entire slot.
 				StatefulBuffer buffer = new StatefulBuffer(context.Transaction(), UnblockedLength
 					());
-				int blockedPosition = context.Container().BytesToBlocks(position);
+				int blockedPosition = context.Container().BlockConverter().BytesToBlocks(position
+					);
 				int indexID = masterAddress + blockedPosition;
 				buffer.SetID(indexID);
 				buffer.Address(indexID);
@@ -325,8 +326,8 @@ namespace Db4objects.Db4o.Internal
 
 		private void BlockAlign(MarshallingContext context, int precedingLength)
 		{
-			int totalLength = context.Container().BlockAlignedBytes(precedingLength + Length(
-				));
+			int totalLength = context.Container().BlockConverter().BlockAlignedBytes(precedingLength
+				 + Length());
 			int newLength = totalLength - precedingLength;
 			BlockAlign(newLength);
 		}

@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			int lastCommitted = _payLoad.ReadInt();
 			lock (ContainerLock())
 			{
-				bytes = Container().ReadWriterByID(Transaction(), id, lastCommitted == 1);
+				bytes = Container().ReadStatefulBufferById(Transaction(), id, lastCommitted == 1);
 			}
 			if (bytes == null)
 			{

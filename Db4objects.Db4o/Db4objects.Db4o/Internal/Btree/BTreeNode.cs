@@ -1365,11 +1365,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public override bool IsFreespaceComponent()
-		{
-			return _btree.IsFreespaceComponent();
-		}
-
 		public bool IsLeaf()
 		{
 			return _isLeaf;
