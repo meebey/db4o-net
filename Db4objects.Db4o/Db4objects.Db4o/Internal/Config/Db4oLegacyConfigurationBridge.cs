@@ -24,9 +24,15 @@ namespace Db4objects.Db4o.Internal.Config
 			return ((ILegacyConfigurationProvider)config).Legacy();
 		}
 
-		public static IFileConfiguration AsFileConfiguration(Config4Impl legacy)
+		public static IFileConfiguration AsFileConfiguration(IConfiguration config)
 		{
-			return new FileConfigurationImpl(legacy);
+			return new FileConfigurationImpl((Config4Impl)config);
+		}
+
+		public static IIdSystemConfiguration AsIdSystemConfiguration(IConfiguration config
+			)
+		{
+			return new IdSystemConfigurationImpl((Config4Impl)config);
 		}
 	}
 }

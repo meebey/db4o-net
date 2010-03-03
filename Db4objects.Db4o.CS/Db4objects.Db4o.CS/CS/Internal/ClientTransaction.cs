@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		// do nothing
-		public override IIdSystem IdSystem()
+		public override ITransactionalIdSystem IdSystem()
 		{
 			return null;
 		}

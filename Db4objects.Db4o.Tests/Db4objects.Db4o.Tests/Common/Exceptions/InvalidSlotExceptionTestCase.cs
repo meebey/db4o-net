@@ -6,14 +6,16 @@ using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
-using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
+using Db4objects.Db4o.Internal.Ids;
+using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Tests.Common.Assorted;
 using Db4objects.Db4o.Tests.Common.Exceptions;
-using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
-	public class InvalidSlotExceptionTestCase : AbstractDb4oTestCase, IOptOutNonStandardBlockSize
+	public class InvalidSlotExceptionTestCase : AbstractDb4oTestCase, IOptOutIdSystem
 	{
 		private const int InvalidId = 3;
 
@@ -27,19 +29,33 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.Storage = new InvalidSlotExceptionTestCase.MockStorage();
+			IIdSystemConfiguration idSystemConfiguration = Db4oLegacyConfigurationBridge.AsIdSystemConfiguration
+				(config);
+			idSystemConfiguration.UseCustomSystem(new _IIdSystemFactory_30());
+		}
+
+		private sealed class _IIdSystemFactory_30 : IIdSystemFactory
+		{
+			public _IIdSystemFactory_30()
+			{
+			}
+
+			public IIdSystem NewInstance(LocalObjectContainer container, int idSystemId)
+			{
+				return new InvalidSlotExceptionTestCase.MockIdSystem(container, idSystemId);
+			}
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
-			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_30(this));
+			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_40(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_30 : ICodeBlock
+		private sealed class _ICodeBlock_40 : ICodeBlock
 		{
-			public _ICodeBlock_30(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_40(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -56,13 +72,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDbNotClosedOnOutOfMemory()
 		{
 			Assert.Expect(typeof(Db4oRecoverableException), typeof(OutOfMemoryException), new 
-				_ICodeBlock_39(this));
+				_ICodeBlock_49(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_39 : ICodeBlock
+		private sealed class _ICodeBlock_49 : ICodeBlock
 		{
-			public _ICodeBlock_39(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_49(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -86,54 +102,24 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		public class MockStorage : StorageDecorator
+		public class MockIdSystem : DelegatingIdSystem
 		{
-			public MockStorage() : base(new FileStorage())
+			public MockIdSystem(LocalObjectContainer container, int idSystemId) : base(container
+				, idSystemId)
 			{
 			}
 
-			protected override IBin Decorate(BinConfiguration config, IBin bin)
+			public override Slot CommittedSlot(int id)
 			{
-				return new InvalidSlotExceptionTestCase.MockStorage.MockBin(bin);
-			}
-
-			private class MockBin : BinDecorator
-			{
-				private bool _deliverInvalidSlot;
-
-				public MockBin(IBin bin) : base(bin)
+				if (id == OutOfMemoryId)
 				{
+					throw new OutOfMemoryException();
 				}
-
-				/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-				public override int Read(long pos, byte[] bytes, int length)
+				if (id == InvalidId)
 				{
-					Seek(pos);
-					if (_deliverInvalidSlot)
-					{
-						ByteArrayBuffer buffer = new ByteArrayBuffer(Const4.PointerLength);
-						buffer.WriteInt(1);
-						buffer.WriteInt(int.MaxValue);
-						System.Array.Copy(buffer._buffer, 0, bytes, 0, Const4.PointerLength);
-						return length;
-					}
-					return base.Read(pos, bytes, length);
+					throw new InvalidIDException(id);
 				}
-
-				/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-				private void Seek(long pos)
-				{
-					if (pos == OutOfMemoryId)
-					{
-						throw new OutOfMemoryException();
-					}
-					if (pos == InvalidId)
-					{
-						_deliverInvalidSlot = true;
-						return;
-					}
-					_deliverInvalidSlot = false;
-				}
+				return _delegate.CommittedSlot(id);
 			}
 		}
 	}

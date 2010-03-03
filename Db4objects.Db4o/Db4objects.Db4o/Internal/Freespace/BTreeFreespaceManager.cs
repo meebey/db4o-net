@@ -213,8 +213,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			CreateBTrees(0, 0);
 			_slotsByAddress.Write(Transaction());
 			_slotsByLength.Write(Transaction());
-			_delegateIndirectionID = Transaction().IdSystem().NewId(SlotChangeFactory.FreeSpace
-				);
+			LocalObjectContainer container = (LocalObjectContainer)Transaction().Container();
+			_delegateIndirectionID = container.AllocatePointerSlot();
 			int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID(), _delegateIndirectionID
 				 };
 			_idArray = new PersistentIntegerArray(ids);
@@ -294,6 +294,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public override void Traverse(IVisitor4 visitor)
 		{
 			_slotsByAddress.TraverseKeys(Transaction(), visitor);
+		}
+
+		public override void MigrateTo(IFreespaceManager fm)
+		{
+			base.MigrateTo(fm);
+			_delegate.MigrateTo(fm);
 		}
 
 		public override int Write(LocalObjectContainer container)

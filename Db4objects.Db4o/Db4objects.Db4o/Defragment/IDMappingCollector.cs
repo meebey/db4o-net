@@ -4,7 +4,6 @@ using System.Collections;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -35,17 +34,6 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return;
 			}
-			int blockSize = context.BlockSize();
-			bool overlapping = (Const4.PointerLength % blockSize > 0);
-			int blocksPerPointer = Const4.PointerLength / blockSize;
-			if (overlapping)
-			{
-				blocksPerPointer++;
-			}
-			int bytesPerPointer = blocksPerPointer * blockSize;
-			int batchSize = _ids.Size() * bytesPerPointer;
-			Slot pointerSlot = context.AllocateTargetSlot(batchSize);
-			int pointerAddress = pointerSlot.Address();
 			IEnumerator idIter = new TreeKeyIterator(_ids);
 			while (idIter.MoveNext())
 			{
@@ -57,8 +45,7 @@ namespace Db4objects.Db4o.Defragment
 					isClassID = true;
 				}
 				// seen object ids don't come by here anymore - any other candidates?
-				context.MapIDs(objectID, pointerAddress, isClassID);
-				pointerAddress += blocksPerPointer;
+				context.MapIDs(objectID, context.TargetNewId(), isClassID);
 			}
 			_ids = null;
 		}

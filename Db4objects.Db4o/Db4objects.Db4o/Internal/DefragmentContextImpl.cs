@@ -103,7 +103,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			catch (MappingNotFoundException)
 			{
-				mapped = _services.AllocateTargetSlot(Const4.PointerLength).Address();
+				mapped = _services.TargetNewId();
 				_services.MapIDs(orig, mapped, false);
 				if (doRegister)
 				{
@@ -249,10 +249,7 @@ namespace Db4objects.Db4o.Internal
 				int sourceAddress = services.SourceAddressByID(sourceID);
 				services.MapIDs(sourceAddress, targetSlot.Address(), false);
 			}
-			ByteArrayBuffer targetPointerReader = new ByteArrayBuffer(Const4.PointerLength);
-			targetPointerReader.WriteInt(targetSlot.Address());
-			targetPointerReader.WriteInt(targetSlot.Length());
-			services.TargetWriteBytes(targetPointerReader, targetID);
+			services.Mapping().MapId(targetID, targetSlot);
 			Db4objects.Db4o.Internal.DefragmentContextImpl context = new Db4objects.Db4o.Internal.DefragmentContextImpl
 				(sourceReader, services);
 			command.ProcessCopy(context);
@@ -338,11 +335,23 @@ namespace Db4objects.Db4o.Internal
 			return Container();
 		}
 
+		/// <summary>only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
+		/// 	</summary>
+		/// <remarks>
+		/// only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
+		/// Doesn't need to work with modern IdSystems.
+		/// </remarks>
 		public Slot AllocateTargetSlot(int length)
 		{
 			return _services.AllocateTargetSlot(length);
 		}
 
+		/// <summary>only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
+		/// 	</summary>
+		/// <remarks>
+		/// only used by old handlers: OpenTypeHandler0, StringHandler0, ArrayHandler0.
+		/// Doesn't need to work with modern IdSystems.
+		/// </remarks>
 		public Slot AllocateMappedTargetSlot(int sourceAddress, int length)
 		{
 			Slot slot = AllocateTargetSlot(length);

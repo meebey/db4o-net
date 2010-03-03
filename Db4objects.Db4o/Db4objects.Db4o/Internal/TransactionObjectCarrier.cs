@@ -9,11 +9,11 @@ namespace Db4objects.Db4o.Internal
 	/// <summary>TODO: Check if all time-consuming stuff is overridden!</summary>
 	internal class TransactionObjectCarrier : LocalTransaction
 	{
-		private readonly IIdSystem _idSystem;
+		private readonly ITransactionalIdSystem _idSystem;
 
 		internal TransactionObjectCarrier(ObjectContainerBase container, Transaction parentTransaction
-			, IIdSystem idSystem, IReferenceSystem referenceSystem) : base(container, parentTransaction
-			, idSystem, referenceSystem)
+			, ITransactionalIdSystem idSystem, IReferenceSystem referenceSystem) : base(container
+			, parentTransaction, idSystem, referenceSystem)
 		{
 			_idSystem = idSystem;
 		}

@@ -99,47 +99,47 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		public virtual object Read(ByteArrayBuffer a_bytes)
+		public virtual object Read(ByteArrayBuffer buffer)
 		{
-			return new Db4objects.Db4o.Internal.TreeInt(a_bytes.ReadInt());
+			return new Db4objects.Db4o.Internal.TreeInt(buffer.ReadInt());
 		}
 
-		public virtual void Write(ByteArrayBuffer a_writer)
+		public virtual void Write(ByteArrayBuffer buffer)
 		{
-			a_writer.WriteInt(_key);
+			buffer.WriteInt(_key);
 		}
 
-		public static void Write(ByteArrayBuffer a_writer, Db4objects.Db4o.Internal.TreeInt
-			 a_tree)
+		public static void Write(ByteArrayBuffer buffer, Db4objects.Db4o.Internal.TreeInt
+			 tree)
 		{
-			Write(a_writer, a_tree, a_tree == null ? 0 : a_tree.Size());
+			Write(buffer, tree, tree == null ? 0 : tree.Size());
 		}
 
-		public static void Write(ByteArrayBuffer a_writer, Db4objects.Db4o.Internal.TreeInt
-			 a_tree, int size)
+		public static void Write(ByteArrayBuffer buffer, Db4objects.Db4o.Internal.TreeInt
+			 tree, int size)
 		{
-			if (a_tree == null)
+			if (tree == null)
 			{
-				a_writer.WriteInt(0);
+				buffer.WriteInt(0);
 				return;
 			}
-			a_writer.WriteInt(size);
-			a_tree.Traverse(new _IVisitor4_97(a_writer));
+			buffer.WriteInt(size);
+			tree.Traverse(new _IVisitor4_97(buffer));
 		}
 
 		private sealed class _IVisitor4_97 : IVisitor4
 		{
-			public _IVisitor4_97(ByteArrayBuffer a_writer)
+			public _IVisitor4_97(ByteArrayBuffer buffer)
 			{
-				this.a_writer = a_writer;
+				this.buffer = buffer;
 			}
 
 			public void Visit(object a_object)
 			{
-				((Db4objects.Db4o.Internal.TreeInt)a_object).Write(a_writer);
+				((Db4objects.Db4o.Internal.TreeInt)a_object).Write(buffer);
 			}
 
-			private readonly ByteArrayBuffer a_writer;
+			private readonly ByteArrayBuffer buffer;
 		}
 
 		public virtual int OwnLength()
@@ -206,26 +206,26 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (VariableLength())
 			{
-				IntByRef mint = new IntByRef(Const4.IntLength);
-				Traverse(new _IVisitor4_152(mint));
-				return mint.value;
+				IntByRef length = new IntByRef(Const4.IntLength);
+				Traverse(new _IVisitor4_152(length));
+				return length.value;
 			}
 			return Const4.IntLength + (Size() * OwnLength());
 		}
 
 		private sealed class _IVisitor4_152 : IVisitor4
 		{
-			public _IVisitor4_152(IntByRef mint)
+			public _IVisitor4_152(IntByRef length)
 			{
-				this.mint = mint;
+				this.length = length;
 			}
 
 			public void Visit(object obj)
 			{
-				mint.value += ((Db4objects.Db4o.Internal.TreeInt)obj).OwnLength();
+				length.value += ((Db4objects.Db4o.Internal.TreeInt)obj).OwnLength();
 			}
 
-			private readonly IntByRef mint;
+			private readonly IntByRef length;
 		}
 
 		public override object Key()

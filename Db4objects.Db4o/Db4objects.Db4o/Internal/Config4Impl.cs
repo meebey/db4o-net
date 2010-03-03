@@ -142,8 +142,10 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(ConfigScope
 			.Individually);
 
-		private static readonly KeySpec IdSystemKey = new KeySpec(GlobalIdSystemFactory.Default
-			);
+		private static readonly KeySpec IdSystemKey = new KeySpec(StandardIdSystemFactory
+			.Default);
+
+		private static readonly KeySpec IdSystemCustomFactoryKey = new KeySpec(null);
 
 		private static readonly KeySpec QueryEvaluationModeKey = new KeySpec(QueryEvaluationMode
 			.Immediate);
@@ -173,9 +175,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchSlotCacheSizeKey = new KeySpec(0);
 
-		private sealed class _IDeferred_150 : KeySpec.IDeferred
+		private sealed class _IDeferred_152 : KeySpec.IDeferred
 		{
-			public _IDeferred_150()
+			public _IDeferred_152()
 			{
 			}
 
@@ -187,7 +189,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_150());
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_152());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -227,9 +229,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec TaintedKey = new KeySpec(false);
 
-		private sealed class _IReferenceSystemFactory_190 : IReferenceSystemFactory
+		private sealed class _IReferenceSystemFactory_192 : IReferenceSystemFactory
 		{
-			public _IReferenceSystemFactory_190()
+			public _IReferenceSystemFactory_192()
 			{
 			}
 
@@ -239,12 +241,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_190
+		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_192
 			());
 
-		private sealed class _INameProvider_196 : INameProvider
+		private sealed class _INameProvider_198 : INameProvider
 		{
-			public _INameProvider_196()
+			public _INameProvider_198()
 			{
 			}
 
@@ -254,7 +256,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_196
+		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_198
 			());
 
 		private ObjectContainerBase _container;
@@ -1403,17 +1405,33 @@ namespace Db4objects.Db4o.Internal
 
 		public void UsePointerBasedIdSystem()
 		{
-			_config.Put(IdSystemKey, GlobalIdSystemFactory.PointerBased);
+			_config.Put(IdSystemKey, StandardIdSystemFactory.PointerBased);
 		}
 
 		public void UseBTreeIdSystem()
 		{
-			_config.Put(IdSystemKey, GlobalIdSystemFactory.Btree);
+			_config.Put(IdSystemKey, StandardIdSystemFactory.Btree);
 		}
 
 		public byte IdSystemType()
 		{
 			return _config.GetAsByte(IdSystemKey);
+		}
+
+		public void UseInMemoryIdSystem()
+		{
+			_config.Put(IdSystemKey, StandardIdSystemFactory.InMemory);
+		}
+
+		public void UseCustomIdSystem(IIdSystemFactory factory)
+		{
+			_config.Put(IdSystemKey, StandardIdSystemFactory.Custom);
+			_config.Put(IdSystemCustomFactoryKey, factory);
+		}
+
+		public IIdSystemFactory CustomIdSystemFactory()
+		{
+			return (IIdSystemFactory)_config.Get(IdSystemCustomFactoryKey);
 		}
 	}
 }

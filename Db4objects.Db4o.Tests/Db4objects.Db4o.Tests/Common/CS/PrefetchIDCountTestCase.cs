@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			ServerMessageDispatcherImpl msgDispatcher = FirstMessageDispatcherFor(server);
 			Transaction transaction = msgDispatcher.Transaction();
 			LocalObjectContainer container = (LocalObjectContainer)server.ObjectContainer();
-			IIdSystem idSystem = transaction.IdSystem();
+			ITransactionalIdSystem idSystem = transaction.IdSystem();
 			int prefetchedID = idSystem.PrefetchID();
 			Assert.IsGreater(0, prefetchedID);
 			PrefetchIDCountTestCase.DebugFreespaceManager freespaceManager = new PrefetchIDCountTestCase.DebugFreespaceManager

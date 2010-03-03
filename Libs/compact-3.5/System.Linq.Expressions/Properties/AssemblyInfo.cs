@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle ("System.Linq.Expressions")]
-[assembly: AssemblyDescription("System.Linq.Expressions 7.13.135.14181 (.NET)")]
+[assembly: AssemblyDescription("System.Linq.Expressions 7.13.137.14181 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid ("33ba2dc5-0fdc-4ce6-af2d-0c785c99f248")]
 
-[assembly: AssemblyVersion("7.13.135.14181")]
+[assembly: AssemblyVersion("7.13.137.14181")]
 
 namespace System.Reflection.Emit {
 	class Stub {}

@@ -104,7 +104,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Rollback();
 			}
-			IIdSystem idSystem = IdSystem();
+			ITransactionalIdSystem idSystem = IdSystem();
 			if (idSystem != null)
 			{
 				idSystem.Close();
@@ -385,6 +385,6 @@ namespace Db4objects.Db4o.Internal
 			return new TransactionContext(this, value);
 		}
 
-		public abstract IIdSystem IdSystem();
+		public abstract ITransactionalIdSystem IdSystem();
 	}
 }

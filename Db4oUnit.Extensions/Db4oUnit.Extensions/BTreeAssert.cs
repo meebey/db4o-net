@@ -99,7 +99,7 @@ namespace Db4oUnit.Extensions
 			 block)
 		{
 			LocalObjectContainer container = (LocalObjectContainer)trans.Container();
-			IIdSystem idSystem = trans.IdSystem();
+			ITransactionalIdSystem idSystem = trans.IdSystem();
 			IEnumerator allSlotIDs = bTree.AllNodeIds(trans.SystemTransaction());
 			Collection4 allSlots = new Collection4();
 			while (allSlotIDs.MoveNext())

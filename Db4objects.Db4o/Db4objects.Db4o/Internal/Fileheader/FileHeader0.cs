@@ -1,8 +1,10 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -15,23 +17,30 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private PBootRecord _bootRecord;
 
-		// The header format is:
-		// Old format
-		// -------------------------
-		// {
-		// Y
-		// [Rest]
-		// New format
-		// -------------------------
-		// (byte)4
-		// block size in bytes 1 to 127
-		// [Rest]
-		// Rest (only ints)
-		// -------------------
-		// address of the extended configuration block, see YapConfigBlock
-		// headerLock
-		// YapClassCollection ID
-		// FreeBySize ID
+		private readonly LocalObjectContainer _container;
+
+		public FileHeader0(LocalObjectContainer container)
+		{
+			// The header format is:
+			// Old format
+			// -------------------------
+			// {
+			// Y
+			// [Rest]
+			// New format
+			// -------------------------
+			// (byte)4
+			// block size in bytes 1 to 127
+			// [Rest]
+			// Rest (only ints)
+			// -------------------
+			// address of the extended configuration block, see YapConfigBlock
+			// headerLock
+			// YapClassCollection ID
+			// FreeBySize ID
+			_container = container;
+		}
+
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Close()
 		{
@@ -57,7 +66,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 					return null;
 				}
 			}
-			return new FileHeader0();
+			return new Db4objects.Db4o.Internal.Fileheader.FileHeader0(file);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
@@ -115,11 +124,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_configBlock.CompleteInterruptedTransaction();
 		}
 
-		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionAddress
-			)
+		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionPointer1
+			, int transactionPointer2)
 		{
-			WriteTransactionPointer(systemTransaction, transactionAddress, _configBlock.Address
-				(), ConfigBlock.TransactionOffset);
+			WriteTransactionPointer(systemTransaction, transactionPointer1, transactionPointer2
+				, _configBlock.Address(), ConfigBlock.TransactionOffset);
 		}
 
 		public virtual MetaIndex GetUUIDMetaIndex()
@@ -177,6 +186,17 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			container.Activate(bootRecord, int.MaxValue);
 			container.SetNextTimeStampId(_bootRecord.i_versionGenerator);
 			container.SystemData().Identity(_bootRecord.i_db);
+		}
+
+		public override IRunnable Commit()
+		{
+			WriteVariablePart(_container, 2);
+			return Runnable4.DoNothing;
+		}
+
+		public override FileHeader Convert(LocalObjectContainer file)
+		{
+			return this;
 		}
 	}
 }

@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.Slots;
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
-	public sealed class TransportIdSystem : IIdSystem
+	public sealed class TransportIdSystem : ITransactionalIdSystem
 	{
 		private readonly LocalObjectContainer _container;
 

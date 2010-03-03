@@ -32,10 +32,6 @@ namespace Db4objects.Db4o.Internal
 
 		public int _bootRecordID;
 
-		private int _transactionId1;
-
-		private int _transactionId2;
-
 		private const int MinimumLength = Const4.IntLength + (Const4.LongLength * 2) + 1;
 
 		internal const int OpenTimeOffset = Const4.IntLength;
@@ -123,8 +119,9 @@ namespace Db4objects.Db4o.Internal
 
 		public void CompleteInterruptedTransaction()
 		{
-			_container.GlobalIdSystem().CompleteInterruptedTransaction(_transactionId1, _transactionId2
-				);
+			Db4objects.Db4o.Internal.SystemData systemData = _container.SystemData();
+			_container.GlobalIdSystem().CompleteInterruptedTransaction(systemData.TransactionPointer1
+				(), systemData.TransactionPointer2());
 		}
 
 		private byte[] PasswordToken()
@@ -192,8 +189,8 @@ namespace Db4objects.Db4o.Internal
 			SystemData().StringEncoding(reader.ReadByte());
 			if (oldLength > TransactionOffset)
 			{
-				_transactionId1 = reader.ReadInt();
-				_transactionId2 = reader.ReadInt();
+				SystemData().TransactionPointer1(reader.ReadInt());
+				SystemData().TransactionPointer2(reader.ReadInt());
 			}
 			if (oldLength > BootrecordOffset)
 			{
@@ -302,8 +299,8 @@ namespace Db4objects.Db4o.Internal
 				writer.WriteLong(TimerFileLock().OpenTime());
 			}
 			writer.WriteByte(SystemData().StringEncoding());
-			IntHandler.WriteInt(0, writer);
-			IntHandler.WriteInt(0, writer);
+			IntHandler.WriteInt(SystemData().TransactionPointer1(), writer);
+			IntHandler.WriteInt(SystemData().TransactionPointer2(), writer);
 			IntHandler.WriteInt(_bootRecordID, writer);
 			IntHandler.WriteInt(0, writer);
 			// dead byte from wrong attempt for blocksize

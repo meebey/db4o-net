@@ -108,7 +108,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 			private DefragmentConfig DefragmentConfig(MemoryStorage storage)
 			{
-				DefragmentConfig defragConfig = new DefragmentConfig(Uri, TempFile(), new TreeIDMapping
+				DefragmentConfig defragConfig = new DefragmentConfig(Uri, TempFile(), new InMemoryIdMapping
 					());
 				defragConfig.Db4oConfig(Config(storage));
 				defragConfig.BackupStorage(BackupStorage());

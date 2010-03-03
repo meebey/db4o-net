@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			return true;
 		}
 
-		public override void FreeDuringCommit(TransactionalIdSystem idSystem, IFreespaceManager
+		public override void FreeDuringCommit(TransactionalIdSystemImpl idSystem, IFreespaceManager
 			 freespaceManager, bool forFreespace)
 		{
 			base.FreeDuringCommit(idSystem, freespaceManager, forFreespace);

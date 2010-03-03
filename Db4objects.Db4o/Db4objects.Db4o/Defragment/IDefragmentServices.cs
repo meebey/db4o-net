@@ -45,5 +45,11 @@ namespace Db4objects.Db4o.Defragment
 		IdSource UnindexedIDs();
 
 		int SourceAddressByID(int sourceID);
+
+		int TargetNewId();
+
+		IIdMapping Mapping();
+
+		void CommitIds();
 	}
 }

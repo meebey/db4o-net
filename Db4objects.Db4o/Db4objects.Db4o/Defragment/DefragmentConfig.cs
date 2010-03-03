@@ -25,7 +25,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private string _tempPath;
 
-		private IContextIDMapping _mapping;
+		private IIdMapping _mapping;
 
 		private IConfiguration _config;
 
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Defragment
 		/// is set to true!
 		/// </param>
 		public DefragmentConfig(string origPath, string backupPath) : this(origPath, backupPath
-			, new TreeIDMapping())
+			, new InMemoryIdMapping())
 		{
 		}
 
@@ -89,9 +89,14 @@ namespace Db4objects.Db4o.Defragment
 		/// exist at this position, otherwise it will be OVERWRITTEN if forceBackupDelete()
 		/// is set to true!
 		/// </param>
-		/// <param name="mapping">The intermediate mapping used internally.</param>
-		public DefragmentConfig(string origPath, string backupPath, IContextIDMapping mapping
-			)
+		/// <param name="mapping">
+		/// The Id mapping to be used internally. Pass either a
+		/// <see cref="InMemoryIdMapping">InMemoryIdMapping</see>
+		/// for fastest defragment or a
+		/// <see cref="DatabaseIdMapping">DatabaseIdMapping</see>
+		/// for low memory consumption.
+		/// </param>
+		public DefragmentConfig(string origPath, string backupPath, IIdMapping mapping)
 		{
 			_origPath = origPath;
 			_backupPath = backupPath;
@@ -110,8 +115,8 @@ namespace Db4objects.Db4o.Defragment
 			return _backupPath;
 		}
 
-		/// <returns>The intermediate mapping used internally. For internal use only.</returns>
-		public virtual IContextIDMapping Mapping()
+		/// <returns>The temporary ID mapping used internally. For internal use only.</returns>
+		public virtual IIdMapping Mapping()
 		{
 			return _mapping;
 		}

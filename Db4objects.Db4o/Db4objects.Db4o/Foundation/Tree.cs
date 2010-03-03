@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Foundation
 				}
 				else
 				{
-					((Tree)newNode).OnAttemptToAddDuplicate(this);
+					return (Tree)((Tree)newNode).OnAttemptToAddDuplicate(this);
 				}
 			}
 			return (Tree)this;
@@ -337,10 +337,11 @@ namespace Db4objects.Db4o.Foundation
 			return _subsequent.Last();
 		}
 
-		public virtual void OnAttemptToAddDuplicate(Tree a_tree)
+		public virtual Tree OnAttemptToAddDuplicate(Tree oldNode)
 		{
 			_size = 0;
-			_preceding = a_tree;
+			_preceding = oldNode;
+			return oldNode;
 		}
 
 		/// <returns>the number of nodes in this tree for balancing</returns>
@@ -611,12 +612,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Accept(IVisitor4 visitor)
 		{
-			Traverse(new _IVisitor4_471(visitor));
+			Traverse(new _IVisitor4_472(visitor));
 		}
 
-		private sealed class _IVisitor4_471 : IVisitor4
+		private sealed class _IVisitor4_472 : IVisitor4
 		{
-			public _IVisitor4_471(IVisitor4 visitor)
+			public _IVisitor4_472(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}

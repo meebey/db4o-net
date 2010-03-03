@@ -10,7 +10,7 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
-	public sealed class PointerBasedIdSystem : IGlobalIdSystem
+	public sealed class PointerBasedIdSystem : IIdSystem
 	{
 		internal readonly TransactionLogHandler _transactionLogHandler;
 

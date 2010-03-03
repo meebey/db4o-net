@@ -9,17 +9,17 @@ using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Ids
 {
-	public class StandardIdSlotChanges
+	public class IdSlotChanges
 	{
 		private readonly LockedTree _slotChanges = new LockedTree();
 
-		private readonly TransactionalIdSystem _idSystem;
+		private readonly TransactionalIdSystemImpl _idSystem;
 
 		private readonly IClosure4 _freespaceManager;
 
 		private TreeInt _prefetchedIDs;
 
-		public StandardIdSlotChanges(TransactionalIdSystem idSystem, IClosure4 freespaceManager
+		public IdSlotChanges(TransactionalIdSystemImpl idSystem, IClosure4 freespaceManager
 			)
 		{
 			_idSystem = idSystem;
@@ -41,7 +41,7 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		private sealed class _IVisitor4_27 : IVisitor4
 		{
-			public _IVisitor4_27(StandardIdSlotChanges _enclosing, bool forFreespace)
+			public _IVisitor4_27(IdSlotChanges _enclosing, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
 				this.forFreespace = forFreespace;
@@ -53,7 +53,7 @@ namespace Db4objects.Db4o.Internal.Ids
 					(), forFreespace);
 			}
 
-			private readonly StandardIdSlotChanges _enclosing;
+			private readonly IdSlotChanges _enclosing;
 
 			private readonly bool forFreespace;
 		}
@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		private sealed class _IVisitor4_44 : IVisitor4
 		{
-			public _IVisitor4_44(StandardIdSlotChanges _enclosing)
+			public _IVisitor4_44(IdSlotChanges _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Ids
 				((SlotChange)slotChange).Rollback(this._enclosing.FreespaceManager());
 			}
 
-			private readonly StandardIdSlotChanges _enclosing;
+			private readonly IdSlotChanges _enclosing;
 		}
 
 		public virtual bool IsDeleted(int id)
@@ -135,7 +135,7 @@ namespace Db4objects.Db4o.Internal.Ids
 			_prefetchedIDs = ((TreeInt)_prefetchedIDs.RemoveLike(new TreeInt(id)));
 		}
 
-		internal void FreePrefetchedIDs(IGlobalIdSystem idSystem)
+		internal void FreePrefetchedIDs(IIdSystem idSystem)
 		{
 			if (_prefetchedIDs == null)
 			{

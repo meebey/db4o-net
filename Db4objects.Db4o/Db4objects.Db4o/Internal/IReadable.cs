@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public interface IReadable
 	{
-		object Read(ByteArrayBuffer a_reader);
+		object Read(ByteArrayBuffer buffer);
 
 		int MarshalledLength();
 	}

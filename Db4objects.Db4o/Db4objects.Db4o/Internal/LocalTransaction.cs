@@ -27,11 +27,11 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ICache4 _slotCache;
 
-		private readonly IIdSystem _idSystem;
+		private readonly ITransactionalIdSystem _idSystem;
 
 		public LocalTransaction(ObjectContainerBase container, Transaction parentTransaction
-			, IIdSystem idSystem, IReferenceSystem referenceSystem) : base(container, parentTransaction
-			, referenceSystem)
+			, ITransactionalIdSystem idSystem, IReferenceSystem referenceSystem) : base(container
+			, parentTransaction, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
 			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_35(this);
@@ -476,7 +476,7 @@ namespace Db4objects.Db4o.Internal
 			IdSystem().CollectCallBackInfo(collector);
 		}
 
-		public override IIdSystem IdSystem()
+		public override ITransactionalIdSystem IdSystem()
 		{
 			return _idSystem;
 		}

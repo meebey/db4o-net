@@ -5,20 +5,21 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Slots;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
 	/// <exclude></exclude>
-	public class FileHeaderVariablePart1 : PersistentBase
+	public class FileHeaderVariablePart1
 	{
-		private const int Length = 2 + (Const4.IntLength * 5) + Const4.LongLength + Const4
+		private const int Length = 1 + (Const4.IntLength * 4) + Const4.LongLength + Const4
 			.AddedLength;
 
-		private readonly LocalObjectContainer _container;
+		protected readonly LocalObjectContainer _container;
 
-		private readonly SystemData _systemData;
+		protected readonly SystemData _systemData;
 
-		private int _identityId;
+		private int _id;
 
 		public FileHeaderVariablePart1(LocalObjectContainer container, int id, SystemData
 			 systemData)
@@ -30,57 +31,52 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			// (int) identity ID
 			// (long) versionGenerator
 			// (int) uuid index ID
-			// (byte) idSystem
-			// (int) idSystem ID
-			SetID(id);
+			_id = id;
 			_container = container;
 			_systemData = systemData;
 		}
 
-		public override byte GetIdentifier()
+		public virtual byte GetIdentifier()
 		{
 			return Const4.Header;
 		}
 
-		public override int OwnLength()
+		public virtual int OwnLength()
 		{
 			return Length;
 		}
 
-		public override void ReadThis(Transaction trans, ByteArrayBuffer reader)
+		public virtual void ReadThis(ByteArrayBuffer buffer)
 		{
-			_systemData.ConverterVersion(reader.ReadInt());
-			_systemData.FreespaceSystem(reader.ReadByte());
-			_systemData.FreespaceAddress(reader.ReadInt());
-			_identityId = reader.ReadInt();
-			_systemData.LastTimeStampID(reader.ReadLong());
-			_systemData.UuidIndexId(reader.ReadInt());
-			if (reader.Eof())
-			{
-				// older versions of the file header don't have IdSystem information.
-				return;
-			}
-			_systemData.IdSystemType(reader.ReadByte());
-			_systemData.IdSystemID(reader.ReadInt());
+			_systemData.ConverterVersion(buffer.ReadInt());
+			_systemData.FreespaceSystem(buffer.ReadByte());
+			_systemData.FreespaceAddress(buffer.ReadInt());
+			_systemData.IdentityId(buffer.ReadInt());
+			_systemData.LastTimeStampID(buffer.ReadLong());
+			_systemData.UuidIndexId(buffer.ReadInt());
 		}
 
-		public override void WriteThis(Transaction trans, ByteArrayBuffer writer)
+		public virtual void WriteThis(ByteArrayBuffer buffer)
 		{
-			writer.WriteInt(_systemData.ConverterVersion());
-			writer.WriteByte(_systemData.FreespaceSystem());
-			writer.WriteInt(_systemData.FreespaceAddress());
-			writer.WriteInt(_systemData.Identity().GetID(trans));
-			writer.WriteLong(_systemData.LastTimeStampID());
-			writer.WriteInt(_systemData.UuidIndexId());
-			writer.WriteByte(_systemData.IdSystemType());
-			writer.WriteInt(_systemData.IdSystemID());
+			buffer.WriteInt(_systemData.ConverterVersion());
+			buffer.WriteByte(_systemData.FreespaceSystem());
+			buffer.WriteInt(_systemData.FreespaceAddress());
+			Db4oDatabase identity = _systemData.Identity();
+			buffer.WriteInt(identity == null ? 0 : identity.GetID(SystemTransaction()));
+			buffer.WriteLong(_systemData.LastTimeStampID());
+			buffer.WriteInt(_systemData.UuidIndexId());
+		}
+
+		private Transaction SystemTransaction()
+		{
+			return _container.SystemTransaction();
 		}
 
 		public virtual void ReadIdentity(LocalTransaction trans)
 		{
 			LocalObjectContainer file = trans.LocalContainer();
 			Db4oDatabase identity = Debug4.staticIdentity ? Db4oDatabase.StaticIdentity : (Db4oDatabase
-				)file.GetByID(trans, _identityId);
+				)file.GetByID(trans, _systemData.IdentityId());
 			if (null != identity)
 			{
 				// TODO: what?
@@ -89,10 +85,54 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
-		protected override ByteArrayBuffer ReadBufferById(Transaction trans)
+		public virtual IRunnable Commit()
+		{
+			int length = _container.BlockConverter().BlockAlignedBytes(OwnLength());
+			if (_id == 0)
+			{
+				_id = _container.AllocatePointerSlot();
+			}
+			Slot committedSlot = _container.ReadPointerSlot(_id);
+			Slot newSlot = _container.AllocateSlot(length);
+			ByteArrayBuffer buffer = new ByteArrayBuffer(length);
+			WriteThis(buffer);
+			_container.WriteEncrypt(buffer, newSlot.Address(), 0);
+			return new _IRunnable_100(this, newSlot, committedSlot);
+		}
+
+		private sealed class _IRunnable_100 : IRunnable
+		{
+			public _IRunnable_100(FileHeaderVariablePart1 _enclosing, Slot newSlot, Slot committedSlot
+				)
+			{
+				this._enclosing = _enclosing;
+				this.newSlot = newSlot;
+				this.committedSlot = committedSlot;
+			}
+
+			public void Run()
+			{
+				this._enclosing._container.WritePointer(this._enclosing._id, newSlot);
+				this._enclosing._container.Free(committedSlot);
+			}
+
+			private readonly FileHeaderVariablePart1 _enclosing;
+
+			private readonly Slot newSlot;
+
+			private readonly Slot committedSlot;
+		}
+
+		public virtual int Id()
+		{
+			return _id;
+		}
+
+		public virtual void Read()
 		{
 			Slot slot = _container.ReadPointerSlot(_id);
-			return _container.ReadBufferBySlot(slot);
+			ByteArrayBuffer buffer = _container.ReadBufferBySlot(slot);
+			ReadThis(buffer);
 		}
 	}
 }

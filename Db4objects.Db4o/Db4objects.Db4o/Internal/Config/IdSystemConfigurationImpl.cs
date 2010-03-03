@@ -24,5 +24,15 @@ namespace Db4objects.Db4o.Internal.Config
 		{
 			_config.UseBTreeIdSystem();
 		}
+
+		public virtual void UseInMemorySystem()
+		{
+			_config.UseInMemoryIdSystem();
+		}
+
+		public virtual void UseCustomSystem(IIdSystemFactory factory)
+		{
+			_config.UseCustomIdSystem(factory);
+		}
 	}
 }

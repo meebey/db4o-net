@@ -3,6 +3,7 @@
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -11,8 +12,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	{
 		private static readonly byte[] Signature = new byte[] { (byte)'d', (byte)'b', (byte
 			)'4', (byte)'o' };
-
-		private static byte Version = 1;
 
 		private static readonly int HeaderLockOffset = Signature.Length + 1;
 
@@ -32,10 +31,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		private TimerFileLock _timerFileLock;
 
 		private FileHeaderVariablePart1 _variablePart;
-
-		private int _transactionId1;
-
-		private int _transactionId2;
 
 		// The header format is:
 		// (byte) 'd'
@@ -66,16 +61,22 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void InitNew(LocalObjectContainer file)
 		{
 			CommonTasksForNewAndRead(file);
-			_variablePart = new FileHeaderVariablePart1(file, 0, file.SystemData());
+			_variablePart = CreateVariablePart(file, 0);
 			WriteVariablePart(file, 0);
+		}
+
+		protected virtual FileHeaderVariablePart1 CreateVariablePart(LocalObjectContainer
+			 file, int id)
+		{
+			return new FileHeaderVariablePart1(file, id, file.SystemData());
 		}
 
 		protected override FileHeader NewOnSignatureMatch(LocalObjectContainer file, ByteArrayBuffer
 			 reader)
 		{
-			if (SignatureMatches(reader, Signature, Version))
+			if (SignatureMatches(reader, Signature, Version()))
 			{
-				return new FileHeader1();
+				return CreateNew();
 			}
 			return null;
 		}
@@ -89,8 +90,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void CompleteInterruptedTransaction(LocalObjectContainer container
 			)
 		{
-			container.GlobalIdSystem().CompleteInterruptedTransaction(_transactionId1, _transactionId2
-				);
+			SystemData systemData = container.SystemData();
+			container.GlobalIdSystem().CompleteInterruptedTransaction(systemData.TransactionPointer1
+				(), systemData.TransactionPointer2());
 		}
 
 		public override int Length()
@@ -103,14 +105,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			CommonTasksForNewAndRead(file);
 			CheckThreadFileLock(file, reader);
 			reader.Seek(TransactionPointerOffset);
-			_transactionId1 = reader.ReadInt();
-			_transactionId2 = reader.ReadInt();
+			file.SystemData().TransactionPointer1(reader.ReadInt());
+			file.SystemData().TransactionPointer2(reader.ReadInt());
 			reader.Seek(BlocksizeOffset);
 			file.BlockSizeReadFromFile(reader.ReadInt());
 			ReadClassCollectionAndFreeSpace(file, reader);
-			_variablePart = new FileHeaderVariablePart1(file, reader.ReadInt(), file.SystemData
-				());
-			_variablePart.Read(file.SystemTransaction());
+			_variablePart = CreateVariablePart(file, reader.ReadInt());
+			_variablePart.Read();
 		}
 
 		private void CheckThreadFileLock(LocalObjectContainer container, ByteArrayBuffer 
@@ -134,19 +135,18 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public override void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
 			, bool shuttingDown, StatefulBuffer writer, int blockSize, int freespaceID)
 		{
+			SystemData systemData = file.SystemData();
 			writer.Append(Signature);
-			writer.WriteByte(Version);
+			writer.WriteByte(Version());
 			writer.WriteInt((int)TimeToWrite(_timerFileLock.OpenTime(), shuttingDown));
 			writer.WriteLong(TimeToWrite(_timerFileLock.OpenTime(), shuttingDown));
 			writer.WriteLong(TimeToWrite(Runtime.CurrentTimeMillis(), shuttingDown));
-			writer.WriteInt(0);
-			// transaction pointer 1 for "in-commit-mode"
-			writer.WriteInt(0);
-			// transaction pointer 2
+			writer.WriteInt(systemData.TransactionPointer1());
+			writer.WriteInt(systemData.TransactionPointer2());
 			writer.WriteInt(blockSize);
-			writer.WriteInt(file.SystemData().ClassCollectionID());
+			writer.WriteInt(systemData.ClassCollectionID());
 			writer.WriteInt(freespaceID);
-			writer.WriteInt(_variablePart.GetID());
+			writer.WriteInt(_variablePart.Id());
 			writer.Write();
 			file.SyncFiles();
 			if (startFileLockingThread)
@@ -155,22 +155,46 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 		}
 
-		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionAddress
-			)
+		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionPointer1
+			, int transactionPointer2)
 		{
-			WriteTransactionPointer(systemTransaction, transactionAddress, 0, TransactionPointerOffset
-				);
+			WriteTransactionPointer(systemTransaction, transactionPointer1, transactionPointer2
+				, 0, TransactionPointerOffset);
 		}
 
 		public override void WriteVariablePart(LocalObjectContainer file, int part)
 		{
-			_variablePart.SetStateDirty();
-			_variablePart.Write(file.SystemTransaction());
+			IRunnable commitHook = Commit();
+			file.SyncFiles();
+			commitHook.Run();
+			file.SyncFiles();
 		}
 
 		public override void ReadIdentity(LocalObjectContainer container)
 		{
 			_variablePart.ReadIdentity((LocalTransaction)container.SystemTransaction());
+		}
+
+		public override IRunnable Commit()
+		{
+			return _variablePart.Commit();
+		}
+
+		protected virtual FileHeader1 CreateNew()
+		{
+			return new FileHeader1();
+		}
+
+		protected virtual byte Version()
+		{
+			return (byte)1;
+		}
+
+		public override FileHeader Convert(LocalObjectContainer file)
+		{
+			FileHeader2 fileHeader = new FileHeader2();
+			fileHeader.InitNew(file);
+			return fileHeader;
 		}
 	}
 }

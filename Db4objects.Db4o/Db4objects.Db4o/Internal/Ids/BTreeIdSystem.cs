@@ -8,7 +8,7 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
-	public class BTreeIdSystem : IGlobalIdSystem
+	public class BTreeIdSystem : IIdSystem
 	{
 		public BTreeIdSystem(int idSystemId)
 		{

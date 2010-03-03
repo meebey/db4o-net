@@ -49,12 +49,11 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		protected virtual void ProduceSomeFreeSpace()
 		{
-			IFreespaceManager fm = CurrentFreespaceManager();
 			int length = 300;
 			Slot slot = LocalContainer().AllocateSlot(length);
 			ByteArrayBuffer buffer = new ByteArrayBuffer(length);
 			LocalContainer().WriteBytes(buffer, slot.Address(), 0);
-			fm.Free(slot);
+			LocalContainer().Free(slot);
 		}
 
 		protected virtual IFreespaceManager CurrentFreespaceManager()

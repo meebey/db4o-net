@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Convert;
@@ -12,6 +13,7 @@ using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Weakref;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Types;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -207,17 +209,13 @@ namespace Db4objects.Db4o.Internal
 		{
 		}
 
-		// do nothing
-		protected override void WriteVariableHeader()
-		{
-		}
-
 		public class KnownObjectIdentity
 		{
 			public int _id;
 
 			public KnownObjectIdentity(int id)
 			{
+				// do nothing
 				_id = id;
 			}
 		}
@@ -367,6 +365,11 @@ namespace Db4objects.Db4o.Internal
 		protected override void CreateIdSystem()
 		{
 		}
+
 		// do nothing
+		public override IRunnable CommitHook()
+		{
+			return Runnable4.DoNothing;
+		}
 	}
 }

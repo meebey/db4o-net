@@ -20,7 +20,7 @@ namespace Db4oUnit.Extensions.Fixtures
 				try
 				{
 					string backupFile = GetAbsolutePath() + ".defrag.backup";
-					IContextIDMapping mapping = new TreeIDMapping();
+					IIdMapping mapping = new InMemoryIdMapping();
 					// new
 					// BTreeIDMapping(getAbsolutePath()+".defrag.mapping",4096,1,1000);
 					DefragmentConfig defragConfig = new DefragmentConfig(GetAbsolutePath(), backupFile

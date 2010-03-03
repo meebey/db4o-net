@@ -6,6 +6,7 @@ using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Transactionlog;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Transactionlog
 {
@@ -146,6 +147,7 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			{
 				return;
 			}
+			IRunnable commitHook = _container.CommitHook();
 			FlushDatabaseFile();
 			EnsureLogAndLock();
 			int length = TransactionLogSlotLength(slotChangeCount);
@@ -156,10 +158,9 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 			Write(_logFile, logBuffer);
 			_logFile.Sync();
 			WriteToLockFile(LockInt);
-			if (WriteSlots(slotChangeTree))
-			{
-				FlushDatabaseFile();
-			}
+			WriteSlots(slotChangeTree);
+			commitHook.Run();
+			FlushDatabaseFile();
 			WriteToLockFile(0);
 		}
 

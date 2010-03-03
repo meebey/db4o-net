@@ -7,17 +7,23 @@ using Db4oUnit.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Tests.Common.Exceptions;
 using Db4objects.Db4o.Tests.Common.Exceptions.Propagation;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 {
 	public class ExceptionDuringTopLevelCallTestSuite : FixtureBasedTestSuite, IDb4oTestCase
-		, IOptOutNetworkingCS
+		, IOptOutNetworkingCS, IOptOutIdSystem
 	{
 		public class ExceptionDuringTopLevelCallTestUnit : AbstractDb4oTestCase
 		{
 			private ExceptionSimulatingStorage _storage;
+
+			private ExceptionSimulatingIdSystem _idSystem;
+
+			private IIdSystemFactory _idSystemFactory;
 
 			private object _unactivated;
 
@@ -35,14 +41,17 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 				}
 				IExceptionPropagationFixture propagationFixture = CurrentExceptionPropagationFixture
 					();
-				_storage = new ExceptionSimulatingStorage(config.Storage, new _IExceptionFactory_29
-					(propagationFixture));
+				IExceptionFactory exceptionFactory = new _IExceptionFactory_37(propagationFixture
+					);
+				_storage = new ExceptionSimulatingStorage(config.Storage, exceptionFactory);
 				config.Storage = _storage;
+				_idSystemFactory = new _IIdSystemFactory_61(this, exceptionFactory);
+				ConfigureIdSystem(config);
 			}
 
-			private sealed class _IExceptionFactory_29 : IExceptionFactory
+			private sealed class _IExceptionFactory_37 : IExceptionFactory
 			{
-				public _IExceptionFactory_29(IExceptionPropagationFixture propagationFixture)
+				public _IExceptionFactory_37(IExceptionPropagationFixture propagationFixture)
 				{
 					this.propagationFixture = propagationFixture;
 					this._alreadyCalled = false;
@@ -77,6 +86,33 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 				private readonly IExceptionPropagationFixture propagationFixture;
 			}
 
+			private sealed class _IIdSystemFactory_61 : IIdSystemFactory
+			{
+				public _IIdSystemFactory_61(ExceptionDuringTopLevelCallTestUnit _enclosing, IExceptionFactory
+					 exceptionFactory)
+				{
+					this._enclosing = _enclosing;
+					this.exceptionFactory = exceptionFactory;
+				}
+
+				public IIdSystem NewInstance(LocalObjectContainer container, int idSystemId)
+				{
+					this._enclosing._idSystem = new ExceptionSimulatingIdSystem(container, idSystemId
+						, exceptionFactory);
+					return this._enclosing._idSystem;
+				}
+
+				private readonly ExceptionDuringTopLevelCallTestUnit _enclosing;
+
+				private readonly IExceptionFactory exceptionFactory;
+			}
+
+			private void ConfigureIdSystem(IConfiguration config)
+			{
+				Db4oLegacyConfigurationBridge.AsIdSystemConfiguration(config).UseCustomSystem(_idSystemFactory
+					);
+			}
+
 			/// <exception cref="System.Exception"></exception>
 			protected override void Db4oSetupAfterStore()
 			{
@@ -91,6 +127,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 					)));
 				Db().Deactivate(_unactivated);
 				_storage.TriggerException(true);
+				_idSystem.TriggerException(true);
 				DatabaseContext context = new DatabaseContext(Db(), _unactivated);
 				CurrentExceptionPropagationFixture().AssertExecute(context, CurrentOperationFixture
 					());
@@ -102,7 +139,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 
 			private void AssertIsNotLocked(string fileName)
 			{
-				IObjectContainer oc = Db4oEmbedded.OpenFile(fileName);
+				IEmbeddedConfiguration embeddedConfiguration = Db4oEmbedded.NewConfiguration();
+				embeddedConfiguration.IdSystem.UseCustomSystem(_idSystemFactory);
+				IObjectContainer oc = Db4oEmbedded.OpenFile(embeddedConfiguration, fileName);
 				oc.Close();
 			}
 
@@ -120,6 +159,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			protected override void Db4oTearDownBeforeClean()
 			{
 				_storage.TriggerException(false);
+				_idSystem.TriggerException(false);
 			}
 		}
 
@@ -136,14 +176,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 				(), new OneTimeDb4oExceptionPropagationFixture(), new OneTimeRuntimeExceptionPropagationFixture
 				(), new RecurringDb4oExceptionPropagationFixture(), new RecurringRuntimeExceptionPropagationFixture
 				(), new RecoverableExceptionPropagationFixture() }), new SimpleFixtureProvider(OperationFixture
-				, new object[] { new _TopLevelOperation_98("commit"), new _TopLevelOperation_102
-				("store"), new _TopLevelOperation_106("activate"), new _TopLevelOperation_120("peek"
-				), new _TopLevelOperation_124("qbe"), new _TopLevelOperation_128("query") }) };
+				, new object[] { new _TopLevelOperation_123("commit"), new _TopLevelOperation_127
+				("store"), new _TopLevelOperation_131("activate"), new _TopLevelOperation_145("peek"
+				), new _TopLevelOperation_149("qbe"), new _TopLevelOperation_153("query") }) };
 		}
 
-		private sealed class _TopLevelOperation_98 : TopLevelOperation
+		private sealed class _TopLevelOperation_123 : TopLevelOperation
 		{
-			public _TopLevelOperation_98(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_123(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -153,9 +193,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_102 : TopLevelOperation
+		private sealed class _TopLevelOperation_127 : TopLevelOperation
 		{
-			public _TopLevelOperation_102(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_127(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -165,9 +205,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_106 : TopLevelOperation
+		private sealed class _TopLevelOperation_131 : TopLevelOperation
 		{
-			public _TopLevelOperation_106(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_131(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -177,9 +217,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_120 : TopLevelOperation
+		private sealed class _TopLevelOperation_145 : TopLevelOperation
 		{
-			public _TopLevelOperation_120(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_145(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -198,9 +238,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_124 : TopLevelOperation
+		private sealed class _TopLevelOperation_149 : TopLevelOperation
 		{
-			public _TopLevelOperation_124(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_149(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -210,9 +250,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 			}
 		}
 
-		private sealed class _TopLevelOperation_128 : TopLevelOperation
+		private sealed class _TopLevelOperation_153 : TopLevelOperation
 		{
-			public _TopLevelOperation_128(string baseArg1) : base(baseArg1)
+			public _TopLevelOperation_153(string baseArg1) : base(baseArg1)
 			{
 			}
 

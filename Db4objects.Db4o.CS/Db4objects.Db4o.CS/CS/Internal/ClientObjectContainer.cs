@@ -1075,7 +1075,7 @@ namespace Db4objects.Db4o.CS.Internal
 			WriteBatchedMessage(msg);
 		}
 
-		public sealed override void WriteTransactionPointer(int a_address)
+		public sealed override void WriteTransactionPointer(int a_address, int pointer2)
 		{
 		}
 

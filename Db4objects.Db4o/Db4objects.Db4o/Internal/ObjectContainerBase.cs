@@ -1467,7 +1467,10 @@ namespace Db4objects.Db4o.Internal
 			_classCollection.InitOnUp(_systemTransaction);
 			if (ConfigImpl.DetectSchemaChanges())
 			{
-				_systemTransaction.Commit();
+				if (!ConfigImpl.IsReadOnly())
+				{
+					_systemTransaction.Commit();
+				}
 			}
 			ConfigImpl.ApplyConfigurationItems(this);
 		}
@@ -1633,13 +1636,13 @@ namespace Db4objects.Db4o.Internal
 			lock (_lock)
 			{
 				CheckClosed();
-				return AsTopLevelCall(new _IFunction4_1264(this, obj, committed, depth), trans);
+				return AsTopLevelCall(new _IFunction4_1267(this, obj, committed, depth), trans);
 			}
 		}
 
-		private sealed class _IFunction4_1264 : IFunction4
+		private sealed class _IFunction4_1267 : IFunction4
 		{
-			public _IFunction4_1264(ObjectContainerBase _enclosing, object obj, bool committed
+			public _IFunction4_1267(ObjectContainerBase _enclosing, object obj, bool committed
 				, IActivationDepth depth)
 			{
 				this._enclosing = _enclosing;
@@ -2051,13 +2054,13 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			CheckReadOnly();
-			return (((int)AsTopLevelStore(new _IFunction4_1587(this, obj, depth, checkJustSet
+			return (((int)AsTopLevelStore(new _IFunction4_1590(this, obj, depth, checkJustSet
 				), trans)));
 		}
 
-		private sealed class _IFunction4_1587 : IFunction4
+		private sealed class _IFunction4_1590 : IFunction4
 		{
-			public _IFunction4_1587(ObjectContainerBase _enclosing, object obj, int depth, bool
+			public _IFunction4_1590(ObjectContainerBase _enclosing, object obj, int depth, bool
 				 checkJustSet)
 			{
 				this._enclosing = _enclosing;
@@ -2557,7 +2560,7 @@ namespace Db4objects.Db4o.Internal
 		public abstract void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata 
 			classMetadata, ByteArrayBuffer buffer);
 
-		public abstract void WriteTransactionPointer(int address);
+		public abstract void WriteTransactionPointer(int pointer1, int pointer2);
 
 		public abstract void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
 			 classMetadata, ArrayType arrayType, ByteArrayBuffer buffer);

@@ -70,7 +70,7 @@ namespace Db4objects.Db4o.Defragment
 
 		internal readonly LocalObjectContainer _targetDb;
 
-		private readonly IContextIDMapping _mapping;
+		private readonly IIdMapping _mapping;
 
 		private IDefragmentListener _listener;
 
@@ -169,12 +169,12 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return oldID;
 			}
-			return _mapping.MappedID(oldID, lenient);
+			return _mapping.MappedId(oldID, lenient);
 		}
 
 		public virtual void MapIDs(int oldID, int newID, bool isClassID)
 		{
-			_mapping.MapIDs(oldID, newID, isClassID);
+			_mapping.MapId(oldID, newID, isClassID);
 		}
 
 		public virtual void Close()
@@ -187,8 +187,13 @@ namespace Db4objects.Db4o.Defragment
 		public virtual ByteArrayBuffer BufferByID(DefragmentServicesImpl.DbSelector selector
 			, int id)
 		{
-			Slot slot = ReadPointer(selector, id);
+			Slot slot = CommittedSlot(selector, id);
 			return BufferByAddress(selector, slot.Address(), slot.Length());
+		}
+
+		private Slot CommittedSlot(DefragmentServicesImpl.DbSelector selector, int id)
+		{
+			return selector.Db(this).GlobalIdSystem().CommittedSlot(id);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -305,12 +310,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_225(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_229(this, collector));
 		}
 
-		private sealed class _IVisitor4_225 : IVisitor4
+		private sealed class _IVisitor4_229 : IVisitor4
 		{
-			public _IVisitor4_225(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_229(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -411,15 +416,6 @@ namespace Db4objects.Db4o.Defragment
 			return new ObjectHeader(_sourceDb, buffer);
 		}
 
-		private Slot ReadPointer(DefragmentServicesImpl.DbSelector selector, int id)
-		{
-			ByteArrayBuffer reader = selector.Db(this).RawBufferByAddress(id, Const4.PointerLength
-				);
-			int address = reader.ReadInt();
-			int length = reader.ReadInt();
-			return new Slot(address, length);
-		}
-
 		public virtual bool HasFieldIndex(ClassMetadata clazz)
 		{
 			// actually only two states are used here, the third is implicit in null
@@ -432,16 +428,16 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata curClazz = clazz;
 			while (!hasFieldIndex.value && curClazz != null)
 			{
-				curClazz.TraverseDeclaredFields(new _IProcedure4_321(hasFieldIndex));
+				curClazz.TraverseDeclaredFields(new _IProcedure4_312(hasFieldIndex));
 				curClazz = curClazz.GetAncestor();
 			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_321 : IProcedure4
+		private sealed class _IProcedure4_312 : IProcedure4
 		{
-			public _IProcedure4_321(BooleanByRef hasFieldIndex)
+			public _IProcedure4_312(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}
@@ -465,12 +461,27 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual int SourceAddressByID(int sourceID)
 		{
-			return ReadPointer(Sourcedb, sourceID).Address();
+			return CommittedSlot(Sourcedb, sourceID).Address();
 		}
 
 		public virtual bool Accept(IStoredClass klass)
 		{
 			return this._defragConfig.StoredClassFilter().Accept(klass);
+		}
+
+		public virtual int TargetNewId()
+		{
+			return _targetDb.GlobalIdSystem().NewId();
+		}
+
+		public virtual IIdMapping Mapping()
+		{
+			return _mapping;
+		}
+
+		public virtual void CommitIds()
+		{
+			_targetDb.GlobalIdSystem().Commit(Mapping().SlotChanges(), Runnable4.DoNothing);
 		}
 	}
 }

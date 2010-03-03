@@ -5,6 +5,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Transactionlog;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Transactionlog
 {
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 				bytes.IncrementOffset(Const4.IntLength);
 				ReadWriteSlotChanges(bytes);
 			}
-			_container.WriteTransactionPointer(0);
+			_container.WriteTransactionPointer(0, 0);
 			FlushDatabaseFile();
 		}
 
@@ -80,14 +81,17 @@ namespace Db4objects.Db4o.Internal.Transactionlog
 				buffer.WriteInt(slotChangeCount);
 				AppendSlotChanges(buffer, slotChangeTree);
 				buffer.Write();
+				IRunnable commitHook = _container.CommitHook();
 				FlushDatabaseFile();
-				_container.WriteTransactionPointer(transactionLogSlot.Address());
+				_container.WriteTransactionPointer(transactionLogSlot.Address(), transactionLogSlot
+					.Address());
 				FlushDatabaseFile();
 				if (WriteSlots(slotChangeTree))
 				{
 					FlushDatabaseFile();
 				}
-				_container.WriteTransactionPointer(0);
+				_container.WriteTransactionPointer(0, 0);
+				commitHook.Run();
 				FlushDatabaseFile();
 				if (transactionLogSlot != reservedSlot)
 				{

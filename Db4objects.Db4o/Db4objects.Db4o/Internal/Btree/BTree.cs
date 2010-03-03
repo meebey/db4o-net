@@ -610,7 +610,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void FreeAllNodeIds(LocalTransaction systemTrans, IEnumerator allNodeIDs)
 		{
-			IIdSystem idSystem = systemTrans.IdSystem();
+			ITransactionalIdSystem idSystem = systemTrans.IdSystem();
 			while (allNodeIDs.MoveNext())
 			{
 				int id = ((int)allNodeIDs.Current);

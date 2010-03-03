@@ -2,17 +2,18 @@
 
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Defragment
 {
 	/// <summary>Base class for defragment ID mappings.</summary>
 	/// <remarks>Base class for defragment ID mappings.</remarks>
 	/// <seealso cref="Defragment">Defragment</seealso>
-	public abstract class AbstractContextIDMapping : IContextIDMapping
+	public abstract class AbstractIdMapping : IIdMapping
 	{
 		private Hashtable4 _classIDs = new Hashtable4();
 
-		public void MapIDs(int origID, int mappedID, bool isClassID)
+		public void MapId(int origID, int mappedID, bool isClassID)
 		{
 			if (isClassID)
 			{
@@ -41,8 +42,12 @@ namespace Db4objects.Db4o.Defragment
 
 		public abstract void Close();
 
-		public abstract int MappedID(int arg1, bool arg2);
+		public abstract void MapId(int arg1, Slot arg2);
+
+		public abstract int MappedId(int arg1, bool arg2);
 
 		public abstract void Open();
+
+		public abstract IVisitable SlotChanges();
 	}
 }

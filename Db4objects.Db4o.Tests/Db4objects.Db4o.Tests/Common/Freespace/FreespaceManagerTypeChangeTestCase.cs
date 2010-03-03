@@ -1,11 +1,14 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
+using System.Collections;
 using Db4oUnit;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Freespace;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
@@ -15,9 +18,43 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 	{
 		private const bool Verbose = false;
 
+		/// <summary>
+		/// The magic numbers for the limits were found empirically
+		/// using "what we have" and adding a reserve.
+		/// </summary>
+		/// <remarks>
+		/// The magic numbers for the limits were found empirically
+		/// using "what we have" and adding a reserve.
+		/// Settings may need to be higher if we add new complexity
+		/// to how our engine works.
+		/// </remarks>
+		private const long UsedSpaceCreepLimit = 1200;
+
+		private const long FragmentationCreepLimit = 10;
+
+		private const long TotalUsedSpaceCreepLimit = 12000;
+
+		private const long TotalFragmentationCreepLimit = 100;
+
 		private IConfiguration configuration;
 
 		private static string ItemName = "one";
+
+		internal int[] _initialUsedSpace = new int[2];
+
+		internal int[] _initialFragmentation = new int[2];
+
+		internal int[] _usedSpace = new int[2];
+
+		internal int[] _fragmentation = new int[2];
+
+		internal int _maxUsedSpaceCreep;
+
+		internal int _maxFragmentationCreep;
+
+		private static int Btree = 0;
+
+		private static int Ram = 1;
 
 		public class Item
 		{
@@ -40,25 +77,33 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			base.Configure(config);
 			config.Freespace().UseBTreeSystem();
 			configuration = config;
+			Db4oLegacyConfigurationBridge.AsIdSystemConfiguration(config).UseInMemorySystem();
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestSwitchingBackAndForth()
 		{
 			ProduceSomeFreeSpace();
+			PrintStatus();
 			Db().Commit();
+			PrintStatus();
 			StoreItem();
-			for (int i = 0; i < 50; i++)
+			PrintStatus();
+			Db().Commit();
+			for (int run = 0; run < 50; run++)
 			{
+				// produceSomeFreeSpace();
+				// db().commit();
 				PrintStatus();
-				AssertFreespaceSlotsAvailable();
+				AssertFreespace(Btree, run);
 				configuration.Freespace().UseRamSystem();
 				Reopen();
 				AssertFreespaceManagerClass(typeof(RamFreespaceManager));
 				AssertItemAvailable();
 				DeleteItem();
 				StoreItem();
-				AssertFreespaceSlotsAvailable();
+				PrintStatus();
+				AssertFreespace(Ram, run);
 				configuration.Freespace().UseBTreeSystem();
 				Reopen();
 				AssertFreespaceManagerClass(typeof(BTreeFreespaceManager));
@@ -87,29 +132,80 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			Assert.AreEqual(ItemName, item._name);
 		}
 
-		private void AssertFreespaceSlotsAvailable()
+		private void AssertFreespace(int system, int run)
 		{
-			Assert.IsGreater(3, FreespaceSlots().Size());
+			int calculatedFreespaceSize = CalculatedFreespaceSize();
+			long fileSize = FileSize();
+			int usedSpace = (int)(fileSize - calculatedFreespaceSize);
+			int fragmentation = FreespaceSlots().Size();
+			if (run == 0)
+			{
+				_usedSpace[system] = usedSpace;
+				_fragmentation[system] = fragmentation;
+				_initialFragmentation[system] = fragmentation;
+				_initialUsedSpace[system] = usedSpace;
+				return;
+			}
+			if (usedSpace > _usedSpace[system])
+			{
+				int usedSpaceCreep = usedSpace - _usedSpace[system];
+				_usedSpace[system] = usedSpace;
+				if (usedSpaceCreep > _maxUsedSpaceCreep)
+				{
+					_maxUsedSpaceCreep = usedSpaceCreep;
+				}
+			}
+			Print("Max space CREEP " + _maxUsedSpaceCreep);
+			if (fragmentation > _fragmentation[system])
+			{
+				int fragmentationCreep = fragmentation - _fragmentation[system];
+				_fragmentation[system] = fragmentation;
+				if (fragmentationCreep > _maxFragmentationCreep)
+				{
+					_maxFragmentationCreep = fragmentationCreep;
+				}
+			}
+			Print("Max Fragmentation CREEP " + _maxFragmentationCreep);
+			int totalUsedSpaceCreep = usedSpace - _initialUsedSpace[system];
+			int totalFragmentationCreep = fragmentation - _initialFragmentation[system];
+			Print("Total space CREEP " + totalUsedSpaceCreep);
+			Print("Total Fragmentation CREEP " + totalFragmentationCreep);
+			Assert.IsSmaller(FragmentationCreepLimit, _maxFragmentationCreep);
+			Assert.IsSmaller(TotalFragmentationCreepLimit, totalFragmentationCreep);
+			Assert.IsSmaller(UsedSpaceCreepLimit, _maxUsedSpaceCreep);
+			Assert.IsSmaller(TotalUsedSpaceCreepLimit, totalUsedSpaceCreep);
 		}
 
 		private void PrintStatus()
 		{
 			return;
-			Print("fileSize " + FileSession().FileLength());
+			Print("fileSize " + FileSize());
 			Print("slot count " + CurrentFreespaceManager().SlotCount());
 			Print("current freespace " + CurrentFreespace());
+			Collection4 freespaceSlots = FreespaceSlots();
+			IEnumerator iterator = freespaceSlots.GetEnumerator();
+			while (iterator.MoveNext())
+			{
+				Print(iterator.Current.ToString());
+			}
+			Print("calculated freespace size " + CalculatedFreespaceSize());
+		}
+
+		private long FileSize()
+		{
+			return FileSession().FileLength();
 		}
 
 		private Collection4 FreespaceSlots()
 		{
 			Collection4 collectionOfSlots = new Collection4();
-			CurrentFreespaceManager().Traverse(new _IVisitor4_101(collectionOfSlots));
+			CurrentFreespaceManager().Traverse(new _IVisitor4_197(collectionOfSlots));
 			return collectionOfSlots;
 		}
 
-		private sealed class _IVisitor4_101 : IVisitor4
+		private sealed class _IVisitor4_197 : IVisitor4
 		{
-			public _IVisitor4_101(Collection4 collectionOfSlots)
+			public _IVisitor4_197(Collection4 collectionOfSlots)
 			{
 				this.collectionOfSlots = collectionOfSlots;
 			}
@@ -120,6 +216,18 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			}
 
 			private readonly Collection4 collectionOfSlots;
+		}
+
+		private int CalculatedFreespaceSize()
+		{
+			int size = 0;
+			IEnumerator i = FreespaceSlots().GetEnumerator();
+			while (i.MoveNext())
+			{
+				Slot slot = (Slot)i.Current;
+				size += slot.Length();
+			}
+			return size;
 		}
 
 		private void AssertFreespaceManagerClass(Type clazz)

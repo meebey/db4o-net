@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Fileheader
 {
@@ -10,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	public abstract class FileHeader
 	{
 		private static readonly FileHeader[] AvailableFileHeaders = new FileHeader[] { new 
-			FileHeader0(), new FileHeader1() };
+			FileHeader0(null), new FileHeader1(), new FileHeader2() };
 
 		private static int ReaderLength()
 		{
@@ -38,6 +39,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 			return header;
 		}
+
+		public abstract FileHeader Convert(LocalObjectContainer file);
 
 		private static ByteArrayBuffer PrepareFileHeaderReader(LocalObjectContainer file)
 		{
@@ -99,17 +102,17 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public abstract void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
 			, bool shuttingDown, StatefulBuffer writer, int blockSize, int freespaceID);
 
-		public abstract void WriteTransactionPointer(Transaction systemTransaction, int transactionAddress
-			);
+		public abstract void WriteTransactionPointer(Transaction systemTransaction, int transactionPointer1
+			, int transactionPointer2);
 
 		protected virtual void WriteTransactionPointer(Transaction systemTransaction, int
-			 transactionAddress, int address, int offset)
+			 transactionPointer1, int transactionPointer2, int address, int offset)
 		{
 			StatefulBuffer bytes = new StatefulBuffer(systemTransaction, address, Const4.IntLength
 				 * 2);
 			bytes.MoveForward(offset);
-			bytes.WriteInt(transactionAddress);
-			bytes.WriteInt(transactionAddress);
+			bytes.WriteInt(transactionPointer1);
+			bytes.WriteInt(transactionPointer2);
 			bytes.Write();
 		}
 
@@ -130,5 +133,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		}
 
 		public abstract void ReadIdentity(LocalObjectContainer container);
+
+		public abstract IRunnable Commit();
 	}
 }

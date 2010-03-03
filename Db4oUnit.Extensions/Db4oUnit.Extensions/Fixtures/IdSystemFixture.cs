@@ -20,7 +20,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public IdSystemFixture()
 		{
-			_idSystemType = GlobalIdSystemFactory.Btree;
+			_idSystemType = StandardIdSystemFactory.InMemory;
 		}
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
@@ -29,15 +29,21 @@ namespace Db4oUnit.Extensions.Fixtures
 				(config);
 			switch (_idSystemType)
 			{
-				case GlobalIdSystemFactory.PointerBased:
+				case StandardIdSystemFactory.PointerBased:
 				{
 					embeddedConfiguration.IdSystem.UsePointerBasedSystem();
 					break;
 				}
 
-				case GlobalIdSystemFactory.Btree:
+				case StandardIdSystemFactory.Btree:
 				{
 					embeddedConfiguration.IdSystem.UseBTreeSystem();
+					break;
+				}
+
+				case StandardIdSystemFactory.InMemory:
+				{
+					embeddedConfiguration.IdSystem.UseInMemorySystem();
 					break;
 				}
 
@@ -55,15 +61,21 @@ namespace Db4oUnit.Extensions.Fixtures
 			string idSystemType = string.Empty;
 			switch (_idSystemType)
 			{
-				case GlobalIdSystemFactory.PointerBased:
+				case StandardIdSystemFactory.PointerBased:
 				{
 					idSystemType = "PointerBased";
 					break;
 				}
 
-				case GlobalIdSystemFactory.Btree:
+				case StandardIdSystemFactory.Btree:
 				{
 					idSystemType = "BTree";
+					break;
+				}
+
+				case StandardIdSystemFactory.InMemory:
+				{
+					idSystemType = "InMemory";
 					break;
 				}
 
@@ -74,6 +86,11 @@ namespace Db4oUnit.Extensions.Fixtures
 				}
 			}
 			return "IdSystem-" + idSystemType + " " + base.Label();
+		}
+
+		public override bool Accept(Type clazz)
+		{
+			return base.Accept(clazz) && !typeof(IOptOutIdSystem).IsAssignableFrom(clazz);
 		}
 	}
 }

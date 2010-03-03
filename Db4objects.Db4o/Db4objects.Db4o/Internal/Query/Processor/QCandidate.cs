@@ -528,10 +528,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			_include = flag;
 		}
 
-		public override void OnAttemptToAddDuplicate(Tree a_tree)
+		public override Tree OnAttemptToAddDuplicate(Tree oldNode)
 		{
 			_size = 0;
-			_root = (Db4objects.Db4o.Internal.Query.Processor.QCandidate)a_tree;
+			_root = (Db4objects.Db4o.Internal.Query.Processor.QCandidate)oldNode;
+			return oldNode;
 		}
 
 		private IReflectClass MemberClass()

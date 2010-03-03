@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		private SlotChange.SlotChangeOperation _currentOperation;
 
-		private Slot _newSlot;
+		protected Slot _newSlot;
 
 		public SlotChange(int id) : base(id)
 		{
@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			return base.ShallowCloneInternal(sc);
 		}
 
-		public virtual void FreeDuringCommit(TransactionalIdSystem idSystem, IFreespaceManager
+		public virtual void FreeDuringCommit(TransactionalIdSystemImpl idSystem, IFreespaceManager
 			 freespaceManager, bool forFreespace)
 		{
 			if (IsForFreespace() != forFreespace)
@@ -82,8 +82,8 @@ namespace Db4objects.Db4o.Internal.Slots
 			}
 		}
 
-		protected virtual Slot ModifiedSlotInUnderlyingIdSystem(TransactionalIdSystem idSystem
-			)
+		protected virtual Slot ModifiedSlotInUnderlyingIdSystem(TransactionalIdSystemImpl
+			 idSystem)
 		{
 			return idSystem.ModifiedSlotInUnderlyingIdSystem(_key);
 		}
@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		public virtual bool IsNew()
 		{
-			return IsFreePointerOnRollback();
+			return _firstOperation == SlotChange.SlotChangeOperation.create;
 		}
 
 		private bool IsFreeOnRollback()
@@ -118,7 +118,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			//	private final boolean isFreePointerOnCommit() {
 			//		return isBitSet(FREE_POINTER_ON_COMMIT_BIT);
 			//	}
-			return _firstOperation == SlotChange.SlotChangeOperation.create;
+			return IsNew();
 		}
 
 		public virtual Slot NewSlot()
@@ -246,6 +246,11 @@ namespace Db4objects.Db4o.Internal.Slots
 		}
 
 		protected virtual bool IsForFreespace()
+		{
+			return false;
+		}
+
+		public virtual bool RemoveId()
 		{
 			return false;
 		}

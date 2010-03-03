@@ -522,6 +522,11 @@ namespace Db4objects.Db4o.Internal
 			return id > 0 && id <= _highestBuiltinTypeID;
 		}
 
+		public int LowestValidId()
+		{
+			return _highestBuiltinTypeID + 1;
+		}
+
 		public VirtualFieldMetadata VirtualFieldByName(string name)
 		{
 			for (int i = 0; i < _virtualFields.Length; i++)

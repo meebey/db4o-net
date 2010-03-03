@@ -1,0 +1,92 @@
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
+
+using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Tests.Common.Assorted;
+using Db4objects.Db4o.Tests.Common.Exceptions;
+using Sharpen.Lang;
+
+namespace Db4objects.Db4o.Tests.Common.Exceptions
+{
+	public class ExceptionSimulatingIdSystem : DelegatingIdSystem
+	{
+		private readonly IExceptionFactory _exceptionFactory;
+
+		private readonly ExceptionSimulatingStorage.ExceptionTriggerCondition _triggerCondition
+			 = new ExceptionSimulatingStorage.ExceptionTriggerCondition();
+
+		public ExceptionSimulatingIdSystem(LocalObjectContainer container, int idSystemId
+			, IExceptionFactory exceptionFactory) : base(container, idSystemId)
+		{
+			_exceptionFactory = exceptionFactory;
+		}
+
+		private void ResetShutdownState()
+		{
+			_triggerCondition._isClosed = false;
+		}
+
+		public virtual void TriggerException(bool exception)
+		{
+			ResetShutdownState();
+			_triggerCondition._triggersException = exception;
+		}
+
+		public virtual bool TriggersException()
+		{
+			return this._triggerCondition._triggersException;
+		}
+
+		public virtual bool IsClosed()
+		{
+			return _triggerCondition._isClosed;
+		}
+
+		public override Slot CommittedSlot(int id)
+		{
+			if (TriggersException())
+			{
+				_exceptionFactory.ThrowException();
+			}
+			return base.CommittedSlot(id);
+		}
+
+		public override int NewId()
+		{
+			if (TriggersException())
+			{
+				_exceptionFactory.ThrowException();
+			}
+			return base.NewId();
+		}
+
+		public override void Close()
+		{
+			base.Close();
+			if (TriggersException())
+			{
+				_exceptionFactory.ThrowOnClose();
+			}
+		}
+
+		public override void CompleteInterruptedTransaction(int transactionId1, int transactionId2
+			)
+		{
+			if (TriggersException())
+			{
+				_exceptionFactory.ThrowException();
+			}
+			base.CompleteInterruptedTransaction(transactionId1, transactionId2);
+		}
+
+		public override void Commit(IVisitable slotChanges, IRunnable commitBlock)
+		{
+			if (TriggersException())
+			{
+				_exceptionFactory.ThrowException();
+			}
+			base.Commit(slotChanges, commitBlock);
+		}
+	}
+}

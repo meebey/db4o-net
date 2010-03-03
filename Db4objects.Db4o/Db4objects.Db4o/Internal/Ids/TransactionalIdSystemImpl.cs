@@ -10,22 +10,22 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
-	public class TransactionalIdSystem : IIdSystem
+	public class TransactionalIdSystemImpl : ITransactionalIdSystem
 	{
-		private StandardIdSlotChanges _slotChanges;
+		private IdSlotChanges _slotChanges;
 
-		private Db4objects.Db4o.Internal.Ids.TransactionalIdSystem _systemIdSystem;
+		private Db4objects.Db4o.Internal.Ids.TransactionalIdSystemImpl _systemIdSystem;
 
 		private readonly IClosure4 _globalIdSystem;
 
 		private readonly IClosure4 _freespaceManager;
 
-		public TransactionalIdSystem(IClosure4 freespaceManager, IClosure4 globalIdSystem
-			, Db4objects.Db4o.Internal.Ids.TransactionalIdSystem systemIdSystem)
+		public TransactionalIdSystemImpl(IClosure4 freespaceManager, IClosure4 globalIdSystem
+			, Db4objects.Db4o.Internal.Ids.TransactionalIdSystemImpl systemIdSystem)
 		{
 			_freespaceManager = freespaceManager;
 			_globalIdSystem = globalIdSystem;
-			_slotChanges = new StandardIdSlotChanges(this, freespaceManager);
+			_slotChanges = new IdSlotChanges(this, freespaceManager);
 			_systemIdSystem = systemIdSystem;
 		}
 
@@ -85,7 +85,7 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		private sealed class _IVisitable_55 : IVisitable
 		{
-			public _IVisitable_55(TransactionalIdSystem _enclosing)
+			public _IVisitable_55(TransactionalIdSystemImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -95,12 +95,12 @@ namespace Db4objects.Db4o.Internal.Ids
 				this._enclosing.TraverseSlotChanges(visitor);
 			}
 
-			private readonly TransactionalIdSystem _enclosing;
+			private readonly TransactionalIdSystemImpl _enclosing;
 		}
 
 		private sealed class _IRunnable_60 : IRunnable
 		{
-			public _IRunnable_60(TransactionalIdSystem _enclosing)
+			public _IRunnable_60(TransactionalIdSystemImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -113,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Ids
 				this._enclosing.FreeSlotChanges(true);
 			}
 
-			private readonly TransactionalIdSystem _enclosing;
+			private readonly TransactionalIdSystemImpl _enclosing;
 		}
 
 		private void FreeSlotChanges(bool forFreespace)
@@ -279,9 +279,9 @@ namespace Db4objects.Db4o.Internal.Ids
 			return ((IFreespaceManager)_freespaceManager.Run());
 		}
 
-		private IGlobalIdSystem GlobalIdSystem()
+		private IIdSystem GlobalIdSystem()
 		{
-			return ((IGlobalIdSystem)_globalIdSystem.Run());
+			return ((IIdSystem)_globalIdSystem.Run());
 		}
 
 		public virtual void Close()

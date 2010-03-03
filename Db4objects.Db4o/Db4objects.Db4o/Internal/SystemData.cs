@@ -19,6 +19,8 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4oDatabase _identity;
 
+		private int _identityId;
+
 		private long _lastTimeStampID;
 
 		private byte _stringEncoding;
@@ -28,6 +30,10 @@ namespace Db4objects.Db4o.Internal
 		private byte _idSystemType;
 
 		private int _idSystemID;
+
+		private int _transactionPointer1;
+
+		private int _transactionPointer2;
 
 		public SystemData()
 		{
@@ -141,6 +147,36 @@ namespace Db4objects.Db4o.Internal
 		public virtual void UuidIndexId(int id)
 		{
 			_uuidIndexId = id;
+		}
+
+		public virtual void IdentityId(int id)
+		{
+			_identityId = id;
+		}
+
+		public virtual int IdentityId()
+		{
+			return _identityId;
+		}
+
+		public virtual void TransactionPointer1(int pointer)
+		{
+			_transactionPointer1 = pointer;
+		}
+
+		public virtual void TransactionPointer2(int pointer)
+		{
+			_transactionPointer2 = pointer;
+		}
+
+		public virtual int TransactionPointer1()
+		{
+			return _transactionPointer1;
+		}
+
+		public virtual int TransactionPointer2()
+		{
+			return _transactionPointer2;
 		}
 	}
 }

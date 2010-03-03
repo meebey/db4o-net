@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				);
 			lock (ContainerLock())
 			{
-				IIdSystem idSystem = Transaction().IdSystem();
+				ITransactionalIdSystem idSystem = Transaction().IdSystem();
 				for (int i = 0; i < prefetchIDCount; i++)
 				{
 					reply.WriteInt(idSystem.PrefetchID());

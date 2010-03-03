@@ -1,17 +1,26 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Mapping;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Defragment
 {
-	/// <summary>BTree mapping for IDs during a defragmentation run.</summary>
-	/// <remarks>BTree mapping for IDs during a defragmentation run.</remarks>
+	/// <summary>Database based mapping for IDs during a defragmentation run.</summary>
+	/// <remarks>
+	/// Database based mapping for IDs during a defragmentation run.
+	/// Use this mapping to keep memory consumption lower than when
+	/// using the
+	/// <see cref="InMemoryIdMapping">InMemoryIdMapping</see>
+	/// .
+	/// </remarks>
 	/// <seealso cref="Defragment">Defragment</seealso>
-	public class BTreeIDMapping : AbstractContextIDMapping
+	public class DatabaseIdMapping : AbstractIdMapping
 	{
 		private string _fileName;
 
@@ -21,7 +30,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private MappedIDPair _cache = new MappedIDPair(0, 0);
 
-		private BTreeIDMapping.BTreeSpec _treeSpec = null;
+		private DatabaseIdMapping.BTreeSpec _treeSpec = null;
 
 		private int _commitFrequency = 0;
 
@@ -36,7 +45,7 @@ namespace Db4objects.Db4o.Defragment
 		/// the BTree implementation. The tree will never commit.
 		/// </remarks>
 		/// <param name="fileName">The location where the BTree file should be created.</param>
-		public BTreeIDMapping(string fileName) : this(fileName, null, 0)
+		public DatabaseIdMapping(string fileName) : this(fileName, null, 0)
 		{
 		}
 
@@ -50,13 +59,13 @@ namespace Db4objects.Db4o.Defragment
 		/// <param name="nodeSize">The size of a BTree node</param>
 		/// <param name="commitFrequency">The number of inserts after which a commit should be issued (&lt;=0: never commit)
 		/// 	</param>
-		public BTreeIDMapping(string fileName, int nodeSize, int commitFrequency) : this(
-			fileName, new BTreeIDMapping.BTreeSpec(nodeSize), commitFrequency)
+		public DatabaseIdMapping(string fileName, int nodeSize, int commitFrequency) : this
+			(fileName, new DatabaseIdMapping.BTreeSpec(nodeSize), commitFrequency)
 		{
 		}
 
-		private BTreeIDMapping(string fileName, BTreeIDMapping.BTreeSpec treeSpec, int commitFrequency
-			)
+		private DatabaseIdMapping(string fileName, DatabaseIdMapping.BTreeSpec treeSpec, 
+			int commitFrequency)
 		{
 			// <=0 : never commit
 			_fileName = fileName;
@@ -64,7 +73,7 @@ namespace Db4objects.Db4o.Defragment
 			_commitFrequency = commitFrequency;
 		}
 
-		public override int MappedID(int oldID, bool lenient)
+		public override int MappedId(int oldID, bool lenient)
 		{
 			if (_cache.Orig() == oldID)
 			{
@@ -148,6 +157,63 @@ namespace Db4objects.Db4o.Defragment
 			public virtual int NodeSize()
 			{
 				return _nodeSize;
+			}
+		}
+
+		public override void MapId(int id, Slot slot)
+		{
+			_mappingDb.Store(new DatabaseIdMapping.IdSlotMapping(id, slot.Address(), slot.Length
+				()));
+		}
+
+		public override IVisitable SlotChanges()
+		{
+			return new _IVisitable_141(this);
+		}
+
+		private sealed class _IVisitable_141 : IVisitable
+		{
+			public _IVisitable_141(DatabaseIdMapping _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Accept(IVisitor4 outSideVisitor)
+			{
+				IObjectSet objectSet = this._enclosing._mappingDb.Query(typeof(DatabaseIdMapping.IdSlotMapping
+					));
+				for (IEnumerator idSlotMappingIter = objectSet.GetEnumerator(); idSlotMappingIter
+					.MoveNext(); )
+				{
+					DatabaseIdMapping.IdSlotMapping idSlotMapping = ((DatabaseIdMapping.IdSlotMapping
+						)idSlotMappingIter.Current);
+					SlotChange slotChange = new SlotChange(idSlotMapping._id);
+					slotChange.NotifySlotCreated(idSlotMapping.Slot());
+					outSideVisitor.Visit(slotChange);
+				}
+			}
+
+			private readonly DatabaseIdMapping _enclosing;
+		}
+
+		public class IdSlotMapping
+		{
+			public IdSlotMapping(int id, int address, int length)
+			{
+				_id = id;
+				_address = address;
+				_length = length;
+			}
+
+			public int _id;
+
+			public int _address;
+
+			public int _length;
+
+			public virtual Db4objects.Db4o.Internal.Slots.Slot Slot()
+			{
+				return new Db4objects.Db4o.Internal.Slots.Slot(_address, _length);
 			}
 		}
 	}

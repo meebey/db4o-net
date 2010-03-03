@@ -17,6 +17,7 @@ using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -42,7 +43,7 @@ namespace Db4objects.Db4o.Internal
 
 		private Db4objects.Db4o.Internal.SystemData _systemData;
 
-		private IGlobalIdSystem _globalIdSystem;
+		private IIdSystem _globalIdSystem;
 
 		private readonly byte[] _pointerBuffer = new byte[Const4.PointerLength];
 
@@ -56,13 +57,13 @@ namespace Db4objects.Db4o.Internal
 		public override Transaction NewTransaction(Transaction parentTransaction, IReferenceSystem
 			 referenceSystem, bool isSystemTransaction)
 		{
-			IIdSystem systemIdSystem = null;
+			ITransactionalIdSystem systemIdSystem = null;
 			if (!isSystemTransaction)
 			{
 				systemIdSystem = SystemTransaction().IdSystem();
 			}
-			IIdSystem idSystem = new TransactionalIdSystem(new _IClosure4_58(this), new _IClosure4_63
-				(this), (TransactionalIdSystem)systemIdSystem);
+			ITransactionalIdSystem idSystem = new TransactionalIdSystemImpl(new _IClosure4_58
+				(this), new _IClosure4_63(this), (TransactionalIdSystemImpl)systemIdSystem);
 			return new LocalTransaction(this, parentTransaction, idSystem, referenceSystem);
 		}
 
@@ -146,7 +147,7 @@ namespace Db4objects.Db4o.Internal
 			AbstractFreespaceManager blockedFreespaceManager = AbstractFreespaceManager.CreateNew
 				(this);
 			InstallFreespaceManager(blockedFreespaceManager);
-			_fileHeader = new FileHeader1();
+			_fileHeader = new FileHeader2();
 			SetRegularEndAddress(_fileHeader.Length());
 			InitNewClassCollection();
 			InitializeEssentialClasses();
@@ -415,11 +416,21 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void SetIdentity(Db4oDatabase identity)
 		{
-			_systemData.Identity(identity);
-			// The dirty TimeStampIdGenerator triggers writing of
-			// the variable part of the systemdata. We need to
-			// make it dirty here, so the new identity is persisted:
-			_timeStampIdGenerator.Next();
+			lock (Lock())
+			{
+				_systemData.Identity(identity);
+				// The dirty TimeStampIdGenerator triggers writing of
+				// the variable part of the systemdata. We need to
+				// make it dirty here, so the new identity is persisted:
+				_timeStampIdGenerator.Next();
+				// _fileHeader is still null on startup.
+				// Only later calls to setIdentity need to 
+				// write the FileHeader variable part
+				if (_fileHeader != null)
+				{
+					_fileHeader.WriteVariablePart(this, 2);
+				}
+			}
 		}
 
 		internal override bool IsServer()
@@ -541,7 +552,8 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		internal virtual void ReadThis()
 		{
-			NewSystemData(AbstractFreespaceManager.FmLegacyRam, GlobalIdSystemFactory.Legacy);
+			NewSystemData(AbstractFreespaceManager.FmLegacyRam, StandardIdSystemFactory.Legacy
+				);
 			BlockSizeReadFromFile(1);
 			_fileHeader = FileHeader.Read(this);
 			CreateStringIO(_systemData.StringEncoding());
@@ -577,6 +589,7 @@ namespace Db4objects.Db4o.Internal
 				_fileHeader.WriteVariablePart(this, 1);
 				Transaction.Commit();
 			}
+			_fileHeader = _fileHeader.Convert(this);
 		}
 
 		private void InstallFreespaceManager(IFreespaceManager blockedFreespaceManager)
@@ -587,7 +600,7 @@ namespace Db4objects.Db4o.Internal
 
 		protected virtual void CreateIdSystem()
 		{
-			_globalIdSystem = GlobalIdSystemFactory.CreateNew(this);
+			_globalIdSystem = StandardIdSystemFactory.NewInstance(this);
 		}
 
 		private bool FreespaceMigrationRequired(IFreespaceManager freespaceManager)
@@ -651,12 +664,12 @@ namespace Db4objects.Db4o.Internal
 					return;
 				}
 			}
-			_semaphoresLock.Run(new _IClosure4_573(this, trans, name));
+			_semaphoresLock.Run(new _IClosure4_584(this, trans, name));
 		}
 
-		private sealed class _IClosure4_573 : IClosure4
+		private sealed class _IClosure4_584 : IClosure4
 		{
-			public _IClosure4_573(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_584(LocalObjectContainer _enclosing, Transaction trans, string 
 				name)
 			{
 				this._enclosing = _enclosing;
@@ -688,13 +701,13 @@ namespace Db4objects.Db4o.Internal
 			if (_semaphores != null)
 			{
 				Hashtable4 semaphores = _semaphores;
-				_semaphoresLock.Run(new _IClosure4_587(this, semaphores, trans));
+				_semaphoresLock.Run(new _IClosure4_598(this, semaphores, trans));
 			}
 		}
 
-		private sealed class _IClosure4_587 : IClosure4
+		private sealed class _IClosure4_598 : IClosure4
 		{
-			public _IClosure4_587(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
+			public _IClosure4_598(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -704,14 +717,14 @@ namespace Db4objects.Db4o.Internal
 
 			public object Run()
 			{
-				semaphores.ForEachKeyForIdentity(new _IVisitor4_588(semaphores), trans);
+				semaphores.ForEachKeyForIdentity(new _IVisitor4_599(semaphores), trans);
 				this._enclosing._semaphoresLock.Awake();
 				return null;
 			}
 
-			private sealed class _IVisitor4_588 : IVisitor4
+			private sealed class _IVisitor4_599 : IVisitor4
 			{
-				public _IVisitor4_588(Hashtable4 semaphores)
+				public _IVisitor4_599(Hashtable4 semaphores)
 				{
 					this.semaphores = semaphores;
 				}
@@ -761,13 +774,13 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			BooleanByRef acquired = new BooleanByRef();
-			_semaphoresLock.Run(new _IClosure4_624(this, trans, name, acquired, timeout));
+			_semaphoresLock.Run(new _IClosure4_635(this, trans, name, acquired, timeout));
 			return acquired.value;
 		}
 
-		private sealed class _IClosure4_624 : IClosure4
+		private sealed class _IClosure4_635 : IClosure4
 		{
-			public _IClosure4_624(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_635(LocalObjectContainer _enclosing, Transaction trans, string 
 				name, BooleanByRef acquired, int timeout)
 			{
 				this._enclosing = _enclosing;
@@ -862,7 +875,6 @@ namespace Db4objects.Db4o.Internal
 		public sealed override void WriteDirty()
 		{
 			WriteCachedDirty();
-			WriteVariableHeader();
 		}
 
 		private void WriteCachedDirty()
@@ -882,17 +894,6 @@ namespace Db4objects.Db4o.Internal
 			_handlers.Encrypt(buffer);
 			WriteBytes(buffer, address, addressOffset);
 			_handlers.Decrypt(buffer);
-		}
-
-		protected virtual void WriteVariableHeader()
-		{
-			if (!_timeStampIdGenerator.IsDirty())
-			{
-				return;
-			}
-			_systemData.LastTimeStampID(_timeStampIdGenerator.LastTimeStampId());
-			_fileHeader.WriteVariablePart(this, 2);
-			_timeStampIdGenerator.SetClean();
 		}
 
 		internal virtual void WriteHeader(bool startFileLockingThread, bool shuttingDown)
@@ -935,9 +936,9 @@ namespace Db4objects.Db4o.Internal
 				));
 		}
 
-		public sealed override void WriteTransactionPointer(int address)
+		public sealed override void WriteTransactionPointer(int pointer1, int pointer2)
 		{
-			_fileHeader.WriteTransactionPointer(SystemTransaction(), address);
+			_fileHeader.WriteTransactionPointer(SystemTransaction(), pointer1, pointer2);
 		}
 
 		public Slot AllocateSlotForUserObjectUpdate(Transaction trans, int id, int length
@@ -996,13 +997,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_802(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_803(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_802 : IVisitor4
+		private sealed class _IVisitor4_803 : IVisitor4
 		{
-			public _IVisitor4_802(IntArrayList ids)
+			public _IVisitor4_803(IntArrayList ids)
 			{
 				this.ids = ids;
 			}
@@ -1124,9 +1125,20 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual IGlobalIdSystem GlobalIdSystem()
+		public virtual IIdSystem GlobalIdSystem()
 		{
 			return _globalIdSystem;
+		}
+
+		public virtual IRunnable CommitHook()
+		{
+			if (!_timeStampIdGenerator.IsDirty())
+			{
+				return Runnable4.DoNothing;
+			}
+			_systemData.LastTimeStampID(_timeStampIdGenerator.LastTimeStampId());
+			_timeStampIdGenerator.SetClean();
+			return _fileHeader.Commit();
 		}
 	}
 }
