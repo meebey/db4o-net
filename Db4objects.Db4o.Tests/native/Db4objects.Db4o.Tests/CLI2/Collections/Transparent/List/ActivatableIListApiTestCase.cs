@@ -1,5 +1,6 @@
 ﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 
+using System;
 using System.Collections.Generic;
 using Db4oUnit;
 
@@ -27,6 +28,14 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 		{
 			const int indexToTest = 1;
 			Assert.AreEqual(NewElement(indexToTest), SingleCollection()[indexToTest]);
+		}
+
+		public void TestCopyTo()
+		{
+			AssertCopy(delegate(ICollectionElement[] elements)
+			{
+				SingleCollection().CopyTo(elements, 0);
+			});
 		}
 
 		public void TestIndexerSetter()

@@ -1,5 +1,4 @@
 ﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
-
 using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Collections;
@@ -10,9 +9,9 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 {
-	public class AbstractActivatableCollectionApiTestCase : AbstractDb4oTestCase
+	public partial class AbstractActivatableCollectionApiTestCase : AbstractDb4oTestCase
 	{
-		protected IList<string> Names = new List<string>(new string[] {"one", "two", "three"});
+		protected readonly IList<string> Names = new List<string>(new string[] {"one", "two", "three", "four"});
 
 		protected override void Configure(IConfiguration config)
 		{
@@ -30,7 +29,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 		{
 			AssertListOperation(delegate(IList<ICollectionElement> list)
 			{
-				list.Add(new Element("four"));
+				list.Add(new Element("five"));
 			});
 		}
 
@@ -44,7 +43,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 		public void TestContains()
 		{
 			Assert.IsTrue(SingleCollection().Contains(new Element("one")));
-			Assert.IsFalse(SingleCollection().Contains(new Element("four")));
+			Assert.IsFalse(SingleCollection().Contains(new Element("five")));
 		}
 
 		public void TestCopyTo()
@@ -84,11 +83,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 
 		protected IList<ICollectionElement> SingleCollection()
 		{
-			CollectionHolder<IList<ICollectionElement>> holder = (CollectionHolder<IList<ICollectionElement>>)RetrieveOnlyInstance(typeof(CollectionHolder<IList<ICollectionElement>>));
+			CollectionHolder<IList<ICollectionElement>> holder = (CollectionHolder<IList<ICollectionElement>>) RetrieveOnlyInstance(typeof(CollectionHolder<IList<ICollectionElement>>));
 			return holder.Collection;
 		}
 
-		protected ActivatableList<ICollectionElement> NewActivatableCollection()
+		private ActivatableList<ICollectionElement> NewActivatableCollection()
 		{
 			ActivatableList<ICollectionElement> activatableList = new ActivatableList<ICollectionElement>(NewPlainCollection());
 			return activatableList;
@@ -108,6 +107,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 			}
 
 			return plainList;
+		}
+
+		protected int LastIndex()
+		{
+			return Names.Count * 2 - 1;
 		}
 
 		protected void AssertListOperation(Action<IList<ICollectionElement>> action)
