@@ -14,8 +14,8 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 
 			foreach (string name in Names)
 			{
-				Assert.IsGreaterOrEqual(0, Array.IndexOf(elements, new Element(name)));
-				Assert.IsGreaterOrEqual(0, Array.IndexOf(elements, new ActivatableElement(name)));
+				Assert.IsGreaterOrEqual(0, Array.IndexOf<ICollectionElement>(elements, new Element(name)));
+				Assert.IsGreaterOrEqual(0, Array.IndexOf<ICollectionElement>(elements, new ActivatableElement(name)));
 			}
 		}
 	}
