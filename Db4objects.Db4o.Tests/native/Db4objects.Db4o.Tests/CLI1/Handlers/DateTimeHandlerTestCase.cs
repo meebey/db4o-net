@@ -41,9 +41,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             Assert.AreEqual(kind, retrievedItem._dateTime.Kind);
         }
 
-        private Internal.Handlers.DateTimeHandler DateTimeHandler()
+        private Db4o.Internal.Handlers.DateTimeHandler DateTimeHandler()
         {
-            return new Internal.Handlers.DateTimeHandler();
+            return new Db4o.Internal.Handlers.DateTimeHandler();
         }
 
         public class Item

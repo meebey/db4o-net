@@ -29,9 +29,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             DoTestStoreObject(storedItem);
         }
 
-        private Internal.Handlers.UIntHandler UIntHandler()
+        private Db4o.Internal.Handlers.UIntHandler UIntHandler()
         {
-            return new Internal.Handlers.UIntHandler();
+            return new Db4o.Internal.Handlers.UIntHandler();
         }
 
         public class Item

@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             DoTestStoreObject(storedItem);
         }
 
-        private Internal.Handlers.SByteHandler SByteHandler()
+        private Db4o.Internal.Handlers.SByteHandler SByteHandler()
         {
-            return new Internal.Handlers.SByteHandler();
+            return new Db4o.Internal.Handlers.SByteHandler();
         }
 
         public class Item

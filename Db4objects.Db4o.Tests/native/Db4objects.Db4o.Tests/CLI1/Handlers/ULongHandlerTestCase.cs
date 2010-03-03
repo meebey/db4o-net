@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             DoTestStoreObject(storedItem);
         }
 
-        private Internal.Handlers.ULongHandler ULongHandler()
+        private Db4o.Internal.Handlers.ULongHandler ULongHandler()
         {
-            return new Internal.Handlers.ULongHandler();
+            return new Db4o.Internal.Handlers.ULongHandler();
         }
 
         public class Item

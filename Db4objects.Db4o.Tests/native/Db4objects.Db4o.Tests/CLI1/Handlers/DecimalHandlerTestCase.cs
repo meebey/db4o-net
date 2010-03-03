@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             DoTestStoreObject(storedItem);
         }
 
-        private Internal.Handlers.DecimalHandler DecimalHandler()
+        private Db4o.Internal.Handlers.DecimalHandler DecimalHandler()
         {
-            return new Internal.Handlers.DecimalHandler();
+            return new Db4o.Internal.Handlers.DecimalHandler();
         }
 
         public class Item

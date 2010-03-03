@@ -22,6 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(Foundation.AllTests),
                     typeof(Handlers.AllTests),
 					typeof(Inside.AllTests),
+					typeof(Internal.AllTests),
 					typeof(NativeQueries.AllTests),
 					typeof(Reflect.Net.AllTests),
 					typeof(Soda.AllTests),

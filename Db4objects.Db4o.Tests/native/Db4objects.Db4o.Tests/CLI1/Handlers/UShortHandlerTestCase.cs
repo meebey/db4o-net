@@ -30,9 +30,9 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             DoTestStoreObject(storedItem);
         }
 
-        private Internal.Handlers.UShortHandler UShortHandler()
+        private Db4o.Internal.Handlers.UShortHandler UShortHandler()
         {
-            return new Internal.Handlers.UShortHandler();
+            return new Db4o.Internal.Handlers.UShortHandler();
         }
 
         public class Item
