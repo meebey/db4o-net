@@ -6,8 +6,5 @@ namespace Db4objects.Db4o.Collections
 {
 	public interface IActivatableList<T> : IActivatableCollection<T>, IList<T>
 	{
-		void AddRange(IEnumerable<T> collection);
-		void Sort();
-		int BinarySearch(T item);
 	}
 }
