@@ -1,6 +1,5 @@
 ﻿/* Copyright (C) 2009 Versant Inc.  http://www.db4o.com */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -28,9 +27,20 @@ namespace Db4objects.Db4o.Linq.Tests
 		{
 		}
 
-		private class IListHolder
+		public void TestQueryOnIListContains()
 		{
-			public readonly IList Items;
+			AssertQuery(
+				db => from IListOfTHolder p in db
+					  where p.Items.Contains("foo")
+					  select p);
+		}
+
+		public void TestQueryOnIListNotContains()
+		{
+			AssertQuery(
+				db => from IListOfTHolder p in db
+					  where !p.Items.Contains("foo")
+					  select p);
 		}
 
 		public void TestQueryOnListContains()
@@ -49,22 +59,6 @@ namespace Db4objects.Db4o.Linq.Tests
 					  select p);
 		}
 
-		public void TestQueryOnIListContains()
-		{
-			AssertQuery(
-				db => from IListOfTHolder p in db
-					  where p.Items.Contains("foo")
-					  select p);
-		}
-
-		public void TestQueryOnIListNotContains()
-		{
-			AssertQuery(
-				db => from IListOfTHolder p in db
-					  where !p.Items.Contains("foo")
-					  select p);
-		}
-
 		public void TestQueryOnICollectionContains()
 		{
 			AssertQuery(
@@ -79,22 +73,6 @@ namespace Db4objects.Db4o.Linq.Tests
 				db => from ICollectionHolder p in db
 					  where !p.Items.Contains("foo")
 					  select p);
-		}
-
-		public void TestQueryOnArrayListContains()
-		{
-			AssertQuery(
-				db => from IListHolder p in db
-					  where p.Items.Contains("foo")
-					  select p);
-		}
-
-		public void TestQueryOnArrayListNotContains()
-		{
-			AssertQuery(
-			    db => from IListHolder p in db
-			          where !p.Items.Contains("foo")
-			          select p);
 		}
 
 		private void AssertQuery<T>(Expression<Func<IObjectContainer, IEnumerable<T>>> queryExpression)

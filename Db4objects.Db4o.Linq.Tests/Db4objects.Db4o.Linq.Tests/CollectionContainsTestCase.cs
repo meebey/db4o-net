@@ -1,5 +1,4 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +59,7 @@ namespace Db4objects.Db4o.Linq.Tests
 
 			protected override IEnumerable<string> GetNames()
 			{
-				return this.Names;
+				return Names;
 			}
 		}
 
@@ -85,12 +84,10 @@ namespace Db4objects.Db4o.Linq.Tests
 				Store(person);
 			}
 
-			Store(new ArrayPerson { Names = new [] { "Biro", "Biro" } });
-			Store(new ArrayPerson { Names = new [] { "Luna" } });
-			Store(new ArrayPerson { Names = new [] { "Loustic" } });
-			Store(new ArrayPerson { Names = new [] { "Loupiot" } });
-			Store(new ArrayPerson { Names = new [] { "Biro", "Miro" } });
-			Store(new ArrayPerson { Names = new [] { "Tounage" } });
+			foreach (var person in PeopleWithArray())
+			{
+				Store(person);
+			}
 		}
 
 		public void TestQueryOnArrayListContains()
@@ -114,7 +111,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				where p.Names.Contains("Biro")
 				select p,
 			
-				"(ArrayListPerson(Names contains 'Biro'))",
+				"(ArrayListPerson(Names == 'Biro'))",
 
 				from ArrayListPerson p in PeopleWithArrayList()
 				where p.Names.Contains("Biro")
@@ -137,10 +134,10 @@ namespace Db4objects.Db4o.Linq.Tests
 
 
 
-		public void _TestQueryOnArrayContains()
+		public void TestQueryOnArrayContains()
 		{
 			var q = NewQuery(typeof(ArrayPerson));
-			q.Descend("Names").Constrain("Biro").Contains();
+			q.Descend("Names").Constrain("Biro");
 
 			var persons = new ObjectSetWrapper<Person>(q.Execute());
 
@@ -151,9 +148,9 @@ namespace Db4objects.Db4o.Linq.Tests
 				}, persons);
 		}
 
-		public void _TestLinqQueryOnArrayContains()
+		public void TestLinqQueryOnArrayContains()
 		{
-			AssertQuery("(ArrayPerson(Names contains 'Biro'))",
+			AssertQuery("(ArrayPerson(Names == 'Biro'))",
 				delegate
 				{
 					var biros = from ArrayPerson p in Db()
@@ -166,6 +163,35 @@ namespace Db4objects.Db4o.Linq.Tests
 							new ArrayPerson { Names = new [] { "Biro", "Miro" } },
 						}, biros);
 				});
+		}
+		
+		public void TestLinqQueryOnArrayNotContains()
+		{
+			AssertQuery(
+				from ArrayPerson p in Db()
+				where !p.Names.Contains("Biro")
+				select p,
+
+				"(ArrayPerson(Names not 'Biro'))",
+
+				from ArrayPerson p in PeopleWithArray()
+				where !p.Names.Contains("Biro")
+				select p);
+		}
+
+		private static IEnumerable<ArrayPerson> PeopleWithArray()
+		{
+			foreach (var person in PeopleWithArrayList())
+			{
+				yield return new ArrayPerson { Names = NamesFrom(person) };
+			}
+		}
+		
+		private static string[] NamesFrom(ArrayListPerson person)
+		{
+			string[] names = new string[person.Names.Count];
+			person.Names.CopyTo(names, 0);
+			return names;
 		}
 	}
 }

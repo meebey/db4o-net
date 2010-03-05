@@ -1,5 +1,4 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
-
 using System;
 using System.Linq.Expressions;
 using Db4objects.Db4o.Linq.Caching;
@@ -44,12 +43,15 @@ namespace Db4objects.Db4o.Linq.Expressions
 				case "EndsWith":
 					RecordConstraintApplication(c => c.EndsWith(true));
 					return;
+
 				case "StartsWith":
 					RecordConstraintApplication(c => c.StartsWith(true));
 					return;
+
 				case "Contains":
 					RecordConstraintApplication(c => c.Contains());
 					return;
+
 				case "Equals":
 					return;
 			}
@@ -67,11 +69,19 @@ namespace Db4objects.Db4o.Linq.Expressions
 			switch (call.Method.Name)
 			{
 				case "Contains":
-					RecordConstraintApplication(c => c.Contains());
+					if (IsCallOnCollectionOfStrings(call))
+					{
+						RecordConstraintApplication(c => c.Contains());
+					}
 					return;
 			}
 
 			CannotOptimize(call);
+		}
+
+		private static bool IsCallOnCollectionOfStrings(MethodCallExpression call)
+		{
+			return call.Method.DeclaringType.IsGenericType && call.Method.DeclaringType.GetGenericArguments()[0] == typeof(string);
 		}
 
 		private static bool IsComparisonExpression(Expression expression)
