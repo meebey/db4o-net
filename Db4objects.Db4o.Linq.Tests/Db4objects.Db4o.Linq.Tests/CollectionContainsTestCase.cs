@@ -148,6 +148,8 @@ namespace Db4objects.Db4o.Linq.Tests
 				}, persons);
 		}
 
+#if !CF // It fails with a TypeLoadException on CF. 
+
 		public void TestLinqQueryOnArrayContains()
 		{
 			AssertQuery("(ArrayPerson(Names == 'Biro'))",
@@ -178,6 +180,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				where !p.Names.Contains("Biro")
 				select p);
 		}
+#endif
 
 		private static IEnumerable<ArrayPerson> PeopleWithArray()
 		{

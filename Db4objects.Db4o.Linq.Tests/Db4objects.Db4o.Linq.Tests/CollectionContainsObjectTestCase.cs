@@ -169,6 +169,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				select p);
 		}
 
+#if !CF // It fails with a TypeLoadException on CF. 
 		public void TestArrayPersonContains()
 		{
 			var role = RoleFromDb(Roles[1]);
@@ -200,6 +201,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				where !p.Roles.Contains(role)
 				select p);
 		}
+#endif
 
 		private Role RoleFromDb(Role role)
 		{
