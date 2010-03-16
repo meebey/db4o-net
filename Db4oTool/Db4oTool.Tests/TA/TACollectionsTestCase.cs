@@ -1,7 +1,10 @@
 ﻿/* Copyright (C) 2010   Versant Inc.   http://www.db4o.com */
 
+using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Collections;
+using Db4oTool.Core;
+using Db4oUnit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -67,14 +70,11 @@ namespace Db4oTool.Tests.TA
 
 		public void TestMethodReturningNewListAsIList()
 		{
-		}
-		
-		public void TestPrivateMethodReturningNewListAsConcreteList()
-		{
-		}
-
-		public void TestPublicMethodReturningNewListAsConcreteList()
-		{
+            InstrumentAndRunInIsolatedAppDomain(delegate(AssemblyDefinition assembly)
+            {
+				Instruction instruction = FindInstruction(assembly, "CreateList", OpCodes.Newobj);
+				AssertInstruction(instruction, OpCodes.Newobj, ParameterLessContructorFor(Import(assembly, typeof(ActivatableList<DateTime>))));
+            });
 		}
 
 		public void TestCastToListIsReplaced()
@@ -83,9 +83,24 @@ namespace Db4oTool.Tests.TA
 			AssertCast("CastFollowedByMethodWithSingleArgument");
 		}
 
-		public void _TestCastResultNotConsumedByMethodCall()
+		public void TestCastResultNotConsumedByMethodCall()
 		{
-			AssertError("CastNotFollowedByConcreteMethodCall");
+            try
+            {
+                InstrumentAssembly("CastNotFollowedByConcreteMethodCall".ToUpperInvariant());
+                Assert.Fail("An exception should be thrown in the call above");
+            }
+            catch(InvalidOperationException e)
+            {
+                Assert.IsTrue(e.Message.Contains("Cast to List<T> are allowed only for property access or method call"));
+            }
 		}
+
+        protected override Configuration Configuration(string assemblyLocation)
+        {
+            Configuration conf = base.Configuration(assemblyLocation);
+            conf.PreserveDebugInfo = true;
+            return conf;
+        }
 	}
 }

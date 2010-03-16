@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Db4objects.Db4o.Collections;
 using Db4oTool.Core;
 using Mono.Cecil;
@@ -24,8 +25,7 @@ namespace Db4oTool.TA
 				StackAnalysisResult result = StackAnalyzer.IsConsumedBy(MethodCallOnList, cast, methodDefinition.DeclaringType.Module);
 				if (!result.Match)
 				{
-					continue;
-					//TODO: Warning ? Error?
+				    throw new InvalidOperationException(string.Format("Error: [{0}] Invalid use of cast result: '{1} {2}'. Cast to List<T> are allowed only for property access or method call.", methodDefinition, result.Consumer.OpCode, result.Consumer.Operand));
 				}
 
 				ReplaceCastAndCalleDeclaringType(cast, result.Consumer, typeof(ActivatableList<>));

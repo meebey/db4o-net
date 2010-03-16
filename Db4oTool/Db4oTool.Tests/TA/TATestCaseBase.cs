@@ -40,12 +40,12 @@ namespace Db4oTool.Tests.TA
 													resourceName), references));
 		}
 
-		protected static string InstrumentAssembly(AssemblyDefinition testAssembly)
+		protected string InstrumentAssembly(AssemblyDefinition testAssembly)
 		{
 			return InstrumentAssembly(testAssembly, false);
 		}
 
-		protected static string InstrumentAssembly(AssemblyDefinition testAssembly, bool instrumentCollections)
+		protected string InstrumentAssembly(AssemblyDefinition testAssembly, bool instrumentCollections)
 		{
 			StringWriter output = new StringWriter();
 			Trace.Listeners.Add(new TextWriterTraceListener(output));
@@ -66,7 +66,7 @@ namespace Db4oTool.Tests.TA
 			new VerifyAssemblyTest(assemblyPath).Run();
 		}
 
-		protected static Configuration Configuration(string assemblyLocation)
+		protected virtual Configuration Configuration(string assemblyLocation)
 		{
 			Configuration configuration = new Configuration(assemblyLocation);
 			configuration.TraceSwitch.Level = TraceLevel.Info;

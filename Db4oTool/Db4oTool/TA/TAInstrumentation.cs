@@ -217,9 +217,6 @@ namespace Db4oTool.TA
 				method.Body.Simplify();
 
 				_collectionsStep.Process(method);
-				//InstrumentListInstantiation(method);
-
-				//InstrumentListCasts(method);
 				
 				if (!HasFieldAccesses(method)) return;
 				

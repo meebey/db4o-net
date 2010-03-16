@@ -29,14 +29,15 @@ namespace Db4oTool.Tests.TA
 				string.Format("Expected warning '{0}' not emitted\r\n\r\nActual instrumentation output:\r\n{1}", expectedWarning, output));
 		}
 
-		protected void AssertError(string methodName)
+		protected void InstrumentAssembly(string symbolName)
 		{
-			//CompilerOptions options = CompilerOptions.DefineSymbol(methodName);
-			//InstrumentAndRunInIsolatedAppDomain(options);
-			Assert.Fail("CHECK FOR ERRORS");
+            CompilationServices.ExtraParameters.Using("/d:" + symbolName, delegate
+            {
+                InstrumentAssembly(GenerateAssembly(TestResource), true);
+            });
 		}
 
-		private static void AssertCast(string testMethodName)
+		private void AssertCast(string testMethodName)
 		{
 			InstrumentAndRunInIsolatedAppDomain(new CastAsserter(testMethodName).AssertIt);
 		}
@@ -51,7 +52,7 @@ namespace Db4oTool.Tests.TA
 			return type.Resolve().Constructors.GetConstructor(false, new Type[0]);
 		}
 
-		private static string InstrumentAndRunInIsolatedAppDomain(Action<AssemblyDefinition> action)
+		private string InstrumentAndRunInIsolatedAppDomain(Action<AssemblyDefinition> action)
 		{
 			AssemblyDefinition assembly = GenerateAssembly(TestResource);
 			string instrumentationOutput = InstrumentAssembly(assembly, true);

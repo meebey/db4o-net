@@ -7,7 +7,7 @@ using System.Diagnostics;
 public class TACollectionsScenarios
 {
 	private IList<string> _interface;
-	private List<string> _list;
+    private List<string> _list;
 
 	public void ParameterLessConstructor()
 	{
@@ -24,17 +24,12 @@ public class TACollectionsScenarios
 	    _interface = new List<string>(10);
 	}
 
-	public void LocalsAsIList()
-	{
-		IList<int> local = new List<int>();
-	}
+    public void LocalsAsIList()
+    {
+        IList<int> local = new List<int>();
+    }
 
-	public void SimpleInstantiation()
-	{
-	    IList<DateTime> local = CreateList();
-	}
-
-	private static IList<DateTime> CreateList()
+    private static IList<DateTime> CreateList()
 	{
 		IList<DateTime> theList = new List<DateTime>();
 		theList.Add(DateTime.Now);
@@ -119,13 +114,14 @@ public class TACollectionsScenarios
 
 	#endregion
 
-	[Conditional("CastNotFollowedByConcreteMethodCall")]
+#if CASTNOTFOLLOWEDBYCONCRETEMETHODCALL
 	public void CastNotFollowedByConcreteMethodCall()
 	{
-		IList<string> dubious = ((List<string>)_interface);
-	}	
+		List<string> dubious = ((List<string>)_interface);
+	}
+#endif
 
-	#endregion
+    #endregion
 }
 
 //TODO: Make this condition explicity. 
