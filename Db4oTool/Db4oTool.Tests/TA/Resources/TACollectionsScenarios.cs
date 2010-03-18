@@ -6,30 +6,21 @@ using System.Diagnostics;
 
 public class TACollectionsScenarios
 {
-	private IList<string> _interface;
-    private List<string> _list;
+	private IList<string> _ilist;
+	private ICollection<string> _icollection;
+	private List<string> _list;
 
-	public void ParameterLessConstructor()
+	public void InitInterface(IList<string> list)
 	{
-		_interface = new List<string>();
+		InitInterface(new List<string>());
 	}
 
-	public void ConstructorTakingIEnumerable()
+	public void LocalsAsIList()
 	{
-	    _interface = new List<string>(new string[] {"foo", "bar" });
+		IList<int> local = new List<int>();
 	}
 
-	public void ConstructorTakingInitialSize()
-	{
-	    _interface = new List<string>(10);
-	}
-
-    public void LocalsAsIList()
-    {
-        IList<int> local = new List<int>();
-    }
-
-    private static IList<DateTime> CreateList()
+	private static IList<DateTime> CreateList()
 	{
 		IList<DateTime> theList = new List<DateTime>();
 		theList.Add(DateTime.Now);
@@ -37,24 +28,43 @@ public class TACollectionsScenarios
 		return theList;
 	}
 
-	#region ThisMayWork
-	// These 2 ones 'can' work with we ensure that:
-	//	- The method declared as List<T> is private
-	//  - We create a list of callers of this method and make sure no one assigns to List<T> (only to IList<T> or some other interface/object?);
-	//  - We replace the return type with ActivatableList<T> / IList<T>
-	//
-	// For now, just ignore and emit warning.
-	// 
-	//public void SimpleInstantiationThroughList()
-	//{
-	//    IList<string> local = PrivateCreateConcreteList();
-	//}
+	public void ParameterLessConstructor()
+	{
+		_ilist = new List<string>();
+	}
 
-	//private List<string> PrivateCreateConcreteList()
-	//{
-	//    return new List<string>();
-	//}
-	#endregion
+	public void CollectionInitInterface(ICollection<string> list)
+	{
+		CollectionInitInterface(new List<string>());
+	}
+
+	public void CollectionLocalsAsIList()
+	{
+		ICollection<int> local = new List<int>();
+	}
+
+	private static ICollection<DateTime> CollectionCreateList()
+	{
+		ICollection<DateTime> theList = new List<DateTime>();
+		theList.Add(DateTime.Now);
+
+		return theList;
+	}
+
+	public void CollectionParameterLessConstructor()
+	{
+		_icollection = new List<string>();
+	}
+
+	public void ConstructorTakingIEnumerable()
+	{
+	    _ilist = new List<string>(new string[] {"foo", "bar" });
+	}
+
+	public void ConstructorTakingInitialSize()
+	{
+	    _ilist = new List<string>(10);
+	}
 
 	public List<string> PublicCreateConcreteList()
 	{
@@ -65,17 +75,17 @@ public class TACollectionsScenarios
 	{
 		// Is it a cast to List<T> ?
 		// Are we calling a method / property imediatly ?
-		((List<string>)_interface).Sort();
+		((List<string>)_ilist).Sort();
 	}
 
 	public void CastFollowedByMethodWithSingleArgument()
 	{
-		((List<string>)_interface).Add("foo");
+		((List<string>)_ilist).Add("foo");
 	}
 
-	public void InitInterface(IList<string> list)
+	public void CastConsumedByPropertyAccess()
 	{
-		InitInterface(new List<string>());
+		int foo = ((List<string>)_ilist).Capacity;
 	}
 
 	/**
@@ -86,9 +96,14 @@ public class TACollectionsScenarios
 
 	#region ShouldNotBeExchangedByActivatableListOfT
 
-	public void AssignmentToConcreteList()
+	public void AssignmentOfConcreteListToLocal()
 	{
 		List<string> local = new List<string>();
+	}
+
+	public void AssignmentOfConcreteListToField()
+	{
+		_list = new List<string>();
 	}
 
 	public void InitConcrete(List<string> list)
@@ -96,32 +111,37 @@ public class TACollectionsScenarios
 	    InitConcrete(new List<string>());
 	}
 
-	//public void AssignmentThroughDelegates()
-	//{
-	//    Action<List<string>> theAction = InitConcrete2;
-	//    theAction(new List<string>());
-	//}
-
-	//public void InitConcrete2(List<string> list)
-	//{
-	//    InitConcrete2(list);
-	//}
-
-	//public void InitConcrete3(string str, List<string> list, int value)
-	//{
-	//    InitConcrete3(str, new List<string>(), value);
-	//}
-
 	#endregion
 
-#if CASTNOTFOLLOWEDBYCONCRETEMETHODCALL
-	public void CastNotFollowedByConcreteMethodCall()
+#if CASTCONSUMEDBYLOCAL
+	public void CastConsumedByLocal()
 	{
-		List<string> dubious = ((List<string>)_interface);
+		List<string> dubious = ((List<string>)_ilist);
 	}
 #endif
 
-    #endregion
+#if CASTCONSUMEDBYFIELD
+	public void CastConsumedByField()
+	{
+		_list = ((List<string>)_ilist);
+	}
+#endif
+
+#if CASTCONSUMEDBYARGUMENT
+	public void CastConsumedByArgument(List<string> arg)
+	{
+		CastConsumedByArgument((List<string>)_ilist);
+	}
+#endif
+
+#if CASTCONSUMEDBYMETHODRETURN
+	public List<string> CastConsumedByMethodReturn()
+	{
+		return ((List<string>)_ilist);
+	}
+#endif
+
+	#endregion
 }
 
 //TODO: Make this condition explicity. 
