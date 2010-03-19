@@ -189,7 +189,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 		{	
 			if (value is string) return string.Format("'{0}'", value);
 
-			return value.ToString();
+			return value == null ? "null" : value.ToString();
 		}
 
 		private static string GetClassName(string fullname)

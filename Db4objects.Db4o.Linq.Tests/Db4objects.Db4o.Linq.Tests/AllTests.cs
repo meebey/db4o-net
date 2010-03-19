@@ -26,6 +26,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(CountTestCase),
 				typeof(DateTimeOffsetQueryTestCase),
 				typeof(EnumComparisonTestCase),
+				typeof(NullConstantTestCase),
 				typeof(OrderByTestCase),
 				typeof(ParameterizedWhereTestCase),
 				typeof(PartiallyOptimizedQueryTestCase),

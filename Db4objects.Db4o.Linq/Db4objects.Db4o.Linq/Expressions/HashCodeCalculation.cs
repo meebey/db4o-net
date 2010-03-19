@@ -1,7 +1,6 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
@@ -46,7 +45,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		protected override void VisitConstant(ConstantExpression constant)
 		{
-			if (constant != null) Add(constant.Value.GetHashCode());
+			if (constant != null && constant.Value != null) Add(constant.Value.GetHashCode());
 		}
 
 		protected override void VisitMemberAccess(MemberExpression member)
