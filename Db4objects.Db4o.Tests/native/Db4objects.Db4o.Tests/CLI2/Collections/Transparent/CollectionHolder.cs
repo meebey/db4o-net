@@ -2,7 +2,7 @@
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 {
-	class CollectionHolder<T>
+	public class CollectionHolder<T>
 	{
 		public CollectionHolder(T collection)
 		{
@@ -13,7 +13,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 		{
 			get { return _collection; }
 		}
-		
+
+#if SILVERLIGHT		
+		public T _collection;
+#else
 		private readonly T _collection;
+#endif
 	}
 }

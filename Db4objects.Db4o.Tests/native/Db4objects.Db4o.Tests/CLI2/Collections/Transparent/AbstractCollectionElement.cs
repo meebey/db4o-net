@@ -2,7 +2,11 @@
 {
 	public class AbstractCollectionElement : ICollectionElement
 	{
+#if SILVERLIGHT
+		public string _name;
+#else
 		protected string _name;
+#endif
 
 		public AbstractCollectionElement(string name)
 		{

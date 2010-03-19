@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Internal.Activation
 		}
 	}
 
-	class Item : ActivatableBase
+	public class Item : ActivatableBase
 	{
 	}
 }

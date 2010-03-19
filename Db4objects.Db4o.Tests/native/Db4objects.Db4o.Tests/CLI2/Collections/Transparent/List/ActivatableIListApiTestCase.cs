@@ -1,12 +1,11 @@
 ﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 
-using System;
 using System.Collections.Generic;
 using Db4oUnit;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 {
-	internal class ActivatableIListApiTestCase : AbstractActivatableCollectionApiTestCase
+	public class ActivatableIListApiTestCase : AbstractActivatableCollectionApiTestCase
 	{
 		public void TestCorrectContent()
 		{

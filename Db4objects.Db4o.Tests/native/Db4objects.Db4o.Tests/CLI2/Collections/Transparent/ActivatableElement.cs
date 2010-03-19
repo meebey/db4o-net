@@ -5,7 +5,7 @@ using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 {
-	class ActivatableElement : AbstractCollectionElement, IActivatable
+	public class ActivatableElement : AbstractCollectionElement, IActivatable
 	{
 		public ActivatableElement(string name) : base(name)
 		{
@@ -56,6 +56,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 			Activate(ActivationPurpose.Read);
 		}
 
+		[Transient]
 		private IActivator _activator;
 	}
 }
