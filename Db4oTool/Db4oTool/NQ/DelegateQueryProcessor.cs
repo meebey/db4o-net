@@ -79,12 +79,6 @@ namespace Db4oTool.NQ
                     predicateReference.DeclaringType);
 
 		    ReplaceByExecuteEnhancedFilter(queryInvocation);
-            
-            //Debug.Write(Formatter.FormatMethodBody(worker.GetBody().Method));
-
-		    //Debug.Write(Formatter.FormatMethodBody((MethodDefinition) FindConstructor(syntheticPredicate, 1)));
-
-		    //Debug.Write(Formatter.FormatMethodBody(syntheticPredicate.Methods[0]));
 		}
 
 		private TypeDefinition NewSyntheticPredicateFor(IExpression expression, IMemberReference predicateMethod, out IDictionary<FieldReference, FieldDefinition> fields)
