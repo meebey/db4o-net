@@ -40,7 +40,9 @@ namespace Db4objects.Db4o.Internal.Ids
 
 				case Btree:
 				{
-					return new BTreeIdSystem(idSystemId);
+					// return new BTreeIdSystem(localContainer, new BTreeIdSystem(localContainer, new InMemoryIdSystem(localContainer)));
+					// return new BTreeIdSystem(localContainer, new PointerBasedIdSystem(localContainer));
+					return new BTreeIdSystem(localContainer, new InMemoryIdSystem(localContainer));
 				}
 
 				case InMemory:

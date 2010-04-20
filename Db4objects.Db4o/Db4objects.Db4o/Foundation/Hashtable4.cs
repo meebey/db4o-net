@@ -73,6 +73,11 @@ namespace Db4objects.Db4o.Foundation
 			return GetFromObjectEntry(key.GetHashCode(), key);
 		}
 
+		public virtual object Get(long key)
+		{
+			return GetFromLongEntry((int)key, key);
+		}
+
 		public virtual bool ContainsKey(object key)
 		{
 			if (null == key)
@@ -109,6 +114,11 @@ namespace Db4objects.Db4o.Foundation
 			PutEntry(new HashtableIntEntry(key, value));
 		}
 
+		public virtual void Put(long key, object value)
+		{
+			PutEntry(new HashtableLongEntry(key, value));
+		}
+
 		public virtual void Put(object key, object value)
 		{
 			if (null == key)
@@ -124,15 +134,20 @@ namespace Db4objects.Db4o.Foundation
 			return RemoveObjectEntry(intKey, objectKey);
 		}
 
+		public virtual object Remove(long longKey)
+		{
+			return RemoveLongEntry((int)longKey, longKey);
+		}
+
 		public virtual object Remove(byte[] key)
 		{
 			int intKey = HashtableByteArrayEntry.Hash(key);
 			return RemoveObjectEntry(intKey, key);
 		}
 
-		public virtual void Remove(int key)
+		public virtual object Remove(int key)
 		{
-			RemoveIntEntry(key);
+			return RemoveIntEntry(key);
 		}
 
 		/// <summary>
@@ -189,6 +204,26 @@ namespace Db4objects.Db4o.Foundation
 					return entry;
 				}
 				entry = (HashtableObjectEntry)entry._next;
+			}
+			return null;
+		}
+
+		private object GetFromLongEntry(int intKey, long longKey)
+		{
+			HashtableLongEntry entry = GetLongEntry(intKey, longKey);
+			return entry == null ? null : entry._object;
+		}
+
+		private HashtableLongEntry GetLongEntry(int intKey, long longKey)
+		{
+			HashtableLongEntry entry = (HashtableLongEntry)_table[intKey & _mask];
+			while (entry != null)
+			{
+				if (entry._key == intKey && entry._longKey == longKey)
+				{
+					return entry;
+				}
+				entry = (HashtableLongEntry)entry._next;
 			}
 			return null;
 		}

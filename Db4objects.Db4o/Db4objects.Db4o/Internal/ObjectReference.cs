@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal
 	/// internal id, UUID/version information, ...
 	/// </remarks>
 	/// <exclude></exclude>
-	public class ObjectReference : PersistentBase, IObjectInfo, IActivator
+	public class ObjectReference : Identifiable, IObjectInfo, IActivator
 	{
 		private Db4objects.Db4o.Internal.ClassMetadata _class;
 
@@ -184,7 +184,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		/// <summary>return false if class not completely initialized, otherwise true</summary>
-		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, int
+		internal virtual bool ContinueSet(Db4objects.Db4o.Internal.Transaction trans, IUpdateDepth
 			 updateDepth)
 		{
 			if (!BitIsTrue(Const4.Continue))
@@ -248,7 +248,7 @@ namespace Db4objects.Db4o.Internal
 			_class.Deactivate(trans, this, depth);
 		}
 
-		public override byte GetIdentifier()
+		public virtual byte GetIdentifier()
 		{
 			return Const4.Yapobject;
 		}
@@ -325,7 +325,7 @@ namespace Db4objects.Db4o.Internal
 			_class = classMetadata;
 		}
 
-		public override int OwnLength()
+		public virtual int OwnLength()
 		{
 			throw Exceptions4.ShouldNeverBeCalled();
 		}
@@ -372,8 +372,8 @@ namespace Db4objects.Db4o.Internal
 			return context.Read();
 		}
 
-		public sealed override void ReadThis(Db4objects.Db4o.Internal.Transaction trans, 
-			ByteArrayBuffer buffer)
+		public void ReadThis(Db4objects.Db4o.Internal.Transaction trans, ByteArrayBuffer 
+			buffer)
 		{
 		}
 
@@ -396,7 +396,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			_object = obj;
 			_class = classMetadata;
-			WriteObjectBegin();
 			int id = trans.Container().IdForNewUserObject(trans);
 			SetID(id);
 			// will be ended in continueset()
@@ -482,13 +481,13 @@ namespace Db4objects.Db4o.Internal
 			_virtualAttributes = at;
 		}
 
-		public override void WriteThis(Db4objects.Db4o.Internal.Transaction trans, ByteArrayBuffer
+		public virtual void WriteThis(Db4objects.Db4o.Internal.Transaction trans, ByteArrayBuffer
 			 buffer)
 		{
 		}
 
 		public virtual void WriteUpdate(Db4objects.Db4o.Internal.Transaction transaction, 
-			int updatedepth)
+			IUpdateDepth updatedepth)
 		{
 			ContinueSet(transaction, updatedepth);
 			// make sure, a concurrent new, possibly triggered by objectOnNew
@@ -507,7 +506,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			MarshallingContext context = new MarshallingContext(transaction, this, updatedepth
 				, false);
-			if (context.UpdateDepth() < 0)
+			if (context.UpdateDepth().Negative())
 			{
 				EndProcessing();
 				return;

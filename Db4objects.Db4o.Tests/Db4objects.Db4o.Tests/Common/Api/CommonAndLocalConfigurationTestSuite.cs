@@ -13,6 +13,7 @@ using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Tests.Common.Api;
@@ -36,7 +37,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(42, legacy.ActivationDepth());
 				Assert.AreEqual(42, common.ActivationDepth);
 				// TODO: assert
-				common.Add(new _IConfigurationItem_40());
+				common.Add(new _IConfigurationItem_41());
 				TypeAlias alias = new TypeAlias("foo", "bar");
 				common.AddAlias(alias);
 				Assert.AreEqual("bar", legacy.ResolveAliasStoredName("foo"));
@@ -86,7 +87,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				TextWriter outStream = Sharpen.Runtime.Out;
 				common.OutStream = outStream;
 				Assert.AreEqual(outStream, legacy.OutStream());
-				IStringEncoding stringEncoding = new _IStringEncoding_114();
+				IStringEncoding stringEncoding = new _IStringEncoding_115();
 				common.StringEncoding = stringEncoding;
 				Assert.AreEqual(stringEncoding, legacy.StringEncoding());
 				common.TestConstructors = false;
@@ -94,16 +95,16 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				common.TestConstructors = true;
 				Assert.IsTrue(legacy.TestConstructors());
 				common.UpdateDepth = 1024;
-				Assert.AreEqual(1024, legacy.UpdateDepth());
+				Assert.AreEqual(UpdateDepthFactory.ForDepth(1024), legacy.UpdateDepth());
 				common.WeakReferences = false;
 				Assert.IsFalse(legacy.WeakReferences());
 				common.WeakReferenceCollectionInterval = 1024;
 				Assert.AreEqual(1024, legacy.WeakReferenceCollectionInterval());
 			}
 
-			private sealed class _IConfigurationItem_40 : IConfigurationItem
+			private sealed class _IConfigurationItem_41 : IConfigurationItem
 			{
-				public _IConfigurationItem_40()
+				public _IConfigurationItem_41()
 				{
 				}
 
@@ -116,9 +117,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				}
 			}
 
-			private sealed class _IStringEncoding_114 : IStringEncoding
+			private sealed class _IStringEncoding_115 : IStringEncoding
 			{
-				public _IStringEncoding_114()
+				public _IStringEncoding_115()
 				{
 				}
 
@@ -136,12 +137,12 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			// TODO: test registerTypeHandler()
 			private DiagnosticBase DummyDiagnostic()
 			{
-				return new _DiagnosticBase_144();
+				return new _DiagnosticBase_145();
 			}
 
-			private sealed class _DiagnosticBase_144 : DiagnosticBase
+			private sealed class _DiagnosticBase_145 : DiagnosticBase
 			{
-				public _DiagnosticBase_144()
+				public _DiagnosticBase_145()
 				{
 				}
 
@@ -201,8 +202,6 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				ICacheConfigurationProvider cacheProvider = ((ICacheConfigurationProvider)Subject
 					());
 				ICacheConfiguration cache = cacheProvider.Cache;
-				cache.SlotCacheSize = 30;
-				Assert.AreEqual(30, legacyConfig.SlotCacheSize());
 				IIdSystemConfigurationProvider idSystemConfigurationProvider = ((IIdSystemConfigurationProvider
 					)Subject());
 				IIdSystemConfiguration idSystemConfiguration = idSystemConfigurationProvider.IdSystem;
@@ -212,6 +211,28 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				idSystemConfiguration.UsePointerBasedSystem();
 				Assert.AreEqual(StandardIdSystemFactory.PointerBased, legacyConfig.IdSystemType()
 					);
+			}
+
+			public virtual void TestUnspecifiedUpdateDepthIsIllegal()
+			{
+				ICommonConfigurationProvider common = ((ICommonConfigurationProvider)Subject());
+				Assert.Expect(typeof(ArgumentException), new _ICodeBlock_220(common));
+			}
+
+			private sealed class _ICodeBlock_220 : ICodeBlock
+			{
+				public _ICodeBlock_220(ICommonConfigurationProvider common)
+				{
+					this.common = common;
+				}
+
+				/// <exception cref="System.Exception"></exception>
+				public void Run()
+				{
+					common.Common.UpdateDepth = Const4.Unspecified;
+				}
+
+				private readonly ICommonConfigurationProvider common;
 			}
 		}
 

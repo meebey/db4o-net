@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Marshall;
 using Sharpen;
 
@@ -24,7 +25,7 @@ namespace Db4objects.Db4o.Internal.Btree
 	/// as needed with prepareRead() and prepareWrite().
 	/// </remarks>
 	/// <exclude></exclude>
-	public sealed class BTreeNode : CacheablePersistentBase
+	public sealed class BTreeNode : LocalPersistentBase
 	{
 		private const int CountLeafAnd3LinkLength = (Const4.IntLength * 4) + 1;
 
@@ -46,8 +47,6 @@ namespace Db4objects.Db4o.Internal.Btree
 		private int _previousID;
 
 		private int _nextID;
-
-		private bool _cached;
 
 		private bool _dead;
 
@@ -100,6 +99,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			if (_isLeaf)
 			{
 				PrepareWrite(trans);
+				SetStateDirty();
 				if (WasRemoved(trans, s))
 				{
 					CancelRemoval(trans, obj, s.Cursor());
@@ -122,6 +122,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					return null;
 				}
 				PrepareWrite(trans);
+				SetStateDirty();
 				_keys[s.Cursor()] = childNode._keys[0];
 				if (childNode != childNodeOrSplit)
 				{
@@ -280,7 +281,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return (Db4objects.Db4o.Internal.Btree.BTreeNode)_children[index];
 			}
-			return _btree.ProduceNode(((int)_children[index]));
+			return ProduceChild(index, ((int)_children[index]));
 		}
 
 		internal Db4objects.Db4o.Internal.Btree.BTreeNode Child(ByteArrayBuffer reader, int
@@ -290,14 +291,16 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return (Db4objects.Db4o.Internal.Btree.BTreeNode)_children[index];
 			}
-			Db4objects.Db4o.Internal.Btree.BTreeNode child = _btree.ProduceNode(ChildID(reader
-				, index));
+			return ProduceChild(index, ChildID(reader, index));
+		}
+
+		private Db4objects.Db4o.Internal.Btree.BTreeNode ProduceChild(int index, int childID
+			)
+		{
+			Db4objects.Db4o.Internal.Btree.BTreeNode child = _btree.ProduceNode(childID);
 			if (_children != null)
 			{
-				if (_cached || child.CanWrite())
-				{
-					_children[index] = child;
-				}
+				_children[index] = child;
 			}
 			return child;
 		}
@@ -354,7 +357,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_cached = false;
 			if (!_isLeaf)
 			{
 				return;
@@ -473,6 +475,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			 child)
 		{
 			PrepareWrite(trans);
+			SetStateDirty();
 			int id = child.GetID();
 			for (int i = 0; i < _count; i++)
 			{
@@ -483,7 +486,7 @@ namespace Db4objects.Db4o.Internal.Btree
 						return;
 					}
 					Remove(i);
-					if (i <= 1)
+					if (i < 1)
 					{
 						TellParentAboutChangedKey(trans);
 					}
@@ -502,6 +505,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			 child)
 		{
 			PrepareWrite(trans);
+			SetStateDirty();
 			int id = child.GetID();
 			for (int i = 0; i < _count; i++)
 			{
@@ -676,6 +680,14 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return InternalKey(trans, index);
 			}
+			if (reader == null)
+			{
+				reader = PrepareRead(trans);
+			}
+			if (CanWrite())
+			{
+				return InternalKey(trans, index);
+			}
 			SeekKey(reader, index);
 			return KeyHandler().ReadIndexEntry(trans.Context(), reader);
 		}
@@ -715,33 +727,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			return _btree.KeyHandler();
 		}
 
-		internal void MarkAsCached(int height)
-		{
-			throw new NotImplementedException();
-		}
-
-		// FIXME: Caching doesn't work as expected. Disabled.
-		//        Reimplement with LRU cache for all nodes,
-		//        independant of _root.
-		//        _cached = true;
-		//        _btree.addNode(this);
-		//        
-		//        if( _isLeaf || (_children == null)){
-		//            return;
-		//        }
-		//        
-		//        height --;
-		//        
-		//        if(height < 1){
-		//            holdChildrenAsIDs();
-		//            return;
-		//        }
-		//        
-		//        for (int i = 0; i < _count; i++) {
-		//            if(_children[i] instanceof BTreeNode){
-		//                ((BTreeNode)_children[i]).markAsCached(height);
-		//            }
-		//        }
 		public override int OwnLength()
 		{
 			return SlotLeadingLength + (_count * EntryLength()) + Const4.BracketsBytes;
@@ -749,6 +734,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		internal ByteArrayBuffer PrepareRead(Transaction trans)
 		{
+			BTreeNodeCacheEntry cacheEntry = Btree().CacheEntry(this);
 			if (CanWrite())
 			{
 				return null;
@@ -758,15 +744,20 @@ namespace Db4objects.Db4o.Internal.Btree
 				return null;
 			}
 			Transaction systemTransaction = trans.SystemTransaction();
-			if (_cached)
+			ByteArrayBuffer buffer = cacheEntry.Buffer();
+			if (buffer != null)
 			{
-				Read(systemTransaction);
+				// Cache hit, still unread
+				buffer.Seek(0);
+				Read(systemTransaction, buffer);
+				cacheEntry.Buffer(null);
 				_btree.AddToProcessing(this);
 				return null;
 			}
-			ByteArrayBuffer reader = ProduceReadBuffer(systemTransaction);
-			ReadNodeHeader(reader);
-			return reader;
+			buffer = ProduceReadBuffer(systemTransaction);
+			ReadNodeHeader(buffer);
+			cacheEntry.Buffer(buffer);
+			return buffer;
 		}
 
 		internal void PrepareWrite(Transaction trans)
@@ -775,13 +766,22 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
+			BTreeNodeCacheEntry cacheEntry = Btree().CacheEntry(this);
 			if (CanWrite())
 			{
-				SetStateDirty();
 				return;
 			}
-			Read(trans.SystemTransaction());
-			SetStateDirty();
+			ByteArrayBuffer buffer = cacheEntry.Buffer();
+			if (buffer != null)
+			{
+				buffer.Seek(0);
+				Read(trans.SystemTransaction(), buffer);
+				cacheEntry.Buffer(null);
+			}
+			else
+			{
+				Read(trans.SystemTransaction());
+			}
 			_btree.AddToProcessing(this);
 		}
 
@@ -830,6 +830,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				throw new InvalidOperationException();
 			}
 			PrepareWrite(trans);
+			SetStateDirty();
 			object obj = null;
 			BTreePatch patch = KeyPatch(index);
 			if (patch == null)
@@ -861,6 +862,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				throw new InvalidOperationException();
 			}
 			PrepareWrite(trans);
+			SetStateDirty();
 			BTreePatch patch = KeyPatch(index);
 			// no patch, no problem, can remove
 			if (patch == null)
@@ -1165,40 +1167,52 @@ namespace Db4objects.Db4o.Internal.Btree
 				_children = null;
 				return;
 			}
-			if (_cached)
+			if (!IsPatched())
 			{
 				return;
 			}
+			HoldChildrenAsIDs();
+			_btree.AddNode(this);
+		}
+
+		private bool IsPatched()
+		{
+			if (_dead)
+			{
+				return false;
+			}
 			if (!CanWrite())
 			{
-				return;
+				return false;
 			}
 			for (int i = 0; i < _count; i++)
 			{
 				if (_keys[i] is BTreePatch)
 				{
-					HoldChildrenAsIDs();
-					_btree.AddNode(this);
-					return;
+					return true;
 				}
 			}
+			return false;
 		}
 
 		private void SetParentID(Transaction trans, int id)
 		{
 			PrepareWrite(trans);
+			SetStateDirty();
 			_parentID = id;
 		}
 
 		private void SetPreviousID(Transaction trans, int id)
 		{
 			PrepareWrite(trans);
+			SetStateDirty();
 			_previousID = id;
 		}
 
 		private void SetNextID(Transaction trans, int id)
 		{
 			PrepareWrite(trans);
+			SetStateDirty();
 			_nextID = id;
 		}
 
@@ -1238,12 +1252,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			return base.WriteObjectBegin();
 		}
 
-		public override void WriteThis(Transaction trans, ByteArrayBuffer a_writer)
+		public override void WriteThis(Transaction trans, ByteArrayBuffer buffer)
 		{
 			int count = 0;
-			int startOffset = a_writer._offset;
+			int startOffset = buffer._offset;
 			IContext context = trans.Context();
-			a_writer.IncrementOffset(CountLeafAnd3LinkLength);
+			buffer.IncrementOffset(CountLeafAnd3LinkLength);
 			if (_isLeaf)
 			{
 				for (int i = 0; i < _count; i++)
@@ -1252,7 +1266,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					if (obj != No4.Instance)
 					{
 						count++;
-						KeyHandler().WriteIndexEntry(context, a_writer, obj);
+						KeyHandler().WriteIndexEntry(context, buffer, obj);
 					}
 				}
 			}
@@ -1268,26 +1282,26 @@ namespace Db4objects.Db4o.Internal.Btree
 						if (childKey != No4.Instance)
 						{
 							count++;
-							KeyHandler().WriteIndexEntry(context, a_writer, childKey);
-							a_writer.WriteIDOf(trans, child);
+							KeyHandler().WriteIndexEntry(context, buffer, childKey);
+							buffer.WriteIDOf(trans, child);
 						}
 					}
 					else
 					{
 						count++;
-						KeyHandler().WriteIndexEntry(context, a_writer, Key(i));
-						a_writer.WriteIDOf(trans, _children[i]);
+						KeyHandler().WriteIndexEntry(context, buffer, Key(i));
+						buffer.WriteIDOf(trans, _children[i]);
 					}
 				}
 			}
-			int endOffset = a_writer._offset;
-			a_writer._offset = startOffset;
-			a_writer.WriteInt(count);
-			a_writer.WriteByte(_isLeaf ? (byte)1 : (byte)0);
-			a_writer.WriteInt(_parentID);
-			a_writer.WriteInt(_previousID);
-			a_writer.WriteInt(_nextID);
-			a_writer._offset = endOffset;
+			int endOffset = buffer._offset;
+			buffer._offset = startOffset;
+			buffer.WriteInt(count);
+			buffer.WriteByte(_isLeaf ? (byte)1 : (byte)0);
+			buffer.WriteInt(_parentID);
+			buffer.WriteInt(_previousID);
+			buffer.WriteInt(_nextID);
+			buffer._offset = endOffset;
 		}
 
 		public override string ToString()
@@ -1412,6 +1426,33 @@ namespace Db4objects.Db4o.Internal.Btree
 			()
 		{
 			return _btree.SlotChangeFactory();
+		}
+
+		public override ITransactionalIdSystem IdSystem(Transaction trans)
+		{
+			return _btree.IdSystem(trans);
+		}
+
+		public void ToReadMode()
+		{
+			if (IsNew())
+			{
+				return;
+			}
+			if (!CanWrite())
+			{
+				return;
+			}
+			if (IsDirty())
+			{
+				return;
+			}
+			if (IsPatched())
+			{
+				return;
+			}
+			_keys = null;
+			_children = null;
 		}
 	}
 }

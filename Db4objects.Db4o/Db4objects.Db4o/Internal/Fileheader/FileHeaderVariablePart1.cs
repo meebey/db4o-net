@@ -93,7 +93,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				_id = _container.AllocatePointerSlot();
 			}
 			Slot committedSlot = _container.ReadPointerSlot(_id);
-			Slot newSlot = _container.AllocateSlot(length);
+			Slot newSlot = AllocateSlot(length);
 			ByteArrayBuffer buffer = new ByteArrayBuffer(length);
 			WriteThis(buffer);
 			_container.WriteEncrypt(buffer, newSlot.Address(), 0);
@@ -112,8 +112,14 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 			public void Run()
 			{
+				// FIXME: This is not transactional !!!
 				this._enclosing._container.WritePointer(this._enclosing._id, newSlot);
-				this._enclosing._container.Free(committedSlot);
+				if (committedSlot == null || committedSlot.IsNull())
+				{
+					return;
+				}
+				this._enclosing._container.FreespaceManager().FreeTransactionLogSlot(committedSlot
+					);
 			}
 
 			private readonly FileHeaderVariablePart1 _enclosing;
@@ -121,6 +127,17 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			private readonly Slot newSlot;
 
 			private readonly Slot committedSlot;
+		}
+
+		private Slot AllocateSlot(int length)
+		{
+			Slot reusedSlot = _container.FreespaceManager().AllocateTransactionLogSlot(length
+				);
+			if (reusedSlot != null)
+			{
+				return reusedSlot;
+			}
+			return _container.AppendBytes(length);
 		}
 
 		public virtual int Id()

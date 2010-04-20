@@ -192,7 +192,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public sealed override void Store(object obj, int depth)
 		{
-			Store(null, obj, depth);
+			Store(null, obj, UpdateDepthFactory.ForDepth(depth));
 		}
 
 		public sealed override IStoredClass StoredClass(object clazz)

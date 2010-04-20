@@ -1,8 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Ids
 {
@@ -19,6 +19,8 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		void CompleteInterruptedTransaction(int transactionId1, int transactionId2);
 
-		void Commit(IVisitable slotChanges, IRunnable commitBlock);
+		void Commit(IVisitable slotChanges, FreespaceCommitter freespaceCommitter);
+
+		ITransactionalIdSystem FreespaceIdSystem();
 	}
 }

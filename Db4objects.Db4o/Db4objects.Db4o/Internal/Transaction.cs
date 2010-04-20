@@ -14,6 +14,8 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public abstract class Transaction
 	{
+		private IContext _context;
+
 		internal Tree _delete;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _systemTransaction;
@@ -343,12 +345,16 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IContext Context()
 		{
-			return new _IContext_292(this);
+			if (_context == null)
+			{
+				_context = new _IContext_295(this);
+			}
+			return _context;
 		}
 
-		private sealed class _IContext_292 : IContext
+		private sealed class _IContext_295 : IContext
 		{
-			public _IContext_292(Transaction _enclosing)
+			public _IContext_295(Transaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

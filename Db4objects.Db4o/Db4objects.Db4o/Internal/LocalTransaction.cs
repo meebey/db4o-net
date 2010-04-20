@@ -7,7 +7,6 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
-using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.References;
@@ -25,8 +24,6 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ICommittedCallbackDispatcher _committedCallbackDispatcher;
 
-		private readonly ICache4 _slotCache;
-
 		private readonly ITransactionalIdSystem _idSystem;
 
 		public LocalTransaction(ObjectContainerBase container, Transaction parentTransaction
@@ -34,14 +31,13 @@ namespace Db4objects.Db4o.Internal
 			, parentTransaction, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
-			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_35(this);
-			_slotCache = CreateSlotCache();
+			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_31(this);
 			_idSystem = idSystem;
 		}
 
-		private sealed class _ICommittedCallbackDispatcher_35 : ICommittedCallbackDispatcher
+		private sealed class _ICommittedCallbackDispatcher_31 : ICommittedCallbackDispatcher
 		{
-			public _ICommittedCallbackDispatcher_35(LocalTransaction _enclosing)
+			public _ICommittedCallbackDispatcher_31(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -57,19 +53,6 @@ namespace Db4objects.Db4o.Internal
 			}
 
 			private readonly LocalTransaction _enclosing;
-		}
-
-		private ICache4 CreateSlotCache()
-		{
-			if (IsSystemTransaction())
-			{
-				int slotCacheSize = Config().SlotCacheSize();
-				if (slotCacheSize > 0)
-				{
-					return CacheFactory.New2QCache(slotCacheSize);
-				}
-			}
-			return new NullCache4();
 		}
 
 		public virtual Config4Impl Config()
@@ -159,10 +142,10 @@ namespace Db4objects.Db4o.Internal
 				DTrace.TransCommit.LogInfo("server == " + Container().IsServer() + ", systemtrans == "
 					 + IsSystemTransaction());
 			}
-			Commit3Stream();
+			CommitClassMetadata();
 			CommitParticipants();
-			Container().WriteDirty();
-			IdSystem().Commit();
+			Container().WriteDirtyClassMetadata();
+			IdSystem().Commit(new FreespaceCommitter(LocalContainer().FreespaceManager()));
 		}
 
 		private void CommitListeners()
@@ -192,10 +175,10 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private void Commit3Stream()
+		private void CommitClassMetadata()
 		{
 			Container().ProcessPendingClassUpdates();
-			Container().WriteDirty();
+			Container().WriteDirtyClassMetadata();
 			Container().ClassCollection().Write(Container().SystemTransaction());
 		}
 
@@ -269,7 +252,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_232(this));
+				delete.Traverse(new _IVisitor4_217(this));
 			}
 			// if the object has been deleted
 			// We need to hold a hard reference here, otherwise we can get 
@@ -280,9 +263,9 @@ namespace Db4objects.Db4o.Internal
 			_writtenUpdateAdjustedIndexes = null;
 		}
 
-		private sealed class _IVisitor4_232 : IVisitor4
+		private sealed class _IVisitor4_217 : IVisitor4
 		{
-			public _IVisitor4_232(LocalTransaction _enclosing)
+			public _IVisitor4_217(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -332,13 +315,13 @@ namespace Db4objects.Db4o.Internal
 		private Collection4 CollectCommittedCallbackDeletedInfo()
 		{
 			Collection4 deleted = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_282(this, deleted));
+			CollectCallBackInfo(new _ICallbackInfoCollector_267(this, deleted));
 			return deleted;
 		}
 
-		private sealed class _ICallbackInfoCollector_282 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_267 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_282(LocalTransaction _enclosing, Collection4 deleted
+			public _ICallbackInfoCollector_267(LocalTransaction _enclosing, Collection4 deleted
 				)
 			{
 				this._enclosing = _enclosing;
@@ -376,13 +359,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			Collection4 added = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_305(this, added, updated));
+			CollectCallBackInfo(new _ICallbackInfoCollector_290(this, added, updated));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ICallbackInfoCollector_305 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_290 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_305(LocalTransaction _enclosing, Collection4 added
+			public _ICallbackInfoCollector_290(LocalTransaction _enclosing, Collection4 added
 				, Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -420,14 +403,14 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_328(this, added, updated, deleted
+			CollectCallBackInfo(new _ICallbackInfoCollector_313(this, added, updated, deleted
 				));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ICallbackInfoCollector_328 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_313 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_328(LocalTransaction _enclosing, Collection4 added
+			public _ICallbackInfoCollector_313(LocalTransaction _enclosing, Collection4 added
 				, Collection4 updated, Collection4 deleted)
 			{
 				this._enclosing = _enclosing;
@@ -500,11 +483,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual LazyObjectReference LazyReferenceFor(int id)
 		{
 			return new LazyObjectReference(this, id);
-		}
-
-		public virtual ICache4 SlotCache()
-		{
-			return _slotCache;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Ids
@@ -12,11 +13,14 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		bool IsDirty();
 
-		void Commit();
+		void Commit(FreespaceCommitter freespaceCommitter);
 
 		Slot CommittedSlot(int id);
 
 		Slot CurrentSlot(int id);
+
+		void AccumulateFreeSlots(FreespaceCommitter freespaceCommitter, bool forFreespace
+			);
 
 		void Rollback();
 

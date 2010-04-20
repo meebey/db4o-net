@@ -35,10 +35,10 @@ namespace Db4objects.Db4o.Internal.Slots
 			return true;
 		}
 
-		public override void FreeDuringCommit(TransactionalIdSystemImpl idSystem, IFreespaceManager
-			 freespaceManager, bool forFreespace)
+		public override void AccumulateFreeSlot(TransactionalIdSystemImpl idSystem, FreespaceCommitter
+			 freespaceCommitter, bool forFreespace)
 		{
-			base.FreeDuringCommit(idSystem, freespaceManager, forFreespace);
+			base.AccumulateFreeSlot(idSystem, freespaceCommitter, forFreespace);
 			if (_freed == null)
 			{
 				return;
@@ -50,8 +50,7 @@ namespace Db4objects.Db4o.Internal.Slots
 			IEnumerator iterator = _freed.GetEnumerator();
 			while (iterator.MoveNext())
 			{
-				Slot slot = (Slot)iterator.Current;
-				freespaceManager.Free(slot);
+				freespaceCommitter.DelayedFree((Slot)iterator.Current);
 			}
 		}
 	}

@@ -236,6 +236,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				// TODO Auto-generated method stub
 				return 0;
 			}
+
+			public override bool IsStarted()
+			{
+				return false;
+			}
 		}
 	}
 }

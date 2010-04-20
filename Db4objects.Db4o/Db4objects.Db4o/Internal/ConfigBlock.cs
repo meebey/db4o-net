@@ -120,7 +120,7 @@ namespace Db4objects.Db4o.Internal
 		public void CompleteInterruptedTransaction()
 		{
 			Db4objects.Db4o.Internal.SystemData systemData = _container.SystemData();
-			_container.GlobalIdSystem().CompleteInterruptedTransaction(systemData.TransactionPointer1
+			_container.IdSystem().CompleteInterruptedTransaction(systemData.TransactionPointer1
 				(), systemData.TransactionPointer2());
 		}
 

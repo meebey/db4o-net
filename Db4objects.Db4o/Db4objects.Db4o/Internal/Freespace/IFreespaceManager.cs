@@ -43,5 +43,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 		void FreeTransactionLogSlot(Slot slot);
 
 		void Listener(IFreespaceListener listener);
+
+		void SlotFreed(Slot slot);
+
+		bool IsStarted();
 	}
 }

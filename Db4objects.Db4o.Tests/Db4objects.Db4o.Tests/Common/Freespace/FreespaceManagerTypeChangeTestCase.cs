@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				AssertFreespace(Btree, run);
 				configuration.Freespace().UseRamSystem();
 				Reopen();
-				AssertFreespaceManagerClass(typeof(RamFreespaceManager));
+				AssertFreespaceManagerClass(typeof(InMemoryFreespaceManager));
 				AssertItemAvailable();
 				DeleteItem();
 				StoreItem();

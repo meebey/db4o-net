@@ -5,7 +5,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Ids
 {
@@ -76,11 +75,12 @@ namespace Db4objects.Db4o.Internal.Ids
 			return _slotChanges.IsDirty();
 		}
 
-		public virtual void Commit()
+		public virtual void Commit(FreespaceCommitter freespaceCommitter)
 		{
 			IVisitable slotChangeVisitable = new _IVisitable_55(this);
-			GlobalIdSystem().Commit(slotChangeVisitable, new _IRunnable_60(this));
-			FreespaceEndCommit();
+			freespaceCommitter.Register(this);
+			AccumulateFreeSlots(freespaceCommitter, false);
+			GlobalIdSystem().Commit(slotChangeVisitable, freespaceCommitter);
 		}
 
 		private sealed class _IVisitable_55 : IVisitable
@@ -98,30 +98,13 @@ namespace Db4objects.Db4o.Internal.Ids
 			private readonly TransactionalIdSystemImpl _enclosing;
 		}
 
-		private sealed class _IRunnable_60 : IRunnable
+		public virtual void AccumulateFreeSlots(FreespaceCommitter accumulator, bool forFreespace
+			)
 		{
-			public _IRunnable_60(TransactionalIdSystemImpl _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			public void Run()
-			{
-				this._enclosing.FreeSlotChanges(false);
-				this._enclosing.FreespaceBeginCommit();
-				this._enclosing.CommitFreespace();
-				this._enclosing.FreeSlotChanges(true);
-			}
-
-			private readonly TransactionalIdSystemImpl _enclosing;
-		}
-
-		private void FreeSlotChanges(bool forFreespace)
-		{
-			_slotChanges.FreeSlotChanges(forFreespace, IsSystemIdSystem());
+			_slotChanges.AccumulateFreeSlots(accumulator, forFreespace, IsSystemIdSystem());
 			if (!IsSystemIdSystem())
 			{
-				_systemIdSystem.FreeSlotChanges(forFreespace);
+				_systemIdSystem.AccumulateFreeSlots(accumulator, forFreespace);
 			}
 		}
 

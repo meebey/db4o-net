@@ -6,6 +6,7 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.References;
@@ -200,7 +201,7 @@ namespace Db4objects.Db4o.Internal
 		public override void Shutdown()
 		{
 			ProcessPendingClassUpdates();
-			WriteDirty();
+			WriteDirtyClassMetadata();
 			Transaction.Commit();
 		}
 
@@ -222,8 +223,8 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		public override int StoreInternal(Transaction trans, object obj, int depth, bool 
-			checkJustSet)
+		public override int StoreInternal(Transaction trans, object obj, IUpdateDepth depth
+			, bool checkJustSet)
 		{
 			int id = _parent.GetID(null, obj);
 			if (id > 0)

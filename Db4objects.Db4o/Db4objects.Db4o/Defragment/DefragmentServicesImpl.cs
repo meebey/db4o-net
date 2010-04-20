@@ -11,6 +11,7 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Internal.Encoding;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
@@ -36,9 +37,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_37 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_38 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_37()
+			public _DbSelector_38()
 			{
 			}
 
@@ -48,12 +49,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_37
+		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_38
 			();
 
-		private sealed class _DbSelector_43 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_44 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_43()
+			public _DbSelector_44()
 			{
 			}
 
@@ -63,7 +64,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_43
+		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_44
 			();
 
 		public readonly LocalObjectContainer _sourceDb;
@@ -153,7 +154,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				_listener.NotifyDefragmentInfo(new DefragmentInfo("No mapping found for ID " + id
 					));
-				return 0;
+				return Const4.InvalidObjectId;
 			}
 			return mapped;
 		}
@@ -193,7 +194,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private Slot CommittedSlot(DefragmentServicesImpl.DbSelector selector, int id)
 		{
-			return selector.Db(this).GlobalIdSystem().CommittedSlot(id);
+			return selector.Db(this).IdSystem().CommittedSlot(id);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -310,12 +311,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_229(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_230(this, collector));
 		}
 
-		private sealed class _IVisitor4_229 : IVisitor4
+		private sealed class _IVisitor4_230 : IVisitor4
 		{
-			public _IVisitor4_229(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_230(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -428,16 +429,16 @@ namespace Db4objects.Db4o.Defragment
 			ClassMetadata curClazz = clazz;
 			while (!hasFieldIndex.value && curClazz != null)
 			{
-				curClazz.TraverseDeclaredFields(new _IProcedure4_312(hasFieldIndex));
+				curClazz.TraverseDeclaredFields(new _IProcedure4_313(hasFieldIndex));
 				curClazz = curClazz.GetAncestor();
 			}
 			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
 			return hasFieldIndex.value;
 		}
 
-		private sealed class _IProcedure4_312 : IProcedure4
+		private sealed class _IProcedure4_313 : IProcedure4
 		{
-			public _IProcedure4_312(BooleanByRef hasFieldIndex)
+			public _IProcedure4_313(BooleanByRef hasFieldIndex)
 			{
 				this.hasFieldIndex = hasFieldIndex;
 			}
@@ -471,7 +472,7 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual int TargetNewId()
 		{
-			return _targetDb.GlobalIdSystem().NewId();
+			return _targetDb.IdSystem().NewId();
 		}
 
 		public virtual IIdMapping Mapping()
@@ -481,7 +482,8 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual void CommitIds()
 		{
-			_targetDb.GlobalIdSystem().Commit(Mapping().SlotChanges(), Runnable4.DoNothing);
+			_targetDb.IdSystem().Commit(Mapping().SlotChanges(), FreespaceCommitter.DoNothing
+				);
 		}
 	}
 }

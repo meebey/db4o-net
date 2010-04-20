@@ -198,12 +198,12 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 				{
 					((IClientSlotCache)cache).Add(this._enclosing.Trans(), i, new ByteArrayBuffer(i));
 				}
-				Assert.IsNull(((IClientSlotCache)cache).Get(this._enclosing.Trans(), 0));
 				for (int i = 1; i < ClientSlotCacheTestCase.SlotCacheSize + 1; i++)
 				{
 					Assert.AreEqual(i, ((IClientSlotCache)cache).Get(this._enclosing.Trans(), i).Length
 						());
 				}
+				Assert.IsNull(((IClientSlotCache)cache).Get(this._enclosing.Trans(), 0));
 			}
 
 			private readonly ClientSlotCacheTestCase _enclosing;

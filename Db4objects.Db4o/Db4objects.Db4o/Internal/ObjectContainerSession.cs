@@ -278,7 +278,7 @@ namespace Db4objects.Db4o.Internal
 			lock (Lock())
 			{
 				CheckClosed();
-				_server.Store(_transaction, obj, depth);
+				_server.Store(_transaction, obj, UpdateDepthFactory.ForDepth(depth));
 			}
 		}
 

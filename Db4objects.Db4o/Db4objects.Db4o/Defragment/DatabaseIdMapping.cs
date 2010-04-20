@@ -6,6 +6,7 @@ using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Slots;
 
@@ -84,7 +85,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return classID;
 			}
-			IBTreeRange range = _idTree.Search(Trans(), new MappedIDPair(oldID, 0));
+			IBTreeRange range = _idTree.SearchRange(Trans(), new MappedIDPair(oldID, 0));
 			IEnumerator pointers = range.Pointers();
 			if (pointers.MoveNext())
 			{
@@ -162,31 +163,28 @@ namespace Db4objects.Db4o.Defragment
 
 		public override void MapId(int id, Slot slot)
 		{
-			_mappingDb.Store(new DatabaseIdMapping.IdSlotMapping(id, slot.Address(), slot.Length
-				()));
+			_mappingDb.Store(new IdSlotMapping(id, slot.Address(), slot.Length()));
 		}
 
 		public override IVisitable SlotChanges()
 		{
-			return new _IVisitable_141(this);
+			return new _IVisitable_142(this);
 		}
 
-		private sealed class _IVisitable_141 : IVisitable
+		private sealed class _IVisitable_142 : IVisitable
 		{
-			public _IVisitable_141(DatabaseIdMapping _enclosing)
+			public _IVisitable_142(DatabaseIdMapping _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Accept(IVisitor4 outSideVisitor)
 			{
-				IObjectSet objectSet = this._enclosing._mappingDb.Query(typeof(DatabaseIdMapping.IdSlotMapping
-					));
+				IObjectSet objectSet = this._enclosing._mappingDb.Query(typeof(IdSlotMapping));
 				for (IEnumerator idSlotMappingIter = objectSet.GetEnumerator(); idSlotMappingIter
 					.MoveNext(); )
 				{
-					DatabaseIdMapping.IdSlotMapping idSlotMapping = ((DatabaseIdMapping.IdSlotMapping
-						)idSlotMappingIter.Current);
+					IdSlotMapping idSlotMapping = ((IdSlotMapping)idSlotMappingIter.Current);
 					SlotChange slotChange = new SlotChange(idSlotMapping._id);
 					slotChange.NotifySlotCreated(idSlotMapping.Slot());
 					outSideVisitor.Visit(slotChange);
@@ -194,27 +192,6 @@ namespace Db4objects.Db4o.Defragment
 			}
 
 			private readonly DatabaseIdMapping _enclosing;
-		}
-
-		public class IdSlotMapping
-		{
-			public IdSlotMapping(int id, int address, int length)
-			{
-				_id = id;
-				_address = address;
-				_length = length;
-			}
-
-			public int _id;
-
-			public int _address;
-
-			public int _length;
-
-			public virtual Db4objects.Db4o.Internal.Slots.Slot Slot()
-			{
-				return new Db4objects.Db4o.Internal.Slots.Slot(_address, _length);
-			}
 		}
 	}
 }

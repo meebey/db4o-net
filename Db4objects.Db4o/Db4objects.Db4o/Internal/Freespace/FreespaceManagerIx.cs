@@ -95,5 +95,10 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public override void Listener(IFreespaceListener listener)
 		{
 		}
+
+		public override bool IsStarted()
+		{
+			return false;
+		}
 	}
 }

@@ -8,6 +8,7 @@ namespace Db4objects.Db4o.TA
 	/// 	</summary>
 	/// <remarks>Interface defining rollback behavior when Transparent Persistence mode is on.
 	/// 	</remarks>
+	/// <seealso cref="TransparentPersistenceSupport">TransparentPersistenceSupport</seealso>
 	public interface IRollbackStrategy
 	{
 		/// <summary>Method to be called per TP-enabled object when the transaction is rolled back.

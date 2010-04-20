@@ -15,12 +15,12 @@ namespace Db4objects.Db4o.Internal.Config
 			_config = config;
 		}
 
+		[System.ObsoleteAttribute(@"since 7.14 BTrees have their own LRU cache now.")]
 		public virtual int SlotCacheSize
 		{
 			set
 			{
 				int size = value;
-				_config.SlotCacheSize(size);
 			}
 		}
 	}

@@ -98,8 +98,17 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void InitNew(LocalObjectContainer file)
 		{
+			if (!IsInitialized())
+			{
+				return;
+			}
 			_configBlock = ConfigBlock.ForNewFile(file);
 			InitBootRecord(file);
+		}
+
+		private bool IsInitialized()
+		{
+			return _configBlock != null;
 		}
 
 		private void InitBootRecord(LocalObjectContainer file)

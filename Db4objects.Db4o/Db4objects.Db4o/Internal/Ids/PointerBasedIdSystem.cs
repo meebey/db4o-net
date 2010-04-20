@@ -5,7 +5,6 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Transactionlog;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Internal.Ids
 {
@@ -32,11 +31,11 @@ namespace Db4objects.Db4o.Internal.Ids
 			return _container.ReadPointerSlot(id);
 		}
 
-		public void Commit(IVisitable slotChanges, IRunnable commitBlock)
+		public void Commit(IVisitable slotChanges, FreespaceCommitter freespaceCommitter)
 		{
 			Slot reservedSlot = _transactionLogHandler.AllocateSlot(false, CountSlotChanges(slotChanges
 				));
-			commitBlock.Run();
+			freespaceCommitter.Commit();
 			_transactionLogHandler.ApplySlotChanges(slotChanges, CountSlotChanges(slotChanges
 				), reservedSlot);
 		}
@@ -108,6 +107,11 @@ namespace Db4objects.Db4o.Internal.Ids
 		{
 			_transactionLogHandler.CompleteInterruptedTransaction(transactionId1, transactionId2
 				);
+		}
+
+		public ITransactionalIdSystem FreespaceIdSystem()
+		{
+			return null;
 		}
 	}
 }

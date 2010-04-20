@@ -202,7 +202,7 @@ namespace Db4objects.Db4o.Ext
 			stream.ShowInternalClasses(true);
 			try
 			{
-				stream.Store3(trans, this, 2, false);
+				stream.Store3(trans, this, UpdateDepthFactory.ForDepth(2), false);
 				return stream.GetID(trans, this);
 			}
 			finally

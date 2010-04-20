@@ -27,11 +27,11 @@ namespace Db4objects.Db4o.Internal.Slots
 
 			public override SlotChange NewInstance(int id)
 			{
-				return new FreespaceSlotChange(id);
+				return new SystemSlotChange(id);
 			}
 		}
 
-		public static readonly Db4objects.Db4o.Internal.Slots.SlotChangeFactory FreeSpace
+		public static readonly Db4objects.Db4o.Internal.Slots.SlotChangeFactory SystemObjects
 			 = new _SlotChangeFactory_20();
 
 		private sealed class _SlotChangeFactory_26 : Db4objects.Db4o.Internal.Slots.SlotChangeFactory
@@ -42,11 +42,11 @@ namespace Db4objects.Db4o.Internal.Slots
 
 			public override SlotChange NewInstance(int id)
 			{
-				return new SystemSlotChange(id);
+				return new FreespaceSlotChange(id);
 			}
 		}
 
-		public static readonly Db4objects.Db4o.Internal.Slots.SlotChangeFactory SystemObjects
+		public static readonly Db4objects.Db4o.Internal.Slots.SlotChangeFactory FreeSpace
 			 = new _SlotChangeFactory_26();
 	}
 }

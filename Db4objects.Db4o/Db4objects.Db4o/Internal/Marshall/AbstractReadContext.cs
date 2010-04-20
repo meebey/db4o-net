@@ -15,6 +15,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 	{
 		protected IActivationDepth _activationDepth = UnknownActivationDepth.Instance;
 
+		private bool _lastReferenceReadWasReallyNull = false;
+
 		protected AbstractReadContext(Transaction transaction, IReadBuffer buffer) : base
 			(transaction, buffer)
 		{
@@ -36,13 +38,13 @@ namespace Db4objects.Db4o.Internal.Marshall
 				throw new ArgumentNullException();
 			}
 			ITypeHandler4 handler = HandlerRegistry.CorrectHandlerVersion(this, handlerType);
-			return SlotFormat().DoWithSlotIndirection(this, handler, new _IClosure4_36(this, 
+			return SlotFormat().DoWithSlotIndirection(this, handler, new _IClosure4_38(this, 
 				handler));
 		}
 
-		private sealed class _IClosure4_36 : IClosure4
+		private sealed class _IClosure4_38 : IClosure4
 		{
-			public _IClosure4_36(AbstractReadContext _enclosing, ITypeHandler4 handler)
+			public _IClosure4_38(AbstractReadContext _enclosing, ITypeHandler4 handler)
 			{
 				this._enclosing = _enclosing;
 				this.handler = handler;
@@ -71,6 +73,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 		{
 			int objectId = ReadInt();
 			if (objectId == 0)
+			{
+				_lastReferenceReadWasReallyNull = true;
+				return null;
+			}
+			_lastReferenceReadWasReallyNull = false;
+			if (objectId == Const4.InvalidObjectId)
 			{
 				return null;
 			}
@@ -135,6 +143,16 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return null;
 			}
 			return Container().DecryptedBufferByAddress(address, length);
+		}
+
+		public virtual bool LastReferenceReadWasReallyNull()
+		{
+			return _lastReferenceReadWasReallyNull;
+		}
+
+		public virtual void NotifyNullReferenceSkipped()
+		{
+			_lastReferenceReadWasReallyNull = true;
 		}
 	}
 }

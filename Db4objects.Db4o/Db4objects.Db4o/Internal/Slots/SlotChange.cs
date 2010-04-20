@@ -52,8 +52,8 @@ namespace Db4objects.Db4o.Internal.Slots
 			return base.ShallowCloneInternal(sc);
 		}
 
-		public virtual void FreeDuringCommit(TransactionalIdSystemImpl idSystem, IFreespaceManager
-			 freespaceManager, bool forFreespace)
+		public virtual void AccumulateFreeSlot(TransactionalIdSystemImpl idSystem, FreespaceCommitter
+			 freespaceCommitter, bool forFreespace)
 		{
 			if (IsForFreespace() != forFreespace)
 			{
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Internal.Slots
 				// has been deleted by another transaction and we add it again.
 				if (slot != null && !slot.IsNull())
 				{
-					freespaceManager.Free(slot);
+					freespaceCommitter.DelayedFree(slot);
 				}
 			}
 		}
@@ -178,8 +178,7 @@ namespace Db4objects.Db4o.Internal.Slots
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.NotifySlotChanged.Log(_key);
-				DTrace.NotifySlotChanged.LogLength(slot);
+				DTrace.NotifySlotUpdated.LogLength(_key, slot);
 			}
 			FreePreviouslyModifiedSlot(freespaceManager);
 			_newSlot = slot;
@@ -253,6 +252,16 @@ namespace Db4objects.Db4o.Internal.Slots
 		public virtual bool RemoveId()
 		{
 			return false;
+		}
+
+		public override string ToString()
+		{
+			string str = "id: " + _key;
+			if (_newSlot != null)
+			{
+				str += " newSlot: " + _newSlot;
+			}
+			return str;
 		}
 	}
 }

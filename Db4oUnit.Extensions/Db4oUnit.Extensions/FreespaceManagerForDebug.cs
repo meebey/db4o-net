@@ -93,5 +93,15 @@ namespace Db4oUnit.Extensions
 			// TODO Auto-generated method stub
 			return 0;
 		}
+
+		public virtual void SlotFreed(Slot slot)
+		{
+		}
+
+		// TODO Auto-generated method stub
+		public virtual bool IsStarted()
+		{
+			return false;
+		}
 	}
 }

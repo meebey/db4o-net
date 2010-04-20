@@ -45,9 +45,10 @@ namespace Db4oTool.Tests.Integration
 			_activations.Clear();
 		}
 
-		public static void Main()
+		public static int Main()
 		{
 			new Application().Run();
+			return 0;
 		}
 
 		private void Run()
@@ -82,6 +83,29 @@ namespace Db4oTool.Tests.Integration
 									},
 
 									typeof(ActivatableList<Item>));
+				});
+
+				WithDatabase(delegate(IObjectContainer db)
+				{
+					CollectionHolder<Item> holder = RetrieveHolder(db);
+
+					AssertCollectionsAreNull(holder);
+
+					AssertItemActivation(
+									holder,
+
+									delegate(CollectionHolder<Item> collectionHolder)
+									{
+										return collectionHolder.Dictionary;
+									},
+
+									delegate(object obj)
+									{
+										IDictionary<string, Item> dictionary = (IDictionary<string, Item>)obj;
+										return dictionary[new Item(ItemName).ToString()];
+									},
+
+									typeof(ActivatableDictionary<string, Item>));
 				});
 
 				TestTransparentPersistence();
@@ -122,17 +146,19 @@ namespace Db4oTool.Tests.Integration
 		private static void AssertCollectionsAreNull(CollectionHolder<Item> holder)
 		{
 			AssertCollectionIsNull(holder, "_list");
+			AssertCollectionIsNull(holder, "_dictionary");
 		}
 
 		private void AssertItemActivation(
-								CollectionHolder<Item> holder, Func<CollectionHolder<Item>, object> collectionExtractor,
+								CollectionHolder<Item> holder, 
+								Func<CollectionHolder<Item>, object> collectionExtractor,
 								Func<object, Item> itemExtractor,
 								Type collectionType)
 		{
 
 			Reset();
 
-			AssertNoActivation(typeof(List<Item>));
+			AssertNoActivation(typeof(List<Item>), typeof(Dictionary<string, Item>));
 
 			AssertActivationCount(typeof(Item), 0);
 			AssertActivationCount(collectionType, 0);
@@ -140,8 +166,8 @@ namespace Db4oTool.Tests.Integration
 
 			AssertActivationCount(collectionType, 1);
 			AssertActivationCount(typeof(Item), 0);
+			
 			Assert.AreEqual(ItemName, item.Name);
-
 			AssertActivationCount(typeof(Item), 1);
 		}
 
@@ -164,9 +190,9 @@ namespace Db4oTool.Tests.Integration
 
 		private void AssertNoActivation(params Type[] collectionTypes)
 		{
-			for (int i = 0; i < collectionTypes.Length; i++)
+			foreach (Type t in collectionTypes)
 			{
-				Assert.AreEqual(0, ActivationCount(collectionTypes[i]), collectionTypes[i].Name);
+				Assert.AreEqual(0, ActivationCount(t), t.Name);
 			}
 		}
 

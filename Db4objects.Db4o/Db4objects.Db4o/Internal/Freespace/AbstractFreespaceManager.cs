@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return systemType;
 		}
 
-		private readonly IProcedure4 _slotFreedCallback;
+		protected IProcedure4 _slotFreedCallback;
 
 		private readonly int _discardLimit;
 
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 				default:
 				{
-					return new RamFreespaceManager(slotFreedCallback, blockedDiscardLimit);
+					return new InMemoryFreespaceManager(slotFreedCallback, blockedDiscardLimit);
 					break;
 				}
 			}
@@ -210,7 +210,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return systemType == FmLegacyRam || systemType == FmIx;
 		}
 
-		protected virtual void SlotFreed(Slot slot)
+		public virtual void SlotFreed(Slot slot)
 		{
 			if (_slotFreedCallback == null)
 			{
@@ -234,6 +234,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public abstract void FreeSelf();
 
 		public abstract void FreeTransactionLogSlot(Slot arg1);
+
+		public abstract bool IsStarted();
 
 		public abstract void Listener(IFreespaceListener arg1);
 

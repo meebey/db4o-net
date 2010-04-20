@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec BlobPathKey = new KeySpec(null);
 
-		private static readonly KeySpec BtreeNodeSizeKey = new KeySpec(119);
+		private static readonly KeySpec BtreeNodeSizeKey = new KeySpec(201);
 
 		private static readonly KeySpec CallbacksKey = new KeySpec(CallBackMode.All);
 
@@ -209,7 +209,8 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec TimeoutServerSocketKey = new KeySpec(Const4.ServerSocketTimeout
 			);
 
-		private static readonly KeySpec UpdateDepthKey = new KeySpec(1);
+		private static readonly KeySpec UpdateDepthKey = new KeySpec(UpdateDepthFactory.ForDepth
+			(1));
 
 		private static readonly KeySpec WeakReferenceCollectionIntervalKey = new KeySpec(
 			1000);
@@ -225,13 +226,11 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec MaxBatchQueueSizeKey = new KeySpec(int.MaxValue);
 
-		private static readonly KeySpec SlotCacheSizeKey = new KeySpec(30);
-
 		private static readonly KeySpec TaintedKey = new KeySpec(false);
 
-		private sealed class _IReferenceSystemFactory_192 : IReferenceSystemFactory
+		private sealed class _IReferenceSystemFactory_190 : IReferenceSystemFactory
 		{
-			public _IReferenceSystemFactory_192()
+			public _IReferenceSystemFactory_190()
 			{
 			}
 
@@ -241,12 +240,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_192
+		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_190
 			());
 
-		private sealed class _INameProvider_198 : INameProvider
+		private sealed class _INameProvider_196 : INameProvider
 		{
-			public _INameProvider_198()
+			public _INameProvider_196()
 			{
 			}
 
@@ -256,7 +255,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_198
+		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_196
 			());
 
 		private ObjectContainerBase _container;
@@ -810,13 +809,17 @@ namespace Db4objects.Db4o.Internal
 		// do nothing
 		public void UpdateDepth(int depth)
 		{
+			if (depth < 0)
+			{
+				throw new ArgumentException("update depth must not be negative");
+			}
 			Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor dp = DiagnosticProcessor(
 				);
 			if (dp.Enabled())
 			{
 				dp.CheckUpdateDepth(depth);
 			}
-			_config.Put(UpdateDepthKey, depth);
+			_config.Put(UpdateDepthKey, UpdateDepthFactory.ForDepth(depth));
 		}
 
 		public void UseBTreeSystem()
@@ -1131,9 +1134,9 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(TimeoutServerSocketKey);
 		}
 
-		public int UpdateDepth()
+		public FixedUpdateDepth UpdateDepth()
 		{
-			return _config.GetAsInt(UpdateDepthKey);
+			return (FixedUpdateDepth)_config.Get(UpdateDepthKey);
 		}
 
 		public int WeakReferenceCollectionInterval()
@@ -1280,16 +1283,6 @@ namespace Db4objects.Db4o.Internal
 		public ICacheConfiguration Cache()
 		{
 			return new CacheConfigurationImpl(this);
-		}
-
-		public void SlotCacheSize(int size)
-		{
-			_config.Put(SlotCacheSizeKey, size);
-		}
-
-		public int SlotCacheSize()
-		{
-			return _config.GetAsInt(SlotCacheSizeKey);
 		}
 
 		public bool FileBasedTransactionLog()

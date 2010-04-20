@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Internal.Ids
 			WritePointer(id, Slot.Zero);
 		}
 
-		public void Commit()
+		public void Commit(FreespaceCommitter accumulator)
 		{
 		}
 
@@ -94,5 +94,11 @@ namespace Db4objects.Db4o.Internal.Ids
 		public void Close()
 		{
 		}
+
+		public void AccumulateFreeSlots(FreespaceCommitter freespaceCommitter, bool forFreespace
+			)
+		{
+		}
+		// do nothing
 	}
 }

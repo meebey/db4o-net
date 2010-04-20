@@ -26,9 +26,10 @@ namespace Db4objects.Db4o.Internal.Ids
 			_freespaceManager = freespaceManager;
 		}
 
-		public void FreeSlotChanges(bool forFreespace, bool traverseMutable)
+		public void AccumulateFreeSlots(FreespaceCommitter freespaceCommitter, bool forFreespace
+			, bool traverseMutable)
 		{
-			IVisitor4 visitor = new _IVisitor4_27(this, forFreespace);
+			IVisitor4 visitor = new _IVisitor4_27(this, freespaceCommitter, forFreespace);
 			if (traverseMutable)
 			{
 				_slotChanges.TraverseMutable(visitor);
@@ -41,19 +42,23 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		private sealed class _IVisitor4_27 : IVisitor4
 		{
-			public _IVisitor4_27(IdSlotChanges _enclosing, bool forFreespace)
+			public _IVisitor4_27(IdSlotChanges _enclosing, FreespaceCommitter freespaceCommitter
+				, bool forFreespace)
 			{
 				this._enclosing = _enclosing;
+				this.freespaceCommitter = freespaceCommitter;
 				this.forFreespace = forFreespace;
 			}
 
 			public void Visit(object obj)
 			{
-				((SlotChange)obj).FreeDuringCommit(this._enclosing._idSystem, this._enclosing.FreespaceManager
-					(), forFreespace);
+				((SlotChange)obj).AccumulateFreeSlot(this._enclosing._idSystem, freespaceCommitter
+					, forFreespace);
 			}
 
 			private readonly IdSlotChanges _enclosing;
+
+			private readonly FreespaceCommitter freespaceCommitter;
 
 			private readonly bool forFreespace;
 		}

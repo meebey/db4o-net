@@ -117,5 +117,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			return _delegate.Write(container);
 		}
+
+		public virtual void SlotFreed(Slot slot)
+		{
+			_delegate.SlotFreed(slot);
+		}
+
+		public virtual bool IsStarted()
+		{
+			return _delegate.IsStarted();
+		}
 	}
 }

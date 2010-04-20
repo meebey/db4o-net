@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Collections;
 using Db4objects.Db4o.Marshall;
@@ -55,7 +56,7 @@ namespace Db4objects.Db4o.Internal.Collections
 
 		private int Store(E obj)
 		{
-			return Container().Store(_transaction, obj, Const4.Unspecified);
+			return Container().Store(_transaction, obj, UnspecifiedUpdateDepth.Instance);
 		}
 
 		private void Add(int id)
@@ -103,7 +104,7 @@ namespace Db4objects.Db4o.Internal.Collections
 		{
 			lock (Lock())
 			{
-				IBTreeRange range = BTree().Search(Transaction(), id);
+				IBTreeRange range = BTree().SearchRange(Transaction(), id);
 				return !range.IsEmpty();
 			}
 		}

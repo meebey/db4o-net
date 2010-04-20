@@ -16,7 +16,8 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		private readonly IBlockConverter _blockConverter = new BlockSizeBlockConverter(BlockSize
 			);
 
-		private readonly RamFreespaceManager _blocked = new RamFreespaceManager(null, 0);
+		private readonly InMemoryFreespaceManager _blocked = new InMemoryFreespaceManager
+			(null, 0);
 
 		private readonly BlockAwareFreespaceManager _nonBlocked;
 

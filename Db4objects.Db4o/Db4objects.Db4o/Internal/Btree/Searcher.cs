@@ -6,7 +6,7 @@ using Db4objects.Db4o.Internal.Btree;
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
-	public class Searcher
+	public sealed class Searcher
 	{
 		private int _lower;
 
@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		public virtual bool AfterLast()
+		public bool AfterLast()
 		{
 			if (_count == 0)
 			{
@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			return (_cursor == _count - 1) && _cmp < 0;
 		}
 
-		public virtual bool BeforeFirst()
+		public bool BeforeFirst()
 		{
 			return (_cursor == 0) && (_cmp > 0);
 		}
@@ -131,39 +131,39 @@ namespace Db4objects.Db4o.Internal.Btree
 			_upper = -2;
 		}
 
-		public virtual int Count()
+		public int Count()
 		{
 			return _count;
 		}
 
-		public virtual int Cursor()
+		public int Cursor()
 		{
 			return _cursor;
 		}
 
-		public virtual bool FoundMatch()
+		public bool FoundMatch()
 		{
 			return _cmp == 0;
 		}
 
-		public virtual bool Incomplete()
+		public bool Incomplete()
 		{
 			return _upper >= _lower;
 		}
 
-		public virtual void MoveForward()
+		public void MoveForward()
 		{
 			_cursor++;
 		}
 
-		public virtual void ResultIs(int cmp)
+		public void ResultIs(int cmp)
 		{
 			_cmp = cmp;
 			AdjustBounds();
 			AdjustCursor();
 		}
 
-		public virtual bool IsGreater()
+		public bool IsGreater()
 		{
 			return _cmp < 0;
 		}

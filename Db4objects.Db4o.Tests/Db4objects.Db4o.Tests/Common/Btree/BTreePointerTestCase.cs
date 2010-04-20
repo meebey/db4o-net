@@ -69,16 +69,34 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 			{
 				Assert.IsNotNull(pointer, "Expected '" + expected[i] + "'");
 				Assert.AreNotSame(_btree.Root(), pointer.Node());
-				AssertInReadMode(pointer.Node());
+				AssertInReadModeOrCached(pointer.Node());
 				Assert.AreEqual(expected[i], pointer.Key());
-				AssertInReadMode(pointer.Node());
+				AssertInReadModeOrCached(pointer.Node());
 				pointer = pointer.Next();
 			}
 		}
 
-		private void AssertInReadMode(BTreeNode node)
+		private void AssertInReadModeOrCached(BTreeNode node)
 		{
+			if (IsCached(node))
+			{
+				return;
+			}
 			Assert.IsFalse(node.CanWrite());
+		}
+
+		private bool IsCached(BTreeNode node)
+		{
+			for (IEnumerator entryIter = _btree.NodeCache().GetEnumerator(); entryIter.MoveNext
+				(); )
+			{
+				BTreeNodeCacheEntry entry = ((BTreeNodeCacheEntry)entryIter.Current);
+				if (node == entry._node)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		protected override BTree NewBTree()

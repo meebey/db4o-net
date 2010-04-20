@@ -4,7 +4,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
@@ -22,9 +21,10 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			_delegate.Close();
 		}
 
-		public virtual void Commit(IVisitable slotChanges, IRunnable commitBlock)
+		public virtual void Commit(IVisitable slotChanges, FreespaceCommitter freespaceCommitter
+			)
 		{
-			_delegate.Commit(slotChanges, commitBlock);
+			_delegate.Commit(slotChanges, freespaceCommitter);
 		}
 
 		public virtual Slot CommittedSlot(int id)
@@ -46,6 +46,11 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void ReturnUnusedIds(IVisitable visitable)
 		{
 			_delegate.ReturnUnusedIds(visitable);
+		}
+
+		public virtual ITransactionalIdSystem FreespaceIdSystem()
+		{
+			return _delegate.FreespaceIdSystem();
 		}
 	}
 }

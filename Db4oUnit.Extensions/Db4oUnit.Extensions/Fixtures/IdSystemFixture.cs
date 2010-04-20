@@ -20,7 +20,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public IdSystemFixture()
 		{
-			_idSystemType = StandardIdSystemFactory.InMemory;
+			_idSystemType = StandardIdSystemFactory.Btree;
 		}
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
@@ -53,6 +53,7 @@ namespace Db4oUnit.Extensions.Fixtures
 					break;
 				}
 			}
+			embeddedConfiguration.File.Freespace.UseBTreeSystem();
 			return base.CreateDatabase(config);
 		}
 

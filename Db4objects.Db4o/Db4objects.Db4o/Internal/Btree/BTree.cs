@@ -3,18 +3,22 @@
 using System;
 using System.Collections;
 using System.Text;
+using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
-	public class BTree : PersistentBase, ITransactionParticipant, IBTreeStructureListener
+	public class BTree : LocalPersistentBase, ITransactionParticipant, IBTreeStructureListener
 	{
+		private readonly BTreeConfiguration _config;
+
 		private const byte BtreeVersion = (byte)1;
 
 		private const int DefragmentIncrementOffset = 1 + Const4.IntLength * 2;
@@ -31,9 +35,9 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private IVisitor4 _removeListener;
 
-		private sealed class _TransactionLocal_36 : TransactionLocal
+		private sealed class _TransactionLocal_40 : TransactionLocal
 		{
-			public _TransactionLocal_36()
+			public _TransactionLocal_40()
 			{
 			}
 
@@ -45,7 +49,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 		}
 
-		private readonly TransactionLocal _sizeDeltaInTransaction = new _TransactionLocal_36
+		private readonly TransactionLocal _sizeDeltaInTransaction = new _TransactionLocal_40
 			();
 
 		protected IQueue4 _processing;
@@ -56,27 +60,25 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private IBTreeStructureListener _structureListener;
 
-		public BTree(Transaction trans, IIndexable4 keyHandler) : this(trans, 0, keyHandler
-			)
-		{
-		}
+		private readonly ICache4 _nodeCache;
 
-		public BTree(Transaction trans, int id, IIndexable4 keyHandler) : this(trans, id, 
-			keyHandler, Config(trans).BTreeNodeSize())
-		{
-		}
+		private TreeIntObject _evictedFromCache;
 
-		public BTree(Transaction trans, int id, IIndexable4 keyHandler, int treeNodeSize)
+		public BTree(Transaction trans, BTreeConfiguration config, int id, IIndexable4 keyHandler
+			, int treeNodeSize) : base(config._idSystem)
 		{
+			_config = config;
 			if (null == keyHandler)
 			{
 				throw new ArgumentNullException();
 			}
 			_nodeSize = treeNodeSize;
+			_nodeCache = CacheFactory.NewLRUIntCache(config._cacheSize);
 			_halfNodeSize = _nodeSize / 2;
 			_nodeSize = _halfNodeSize * 2;
 			_keyHandler = keyHandler;
-			if (id == 0)
+			SetID(id);
+			if (IsNew())
 			{
 				SetStateDirty();
 				_root = new BTreeNode(this, 0, true, 0, 0, 0);
@@ -86,9 +88,28 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			else
 			{
-				SetID(id);
 				SetStateDeactivated();
 			}
+		}
+
+		public BTree(Transaction trans, BTreeConfiguration config, IIndexable4 keyHandler
+			) : this(trans, config, 0, keyHandler)
+		{
+		}
+
+		public BTree(Transaction trans, BTreeConfiguration config, int id, IIndexable4 keyHandler
+			) : this(trans, config, id, keyHandler, Config(trans).BTreeNodeSize())
+		{
+		}
+
+		public BTree(Transaction trans, int id, IIndexable4 keyHandler) : this(trans, BTreeConfiguration
+			.Default, id, keyHandler)
+		{
+		}
+
+		public BTree(Transaction trans, int id, IIndexable4 keyHandler, int nodeSize) : this
+			(trans, BTreeConfiguration.Default, id, keyHandler, nodeSize)
+		{
 		}
 
 		public virtual BTreeNode Root()
@@ -112,40 +133,74 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual void Add(Transaction trans, IPreparedComparison preparedComparison
 			, object key)
 		{
-			EnsureDirty(trans);
+			EnsureActive(trans);
+			Enlist(trans);
 			BTreeNode rootOrSplit = _root.Add(trans, preparedComparison, key);
 			if (rootOrSplit != null && rootOrSplit != _root)
 			{
+				EnsureDirty(trans);
 				_root = new BTreeNode(trans, _root, rootOrSplit);
 				_root.Write(trans.SystemTransaction());
 				AddNode(_root);
 			}
+			ConvertCacheEvictedNodesToReadMode();
 		}
 
-		// FIXME: Change the signature to return true, if object could be removed.
 		public virtual void Remove(Transaction trans, object key)
 		{
-			KeyCantBeNull(key);
-			IPreparedComparison preparedComparison = KeyHandler().PrepareComparison(trans.Context
-				(), key);
-			IEnumerator pointers = Search(trans, preparedComparison).Pointers();
-			if (!pointers.MoveNext())
+			BTreePointer bTreePointer = SearchPointer(trans, key);
+			if (bTreePointer == null)
 			{
 				return;
 			}
-			BTreePointer first = (BTreePointer)pointers.Current;
-			EnsureDirty(trans);
-			BTreeNode node = first.Node();
-			node.Remove(trans, preparedComparison, key, first.Index());
+			Enlist(trans);
+			IPreparedComparison preparedComparison = KeyHandler().PrepareComparison(trans.Context
+				(), key);
+			BTreeNode node = bTreePointer.Node();
+			node.Remove(trans, preparedComparison, key, bTreePointer.Index());
+			ConvertCacheEvictedNodesToReadMode();
 		}
 
-		public virtual IBTreeRange Search(Transaction trans, object key)
+		public virtual IBTreeRange SearchRange(Transaction trans, object key)
 		{
 			KeyCantBeNull(key);
-			return Search(trans, KeyHandler().PrepareComparison(trans.Context(), key));
+			return SearchRange(trans, KeyHandler().PrepareComparison(trans.Context(), key));
 		}
 
-		private IBTreeRange Search(Transaction trans, IPreparedComparison preparedComparison
+		public virtual BTreePointer SearchPointer(Transaction trans, object key)
+		{
+			EnsureActive(trans);
+			KeyCantBeNull(key);
+			IPreparedComparison preparedComparison = KeyHandler().PrepareComparison(trans.Context
+				(), key);
+			BTreeNodeSearchResult start = SearchLeaf(trans, preparedComparison, SearchTarget.
+				Lowest);
+			BTreePointer bTreePointer = start.FirstValidPointer();
+			if (bTreePointer == null)
+			{
+				ConvertCacheEvictedNodesToReadMode();
+				return null;
+			}
+			object found = bTreePointer.Key();
+			ConvertCacheEvictedNodesToReadMode();
+			if (preparedComparison.CompareTo(found) == 0)
+			{
+				return bTreePointer;
+			}
+			return null;
+		}
+
+		public virtual object Search(Transaction trans, object key)
+		{
+			BTreePointer bTreePointer = SearchPointer(trans, key);
+			if (bTreePointer != null)
+			{
+				return bTreePointer.Key();
+			}
+			return null;
+		}
+
+		private IBTreeRange SearchRange(Transaction trans, IPreparedComparison preparedComparison
 			)
 		{
 			EnsureActive(trans);
@@ -157,7 +212,9 @@ namespace Db4objects.Db4o.Internal.Btree
 				Lowest);
 			BTreeNodeSearchResult end = SearchLeaf(trans, preparedComparison, SearchTarget.Highest
 				);
-			return start.CreateIncludingRange(end);
+			IBTreeRange range = start.CreateIncludingRange(end);
+			ConvertCacheEvictedNodesToReadMode();
+			return range;
 		}
 
 		private void KeyCantBeNull(object key)
@@ -184,7 +241,10 @@ namespace Db4objects.Db4o.Internal.Btree
 			 preparedComparison, SearchTarget target)
 		{
 			EnsureActive(trans);
-			return _root.SearchLeaf(trans, preparedComparison, target);
+			BTreeNodeSearchResult result = _root.SearchLeaf(trans, preparedComparison, target
+				);
+			ConvertCacheEvictedNodesToReadMode();
+			return result;
 		}
 
 		public virtual void Commit(Transaction transaction)
@@ -192,12 +252,19 @@ namespace Db4objects.Db4o.Internal.Btree
 			UpdateSize(transaction);
 			CommitNodes(transaction);
 			FinishTransaction(transaction);
+			ConvertCacheEvictedNodesToReadMode();
 		}
 
 		private void UpdateSize(Transaction transaction)
 		{
 			ByRef sizeInTransaction = SizeIn(transaction);
-			_size += (((int)sizeInTransaction.value));
+			int sizeModification = (((int)sizeInTransaction.value));
+			if (sizeModification == 0)
+			{
+				return;
+			}
+			EnsureDirty(transaction);
+			_size += sizeModification;
 			sizeInTransaction.value = 0;
 		}
 
@@ -206,14 +273,14 @@ namespace Db4objects.Db4o.Internal.Btree
 			return trans.Get(_sizeDeltaInTransaction);
 		}
 
-		public virtual void CommitNodes(Transaction trans)
+		private void CommitNodes(Transaction trans)
 		{
-			ProcessEachNode(new _IProcedure4_173(trans));
+			ProcessEachNode(new _IProcedure4_230(trans));
 		}
 
-		private sealed class _IProcedure4_173 : IProcedure4
+		private sealed class _IProcedure4_230 : IProcedure4
 		{
-			public _IProcedure4_173(Transaction trans)
+			public _IProcedure4_230(Transaction trans)
 			{
 				this.trans = trans;
 			}
@@ -244,25 +311,25 @@ namespace Db4objects.Db4o.Internal.Btree
 		{
 			RollbackNodes(trans);
 			FinishTransaction(trans);
+			ConvertCacheEvictedNodesToReadMode();
 		}
 
 		private void FinishTransaction(Transaction trans)
 		{
 			Transaction systemTransaction = trans.SystemTransaction();
 			WriteAllNodes(systemTransaction);
-			SetStateDirty();
 			Write(systemTransaction);
 			Purge();
 		}
 
 		private void RollbackNodes(Transaction trans)
 		{
-			ProcessEachNode(new _IProcedure4_202(trans));
+			ProcessEachNode(new _IProcedure4_259(trans));
 		}
 
-		private sealed class _IProcedure4_202 : IProcedure4
+		private sealed class _IProcedure4_259 : IProcedure4
 		{
-			public _IProcedure4_202(Transaction trans)
+			public _IProcedure4_259(Transaction trans)
 			{
 				this.trans = trans;
 			}
@@ -281,20 +348,19 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _IVisitor4_211(systemTransaction));
+			_nodes.Traverse(new _IVisitor4_268(systemTransaction));
 		}
 
-		private sealed class _IVisitor4_211 : IVisitor4
+		private sealed class _IVisitor4_268 : IVisitor4
 		{
-			public _IVisitor4_211(Transaction systemTransaction)
+			public _IVisitor4_268(Transaction systemTransaction)
 			{
 				this.systemTransaction = systemTransaction;
 			}
 
 			public void Visit(object obj)
 			{
-				BTreeNode node = (BTreeNode)((TreeIntObject)obj).GetObject();
-				node.Write(systemTransaction);
+				((BTreeNode)((TreeIntObject)obj).GetObject()).Write(systemTransaction);
 			}
 
 			private readonly Transaction systemTransaction;
@@ -308,21 +374,19 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			Tree temp = _nodes;
 			_nodes = null;
-			// FIXME: Caching doesn't work as expected. Disabled.
-			//        Reimplement with LRU cache for all nodes,
-			//        independant of _root.
-			//        if(_cacheHeight > 0){
-			//            _root.markAsCached(_cacheHeight);
-			//        }else{
 			_root.HoldChildrenAsIDs();
 			AddNode(_root);
-			//        }
-			temp.Traverse(new _IVisitor4_241());
+			temp.Traverse(new _IVisitor4_287());
+			for (IEnumerator entryIter = _nodeCache.GetEnumerator(); entryIter.MoveNext(); )
+			{
+				BTreeNodeCacheEntry entry = ((BTreeNodeCacheEntry)entryIter.Current);
+				entry._node.HoldChildrenAsIDs();
+			}
 		}
 
-		private sealed class _IVisitor4_241 : IVisitor4
+		private sealed class _IVisitor4_287 : IVisitor4
 		{
-			public _IVisitor4_241()
+			public _IVisitor4_287()
 			{
 			}
 
@@ -336,12 +400,12 @@ namespace Db4objects.Db4o.Internal.Btree
 		private void ProcessAllNodes()
 		{
 			_processing = new NonblockingQueue();
-			_nodes.Traverse(new _IVisitor4_251(this));
+			_nodes.Traverse(new _IVisitor4_304(this));
 		}
 
-		private sealed class _IVisitor4_251 : IVisitor4
+		private sealed class _IVisitor4_304 : IVisitor4
 		{
-			public _IVisitor4_251(BTree _enclosing)
+			public _IVisitor4_304(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -365,16 +429,21 @@ namespace Db4objects.Db4o.Internal.Btree
 		private void EnsureDirty(Transaction trans)
 		{
 			EnsureActive(trans);
+			Enlist(trans);
+			SetStateDirty();
+		}
+
+		private void Enlist(Transaction trans)
+		{
 			if (CanEnlistWithTransaction())
 			{
 				((LocalTransaction)trans).Enlist(this);
 			}
-			SetStateDirty();
 		}
 
 		protected virtual bool CanEnlistWithTransaction()
 		{
-			return true;
+			return _config._canEnlistWithTransaction;
 		}
 
 		public override byte GetIdentifier()
@@ -394,13 +463,17 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual BTreeNode ProduceNode(int id)
 		{
+			if (DTrace.enabled)
+			{
+				DTrace.BtreeProduceNode.Log(id);
+			}
 			TreeIntObject addtio = new TreeIntObject(id);
 			_nodes = (TreeIntObject)((TreeIntObject)Tree.Add(_nodes, addtio));
 			TreeIntObject tio = (TreeIntObject)addtio.AddedOrExisting();
 			BTreeNode node = (BTreeNode)tio.GetObject();
 			if (node == null)
 			{
-				node = new BTreeNode(id, this);
+				node = CacheEntry(new BTreeNode(id, this))._node;
 				tio.SetObject(node);
 				AddToProcessing(node);
 			}
@@ -471,6 +544,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				return;
 			}
 			_root.TraverseKeys(trans, visitor);
+			ConvertCacheEvictedNodesToReadMode();
 		}
 
 		public virtual void SizeChanged(Transaction transaction, BTreeNode node, int changeBy
@@ -492,7 +566,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return null;
 			}
-			return _root.FirstPointer(trans);
+			BTreePointer pointer = _root.FirstPointer(trans);
+			ConvertCacheEvictedNodesToReadMode();
+			return pointer;
 		}
 
 		public virtual BTreePointer LastPointer(Transaction trans)
@@ -502,7 +578,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return null;
 			}
-			return _root.LastPointer(trans);
+			BTreePointer pointer = _root.LastPointer(trans);
+			ConvertCacheEvictedNodesToReadMode();
+			return pointer;
 		}
 
 		public virtual Db4objects.Db4o.Internal.Btree.BTree DebugLoadFully(Transaction trans
@@ -532,14 +610,15 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public virtual void DefragBTree(IDefragmentServices services)
 		{
-			DefragmentContextImpl.ProcessCopy(services, GetID(), new _ISlotCopyHandler_411(this
+			DefragmentContextImpl.ProcessCopy(services, GetID(), new _ISlotCopyHandler_474(this
 				));
-			services.TraverseAllIndexSlots(this, new _IVisitor4_416(this, services));
+			services.TraverseAllIndexSlots(this, new _IVisitor4_479(this, services));
+			ConvertCacheEvictedNodesToReadMode();
 		}
 
-		private sealed class _ISlotCopyHandler_411 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_474 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_411(BTree _enclosing)
+			public _ISlotCopyHandler_474(BTree _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -552,9 +631,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			private readonly BTree _enclosing;
 		}
 
-		private sealed class _IVisitor4_416 : IVisitor4
+		private sealed class _IVisitor4_479 : IVisitor4
 		{
-			public _IVisitor4_416(BTree _enclosing, IDefragmentServices services)
+			public _IVisitor4_479(BTree _enclosing, IDefragmentServices services)
 			{
 				this._enclosing = _enclosing;
 				this.services = services;
@@ -563,12 +642,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			public void Visit(object obj)
 			{
 				int id = ((int)obj);
-				DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_419(this));
+				DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_482(this));
 			}
 
-			private sealed class _ISlotCopyHandler_419 : ISlotCopyHandler
+			private sealed class _ISlotCopyHandler_482 : ISlotCopyHandler
 			{
-				public _ISlotCopyHandler_419(_IVisitor4_416 _enclosing)
+				public _ISlotCopyHandler_482(_IVisitor4_479 _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -578,7 +657,7 @@ namespace Db4objects.Db4o.Internal.Btree
 					this._enclosing._enclosing.DefragIndexNode(context);
 				}
 
-				private readonly _IVisitor4_416 _enclosing;
+				private readonly _IVisitor4_479 _enclosing;
 			}
 
 			private readonly BTree _enclosing;
@@ -586,7 +665,7 @@ namespace Db4objects.Db4o.Internal.Btree
 			private readonly IDefragmentServices services;
 		}
 
-		public virtual int CompareKeys(IContext context, object key1, object key2)
+		internal virtual int CompareKeys(IContext context, object key1, object key2)
 		{
 			IPreparedComparison preparedComparison = _keyHandler.PrepareComparison(context, key1
 				);
@@ -610,7 +689,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private void FreeAllNodeIds(LocalTransaction systemTrans, IEnumerator allNodeIDs)
 		{
-			ITransactionalIdSystem idSystem = systemTrans.IdSystem();
+			ITransactionalIdSystem idSystem = IdSystem(systemTrans);
 			while (allNodeIDs.MoveNext())
 			{
 				int id = ((int)allNodeIDs.Current);
@@ -621,13 +700,13 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual IEnumerator AllNodeIds(Transaction systemTrans)
 		{
 			Collection4 allNodeIDs = new Collection4();
-			TraverseAllNodes(systemTrans, new _IVisitor4_455(allNodeIDs));
+			TraverseAllNodes(systemTrans, new _IVisitor4_519(allNodeIDs));
 			return allNodeIDs.GetEnumerator();
 		}
 
-		private sealed class _IVisitor4_455 : IVisitor4
+		private sealed class _IVisitor4_519 : IVisitor4
 		{
-			public _IVisitor4_455(Collection4 allNodeIDs)
+			public _IVisitor4_519(Collection4 allNodeIDs)
 			{
 				this.allNodeIDs = allNodeIDs;
 			}
@@ -651,12 +730,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				return;
 			}
-			_nodes.Traverse(new _IVisitor4_471(visitor));
+			_nodes.Traverse(new _IVisitor4_535(visitor));
 		}
 
-		private sealed class _IVisitor4_471 : IVisitor4
+		private sealed class _IVisitor4_535 : IVisitor4
 		{
-			public _IVisitor4_471(IVisitor4 visitor)
+			public _IVisitor4_535(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -675,13 +754,13 @@ namespace Db4objects.Db4o.Internal.Btree
 			sb.Append("BTree ");
 			sb.Append(GetID());
 			sb.Append(" Active Nodes: \n");
-			TraverseAllNodes(new _IVisitor4_483(sb));
+			TraverseAllNodes(new _IVisitor4_547(sb));
 			return sb.ToString();
 		}
 
-		private sealed class _IVisitor4_483 : IVisitor4
+		private sealed class _IVisitor4_547 : IVisitor4
 		{
-			public _IVisitor4_483(StringBuilder sb)
+			public _IVisitor4_547(StringBuilder sb)
 			{
 				this.sb = sb;
 			}
@@ -740,6 +819,81 @@ namespace Db4objects.Db4o.Internal.Btree
 				int index = currentPointer.Index();
 				node.Remove(transaction, index);
 				currentPointer = currentPointer.Next();
+			}
+		}
+
+		public virtual ICache4 NodeCache()
+		{
+			return _nodeCache;
+		}
+
+		internal virtual BTreeNodeCacheEntry CacheEntry(BTreeNode node)
+		{
+			return ((BTreeNodeCacheEntry)_nodeCache.Produce(node.GetID(), new _IFunction4_597
+				(node), new _IProcedure4_601(this)));
+		}
+
+		private sealed class _IFunction4_597 : IFunction4
+		{
+			public _IFunction4_597(BTreeNode node)
+			{
+				this.node = node;
+			}
+
+			public object Apply(object id)
+			{
+				return new BTreeNodeCacheEntry(node);
+			}
+
+			private readonly BTreeNode node;
+		}
+
+		private sealed class _IProcedure4_601 : IProcedure4
+		{
+			public _IProcedure4_601(BTree _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Apply(object entry)
+			{
+				this._enclosing.EvictedFromCache(((BTreeNodeCacheEntry)entry)._node);
+			}
+
+			private readonly BTree _enclosing;
+		}
+
+		public override Db4objects.Db4o.Internal.Slots.SlotChangeFactory SlotChangeFactory
+			()
+		{
+			return _config._slotChangeFactory;
+		}
+
+		public virtual void EvictedFromCache(BTreeNode node)
+		{
+			_evictedFromCache = ((TreeIntObject)Tree.Add(_evictedFromCache, new TreeIntObject
+				(node.GetID(), node)));
+		}
+
+		public virtual void ConvertCacheEvictedNodesToReadMode()
+		{
+			if (_evictedFromCache == null)
+			{
+				return;
+			}
+			Tree.Traverse(_evictedFromCache, new _IVisitor4_620());
+			_evictedFromCache = null;
+		}
+
+		private sealed class _IVisitor4_620 : IVisitor4
+		{
+			public _IVisitor4_620()
+			{
+			}
+
+			public void Visit(object treeIntObject)
+			{
+				((BTreeNode)((TreeIntObject)treeIntObject)._object).ToReadMode();
 			}
 		}
 	}

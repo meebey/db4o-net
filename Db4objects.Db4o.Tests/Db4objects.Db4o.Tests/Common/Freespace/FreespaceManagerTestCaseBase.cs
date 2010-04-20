@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			BTreeFreespaceManager btreeFm = new BTreeFreespaceManager(container, null, container
 				.ConfigImpl.DiscardFreeSpace());
 			btreeFm.Start(0);
-			fm = new IFreespaceManager[] { new RamFreespaceManager(null, container.ConfigImpl
+			fm = new IFreespaceManager[] { new InMemoryFreespaceManager(null, container.ConfigImpl
 				.DiscardFreeSpace()), btreeFm };
 		}
 

@@ -247,7 +247,24 @@ namespace Db4objects.Db4o.Foundation
 			return null;
 		}
 
-		protected virtual void RemoveIntEntry(int key)
+		protected virtual object RemoveLongEntry(int intKey, long longKey)
+		{
+			HashtableLongEntry entry = (HashtableLongEntry)_table[intKey & _mask];
+			HashtableLongEntry predecessor = null;
+			while (entry != null)
+			{
+				if (entry._key == intKey && entry._longKey == longKey)
+				{
+					RemoveEntry(predecessor, entry);
+					return entry._object;
+				}
+				predecessor = entry;
+				entry = (HashtableLongEntry)entry._next;
+			}
+			return null;
+		}
+
+		protected virtual object RemoveIntEntry(int key)
 		{
 			HashtableIntEntry entry = _table[key & _mask];
 			HashtableIntEntry predecessor = null;
@@ -256,11 +273,12 @@ namespace Db4objects.Db4o.Foundation
 				if (entry._key == key)
 				{
 					RemoveEntry(predecessor, entry);
-					return;
+					return entry._object;
 				}
 				predecessor = entry;
 				entry = entry._next;
 			}
+			return null;
 		}
 	}
 }

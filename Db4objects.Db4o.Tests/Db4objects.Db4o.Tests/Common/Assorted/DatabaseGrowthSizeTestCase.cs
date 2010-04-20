@@ -9,10 +9,11 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
 	public class DatabaseGrowthSizeTestCase : AbstractDb4oTestCase, IOptOutMultiSession
+		, IOptOutIdSystem
 	{
 		private const int Size = 10000;
 
-		private const int ApproximateHeaderSize = 100;
+		private const int MaximumHeaderSize = 110;
 
 		public static void Main(string[] args)
 		{
@@ -29,12 +30,12 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void Test()
 		{
 			Assert.IsGreater(Size, FileSession().FileLength());
-			Assert.IsSmaller(Size + ApproximateHeaderSize, FileSession().FileLength());
+			Assert.IsSmaller(Size + MaximumHeaderSize, FileSession().FileLength());
 			DatabaseGrowthSizeTestCase.Item item = DatabaseGrowthSizeTestCase.Item.NewItem(Size
 				);
 			Store(item);
 			Assert.IsGreater(Size * 2, FileSession().FileLength());
-			Assert.IsSmaller(Size * 2 + ApproximateHeaderSize, FileSession().FileLength());
+			Assert.IsSmaller(Size * 2 + MaximumHeaderSize, FileSession().FileLength());
 			object retrievedItem = ((DatabaseGrowthSizeTestCase.Item)RetrieveOnlyInstance(typeof(
 				DatabaseGrowthSizeTestCase.Item)));
 			Assert.AreSame(item, retrievedItem);

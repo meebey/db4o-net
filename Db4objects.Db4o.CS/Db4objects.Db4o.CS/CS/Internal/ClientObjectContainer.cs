@@ -1011,7 +1011,7 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		// do nothing
-		public sealed override void WriteDirty()
+		public sealed override void WriteDirtyClassMetadata()
 		{
 		}
 

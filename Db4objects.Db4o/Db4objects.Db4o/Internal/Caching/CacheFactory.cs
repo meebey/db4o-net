@@ -31,5 +31,10 @@ namespace Db4objects.Db4o.Internal.Caching
 		{
 			return new LRUIntCache(size);
 		}
+
+		public static IPurgeableCache4 NewLRULongCache(int size)
+		{
+			return new LRULongCache(size);
+		}
 	}
 }

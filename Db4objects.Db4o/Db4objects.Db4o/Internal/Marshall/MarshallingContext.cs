@@ -3,6 +3,7 @@
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
@@ -20,7 +21,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		private readonly ObjectReference _reference;
 
-		private int _updateDepth;
+		private IUpdateDepth _updateDepth;
 
 		private readonly bool _isNew;
 
@@ -39,7 +40,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private int _declaredAspectCount;
 
 		public MarshallingContext(Db4objects.Db4o.Internal.Transaction trans, ObjectReference
-			 @ref, int updateDepth, bool isNew)
+			 @ref, IUpdateDepth updateDepth, bool isNew)
 		{
 			// YapClass ID
 			// Marshaller Version
@@ -164,12 +165,12 @@ namespace Db4objects.Db4o.Internal.Marshall
 			return ClassMetadata().Config();
 		}
 
-		public virtual int UpdateDepth()
+		public virtual IUpdateDepth UpdateDepth()
 		{
 			return _updateDepth;
 		}
 
-		public virtual void UpdateDepth(int depth)
+		public virtual void UpdateDepth(IUpdateDepth depth)
 		{
 			_updateDepth = depth;
 		}

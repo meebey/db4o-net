@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			)
 		{
 			SystemData systemData = container.SystemData();
-			container.GlobalIdSystem().CompleteInterruptedTransaction(systemData.TransactionPointer1
+			container.IdSystem().CompleteInterruptedTransaction(systemData.TransactionPointer1
 				(), systemData.TransactionPointer2());
 		}
 
@@ -164,10 +164,19 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public override void WriteVariablePart(LocalObjectContainer file, int part)
 		{
+			if (!IsInitalized())
+			{
+				return;
+			}
 			IRunnable commitHook = Commit();
 			file.SyncFiles();
 			commitHook.Run();
 			file.SyncFiles();
+		}
+
+		private bool IsInitalized()
+		{
+			return _variablePart != null;
 		}
 
 		public override void ReadIdentity(LocalObjectContainer container)

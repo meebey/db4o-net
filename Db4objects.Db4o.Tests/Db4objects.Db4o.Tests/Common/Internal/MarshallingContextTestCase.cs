@@ -92,8 +92,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 			ObjectReference @ref = new ObjectReference(ClassMetadataForObject(obj), imaginativeID
 				);
 			@ref.SetObject(obj);
-			MarshallingContext marshallingContext = new MarshallingContext(Trans(), @ref, int.MaxValue
-				, true);
+			MarshallingContext marshallingContext = new MarshallingContext(Trans(), @ref, UpdateDepthFactory
+				.ForDepth(int.MaxValue), true);
 			Handlers4.Write(@ref.ClassMetadata().TypeHandler(), marshallingContext, obj);
 			Pointer4 pointer = marshallingContext.AllocateSlot();
 			ByteArrayBuffer buffer = marshallingContext.ToWriteBuffer(pointer);

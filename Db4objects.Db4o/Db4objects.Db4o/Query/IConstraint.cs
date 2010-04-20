@@ -185,24 +185,17 @@ namespace Db4objects.Db4o.Query
 		/// </returns>
 		IConstraint Like();
 
-		/// <summary>sets the evaluation mode to containment comparison.</summary>
+		/// <summary>Sets the evaluation mode to string contains comparison.</summary>
 		/// <remarks>
-		/// sets the evaluation mode to containment comparison.
+		/// Sets the evaluation mode to string contains comparison. The contains comparison is case sensitive.<br/>
 		/// For example:<br/>
-		/// <code>Pilot pilot1 = new Pilot("Test 1", 1);</code><br/>
-		/// <code>list.Add(pilot1);</code><br/>
-		/// <code>Pilot pilot2 = new Pilot("Test 2", 2);</code><br/>
-		/// <code>list.Add(pilot2);</code><br/>
-		/// <code>Team team = new Team("Ferrari", list);</code><br/>
-		/// <code>container.Store(team);</code><br/>
-		/// <code>IQuery query = container.Query();</code><br/>
-		/// <code>query.Constrain(typeof(Team));</code><br/>
-		/// <code>query.Descend("pilots").Constrain(pilot2).Contains();</code><br/>
-		/// will return the Team object as it contains pilot2.<br/>
-		/// If applied to a String object, this constrain will behave as
-		/// <see cref="Db4objects.Db4o.Query.IConstraint.Like">Db4objects.Db4o.Query.IConstraint.Like
-		/// </see>
-		/// .
+		/// <code>Pilot pilot = new Pilot("Test Pilot1", 100);</code><br/>
+		/// <code>container.Store(pilot);</code><br/>
+		/// <code> ...</code><br/>
+		/// <code>query.Constrain(typeof(Pilot));</code><br/>
+		/// <code>// All pilots with the name containing "est" will be retrieved</code><br/>
+		/// <code>query.Descend("name").Constrain("est").Contains();</code><br/>
+		/// <see cref="Db4objects.Db4o.Query.IConstraint.Like">Like() for case insensitive string comparison</see>
 		/// </remarks>
 		/// <returns>
 		/// this

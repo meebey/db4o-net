@@ -5,6 +5,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o.Internal
@@ -47,7 +48,7 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec TranslatorNameKey = new KeySpec((string)null);
 
-		private static readonly KeySpec UpdateDepthKey = new KeySpec(-1);
+		private static readonly KeySpec UpdateDepthKey = new KeySpec(null);
 
 		private static readonly KeySpec WriteAsKey = new KeySpec((string)null);
 
@@ -306,7 +307,11 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void UpdateDepth(int depth)
 		{
-			_config.Put(UpdateDepthKey, depth);
+			if (depth < 0)
+			{
+				throw new ArgumentException("update depth must not be negative");
+			}
+			_config.Put(UpdateDepthKey, UpdateDepthFactory.ForDepth(depth));
 		}
 
 		internal virtual Config4Impl Config()
@@ -344,9 +349,9 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsBoolean(StoreTransientFieldsKey);
 		}
 
-		internal virtual int UpdateDepth()
+		internal virtual FixedUpdateDepth UpdateDepth()
 		{
-			return _config.GetAsInt(UpdateDepthKey);
+			return (FixedUpdateDepth)_config.Get(UpdateDepthKey);
 		}
 
 		internal virtual string WriteAs()

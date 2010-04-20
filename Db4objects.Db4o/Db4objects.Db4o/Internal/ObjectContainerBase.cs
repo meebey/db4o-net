@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Internal
 			// the Configuration context for this ObjectContainer
 			// Counts the number of toplevel calls into YapStream
 			// currently used to resolve self-linking concurrency problems
-			// in cylic links, stores only YapClass objects
+			// in cylic links, stores only ClassMetadata objects
 			// a value greater than 0 indicates class implementing the
 			// "Internal" interface are visible in queries and can
 			// be used.
@@ -840,8 +840,9 @@ namespace Db4objects.Db4o.Internal
 			{
 				// Activate Objects for Callbacks, because in C/S mode Objects are not activated on the Server
 				// FIXME: [TA] review activation depth
-				int depth = classMetadata.AdjustCollectionDepthToBorders(1);
-				Activate(trans, obj, new FixedActivationDepth(depth));
+				IActivationDepth depth = classMetadata.AdjustCollectionDepthToBorders(new FixedActivationDepth
+					(1));
+				Activate(trans, obj, depth);
 			}
 		}
 
@@ -2028,12 +2029,12 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public void Store(Transaction trans, object obj)
 		{
-			Store(trans, obj, Const4.Unspecified);
+			Store(trans, obj, UnspecifiedUpdateDepth.Instance);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		public int Store(Transaction trans, object obj, int depth)
+		public int Store(Transaction trans, object obj, IUpdateDepth depth)
 		{
 			lock (_lock)
 			{
@@ -2045,13 +2046,13 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public int StoreInternal(Transaction trans, object obj, bool checkJustSet)
 		{
-			return StoreInternal(trans, obj, Const4.Unspecified, checkJustSet);
+			return StoreInternal(trans, obj, UnspecifiedUpdateDepth.Instance, checkJustSet);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		public virtual int StoreInternal(Transaction trans, object obj, int depth, bool checkJustSet
-			)
+		public virtual int StoreInternal(Transaction trans, object obj, IUpdateDepth depth
+			, bool checkJustSet)
 		{
 			CheckReadOnly();
 			return (((int)AsTopLevelStore(new _IFunction4_1590(this, obj, depth, checkJustSet
@@ -2060,8 +2061,8 @@ namespace Db4objects.Db4o.Internal
 
 		private sealed class _IFunction4_1590 : IFunction4
 		{
-			public _IFunction4_1590(ObjectContainerBase _enclosing, object obj, int depth, bool
-				 checkJustSet)
+			public _IFunction4_1590(ObjectContainerBase _enclosing, object obj, IUpdateDepth 
+				depth, bool checkJustSet)
 			{
 				this._enclosing = _enclosing;
 				this.obj = obj;
@@ -2079,13 +2080,13 @@ namespace Db4objects.Db4o.Internal
 
 			private readonly object obj;
 
-			private readonly int depth;
+			private readonly IUpdateDepth depth;
 
 			private readonly bool checkJustSet;
 		}
 
-		public int StoreAfterReplication(Transaction trans, object obj, int depth, bool checkJust
-			)
+		public int StoreAfterReplication(Transaction trans, object obj, IUpdateDepth depth
+			, bool checkJust)
 		{
 			if (obj is IDb4oType)
 			{
@@ -2107,7 +2108,7 @@ namespace Db4objects.Db4o.Internal
 				_handlers._replicationReferenceProvider = referenceProvider;
 				try
 				{
-					Store2(CheckTransaction(), obj, 1, false);
+					Store2(CheckTransaction(), obj, UpdateDepthFactory.ForDepth(1), false);
 				}
 				finally
 				{
@@ -2117,7 +2118,8 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private int Store2(Transaction trans, object obj, int depth, bool checkJust)
+		private int Store2(Transaction trans, object obj, IUpdateDepth depth, bool checkJust
+			)
 		{
 			int id = Store3(trans, obj, depth, checkJust);
 			if (StackIsSmall())
@@ -2165,7 +2167,7 @@ namespace Db4objects.Db4o.Internal
 			throw new ObjectNotStorableException(claxx);
 		}
 
-		public int Store3(Transaction trans, object obj, int updateDepth, bool checkJustSet
+		public int Store3(Transaction trans, object obj, IUpdateDepth updateDepth, bool checkJustSet
 			)
 		{
 			if (obj == null || (obj is ITransientClass))
@@ -2215,7 +2217,7 @@ namespace Db4objects.Db4o.Internal
 							return @ref.GetID();
 						}
 					}
-					if (UpdateDepthSufficient(updateDepth))
+					if (updateDepth.SufficientDepth())
 					{
 						FlagAsHandled(@ref);
 						@ref.WriteUpdate(trans, updateDepth);
@@ -2232,11 +2234,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new Db4oIllegalStateException("Objects must not be updated in callback");
 			}
-		}
-
-		private bool UpdateDepthSufficient(int updateDepth)
-		{
-			return (updateDepth == Const4.Unspecified) || (updateDepth > 0);
 		}
 
 		private bool ObjectCanNew(Transaction transaction, ClassMetadata yc, object obj)
@@ -2417,9 +2414,10 @@ namespace Db4objects.Db4o.Internal
 
 			public readonly ObjectReference @ref;
 
-			public readonly int depth;
+			public readonly IUpdateDepth depth;
 
-			public PendingSet(Transaction transaction_, ObjectReference ref_, int depth_)
+			public PendingSet(Transaction transaction_, ObjectReference ref_, IUpdateDepth depth_
+				)
 			{
 				this.transaction = transaction_;
 				this.@ref = ref_;
@@ -2427,7 +2425,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		internal virtual void StillToSet(Transaction transaction, ObjectReference @ref, int
+		internal virtual void StillToSet(Transaction transaction, ObjectReference @ref, IUpdateDepth
 			 updateDepth)
 		{
 			if (StackIsSmall())
@@ -2555,7 +2553,7 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void Shutdown();
 
-		public abstract void WriteDirty();
+		public abstract void WriteDirtyClassMetadata();
 
 		public abstract void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata 
 			classMetadata, ByteArrayBuffer buffer);

@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		{
 			return new Type[] { typeof(CascadedDeleteUpdate), typeof(CascadeDeleteArray), typeof(
 				CascadeDeleteDeleted), typeof(CascadeDeleteFalse), typeof(CascadeOnActivate), typeof(
-				CascadeOnDeleteTestCase), typeof(CascadeOnDeleteHierarchyTestCase), typeof(CascadeOnUpdate
+				CascadeOnDeleteTestCase), typeof(CascadeOnDeleteHierarchyTestCase), typeof(CascadeOnUpdateTestCase
 				), typeof(CascadeToArray), typeof(ConjunctiveQbETestCase), typeof(DeepMultifieldSortingTestCase
 				), typeof(DescendIndexQueryTestCase), typeof(IdentityQueryForNotStoredTestCase), 
 				typeof(IdListQueryResultTestCase), typeof(IndexedJoinQueriesTestCase), typeof(IndexOnParentFieldTestCase

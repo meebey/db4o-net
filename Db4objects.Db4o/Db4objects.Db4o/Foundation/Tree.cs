@@ -231,40 +231,38 @@ namespace Db4objects.Db4o.Foundation
 			return this;
 		}
 
-		public static Tree Find(Tree a_in, Tree a_tree)
+		public static Tree Find(Tree inTree, Tree template)
 		{
-			if (a_in == null)
+			if (inTree == null)
 			{
 				return null;
 			}
-			return a_in.Find(a_tree);
+			return inTree.Find(template);
 		}
 
-		public Tree Find(Tree a_tree)
+		public Tree Find(Tree template)
 		{
-			int cmp = Compare(a_tree);
-			if (cmp < 0)
+			Tree current = this;
+			while (true)
 			{
-				if (_subsequent != null)
+				int comparisonResult = current.Compare(template);
+				if (comparisonResult == 0)
 				{
-					return _subsequent.Find(a_tree);
+					return current;
 				}
-			}
-			else
-			{
-				if (cmp > 0)
+				if (comparisonResult < 0)
 				{
-					if (_preceding != null)
-					{
-						return _preceding.Find(a_tree);
-					}
+					current = ((Tree)current._subsequent);
 				}
 				else
 				{
-					return this;
+					current = ((Tree)current._preceding);
+				}
+				if (current == null)
+				{
+					return null;
 				}
 			}
-			return null;
 		}
 
 		public static Tree FindGreaterOrEqual(Tree a_in, Tree a_finder)
@@ -492,32 +490,32 @@ namespace Db4objects.Db4o.Foundation
 			return this;
 		}
 
-		public virtual void SetSizeOwn()
+		public void SetSizeOwn()
 		{
 			_size = OwnSize();
 		}
 
-		public virtual void SetSizeOwnPrecedingSubsequent()
+		public void SetSizeOwnPrecedingSubsequent()
 		{
 			_size = OwnSize() + _preceding._size + _subsequent._size;
 		}
 
-		public virtual void SetSizeOwnPreceding()
+		public void SetSizeOwnPreceding()
 		{
 			_size = OwnSize() + _preceding._size;
 		}
 
-		public virtual void SetSizeOwnSubsequent()
+		public void SetSizeOwnSubsequent()
 		{
 			_size = OwnSize() + _subsequent._size;
 		}
 
-		public virtual void SetSizeOwnPlus(Tree tree)
+		public void SetSizeOwnPlus(Tree tree)
 		{
 			_size = OwnSize() + tree._size;
 		}
 
-		public virtual void SetSizeOwnPlus(Tree tree1, Tree tree2)
+		public void SetSizeOwnPlus(Tree tree1, Tree tree2)
 		{
 			_size = OwnSize() + tree1._size + tree2._size;
 		}
@@ -546,6 +544,72 @@ namespace Db4objects.Db4o.Foundation
 			tree.Traverse(visitor);
 		}
 
+		/// <summary>Traverses a tree with a starting point node.</summary>
+		/// <remarks>
+		/// Traverses a tree with a starting point node.
+		/// If there is no exact match for the starting node, the next higher will be taken.
+		/// </remarks>
+		public static void Traverse(Tree tree, Tree startingNode, ICancellableVisitor4 visitor
+			)
+		{
+			if (tree == null)
+			{
+				return;
+			}
+			tree.Traverse(startingNode, visitor);
+		}
+
+		private bool Traverse(Tree startingNode, ICancellableVisitor4 visitor)
+		{
+			if (startingNode != null)
+			{
+				int cmp = Compare(startingNode);
+				if (cmp < 0)
+				{
+					if (_subsequent != null)
+					{
+						return _subsequent.Traverse(startingNode, visitor);
+					}
+					return true;
+				}
+				else
+				{
+					if (cmp > 0)
+					{
+						if (_preceding != null)
+						{
+							if (!_preceding.Traverse(startingNode, visitor))
+							{
+								return false;
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if (_preceding != null)
+				{
+					if (!_preceding.Traverse(null, visitor))
+					{
+						return false;
+					}
+				}
+			}
+			if (!visitor.Visit(this))
+			{
+				return false;
+			}
+			if (_subsequent != null)
+			{
+				if (!_subsequent.Traverse(null, visitor))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public void Traverse(IVisitor4 visitor)
 		{
 			if (_preceding != null)
@@ -572,23 +636,19 @@ namespace Db4objects.Db4o.Foundation
 			a_visitor.Visit(this);
 		}
 
-		// Keep the debug methods to debug the depth	
-		//	final void debugDepth(){
-		//	    System.out.println("Tree depth: " + debugDepth(0));
-		//	}
-		//	
-		//	final int debugDepth(int d){
-		//	    int max = d + 1;
-		//	    if (i_preceding != null){
-		//	        max = i_preceding.debugDepth(d + 1);
+		// Keep the debug method to debug the depth
+		//	public final void debugLeafDepth(int currentDepth){
+		//		currentDepth++;
+		//		if(_preceding == null && _subsequent == null){
+		//			System.out.println("" + currentDepth + " tree leaf depth.");
+		//			return;
+		//		}
+		//	    if (_preceding != null){
+		//	    	_preceding.debugLeafDepth(currentDepth);
 		//	    }
-		//	    if(i_subsequent != null){
-		//	        int ms = i_subsequent.debugDepth(d + 1);
-		//	        if(ms > max){
-		//	            max = ms;
-		//	        }
+		//	    if(_subsequent != null){
+		//	    	_subsequent.debugLeafDepth(currentDepth);
 		//	    }
-		//	    return max;
 		//	}
 		protected virtual Tree ShallowCloneInternal(Tree tree)
 		{
@@ -612,12 +672,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Accept(IVisitor4 visitor)
 		{
-			Traverse(new _IVisitor4_472(visitor));
+			Traverse(new _IVisitor4_513(visitor));
 		}
 
-		private sealed class _IVisitor4_472 : IVisitor4
+		private sealed class _IVisitor4_513 : IVisitor4
 		{
-			public _IVisitor4_472(IVisitor4 visitor)
+			public _IVisitor4_513(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}

@@ -74,17 +74,17 @@ namespace Db4oUnit.Extensions
 			visitor.AssertExpectations();
 		}
 
-		public static BTree CreateIntKeyBTree(ObjectContainerBase stream, int id, int nodeSize
-			)
+		public static BTree CreateIntKeyBTree(ObjectContainerBase container, int id, int 
+			nodeSize)
 		{
-			return new BTree(stream.SystemTransaction(), id, new IntHandler(), nodeSize);
+			return new BTree(container.SystemTransaction(), id, new IntHandler(), nodeSize);
 		}
 
 		public static void AssertSingleElement(Transaction trans, BTree btree, object element
 			)
 		{
 			Assert.AreEqual(1, btree.Size(trans));
-			IBTreeRange result = btree.Search(trans, element);
+			IBTreeRange result = btree.SearchRange(trans, element);
 			ExpectingVisitor expectingVisitor = new ExpectingVisitor(new object[] { element }
 				);
 			BTreeAssert.TraverseKeys(result, expectingVisitor);

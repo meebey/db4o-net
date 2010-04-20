@@ -8,6 +8,11 @@ namespace Db4oUnit
 {
 	public class IteratorAssert
 	{
+		public static void AreEqual(IEnumerable expected, IEnumerable actual)
+		{
+			AreEqual(expected.GetEnumerator(), actual.GetEnumerator());
+		}
+
 		public static void AreEqual(IEnumerator expected, IEnumerator actual)
 		{
 			if (null == expected)

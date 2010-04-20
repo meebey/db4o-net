@@ -1,52 +1,52 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
-	public class IdSlotMapping : TreeInt
+	public class IdSlotMapping
 	{
-		private readonly Db4objects.Db4o.Internal.Slots.Slot _slot;
+		public readonly int _id;
 
-		public IdSlotMapping(int id, Db4objects.Db4o.Internal.Slots.Slot slot) : base(id)
+		public readonly int _address;
+
+		public readonly int _length;
+
+		public IdSlotMapping(int id, int address, int length)
 		{
-			_slot = slot;
+			_id = id;
+			_address = address;
+			_length = length;
+		}
+
+		public IdSlotMapping(int id, Db4objects.Db4o.Internal.Slots.Slot slot) : this(id, 
+			slot.Address(), slot.Length())
+		{
 		}
 
 		public virtual Db4objects.Db4o.Internal.Slots.Slot Slot()
 		{
-			return _slot;
+			return new Db4objects.Db4o.Internal.Slots.Slot(_address, _length);
 		}
 
-		public override Tree OnAttemptToAddDuplicate(Tree oldNode)
+		public virtual void Write(ByteArrayBuffer buffer)
 		{
-			_preceding = ((Tree)oldNode._preceding);
-			_subsequent = ((Tree)oldNode._subsequent);
-			_size = oldNode._size;
-			return this;
+			buffer.WriteInt(_id);
+			buffer.WriteInt(_address);
+			buffer.WriteInt(_length);
 		}
 
-		public override int OwnLength()
+		public static Db4objects.Db4o.Internal.Ids.IdSlotMapping Read(ByteArrayBuffer buffer
+			)
 		{
-			return Const4.IntLength * 3;
+			return new Db4objects.Db4o.Internal.Ids.IdSlotMapping(buffer.ReadInt(), buffer.ReadInt
+				(), buffer.ReadInt());
 		}
 
-		// _key, _slot._address, _slot._length 
-		public override object Read(ByteArrayBuffer buffer)
+		public override string ToString()
 		{
-			int id = buffer.ReadInt();
-			Db4objects.Db4o.Internal.Slots.Slot slot = new Db4objects.Db4o.Internal.Slots.Slot
-				(buffer.ReadInt(), buffer.ReadInt());
-			return new Db4objects.Db4o.Internal.Ids.IdSlotMapping(id, slot);
-		}
-
-		public override void Write(ByteArrayBuffer buffer)
-		{
-			buffer.WriteInt(_key);
-			buffer.WriteInt(_slot.Address());
-			buffer.WriteInt(_slot.Length());
+			return string.Empty + _id + ":" + _address + "," + _length;
 		}
 	}
 }

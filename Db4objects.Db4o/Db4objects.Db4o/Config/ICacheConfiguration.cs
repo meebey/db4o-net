@@ -15,6 +15,7 @@ namespace Db4objects.Db4o.Config
 		/// slots in the cache.
 		/// </remarks>
 		/// <value>the number of slots</value>
+		[System.ObsoleteAttribute(@"since 7.14 BTrees have their own LRU cache now.")]
 		int SlotCacheSize
 		{
 			set;

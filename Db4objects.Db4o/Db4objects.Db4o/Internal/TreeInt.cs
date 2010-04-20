@@ -210,7 +210,7 @@ namespace Db4objects.Db4o.Internal
 				Traverse(new _IVisitor4_152(length));
 				return length.value;
 			}
-			return Const4.IntLength + (Size() * OwnLength());
+			return MarshalledLength(Size());
 		}
 
 		private sealed class _IVisitor4_152 : IVisitor4
@@ -228,9 +228,20 @@ namespace Db4objects.Db4o.Internal
 			private readonly IntByRef length;
 		}
 
+		public int MarshalledLength(int size)
+		{
+			return Const4.IntLength + (size * OwnLength());
+		}
+
 		public override object Key()
 		{
 			return _key;
+		}
+
+		public override bool Equals(object obj)
+		{
+			Db4objects.Db4o.Internal.TreeInt other = (Db4objects.Db4o.Internal.TreeInt)obj;
+			return other._key == _key;
 		}
 	}
 }

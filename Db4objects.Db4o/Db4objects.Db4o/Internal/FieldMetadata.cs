@@ -914,18 +914,11 @@ namespace Db4objects.Db4o.Internal
 			_state = FieldMetadataState.Updating;
 		}
 
-		private int AdjustUpdateDepthForCascade(object obj, int updateDepth)
+		private IUpdateDepth AdjustUpdateDepthForCascade(object obj, IUpdateDepth updateDepth
+			)
 		{
-			int minimumUpdateDepth = 1;
-			if (_containingClass.IsCollection(obj))
-			{
-				minimumUpdateDepth = 2;
-			}
-			if (updateDepth < minimumUpdateDepth)
-			{
-				return minimumUpdateDepth;
-			}
-			return updateDepth;
+			return updateDepth.AdjustUpdateDepthForCascade(_containingClass.IsCollection(obj)
+				);
 		}
 
 		private bool CascadeOnUpdate(Config4Class parentClassConfiguration)
@@ -938,7 +931,7 @@ namespace Db4objects.Db4o.Internal
 		public override void Marshall(MarshallingContext context, object obj)
 		{
 			// alive needs to be checked by all callers: Done
-			int updateDepth = context.UpdateDepth();
+			IUpdateDepth updateDepth = context.UpdateDepth();
 			if (obj != null && CascadeOnUpdate(context.ClassConfiguration()))
 			{
 				context.UpdateDepth(AdjustUpdateDepthForCascade(obj, updateDepth));
@@ -1074,13 +1067,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_878(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_871(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_878 : IVisitor4
+		private sealed class _IVisitor4_871 : IVisitor4
 		{
-			public _IVisitor4_878(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_871(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1302,12 +1295,12 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 correctTypeHandlerVersion = HandlerRegistry.CorrectHandlerVersion(context
 				, GetHandler(), _fieldType);
 			context.SlotFormat().DoWithSlotIndirection(context, correctTypeHandlerVersion, new 
-				_IClosure4_1041(context, correctTypeHandlerVersion));
+				_IClosure4_1034(context, correctTypeHandlerVersion));
 		}
 
-		private sealed class _IClosure4_1041 : IClosure4
+		private sealed class _IClosure4_1034 : IClosure4
 		{
-			public _IClosure4_1041(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
+			public _IClosure4_1034(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
 				)
 			{
 				this.context = context;

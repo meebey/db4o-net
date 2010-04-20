@@ -13,11 +13,11 @@ namespace Db4objects.Db4o.Foundation
 
 		public Db4objects.Db4o.Foundation.HashtableIntEntry _next;
 
-		internal HashtableIntEntry(int a_hash, object a_object)
+		internal HashtableIntEntry(int key, object obj)
 		{
 			// FIELDS ARE PUBLIC SO THEY CAN BE REFLECTED ON IN JDKs <= 1.1
-			_key = a_hash;
-			_object = a_object;
+			_key = key;
+			_object = obj;
 		}
 
 		public HashtableIntEntry()

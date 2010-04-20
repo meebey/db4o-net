@@ -5,6 +5,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Freespace;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal.Freespace
@@ -14,11 +15,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 	{
 		private readonly LocalObjectContainer _file;
 
-		private RamFreespaceManager _delegate;
+		private InMemoryFreespaceManager _delegate;
 
-		private FreespaceBTree _slotsByAddress;
+		private BTree _slotsByAddress;
 
-		private FreespaceBTree _slotsByLength;
+		private BTree _slotsByLength;
 
 		private PersistentIntegerArray _idArray;
 
@@ -28,11 +29,14 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private IFreespaceListener _listener = NullFreespaceListener.Instance;
 
+		private ITransactionalIdSystem _idSystem;
+
 		public BTreeFreespaceManager(LocalObjectContainer file, IProcedure4 slotFreedCallback
 			, int discardLimit) : base(slotFreedCallback, discardLimit)
 		{
 			_file = file;
-			_delegate = new RamFreespaceManager(slotFreedCallback, discardLimit);
+			_delegate = new InMemoryFreespaceManager(slotFreedCallback, discardLimit);
+			_idSystem = file.IdSystem().FreespaceIdSystem();
 		}
 
 		private void AddSlot(Slot slot)
@@ -65,9 +69,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private void CreateBTrees(int addressID, int lengthID)
 		{
-			_slotsByAddress = new FreespaceBTree(Transaction(), addressID, new AddressKeySlotHandler
+			BTreeConfiguration config = new BTreeConfiguration(_idSystem, SlotChangeFactory.FreeSpace
+				, 64, false);
+			_slotsByAddress = new BTree(Transaction(), config, addressID, new AddressKeySlotHandler
 				());
-			_slotsByLength = new FreespaceBTree(Transaction(), lengthID, new LengthKeySlotHandler
+			_slotsByLength = new BTree(Transaction(), config, lengthID, new LengthKeySlotHandler
 				());
 		}
 
@@ -83,7 +89,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override void Free(Slot slot)
 		{
-			if (!Started())
+			if (!IsStarted())
 			{
 				return;
 			}
@@ -154,7 +160,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public override Slot AllocateSlot(int length)
 		{
-			if (!Started())
+			if (!IsStarted())
 			{
 				return null;
 			}
@@ -193,7 +199,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private void InitializeExisting(int slotAddress)
 		{
-			_idArray = new PersistentIntegerArray(slotAddress);
+			_idArray = new PersistentIntegerArray(_idSystem, slotAddress);
 			_idArray.Read(Transaction());
 			int[] ids = _idArray.Array();
 			int addressId = ids[0];
@@ -217,7 +223,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_delegateIndirectionID = container.AllocatePointerSlot();
 			int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID(), _delegateIndirectionID
 				 };
-			_idArray = new PersistentIntegerArray(ids);
+			_idArray = new PersistentIntegerArray(_idSystem, ids);
 			_idArray.Write(Transaction());
 			_file.SystemData().FreespaceAddress(_idArray.GetID());
 		}
@@ -271,7 +277,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 		}
 
-		private bool Started()
+		public override bool IsStarted()
 		{
 			return _idArray != null;
 		}

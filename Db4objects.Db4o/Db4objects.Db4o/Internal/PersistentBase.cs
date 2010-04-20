@@ -1,52 +1,16 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
-	public abstract class PersistentBase : IPersistent, ILinkLengthAware
+	public abstract class PersistentBase : Identifiable, IPersistent, ILinkLengthAware
 	{
-		protected int _id;
-
-		protected int _state = 2;
-
-		// UID and address of pointer to the object in our file
-		// DIRTY and ACTIVE
-		public bool BeginProcessing()
-		{
-			if (BitIsTrue(Const4.Processing))
-			{
-				return false;
-			}
-			BitTrue(Const4.Processing);
-			return true;
-		}
-
-		internal void BitFalse(int bitPos)
-		{
-			_state &= ~(1 << bitPos);
-		}
-
-		internal bool BitIsFalse(int bitPos)
-		{
-			return (_state | (1 << bitPos)) != _state;
-		}
-
-		internal bool BitIsTrue(int bitPos)
-		{
-			return (_state | (1 << bitPos)) == _state;
-		}
-
-		internal void BitTrue(int bitPos)
-		{
-			_state |= (1 << bitPos);
-		}
-
 		internal virtual void CacheDirty(Collection4 col)
 		{
 			if (!BitIsTrue(Const4.CachedDirty))
@@ -56,35 +20,10 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual void EndProcessing()
-		{
-			BitFalse(Const4.Processing);
-		}
-
 		public virtual void Free(LocalTransaction trans)
 		{
-			trans.SystemTransaction().IdSystem().NotifySlotDeleted(GetID(), SlotChangeFactory
-				());
-		}
-
-		public virtual int GetID()
-		{
-			return _id;
-		}
-
-		public bool IsActive()
-		{
-			return BitIsTrue(Const4.Active);
-		}
-
-		public virtual bool IsDirty()
-		{
-			return BitIsTrue(Const4.Active) && (!BitIsTrue(Const4.Clean));
-		}
-
-		public bool IsNew()
-		{
-			return GetID() == 0;
+			IdSystem(trans.SystemTransaction()).NotifySlotDeleted(GetID(), SlotChangeFactory(
+				));
 		}
 
 		public int LinkLength()
@@ -105,9 +44,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				ByteArrayBuffer reader = ProduceReadBuffer(trans);
-				ReadThis(trans, reader);
-				SetStateOnRead(reader);
+				Read(trans, ProduceReadBuffer(trans));
 			}
 			finally
 			{
@@ -115,7 +52,13 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		protected virtual ByteArrayBuffer ProduceReadBuffer(Transaction trans)
+		protected virtual void Read(Transaction trans, ByteArrayBuffer reader)
+		{
+			ReadThis(trans, reader);
+			SetStateOnRead(reader);
+		}
+
+		protected ByteArrayBuffer ProduceReadBuffer(Transaction trans)
 		{
 			return ReadBufferById(trans);
 		}
@@ -123,32 +66,6 @@ namespace Db4objects.Db4o.Internal
 		protected virtual ByteArrayBuffer ReadBufferById(Transaction trans)
 		{
 			return trans.Container().ReadBufferById(trans, GetID());
-		}
-
-		public virtual void SetID(int a_id)
-		{
-			if (DTrace.enabled)
-			{
-				DTrace.PersistentbaseSetId.Log(a_id);
-			}
-			_id = a_id;
-		}
-
-		public void SetStateClean()
-		{
-			BitTrue(Const4.Active);
-			BitTrue(Const4.Clean);
-		}
-
-		public void SetStateDeactivated()
-		{
-			BitFalse(Const4.Active);
-		}
-
-		public virtual void SetStateDirty()
-		{
-			BitTrue(Const4.Active);
-			BitFalse(Const4.Clean);
 		}
 
 		internal virtual void SetStateOnRead(ByteArrayBuffer reader)
@@ -181,12 +98,16 @@ namespace Db4objects.Db4o.Internal
 				Slot slot = container.AllocateSlot(length);
 				if (IsNew())
 				{
-					SetID(trans.IdSystem().NewId(SlotChangeFactory()));
-					trans.IdSystem().NotifySlotCreated(_id, slot, SlotChangeFactory());
+					SetID(IdSystem(trans).NewId(SlotChangeFactory()));
+					IdSystem(trans).NotifySlotCreated(_id, slot, SlotChangeFactory());
 				}
 				else
 				{
-					trans.IdSystem().NotifySlotUpdated(_id, slot, SlotChangeFactory());
+					IdSystem(trans).NotifySlotUpdated(_id, slot, SlotChangeFactory());
+				}
+				if (DTrace.enabled)
+				{
+					DTrace.PersistentBaseNewSlot.LogLength(GetID(), slot);
 				}
 				ByteArrayBuffer writer = ProduceWriteBuffer(trans, length);
 				WriteToFile(trans, writer, slot);
@@ -195,6 +116,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				EndProcessing();
 			}
+		}
+
+		public virtual ITransactionalIdSystem IdSystem(Transaction trans)
+		{
+			return trans.IdSystem();
 		}
 
 		protected virtual ByteArrayBuffer ProduceWriteBuffer(Transaction trans, int length
@@ -236,15 +162,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			Write(trans);
 			writer.WriteInt(GetID());
-		}
-
-		public override int GetHashCode()
-		{
-			if (IsNew())
-			{
-				throw new InvalidOperationException();
-			}
-			return GetID();
 		}
 
 		public virtual Db4objects.Db4o.Internal.Slots.SlotChangeFactory SlotChangeFactory

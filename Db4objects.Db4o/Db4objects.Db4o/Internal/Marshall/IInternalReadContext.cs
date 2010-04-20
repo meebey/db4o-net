@@ -27,5 +27,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 		void Seek(int offset);
 
 		int HandlerVersion();
+
+		void NotifyNullReferenceSkipped();
 	}
 }

@@ -22,11 +22,11 @@ namespace Db4objects.Db4o.Bench.Crud
 
 		public virtual void Run(int itemCount)
 		{
-			IConfiguration config = Prepare(itemCount);
-			Create(itemCount, config);
-			Read(config);
-			Update(config);
-			Delete(config);
+			DeleteDbFile();
+			Create(itemCount, NewConfiguration(itemCount));
+			Read(NewConfiguration(itemCount));
+			Update(NewConfiguration(itemCount));
+			Delete(NewConfiguration(itemCount));
 			DeleteDbFile();
 		}
 
@@ -84,12 +84,11 @@ namespace Db4objects.Db4o.Bench.Crud
 			oc.Close();
 		}
 
-		private IConfiguration Prepare(int itemCount)
+		private IConfiguration NewConfiguration(int itemCount)
 		{
-			DeleteDbFile();
 			RandomAccessFileAdapter rafAdapter = new RandomAccessFileAdapter();
 			IoAdapter ioAdapter = new LoggingIoAdapter(rafAdapter, LogFileName(itemCount));
-			IConfiguration config = Db4oFactory.CloneConfiguration();
+			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.Io(ioAdapter);
 			return config;
 		}

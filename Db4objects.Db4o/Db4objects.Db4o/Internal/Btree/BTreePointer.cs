@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.Btree;
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <exclude></exclude>
-	public class BTreePointer
+	public sealed class BTreePointer
 	{
 		public static Db4objects.Db4o.Internal.Btree.BTreePointer Max(Db4objects.Db4o.Internal.Btree.BTreePointer
 			 x, Db4objects.Db4o.Internal.Btree.BTreePointer y)
@@ -49,12 +49,12 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		private readonly int _index;
 
-		private readonly Db4objects.Db4o.Internal.Transaction _transaction;
+		private readonly Transaction _transaction;
 
 		private readonly ByteArrayBuffer _nodeReader;
 
-		public BTreePointer(Db4objects.Db4o.Internal.Transaction transaction, ByteArrayBuffer
-			 nodeReader, BTreeNode node, int index)
+		public BTreePointer(Transaction transaction, ByteArrayBuffer nodeReader, BTreeNode
+			 node, int index)
 		{
 			if (transaction == null || node == null)
 			{
@@ -64,11 +64,6 @@ namespace Db4objects.Db4o.Internal.Btree
 			_nodeReader = nodeReader;
 			_node = node;
 			_index = index;
-		}
-
-		public Db4objects.Db4o.Internal.Transaction Transaction()
-		{
-			return _transaction;
 		}
 
 		public int Index()
@@ -83,28 +78,23 @@ namespace Db4objects.Db4o.Internal.Btree
 
 		public object Key()
 		{
-			return Node().Key(Transaction(), NodeReader(), Index());
+			return _node.Key(_transaction, _nodeReader, _index);
 		}
 
-		private ByteArrayBuffer NodeReader()
+		public Db4objects.Db4o.Internal.Btree.BTreePointer Next()
 		{
-			return _nodeReader;
-		}
-
-		public virtual Db4objects.Db4o.Internal.Btree.BTreePointer Next()
-		{
-			int indexInMyNode = Index() + 1;
-			while (indexInMyNode < Node().Count())
+			int indexInMyNode = _index + 1;
+			while (indexInMyNode < _node.Count())
 			{
-				if (Node().IndexIsValid(Transaction(), indexInMyNode))
+				if (_node.IndexIsValid(_transaction, indexInMyNode))
 				{
-					return new Db4objects.Db4o.Internal.Btree.BTreePointer(Transaction(), NodeReader(
-						), Node(), indexInMyNode);
+					return new Db4objects.Db4o.Internal.Btree.BTreePointer(_transaction, _nodeReader, 
+						_node, indexInMyNode);
 				}
 				indexInMyNode++;
 			}
 			int newIndex = -1;
-			BTreeNode nextNode = Node();
+			BTreeNode nextNode = _node;
 			ByteArrayBuffer nextReader = null;
 			while (newIndex == -1)
 			{
@@ -113,27 +103,28 @@ namespace Db4objects.Db4o.Internal.Btree
 				{
 					return null;
 				}
-				nextReader = nextNode.PrepareRead(Transaction());
-				newIndex = nextNode.FirstKeyIndex(Transaction());
+				nextReader = nextNode.PrepareRead(_transaction);
+				newIndex = nextNode.FirstKeyIndex(_transaction);
 			}
-			return new Db4objects.Db4o.Internal.Btree.BTreePointer(Transaction(), nextReader, 
+			Btree().ConvertCacheEvictedNodesToReadMode();
+			return new Db4objects.Db4o.Internal.Btree.BTreePointer(_transaction, nextReader, 
 				nextNode, newIndex);
 		}
 
-		public virtual Db4objects.Db4o.Internal.Btree.BTreePointer Previous()
+		public Db4objects.Db4o.Internal.Btree.BTreePointer Previous()
 		{
-			int indexInMyNode = Index() - 1;
+			int indexInMyNode = _index - 1;
 			while (indexInMyNode >= 0)
 			{
-				if (Node().IndexIsValid(Transaction(), indexInMyNode))
+				if (_node.IndexIsValid(_transaction, indexInMyNode))
 				{
-					return new Db4objects.Db4o.Internal.Btree.BTreePointer(Transaction(), NodeReader(
-						), Node(), indexInMyNode);
+					return new Db4objects.Db4o.Internal.Btree.BTreePointer(_transaction, _nodeReader, 
+						_node, indexInMyNode);
 				}
 				indexInMyNode--;
 			}
 			int newIndex = -1;
-			BTreeNode previousNode = Node();
+			BTreeNode previousNode = _node;
 			ByteArrayBuffer previousReader = null;
 			while (newIndex == -1)
 			{
@@ -142,10 +133,10 @@ namespace Db4objects.Db4o.Internal.Btree
 				{
 					return null;
 				}
-				previousReader = previousNode.PrepareRead(Transaction());
-				newIndex = previousNode.LastKeyIndex(Transaction());
+				previousReader = previousNode.PrepareRead(_transaction);
+				newIndex = previousNode.LastKeyIndex(_transaction);
 			}
-			return new Db4objects.Db4o.Internal.Btree.BTreePointer(Transaction(), previousReader
+			return new Db4objects.Db4o.Internal.Btree.BTreePointer(_transaction, previousReader
 				, previousNode, newIndex);
 		}
 
@@ -161,24 +152,24 @@ namespace Db4objects.Db4o.Internal.Btree
 			}
 			Db4objects.Db4o.Internal.Btree.BTreePointer other = (Db4objects.Db4o.Internal.Btree.BTreePointer
 				)obj;
-			if (Index() != other.Index())
+			if (_index != other._index)
 			{
 				return false;
 			}
-			return Node().Equals(other.Node());
+			return _node.Equals(other._node);
 		}
 
 		public override int GetHashCode()
 		{
-			return Node().GetHashCode();
+			return _node.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return "BTreePointer(index=" + Index() + ", node=" + Node() + ")";
+			return "BTreePointer(index=" + _index + ", node=" + _node + ")";
 		}
 
-		public virtual int CompareTo(Db4objects.Db4o.Internal.Btree.BTreePointer y)
+		public int CompareTo(Db4objects.Db4o.Internal.Btree.BTreePointer y)
 		{
 			if (null == y)
 			{
@@ -188,12 +179,12 @@ namespace Db4objects.Db4o.Internal.Btree
 			{
 				throw new ArgumentException();
 			}
-			return Btree().CompareKeys(Transaction().Context(), Key(), y.Key());
+			return Btree().CompareKeys(_transaction.Context(), Key(), y.Key());
 		}
 
 		private BTree Btree()
 		{
-			return Node().Btree();
+			return _node.Btree();
 		}
 
 		public static bool LessThan(Db4objects.Db4o.Internal.Btree.BTreePointer x, Db4objects.Db4o.Internal.Btree.BTreePointer
@@ -213,9 +204,9 @@ namespace Db4objects.Db4o.Internal.Btree
 			return x.Equals(y);
 		}
 
-		public virtual bool IsValid()
+		public bool IsValid()
 		{
-			return Node().IndexIsValid(Transaction(), Index());
+			return _node.IndexIsValid(_transaction, _index);
 		}
 	}
 }

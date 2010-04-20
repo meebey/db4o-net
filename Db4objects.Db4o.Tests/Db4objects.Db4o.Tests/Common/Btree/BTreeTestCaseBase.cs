@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		protected virtual IBTreeRange Search(Transaction trans, int key)
 		{
-			return _btree.Search(trans, key);
+			return _btree.SearchRange(trans, key);
 		}
 
 		protected virtual void Commit(Transaction trans)

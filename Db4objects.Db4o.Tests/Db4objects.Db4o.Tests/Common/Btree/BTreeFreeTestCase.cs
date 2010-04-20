@@ -20,13 +20,14 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 		public virtual void Test()
 		{
 			Add(Values);
-			BTreeAssert.AssertAllSlotsFreed(FileTransaction(), _btree, new _ICodeBlock_21(this
+			Trans().Commit();
+			BTreeAssert.AssertAllSlotsFreed(FileTransaction(), _btree, new _ICodeBlock_22(this
 				));
 		}
 
-		private sealed class _ICodeBlock_21 : ICodeBlock
+		private sealed class _ICodeBlock_22 : ICodeBlock
 		{
-			public _ICodeBlock_21(BTreeFreeTestCase _enclosing)
+			public _ICodeBlock_22(BTreeFreeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

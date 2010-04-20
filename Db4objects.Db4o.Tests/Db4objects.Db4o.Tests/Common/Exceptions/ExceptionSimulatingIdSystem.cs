@@ -2,10 +2,10 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Assorted;
 using Db4objects.Db4o.Tests.Common.Exceptions;
-using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
@@ -80,13 +80,14 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			base.CompleteInterruptedTransaction(transactionId1, transactionId2);
 		}
 
-		public override void Commit(IVisitable slotChanges, IRunnable commitBlock)
+		public override void Commit(IVisitable slotChanges, FreespaceCommitter freespaceCommitter
+			)
 		{
 			if (TriggersException())
 			{
 				_exceptionFactory.ThrowException();
 			}
-			base.Commit(slotChanges, commitBlock);
+			base.Commit(slotChanges, freespaceCommitter);
 		}
 	}
 }

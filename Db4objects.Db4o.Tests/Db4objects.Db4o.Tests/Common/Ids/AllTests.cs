@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Tests.Common.Ids
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(GlobalIdSystemTestSuite) };
+			return new Type[] { typeof(IdSystemTestSuite) };
 		}
 	}
 }

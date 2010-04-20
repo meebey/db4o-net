@@ -35,6 +35,7 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
+				int xxx = 1;
 			}
 		}
 
@@ -42,14 +43,19 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				// breakOnEvent(395);
-				AddRangeWithLength(49, 1);
 			}
 		}
 
+		//        	addRange(19);
+		//        	
+		//        	addRangeWithEnd(448, 460);
+		// addRange(13061);
+		// addRangeWithEnd(390, 402);
+		// addRangeWithLength(3840, 1);
+		// addRangeWithLength(180, 1);
 		// addRange(4874);
 		// addRangeWithEnd(3835808, 3836267);
-		// breakOnEvent(5);
+		// breakOnEvent(226);
 		// addRangeWithLength(1068, 1);
 		// addRangeWithLength(1722, 1);
 		//            trackEventsWithoutRange();
@@ -62,7 +68,7 @@ namespace Db4objects.Db4o
 		//                FILE_FREE,
 		//                TRANS_COMMIT,
 		//                });
-		//          turnAllOffExceptFor(new DTrace[] {BTREE_NODE_COMMIT_OR_ROLLBACK });
+		// turnAllOffExceptFor(new DTrace[] {FREESPACEMANAGER_BTREE_FREE, FREESPACEMANAGER_RAM_FREE });
 		//            turnAllOffExceptFor(new DTrace[] {BTREE_NODE_REMOVE, BTREE_NODE_COMMIT_OR_ROLLBACK YAPMETA_SET_ID});
 		private static void Init()
 		{
@@ -79,6 +85,8 @@ namespace Db4objects.Db4o
 					);
 				BtreeNodeCommitOrRollback = new Db4objects.Db4o.DTrace(true, true, "btreenode commit or rollback"
 					, true);
+				BtreeProduceNode = new Db4objects.Db4o.DTrace(true, true, "btree produce node", true
+					);
 				CandidateRead = new Db4objects.Db4o.DTrace(true, true, "candidate read", true);
 				ClassmetadataById = new Db4objects.Db4o.DTrace(true, true, "classmetadata by id", 
 					true);
@@ -104,7 +112,7 @@ namespace Db4objects.Db4o
 				FileFree = new Db4objects.Db4o.DTrace(true, true, "fileFree", true);
 				FreespacemanagerGetSlot = new Db4objects.Db4o.DTrace(true, true, "FreespaceManager getSlot"
 					, true);
-				FreespacemanagerRamFree = new Db4objects.Db4o.DTrace(true, true, "RamFreeSpaceManager free"
+				FreespacemanagerRamFree = new Db4objects.Db4o.DTrace(true, true, "InMemoryfreespaceManager free"
 					, true);
 				FreespacemanagerBtreeFree = new Db4objects.Db4o.DTrace(true, true, "BTreeFreeSpaceManager free"
 					, true);
@@ -125,11 +133,13 @@ namespace Db4objects.Db4o
 				NewInstance = new Db4objects.Db4o.DTrace(true, true, "newInstance", true);
 				NotifySlotCreated = new Db4objects.Db4o.DTrace(true, true, "notifySlotCreated", true
 					);
-				NotifySlotChanged = new Db4objects.Db4o.DTrace(true, true, "notifySlotChanged", true
-					);
+				NotifySlotUpdated = new Db4objects.Db4o.DTrace(true, true, "notify Slot updated", 
+					true);
 				NotifySlotDeleted = new Db4objects.Db4o.DTrace(true, true, "notifySlotDeleted", true
 					);
 				ObjectReferenceCreated = new Db4objects.Db4o.DTrace(true, true, "new ObjectReference"
+					, true);
+				PersistentBaseNewSlot = new Db4objects.Db4o.DTrace(true, true, "PersistentBase new slot"
 					, true);
 				PersistentOwnLength = new Db4objects.Db4o.DTrace(true, true, "Persistent own length"
 					, true);
@@ -143,7 +153,6 @@ namespace Db4objects.Db4o
 				ReadArrayWrapper = new Db4objects.Db4o.DTrace(true, true, "read array wrapper", true
 					);
 				ReadBytes = new Db4objects.Db4o.DTrace(true, true, "readBytes", true);
-				ReadId = new Db4objects.Db4o.DTrace(true, true, "read ID", true);
 				ReadSlot = new Db4objects.Db4o.DTrace(true, true, "read slot", true);
 				ReferenceRemoved = new Db4objects.Db4o.DTrace(true, true, "reference removed", true
 					);
@@ -153,14 +162,15 @@ namespace Db4objects.Db4o
 				RereadOldUuid = new Db4objects.Db4o.DTrace(true, true, "reread old uuid", true);
 				ServerMessageLoopException = new Db4objects.Db4o.DTrace(true, true, "server message loop exception"
 					, true);
-				SlotSetPointer = new Db4objects.Db4o.DTrace(true, true, "slot set pointer", true);
-				SlotDelete = new Db4objects.Db4o.DTrace(true, true, "slot delete", true);
+				SlotMapped = new Db4objects.Db4o.DTrace(true, true, "slot mapped", true);
+				SlotCommitted = new Db4objects.Db4o.DTrace(true, true, "slot committed", true);
 				SlotFreeOnCommit = new Db4objects.Db4o.DTrace(true, true, "slot free on commit", 
 					true);
 				SlotFreeOnRollbackId = new Db4objects.Db4o.DTrace(true, true, "slot free on rollback id"
 					, true);
 				SlotFreeOnRollbackAddress = new Db4objects.Db4o.DTrace(true, true, "slot free on rollback address"
 					, true);
+				SlotRead = new Db4objects.Db4o.DTrace(true, true, "slot read", true);
 				TransCommit = new Db4objects.Db4o.DTrace(true, true, "trans commit", true);
 				TransDelete = new Db4objects.Db4o.DTrace(true, true, "trans delete", true);
 				TransDontDelete = new Db4objects.Db4o.DTrace(true, true, "trans dontDelete", true
@@ -232,6 +242,8 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace BtreeNodeRemove;
 
+		public static Db4objects.Db4o.DTrace BtreeProduceNode;
+
 		public static Db4objects.Db4o.DTrace CandidateRead;
 
 		public static Db4objects.Db4o.DTrace ClassmetadataById;
@@ -298,11 +310,13 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace NotifySlotCreated;
 
-		public static Db4objects.Db4o.DTrace NotifySlotChanged;
+		public static Db4objects.Db4o.DTrace NotifySlotUpdated;
 
 		public static Db4objects.Db4o.DTrace NotifySlotDeleted;
 
 		public static Db4objects.Db4o.DTrace ObjectReferenceCreated;
+
+		public static Db4objects.Db4o.DTrace PersistentBaseNewSlot;
 
 		public static Db4objects.Db4o.DTrace PersistentOwnLength;
 
@@ -318,8 +332,6 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace ReadBytes;
 
-		public static Db4objects.Db4o.DTrace ReadId;
-
 		public static Db4objects.Db4o.DTrace ReadSlot;
 
 		public static Db4objects.Db4o.DTrace ReferenceRemoved;
@@ -332,15 +344,17 @@ namespace Db4objects.Db4o
 
 		public static Db4objects.Db4o.DTrace ServerMessageLoopException;
 
-		public static Db4objects.Db4o.DTrace SlotSetPointer;
+		public static Db4objects.Db4o.DTrace SlotMapped;
 
-		public static Db4objects.Db4o.DTrace SlotDelete;
+		public static Db4objects.Db4o.DTrace SlotCommitted;
 
 		public static Db4objects.Db4o.DTrace SlotFreeOnCommit;
 
 		public static Db4objects.Db4o.DTrace SlotFreeOnRollbackId;
 
 		public static Db4objects.Db4o.DTrace SlotFreeOnRollbackAddress;
+
+		public static Db4objects.Db4o.DTrace SlotRead;
 
 		public static Db4objects.Db4o.DTrace TransCommit;
 
@@ -395,7 +409,7 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				LogEnd(Unused, 0, info);
+				LogEnd(Unused, Unused, 0, info);
 			}
 		}
 
@@ -403,7 +417,7 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				LogEnd(p, 0, info);
+				LogEnd(Unused, p, 0, info);
 			}
 		}
 
@@ -411,7 +425,15 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				LogEnd(start, start + length - 1);
+				LogLength(Unused, start, length);
+			}
+		}
+
+		public virtual void LogLength(long id, long start, long length)
+		{
+			if (enabled)
+			{
+				LogEnd(id, start, start + length - 1);
 			}
 		}
 
@@ -419,11 +441,19 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
+				LogLength(Unused, slot);
+			}
+		}
+
+		public virtual void LogLength(long id, Slot slot)
+		{
+			if (enabled)
+			{
 				if (slot == null)
 				{
 					return;
 				}
-				LogLength(slot.Address(), slot.Length());
+				LogLength(id, slot.Address(), slot.Length());
 			}
 		}
 
@@ -431,12 +461,23 @@ namespace Db4objects.Db4o
 		{
 			if (enabled)
 			{
-				LogEnd(start, end, null);
+				LogEnd(Unused, start, end);
 			}
 		}
 
-		public virtual void LogEnd(long start, long end, string info)
+		public virtual void LogEnd(long id, long start, long end)
 		{
+			if (enabled)
+			{
+				LogEnd(id, start, end, null);
+			}
+		}
+
+		public virtual void LogEnd(long id, long start, long end, string info)
+		{
+			//    	if(! Deploy.log){
+			//    		return;
+			//    	}
 			if (enabled)
 			{
 				if (!_enabled)
@@ -450,6 +491,12 @@ namespace Db4objects.Db4o
 				}
 				for (int i = 0; i < _rangeCount; i++)
 				{
+					// Case 0 ID in range
+					if (id >= _rangeStart[i] && id <= _rangeEnd[i])
+					{
+						inRange = true;
+						break;
+					}
 					// Case 1 start in range
 					if (start >= _rangeStart[i] && start <= _rangeEnd[i])
 					{
@@ -479,6 +526,8 @@ namespace Db4objects.Db4o
 						_eventNr++;
 						StringBuilder sb = new StringBuilder(":");
 						sb.Append(FormatInt(_eventNr, 6));
+						sb.Append(":");
+						sb.Append(FormatInt(id));
 						sb.Append(":");
 						sb.Append(FormatInt(start));
 						sb.Append(":");
@@ -638,8 +687,8 @@ namespace Db4objects.Db4o
 			{
 				if (_rangeStart == null)
 				{
-					_rangeStart = new long[100];
-					_rangeEnd = new long[100];
+					_rangeStart = new long[1000];
+					_rangeEnd = new long[1000];
 				}
 				_rangeStart[_rangeCount] = start;
 				_rangeEnd[_rangeCount] = end;

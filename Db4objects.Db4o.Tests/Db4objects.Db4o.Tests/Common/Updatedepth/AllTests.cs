@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Updatedepth;
 
 namespace Db4objects.Db4o.Tests.Common.Updatedepth
 {
@@ -9,7 +10,8 @@ namespace Db4objects.Db4o.Tests.Common.Updatedepth
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] {  };
+			return new Type[] { typeof(NegativeUpdateDepthTestCase), typeof(UpdateDepthWithCascadingDeleteTestCase
+				) };
 		}
 	}
 }

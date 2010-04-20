@@ -44,11 +44,12 @@ namespace Db4objects.Db4o.Typehandlers
 			{
 				object key = unmarshallingContext.ReadFullyActivatedObjectForKeys(handlers._keyHandler
 					);
-				object value = context.ReadObject(handlers._valueHandler);
-				if (key != null && value != null)
+				if (key == null && !unmarshallingContext.LastReferenceReadWasReallyNull())
 				{
-					map[key] = value;
+					continue;
 				}
+				object value = context.ReadObject(handlers._valueHandler);
+				map[key] = value;
 			}
 		}
 

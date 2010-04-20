@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Defragment
 	/// <seealso cref="Defragment">Defragment</seealso>
 	public class InMemoryIdMapping : AbstractIdMapping
 	{
-		private IdSlotMapping _idsToSlots;
+		private IdSlotTree _idsToSlots;
 
 		private Tree _tree;
 
@@ -67,8 +67,8 @@ namespace Db4objects.Db4o.Defragment
 
 		public override void MapId(int id, Slot slot)
 		{
-			IdSlotMapping idSlotMapping = new IdSlotMapping(id, slot);
-			_idsToSlots = ((IdSlotMapping)Tree.Add(_idsToSlots, idSlotMapping));
+			IdSlotTree idSlotMapping = new IdSlotTree(id, slot);
+			_idsToSlots = ((IdSlotTree)Tree.Add(_idsToSlots, idSlotMapping));
 		}
 
 		public override IVisitable SlotChanges()
@@ -98,7 +98,7 @@ namespace Db4objects.Db4o.Defragment
 				public void Visit(object idSlotMapping)
 				{
 					SlotChange slotChange = new SlotChange(((TreeInt)idSlotMapping)._key);
-					slotChange.NotifySlotCreated(((IdSlotMapping)idSlotMapping).Slot());
+					slotChange.NotifySlotCreated(((IdSlotTree)idSlotMapping).Slot());
 					outSideVisitor.Visit(slotChange);
 				}
 

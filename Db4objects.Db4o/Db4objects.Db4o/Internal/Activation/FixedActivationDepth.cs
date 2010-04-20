@@ -40,5 +40,13 @@ namespace Db4objects.Db4o.Internal.Activation
 			return new Db4objects.Db4o.Internal.Activation.FixedActivationDepth(_depth - 1, _mode
 				);
 		}
+
+		// TODO code duplication in fixed activation/update depth
+		public virtual Db4objects.Db4o.Internal.Activation.FixedActivationDepth AdjustDepthToBorders
+			()
+		{
+			return new Db4objects.Db4o.Internal.Activation.FixedActivationDepth(DepthUtil.AdjustDepthToBorders
+				(_depth));
+		}
 	}
 }

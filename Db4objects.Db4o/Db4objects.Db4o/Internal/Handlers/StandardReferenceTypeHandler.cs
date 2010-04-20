@@ -550,7 +550,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 				return;
 			}
 			// FIXME: [TA] review activation depth
-			int depth = ClassMetadata().AdjustDepthToBorders(2);
+			int depth = DepthUtil.AdjustDepthToBorders(2);
 			container.Activate(transaction, obj, container.ActivationDepthProvider().ActivationDepth
 				(depth, ActivationMode.Activate));
 			Platform4.ForEachCollectionElement(obj, new _IVisitor4_378(context));

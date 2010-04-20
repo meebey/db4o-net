@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Marshall;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Marshall;
@@ -20,6 +21,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 			int payloadOffset = context.ReadInt();
 			if (payloadOffset == 0)
 			{
+				context.NotifyNullReferenceSkipped();
 				return null;
 			}
 			int savedOffSet = context.Offset();
@@ -87,23 +89,24 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 		private void AddReference(IContext context, object obj, int id)
 		{
 			Transaction transaction = context.Transaction();
-			ObjectReference @ref = new _ObjectReference_72(id);
+			ObjectReference @ref = new _ObjectReference_74(id);
 			@ref.ClassMetadata(transaction.Container().ClassMetadataForID(Handlers4.UntypedId
 				));
 			@ref.SetObjectWeak(transaction.Container(), obj);
 			transaction.AddNewReference(@ref);
 		}
 
-		private sealed class _ObjectReference_72 : ObjectReference
+		private sealed class _ObjectReference_74 : ObjectReference
 		{
-			public _ObjectReference_72(int baseArg1) : base(baseArg1)
+			public _ObjectReference_74(int baseArg1) : base(baseArg1)
 			{
 				this._firstUpdate = true;
 			}
 
 			internal bool _firstUpdate;
 
-			public override void WriteUpdate(Transaction transaction, int updatedepth)
+			public override void WriteUpdate(Transaction transaction, IUpdateDepth updatedepth
+				)
 			{
 				if (!this._firstUpdate)
 				{

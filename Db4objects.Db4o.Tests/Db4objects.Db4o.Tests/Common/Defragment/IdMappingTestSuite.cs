@@ -8,13 +8,14 @@ using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Defragment;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
-	public class IdMappingTestSuite : FixtureBasedTestSuite
+	public partial class IdMappingTestSuite : FixtureBasedTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -76,13 +77,13 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 					_idMapping.MapId(testableIdSlotMapping._id, testableIdSlotMapping.Slot());
 				}
 				IList actual = new ArrayList();
-				_idMapping.SlotChanges().Accept(new _IVisitor4_72(actual));
+				_idMapping.SlotChanges().Accept(new _IVisitor4_75(actual));
 				IteratorAssert.SameContent(expected, actual);
 			}
 
-			private sealed class _IVisitor4_72 : IVisitor4
+			private sealed class _IVisitor4_75 : IVisitor4
 			{
-				public _IVisitor4_72(IList actual)
+				public _IVisitor4_75(IList actual)
 				{
 					this.actual = actual;
 				}
@@ -99,7 +100,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		public class TestableIdSlotMapping : DatabaseIdMapping.IdSlotMapping
+		public class TestableIdSlotMapping : IdSlotMapping
 		{
 			public TestableIdSlotMapping(int id, int address, int length) : base(id, address, 
 				length)
@@ -114,39 +115,39 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			}
 		}
 
-		public override IFixtureProvider[] FixtureProviders()
-		{
-			return new IFixtureProvider[] { new SimpleFixtureProvider(_fixture, new IFunction4
-				[] { new _IFunction4_101(), new _IFunction4_105() }) };
-		}
-
-		private sealed class _IFunction4_101 : IFunction4
-		{
-			public _IFunction4_101()
-			{
-			}
-
-			public object Apply(object fileName)
-			{
-				return new DatabaseIdMapping(((string)fileName));
-			}
-		}
-
-		private sealed class _IFunction4_105 : IFunction4
-		{
-			public _IFunction4_105()
-			{
-			}
-
-			public object Apply(object fileName)
-			{
-				return new InMemoryIdMapping();
-			}
-		}
-
 		public override Type[] TestUnits()
 		{
 			return new Type[] { typeof(IdMappingTestSuite.IdMappingTestCase) };
+		}
+
+		private class DatabaseIdMappingProvider : IFunction4
+		{
+			public virtual object Apply(object fileName)
+			{
+				return new DatabaseIdMapping(((string)fileName));
+			}
+
+			internal DatabaseIdMappingProvider(IdMappingTestSuite _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			private readonly IdMappingTestSuite _enclosing;
+		}
+
+		private class InMemoryIdMappingProvider : IFunction4
+		{
+			public virtual object Apply(object fileName)
+			{
+				return new InMemoryIdMapping();
+			}
+
+			internal InMemoryIdMappingProvider(IdMappingTestSuite _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			private readonly IdMappingTestSuite _enclosing;
 		}
 
 		private static FixtureVariable _fixture = FixtureVariable.NewInstance("IdMapping"

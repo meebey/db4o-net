@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 				{
 					ExpectingVisitor expectingVisitor = ExpectingVisitor.CreateExpectingVisitor(keys[
 						i], IntArrays4.Occurences(keys, keys[i]));
-					IBTreeRange range = btree.Search(trans, keys[i]);
+					IBTreeRange range = btree.SearchRange(trans, keys[i]);
 					BTreeAssert.TraverseKeys(range, expectingVisitor);
 					expectingVisitor.AssertExpectations();
 					lastValue = keys[i];
