@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Internal.Collections;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Net;
@@ -51,6 +52,7 @@ namespace Db4objects.Db4o.Internal
 #endif 
 
 			Type[] dictionaryTypes = new Type[] {
+				typeof(ActivatableDictionary<,>),
 				typeof(Dictionary<,>),
 #if !SILVERLIGHT
 				typeof(SortedList<,>),

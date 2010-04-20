@@ -5,6 +5,7 @@ using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 {
+	[Serializable]
 	public class ActivatableElement : AbstractCollectionElement, IActivatable
 	{
 		public ActivatableElement(string name) : base(name)
@@ -44,6 +45,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 
 			return Name.Equals(other.Name);
 		}
+
+		public override int GetHashCode()
+		{
+			return Name.GetHashCode();
+		}
 	
 		public override string ToString()
 		{
@@ -56,7 +62,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 			Activate(ActivationPurpose.Read);
 		}
 
-		[Transient]
+		[NonSerialized]
 		private IActivator _activator;
 	}
 }

@@ -1,19 +1,19 @@
-﻿/* Copyright (C) 2010   Versant Inc.   http://www.db4o.com */
-
+﻿/* Copyright (C) 2010 Versant Inc.   http://www.db4o.com */
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Collections;
 using Db4oTool.Tests.Core;
 using Db4oUnit;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Db4oTool.Tests.TA
+namespace Db4oTool.Tests.TA.Collections
 {
-	partial class TACollectionsTestCase : ITestLifeCycle
+	abstract class TACollectionsTestCaseBase : TATestCaseBase, ITestLifeCycle
 	{
+		protected abstract string TestResource { get; }
+		protected abstract Type ReplacementType { get; }	
+		protected abstract Type OriginalType { get; }
+		
 		internal static void AssertInstruction(Instruction actual, OpCode opCode, IMemberReference expectedCtor)
 		{
 			Assert.AreEqual(opCode, actual.OpCode);
@@ -30,7 +30,7 @@ namespace Db4oTool.Tests.TA
 				string.Format("Expected warning '{0}' not emitted\r\n\r\nActual instrumentation output:\r\n{1}", expectedWarning, output));
 		}
 
-		protected void InstrumentAssembly(string symbolName)
+		private void InstrumentAssembly(string symbolName)
 		{
             CompilationServices.ExtraParameters.Using("/d:" + symbolName, delegate
             {
@@ -38,19 +38,15 @@ namespace Db4oTool.Tests.TA
             });
 		}
 
-		private void AssertSuccessfulCast(string testMethodName)
+		protected void AssertSuccessfulCast(string testMethodName)
 		{
-			InstrumentAndRunInIsolatedAppDomain(new CastAsserter(testMethodName).AssertIt);
+			InstrumentAndRunInIsolatedAppDomain(new CastAsserter(ReplacementType, TestResource, testMethodName).AssertIt);
 		}
 
-		protected static MethodBase InstrumentedMethod(Assembly assembly, string name)
+		internal static MethodReference ContructorFor(TypeReference type, params Type[] parameterTypes)
 		{
-			return assembly.GetType(TestResource).GetMethod(name);
-		}
-
-		internal static MethodReference ParameterLessContructorFor(TypeReference type)
-		{
-			return type.Resolve().Constructors.GetConstructor(false, new Type[0]);
+			TypeDefinition definition = type.Resolve();
+			return definition.Constructors.GetConstructor(false, parameterTypes);
 		}
 
 		private string InstrumentAndRunInIsolatedAppDomain(Action<AssemblyDefinition> action)
@@ -84,9 +80,14 @@ namespace Db4oTool.Tests.TA
 		{
 		}
 
-		public static Instruction FindInstruction(AssemblyDefinition assembly, string testMethodName, OpCode testInstruction)
+		public Instruction FindInstruction(AssemblyDefinition assembly, string testMethodName, OpCode testInstruction)
 		{
-			TypeDefinition testType = assembly.MainModule.Types["TACollectionsScenarios"];
+			return FindInstruction(assembly, TestResource, testMethodName, testInstruction);
+		}
+		
+		public static Instruction FindInstruction(AssemblyDefinition assembly, string typeName, string testMethodName, OpCode testInstruction)
+		{
+			TypeDefinition testType = assembly.MainModule.Types[typeName];
 			MethodDefinition testMethod = SingleMethod(testType.Methods.GetMethod(testMethodName));
 
 			Instruction current = testMethod.Body.Instructions[0];
@@ -118,19 +119,17 @@ namespace Db4oTool.Tests.TA
 			return assembly.MainModule.Import(type);
 		}
 		
-		private const string TestResource = "TACollectionsScenarios";
-
-		private void AssertConstructorInstrumentation(string methodName)
+		protected void AssertConstructorInstrumentation(string methodName, params Type[] argumentTypes)
 		{
-			InstrumentAndRunInIsolatedAppDomain(new ConstructorInstrumentationAsserter(methodName, typeof(ActivatableList<string>)).AssertIt);
+			InstrumentAndRunInIsolatedAppDomain(new ConstructorInstrumentationAsserter(TestResource, methodName, ReplacementType, argumentTypes).AssertIt);
+		}
+		
+		protected void AssertConstructorInstrumentationWarning(string methodName)
+		{
+			InstrumentAndRunInIsolatedAppDomain(new ConstructorInstrumentationAsserter(TestResource, methodName, OriginalType).AssertIt);
 		}
 
-		private void AssertConstructorInstrumentationWarning(string methodName)
-		{
-			InstrumentAndRunInIsolatedAppDomain(new ConstructorInstrumentationAsserter(methodName, typeof(List<string>)).AssertIt);
-		}
-
-		private void AssertFailingCast(string testMethodName)
+		protected void AssertFailingCast(string testMethodName)
 		{
 			try
 			{
@@ -147,38 +146,48 @@ namespace Db4oTool.Tests.TA
 	[Serializable]
 	internal class ConstructorInstrumentationAsserter
 	{
-		public ConstructorInstrumentationAsserter(string methodName, Type type)
+		public ConstructorInstrumentationAsserter(string testTypeName, string methodName, Type type, params Type[] parameterTypes)
 		{
+			_testTypeName = testTypeName;
 			_methodName = methodName;
 			_type = type;
+			_parameterTypes = parameterTypes;
 		}
 
 		public void AssertIt(AssemblyDefinition assembly)
 		{
-			Instruction current = TACollectionsTestCase.FindInstruction(assembly, _methodName, OpCodes.Newobj);
-			TACollectionsTestCase.AssertInstruction(current, OpCodes.Newobj, TACollectionsTestCase.ParameterLessContructorFor(TACollectionsTestCase.Import(assembly, _type)));
+			Instruction current = TACollectionsTestCaseBase.FindInstruction(assembly, _testTypeName, _methodName, OpCodes.Newobj);
+			MethodReference foundCtor = TACollectionsTestCaseBase.ContructorFor(TACollectionsTestCaseBase.Import(assembly, _type), _parameterTypes);
+			Assert.IsNotNull(foundCtor);
+			TACollectionsTestCaseBase.AssertInstruction(current, OpCodes.Newobj, foundCtor);
 		}
 
+		private readonly string _testTypeName;
 		private readonly string _methodName;
 		private readonly Type _type;
+		private readonly Type[] _parameterTypes;
 	}
 
 	[Serializable]
 	internal class CastAsserter
 	{
-		public CastAsserter(string testMethodName)
+		public CastAsserter(Type replacementType, string testTypeName, string testMethodName)
 		{
+			_replacementType = replacementType;
+			_testTypeName = testTypeName;
 			_testMethodName = testMethodName;
 		}
 
 		public void AssertIt(AssemblyDefinition assembly)
 		{
-			Instruction current = TACollectionsTestCase.FindInstruction(assembly, _testMethodName, OpCodes.Castclass);
+			Instruction current = TACollectionsTestCaseBase.FindInstruction(assembly, _testTypeName, _testMethodName, OpCodes.Castclass);
 
 			TypeReference castTarget = ((TypeReference)current.Operand).Resolve();
-			Assert.AreEqual(assembly.MainModule.Import(typeof(ActivatableList<>)).Resolve(), castTarget);
+			Assert.AreEqual(assembly.MainModule.Import(_replacementType).Resolve(), castTarget);
 		}
 
+		private readonly Type _replacementType;
+		private readonly string _testTypeName;
 		private readonly string _testMethodName;
 	}
 

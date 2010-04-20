@@ -1,5 +1,9 @@
-﻿namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
+﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
+using System;
+
+namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 {
+	[Serializable]
 	public class AbstractCollectionElement : ICollectionElement
 	{
 #if SILVERLIGHT
@@ -8,7 +12,7 @@
 		protected string _name;
 #endif
 
-		public AbstractCollectionElement(string name)
+		protected AbstractCollectionElement(string name)
 		{
 			_name = name;	
 		}

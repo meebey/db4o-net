@@ -1,5 +1,4 @@
 ﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using Db4objects.Db4o.Internal.Activation;
 
 namespace Db4objects.Db4o.Collections
 {
-	public class ActivatableList<T> : ActivatableBase, IActivatableList<T>
+	public class ActivatableList<T> : ActivatableBase, IList<T>, IActivatableCollection<T>
 	{
 		public ActivatableList()
 		{

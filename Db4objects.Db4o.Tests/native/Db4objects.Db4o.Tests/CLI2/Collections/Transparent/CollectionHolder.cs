@@ -1,23 +1,26 @@
 ﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 
+using System;
+
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 {
-	public class CollectionHolder<T>
+	[Serializable]
+	public class CollectionHolder<TColl>
 	{
-		public CollectionHolder(T collection)
+		public CollectionHolder(TColl collection)
 		{
 			_collection = collection;	
 		}
 
-		public T Collection
+		public TColl Collection
 		{
 			get { return _collection; }
 		}
 
-#if SILVERLIGHT		
-		public T _collection;
+#if SILVERLIGHT
+		public TColl _collection;
 #else
-		private readonly T _collection;
+		private readonly TColl _collection;
 #endif
 	}
 }

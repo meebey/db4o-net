@@ -30,8 +30,8 @@ namespace Db4oTool.Tests.TA
 		{
 			return new Type[]
 				{
+					typeof(Collections.AllTests),
 					typeof(TABytecodeChangesTestCase),
-					typeof(TACollectionsTestCase),
 					typeof(TACrossAssemblyInstrumentationTestCase),
 					typeof(TAEnsureDb4oReferenceIsAdded),
 					typeof(TAFieldSetterInstrumentationTestCase),

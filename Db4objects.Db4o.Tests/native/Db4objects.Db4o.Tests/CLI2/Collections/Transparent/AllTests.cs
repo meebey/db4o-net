@@ -10,6 +10,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 		{
 			return new Type[]
 			       	{
+			       		typeof(Dictionary.AllTests),
 			       		typeof(List.AllTests),
 					};
 		}

@@ -1,5 +1,4 @@
 ﻿/* Copyright (C) 2010   Versant Inc.   http://www.db4o.com */
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,8 +22,6 @@ public class TACollectionsScenarios
 	private static IList<DateTime> CreateList()
 	{
 		IList<DateTime> theList = new List<DateTime>();
-		theList.Add(DateTime.Now);
-
 		return theList;
 	}
 

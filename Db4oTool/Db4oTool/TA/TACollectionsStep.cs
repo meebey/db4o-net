@@ -12,22 +12,22 @@ namespace Db4oTool.TA
 	{
 		public override void Process(MethodDefinition method)
 		{
-			InstrumentListInstantiation(method);
-
-			InstrumentListCasts(method);
+			InstrumentCollectionInstantiation(method);
+			InstrumentConcreteCollectionCasts(method);
 		}
 
-		private void InstrumentListCasts(MethodDefinition methodDefinition)
+		private void InstrumentConcreteCollectionCasts(MethodDefinition methodDefinition)
 		{
-			foreach (Instruction cast in ListCasts(methodDefinition.Body))
+			foreach (Instruction cast in CastsToSupportedCollections(methodDefinition.Body))
 			{
-				StackAnalysisResult result = StackAnalyzer.IsConsumedBy(MethodCallOnList, cast, methodDefinition.DeclaringType.Module);
+				StackAnalysisResult result = StackAnalyzer.IsConsumedBy(MethodCallOnSupportedCollections, cast, methodDefinition.DeclaringType.Module);
 				if (!result.Match)
 				{
 				    throw new InvalidOperationException(string.Format("Error: [{0}] Invalid use of cast result: '{1} {2}'. Cast to List<T> are allowed only for property access or method call.", methodDefinition, result.Consumer.OpCode, result.Consumer.Operand));
 				}
 
-				ReplaceCastAndCalleeDeclaringType(cast, result.Consumer, typeof(ActivatableList<>));
+				TypeReference castTarget = (TypeReference) cast.Operand;
+				ReplaceCastAndCalleeDeclaringType(cast, result.Consumer, _collectionReplacements[castTarget.Resolve().FullName]);
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace Db4oTool.TA
 			return newMethod;
 		}
 
-		private GenericInstanceType NewGenericInstanceTypeWithArgumentsFrom(TypeReference referenceType, GenericInstanceType argumentSource)
+		private static GenericInstanceType NewGenericInstanceTypeWithArgumentsFrom(TypeReference referenceType, GenericInstanceType argumentSource)
 		{
 			GenericInstanceType replacementTypeReference = new GenericInstanceType(referenceType);
 			foreach (TypeReference argument in argumentSource.GenericArguments)
@@ -61,28 +61,33 @@ namespace Db4oTool.TA
 			return replacementTypeReference;
 		}
 
-		private static bool MethodCallOnList(Instruction candidate)
+		private static bool MethodCallOnSupportedCollections(Instruction candidate)
 		{
 			if (candidate.OpCode != OpCodes.Call && candidate.OpCode != OpCodes.Callvirt) return false;
 
 			MethodDefinition callee = ((MethodReference)candidate.Operand).Resolve();
-			return callee.DeclaringType.Resolve().FullName == callee.DeclaringType.Module.Import(typeof(List<>)).FullName;
+			return HasReplacement(callee.DeclaringType.Resolve().FullName);
 		}
 
-		private IEnumerable<Instruction> ListCasts(MethodBody body)
+		private static bool HasReplacement(string collectionConcreteType)
+		{
+			return _collectionReplacements.ContainsKey(collectionConcreteType);
+		}
+
+		private IEnumerable<Instruction> CastsToSupportedCollections(MethodBody body)
 		{
 			return InstrumentationUtil.Where(body, delegate(Instruction candidate)
 			{
 				if (candidate.OpCode != OpCodes.Castclass) return false;
 				GenericInstanceType target = candidate.Operand as GenericInstanceType;
 
-				return target != null && target.Resolve() == Context.Import(typeof(List<>)).Resolve();
+				return target != null && HasReplacement(target.Resolve().FullName);
 			});
 		}
 
-		private void InstrumentListInstantiation(MethodDefinition methodDefinition)
+		private void InstrumentCollectionInstantiation(MethodDefinition methodDefinition)
 		{
-			foreach (Instruction newObj in ListInstantiations(methodDefinition.Body))
+			foreach (Instruction newObj in TAEnabledCollectionInstantiations(methodDefinition.Body))
 			{
 				StackAnalysisResult stackAnalysis = StackAnalyzer.IsConsumedBy(delegate { return true; }, newObj, methodDefinition.DeclaringType.Module);
 				if (IsAssignmentToConcreteType(stackAnalysis))
@@ -91,7 +96,7 @@ namespace Db4oTool.TA
 					continue;
 				}
 
-				ReplaceContructorWithConstructorFrom(newObj, typeof(ActivatableList<>));
+				ReplaceContructorWithConstructorFrom(newObj);
 			}
 		}
 
@@ -104,12 +109,12 @@ namespace Db4oTool.TA
 			return originalType.FullName;
 		}
 
-		private void ReplaceContructorWithConstructorFrom(Instruction newObj, Type type)
+		private void ReplaceContructorWithConstructorFrom(Instruction newObj)
 		{
 			MethodReference originalCtor = (MethodReference)newObj.Operand;
 
 			GenericInstanceType originalList = (GenericInstanceType)originalCtor.DeclaringType;
-			GenericInstanceType declaringType = new GenericInstanceType(Context.Import(type));
+			GenericInstanceType declaringType = new GenericInstanceType(Context.Import(_collectionReplacements[originalList.Resolve().FullName]));
 
 			foreach (TypeReference argument in originalList.GenericArguments)
 			{
@@ -152,10 +157,10 @@ namespace Db4oTool.TA
 					}
 				}
 			}
-			return assignmentTargetType.GetOriginalType() == Context.Import(typeof(List<>));
+			return HasReplacement(assignmentTargetType.GetOriginalType().FullName);
 		}
 
-		private static IEnumerable<Instruction> ListInstantiations(MethodBody methodBody)
+		private static IEnumerable<Instruction> TAEnabledCollectionInstantiations(MethodBody methodBody)
 		{
 			return InstrumentationUtil.Where(methodBody, delegate(Instruction candidate)
 			{
@@ -163,8 +168,19 @@ namespace Db4oTool.TA
 				MethodReference ctor = (MethodReference)candidate.Operand;
 				TypeDefinition declaringType = ctor.DeclaringType.Resolve();
 
-				return declaringType.HasGenericParameters && declaringType.FullName == typeof(List<>).FullName;
+				return declaringType.HasGenericParameters && _collectionReplacements.ContainsKey(declaringType.FullName);
 			});
 		}
+
+
+		static TACollectionsStep()
+		{
+			_collectionReplacements = new Dictionary<string, Type>();
+			
+			_collectionReplacements[typeof (List<>).FullName] = typeof (ActivatableList<>);
+			_collectionReplacements[typeof (Dictionary<,>).FullName] = typeof (ActivatableDictionary<,>);
+		}
+
+		private static readonly IDictionary<string, Type> _collectionReplacements;
 	}
 }

@@ -10,7 +10,6 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 		{
 			return new Type[]
 			       	{
-			       		typeof(ActivatableIListApiTestCase),
 						typeof(ActivatableListTestCase),
 					};
 		}

@@ -5,6 +5,7 @@ using Db4objects.Db4o.TA;
 
 namespace Db4objects.Db4o.Internal.Activation
 {
+	[Serializable]
 	public class ActivatableBase : IActivatable
 	{
 		public void Bind(IActivator activator)

@@ -1,10 +1,13 @@
 ﻿/* Copyright (C) 2010   Versant Inc.   http://www.db4o.com */
 
+using System;
+using System.Collections.Generic;
+using Db4objects.Db4o.Collections;
 using Db4oTool.Core;
 
-namespace Db4oTool.Tests.TA
+namespace Db4oTool.Tests.TA.Collections
 {
-	partial class TACollectionsTestCase : TATestCaseBase
+	class TAListTestCase : TACollectionsTestCaseBase
 	{
 		public void TestMethodWithInterfaceParameter()
 		{
@@ -59,5 +62,24 @@ namespace Db4oTool.Tests.TA
             conf.PreserveDebugInfo = true;
             return conf;
         }
+
+		#region Overrides of TACollectionsTestCaseBase
+
+		protected override string TestResource
+		{
+			get { return "TACollectionsScenarios"; }
+		}
+
+		protected override Type ReplacementType
+		{
+			get { return typeof(ActivatableList<string>); }
+		}
+
+		protected override Type OriginalType
+		{
+			get { return typeof(List<string>); }
+		}
+
+		#endregion
 	}
 }

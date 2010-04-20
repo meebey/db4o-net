@@ -1,7 +1,5 @@
 ﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
-using System;
 using System.Collections.Generic;
-using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.TA;
 using Db4oUnit;
@@ -9,9 +7,9 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 {
-	public partial class AbstractActivatableCollectionApiTestCase : AbstractDb4oTestCase
+	public abstract partial class AbstractActivatableCollectionApiTestCase<TColl, TElem> : AbstractDb4oTestCase where TColl : ICollection<TElem>
 	{
-		protected readonly IList<string> Names = new List<string>(new string[] {"one", "two", "three", "four"});
+		protected static readonly IList<string> Names = new List<string>(new string[] {"one", "two", "three", "four"});
 
 		protected override void Configure(IConfiguration config)
 		{
@@ -20,16 +18,15 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 
 		protected override void Store()
 		{
-			ActivatableList<ICollectionElement> collection = NewActivatableCollection();
-			CollectionHolder<IList<ICollectionElement>> item = new CollectionHolder<IList<ICollectionElement>>(collection);
+			CollectionHolder<TColl> item = new CollectionHolder<TColl>(NewPopulatedActivatableCollection());
 			Store(item);
 		}
 
 		public void TestAdd()
 		{
-			AssertListOperation(delegate(IList<ICollectionElement> list)
+			AssertCollectionChange(delegate(TColl list)
 			{
-				list.Add(new Element("five"));
+				list.Add( NewElement("five") );
 			});
 		}
 
@@ -37,21 +34,25 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 		{
 			SingleCollection().Clear();
 			Reopen();
-			IteratorAssert.SameContent(new List<Element>(), SingleCollection());
+			
+			TColl expected = NewPopulatedPlainCollection();
+			Assert.IsGreater(0, expected.Count);
+			expected.Clear();
+			IteratorAssert.SameContent(expected, SingleCollection());
 		}
 
 		public void TestContains()
 		{
-			Assert.IsTrue(SingleCollection().Contains(new Element("one")));
-			Assert.IsFalse(SingleCollection().Contains(new Element("five")));
+			Assert.IsTrue(SingleCollection().Contains( NewElement("one") ));
+			Assert.IsFalse(SingleCollection().Contains( NewElement("five") ));
 		}
 
 		public void TestCopyTo()
 		{
-			IList<ICollectionElement> plainCollection = NewPlainCollection();
-			ICollectionElement[] target = new ICollectionElement[plainCollection.Count];
+			TColl plainCollection = NewPopulatedPlainCollection();
+			TElem[] target = new TElem[plainCollection.Count];
 
-			IList<ICollectionElement> list = SingleCollection();
+			TColl list = SingleCollection();
 			list.CopyTo(target, 0);
 			Assert.IsTrue(Db().IsActive(list));
 			IteratorAssert.AreEqual(list.GetEnumerator(), target.GetEnumerator());
@@ -65,48 +66,15 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 
 		public void TestRemove()
 		{
-			AssertListOperation(delegate(IList<ICollectionElement> list)
+			AssertCollectionChange(delegate(TColl list)
 			{
-				list.Remove(new Element("one"));
+				list.Remove( NewElement("one") );
 			});
 		}
 
 		public void TestCount()
 		{
-			Assert.AreEqual(NewPlainCollection().Count, SingleCollection().Count);
-		}
-
-		protected ICollectionElement NewElement(int index)
-		{
-			return new Element(Names[index]);
-		}
-
-		protected IList<ICollectionElement> SingleCollection()
-		{
-			CollectionHolder<IList<ICollectionElement>> holder = (CollectionHolder<IList<ICollectionElement>>) RetrieveOnlyInstance(typeof(CollectionHolder<IList<ICollectionElement>>));
-			return holder.Collection;
-		}
-
-		private ActivatableList<ICollectionElement> NewActivatableCollection()
-		{
-			ActivatableList<ICollectionElement> activatableList = new ActivatableList<ICollectionElement>(NewPlainCollection());
-			return activatableList;
-		}
-
-		protected List<ICollectionElement> NewPlainCollection()
-		{
-			List<ICollectionElement> plainList = new List<ICollectionElement>();
-			foreach (string name in Names)
-			{
-				plainList.Add(new Element(name));
-			}
-
-			foreach (string name in Names)
-			{
-				plainList.Add(new ActivatableElement(name));
-			}
-
-			return plainList;
+			Assert.AreEqual(NewPopulatedPlainCollection().Count, SingleCollection().Count);
 		}
 
 		protected int LastIndex()
@@ -114,16 +82,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent
 			return Names.Count * 2 - 1;
 		}
 
-		protected void AssertListOperation(Action<IList<ICollectionElement>> action)
-		{
-			action(SingleCollection());
-			Reopen();
-
-			List<ICollectionElement> expected = NewPlainCollection();
-			action(expected);
-
-			IteratorAssert.AreEqual(expected.GetEnumerator(), SingleCollection().GetEnumerator());
-		}
-	
+		protected abstract TColl NewPlainCollection();
+		protected abstract TColl SingleCollection();
+		protected abstract TColl NewActivatableCollection(TColl template);
+		
+		protected abstract TElem NewElement(string value);
+		protected abstract TElem NewActivatableElement(string value);
 	}
 }

@@ -5,17 +5,97 @@ using System.Collections.ObjectModel;
 using Db4objects.Db4o.Collections;
 using Db4oUnit;
 
-
 namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 {
-	public class ActivatableListTestCase : AbstractActivatableCollectionApiTestCase
+	public partial class ActivatableListTestCase : AbstractActivatableCollectionApiTestCase<IList<ICollectionElement>, ICollectionElement>
 	{
+		#region IList<T> members
+
+		public void TestCorrectContent()
+		{
+			IteratorAssert.AreEqual(NewPopulatedPlainCollection().GetEnumerator(), SingleCollection().GetEnumerator());
+		}
+
+		public void TestCollectionIsNotActivated()
+		{
+			Assert.IsFalse(Db().IsActive(SingleCollection()));
+		}
+
+		public void TestIndexOf()
+		{
+			const int itemIndex = 2;
+			IList<ICollectionElement> collection = SingleCollection();
+			int i = collection.Count;
+			Assert.AreEqual(itemIndex, collection.IndexOf(NewElement(itemIndex)));
+		}
+
+		public void TestIndexerGetter()
+		{
+			const int indexToTest = 1;
+			Assert.AreEqual(NewElement(indexToTest), SingleCollection()[indexToTest]);
+		}
+
+		public void TestCopyTo()
+		{
+			AssertCopy(delegate(ICollectionElement[] elements)
+			{
+				SingleCollection().CopyTo(elements, 0);
+			});
+		}
+
+		public void TestIndexerSetter()
+		{
+			AssertCollectionChange(delegate(IList<ICollectionElement> list)
+			{
+				const int indexToTest = 1;
+				list[indexToTest] = new Element("one-and-half");
+			});
+		}
+
+		public void TestInsert()
+		{
+			AssertCollectionChange(delegate(IList<ICollectionElement> list)
+			{
+				const int insertionIndex = 2;
+				const string newItemName = "two-and-half";
+
+				list.Insert(insertionIndex, new Element(newItemName));
+			});
+		}
+
+		public void TestRemoveAt()
+		{
+			AssertCollectionChange(delegate(IList<ICollectionElement> list)
+			{
+				list.RemoveAt(0);
+			});
+		}
+
+		public void TestRepeatedAdd()
+		{
+			ICollectionElement four = new Element("four");
+			SingleCollection().Add(four);
+			Db().Purge();
+
+			ICollectionElement five = new Element("five");
+			SingleCollection().Add(five);
+			Reopen();
+
+			IList<ICollectionElement> retrieved = SingleCollection();
+			Assert.IsTrue(retrieved.Contains(four));
+			Assert.IsTrue(retrieved.Contains(five));
+		}
+
+		#endregion
+
+		#region List<T> members
+
 		public void TestReadOnly()
 		{
 			ActivatableList<ICollectionElement> source = SingleActivatableCollection();
 			ReadOnlyCollection<ICollectionElement> readOnly = source.AsReadOnly();
 
-			IteratorAssert.AreEqual(NewPlainCollection().GetEnumerator(), readOnly.GetEnumerator());
+			IteratorAssert.AreEqual(NewPopulatedPlainList().GetEnumerator(), readOnly.GetEnumerator());
 
 			source.Add(new Element("n"));
 			Assert.IsGreaterOrEqual(0, readOnly.IndexOf(new Element("n")));
@@ -26,7 +106,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().AddRange(ToBeAdded());
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.AddRange(ToBeAdded());
 
 			IteratorAssert.AreEqual(expected.GetEnumerator(), SingleCollection().GetEnumerator());
@@ -111,7 +191,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 		{
 			Predicate<ICollectionElement> predicate = delegate(ICollectionElement candidate) { return candidate.Name == Names[0]; };
 
-			List<ICollectionElement> expected= NewPlainCollection().FindAll(predicate);
+			List<ICollectionElement> expected= NewPopulatedPlainList().FindAll(predicate);
 			List<ICollectionElement> actual = SingleActivatableCollection().FindAll(predicate);
 
 			IteratorAssert.SameContent(expected, actual);
@@ -129,14 +209,14 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 
 		public void FindIndexWithCount()
 		{
-			Assert.IsGreaterOrEqual(0, SingleActivatableCollection().FindIndex(0, NewPlainCollection().Count, delegate(ICollectionElement candidate) { return candidate.Name == Names[1]; }));
+			Assert.IsGreaterOrEqual(0, SingleActivatableCollection().FindIndex(0, NewPopulatedPlainList().Count, delegate(ICollectionElement candidate) { return candidate.Name == Names[1]; }));
 		}
 
 		public void TestFindLast()
 		{
 			Predicate<ICollectionElement> match = delegate(ICollectionElement candidate) { return candidate.Name == Names[2]; };
 
-			ICollectionElement expected = NewPlainCollection().FindLast(match);
+			ICollectionElement expected = NewPopulatedPlainList().FindLast(match);
 			ICollectionElement actual = SingleActivatableCollection().FindLast(match);
 
 			Assert.AreEqual(expected, actual);
@@ -149,12 +229,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 		
 		public void TestFindLastIndexWithStartIndex()
 		{
-			Assert.IsGreaterOrEqual(0, SingleActivatableCollection().FindLastIndex(NewPlainCollection().Count - 1, delegate(ICollectionElement candidate) { return candidate.Name == Names[1]; }));
+			Assert.IsGreaterOrEqual(0, SingleActivatableCollection().FindLastIndex(NewPopulatedPlainList().Count - 1, delegate(ICollectionElement candidate) { return candidate.Name == Names[1]; }));
 		}
 		
 		public void TestFindLastIndexWithCount()
 		{
-			Assert.IsGreaterOrEqual(0, SingleActivatableCollection().FindLastIndex(NewPlainCollection().Count - 1, NewPlainCollection().Count, delegate(ICollectionElement candidate) { return candidate.Name == Names[1]; }));
+			Assert.IsGreaterOrEqual(0, SingleActivatableCollection().FindLastIndex(NewPopulatedPlainList().Count - 1, NewPopulatedPlainList().Count, delegate(ICollectionElement candidate) { return candidate.Name == Names[1]; }));
 		}
 #endif
 
@@ -176,18 +256,18 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			int startIndex = 1;
 			int count = 3;
 
-			List<ICollectionElement> expected = NewPlainCollection().GetRange(startIndex, count);
+			List<ICollectionElement> expected = NewPopulatedPlainList().GetRange(startIndex, count);
 			List<ICollectionElement> actual = SingleActivatableCollection().GetRange(startIndex, count);
 
 			IteratorAssert.SameContent(expected, actual);
 		}
 
-		public void TestIndexOf()
+		public void TestIndexOfWithStartIndex()
 		{
 			ICollectionElement tbf = NewElement(Names.Count - 2);
 			const int startIndex = 1;
 			
-			int expectedIndex = NewPlainCollection().IndexOf(tbf, startIndex);
+			int expectedIndex = NewPopulatedPlainList().IndexOf(tbf, startIndex);
 			int actualIndex = SingleActivatableCollection().IndexOf(tbf, startIndex);
 
 			Assert.AreEqual(expectedIndex, actualIndex);
@@ -199,7 +279,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			const int startIndex = 1;
 			const int count = 3;
 
-			int expectedIndex = NewPlainCollection().IndexOf(tbf, startIndex, count);
+			int expectedIndex = NewPopulatedPlainList().IndexOf(tbf, startIndex, count);
 			int actualIndex = SingleActivatableCollection().IndexOf(tbf, startIndex, count);
 
 			Assert.AreEqual(expectedIndex, actualIndex);
@@ -212,7 +292,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().InsertRange(index, ToBeAdded());
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.InsertRange(index, ToBeAdded());
 
 			IteratorAssert.SameContent(expected, SingleActivatableCollection());
@@ -222,7 +302,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 		{
 			ICollectionElement tbf = NewElement(1);
 
-			List<ICollectionElement> collection = NewPlainCollection();
+			List<ICollectionElement> collection = NewPopulatedPlainList();
 			int expected = collection.LastIndexOf(tbf);
 			int actual = SingleActivatableCollection().LastIndexOf(tbf);
 			
@@ -234,7 +314,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			ICollectionElement tbf = NewElement(1);
 
 			int startIndex = LastIndex();
-			int expected = NewPlainCollection().LastIndexOf(tbf, startIndex);
+			int expected = NewPopulatedPlainList().LastIndexOf(tbf, startIndex);
 			int actual = SingleActivatableCollection().LastIndexOf(tbf, startIndex);
 			
 			Assert.AreEqual(expected, actual);
@@ -247,7 +327,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			int startIndex = Names.Count;
 			const int count = 5;
 
-			int expected = NewPlainCollection().LastIndexOf(tbf, startIndex, count);
+			int expected = NewPopulatedPlainList().LastIndexOf(tbf, startIndex, count);
 			int actual = SingleActivatableCollection().LastIndexOf(tbf, startIndex, count);
 
 			Assert.AreEqual(expected, actual);
@@ -261,7 +341,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			int actualCount = SingleActivatableCollection().RemoveAll(predicate);
 			Reopen();
 
-			List<ICollectionElement> expectedCollection = NewPlainCollection();
+			List<ICollectionElement> expectedCollection = NewPopulatedPlainList();
 			int expectedCount = expectedCollection.RemoveAll(predicate);
 
 			Assert.AreEqual(expectedCount, actualCount);
@@ -277,7 +357,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().RemoveRange(startIndex, count);
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.RemoveRange(startIndex, count);
 
 			IteratorAssert.SameContent(expected, SingleActivatableCollection());
@@ -288,7 +368,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().Reverse();
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.Reverse();
 
 			IteratorAssert.AreEqual(expected.GetEnumerator(), SingleActivatableCollection().GetEnumerator());
@@ -302,7 +382,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().Reverse(index, count);
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.Reverse(index, count);
 
 			IteratorAssert.AreEqual(expected.GetEnumerator(), SingleActivatableCollection().GetEnumerator());
@@ -313,7 +393,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			ActivatableList<ICollectionElement> actual = SingleActivatableCollection();
 			actual.Sort();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.Sort();
 
 			IteratorAssert.AreEqual(expected.GetEnumerator(), actual.GetEnumerator());
@@ -328,7 +408,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().Sort(index, count, comparer);
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.Sort(index, count, comparer);
 
 			IteratorAssert.AreEqual(expected.GetEnumerator(), SingleActivatableCollection().GetEnumerator());
@@ -341,7 +421,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().Sort(comparer);
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.Sort(comparer);
 
 			IteratorAssert.AreEqual(expected.GetEnumerator(), SingleActivatableCollection().GetEnumerator());
@@ -357,7 +437,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 			SingleActivatableCollection().Sort(comparison);
 			Reopen();
 
-			List<ICollectionElement> expected = NewPlainCollection();
+			List<ICollectionElement> expected = NewPopulatedPlainList();
 			expected.Sort(comparison);
 
 			IteratorAssert.AreEqual(expected.GetEnumerator(), SingleActivatableCollection().GetEnumerator());
@@ -365,7 +445,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 
 		public void TestToArray()
 		{
-			ICollectionElement[] expected = NewPlainCollection().ToArray();
+			ICollectionElement[] expected = NewPopulatedPlainList().ToArray();
 			ICollectionElement[] actual = SingleActivatableCollection().ToArray();
 
 			IteratorAssert.AreEqual(expected, actual.GetEnumerator());
@@ -399,31 +479,12 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections.Transparent.List
 		public void TestConvertAll()
 		{
 			Converter<ICollectionElement, string> toString = delegate(ICollectionElement source) { return source.Name; };
-			List<string> expectedlNames = NewPlainCollection().ConvertAll(toString);
+			List<string> expectedlNames = NewPopulatedPlainList().ConvertAll(toString);
 			List<string> actualNames = SingleActivatableCollection().ConvertAll(toString);
 
 			IteratorAssert.AreEqual(expectedlNames.GetEnumerator(), actualNames.GetEnumerator());
 		}
 #endif
-
-		private ActivatableList<ICollectionElement> SingleActivatableCollection()
-		{
-			return (ActivatableList<ICollectionElement>) SingleCollection();
-		}
-
-		private List<ICollectionElement> ToBeAdded()
-		{
-			return NewPlainCollection();
-		}
-	}
-
-	public class SimpleComparer : IComparer<ICollectionElement>
-	{
-		public static SimpleComparer Instance = new SimpleComparer();
-
-		public int Compare(ICollectionElement x, ICollectionElement y)
-		{
-			return x.Name.CompareTo(y.Name);
-		}
+		#endregion
 	}
 }

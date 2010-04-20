@@ -15,10 +15,22 @@ namespace Db4oTool.Tests.Integration.Model
 			get { return _name; }
 		}
 
+		public override bool Equals(object obj)
+		{
+			Item other = obj as Item;
+			if (other == null) return false;
+
+			return _name.CompareTo(other._name) == 0;
+		}
+
+		public override int GetHashCode()
+		{
+			return _name.GetHashCode();
+		}
+
 		public override string ToString()
 		{
 			return "Item: " + _name;
 		}
-
 	}
 }
