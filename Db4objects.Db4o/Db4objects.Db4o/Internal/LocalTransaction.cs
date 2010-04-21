@@ -302,9 +302,9 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public override void WriteUpdateAdjustIndexes(int id, ClassMetadata clazz, ArrayType
-			 typeInfo, int cascade)
+			 typeInfo)
 		{
-			new WriteUpdateProcessor(this, id, clazz, typeInfo, cascade).Run();
+			new WriteUpdateProcessor(this, id, clazz, typeInfo).Run();
 		}
 
 		private ICallbacks Callbacks()

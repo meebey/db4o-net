@@ -16,5 +16,7 @@ namespace Db4objects.Db4o.Internal.Activation
 		IUpdateDepth AdjustUpdateDepthForCascade(bool isCollection);
 
 		IUpdateDepth Descend();
+
+		bool CanSkip(ClassMetadata clazz);
 	}
 }

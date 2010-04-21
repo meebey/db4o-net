@@ -619,18 +619,18 @@ namespace Db4objects.Db4o.Internal
 			return depth.AdjustDepthToBorders();
 		}
 
-		public FixedUpdateDepth UpdateDepthFromConfig()
+		public int UpdateDepthFromConfig()
 		{
-			if (_config != null && _config.UpdateDepth() != null)
+			if (_config != null && _config.UpdateDepth() != Const4.Unspecified)
 			{
 				return _config.UpdateDepth();
 			}
 			Config4Impl config = ConfigImpl();
-			FixedUpdateDepth depth = config.UpdateDepth();
+			int depth = config.UpdateDepth();
 			if (_ancestor != null)
 			{
-				FixedUpdateDepth ancestordepth = _ancestor.UpdateDepthFromConfig();
-				if (ancestordepth.IsBroaderThan(depth))
+				int ancestordepth = _ancestor.UpdateDepthFromConfig();
+				if (ancestordepth > depth)
 				{
 					return ancestordepth;
 				}

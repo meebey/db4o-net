@@ -37,6 +37,9 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec ActivationDepthProviderKey = new KeySpec(LegacyActivationDepthProvider
 			.Instance);
 
+		private static readonly KeySpec UpdateDepthProviderKey = new KeySpec(new LegacyUpdateDepthProvider
+			());
+
 		private static readonly KeySpec AllowVersionUpdatesKey = new KeySpec(false);
 
 		private static readonly KeySpec AutomaticShutdownKey = new KeySpec(true);
@@ -61,9 +64,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec ClassloaderKey = new KeySpec(null);
 
-		private sealed class _IDeferred_72 : KeySpec.IDeferred
+		private sealed class _IDeferred_73 : KeySpec.IDeferred
 		{
-			public _IDeferred_72()
+			public _IDeferred_73()
 			{
 			}
 
@@ -74,16 +77,16 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_72
+		private static readonly KeySpec ClientServerFactoryKey = new KeySpec(new _IDeferred_73
 			());
 
 		private static readonly KeySpec DatabaseGrowthSizeKey = new KeySpec(0);
 
 		private static readonly KeySpec DetectSchemaChangesKey = new KeySpec(true);
 
-		private sealed class _IDeferred_82 : KeySpec.IDeferred
+		private sealed class _IDeferred_83 : KeySpec.IDeferred
 		{
-			public _IDeferred_82()
+			public _IDeferred_83()
 			{
 			}
 
@@ -93,7 +96,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_82());
+		private static readonly KeySpec DiagnosticKey = new KeySpec(new _IDeferred_83());
 
 		private static readonly KeySpec DisableCommitRecoveryKey = new KeySpec(false);
 
@@ -110,9 +113,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec EncryptKey = new KeySpec(false);
 
-		private sealed class _IDeferred_100 : KeySpec.IDeferred
+		private sealed class _IDeferred_101 : KeySpec.IDeferred
 		{
-			public _IDeferred_100()
+			public _IDeferred_101()
 			{
 			}
 
@@ -122,7 +125,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_100
+		private static readonly KeySpec EnvironmentContributionsKey = new KeySpec(new _IDeferred_101
 			());
 
 		private static readonly KeySpec ExceptionalClassesKey = new KeySpec(null);
@@ -175,9 +178,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec PrefetchSlotCacheSizeKey = new KeySpec(0);
 
-		private sealed class _IDeferred_152 : KeySpec.IDeferred
+		private sealed class _IDeferred_153 : KeySpec.IDeferred
 		{
-			public _IDeferred_152()
+			public _IDeferred_153()
 			{
 			}
 
@@ -189,7 +192,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_152());
+		private static readonly KeySpec ReadAsKey = new KeySpec(new _IDeferred_153());
 
 		private static readonly KeySpec RecoveryModeKey = new KeySpec(false);
 
@@ -209,8 +212,7 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec TimeoutServerSocketKey = new KeySpec(Const4.ServerSocketTimeout
 			);
 
-		private static readonly KeySpec UpdateDepthKey = new KeySpec(UpdateDepthFactory.ForDepth
-			(1));
+		private static readonly KeySpec UpdateDepthKey = new KeySpec(1);
 
 		private static readonly KeySpec WeakReferenceCollectionIntervalKey = new KeySpec(
 			1000);
@@ -228,9 +230,9 @@ namespace Db4objects.Db4o.Internal
 
 		private static readonly KeySpec TaintedKey = new KeySpec(false);
 
-		private sealed class _IReferenceSystemFactory_190 : IReferenceSystemFactory
+		private sealed class _IReferenceSystemFactory_191 : IReferenceSystemFactory
 		{
-			public _IReferenceSystemFactory_190()
+			public _IReferenceSystemFactory_191()
 			{
 			}
 
@@ -240,12 +242,12 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_190
+		private static readonly KeySpec ReferenceSystemFactoryKey = new KeySpec(new _IReferenceSystemFactory_191
 			());
 
-		private sealed class _INameProvider_196 : INameProvider
+		private sealed class _INameProvider_197 : INameProvider
 		{
-			public _INameProvider_196()
+			public _INameProvider_197()
 			{
 			}
 
@@ -255,7 +257,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_196
+		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_197
 			());
 
 		private ObjectContainerBase _container;
@@ -819,7 +821,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				dp.CheckUpdateDepth(depth);
 			}
-			_config.Put(UpdateDepthKey, UpdateDepthFactory.ForDepth(depth));
+			_config.Put(UpdateDepthKey, depth);
 		}
 
 		public void UseBTreeSystem()
@@ -1134,9 +1136,9 @@ namespace Db4objects.Db4o.Internal
 			return _config.GetAsInt(TimeoutServerSocketKey);
 		}
 
-		public FixedUpdateDepth UpdateDepth()
+		public int UpdateDepth()
 		{
-			return (FixedUpdateDepth)_config.Get(UpdateDepthKey);
+			return _config.GetAsInt(UpdateDepthKey);
 		}
 
 		public int WeakReferenceCollectionInterval()
@@ -1223,9 +1225,19 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(ActivationDepthProviderKey, provider);
 		}
 
+		public void UpdateDepthProvider(IUpdateDepthProvider provider)
+		{
+			_config.Put(UpdateDepthProviderKey, provider);
+		}
+
 		public IActivationDepthProvider ActivationDepthProvider()
 		{
 			return (IActivationDepthProvider)_config.Get(ActivationDepthProviderKey);
+		}
+
+		public IUpdateDepthProvider UpdateDepthProvider()
+		{
+			return (IUpdateDepthProvider)_config.Get(UpdateDepthProviderKey);
 		}
 
 		public void RegisterTypeHandler(ITypeHandlerPredicate predicate, ITypeHandler4 typeHandler

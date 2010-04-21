@@ -236,7 +236,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public abstract void WriteUpdateAdjustIndexes(int id, ClassMetadata clazz, ArrayType
-			 typeInfo, int cascade);
+			 typeInfo);
 
 		public ObjectContainerBase Container()
 		{

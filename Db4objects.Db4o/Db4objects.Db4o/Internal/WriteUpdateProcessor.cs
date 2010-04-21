@@ -20,16 +20,15 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ArrayType _typeInfo;
 
-		private int _cascade;
+		private int _cascade = 0;
 
 		public WriteUpdateProcessor(LocalTransaction transaction, int id, ClassMetadata clazz
-			, ArrayType typeInfo, int cascade)
+			, ArrayType typeInfo)
 		{
 			_transaction = transaction;
 			_id = id;
 			_clazz = clazz;
 			_typeInfo = typeInfo;
-			_cascade = cascade;
 		}
 
 		public virtual void Run()

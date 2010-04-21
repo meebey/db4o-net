@@ -116,7 +116,7 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		public override void WriteUpdateAdjustIndexes(int id, ClassMetadata classMetadata
-			, ArrayType arrayType, int cascade)
+			, ArrayType arrayType)
 		{
 		}
 

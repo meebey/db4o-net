@@ -27,9 +27,16 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 			public int _id;
 
-			public Item(int id)
+			public CollectionUpdateTPTestCase.Child _child;
+
+			public Item(int id) : this(id, null)
+			{
+			}
+
+			public Item(int id, CollectionUpdateTPTestCase.Child child)
 			{
 				_id = id;
+				_child = child;
 			}
 
 			public virtual void Id(int id)
@@ -42,6 +49,12 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			{
 				_activator.Activate(ActivationPurpose.Read);
 				return _id;
+			}
+
+			public virtual CollectionUpdateTPTestCase.Child Child()
+			{
+				_activator.Activate(ActivationPurpose.Read);
+				return _child;
 			}
 
 			public virtual void Activate(ActivationPurpose purpose)
@@ -58,6 +71,26 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			{
 				_activator.Activate(ActivationPurpose.Read);
 				return "Item #" + _id;
+			}
+		}
+
+		public class Child
+		{
+			public int _id;
+
+			public Child(int id)
+			{
+				_id = id;
+			}
+
+			public virtual void Id(int id)
+			{
+				_id = id;
+			}
+
+			public override string ToString()
+			{
+				return "Child #" + _id;
 			}
 		}
 
@@ -93,21 +126,22 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		{
 			CollectionUpdateTPTestCase.Holder holder = new CollectionUpdateTPTestCase.Holder(
 				new CollectionUpdateTPTestCase.Item[] { new CollectionUpdateTPTestCase.Item(1), 
-				new CollectionUpdateTPTestCase.Item(2) });
+				new CollectionUpdateTPTestCase.Item(2, new CollectionUpdateTPTestCase.Child(7)) }
+				);
 			Store(holder);
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestStructureUpdate()
 		{
-			AssertItemUpdates(1, new _IProcedure4_81(this));
+			AssertUpdates(0, 0, new _IProcedure4_108(this));
 			Reopen();
 			AssertHolderContent(new int[] { Id1, Id2, 3 });
 		}
 
-		private sealed class _IProcedure4_81 : IProcedure4
+		private sealed class _IProcedure4_108 : IProcedure4
 		{
-			public _IProcedure4_81(CollectionUpdateTPTestCase _enclosing)
+			public _IProcedure4_108(CollectionUpdateTPTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -127,63 +161,100 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestElementUpdate()
 		{
-			AssertItemUpdates(1, new _IProcedure4_94());
-			//db().store(holder, Integer.MAX_VALUE);
+			AssertUpdates(1, 0, new _IProcedure4_121(this));
 			Reopen();
 			AssertHolderContent(new int[] { 42, Id2 });
 		}
 
-		private sealed class _IProcedure4_94 : IProcedure4
+		private sealed class _IProcedure4_121 : IProcedure4
 		{
-			public _IProcedure4_94()
+			public _IProcedure4_121(CollectionUpdateTPTestCase _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			public void Apply(object holder)
 			{
 				((CollectionUpdateTPTestCase.Holder)holder).Item(0).Id(42);
+				this._enclosing.Db().Store(((CollectionUpdateTPTestCase.Holder)holder), int.MaxValue
+					);
 			}
+
+			private readonly CollectionUpdateTPTestCase _enclosing;
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestElementUpdateAndActivation()
 		{
-			AssertItemUpdates(1, new _IProcedure4_105());
-			//db().store(holder, Integer.MAX_VALUE);
+			AssertUpdates(1, 1, new _IProcedure4_132(this));
 			Reopen();
 			AssertHolderContent(new int[] { 42, Id2 });
 		}
 
-		private sealed class _IProcedure4_105 : IProcedure4
+		private sealed class _IProcedure4_132 : IProcedure4
 		{
-			public _IProcedure4_105()
+			public _IProcedure4_132(CollectionUpdateTPTestCase _enclosing)
 			{
+				this._enclosing = _enclosing;
 			}
 
 			public void Apply(object holder)
 			{
 				((CollectionUpdateTPTestCase.Holder)holder).Item(0).Id(42);
 				((CollectionUpdateTPTestCase.Holder)holder).Item(1).Id();
+				this._enclosing.Db().Store(((CollectionUpdateTPTestCase.Holder)holder), int.MaxValue
+					);
 			}
+
+			private readonly CollectionUpdateTPTestCase _enclosing;
 		}
 
-		private void AssertItemUpdates(int expectedCount, IProcedure4 block)
+		/// <exception cref="System.Exception"></exception>
+		public virtual void TestChildUpdate()
+		{
+			AssertUpdates(0, 1, new _IProcedure4_144(this));
+			Reopen();
+			AssertHolderContent(new int[] { Id1, Id2 });
+		}
+
+		private sealed class _IProcedure4_144 : IProcedure4
+		{
+			public _IProcedure4_144(CollectionUpdateTPTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Apply(object holder)
+			{
+				((CollectionUpdateTPTestCase.Holder)holder).Item(1).Child().Id(100);
+				this._enclosing.Db().Store(((CollectionUpdateTPTestCase.Holder)holder), int.MaxValue
+					);
+			}
+
+			private readonly CollectionUpdateTPTestCase _enclosing;
+		}
+
+		private void AssertUpdates(int expectedItemCount, int expectedChildCount, IProcedure4
+			 block)
 		{
 			IntByRef itemCount = new IntByRef(0);
+			IntByRef childCount = new IntByRef(0);
 			EventRegistry().Updated += new System.EventHandler<Db4objects.Db4o.Events.ObjectInfoEventArgs>
-				(new _IEventListener4_118(itemCount).OnEvent);
+				(new _IEventListener4_157(itemCount, childCount).OnEvent);
 			CollectionUpdateTPTestCase.Holder holder = ((CollectionUpdateTPTestCase.Holder)RetrieveOnlyInstance
 				(typeof(CollectionUpdateTPTestCase.Holder)));
 			block.Apply(holder);
 			Commit();
-			Assert.AreEqual(expectedCount, itemCount.value);
+			Assert.AreEqual(expectedItemCount, itemCount.value);
+			Assert.AreEqual(expectedChildCount, childCount.value);
 		}
 
-		private sealed class _IEventListener4_118
+		private sealed class _IEventListener4_157
 		{
-			public _IEventListener4_118(IntByRef itemCount)
+			public _IEventListener4_157(IntByRef itemCount, IntByRef childCount)
 			{
 				this.itemCount = itemCount;
+				this.childCount = childCount;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.ObjectInfoEventArgs args
@@ -191,12 +262,17 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			{
 				if (((ObjectInfoEventArgs)args).Object is CollectionUpdateTPTestCase.Item)
 				{
-					Sharpen.Runtime.Out.WriteLine(((ObjectInfoEventArgs)args).Object);
 					itemCount.value = itemCount.value + 1;
+				}
+				if (((ObjectInfoEventArgs)args).Object is CollectionUpdateTPTestCase.Child)
+				{
+					childCount.value = childCount.value + 1;
 				}
 			}
 
 			private readonly IntByRef itemCount;
+
+			private readonly IntByRef childCount;
 		}
 
 		private void AssertHolderContent(int[] ids)

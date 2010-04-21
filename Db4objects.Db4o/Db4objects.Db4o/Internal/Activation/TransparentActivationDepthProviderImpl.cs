@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		private IRollbackStrategy _rollbackStrategy;
 
-		private bool _transparentPersistenceIsEnabled;
+		public bool _transparentPersistenceIsEnabled;
 
 		public virtual void EnableTransparentPersistenceSupportFor(IInternalObjectContainer
 			 container, IRollbackStrategy rollbackStrategy)
@@ -202,7 +202,8 @@ namespace Db4objects.Db4o.Internal.Activation
 			private void StoreModifiedObjects()
 			{
 				ObjectContainerBase container = _transaction.Container();
-				container.StoreAll(_transaction, _modified.ValuesIterator());
+				container.StoreAll(_transaction, _modified.ValuesIterator(), container.UpdateDepthProvider
+					().Unspecified(true));
 				_transaction.ProcessDeletes();
 			}
 

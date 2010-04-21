@@ -5,21 +5,33 @@ using Db4objects.Db4o.Internal.Activation;
 
 namespace Db4objects.Db4o.Internal.Activation
 {
-	public sealed class FixedUpdateDepth : IUpdateDepth
+	public abstract class FixedUpdateDepth : IUpdateDepth
 	{
 		private int _depth;
+
+		private bool _tpMode = false;
 
 		public FixedUpdateDepth(int depth)
 		{
 			_depth = depth;
 		}
 
-		public bool SufficientDepth()
+		public virtual void TpMode(bool tpMode)
+		{
+			_tpMode = tpMode;
+		}
+
+		public virtual bool TpMode()
+		{
+			return _tpMode;
+		}
+
+		public virtual bool SufficientDepth()
 		{
 			return _depth > 0;
 		}
 
-		public bool Negative()
+		public virtual bool Negative()
 		{
 			// should never happen?
 			return _depth < 0;
@@ -30,7 +42,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			return GetType().FullName + ": " + _depth;
 		}
 
-		public IUpdateDepth Adjust(ClassMetadata clazz)
+		public virtual IUpdateDepth Adjust(ClassMetadata clazz)
 		{
 			if (clazz.CascadesOnDeleteOrUpdate())
 			{
@@ -39,34 +51,32 @@ namespace Db4objects.Db4o.Internal.Activation
 			return Descend();
 		}
 
-		public bool IsBroaderThan(Db4objects.Db4o.Internal.Activation.FixedUpdateDepth other
-			)
+		public virtual bool IsBroaderThan(Db4objects.Db4o.Internal.Activation.FixedUpdateDepth
+			 other)
 		{
 			return _depth > other._depth;
 		}
 
 		// TODO code duplication in fixed activation/update depth
-		public Db4objects.Db4o.Internal.Activation.FixedUpdateDepth AdjustDepthToBorders(
-			)
+		public virtual Db4objects.Db4o.Internal.Activation.FixedUpdateDepth AdjustDepthToBorders
+			()
 		{
-			return new Db4objects.Db4o.Internal.Activation.FixedUpdateDepth(DepthUtil.AdjustDepthToBorders
-				(_depth));
+			return ForDepth(DepthUtil.AdjustDepthToBorders(_depth));
 		}
 
-		public IUpdateDepth AdjustUpdateDepthForCascade(bool isCollection)
+		public virtual IUpdateDepth AdjustUpdateDepthForCascade(bool isCollection)
 		{
 			int minimumUpdateDepth = isCollection ? 2 : 1;
 			if (_depth < minimumUpdateDepth)
 			{
-				return new Db4objects.Db4o.Internal.Activation.FixedUpdateDepth(minimumUpdateDepth
-					);
+				return ForDepth(minimumUpdateDepth);
 			}
 			return this;
 		}
 
-		public IUpdateDepth Descend()
+		public virtual IUpdateDepth Descend()
 		{
-			return new Db4objects.Db4o.Internal.Activation.FixedUpdateDepth(_depth - 1);
+			return ForDepth(_depth - 1);
 		}
 
 		public override bool Equals(object other)
@@ -86,5 +96,10 @@ namespace Db4objects.Db4o.Internal.Activation
 		{
 			return _depth;
 		}
+
+		protected abstract Db4objects.Db4o.Internal.Activation.FixedUpdateDepth ForDepth(
+			int depth);
+
+		public abstract bool CanSkip(ClassMetadata arg1);
 	}
 }

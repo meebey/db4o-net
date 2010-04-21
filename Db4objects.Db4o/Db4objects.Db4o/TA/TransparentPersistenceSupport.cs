@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.TA;
@@ -59,6 +60,12 @@ namespace Db4objects.Db4o.TA
 			ITransparentActivationDepthProvider provider = (ITransparentActivationDepthProvider
 				)ActivationProvider(container);
 			provider.EnableTransparentPersistenceSupportFor(container, _rollbackStrategy);
+		}
+
+		public override void Prepare(IConfiguration configuration)
+		{
+			base.Prepare(configuration);
+			((Config4Impl)configuration).UpdateDepthProvider(new TPUpdateDepthProvider());
 		}
 	}
 }

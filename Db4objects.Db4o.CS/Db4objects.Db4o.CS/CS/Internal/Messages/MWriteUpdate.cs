@@ -26,7 +26,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				Slot newSlot = null;
 				if (clientSlot.IsUpdate())
 				{
-					Transaction().WriteUpdateAdjustIndexes(id, classMetadata, arrayType, 0);
+					Transaction().WriteUpdateAdjustIndexes(id, classMetadata, arrayType);
 					newSlot = LocalContainer().AllocateSlotForUserObjectUpdate(_payLoad.Transaction()
 						, _payLoad.GetID(), _payLoad.Length());
 				}

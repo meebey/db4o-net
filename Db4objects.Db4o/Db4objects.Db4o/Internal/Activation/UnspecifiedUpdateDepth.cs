@@ -6,12 +6,9 @@ using Db4objects.Db4o.Internal.Activation;
 
 namespace Db4objects.Db4o.Internal.Activation
 {
-	public class UnspecifiedUpdateDepth : IUpdateDepth
+	public abstract class UnspecifiedUpdateDepth : IUpdateDepth
 	{
-		public static readonly Db4objects.Db4o.Internal.Activation.UnspecifiedUpdateDepth
-			 Instance = new Db4objects.Db4o.Internal.Activation.UnspecifiedUpdateDepth();
-
-		private UnspecifiedUpdateDepth()
+		protected UnspecifiedUpdateDepth()
 		{
 		}
 
@@ -32,10 +29,9 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		public virtual IUpdateDepth Adjust(ClassMetadata clazz)
 		{
-			FixedUpdateDepth depth = clazz.UpdateDepthFromConfig();
-			//        depth = clazz.adjustCollectionDepthToBorders(depth);
-			//        return depth.adjust(clazz);
-			return depth.Descend();
+			FixedUpdateDepth depth = (FixedUpdateDepth)ForDepth(clazz.UpdateDepthFromConfig()
+				).Descend();
+			return depth;
 		}
 
 		public virtual IUpdateDepth AdjustUpdateDepthForCascade(bool isCollection)
@@ -47,5 +43,9 @@ namespace Db4objects.Db4o.Internal.Activation
 		{
 			throw new InvalidOperationException();
 		}
+
+		protected abstract FixedUpdateDepth ForDepth(int depth);
+
+		public abstract bool CanSkip(ClassMetadata arg1);
 	}
 }

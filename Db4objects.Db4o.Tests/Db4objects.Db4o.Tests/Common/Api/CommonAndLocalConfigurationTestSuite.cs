@@ -13,7 +13,6 @@ using Db4objects.Db4o.Config.Encoding;
 using Db4objects.Db4o.Diagnostic;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Tests.Common.Api;
@@ -95,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				common.TestConstructors = true;
 				Assert.IsTrue(legacy.TestConstructors());
 				common.UpdateDepth = 1024;
-				Assert.AreEqual(UpdateDepthFactory.ForDepth(1024), legacy.UpdateDepth());
+				Assert.AreEqual(1024, legacy.UpdateDepth());
 				common.WeakReferences = false;
 				Assert.IsFalse(legacy.WeakReferences());
 				common.WeakReferenceCollectionInterval = 1024;

@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Db4objects.Drs.Tests")]
-[assembly: AssemblyDescription("Db4objects.Drs.Tests 7.13.143.14312 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Drs.Tests 7.13.144.14312 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("7.13.143.14312")]
+[assembly: AssemblyVersion("7.13.144.14312")]

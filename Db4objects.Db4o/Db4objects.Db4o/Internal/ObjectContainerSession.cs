@@ -278,7 +278,8 @@ namespace Db4objects.Db4o.Internal
 			lock (Lock())
 			{
 				CheckClosed();
-				_server.Store(_transaction, obj, UpdateDepthFactory.ForDepth(depth));
+				_server.Store(_transaction, obj, (depth == Const4.Unspecified ? (IUpdateDepth)UpdateDepthProvider
+					().Unspecified(false) : (IUpdateDepth)UpdateDepthProvider().ForDepth(depth)));
 			}
 		}
 
@@ -610,6 +611,11 @@ namespace Db4objects.Db4o.Internal
 			 objects)
 		{
 			_server.StoreAll(transaction, objects);
+		}
+
+		public virtual IUpdateDepthProvider UpdateDepthProvider()
+		{
+			return ConfigImpl.UpdateDepthProvider();
 		}
 	}
 }

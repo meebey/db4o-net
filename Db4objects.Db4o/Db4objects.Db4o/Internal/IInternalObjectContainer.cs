@@ -4,6 +4,7 @@ using System.Collections;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Reflect;
@@ -58,5 +59,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		void StoreAll(Db4objects.Db4o.Internal.Transaction trans, IEnumerator objects);
+
+		IUpdateDepthProvider UpdateDepthProvider();
 	}
 }

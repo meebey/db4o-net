@@ -2029,7 +2029,7 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public void Store(Transaction trans, object obj)
 		{
-			Store(trans, obj, UnspecifiedUpdateDepth.Instance);
+			Store(trans, obj, UpdateDepthProvider().Unspecified(false));
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -2046,7 +2046,8 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public int StoreInternal(Transaction trans, object obj, bool checkJustSet)
 		{
-			return StoreInternal(trans, obj, UnspecifiedUpdateDepth.Instance, checkJustSet);
+			return StoreInternal(trans, obj, UpdateDepthProvider().Unspecified(false), checkJustSet
+				);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -2108,7 +2109,7 @@ namespace Db4objects.Db4o.Internal
 				_handlers._replicationReferenceProvider = referenceProvider;
 				try
 				{
-					Store2(CheckTransaction(), obj, UpdateDepthFactory.ForDepth(1), false);
+					Store2(CheckTransaction(), obj, UpdateDepthProvider().ForDepth(1), false);
 				}
 				finally
 				{
@@ -2680,6 +2681,15 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
+		public virtual void StoreAll(Transaction transaction, IEnumerator objects, IUpdateDepth
+			 depth)
+		{
+			while (objects.MoveNext())
+			{
+				Store(transaction, objects.Current, depth);
+			}
+		}
+
 		public virtual void WithTransaction(Transaction transaction, IRunnable runnable)
 		{
 			lock (_lock)
@@ -2737,6 +2747,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				_blockConverter = new BlockSizeBlockConverter(blockSize);
 			}
+		}
+
+		public virtual IUpdateDepthProvider UpdateDepthProvider()
+		{
+			return ConfigImpl.UpdateDepthProvider();
 		}
 
 		public abstract void Activate(object arg1, int arg2);
