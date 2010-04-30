@@ -711,5 +711,11 @@ namespace Db4objects.Db4o.Internal
         {
             throw exc;
         }
+
+        public static sbyte ToSByte(byte b)
+        {
+		    return (sbyte)b;
+	    }
+
     }
 }
