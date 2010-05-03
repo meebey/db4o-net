@@ -13,6 +13,11 @@ namespace Db4oTool.Tests.Core
 				((List<int>)_list).Sort();
 			}
 
+			public void CastFollowedByMethodExpectingDelegate()
+			{
+				((List<int>)_list).Sort(Comparison);
+			}
+
 			public void CastFollowedByMethodWithOneArgCall()
 			{
 				((List<int>)_list).BinarySearch(10);
@@ -66,6 +71,11 @@ namespace Db4oTool.Tests.Core
 			private static int StaticGetValue()
 			{
 				return Environment.ProcessorCount;
+			}
+
+			private static int Comparison(int lhf, int rhs)
+			{
+				return 0;
 			}
 
 			private IList<int> _list;

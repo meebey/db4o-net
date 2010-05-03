@@ -132,7 +132,7 @@ namespace Db4oTool.Core
 		{
 			MethodReference methodReference = (MethodReference) methodCall.Operand;
 			MethodDefinition methodDefinition = methodReference.Resolve();
-			return (methodDefinition.IsStatic ? 0 : 1) + methodDefinition.Parameters.Count;
+			return (methodDefinition.IsStatic || methodDefinition.IsConstructor ? 0 : 1) + methodDefinition.Parameters.Count;
 		}
 
 		private bool IsNonVoidMethodCall(Instruction instruction)

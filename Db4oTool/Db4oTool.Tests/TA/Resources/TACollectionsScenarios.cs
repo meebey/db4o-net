@@ -85,6 +85,21 @@ public class TACollectionsScenarios
 		int foo = ((List<string>)_ilist).Capacity;
 	}
 
+	public void CastConsumedByMethodExpectingExplicityDelegate()
+	{
+		((List<string>)_ilist).Sort(new Comparison<string>(Compare));
+	}
+
+	public void CastConsumedByMethodExpectingDelegate()
+	{
+		((List<string>)_ilist).Sort(Compare);
+	}
+
+	private int Compare(string lhs, string rhs)
+	{
+		return 0;
+	}
+
 	/**
 	 * The following instantiations of List<> should not be exchanged by its ActivatableList<> counterparts since
 	 * they are assigning directly to List<> instead of IList<>
