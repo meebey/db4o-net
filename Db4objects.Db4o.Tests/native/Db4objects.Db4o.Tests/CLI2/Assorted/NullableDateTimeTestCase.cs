@@ -17,14 +17,16 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
             public object _untypedArray;
 
+			public Item()
+			{
+			}
 
             public Item(DateTime? value)
             {
-                _typedDateTime = value;
+				_typedDateTime = value;
                 _untypedDateTime = value;
                 _typedArray = new DateTime?[] {value};
                 _untypedArray = new DateTime?[] {value};
-
             }
         }
 
