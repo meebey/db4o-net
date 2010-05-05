@@ -53,6 +53,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 #endif
 					typeof(ImageTestCase),
 					typeof(JavaDateCompatibilityTestCase),
+                    typeof(JavaSimpleChecksumCompatibilityTestCase),
 					typeof(JavaUUIDCompatibilityTestCase),
 					typeof(MDArrayTestCase),
 #if !CF && !SILVERLIGHT
