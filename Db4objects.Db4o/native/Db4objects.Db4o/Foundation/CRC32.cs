@@ -1,31 +1,11 @@
 namespace Db4objects.Db4o.Foundation
 {
-	/// <summary>
-	/// <P> Calculates the CRC32 - 32 bit Cyclical Redundancy Check
-	/// <P> This check is used in numerous systems to verify the integrity
-	/// of information.
-	/// </summary>
-	/// <remarks>
-	/// <P> Calculates the CRC32 - 32 bit Cyclical Redundancy Check
-	/// <P> This check is used in numerous systems to verify the integrity
-	/// of information.  It's also used as a hashing function.  Unlike a regular
-	/// checksum, it's sensitive to the order of the characters.
-	/// It produces a 32 bit (Java <CODE>int</CODE>.
-	/// <P>
-	/// This Java programme was translated from a C version I had written.
-	/// <P> This software is in the public domain.
-	/// </remarks>
-	/// <author>Michael Lecuyer</author>
-	/// <version>1.1 August 11, 1998</version>
     public class CRC32
     {
         private static uint[] crcTable;
 
         static CRC32()
         {
-            // This software is in the public domain.
-            //
-            // CRC Lookup table
             BuildCRCTable();
         }
 
