@@ -24,12 +24,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             {
                 buffer.WriteInt(ints[i]);
             }
-            buffer.Seek(0);
-            long checkSum = 0;
-            for (int i = 0; i < buffer.Length(); i++)
-            {
-                checkSum = SimpleCheckSum.AddToCheckSum(checkSum, buffer.ReadByte());
-            }
+            long checkSum = CRC32.CheckSum(buffer._buffer, 0, buffer._buffer.Length);
 
             _expectedJavaOutput = checkSum.ToString();
             RunTest();
@@ -67,11 +62,7 @@ public class Program {
 		for (int i = 0; i < ints.length; i++) {
 			buffer.writeInt(ints[i]);
 		}
-		buffer.seek(0);
-		long checkSum = 0;
-		for (int i = 0; i < buffer.length(); i++) {
-			checkSum = SimpleCheckSum.addToCheckSum(checkSum, buffer.readByte());
-		}
+		long checkSum = CRC32.checkSum(buffer._buffer, 0, buffer._buffer.length);
 		System.out.print(checkSum);
 
 	}
