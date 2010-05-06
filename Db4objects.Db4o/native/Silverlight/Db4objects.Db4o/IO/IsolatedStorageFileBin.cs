@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.IO.IsolatedStorage;
 using Db4objects.Db4o.Ext;
+using Sharpen.Lang;
 using Sharpen.Util;
 
 namespace Db4objects.Db4o.IO
@@ -118,6 +119,13 @@ namespace Db4objects.Db4o.IO
             public void Sync()
             {
                 _fileStream.Flush();                
+            }
+
+            public void Sync(IRunnable runnable)
+            {
+                Sync();
+                runnable.Run();
+                Sync();
             }
 
             public int SyncRead(long position, byte[] bytes, int bytesToRead)
