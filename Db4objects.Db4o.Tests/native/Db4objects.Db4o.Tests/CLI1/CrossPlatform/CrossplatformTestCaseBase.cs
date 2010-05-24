@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Text.RegularExpressions;
 using Db4objects.Db4o.Config;
 #if !CF && !SILVERLIGHT
@@ -233,29 +234,51 @@ public class ClientCrossPlatform {
 
 		private void Connect()
 		{
-			const int retryCount = 10;
+			const int retryCount = 20; // With 20 retries we'll wait at most 11 seconds until fail.
+			Stack<Exception> exceptions = new Stack<Exception>();
+
+			_client = null;
+			long timeToWait = 100;
 			for (int i = 0; i < retryCount; ++i)
 			{
-				_client = null;
 				try
 				{
 					IClientConfiguration clientConfiguration = Db4oClientServerLegacyConfigurationBridge.AsClientConfiguration(Config());
 					_client = Db4oClientServer.OpenClient(clientConfiguration, "localhost", Port, USER_NAME, USER_PWD);
-					break;
-				}
-				catch (SocketException se)
-				{
-				}
-				catch (DatabaseClosedException dce)
-				{
+					return;
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine(e);
+					if (NotTheSameAsLast(e, exceptions))
+					{
+						exceptions.Push(e);
+					}
 				}
-				Cool.SleepIgnoringInterruption(100);
+				Cool.SleepIgnoringInterruption(timeToWait);
+				if (i == 10)
+				{
+					timeToWait = 1000;
+				}
 			}
-			Assert.IsNotNull(_client);
+
+			FailConnect(retryCount, exceptions);
+		}
+
+		private static void FailConnect(int retryCount, Stack<Exception> exceptions)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.AppendFormat("Connect failed after {0} times\r\n", retryCount);
+
+			while (exceptions.Count > 0)
+			{
+				sb.AppendFormat("{0}\r\n", exceptions.Pop());
+			}
+			Assert.Fail(sb.ToString());
+		}
+
+		private static bool NotTheSameAsLast(Exception e, Stack<Exception> exceptions)
+		{
+			return exceptions.Count == 0 || e.GetType() != exceptions.Peek().GetType();
 		}
 
 		protected void ShutdownServer()
