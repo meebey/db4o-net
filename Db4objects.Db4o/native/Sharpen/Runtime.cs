@@ -260,6 +260,15 @@ namespace Sharpen
 			return (javaMilliseconds + Runtime.DIFFERENCE_IN_TICKS) * Runtime.RATIO;
 		}
 
+        public static string Getenv(string name)
+        {
+#if CF || SILVERLIGHT
+			throw new NotImplementedException();
+#else
+            return Environment.GetEnvironmentVariable(name);
+#endif
+        }
+
  
     }
 }
