@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Collections
 
 		private void Populate(IDictionary subject, IEnumerable keys, IEnumerable values)
 		{
-			foreach (Tuple<object, object> entry in Iterators.Zip(keys, values))
+			foreach (Db4o.Foundation.Tuple<object, object> entry in Iterators.Zip(keys, values))
 			{
 				subject.Add(entry.a, entry.b);
 			}
