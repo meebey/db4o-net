@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Bench.Logging
 
 		public static readonly string Separator = ",";
 
-		public static ISet AllEntries()
+		public static Sharpen.Util.ISet AllEntries()
 		{
 			HashSet entries = new HashSet();
 			Sharpen.Collections.AddAll(entries, Arrays.AsList(AllConstants));
