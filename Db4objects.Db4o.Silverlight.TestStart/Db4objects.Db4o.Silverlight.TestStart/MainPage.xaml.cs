@@ -1,8 +1,8 @@
 ﻿/* Copyright (C) 2009 Versant Inc.   http://www.db4o.com */
 using System;
+using System.IO.IsolatedStorage;
 using System.Threading;
 using System.Windows.Browser;
-using Db4objects.Db4o.Tests.Common.References;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -51,6 +51,12 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 		private static Db4oTestSuiteBuilder SilverlightSuite(params Type[] testCases)
 		{
 			return new Db4oTestSuiteBuilder(new SilverlightFixture(), testCases);
+		}
+
+		private void increaseDiskQuota_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			var isolatedStorageManager = IsolatedStorageFile.GetUserStoreForApplication();
+			isolatedStorageManager.IncreaseQuotaTo(1024*1024*100);
 		}
 	}
 }
