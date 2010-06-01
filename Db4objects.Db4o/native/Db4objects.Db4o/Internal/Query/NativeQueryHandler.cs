@@ -108,13 +108,13 @@ namespace Db4objects.Db4o.Internal.Query
 
 	    private void NativeQueryUnoptimized(Exception e)
 	    {
-            DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+            DiagnosticProcessor dp = Container()._handlers.DiagnosticProcessor();
             if (dp.Enabled()) dp.NativeQueryUnoptimized(null, e);
 	    }
 
 	    private void NativeQueryOptimizerNotLoaded(Exception exception)
 	    {
-	        DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+	        DiagnosticProcessor dp = Container()._handlers.DiagnosticProcessor();
 	        if (dp.Enabled()) dp.NativeQueryOptimizerNotLoaded(Db4o.Diagnostic.NativeQueryOptimizerNotLoaded.NqNotPresent, exception);
 	    }
 
@@ -165,7 +165,7 @@ namespace Db4objects.Db4o.Internal.Query
 
                 if (OptimizeNativeQueries())
                 {
-                    DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+                    DiagnosticProcessor dp = Container()._handlers.DiagnosticProcessor();
                     if (dp.Enabled()) dp.NativeQueryUnoptimized(predicate, e);
                 }
             }
