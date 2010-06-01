@@ -19,6 +19,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				typeof(CodeAnalysis.AllTests),
 				typeof(Expressions.AllTests),
 				typeof(Queries.AllTests),
+                typeof(ByteQueryTestCase),
 				typeof(CollectionContainsObjectTestCase),
 				typeof(CollectionContainsOptimizationTestCase),
 				typeof(CollectionContainsTestCase),

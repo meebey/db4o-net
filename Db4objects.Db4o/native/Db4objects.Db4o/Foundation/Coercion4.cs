@@ -5,9 +5,18 @@ namespace Db4objects.Db4o.Foundation
 {
 	public class Coercion4
 	{
-		public static object ToSByte(object obj)
+		public static object ToByte(object obj)
 		{
 			if (obj is byte) return obj;
+
+			IConvertible convertible = obj as IConvertible;
+			if (null != convertible) return convertible.ToByte(null);
+			return Db4objects.Db4o.Foundation.No4.Instance;
+		}
+
+		public static object ToSByte(object obj)
+		{
+			if (obj is sbyte) return obj;
 
 			IConvertible convertible = obj as IConvertible;
 			if (null != convertible) return convertible.ToSByte(null);

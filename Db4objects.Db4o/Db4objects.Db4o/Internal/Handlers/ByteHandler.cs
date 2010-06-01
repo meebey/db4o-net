@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public override object Coerce(IReflectClass claxx, object obj)
 		{
-			return Coercion4.ToSByte(obj);
+			return Coercion4.ToByte(obj);
 		}
 
 		public override object DefaultValue()
