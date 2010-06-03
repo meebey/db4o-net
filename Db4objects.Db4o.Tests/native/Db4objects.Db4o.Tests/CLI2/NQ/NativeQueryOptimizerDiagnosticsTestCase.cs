@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
-using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests.NativeQueries.Diagnostics
 {

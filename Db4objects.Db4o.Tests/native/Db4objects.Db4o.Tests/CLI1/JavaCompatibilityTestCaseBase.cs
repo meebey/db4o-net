@@ -3,7 +3,7 @@ using System;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
-using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI1
@@ -16,8 +16,8 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 		public JavaSnippet(string mainClassName, string sourceCode)
 		{
-			this.MainClassName = mainClassName;
-			this.SourceCode = sourceCode;
+			MainClassName = mainClassName;
+			SourceCode = sourceCode;
 		}
 
 		public string MainClassFile

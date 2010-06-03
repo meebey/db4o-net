@@ -4,7 +4,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
-using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI1.Aliases

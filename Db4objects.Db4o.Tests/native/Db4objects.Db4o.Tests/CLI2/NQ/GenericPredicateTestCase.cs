@@ -4,6 +4,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Diagnostic;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
 
 namespace Db4objects.Db4o.Tests.CLI2.NQ

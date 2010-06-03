@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 using Db4oUnit;
-using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI2.Assorted
 {

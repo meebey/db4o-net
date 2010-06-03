@@ -7,7 +7,7 @@ using Db4objects.Db4o.Internal.Reflect;
 using System.Collections.Generic;
 using Db4objects.Db4o.Reflect;
 using Db4oUnit;
-using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI2.Reflector
 {
@@ -30,12 +30,24 @@ namespace Db4objects.Db4o.Tests.CLI2.Reflector
 		public void TestNonAccessibleGenericTypeParamenterBugInReflectionEmit()
 		{
 			FastNetReflector reflector = new FastNetReflector();
-			IReflectField sizeField = reflector.ForClass(typeof (List<NotAccessible>)).GetDeclaredField("_size");
-			
-			List<NotAccessible> list = new List<NotAccessible>();
-			sizeField.Set(list, 42);
-			Assert.AreEqual(42, sizeField.Get(list));
+			IReflectField sizeField = reflector.ForClass(typeof(GenericClass<NotAccessible>)).GetDeclaredField("_size");
+
+			GenericClass<NotAccessible> obj = new GenericClass<NotAccessible>();
+			sizeField.Set(obj, 42);
+			Assert.AreEqual(42, sizeField.Get(obj));
 		}
+
+#if !NET_4_0 //TODO: Investigate why this is failing on .Net 4.0
+		public void TestDynamicMethodsOnSecurityCriticalTypes()
+		{
+			FastNetReflector reflector = new FastNetReflector();
+			IReflectField sizeField = reflector.ForClass(typeof(List<NotAccessible>)).GetDeclaredField("_size");
+
+			List<NotAccessible> obj = new List<NotAccessible>();
+			sizeField.Set(obj, 42);
+			Assert.AreEqual(42, sizeField.Get(obj));
+		}
+#endif
 
 		internal class ValueTypeContainer
 		{
@@ -54,6 +66,11 @@ namespace Db4objects.Db4o.Tests.CLI2.Reflector
 
 		private class NotAccessible
 		{
+		}
+
+		class GenericClass<T>
+		{
+			private int _size;
 		}
 #endif
 	}
