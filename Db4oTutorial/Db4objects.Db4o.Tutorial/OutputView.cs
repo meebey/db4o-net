@@ -1,16 +1,6 @@
-/*
- * Created by SharpDevelop.
- * User: rodrigob
- * Date: 11/1/2004
- * Time: 2:04 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-
-using System;
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 using System.Windows.Forms;
-using System.Drawing;
-using WeifenLuo.WinFormsUI;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Db4objects.Db4o.Tutorial
 {
@@ -23,20 +13,20 @@ namespace Db4objects.Db4o.Tutorial
 		
 		public OutputView(MainForm main)
 		{
-			this.CloseButton = false;
-			this.DockableAreas = (
+			CloseButton = false;
+			DockAreas = (
 					DockAreas.Float |
 					DockAreas.DockBottom |
 					DockAreas.DockTop |
 					DockAreas.DockLeft |
 					DockAreas.DockRight);
-			this.ShowHint = DockState.DockBottom;
-			this.Text = "Output";
+			ShowHint = DockState.DockBottom;
+			Text = "Output";
 			
 			_console = new OutputViewControl();
 			_console.MainForm = main;
 			_console.Dock = DockStyle.Fill;
-			this.Controls.Add(_console);
+			Controls.Add(_console);
 		}
 		
 		public void AppendText(string text)

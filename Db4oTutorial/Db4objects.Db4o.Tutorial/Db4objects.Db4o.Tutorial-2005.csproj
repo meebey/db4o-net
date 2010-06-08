@@ -72,19 +72,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AxSHDocVw">
-      <Name>AxSHDocVw</Name>
-      <HintPath>..\Libs\AxSHDocVw.dll</HintPath>
-    </Reference>
-    <Reference Include="SHDocVw">
-      <Name>SHDocVw</Name>
-      <HintPath>..\Libs\SHDocVw.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
-    </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
     </Reference>
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
@@ -95,9 +84,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <Reference Include="WeifenLuo.WinFormsUI">
-      <Name>WeifenLuo.WinFormsUI</Name>
-      <HintPath>..\Libs\WeifenLuo.WinFormsUI.dll</HintPath>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.3.1.24483, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-2005.csproj">
       <Project>{3028DD51-034F-495B-8970-2F27BA021B85}</Project>
@@ -148,6 +137,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Content Include="db4o.ico" />
+    <None Include="Resources\Icon1.ico" />
     <EmbeddedResource Include="Db4objects.Db4o.Tutorial.MainForm.resources" />
     <EmbeddedResource Include="Db4objects.Db4o.Tutorial.OutputViewControl.resources" />
     <EmbeddedResource Include="Db4objects.Db4o.Tutorial.TutorialOutlineViewControl.resources" />

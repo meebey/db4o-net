@@ -1,19 +1,8 @@
-/*
- * Created by SharpDevelop.
- * User: rodrigob
- * Date: 11/1/2004
- * Time: 2:17 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 using System;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using WeifenLuo.WinFormsUI;
-using AxSHDocVw;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Db4objects.Db4o.Tutorial
 {
@@ -22,24 +11,26 @@ namespace Db4objects.Db4o.Tutorial
 	/// </summary>
 	public class WebBrowserView : DockContent, IOleClientSite, IDocHostUIHandler
 	{
-		AxWebBrowser _webBrowser;
+		private readonly WebBrowser _webBrowser;
 				
-		object _external;
-		
 		public WebBrowserView()
 		{			
-			this.CloseButton = false;
-			this.DockableAreas = DockAreas.Document;
-			this.Text = "Web Browser";
+			CloseButton = false;
+			DockAreas = DockAreas.Document;
 			
 			WebBrowserViewControl control = new WebBrowserViewControl();
 			control.Dock = DockStyle.Fill;
 			_webBrowser = control.WebBrowser;
-			_webBrowser.TitleChange += new AxSHDocVw.DWebBrowserEvents2_TitleChangeEventHandler(_webBrowser_TitleChange);
+			_webBrowser.DocumentTitleChanged += OnDocumentTitleChanged;
 			
-			this.Controls.Add(control);
+			Controls.Add(control);
 		}
-		
+
+		private void OnDocumentTitleChanged(object sender, EventArgs e)
+		{
+			Text = _webBrowser.Document.Url.Segments[_webBrowser.Document.Url.Segments.Length - 1];
+		}
+
 		/// <summary>
 		/// object that will be exposed inside the WebBrowser through
 		/// the window.external property.
@@ -48,39 +39,18 @@ namespace Db4objects.Db4o.Tutorial
 		{
 			get
 			{
-				return _external;
+				return _webBrowser.ObjectForScripting;
 			}
 			
 			set
 			{
-				_external = value;
+				_webBrowser.ObjectForScripting = value;
 			}
 		}
 		
 		public void Navigate(string url)
 		{			
-			object noParam1 = null;
-			object noParam2 = null;
-			object noParam3 = null;
-			object noParam4 = null;
-			_webBrowser.Navigate(url,
-			                     ref noParam1,
-			                     ref noParam2,
-			                     ref noParam3,
-			                     ref noParam4);
-		}
-		
-		delegate void LoadStartPageFunction();
-		
-		override protected void OnLoad(EventArgs args)
-		{
-			(_webBrowser.GetOcx() as IOleObject).SetClientSite(this);			
-			base.OnLoad(args);
-		}
-		
-		void _webBrowser_TitleChange(object sender, AxSHDocVw.DWebBrowserEvents2_TitleChangeEvent e)
-		{	
-			this.Text = e.text;
+			_webBrowser.Navigate(url);
 		}
 		
 		#region IOleClientSite implementation
@@ -180,12 +150,10 @@ namespace Db4objects.Db4o.Tutorial
 		
 		void IDocHostUIHandler.GetExternal(out object ppDispatch)
 		{			
-			ppDispatch = _external;
+			ppDispatch = _webBrowser.ObjectForScripting;
 		}		
 		
-		uint IDocHostUIHandler.TranslateUrl(uint dwTranslate,
-		                  string pchURLIn,
-		                  ref string ppchURLOut)
+		uint IDocHostUIHandler.TranslateUrl(uint dwTranslate, string pchURLIn, ref string ppchURLOut)
 		{			
 			return 0;
 		}

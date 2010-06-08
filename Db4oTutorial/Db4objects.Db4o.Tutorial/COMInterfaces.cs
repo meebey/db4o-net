@@ -1,3 +1,4 @@
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 namespace Db4objects.Db4o.Tutorial
 {
 	using System;

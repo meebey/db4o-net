@@ -1,13 +1,5 @@
-/*
- * Created by SharpDevelop.
- * User: rodrigob
- * Date: 11/4/2004
- * Time: 3:27 AM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 

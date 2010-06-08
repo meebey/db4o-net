@@ -1,4 +1,5 @@
-﻿using Db4objects.Db4o.CS;
+﻿/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
+using Db4objects.Db4o.CS;
 
 namespace Db4objects.Db4o.Tutorial
 {
@@ -24,9 +25,9 @@ namespace Db4objects.Db4o.Tutorial
             new Executor(RemoteServerExecutor)
         };
 
-        readonly static string YapFileName = Path.Combine(
+        readonly static string DatabaseFileName = Path.Combine(
                                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                               "formula1.yap");
+                               "formula1.odb");
 
         readonly static int ServerPort = 0xdb40;
 
@@ -37,7 +38,7 @@ namespace Db4objects.Db4o.Tutorial
 		
         public void Reset()
         {
-            File.Delete(YapFileName);
+            File.Delete(DatabaseFileName);
         }
         
         public void Run(string typeName, string method, TextWriter console)
@@ -56,7 +57,7 @@ namespace Db4objects.Db4o.Tutorial
         
         void RunExample(string typeName, string method)
         {
-        		Type type = typeof(Util).Assembly.GetType(typeName, true);
+        	Type type = typeof(Util).Assembly.GetType(typeName, true);
 			MethodInfo example = type.GetMethod(method, BindingFlags.IgnoreCase|BindingFlags.Static|BindingFlags.Public);
             
             bool found = false;
@@ -82,7 +83,7 @@ namespace Db4objects.Db4o.Tutorial
                 return false;
             }
 
-            IObjectContainer container = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
+            IObjectContainer container = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), DatabaseFileName);
             try
             {
                 method.Invoke(null, new object[] { container });
@@ -101,7 +102,7 @@ namespace Db4objects.Db4o.Tutorial
                 return false;
             }
 
-            IObjectServer server = Db4oClientServer.OpenServer(Db4oClientServer.NewServerConfiguration(), YapFileName, 0);
+            IObjectServer server = Db4oClientServer.OpenServer(Db4oClientServer.NewServerConfiguration(), DatabaseFileName, 0);
             try
             {                
                 method.Invoke(null, new object[] { server });
@@ -121,7 +122,7 @@ namespace Db4objects.Db4o.Tutorial
             }
 
             IObjectServer server = Db4oClientServer.OpenServer(Db4oClientServer.NewServerConfiguration(), 
-                YapFileName, ServerPort);
+                DatabaseFileName, ServerPort);
             try
             {   
                 server.GrantAccess(ServerUser, ServerPassword);

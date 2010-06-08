@@ -1,19 +1,11 @@
-/*
- * Created by SharpDevelop.
- * User: rodrigob
- * Date: 11/1/2004
- * Time: 3:52 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 using System;
 using System.Collections;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
-using WeifenLuo.WinFormsUI;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Db4objects.Db4o.Tutorial
 {
@@ -31,9 +23,9 @@ namespace Db4objects.Db4o.Tutorial
 			_main = main;
 
 			Text = "Tutorial Outline";
-			DockableAreas = (DockAreas.Float |
-			                 DockAreas.DockLeft |
-			                 DockAreas.DockRight);
+			DockAreas = (	DockAreas.Float | 
+							DockAreas.DockLeft |
+			                DockAreas.DockRight);
 
 			ClientSize = new Size(295, 347);
 			DockPadding.Bottom = 2;

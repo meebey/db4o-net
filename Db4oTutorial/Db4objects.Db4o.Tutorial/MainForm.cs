@@ -1,8 +1,9 @@
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 using System;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Db4objects.Db4o.Tutorial
 {
@@ -19,13 +20,11 @@ namespace Db4objects.Db4o.Tutorial
 		
 		public MainForm()
 		{
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
 			InitializeComponent();
 			
 			_dockPanel = new DockPanel();
 			_dockPanel.Dock = DockStyle.Fill;
+			_dockPanel.DocumentStyle = DocumentStyle.DockingMdi;
 			
 			Controls.Add(_dockPanel);
 			
@@ -141,8 +140,9 @@ namespace Db4objects.Db4o.Tutorial
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(792, 566);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.IsMdiContainer = true;
 			this.Name = "MainForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.StartPosition = FormStartPosition.CenterScreen;
 			this.Text = "db4o tutorial";
 			this.ResumeLayout(false);
 
@@ -150,11 +150,10 @@ namespace Db4objects.Db4o.Tutorial
 		#endregion
 		
 		void LoadViews()
-		{	
+		{
 			_outputView.Show(_dockPanel);
 			_outlineView.Show(_dockPanel);
 			_webBrowserView.Show(_dockPanel);
-			
 		}
 	}
 }

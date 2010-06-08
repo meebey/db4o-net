@@ -1,12 +1,4 @@
-/*
- * Created by SharpDevelop.
- * User: rodrigob
- * Date: 11/5/2004
- * Time: 7:26 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-
+/* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -15,7 +7,7 @@ namespace Db4objects.Db4o.Tutorial
 	/// <summary>
 	/// Description of TutorialOutlineViewControl.
 	/// </summary>
-	public class TutorialOutlineViewControl : System.Windows.Forms.UserControl
+	public class TutorialOutlineViewControl : UserControl
 	{
 		private TreeView _tree;
 		private PictureBox _logo;
