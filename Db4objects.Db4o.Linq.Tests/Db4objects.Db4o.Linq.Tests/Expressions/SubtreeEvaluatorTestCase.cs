@@ -2,8 +2,7 @@
 
 using System;
 using System.Linq.Expressions;
-using System.Text;
-
+using System.Text.RegularExpressions;
 using Db4objects.Db4o.Linq.Expressions;
 
 using Db4oUnit;
@@ -60,6 +59,11 @@ namespace Db4objects.Db4o.Linq.Tests.Expressions
 
 		static void AssertExpression(string expected, Expression expression)
 		{
+#if NET_4_0
+			const string EqualsSignNotPreceededByExclamation = "(?<!\\!)\\=";
+			expected = Regex.Replace(expected, EqualsSignNotPreceededByExclamation, "==").Replace("||", "OrElse").Replace("&&", "AndAlso");
+#endif
+
 			if (expression.NodeType == ExpressionType.Lambda)
 			{
 				expression = ((LambdaExpression)expression).Body;

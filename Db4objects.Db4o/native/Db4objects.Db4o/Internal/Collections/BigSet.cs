@@ -1,7 +1,6 @@
-
+/* Copyright (C) 2010 Versant Inc.  http://www.db4o.com */
 using System.Collections;
 using System.Collections.Generic;
-using Db4objects.Db4o.Collections;
 
 namespace Db4objects.Db4o.Internal.Collections
 {
@@ -52,7 +51,7 @@ namespace Db4objects.Db4o.Internal.Collections
 
 		#region Implementation of ISet<E>
 
-		bool ISet<E>.RemoveAll(IEnumerable<E> es)
+		bool Db4o.Collections.ISet<E>.RemoveAll(IEnumerable<E> es)
 		{
 			bool result = false;
 			foreach (E e in es)
@@ -65,7 +64,7 @@ namespace Db4objects.Db4o.Internal.Collections
 			return result;
 		}
 
-		bool ISet<E>.ContainsAll(IEnumerable<E> es)
+		bool Db4o.Collections.ISet<E>.ContainsAll(IEnumerable<E> es)
 		{
 			foreach (E e in es)
 			{

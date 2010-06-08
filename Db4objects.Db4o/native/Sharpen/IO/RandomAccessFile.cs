@@ -11,7 +11,10 @@ namespace Sharpen.IO
         private readonly FileStream _stream;
 
 #if !CF && !MONO && !SILVERLIGHT
-        [DllImport("kernel32.dll", SetLastError = true)]
+#if NET_4_0
+        [System.Security.SecuritySafeCritical]
+#endif
+		[DllImport("kernel32.dll", SetLastError = true)]
         static extern int FlushFileBuffers(Microsoft.Win32.SafeHandles.SafeFileHandle fileHandle);
 #endif
         public RandomAccessFile(String file, bool readOnly, bool lockFile)
@@ -57,7 +60,10 @@ namespace Sharpen.IO
             _stream.Seek(pos, SeekOrigin.Begin);
         }
 
-        public void Sync()
+#if NET_4_0
+        [System.Security.SecuritySafeCritical]
+#endif
+		public void Sync()
         {
             _stream.Flush();
 

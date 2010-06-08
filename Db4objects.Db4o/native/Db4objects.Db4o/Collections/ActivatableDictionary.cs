@@ -289,6 +289,9 @@ namespace Db4objects.Db4o.Collections
 #if !CF && !SILVERLIGHT
 		#region Implementation of ISerializable
 
+#if NET_4_0
+		[System.Security.SecurityCritical]
+#endif
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			ActivateForRead();
