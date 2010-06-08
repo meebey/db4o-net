@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o;
 
 namespace Db4objects.Db4o.Events
 {
@@ -16,6 +17,11 @@ namespace Db4objects.Db4o.Events
 		public virtual object Transaction()
 		{
 			return _transaction;
+		}
+
+		public virtual IObjectContainer ObjectContainer()
+		{
+			return _transaction.ObjectContainer();
 		}
 	}
 }

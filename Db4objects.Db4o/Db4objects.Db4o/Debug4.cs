@@ -70,16 +70,6 @@ namespace Db4objects.Db4o
 		/// <summary>allows overriding the file locking mechanism to turn it off</summary>
 		public const bool lockFile = true;
 
-		/// <summary>
-		/// turn to false, to prevent reading old PBootRecord object
-		/// for debugging updating database files.
-		/// </summary>
-		/// <remarks>
-		/// turn to false, to prevent reading old PBootRecord object
-		/// for debugging updating database files.
-		/// </remarks>
-		public const bool readBootRecord = true;
-
 		public static void Expect(bool cond)
 		{
 			if (!cond)

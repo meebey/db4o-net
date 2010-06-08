@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Internal.Ids;
+using Db4objects.Db4o.Internal.Slots;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -11,9 +13,9 @@ namespace Db4objects.Db4o.Internal
 
 		private int _converterVersion;
 
-		private int _freespaceAddress;
+		private Slot _inMemoryFreespaceSlot;
 
-		private int _freespaceID;
+		private int _bTreeFreespaceId;
 
 		private byte _freespaceSystem;
 
@@ -29,15 +31,23 @@ namespace Db4objects.Db4o.Internal
 
 		private byte _idSystemType;
 
-		private int _idSystemID;
-
 		private int _transactionPointer1;
 
 		private int _transactionPointer2;
 
-		public SystemData()
+		private Slot _idSystemSlot;
+
+		public virtual Slot IdSystemSlot()
 		{
+			return _idSystemSlot;
 		}
+
+		public virtual void IdSystemSlot(Slot slot)
+		{
+			_idSystemSlot = slot;
+		}
+
+		private ITransactionalIdSystem _freespaceIdSystem;
 
 		public virtual void IdSystemType(byte idSystem)
 		{
@@ -47,16 +57,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual byte IdSystemType()
 		{
 			return _idSystemType;
-		}
-
-		public virtual void IdSystemID(int idSystemID)
-		{
-			_idSystemID = idSystemID;
-		}
-
-		public virtual int IdSystemID()
-		{
-			return _idSystemID;
 		}
 
 		public virtual int ClassCollectionID()
@@ -79,24 +79,24 @@ namespace Db4objects.Db4o.Internal
 			_converterVersion = version;
 		}
 
-		public virtual int FreespaceAddress()
+		public virtual int BTreeFreespaceId()
 		{
-			return _freespaceAddress;
+			return _bTreeFreespaceId;
 		}
 
-		public virtual void FreespaceAddress(int address)
+		public virtual void BTreeFreespaceId(int id)
 		{
-			_freespaceAddress = address;
+			_bTreeFreespaceId = id;
 		}
 
-		public virtual int FreespaceID()
+		public virtual Slot InMemoryFreespaceSlot()
 		{
-			return _freespaceID;
+			return _inMemoryFreespaceSlot;
 		}
 
-		public virtual void FreespaceID(int id)
+		public virtual void InMemoryFreespaceSlot(Slot slot)
 		{
-			_freespaceID = id;
+			_inMemoryFreespaceSlot = slot;
 		}
 
 		public virtual byte FreespaceSystem()
@@ -177,6 +177,17 @@ namespace Db4objects.Db4o.Internal
 		public virtual int TransactionPointer2()
 		{
 			return _transactionPointer2;
+		}
+
+		public virtual void FreespaceIdSystem(ITransactionalIdSystem transactionalIdSystem
+			)
+		{
+			_freespaceIdSystem = transactionalIdSystem;
+		}
+
+		public virtual ITransactionalIdSystem FreespaceIdSystem()
+		{
+			return _freespaceIdSystem;
 		}
 	}
 }

@@ -895,7 +895,7 @@ namespace Db4objects.Db4o.CS.Internal
 			ClassCollection().Read(SystemTransaction());
 		}
 
-		public override void ReleaseSemaphore(string name)
+		public override void ReleaseSemaphore(Transaction trans, string name)
 		{
 			lock (_lock)
 			{
@@ -904,8 +904,14 @@ namespace Db4objects.Db4o.CS.Internal
 				{
 					throw new ArgumentNullException();
 				}
-				Write(Msg.ReleaseSemaphore.GetWriterForString(_transaction, name));
+				trans = CheckTransaction(trans);
+				Write(Msg.ReleaseSemaphore.GetWriterForString(trans, name));
 			}
+		}
+
+		public override void ReleaseSemaphore(string name)
+		{
+			ReleaseSemaphore(_transaction, name);
 		}
 
 		public override void ReleaseSemaphores(Transaction ta)
@@ -952,20 +958,26 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		// do nothing
-		public override bool SetSemaphore(string name, int timeout)
+		public override bool SetSemaphore(Transaction trans, string name, int timeout)
 		{
 			lock (_lock)
 			{
 				CheckClosed();
+				trans = CheckTransaction(trans);
 				if (name == null)
 				{
 					throw new ArgumentNullException();
 				}
-				MsgD msg = Msg.SetSemaphore.GetWriterForIntString(_transaction, timeout, name);
+				MsgD msg = Msg.SetSemaphore.GetWriterForIntString(trans, timeout, name);
 				Write(msg);
 				Msg message = GetResponse();
 				return (message.Equals(Msg.Success));
 			}
+		}
+
+		public override bool SetSemaphore(string name, int timeout)
+		{
+			return SetSemaphore(_transaction, name, timeout);
 		}
 
 		[System.ObsoleteAttribute]
@@ -1075,11 +1087,6 @@ namespace Db4objects.Db4o.CS.Internal
 			WriteBatchedMessage(msg);
 		}
 
-		public sealed override void WriteTransactionPointer(int a_address, int pointer2)
-		{
-		}
-
-		// do nothing
 		public sealed override void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
 			 classMetadata, ArrayType arrayType, ByteArrayBuffer buffer)
 		{
@@ -1173,13 +1180,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_924(this, trans, result));
+			WithEnvironment(new _IRunnable_930(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_924 : IRunnable
+		private sealed class _IRunnable_930 : IRunnable
 		{
-			public _IRunnable_924(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_930(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;

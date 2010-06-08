@@ -4,6 +4,9 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
+using Db4objects.Db4o.Internal.Fileheader;
 using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
@@ -13,11 +16,21 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		private const int Size = 10000;
 
-		private const int MaximumHeaderSize = 110;
+		private static readonly int MaximumHeaderSize = HeaderSize();
+
+		private const int Reserve = Const4.PointerLength * 3;
 
 		public static void Main(string[] args)
 		{
 			new DatabaseGrowthSizeTestCase().RunSolo();
+		}
+
+		private static int HeaderSize()
+		{
+			NewFileHeaderBase fileHeader = FileHeader.NewCurrentFileHeader();
+			FileHeaderVariablePart variablePart = fileHeader.CreateVariablePart(null);
+			return fileHeader.Length() + variablePart.MarshalledLength() + FileHeader.TransactionPointerLength
+				 + Reserve;
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -25,6 +38,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			config.DatabaseGrowthSize(Size);
 			config.BlockSize(3);
+			Db4oLegacyConfigurationBridge.AsIdSystemConfiguration(config).UsePointerBasedSystem
+				();
 		}
 
 		public virtual void Test()

@@ -205,8 +205,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 					)Subject());
 				IIdSystemConfiguration idSystemConfiguration = idSystemConfigurationProvider.IdSystem;
 				Assert.AreEqual(StandardIdSystemFactory.Default, legacyConfig.IdSystemType());
-				idSystemConfiguration.UseBTreeSystem();
-				Assert.AreEqual(StandardIdSystemFactory.Btree, legacyConfig.IdSystemType());
+				idSystemConfiguration.UseStackedBTreeSystem();
+				Assert.AreEqual(StandardIdSystemFactory.StackedBtree, legacyConfig.IdSystemType()
+					);
 				idSystemConfiguration.UsePointerBasedSystem();
 				Assert.AreEqual(StandardIdSystemFactory.PointerBased, legacyConfig.IdSystemType()
 					);

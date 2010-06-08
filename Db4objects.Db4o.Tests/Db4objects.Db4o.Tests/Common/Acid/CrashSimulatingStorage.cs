@@ -3,6 +3,7 @@
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Acid;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
@@ -66,6 +67,31 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			{
 				base.Sync();
 				_batch.Sync();
+			}
+
+			public override void Sync(IRunnable runnable)
+			{
+				base.Sync(new _IRunnable_63(this, runnable));
+				_batch.Sync();
+			}
+
+			private sealed class _IRunnable_63 : IRunnable
+			{
+				public _IRunnable_63(CrashSimulatingBin _enclosing, IRunnable runnable)
+				{
+					this._enclosing = _enclosing;
+					this.runnable = runnable;
+				}
+
+				public void Run()
+				{
+					this._enclosing._batch.Sync();
+					runnable.Run();
+				}
+
+				private readonly CrashSimulatingBin _enclosing;
+
+				private readonly IRunnable runnable;
 			}
 		}
 	}

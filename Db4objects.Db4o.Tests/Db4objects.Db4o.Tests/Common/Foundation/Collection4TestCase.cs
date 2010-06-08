@@ -27,6 +27,85 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			AssertCollection(new string[0], c);
 		}
 
+		public virtual void TestContains()
+		{
+			object a = new object();
+			Collection4 c = new Collection4();
+			c.Add(new object());
+			Assert.IsFalse(c.Contains(a));
+			c.Add(a);
+			Assert.IsTrue(c.Contains(a));
+			c.Remove(a);
+			Assert.IsFalse(c.Contains(a));
+		}
+
+		private class Item
+		{
+			public int id;
+
+			public override int GetHashCode()
+			{
+				int prime = 31;
+				int result = 1;
+				result = prime * result + id;
+				return result;
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (this == obj)
+				{
+					return true;
+				}
+				if (obj == null)
+				{
+					return false;
+				}
+				if (GetType() != obj.GetType())
+				{
+					return false;
+				}
+				Collection4TestCase.Item other = (Collection4TestCase.Item)obj;
+				if (id != other.id)
+				{
+					return false;
+				}
+				return true;
+			}
+
+			public Item(int id)
+			{
+				this.id = id;
+			}
+		}
+
+		public virtual void TestContainsAll()
+		{
+			Collection4TestCase.Item a = new Collection4TestCase.Item(42);
+			Collection4TestCase.Item b = new Collection4TestCase.Item(a.id + 1);
+			Collection4TestCase.Item c = new Collection4TestCase.Item(b.id + 1);
+			Collection4TestCase.Item a_ = new Collection4TestCase.Item(a.id);
+			Collection4 needle = new Collection4();
+			Collection4 haystack = new Collection4();
+			haystack.Add(a);
+			needle.Add(a);
+			needle.Add(b);
+			Assert.IsFalse(haystack.ContainsAll(needle));
+			needle.Remove(b);
+			Assert.IsTrue(haystack.ContainsAll(needle));
+			needle.Add(b);
+			haystack.Add(b);
+			Assert.IsTrue(haystack.ContainsAll(needle));
+			needle.Add(a_);
+			Assert.IsTrue(haystack.ContainsAll(needle));
+			needle.Add(c);
+			Assert.IsFalse(haystack.ContainsAll(needle));
+			needle.Clear();
+			Assert.IsTrue(haystack.ContainsAll(needle));
+			haystack.Clear();
+			Assert.IsTrue(haystack.ContainsAll(needle));
+		}
+
 		public virtual void TestReplace()
 		{
 			Collection4 c = new Collection4();
@@ -92,12 +171,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		private void AssertIllegalIndex(Collection4 c, int index)
 		{
-			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_89(c, index));
+			Assert.Expect(typeof(ArgumentException), new _ICodeBlock_170(c, index));
 		}
 
-		private sealed class _ICodeBlock_89 : ICodeBlock
+		private sealed class _ICodeBlock_170 : ICodeBlock
 		{
-			public _ICodeBlock_89(Collection4 c, int index)
+			public _ICodeBlock_170(Collection4 c, int index)
 			{
 				this.c = c;
 				this.index = index;
@@ -140,12 +219,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			IEnumerator i = c.GetEnumerator();
 			Assert.IsTrue(i.MoveNext());
 			c.Add("3");
-			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_119(i));
+			Assert.Expect(typeof(InvalidIteratorException), new _ICodeBlock_200(i));
 		}
 
-		private sealed class _ICodeBlock_119 : ICodeBlock
+		private sealed class _ICodeBlock_200 : ICodeBlock
 		{
-			public _ICodeBlock_119(IEnumerator i)
+			public _ICodeBlock_200(IEnumerator i)
 			{
 				this.i = i;
 			}

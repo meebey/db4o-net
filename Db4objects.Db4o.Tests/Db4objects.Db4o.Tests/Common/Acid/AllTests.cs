@@ -8,6 +8,11 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 {
 	public class AllTests : ComposibleTestSuite
 	{
+		public static void Main(string[] args)
+		{
+			new Db4objects.Db4o.Tests.Common.Acid.AllTests().RunSolo();
+		}
+
 		protected override Type[] TestCases()
 		{
 			return ComposeWith();
@@ -16,7 +21,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{
-			return new Type[] { typeof(CrashSimulatingTestCase), typeof(ReadCommittedIsolationTestCase
+			return new Type[] { typeof(CrashSimulatingTestSuite), typeof(ReadCommittedIsolationTestCase
 				) };
 		}
 		#endif // !SILVERLIGHT

@@ -15,7 +15,7 @@ namespace Db4objects.Db4o.Internal.Activation
 		{
 		}
 
-		public override bool CanSkip(ClassMetadata clazz)
+		public override bool CanSkip(ObjectReference @ref)
 		{
 			return false;
 		}

@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			return new LegacyFixedUpdateDepth(depth);
 		}
 
-		public virtual UnspecifiedUpdateDepth Unspecified(bool tpCommitMode)
+		public virtual UnspecifiedUpdateDepth Unspecified(IModifiedObjectQuery query)
 		{
 			return LegacyUnspecifiedUpdateDepth.Instance;
 		}

@@ -165,7 +165,7 @@ namespace Db4objects.Db4o.Internal
 			if (sd.UuidIndexId() == 0)
 			{
 				sd.UuidIndexId(base.GetIndex(transaction).GetID());
-				file.GetFileHeader().WriteVariablePart(file, 1);
+				file.GetFileHeader().WriteVariablePart(file);
 			}
 		}
 

@@ -129,6 +129,11 @@ namespace Db4objects.Db4o.Foundation
 			return Find(element) != null;
 		}
 
+		public virtual bool ContainsAll(IEnumerable iter)
+		{
+			return ContainsAll(iter.GetEnumerator());
+		}
+
 		public virtual bool ContainsAll(IEnumerator iter)
 		{
 			AssertNotNull(iter);

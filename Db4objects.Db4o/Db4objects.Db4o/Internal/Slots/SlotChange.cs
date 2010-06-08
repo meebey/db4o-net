@@ -55,7 +55,7 @@ namespace Db4objects.Db4o.Internal.Slots
 		public virtual void AccumulateFreeSlot(TransactionalIdSystemImpl idSystem, FreespaceCommitter
 			 freespaceCommitter, bool forFreespace)
 		{
-			if (IsForFreespace() != forFreespace)
+			if (ForFreespace() != forFreespace)
 			{
 				return;
 			}
@@ -69,17 +69,22 @@ namespace Db4objects.Db4o.Internal.Slots
 				Slot slot = idSystem.CommittedSlot(_key);
 				// If we don't get a valid slot, the object may have just 
 				// been stored by the SystemTransaction and not committed yet.
-				if (slot == null || slot.IsNull())
+				if (Slot.IsNull(slot))
 				{
 					slot = ModifiedSlotInUnderlyingIdSystem(idSystem);
 				}
 				// No old slot at all can be the case if the object
 				// has been deleted by another transaction and we add it again.
-				if (slot != null && !slot.IsNull())
+				if (!Slot.IsNull(slot))
 				{
-					freespaceCommitter.DelayedFree(slot);
+					freespaceCommitter.DelayedFree(slot, FreeToSystemFreespaceSystem());
 				}
 			}
+		}
+
+		protected virtual bool ForFreespace()
+		{
+			return false;
 		}
 
 		protected virtual Slot ModifiedSlotInUnderlyingIdSystem(TransactionalIdSystemImpl
@@ -100,7 +105,7 @@ namespace Db4objects.Db4o.Internal.Slots
 
 		private bool IsFreeOnRollback()
 		{
-			return _newSlot != null && !_newSlot.IsNull();
+			return !Slot.IsNull(_newSlot);
 		}
 
 		public bool SlotModified()
@@ -188,11 +193,7 @@ namespace Db4objects.Db4o.Internal.Slots
 		protected virtual void FreePreviouslyModifiedSlot(IFreespaceManager freespaceManager
 			)
 		{
-			if (_newSlot == null)
-			{
-				return;
-			}
-			if (_newSlot.IsNull())
+			if (Slot.IsNull(_newSlot))
 			{
 				return;
 			}
@@ -244,11 +245,6 @@ namespace Db4objects.Db4o.Internal.Slots
 			_newSlot = Slot.Zero;
 		}
 
-		protected virtual bool IsForFreespace()
-		{
-			return false;
-		}
-
 		public virtual bool RemoveId()
 		{
 			return false;
@@ -262,6 +258,11 @@ namespace Db4objects.Db4o.Internal.Slots
 				str += " newSlot: " + _newSlot;
 			}
 			return str;
+		}
+
+		protected virtual bool FreeToSystemFreespaceSystem()
+		{
+			return false;
 		}
 	}
 }

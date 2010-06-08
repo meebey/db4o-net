@@ -40,7 +40,8 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		protected sealed override void OpenImpl()
 		{
-			IStorage storage = ConfigImpl.Storage;
+			Config4Impl configImpl = ConfigImpl;
+			IStorage storage = configImpl.Storage;
 			bool isNew = !storage.Exists(FileName());
 			if (isNew)
 			{
@@ -48,8 +49,8 @@ namespace Db4objects.Db4o.Internal
 				CheckReadOnly();
 				_handlers.OldEncryptionOff();
 			}
-			bool readOnly = ConfigImpl.IsReadOnly();
-			bool lockFile = Debug4.lockFile && ConfigImpl.LockFile() && (!readOnly);
+			bool readOnly = configImpl.IsReadOnly();
+			bool lockFile = Debug4.lockFile && configImpl.LockFile() && (!readOnly);
 			if (NeedsLockFileThread())
 			{
 				IBin fileBin = storage.Open(new BinConfiguration(FileName(), false, 0, false));
@@ -58,15 +59,19 @@ namespace Db4objects.Db4o.Internal
 			}
 			else
 			{
-				_file = new BlockAwareBin(storage.Open(new BinConfiguration(FileName(), lockFile, 
-					0, readOnly)));
+				IBin bin = storage.Open(new BinConfiguration(FileName(), lockFile, 0, readOnly));
+				if (configImpl.AsynchronousSync())
+				{
+					bin = new ThreadedSyncBin(bin);
+				}
+				_file = new BlockAwareBin(bin);
 			}
 			if (isNew)
 			{
 				ConfigureNewFile();
-				if (ConfigImpl.ReservedStorageSpace() > 0)
+				if (configImpl.ReservedStorageSpace() > 0)
 				{
-					Reserve(ConfigImpl.ReservedStorageSpace());
+					Reserve(configImpl.ReservedStorageSpace());
 				}
 				CommitTransaction();
 				WriteHeader(true, false);
@@ -81,12 +86,12 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Backup(IStorage targetStorage, string path)
 		{
-			WithEnvironment(new _IRunnable_71(this, targetStorage, path));
+			WithEnvironment(new _IRunnable_76(this, targetStorage, path));
 		}
 
-		private sealed class _IRunnable_71 : IRunnable
+		private sealed class _IRunnable_76 : IRunnable
 		{
-			public _IRunnable_71(IoAdaptedObjectContainer _enclosing, IStorage targetStorage, 
+			public _IRunnable_76(IoAdaptedObjectContainer _enclosing, IStorage targetStorage, 
 				string path)
 			{
 				this._enclosing = _enclosing;
@@ -328,6 +333,11 @@ namespace Db4objects.Db4o.Internal
 		public override void SyncFiles()
 		{
 			_file.Sync();
+		}
+
+		public override void SyncFiles(IRunnable runnable)
+		{
+			_file.Sync(runnable);
 		}
 
 		public override void WriteBytes(ByteArrayBuffer buffer, int blockedAddress, int addressOffset

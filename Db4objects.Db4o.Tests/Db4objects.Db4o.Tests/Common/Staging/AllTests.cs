@@ -15,14 +15,14 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 
 		protected override Type[] TestCases()
 		{
-			return ComposeTests(new Type[] { typeof(ActivateDepthTestCase), typeof(CollectionUpdateTPTestCase
-				), typeof(InterfaceQueryTestCase), typeof(LazyQueryDeleteTestCase), typeof(RemovedFieldDefragmentTestCase
-				), typeof(SODAClassTypeDescend), typeof(StoredClassUnknownClassQueryTestCase), typeof(
-				UntypedFieldSortingTestCase) });
+			return ComposeTests(new Type[] { typeof(ActivateDepthTestCase), typeof(InterfaceQueryTestCase
+				), typeof(GenericClassWithExistingSuperClassTestCase), typeof(LazyQueryDeleteTestCase
+				), typeof(RemovedFieldDefragmentTestCase), typeof(SODAClassTypeDescend), typeof(
+				StoredClassUnknownClassQueryTestCase), typeof(UntypedFieldSortingTestCase) });
 		}
 
-		// COR-1897
 		// COR-1131
+		// COR-1959
 		// COR-1542
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()

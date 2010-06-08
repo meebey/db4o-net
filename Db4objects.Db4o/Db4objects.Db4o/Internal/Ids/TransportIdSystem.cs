@@ -99,6 +99,5 @@ namespace Db4objects.Db4o.Internal.Ids
 			)
 		{
 		}
-		// do nothing
 	}
 }

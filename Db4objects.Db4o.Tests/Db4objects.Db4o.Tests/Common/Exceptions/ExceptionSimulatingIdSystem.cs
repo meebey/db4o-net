@@ -16,8 +16,8 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		private readonly ExceptionSimulatingStorage.ExceptionTriggerCondition _triggerCondition
 			 = new ExceptionSimulatingStorage.ExceptionTriggerCondition();
 
-		public ExceptionSimulatingIdSystem(LocalObjectContainer container, int idSystemId
-			, IExceptionFactory exceptionFactory) : base(container, idSystemId)
+		public ExceptionSimulatingIdSystem(LocalObjectContainer container, IExceptionFactory
+			 exceptionFactory) : base(container)
 		{
 			_exceptionFactory = exceptionFactory;
 		}

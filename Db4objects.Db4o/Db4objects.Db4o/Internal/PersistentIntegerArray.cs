@@ -9,27 +9,23 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class PersistentIntegerArray : LocalPersistentBase
 	{
+		private readonly Db4objects.Db4o.Internal.Slots.SlotChangeFactory _slotChangeFactory;
+
 		private int[] _ints;
 
-		public PersistentIntegerArray(ITransactionalIdSystem idSystem, int[] arr) : base(
-			idSystem)
+		public PersistentIntegerArray(Db4objects.Db4o.Internal.Slots.SlotChangeFactory slotChangeFactory
+			, ITransactionalIdSystem idSystem, int[] arr) : base(idSystem)
 		{
+			_slotChangeFactory = slotChangeFactory;
 			_ints = new int[arr.Length];
 			System.Array.Copy(arr, 0, _ints, 0, arr.Length);
 		}
 
-		public PersistentIntegerArray(ITransactionalIdSystem idSystem, int id) : base(idSystem
-			)
+		public PersistentIntegerArray(Db4objects.Db4o.Internal.Slots.SlotChangeFactory slotChangeFactory
+			, ITransactionalIdSystem idSystem, int id) : base(idSystem)
 		{
+			_slotChangeFactory = slotChangeFactory;
 			SetID(id);
-		}
-
-		public PersistentIntegerArray(int id) : this(null, id)
-		{
-		}
-
-		public PersistentIntegerArray(int[] arr) : this(null, arr)
-		{
 		}
 
 		public override byte GetIdentifier()
@@ -74,7 +70,7 @@ namespace Db4objects.Db4o.Internal
 		public override Db4objects.Db4o.Internal.Slots.SlotChangeFactory SlotChangeFactory
 			()
 		{
-			return Db4objects.Db4o.Internal.Slots.SlotChangeFactory.FreeSpace;
+			return _slotChangeFactory;
 		}
 	}
 }

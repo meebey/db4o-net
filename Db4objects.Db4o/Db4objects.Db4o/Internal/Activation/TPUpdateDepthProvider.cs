@@ -8,12 +8,12 @@ namespace Db4objects.Db4o.Internal.Activation
 	{
 		public virtual FixedUpdateDepth ForDepth(int depth)
 		{
-			return new TPFixedUpdateDepth(depth, false);
+			return new TPFixedUpdateDepth(depth, NullModifiedObjectQuery.Instance);
 		}
 
-		public virtual UnspecifiedUpdateDepth Unspecified(bool tpCommitMode)
+		public virtual UnspecifiedUpdateDepth Unspecified(IModifiedObjectQuery query)
 		{
-			return new TPUnspecifiedUpdateDepth(tpCommitMode);
+			return new TPUnspecifiedUpdateDepth(query);
 		}
 	}
 }

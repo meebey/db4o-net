@@ -482,7 +482,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			IClassIndexStrategy index = i_classMetadata.Index();
 			index.TraverseAll(i_trans, new _IVisitor4_349(this, result));
 			i_root = result.tree;
-			DiagnosticProcessor dp = i_trans.Container()._handlers._diagnosticProcessor;
+			DiagnosticProcessor dp = i_trans.Container()._handlers.DiagnosticProcessor();
 			if (dp.Enabled() && !IsClassOnlyQuery())
 			{
 				dp.LoadedFromClassIndex(i_classMetadata);

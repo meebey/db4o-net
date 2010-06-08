@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.IO;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
-	public class AllTests : ComposibleReflectionTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] arguments)
 		{
@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			return ComposeTests(new Type[] { typeof(BlockAwareBinTestSuite), typeof(MemoryBinGrowthTestCase
 				), typeof(MemoryBinIsReusableTestCase), typeof(MemoryIoAdapterTestCase), typeof(
 				NonFlushingStorageTestCase), typeof(RandomAccessFileStorageFactoryTestCase), typeof(
-				StorageTestSuite) });
+				SaveAsStorageTestCase), typeof(StorageTestSuite) });
 		}
 
 		#if !SILVERLIGHT

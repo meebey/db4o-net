@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Internal.Delete
 
 		public virtual void DefragmentRecommended()
 		{
-			DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+			DiagnosticProcessor dp = Container()._handlers.DiagnosticProcessor();
 			if (dp.Enabled())
 			{
 				dp.DefragmentRecommended(DefragmentRecommendation.DefragmentRecommendationReason.

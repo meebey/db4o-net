@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public class Holder<E>
 		{
-			public ISet<E> _set;
+			public Db4objects.Db4o.Collections.ISet<E> _set;
 		}
 
 		public class Item
@@ -88,7 +88,8 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 			public void Apply(object set)
 			{
-				((ISet<BigSetTestCase.Item>)set).Add(new BigSetTestCase.Item("3"));
+				((Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item>)set).Add(new BigSetTestCase.Item
+					("3"));
 			}
 		}
 
@@ -97,7 +98,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			BigSetTestCase.Holder<BigSetTestCase.Item> holder = NewHolderWithBigSet(new BigSetTestCase.Item
 				("1"), new BigSetTestCase.Item("2"));
 			StoreAndCommit(holder);
-			ISet<BigSetTestCase.Item> set = holder._set;
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = holder._set;
 			Assert.AreEqual(2, set.Count);
 			setOperations.Apply(set);
 			PurgeAll(holder, holder._set);
@@ -119,7 +120,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 			public void Apply(object set)
 			{
-				((ISet<BigSetTestCase.Item>)set).Clear();
+				((Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item>)set).Clear();
 			}
 		}
 
@@ -137,7 +138,8 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 			public void Apply(object set)
 			{
-				((ISet<BigSetTestCase.Item>)set).Remove(this._enclosing.QueryItem("1"));
+				((Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item>)set).Remove(this._enclosing
+					.QueryItem("1"));
 			}
 
 			private readonly BigSetTestCase _enclosing;
@@ -193,13 +195,13 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestEmptySet()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			Assert.AreEqual(0, set.Count);
 		}
 
 		public virtual void TestSize()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			set.Add(ItemOne);
 			Assert.AreEqual(1, set.Count);
 			set.Remove(ItemOne);
@@ -214,7 +216,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestContains()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			set.Add(ItemOne);
 			Assert.IsTrue(set.Contains(ItemOne));
 		}
@@ -225,7 +227,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			BigSetTestCase.Holder<BigSetTestCase.Item> holder = new BigSetTestCase.Holder<BigSetTestCase.Item
 				>();
 			holder._set = NewBigSet();
-			ISet<BigSetTestCase.Item> set = holder._set;
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = holder._set;
 			set.Add(ItemOne);
 			Store(holder);
 			Reopen();
@@ -235,7 +237,8 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 			AssertSinglePersistentItem(set);
 		}
 
-		private void AssertSinglePersistentItem(ISet<BigSetTestCase.Item> set)
+		private void AssertSinglePersistentItem(Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item
+			> set)
 		{
 			BigSetTestCase.Item expectedItem = (BigSetTestCase.Item)RetrieveOnlyInstance(typeof(
 				BigSetTestCase.Item));
@@ -250,7 +253,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestAddAllContainsAll()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			IList<BigSetTestCase.Item> collection = ItemList();
 			Assert.IsTrue(Sharpen.Collections.AddAll(set, collection));
 			Assert.IsTrue(set.ContainsAll(collection));
@@ -260,7 +263,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestRemove()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			IList<BigSetTestCase.Item> collection = ItemList();
 			Sharpen.Collections.AddAll(set, collection);
 			BigSetTestCase.Item first = collection[0];
@@ -273,7 +276,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestRemoveAll()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			IList<BigSetTestCase.Item> collection = ItemList();
 			Sharpen.Collections.AddAll(set, collection);
 			Assert.IsTrue(set.RemoveAll(collection));
@@ -283,7 +286,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestIsEmpty()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			Assert.IsTrue(set.IsEmpty);
 			set.Add(ItemOne);
 			Assert.IsFalse(set.IsEmpty);
@@ -293,7 +296,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		public virtual void TestIterator()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			ICollection<BigSetTestCase.Item> collection = ItemList();
 			Sharpen.Collections.AddAll(set, collection);
 			IEnumerator i = set.GetEnumerator();
@@ -304,7 +307,7 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDelete()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			set.Add(ItemOne);
 			Db().Store(set);
 			Db().Commit();
@@ -316,7 +319,8 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 		private sealed class _ICodeBlock_259 : ICodeBlock
 		{
-			public _ICodeBlock_259(BigSetTestCase _enclosing, ISet<BigSetTestCase.Item> set)
+			public _ICodeBlock_259(BigSetTestCase _enclosing, Db4objects.Db4o.Collections.ISet
+				<BigSetTestCase.Item> set)
 			{
 				this._enclosing = _enclosing;
 				this.set = set;
@@ -331,12 +335,12 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 
 			private readonly BigSetTestCase _enclosing;
 
-			private readonly ISet<BigSetTestCase.Item> set;
+			private readonly Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set;
 		}
 
 		private sealed class _ICodeBlock_265 : ICodeBlock
 		{
-			public _ICodeBlock_265(ISet<BigSetTestCase.Item> set)
+			public _ICodeBlock_265(Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set)
 			{
 				this.set = set;
 			}
@@ -347,24 +351,25 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 				set.Add(BigSetTestCase.ItemOne);
 			}
 
-			private readonly ISet<BigSetTestCase.Item> set;
+			private readonly Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set;
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestDefragment()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			set.Add(ItemOne);
 			Db().Store(set);
 			Db().Commit();
 			Defragment();
-			set = (ISet<BigSetTestCase.Item>)RetrieveOnlyInstance(set.GetType());
+			set = (Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item>)RetrieveOnlyInstance
+				(set.GetType());
 			AssertSinglePersistentItem(set);
 		}
 
 		public virtual void TestClear()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			set.Add(ItemOne);
 			set.Clear();
 			Assert.AreEqual(0, set.Count);
@@ -383,22 +388,23 @@ namespace Db4objects.Db4o.Tests.Jre12.Collections
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestGetInternalImplementation()
 		{
-			ISet<BigSetTestCase.Item> set = NewBigSet();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = NewBigSet();
 			BTree bTree = BTree(set);
 			Assert.IsNotNull(bTree);
 		}
 
-		private ISet<BigSetTestCase.Item> NewBigSet(params BigSetTestCase.Item[] initialSet
-			)
+		private Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> NewBigSet(params BigSetTestCase.Item
+			[] initialSet)
 		{
-			ISet<BigSetTestCase.Item> set = CollectionFactory.ForObjectContainer(Db()).NewBigSet
-				<BigSetTestCase.Item>();
+			Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set = CollectionFactory.ForObjectContainer
+				(Db()).NewBigSet<BigSetTestCase.Item>();
 			Sharpen.Collections.AddAll(set, Arrays.AsList(initialSet));
 			return set;
 		}
 
 		/// <exception cref="System.MemberAccessException"></exception>
-		public static BTree BTree(ISet<BigSetTestCase.Item> set)
+		public static BTree BTree(Db4objects.Db4o.Collections.ISet<BigSetTestCase.Item> set
+			)
 		{
 			return (BTree)Reflection4.GetFieldValue(set, "_bTree");
 		}

@@ -100,6 +100,6 @@ namespace Db4objects.Db4o.Internal.Activation
 		protected abstract Db4objects.Db4o.Internal.Activation.FixedUpdateDepth ForDepth(
 			int depth);
 
-		public abstract bool CanSkip(ClassMetadata arg1);
+		public abstract bool CanSkip(ObjectReference arg1);
 	}
 }

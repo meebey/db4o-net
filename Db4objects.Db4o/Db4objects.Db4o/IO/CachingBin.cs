@@ -6,6 +6,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal.Caching;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.IO
 {
@@ -43,8 +44,8 @@ namespace Db4objects.Db4o.IO
 			)
 		{
 			_onDiscardPage = new _IProcedure4_22(this);
-			_producerFromDisk = new _IFunction4_128(this);
-			_producerFromPool = new _IFunction4_137(this);
+			_producerFromDisk = new _IFunction4_138(this);
+			_producerFromPool = new _IFunction4_147(this);
 			_pageSize = pageSize;
 			_pagePool = new SimpleObjectPool(NewPagePool(pageCount));
 			_cache = cache;
@@ -131,6 +132,31 @@ namespace Db4objects.Db4o.IO
 			base.Sync();
 		}
 
+		public override void Sync(IRunnable runnable)
+		{
+			FlushAllPages();
+			base.Sync(new _IRunnable_119(this, runnable));
+		}
+
+		private sealed class _IRunnable_119 : IRunnable
+		{
+			public _IRunnable_119(CachingBin _enclosing, IRunnable runnable)
+			{
+				this._enclosing = _enclosing;
+				this.runnable = runnable;
+			}
+
+			public void Run()
+			{
+				runnable.Run();
+				this._enclosing.FlushAllPages();
+			}
+
+			private readonly CachingBin _enclosing;
+
+			private readonly IRunnable runnable;
+		}
+
 		public override int SyncRead(long position, byte[] bytes, int bytesToRead)
 		{
 			return ReadInternal(position, bytes, bytesToRead, true);
@@ -143,9 +169,9 @@ namespace Db4objects.Db4o.IO
 			return _fileLength;
 		}
 
-		private sealed class _IFunction4_128 : IFunction4
+		private sealed class _IFunction4_138 : IFunction4
 		{
-			public _IFunction4_128(CachingBin _enclosing)
+			public _IFunction4_138(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -164,9 +190,9 @@ namespace Db4objects.Db4o.IO
 
 		internal readonly IFunction4 _producerFromDisk;
 
-		private sealed class _IFunction4_137 : IFunction4
+		private sealed class _IFunction4_147 : IFunction4
 		{
-			public _IFunction4_137(CachingBin _enclosing)
+			public _IFunction4_147(CachingBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

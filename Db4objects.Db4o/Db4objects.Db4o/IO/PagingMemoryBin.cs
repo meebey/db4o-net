@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using Db4objects.Db4o.IO;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.IO
 {
@@ -124,6 +125,11 @@ namespace Db4objects.Db4o.IO
 		private int PageOffset(long pos)
 		{
 			return (int)(pos % _pageSize);
+		}
+
+		public virtual void Sync(IRunnable runnable)
+		{
+			runnable.Run();
 		}
 	}
 }

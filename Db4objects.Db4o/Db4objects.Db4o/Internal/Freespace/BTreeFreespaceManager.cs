@@ -23,8 +23,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private PersistentIntegerArray _idArray;
 
-		private int _delegateIndirectionID;
-
 		private int _delegationRequests;
 
 		private IFreespaceListener _listener = NullFreespaceListener.Instance;
@@ -36,7 +34,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			_file = file;
 			_delegate = new InMemoryFreespaceManager(slotFreedCallback, discardLimit);
-			_idSystem = file.IdSystem().FreespaceIdSystem();
+			_idSystem = file.SystemData().FreespaceIdSystem();
 		}
 
 		private void AddSlot(Slot slot)
@@ -46,9 +44,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_listener.SlotAdded(slot.Length());
 		}
 
-		public override Slot AllocateTransactionLogSlot(int length)
+		public override Slot AllocateSafeSlot(int length)
 		{
-			return _delegate.AllocateTransactionLogSlot(length);
+			return _delegate.AllocateSafeSlot(length);
 		}
 
 		public override void BeginCommit()
@@ -153,9 +151,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_slotsByLength.Free(Transaction());
 		}
 
-		public override void FreeTransactionLogSlot(Slot slot)
+		public override void FreeSafeSlot(Slot slot)
 		{
-			_delegate.FreeTransactionLogSlot(slot);
+			_delegate.FreeSafeSlot(slot);
 		}
 
 		public override Slot AllocateSlot(int length)
@@ -180,7 +178,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 				Slot slot = (Slot)pointer.Key();
 				RemoveSlot(slot);
 				int remainingLength = slot.Length() - length;
-				if (!CanDiscard(remainingLength))
+				if (SplitRemainder(remainingLength))
 				{
 					AddSlot(slot.SubSlot(length));
 					slot = slot.Truncate(length);
@@ -197,21 +195,17 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 		}
 
-		private void InitializeExisting(int slotAddress)
+		private void InitializeExisting(int id)
 		{
-			_idArray = new PersistentIntegerArray(_idSystem, slotAddress);
+			_idArray = new PersistentIntegerArray(SlotChangeFactory.FreeSpace, _idSystem, id);
 			_idArray.Read(Transaction());
 			int[] ids = _idArray.Array();
 			int addressId = ids[0];
 			int lengthID = ids[1];
-			_delegateIndirectionID = ids[2];
 			CreateBTrees(addressId, lengthID);
 			_slotsByAddress.Read(Transaction());
 			_slotsByLength.Read(Transaction());
-			Slot slot = _file.ReadPointerSlot(_delegateIndirectionID);
-			_file.WritePointer(_delegateIndirectionID, Slot.Zero);
-			_file.SyncFiles();
-			_delegate.Read(_file, slot);
+			_delegate.Read(_file, _file.SystemData().InMemoryFreespaceSlot());
 		}
 
 		private void InitializeNew()
@@ -219,13 +213,11 @@ namespace Db4objects.Db4o.Internal.Freespace
 			CreateBTrees(0, 0);
 			_slotsByAddress.Write(Transaction());
 			_slotsByLength.Write(Transaction());
-			LocalObjectContainer container = (LocalObjectContainer)Transaction().Container();
-			_delegateIndirectionID = container.AllocatePointerSlot();
-			int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID(), _delegateIndirectionID
-				 };
-			_idArray = new PersistentIntegerArray(_idSystem, ids);
+			int[] ids = new int[] { _slotsByAddress.GetID(), _slotsByLength.GetID() };
+			_idArray = new PersistentIntegerArray(SlotChangeFactory.FreeSpace, _idSystem, ids
+				);
 			_idArray.Write(Transaction());
-			_file.SystemData().FreespaceAddress(_idArray.GetID());
+			_file.SystemData().BTreeFreespaceId(_idArray.GetID());
 		}
 
 		private bool IsDelegating()
@@ -233,11 +225,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return _delegationRequests > 0;
 		}
 
-		public override void Read(LocalObjectContainer container, int freeSpaceID)
+		public virtual void Read(LocalObjectContainer container, int freeSpaceID)
 		{
 		}
 
 		// do nothing
+		// reading happens in start( )
 		private void RemoveSlot(Slot slot)
 		{
 			_slotsByLength.Remove(Transaction(), slot);
@@ -257,18 +250,18 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return _slotsByAddress.Size(Transaction()) + _delegate.SlotCount();
 		}
 
-		public override void Start(int slotAddress)
+		public override void Start(int id)
 		{
 			try
 			{
 				BeginDelegation();
-				if (slotAddress == 0)
+				if (id == 0)
 				{
 					InitializeNew();
 				}
 				else
 				{
-					InitializeExisting(slotAddress);
+					InitializeExisting(id);
 				}
 			}
 			finally
@@ -308,15 +301,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_delegate.MigrateTo(fm);
 		}
 
-		public override int Write(LocalObjectContainer container)
+		public override void Write(LocalObjectContainer container)
 		{
 			try
 			{
 				BeginDelegation();
-				Slot slot = _file.AllocateSlot(_delegate.MarshalledLength());
-				Pointer4 pointer = new Pointer4(_delegateIndirectionID, slot);
-				_delegate.Write(_file, pointer);
-				return _idArray.GetID();
+				_delegate.Write(container);
+				container.SystemData().BTreeFreespaceId(_idArray.GetID());
 			}
 			finally
 			{
@@ -333,5 +324,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 			return (LocalTransaction)_file.SystemTransaction();
 		}
+
+		public override Slot AllocateTransactionLogSlot(int length)
+		{
+			return _delegate.AllocateTransactionLogSlot(length);
+		}
+
+		public override void Read(LocalObjectContainer container, Slot slot)
+		{
+		}
+		// do nothing
+		// everything happens in start
 	}
 }

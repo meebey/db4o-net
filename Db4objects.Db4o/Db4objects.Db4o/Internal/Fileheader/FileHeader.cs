@@ -10,8 +10,15 @@ namespace Db4objects.Db4o.Internal.Fileheader
 	/// <exclude></exclude>
 	public abstract class FileHeader
 	{
+		public const int TransactionPointerLength = Const4.IntLength * 2;
+
 		private static readonly FileHeader[] AvailableFileHeaders = new FileHeader[] { new 
 			FileHeader0(null), new FileHeader1(), new FileHeader2() };
+
+		public static NewFileHeaderBase NewCurrentFileHeader()
+		{
+			return new FileHeader2();
+		}
 
 		private static int ReaderLength()
 		{
@@ -31,7 +38,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			if (header == null)
 			{
 				Exceptions4.ThrowRuntimeException(Db4objects.Db4o.Internal.Messages.IncompatibleFormat
-					);
+					, file.ToString());
 			}
 			else
 			{
@@ -40,7 +47,12 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			return header;
 		}
 
-		public abstract FileHeader Convert(LocalObjectContainer file);
+		public virtual FileHeader Convert(LocalObjectContainer file)
+		{
+			FileHeader2 fileHeader = new FileHeader2();
+			fileHeader.InitNew(file);
+			return fileHeader;
+		}
 
 		private static ByteArrayBuffer PrepareFileHeaderReader(LocalObjectContainer file)
 		{
@@ -100,31 +112,31 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		// TODO: freespaceID should not be passed here, it should be taken from SystemData
 		public abstract void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
-			, bool shuttingDown, StatefulBuffer writer, int blockSize, int freespaceID);
+			, bool shuttingDown, StatefulBuffer writer, int blockSize);
 
-		public abstract void WriteTransactionPointer(Transaction systemTransaction, int transactionPointer1
-			, int transactionPointer2);
+		public abstract void WriteTransactionPointer(Transaction systemTransaction, int transactionPointer
+			);
 
 		protected virtual void WriteTransactionPointer(Transaction systemTransaction, int
-			 transactionPointer1, int transactionPointer2, int address, int offset)
+			 transactionPointer, int address, int offset)
 		{
-			StatefulBuffer bytes = new StatefulBuffer(systemTransaction, address, Const4.IntLength
-				 * 2);
+			StatefulBuffer bytes = new StatefulBuffer(systemTransaction, address, TransactionPointerLength
+				);
 			bytes.MoveForward(offset);
-			bytes.WriteInt(transactionPointer1);
-			bytes.WriteInt(transactionPointer2);
+			bytes.WriteInt(transactionPointer);
+			bytes.WriteInt(transactionPointer);
+			// Dangerous write. 
+			// On corruption transaction pointers will not be the same and nothing will happen.
 			bytes.Write();
 		}
 
-		public abstract void WriteVariablePart(LocalObjectContainer file, int part);
-
-		protected void ReadClassCollectionAndFreeSpace(LocalObjectContainer file, ByteArrayBuffer
-			 reader)
+		public virtual void WriteVariablePart(LocalObjectContainer file)
 		{
-			SystemData systemData = file.SystemData();
-			systemData.ClassCollectionID(reader.ReadInt());
-			systemData.FreespaceID(reader.ReadInt());
+			WriteVariablePart(file, false);
 		}
+
+		public abstract void WriteVariablePart(LocalObjectContainer file, bool shuttingDown
+			);
 
 		public static bool LockedByOtherSession(LocalObjectContainer container, long lastAccessTime
 			)
@@ -134,6 +146,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public abstract void ReadIdentity(LocalObjectContainer container);
 
-		public abstract IRunnable Commit();
+		public abstract IRunnable Commit(bool shuttingDown);
 	}
 }

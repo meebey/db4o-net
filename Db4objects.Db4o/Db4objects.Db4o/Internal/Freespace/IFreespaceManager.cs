@@ -22,25 +22,27 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		int TotalFreespace();
 
+		Slot AllocateTransactionLogSlot(int length);
+
 		Slot AllocateSlot(int length);
 
 		void MigrateTo(IFreespaceManager fm);
 
-		void Read(LocalObjectContainer container, int freeSpaceID);
+		void Read(LocalObjectContainer container, Slot slot);
 
-		void Start(int slotAddress);
+		void Start(int id);
 
 		byte SystemType();
 
 		void Traverse(IVisitor4 visitor);
 
-		int Write(LocalObjectContainer container);
+		void Write(LocalObjectContainer container);
 
 		void Commit();
 
-		Slot AllocateTransactionLogSlot(int length);
+		Slot AllocateSafeSlot(int length);
 
-		void FreeTransactionLogSlot(Slot slot);
+		void FreeSafeSlot(Slot slot);
 
 		void Listener(IFreespaceListener listener);
 

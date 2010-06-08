@@ -203,8 +203,23 @@ namespace Db4objects.Db4o.Internal.Activation
 			{
 				ObjectContainerBase container = _transaction.Container();
 				container.StoreAll(_transaction, _modified.ValuesIterator(), container.UpdateDepthProvider
-					().Unspecified(true));
+					().Unspecified(new _IModifiedObjectQuery_132(this)));
 				_transaction.ProcessDeletes();
+			}
+
+			private sealed class _IModifiedObjectQuery_132 : IModifiedObjectQuery
+			{
+				public _IModifiedObjectQuery_132(ObjectsModifiedInTransaction _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+
+				public bool IsModified(object obj)
+				{
+					return this._enclosing.Contains(obj);
+				}
+
+				private readonly ObjectsModifiedInTransaction _enclosing;
 			}
 
 			public void Rollback(IRollbackStrategy rollbackStrategy)

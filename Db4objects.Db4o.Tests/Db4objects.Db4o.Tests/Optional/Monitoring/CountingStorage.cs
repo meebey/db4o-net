@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Optional.Monitoring
 {
@@ -62,6 +63,12 @@ namespace Db4objects.Db4o.Tests.Optional.Monitoring
 			{
 				++this._enclosing._numberOfSyncCalls;
 				base.Sync();
+			}
+
+			public override void Sync(IRunnable runnable)
+			{
+				++this._enclosing._numberOfSyncCalls;
+				base.Sync(runnable);
 			}
 
 			public override int Read(long position, byte[] bytes, int bytesToRead)

@@ -127,6 +127,11 @@ namespace Db4objects.Db4o.Internal.Diagnostic
 				));
 		}
 
+		public virtual void ClassMissed(string className)
+		{
+			OnDiagnostic(new MissingClass(className));
+		}
+
 		public virtual void OnDiagnostic(IDiagnostic d)
 		{
 			if (_listeners == null)

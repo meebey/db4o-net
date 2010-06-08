@@ -13,7 +13,7 @@ using Sharpen.Lang;
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
-	public class InMemoryIdSystem : IIdSystem
+	public class InMemoryIdSystem : IStackableIdSystem
 	{
 		private readonly LocalObjectContainer _container;
 
@@ -23,18 +23,20 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		private readonly SequentialIdGenerator _idGenerator;
 
+		private int _childId;
+
 		/// <summary>for testing purposes only.</summary>
 		/// <remarks>for testing purposes only.</remarks>
 		public InMemoryIdSystem(LocalObjectContainer container, int maxValidId)
 		{
 			_container = container;
-			_idGenerator = new SequentialIdGenerator(new _IFunction4_30(this, maxValidId), _container
+			_idGenerator = new SequentialIdGenerator(new _IFunction4_32(this, maxValidId), _container
 				.Handlers.LowestValidId(), maxValidId);
 		}
 
-		private sealed class _IFunction4_30 : IFunction4
+		private sealed class _IFunction4_32 : IFunction4
 		{
-			public _IFunction4_30(InMemoryIdSystem _enclosing, int maxValidId)
+			public _IFunction4_32(InMemoryIdSystem _enclosing, int maxValidId)
 			{
 				this._enclosing = _enclosing;
 				this.maxValidId = maxValidId;
@@ -59,11 +61,11 @@ namespace Db4objects.Db4o.Internal.Ids
 		private void ReadThis()
 		{
 			SystemData systemData = _container.SystemData();
-			_slot = new Slot(systemData.TransactionPointer1(), systemData.TransactionPointer2
-				());
-			if (!_slot.IsNull())
+			_slot = systemData.IdSystemSlot();
+			if (!Slot.IsNull(_slot))
 			{
 				ByteArrayBuffer buffer = _container.ReadBufferBySlot(_slot);
+				_childId = buffer.ReadInt();
 				_idGenerator.Read(buffer);
 				_ids = (IdSlotTree)new TreeReader(buffer, new IdSlotTree(0, null)).Read();
 			}
@@ -83,14 +85,14 @@ namespace Db4objects.Db4o.Internal.Ids
 			// No more operations against the FreespaceManager.
 			// Time to free old slots.
 			freespaceCommitter.Commit();
-			slotChanges.Accept(new _IVisitor4_66(this));
+			slotChanges.Accept(new _IVisitor4_69(this));
 			WriteThis(reservedSlot);
 			FreeSlot(oldSlot);
 		}
 
-		private sealed class _IVisitor4_66 : IVisitor4
+		private sealed class _IVisitor4_69 : IVisitor4
 		{
-			public _IVisitor4_66(InMemoryIdSystem _enclosing)
+			public _IVisitor4_69(InMemoryIdSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -123,7 +125,7 @@ namespace Db4objects.Db4o.Internal.Ids
 		{
 			if (!appendToFile)
 			{
-				Slot slot = _container.FreespaceManager().AllocateTransactionLogSlot(slotLength);
+				Slot slot = _container.FreespaceManager().AllocateSafeSlot(slotLength);
 				if (slot != null)
 				{
 					return slot;
@@ -136,13 +138,13 @@ namespace Db4objects.Db4o.Internal.Ids
 		{
 			IntByRef count = new IntByRef();
 			count.value = _ids == null ? 0 : _ids.Size();
-			slotChanges.Accept(new _IVisitor4_100(count));
+			slotChanges.Accept(new _IVisitor4_103(count));
 			return count.value;
 		}
 
-		private sealed class _IVisitor4_100 : IVisitor4
+		private sealed class _IVisitor4_103 : IVisitor4
 		{
-			public _IVisitor4_100(IntByRef count)
+			public _IVisitor4_103(IntByRef count)
 			{
 				this.count = count;
 			}
@@ -178,22 +180,19 @@ namespace Db4objects.Db4o.Internal.Ids
 				_slot = AllocateSlot(true, slotLength);
 			}
 			ByteArrayBuffer buffer = new ByteArrayBuffer(_slot.Length());
+			buffer.WriteInt(_childId);
 			_idGenerator.Write(buffer);
 			TreeInt.Write(buffer, _ids);
 			_container.WriteBytes(buffer, _slot.Address(), 0);
+			_container.SystemData().IdSystemSlot(_slot);
 			IRunnable commitHook = _container.CommitHook();
-			_container.SyncFiles();
-			_container.WriteTransactionPointer(_slot.Address(), _slot.Length());
-			commitHook.Run();
-			_container.SyncFiles();
-			_container.SystemData().TransactionPointer1(_slot.Address());
-			_container.SystemData().TransactionPointer2(_slot.Length());
+			_container.SyncFiles(commitHook);
 			FreeSlot(reservedSlot);
 		}
 
 		private void FreeSlot(Slot slot)
 		{
-			if (slot == null || slot.IsNull())
+			if (Slot.IsNull(slot))
 			{
 				return;
 			}
@@ -202,12 +201,13 @@ namespace Db4objects.Db4o.Internal.Ids
 			{
 				return;
 			}
-			freespaceManager.FreeTransactionLogSlot(slot);
+			freespaceManager.FreeSafeSlot(slot);
 		}
 
 		private int SlotLength()
 		{
-			return TreeInt.MarshalledLength(_ids) + _idGenerator.MarshalledLength();
+			return TreeInt.MarshalledLength(_ids) + _idGenerator.MarshalledLength() + Const4.
+				IdLength;
 		}
 
 		private int EstimatedSlotLength(int estimatedCount)
@@ -218,7 +218,7 @@ namespace Db4objects.Db4o.Internal.Ids
 				template = new IdSlotTree(0, new Slot(0, 0));
 			}
 			return template.MarshalledLength(estimatedCount) + _idGenerator.MarshalledLength(
-				);
+				) + Const4.IdLength;
 		}
 
 		public virtual Slot CommittedSlot(int id)
@@ -251,7 +251,7 @@ namespace Db4objects.Db4o.Internal.Ids
 			}
 			IntByRef lastId = new IntByRef();
 			IntByRef freeId = new IntByRef();
-			Tree.Traverse(_ids, new TreeInt(start), new _ICancellableVisitor4_203(lastId, start
+			Tree.Traverse(_ids, new TreeInt(start), new _ICancellableVisitor4_204(lastId, start
 				, freeId));
 			if (freeId.value > 0)
 			{
@@ -264,9 +264,9 @@ namespace Db4objects.Db4o.Internal.Ids
 			return 0;
 		}
 
-		private sealed class _ICancellableVisitor4_203 : ICancellableVisitor4
+		private sealed class _ICancellableVisitor4_204 : ICancellableVisitor4
 		{
-			public _ICancellableVisitor4_203(IntByRef lastId, int start, IntByRef freeId)
+			public _ICancellableVisitor4_204(IntByRef lastId, int start, IntByRef freeId)
 			{
 				this.lastId = lastId;
 				this.start = start;
@@ -304,12 +304,12 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual void ReturnUnusedIds(IVisitable visitable)
 		{
-			visitable.Accept(new _IVisitor4_232(this));
+			visitable.Accept(new _IVisitor4_233(this));
 		}
 
-		private sealed class _IVisitor4_232 : IVisitor4
+		private sealed class _IVisitor4_233 : IVisitor4
 		{
-			public _IVisitor4_232(InMemoryIdSystem _enclosing)
+			public _IVisitor4_233(InMemoryIdSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -323,9 +323,14 @@ namespace Db4objects.Db4o.Internal.Ids
 			private readonly InMemoryIdSystem _enclosing;
 		}
 
-		public virtual ITransactionalIdSystem FreespaceIdSystem()
+		public virtual int ChildId()
 		{
-			return null;
+			return _childId;
+		}
+
+		public virtual void ChildId(int id)
+		{
+			_childId = id;
 		}
 	}
 }

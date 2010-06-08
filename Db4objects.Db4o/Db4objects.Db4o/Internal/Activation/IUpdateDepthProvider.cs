@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	public interface IUpdateDepthProvider
 	{
-		UnspecifiedUpdateDepth Unspecified(bool tpCommitMode);
+		UnspecifiedUpdateDepth Unspecified(IModifiedObjectQuery query);
 
 		FixedUpdateDepth ForDepth(int depth);
 	}

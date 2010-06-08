@@ -125,5 +125,10 @@ namespace Db4objects.Db4o.Internal.Config
 				_config.RecoveryMode(flag);
 			}
 		}
+
+		public virtual void AsynchronousSync(bool flag)
+		{
+			_config.AsynchronousSync(flag);
+		}
 	}
 }

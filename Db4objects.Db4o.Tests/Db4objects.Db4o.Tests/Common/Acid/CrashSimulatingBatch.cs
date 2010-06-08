@@ -12,9 +12,11 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 {
 	public class CrashSimulatingBatch
 	{
-		internal Collection4 writes = new Collection4();
+		private int _counter;
 
-		internal Collection4 currentWrite = new Collection4();
+		private Collection4 _writes = new Collection4();
+
+		private Collection4 _currentWrite = new Collection4();
 
 		public virtual void Add(string path, byte[] bytes, long offset, int length)
 		{
@@ -32,9 +34,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 					Sharpen.Runtime.PrintStackTrace(e);
 				}
 			}
-			CrashSimulatingWrite crashSimulatingWrite = new CrashSimulatingWrite(bytes, offset
-				, length, lockFileBuffer, logFileBuffer);
-			currentWrite.Add(crashSimulatingWrite);
+			CrashSimulatingWrite crashSimulatingWrite = new CrashSimulatingWrite(_counter++, 
+				bytes, offset, length, lockFileBuffer, logFileBuffer);
+			_currentWrite.Add(crashSimulatingWrite);
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -50,24 +52,24 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 
 		public virtual void Sync()
 		{
-			writes.Add(currentWrite);
-			currentWrite = new Collection4();
+			_writes.Add(_currentWrite);
+			_currentWrite = new Collection4();
 		}
 
 		public virtual int NumSyncs()
 		{
-			return writes.Size();
+			return _writes.Size();
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
-		public virtual int WriteVersions(string file)
+		public virtual int WriteVersions(string file, bool writeTrash)
 		{
 			int count = 0;
 			int rcount = 0;
 			string lastFileName = file + "0";
 			string rightFileName = file + "R";
 			File4.Copy(lastFileName, rightFileName);
-			IEnumerator syncIter = writes.GetEnumerator();
+			IEnumerator syncIter = _writes.GetEnumerator();
 			while (syncIter.MoveNext())
 			{
 				rcount++;
@@ -77,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				while (singleForwardIter.MoveNext())
 				{
 					CrashSimulatingWrite csw = (CrashSimulatingWrite)singleForwardIter.Current;
-					csw.Write(rightFileName, rightRaf);
+					csw.Write(rightFileName, rightRaf, false);
 				}
 				rightRaf.Close();
 				IEnumerator singleBackwardIter = writesBetweenSync.GetEnumerator();
@@ -88,7 +90,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 					string currentFileName = file + "W" + count;
 					File4.Copy(lastFileName, currentFileName);
 					RandomAccessFile raf = new RandomAccessFile(currentFileName, "rw");
-					csw.Write(currentFileName, raf);
+					csw.Write(currentFileName, raf, writeTrash);
 					raf.Close();
 					lastFileName = currentFileName;
 				}

@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Diagnostics;
 
 namespace Db4objects.Db4o.Tests.Common.Diagnostics
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -15,8 +15,15 @@ namespace Db4objects.Db4o.Tests.Common.Diagnostics
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ClassHasNoFieldsTestCase), typeof(DescendIntoTranslatorTestCase
-				), typeof(DiagnosticsTestCase), typeof(IndexFieldDiagnosticTestCase) };
+			return ComposeTests(new Type[] { typeof(ClassHasNoFieldsTestCase), typeof(DescendIntoTranslatorTestCase
+				), typeof(DiagnosticsTestCase), typeof(IndexFieldDiagnosticTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(MissingClassDiagnosticsTestCase) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

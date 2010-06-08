@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using Sharpen.Lang;
+
 namespace Db4objects.Db4o.IO
 {
 	/// <summary>
@@ -48,6 +50,9 @@ namespace Db4objects.Db4o.IO
 		/// media.
 		/// </remarks>
 		void Sync();
+
+		/// <summary>runs the Runnable between two calls to sync();</summary>
+		void Sync(IRunnable runnable);
 
 		/// <summary>
 		/// reads a given number of bytes into an array of bytes at an

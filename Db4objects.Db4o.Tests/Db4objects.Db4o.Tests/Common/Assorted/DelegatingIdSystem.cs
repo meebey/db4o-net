@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 	{
 		protected readonly IIdSystem _delegate;
 
-		public DelegatingIdSystem(LocalObjectContainer container, int idSystemId)
+		public DelegatingIdSystem(LocalObjectContainer container)
 		{
 			_delegate = new InMemoryIdSystem(container);
 		}
@@ -46,11 +46,6 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		public virtual void ReturnUnusedIds(IVisitable visitable)
 		{
 			_delegate.ReturnUnusedIds(visitable);
-		}
-
-		public virtual ITransactionalIdSystem FreespaceIdSystem()
-		{
-			return _delegate.FreespaceIdSystem();
 		}
 	}
 }

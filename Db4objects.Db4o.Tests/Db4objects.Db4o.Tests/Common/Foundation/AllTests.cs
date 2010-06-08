@@ -24,8 +24,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				), typeof(IntArrayListTestCase), typeof(IntMatcherTestCase), typeof(Iterable4AdaptorTestCase
 				), typeof(IteratorsTestCase), typeof(Map4TestCase), typeof(NoDuplicatesQueueTestCase
 				), typeof(NonblockingQueueTestCase), typeof(ObjectPoolTestCase), typeof(Path4TestCase
-				), typeof(SortedCollection4TestCase), typeof(Stack4TestCase), typeof(TreeKeyIteratorTestCase
-				), typeof(TreeNodeIteratorTestCase), typeof(TreeTestCase) };
+				), typeof(SortedCollection4TestCase), typeof(Stack4TestCase), typeof(TimeStampIdGeneratorTestCase
+				), typeof(TreeKeyIteratorTestCase), typeof(TreeNodeIteratorTestCase), typeof(TreeTestCase
+				) };
 		}
 	}
 }

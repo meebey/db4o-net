@@ -123,5 +123,10 @@ namespace Db4objects.Db4o.Internal.Slots
 		{
 			return _address == Update;
 		}
+
+		public static bool IsNull(Db4objects.Db4o.Internal.Slots.Slot slot)
+		{
+			return slot == null || slot.IsNull();
+		}
 	}
 }

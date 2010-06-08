@@ -17,6 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			public static readonly PersistStaticFieldValuesTestCase.PsfvHelper Two = new PersistStaticFieldValuesTestCase.PsfvHelper
 				();
 
+			[System.NonSerialized]
 			public static readonly PersistStaticFieldValuesTestCase.PsfvHelper Three = new PersistStaticFieldValuesTestCase.PsfvHelper
 				();
 
@@ -50,7 +51,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				)));
 			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.One, psfv.one);
 			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.Two, psfv.two);
-			Assert.AreSame(PersistStaticFieldValuesTestCase.Data.Three, psfv.three);
+			Assert.AreNotSame(PersistStaticFieldValuesTestCase.Data.Three, psfv.three);
 		}
 
 		public class PsfvHelper

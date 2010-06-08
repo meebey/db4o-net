@@ -144,7 +144,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			{
 				if (yc.IsTranslated())
 				{
-					i_trans.Container()._handlers._diagnosticProcessor.DescendIntoTranslator(yc, a_field
+					i_trans.Container()._handlers.DiagnosticProcessor().DescendIntoTranslator(yc, a_field
 						);
 				}
 				FieldMetadata yf = yc.FieldMetadataForName(a_field);

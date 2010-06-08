@@ -21,16 +21,16 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
-		public override Slot AllocateTransactionLogSlot(int length)
+		public override Slot AllocateSafeSlot(int length)
 		{
-			throw new InvalidOperationException();
+			return null;
 		}
 
-		public override void FreeTransactionLogSlot(Slot slot)
+		public override void FreeSafeSlot(Slot slot)
 		{
-			throw new InvalidOperationException();
 		}
 
+		// do nothing
 		public override void BeginCommit()
 		{
 		}
@@ -70,11 +70,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			throw new InvalidOperationException();
 		}
 
-		public override void Read(LocalObjectContainer container, int freespaceID)
-		{
-		}
-
-		public override void Start(int slotAddress)
+		public override void Start(int id)
 		{
 		}
 
@@ -83,9 +79,8 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return FmIx;
 		}
 
-		public override int Write(LocalObjectContainer container)
+		public override void Write(LocalObjectContainer container)
 		{
-			return 0;
 		}
 
 		public override void Commit()
@@ -99,6 +94,15 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public override bool IsStarted()
 		{
 			return false;
+		}
+
+		public override Slot AllocateTransactionLogSlot(int length)
+		{
+			return null;
+		}
+
+		public override void Read(LocalObjectContainer container, Slot slot)
+		{
 		}
 	}
 }

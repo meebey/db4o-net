@@ -2,13 +2,12 @@
 
 using System;
 using Db4oUnit;
-using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Tests.Common.Freespace;
 using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Freespace
 {
-	public class FileSizeTestCase : FreespaceManagerTestCaseBase, IOptOutDefragSolo
+	public class FileSizeTestCase : FreespaceManagerTestCaseBase
 	{
 		private const int Iterations = 100;
 
@@ -17,16 +16,45 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			new FileSizeTestCase().RunSolo();
 		}
 
+		public virtual void TestConsistentSizeOnDefragment()
+		{
+			StoreSomeItems();
+			Db().Commit();
+			AssertConsistentSize(new _IRunnable_20(this));
+		}
+
+		private sealed class _IRunnable_20 : IRunnable
+		{
+			public _IRunnable_20(FileSizeTestCase _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public void Run()
+			{
+				try
+				{
+					this._enclosing.Defragment();
+				}
+				catch (Exception e)
+				{
+					Sharpen.Runtime.PrintStackTrace(e);
+				}
+			}
+
+			private readonly FileSizeTestCase _enclosing;
+		}
+
 		public virtual void TestConsistentSizeOnRollback()
 		{
 			StoreSomeItems();
 			ProduceSomeFreeSpace();
-			AssertConsistentSize(new _IRunnable_21(this));
+			AssertConsistentSize(new _IRunnable_34(this));
 		}
 
-		private sealed class _IRunnable_21 : IRunnable
+		private sealed class _IRunnable_34 : IRunnable
 		{
-			public _IRunnable_21(FileSizeTestCase _enclosing)
+			public _IRunnable_34(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -44,12 +72,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			StoreSomeItems();
 			Db().Commit();
-			AssertConsistentSize(new _IRunnable_32(this));
+			AssertConsistentSize(new _IRunnable_45(this));
 		}
 
-		private sealed class _IRunnable_32 : IRunnable
+		private sealed class _IRunnable_45 : IRunnable
 		{
-			public _IRunnable_32(FileSizeTestCase _enclosing)
+			public _IRunnable_45(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -69,12 +97,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			FreespaceManagerTestCaseBase.Item item = new FreespaceManagerTestCaseBase.Item();
 			Store(item);
 			Db().Commit();
-			AssertConsistentSize(new _IRunnable_45(this, item));
+			AssertConsistentSize(new _IRunnable_58(this, item));
 		}
 
-		private sealed class _IRunnable_45 : IRunnable
+		private sealed class _IRunnable_58 : IRunnable
 		{
-			public _IRunnable_45(FileSizeTestCase _enclosing, FreespaceManagerTestCaseBase.Item
+			public _IRunnable_58(FileSizeTestCase _enclosing, FreespaceManagerTestCaseBase.Item
 				 item)
 			{
 				this._enclosing = _enclosing;
@@ -97,12 +125,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		{
 			Db().Commit();
 			Reopen();
-			AssertConsistentSize(new _IRunnable_56(this));
+			AssertConsistentSize(new _IRunnable_69(this));
 		}
 
-		private sealed class _IRunnable_56 : IRunnable
+		private sealed class _IRunnable_69 : IRunnable
 		{
-			public _IRunnable_56(FileSizeTestCase _enclosing)
+			public _IRunnable_69(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -128,12 +156,12 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			ProduceSomeFreeSpace();
 			Store(new FreespaceManagerTestCaseBase.Item());
 			Db().Commit();
-			AssertConsistentSize(new _IRunnable_71(this));
+			AssertConsistentSize(new _IRunnable_84(this));
 		}
 
-		private sealed class _IRunnable_71 : IRunnable
+		private sealed class _IRunnable_84 : IRunnable
 		{
-			public _IRunnable_71(FileSizeTestCase _enclosing)
+			public _IRunnable_84(FileSizeTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -158,16 +186,23 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		public virtual void AssertConsistentSize(IRunnable runnable)
 		{
-			for (int i = 0; i < 10; i++)
-			{
-				runnable.Run();
-			}
+			Warmup(runnable);
 			int originalFileSize = DatabaseFileSize();
 			for (int i = 0; i < Iterations; i++)
 			{
+				//        	System.out.println(databaseFileSize());
 				runnable.Run();
 			}
 			Assert.AreEqual(originalFileSize, DatabaseFileSize());
+		}
+
+		private void Warmup(IRunnable runnable)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				//        	System.out.println(databaseFileSize());
+				runnable.Run();
+			}
 		}
 	}
 }

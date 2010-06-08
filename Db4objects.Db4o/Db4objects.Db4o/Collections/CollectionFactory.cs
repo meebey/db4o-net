@@ -2,7 +2,6 @@
 
 using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Collections;
 
@@ -54,7 +53,7 @@ namespace Db4objects.Db4o.Collections
 		/// BigSet is recommend whenever one object references a huge number of other objects and sorting is not required.
 		/// </remarks>
 		/// <returns></returns>
-		public virtual ISet<E> NewBigSet<E>()
+		public virtual Db4objects.Db4o.Collections.ISet<E> NewBigSet<E>()
 		{
 			return new BigSet<E>((LocalObjectContainer)_objectContainer);
 		}

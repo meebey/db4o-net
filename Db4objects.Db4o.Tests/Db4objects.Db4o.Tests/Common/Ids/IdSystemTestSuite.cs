@@ -167,7 +167,7 @@ namespace Db4objects.Db4o.Tests.Common.Ids
 
 			private bool IsValid(Slot slot)
 			{
-				return slot != null && !slot.IsNull();
+				return !Slot.IsNull(slot);
 			}
 
 			private IFreespaceManager FreespaceManager()
@@ -356,31 +356,13 @@ namespace Db4objects.Db4o.Tests.Common.Ids
 
 			public void Apply(IIdSystemConfiguration idSystemConfiguration)
 			{
-				idSystemConfiguration.UseBTreeSystem();
+				idSystemConfiguration.UseStackedBTreeSystem();
 			}
 
 			public IIdSystem NewInstance(LocalObjectContainer container)
 			{
-				IIdSystem idSystem = new InMemoryIdSystem(container);
-				ITransactionalIdSystem transactionalIdSystem = container.NewTransactionalIdSystem
-					(null, new _IClosure4_278(idSystem));
-				return new BTreeIdSystem(container, transactionalIdSystem, IdSystemTestSuite.MaxValidId
-					);
-			}
-
-			private sealed class _IClosure4_278 : IClosure4
-			{
-				public _IClosure4_278(IIdSystem idSystem)
-				{
-					this.idSystem = idSystem;
-				}
-
-				public object Run()
-				{
-					return idSystem;
-				}
-
-				private readonly IIdSystem idSystem;
+				return new BTreeIdSystem(container, new InMemoryIdSystem(container), IdSystemTestSuite
+					.MaxValidId);
 			}
 
 			public bool SupportsIdOverflow()

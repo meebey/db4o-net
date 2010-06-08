@@ -178,12 +178,18 @@ namespace Db4objects.Db4o.Reflect.Generic
 				_pendingClasses.Add(id);
 				return ret;
 			}
+			ReportMissingClass(className);
 			ret = _builder.CreateClass(className, EnsureClassAvailability(spec.SuperClassID()
 				), spec.NumFields());
 			// step 1 only add to _classByID, keep the class out of _classByName and _classes
 			_classByID.Put(id, ret);
 			_pendingClasses.Add(id);
 			return ret;
+		}
+
+		private void ReportMissingClass(string className)
+		{
+			_stream.Handlers.DiagnosticProcessor().ClassMissed(className);
 		}
 
 		private void EnsureClassRead(int id)

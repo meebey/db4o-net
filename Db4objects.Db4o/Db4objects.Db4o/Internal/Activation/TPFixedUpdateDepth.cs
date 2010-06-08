@@ -8,32 +8,23 @@ namespace Db4objects.Db4o.Internal.Activation
 {
 	public class TPFixedUpdateDepth : FixedUpdateDepth
 	{
-		private bool _tpCommit;
+		private IModifiedObjectQuery _query;
 
-		public TPFixedUpdateDepth(int depth, bool tpCommit) : base(depth)
+		public TPFixedUpdateDepth(int depth, IModifiedObjectQuery query) : base(depth)
 		{
-			_tpCommit = tpCommit;
+			_query = query;
 		}
 
-		internal virtual void TpCommit(bool tpCommit)
+		public override bool CanSkip(ObjectReference @ref)
 		{
-			_tpCommit = tpCommit;
-		}
-
-		public override bool CanSkip(ClassMetadata clazz)
-		{
-			if (_tpCommit)
-			{
-				return false;
-			}
+			ClassMetadata clazz = @ref.ClassMetadata();
 			return clazz.Reflector().ForClass(typeof(IActivatable)).IsAssignableFrom(clazz.ClassReflector
-				());
+				()) && !_query.IsModified(@ref.GetObject());
 		}
 
 		protected override FixedUpdateDepth ForDepth(int depth)
 		{
-			return new Db4objects.Db4o.Internal.Activation.TPFixedUpdateDepth(depth, _tpCommit
-				);
+			return new Db4objects.Db4o.Internal.Activation.TPFixedUpdateDepth(depth, _query);
 		}
 	}
 }

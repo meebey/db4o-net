@@ -12,8 +12,7 @@ namespace Db4objects.Db4o.Config
 	{
 		/// <summary>creates</summary>
 		/// <param name="container"></param>
-		/// <param name="idSystemId"></param>
 		/// <returns></returns>
-		IIdSystem NewInstance(LocalObjectContainer container, int idSystemId);
+		IIdSystem NewInstance(LocalObjectContainer container);
 	}
 }

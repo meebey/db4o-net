@@ -205,7 +205,7 @@ namespace Db4objects.Db4o.Internal
 			Transaction.Commit();
 		}
 
-		internal sealed override void WriteHeader(bool startFileLockingThread, bool shuttingDown
+		public sealed override void WriteHeader(bool startFileLockingThread, bool shuttingDown
 			)
 		{
 		}
@@ -261,7 +261,6 @@ namespace Db4objects.Db4o.Internal
 			{
 				ConfigureNewFile();
 				CommitTransaction();
-				WriteHeader(false, false);
 			}
 			else
 			{
@@ -371,6 +370,11 @@ namespace Db4objects.Db4o.Internal
 		public override IRunnable CommitHook()
 		{
 			return Runnable4.DoNothing;
+		}
+
+		public override void SyncFiles(IRunnable runnable)
+		{
+			runnable.Run();
 		}
 	}
 }

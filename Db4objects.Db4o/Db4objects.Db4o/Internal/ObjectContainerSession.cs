@@ -23,23 +23,23 @@ namespace Db4objects.Db4o.Internal
 	public partial class ObjectContainerSession : IInternalObjectContainer, ITransientClass
 		, IObjectContainerSpec
 	{
-		protected readonly LocalObjectContainer _server;
+		protected readonly ObjectContainerBase _server;
 
 		protected readonly Db4objects.Db4o.Internal.Transaction _transaction;
 
 		private bool _closed = false;
 
-		public ObjectContainerSession(LocalObjectContainer server, Db4objects.Db4o.Internal.Transaction
+		public ObjectContainerSession(ObjectContainerBase server, Db4objects.Db4o.Internal.Transaction
 			 trans)
 		{
 			_server = server;
 			_transaction = trans;
-			_transaction.SetOutSideRepresentation(this);
 		}
 
-		public ObjectContainerSession(LocalObjectContainer server) : this(server, server.
-			NewUserTransaction())
+		public ObjectContainerSession(ObjectContainerBase server) : this(server, server.NewUserTransaction
+			())
 		{
+			_transaction.SetOutSideRepresentation(this);
 		}
 
 		/// <param name="path"></param>
@@ -77,9 +77,8 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IConfiguration Configure()
 		{
-			// FIXME: Consider allowing configuring
-			// throw new NotSupportedException();
 			// FIXME: Consider throwing NotSupportedException here.
+			// throw new NotSupportedException();
 			lock (Lock())
 			{
 				CheckClosed();
@@ -279,7 +278,8 @@ namespace Db4objects.Db4o.Internal
 			{
 				CheckClosed();
 				_server.Store(_transaction, obj, (depth == Const4.Unspecified ? (IUpdateDepth)UpdateDepthProvider
-					().Unspecified(false) : (IUpdateDepth)UpdateDepthProvider().ForDepth(depth)));
+					().Unspecified(NullModifiedObjectQuery.Instance) : (IUpdateDepth)UpdateDepthProvider
+					().ForDepth(depth)));
 			}
 		}
 

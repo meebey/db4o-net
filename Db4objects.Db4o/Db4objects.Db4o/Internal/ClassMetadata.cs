@@ -299,7 +299,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				_aspects = ToClassAspectArray(aspects);
 			}
-			DiagnosticProcessor dp = _container._handlers._diagnosticProcessor;
+			DiagnosticProcessor dp = _container._handlers.DiagnosticProcessor();
 			if (dp.Enabled())
 			{
 				dp.CheckClassHasFields(this);
@@ -997,7 +997,7 @@ namespace Db4objects.Db4o.Internal
 				// It's very ugly to catch all here but it does
 				// help to heal migration from earlier db4o
 				// versions.
-				DiagnosticProcessor dp = Container()._handlers._diagnosticProcessor;
+				DiagnosticProcessor dp = Container()._handlers.DiagnosticProcessor();
 				if (dp.Enabled())
 				{
 					dp.DeletionFailed();
@@ -2343,7 +2343,8 @@ namespace Db4objects.Db4o.Internal
 
 			public bool Match(object candidate)
 			{
-				return ((IReflectField)candidate).IsStatic();
+				return ((IReflectField)candidate).IsStatic() && !((IReflectField)candidate).IsTransient
+					();
 			}
 		}
 

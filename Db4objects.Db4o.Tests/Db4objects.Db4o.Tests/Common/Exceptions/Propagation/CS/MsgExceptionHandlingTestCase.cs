@@ -11,6 +11,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Tests.Common.CS;
 using Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS;
 using Sharpen;
@@ -41,6 +42,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 			public override void Sync()
 			{
 				base.Sync();
+				_storage.NotifySyncInvocation();
+			}
+
+			public override void Sync(IRunnable runnable)
+			{
+				base.Sync(runnable);
 				_storage.NotifySyncInvocation();
 			}
 		}
@@ -86,7 +93,10 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 
 			public virtual void SyncAllowed(bool isAllowed)
 			{
-				_syncAllowed = isAllowed;
+				lock (this)
+				{
+					_syncAllowed = isAllowed;
+				}
 			}
 
 			public virtual bool IllegalSyncInvocation()
@@ -96,9 +106,12 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 
 			public virtual void NotifySyncInvocation()
 			{
-				if (!_syncAllowed)
+				lock (this)
 				{
-					_illegalSyncInvocation = true;
+					if (!_syncAllowed)
+					{
+						_illegalSyncInvocation = true;
+					}
 				}
 			}
 		}
@@ -112,13 +125,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 		{
 			_serverClosed = false;
 			IObjectServerEvents events = Server();
-			events.Closed += new System.EventHandler<ServerClosedEventArgs>(new _IEventListener4_96
+			events.Closed += new System.EventHandler<ServerClosedEventArgs>(new _IEventListener4_103
 				(this).OnEvent);
 		}
 
-		private sealed class _IEventListener4_96
+		private sealed class _IEventListener4_103
 		{
-			public _IEventListener4_96(MsgExceptionHandlingTestCase _enclosing)
+			public _IEventListener4_103(MsgExceptionHandlingTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -189,6 +202,10 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 		private void AssertNonRecoverableExceptionForMessage(MsgD message, Exception throwable
 			)
 		{
+			// Make sure the ClassMetadata of the exception is in the
+			// ObjectContainer otherwise we get side effects from producing it.
+			IReflectClass reflectClass = Client().Reflector().ForClass(throwable.GetType());
+			Client().ProduceClassMetadata(reflectClass);
 			_storage.SyncAllowed(false);
 			Client().Write(message.GetWriterForSingleObject(Trans(), throwable));
 			AssertDatabaseClosedException();
@@ -197,13 +214,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation.CS
 
 		private void AssertDatabaseClosedException()
 		{
-			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_151(this));
+			Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_164(this));
 			Assert.IsFalse(Client().IsAlive());
 		}
 
-		private sealed class _ICodeBlock_151 : ICodeBlock
+		private sealed class _ICodeBlock_164 : ICodeBlock
 		{
-			public _ICodeBlock_151(MsgExceptionHandlingTestCase _enclosing)
+			public _ICodeBlock_164(MsgExceptionHandlingTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -9,6 +9,7 @@ using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Common.Defragment;
+using Sharpen;
 
 namespace Db4objects.Db4o.Tests.Common.Defragment
 {
@@ -169,11 +170,13 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 				/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 				public override void Write(long pos, byte[] buffer, int length)
 				{
+					byte[] encryptedBuffer = new byte[buffer.Length];
+					System.Array.Copy(buffer, 0, encryptedBuffer, 0, buffer.Length);
 					for (int i = 0; i < length; i++)
 					{
-						buffer[i] = (byte)(buffer[i] + _password.GetHashCode());
+						encryptedBuffer[i] = (byte)(encryptedBuffer[i] + _password.GetHashCode());
 					}
-					_bin.Write(pos, buffer, length);
+					_bin.Write(pos, encryptedBuffer, length);
 				}
 			}
 		}

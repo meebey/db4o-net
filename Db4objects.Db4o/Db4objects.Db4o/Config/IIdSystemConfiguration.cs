@@ -12,9 +12,31 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>configures db4o to store IDs as pointers.</remarks>
 		void UsePointerBasedSystem();
 
-		/// <summary>configures db4o to use a BTree based ID system.</summary>
-		/// <remarks>configures db4o to use a BTree based ID system.</remarks>
-		void UseBTreeSystem();
+		/// <summary>
+		/// configures db4o to use a stack of two BTreeIdSystems on
+		/// top of an InMemoryIdSystem.
+		/// </summary>
+		/// <remarks>
+		/// configures db4o to use a stack of two BTreeIdSystems on
+		/// top of an InMemoryIdSystem. This setup is scalable for
+		/// large numbers of IDs. It is the default configuration
+		/// when new databases are created.
+		/// </remarks>
+		void UseStackedBTreeSystem();
+
+		/// <summary>
+		/// configures db4o to use a single BTreeIdSystem on
+		/// top of an InMemoryIdSystem.
+		/// </summary>
+		/// <remarks>
+		/// configures db4o to use a single BTreeIdSystem on
+		/// top of an InMemoryIdSystem. This setup is suitable for
+		/// smaller databases with a small number of IDs.
+		/// For larger numbers of IDs call
+		/// <see cref="UseStackedBTreeSystem()">UseStackedBTreeSystem()</see>
+		/// .
+		/// </remarks>
+		void UseSingleBTreeSystem();
 
 		/// <summary>configures db4o to use an in-memory ID system.</summary>
 		/// <remarks>

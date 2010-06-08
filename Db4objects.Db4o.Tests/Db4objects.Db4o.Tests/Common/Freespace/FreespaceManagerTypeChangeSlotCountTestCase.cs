@@ -6,6 +6,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Tests.Common.Api;
@@ -60,20 +61,22 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 
 		private void CreateDatabaseUsingRamManager()
 		{
-			ConfigureRamManager();
+			ConfigureRamFreespaceManager();
 			Open();
 		}
 
 		private void CreateDatabaseUsingBTreeManager()
 		{
-			ConfigureBTreeManager();
+			ConfigureBTreeFreespaceManager();
 			Open();
 		}
 
 		private void Open()
 		{
-			_container = (LocalObjectContainer)Db4oFactory.OpenFile(((IConfiguration)_currentConfig
-				.Run()), TempFile());
+			IConfiguration config = ((IConfiguration)_currentConfig.Run());
+			Db4oLegacyConfigurationBridge.AsIdSystemConfiguration(config).UsePointerBasedSystem
+				();
+			_container = (LocalObjectContainer)Db4oFactory.OpenFile(config, TempFile());
 		}
 
 		private void CreateFreeSpace()
@@ -86,18 +89,18 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		private void MigrateToBTree()
 		{
 			_container.Close();
-			ConfigureBTreeManager();
+			ConfigureBTreeFreespaceManager();
 			Open();
 		}
 
-		private void ConfigureBTreeManager()
+		private void ConfigureBTreeFreespaceManager()
 		{
-			_currentConfig = new _IClosure4_83();
+			_currentConfig = new _IClosure4_86();
 		}
 
-		private sealed class _IClosure4_83 : IClosure4
+		private sealed class _IClosure4_86 : IClosure4
 		{
-			public _IClosure4_83()
+			public _IClosure4_86()
 			{
 			}
 
@@ -113,18 +116,18 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		private void MigrateToRam()
 		{
 			_container.Close();
-			ConfigureRamManager();
+			ConfigureRamFreespaceManager();
 			Open();
 		}
 
-		private void ConfigureRamManager()
+		private void ConfigureRamFreespaceManager()
 		{
-			_currentConfig = new _IClosure4_98();
+			_currentConfig = new _IClosure4_101();
 		}
 
-		private sealed class _IClosure4_98 : IClosure4
+		private sealed class _IClosure4_101 : IClosure4
 		{
-			public _IClosure4_98()
+			public _IClosure4_101()
 			{
 			}
 
@@ -139,13 +142,13 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 		private IList GetSlots(IFreespaceManager freespaceManager)
 		{
 			IList retVal = new ArrayList();
-			freespaceManager.Traverse(new _IVisitor4_107(retVal));
+			freespaceManager.Traverse(new _IVisitor4_110(retVal));
 			return retVal;
 		}
 
-		private sealed class _IVisitor4_107 : IVisitor4
+		private sealed class _IVisitor4_110 : IVisitor4
 		{
-			public _IVisitor4_107(IList retVal)
+			public _IVisitor4_110(IList retVal)
 			{
 				this.retVal = retVal;
 			}

@@ -31,31 +31,31 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		{
 			IIdSystemConfiguration idSystemConfiguration = Db4oLegacyConfigurationBridge.AsIdSystemConfiguration
 				(config);
-			idSystemConfiguration.UseCustomSystem(new _IIdSystemFactory_30());
+			idSystemConfiguration.UseCustomSystem(new _IIdSystemFactory_29());
 		}
 
-		private sealed class _IIdSystemFactory_30 : IIdSystemFactory
+		private sealed class _IIdSystemFactory_29 : IIdSystemFactory
 		{
-			public _IIdSystemFactory_30()
+			public _IIdSystemFactory_29()
 			{
 			}
 
-			public IIdSystem NewInstance(LocalObjectContainer container, int idSystemId)
+			public IIdSystem NewInstance(LocalObjectContainer container)
 			{
-				return new InvalidSlotExceptionTestCase.MockIdSystem(container, idSystemId);
+				return new InvalidSlotExceptionTestCase.MockIdSystem(container);
 			}
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestInvalidSlotException()
 		{
-			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_40(this));
+			Assert.Expect(typeof(Db4oRecoverableException), new _ICodeBlock_38(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_40 : ICodeBlock
+		private sealed class _ICodeBlock_38 : ICodeBlock
 		{
-			public _ICodeBlock_40(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_38(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -72,13 +72,13 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 		public virtual void TestDbNotClosedOnOutOfMemory()
 		{
 			Assert.Expect(typeof(Db4oRecoverableException), typeof(OutOfMemoryException), new 
-				_ICodeBlock_49(this));
+				_ICodeBlock_47(this));
 			Assert.IsFalse(Db().IsClosed());
 		}
 
-		private sealed class _ICodeBlock_49 : ICodeBlock
+		private sealed class _ICodeBlock_47 : ICodeBlock
 		{
-			public _ICodeBlock_49(InvalidSlotExceptionTestCase _enclosing)
+			public _ICodeBlock_47(InvalidSlotExceptionTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -104,8 +104,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 
 		public class MockIdSystem : DelegatingIdSystem
 		{
-			public MockIdSystem(LocalObjectContainer container, int idSystemId) : base(container
-				, idSystemId)
+			public MockIdSystem(LocalObjectContainer container) : base(container)
 			{
 			}
 

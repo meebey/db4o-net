@@ -269,7 +269,7 @@ namespace Db4objects.Db4o.TA
 				}
 				NotTransparentActivationEnabled diagnostic = new NotTransparentActivationEnabled(
 					clazz);
-				DiagnosticProcessor processor = this._container.Handlers._diagnosticProcessor;
+				DiagnosticProcessor processor = this._container.Handlers.DiagnosticProcessor();
 				processor.OnDiagnostic(diagnostic);
 			}
 

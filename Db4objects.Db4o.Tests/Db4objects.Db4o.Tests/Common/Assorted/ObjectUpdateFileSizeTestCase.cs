@@ -43,24 +43,32 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="System.Exception"></exception>
 		private void AssertFileSizeConstant()
 		{
-			Defragment();
 			long beforeUpdate = DbSize();
-			for (int i = 0; i < 15; ++i)
+			for (int j = 0; j < 10; j++)
 			{
-				UpdateItem();
+				Defragment();
+				for (int i = 0; i < 15; ++i)
+				{
+					UpdateItem();
+				}
+				Defragment();
+				long afterUpdate = DbSize();
+				Assert.IsTrue(afterUpdate - beforeUpdate < 30);
 			}
-			Defragment();
-			long afterUpdate = DbSize();
-			Assert.IsTrue(afterUpdate - beforeUpdate < 2);
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		/// <exception cref="System.IO.IOException"></exception>
 		private void WarmUp()
 		{
-			for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; j++)
 			{
-				UpdateItem();
+				for (int i = 0; i < 3; ++i)
+				{
+					UpdateItem();
+					Db().Commit();
+				}
+				Defragment();
 			}
 		}
 

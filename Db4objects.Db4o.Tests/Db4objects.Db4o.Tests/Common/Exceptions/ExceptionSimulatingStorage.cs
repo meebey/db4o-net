@@ -2,6 +2,7 @@
 
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Tests.Common.Exceptions;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
@@ -84,6 +85,15 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 					_exceptionFactory.ThrowException();
 				}
 				_bin.Sync();
+			}
+
+			public override void Sync(IRunnable runnable)
+			{
+				if (TriggersException())
+				{
+					_exceptionFactory.ThrowException();
+				}
+				_bin.Sync(runnable);
 			}
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>

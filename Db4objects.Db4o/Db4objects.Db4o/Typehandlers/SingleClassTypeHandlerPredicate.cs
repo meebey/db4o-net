@@ -17,10 +17,10 @@ namespace Db4objects.Db4o.Typehandlers
 			_class = clazz;
 		}
 
-		public bool Match(IReflectClass classReflector)
+		public bool Match(IReflectClass candidate)
 		{
-			IReflectClass reflectClass = classReflector.Reflector().ForClass(_class);
-			return classReflector == reflectClass;
+			IReflectClass reflectClass = candidate.Reflector().ForClass(_class);
+			return candidate == reflectClass;
 		}
 	}
 }

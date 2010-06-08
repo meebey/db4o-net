@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal.Caching;
@@ -35,10 +34,6 @@ namespace Db4objects.Db4o.Internal.Caching
 		public virtual object Produce(object key, IFunction4 producer, IProcedure4 finalizer
 			)
 		{
-			if (((long)key) == null)
-			{
-				throw new ArgumentNullException();
-			}
 			if (_am.Remove((((long)key))))
 			{
 				_am.AddFirst((((long)key)));

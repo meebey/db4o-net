@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		/// <exception cref="System.Exception"></exception>
 		protected virtual void ReopenHidingClasses(Type[] classes)
 		{
-			CloseAndResetConfig();
+			Fixture().Close();
 			Fixture().Config().ReflectWith(new ExcludingReflector(classes));
 			Open();
 		}

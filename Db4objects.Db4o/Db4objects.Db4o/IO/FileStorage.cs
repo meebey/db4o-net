@@ -7,6 +7,7 @@ using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Sharpen.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.IO
 {
@@ -175,6 +176,13 @@ namespace Db4objects.Db4o.IO
 				{
 					throw new Db4oIOException();
 				}
+			}
+
+			public virtual void Sync(IRunnable runnable)
+			{
+				Sync();
+				runnable.Run();
+				Sync();
 			}
 		}
 

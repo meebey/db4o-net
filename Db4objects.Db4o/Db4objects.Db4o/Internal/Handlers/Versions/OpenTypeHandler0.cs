@@ -93,13 +93,10 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 			try
 			{
 				ByteArrayBuffer sourceBuffer = context.SourceBufferById(sourceId);
-				Slot targetPointerSlot = context.AllocateMappedTargetSlot(sourceId, Const4.PointerLength
-					);
 				Slot targetPayloadSlot = context.AllocateTargetSlot(sourceBuffer.Length());
-				ByteArrayBuffer pointerBuffer = new ByteArrayBuffer(Const4.PointerLength);
-				pointerBuffer.WriteInt(targetPayloadSlot.Address());
-				pointerBuffer.WriteInt(targetPayloadSlot.Length());
-				context.TargetWriteBytes(targetPointerSlot.Address(), pointerBuffer);
+				int targetId = context.Services().TargetNewId();
+				context.Services().MapIDs(sourceId, targetId, false);
+				context.Services().Mapping().MapId(targetId, targetPayloadSlot);
 				DefragmentContextImpl payloadContext = new DefragmentContextImpl(sourceBuffer, (DefragmentContextImpl
 					)context);
 				int clazzId = payloadContext.CopyIDReturnOriginalID();
@@ -108,7 +105,7 @@ namespace Db4objects.Db4o.Internal.Handlers.Versions
 					, payloadHandler);
 				versionedPayloadHandler.Defragment(payloadContext);
 				payloadContext.WriteToTarget(targetPayloadSlot.Address());
-				return targetPointerSlot.Address();
+				return targetId;
 			}
 			catch (IOException ioexc)
 			{

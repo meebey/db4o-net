@@ -33,8 +33,8 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				}
 				fm[i].Free(new Slot(20, 15));
 				Slot slot = fm[i].AllocateSlot(5);
-				AssertSlot(new Slot(20, 5), slot);
-				Assert.AreEqual(1, fm[i].SlotCount());
+				AssertSlot(new Slot(20, 15), slot);
+				Assert.AreEqual(0, fm[i].SlotCount());
 				fm[i].Free(slot);
 				Assert.AreEqual(1, fm[i].SlotCount());
 				slot = fm[i].AllocateSlot(6);

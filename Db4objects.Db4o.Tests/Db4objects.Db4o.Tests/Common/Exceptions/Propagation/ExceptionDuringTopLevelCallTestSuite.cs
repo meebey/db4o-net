@@ -95,10 +95,10 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions.Propagation
 					this.exceptionFactory = exceptionFactory;
 				}
 
-				public IIdSystem NewInstance(LocalObjectContainer container, int idSystemId)
+				public IIdSystem NewInstance(LocalObjectContainer container)
 				{
-					this._enclosing._idSystem = new ExceptionSimulatingIdSystem(container, idSystemId
-						, exceptionFactory);
+					this._enclosing._idSystem = new ExceptionSimulatingIdSystem(container, exceptionFactory
+						);
 					return this._enclosing._idSystem;
 				}
 

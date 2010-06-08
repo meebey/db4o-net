@@ -13,11 +13,13 @@ namespace Db4objects.Db4o.Internal.Ids
 		public static readonly Db4objects.Db4o.Internal.Ids.FreespaceCommitter DoNothing = 
 			new FreespaceCommitter.NullFreespaceCommitter();
 
-		private readonly IList _idSystems = new ArrayList();
+		private readonly IList _freeToUserFreespaceSystem = new ArrayList();
 
-		private readonly IList _toFree = new ArrayList();
+		private readonly IList _freeToSystemFreespaceSystem = new ArrayList();
 
 		private readonly IFreespaceManager _freespaceManager;
+
+		private ITransactionalIdSystem _transactionalIdSystem;
 
 		public FreespaceCommitter(IFreespaceManager freespaceManager)
 		{
@@ -26,37 +28,28 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual void Commit()
 		{
-			Apply();
+			Apply(_freeToUserFreespaceSystem);
 			_freespaceManager.BeginCommit();
 			_freespaceManager.Commit();
-			Accumulate(true);
-			Apply();
+			_transactionalIdSystem.AccumulateFreeSlots(this, true);
+			Apply(_freeToSystemFreespaceSystem);
 			_freespaceManager.EndCommit();
 		}
 
-		private void Apply()
+		private void Apply(IList toFree)
 		{
-			for (IEnumerator slotIter = _toFree.GetEnumerator(); slotIter.MoveNext(); )
+			for (IEnumerator slotIter = toFree.GetEnumerator(); slotIter.MoveNext(); )
 			{
 				Slot slot = ((Slot)slotIter.Current);
 				_freespaceManager.Free(slot);
 			}
-			_toFree.Clear();
+			toFree.Clear();
 		}
 
-		private void Accumulate(bool forFreespace)
+		public virtual void TransactionalIdSystem(ITransactionalIdSystem transactionalIdSystem
+			)
 		{
-			for (IEnumerator idSystemIter = _idSystems.GetEnumerator(); idSystemIter.MoveNext
-				(); )
-			{
-				ITransactionalIdSystem idSystem = ((ITransactionalIdSystem)idSystemIter.Current);
-				idSystem.AccumulateFreeSlots(this, forFreespace);
-			}
-		}
-
-		public virtual void Register(ITransactionalIdSystem transactionalIdSystem)
-		{
-			_idSystems.Add(transactionalIdSystem);
+			_transactionalIdSystem = transactionalIdSystem;
 		}
 
 		private class NullFreespaceCommitter : FreespaceCommitter
@@ -65,20 +58,22 @@ namespace Db4objects.Db4o.Internal.Ids
 			{
 			}
 
-			public override void Register(ITransactionalIdSystem transactionalIdSystem)
-			{
-			}
-
-			// do nothing
 			public override void Commit()
 			{
 			}
 			// do nothing
 		}
 
-		public virtual void DelayedFree(Slot slot)
+		public virtual void DelayedFree(Slot slot, bool freeToSystemFreeSpaceSystem)
 		{
-			_toFree.Add(slot);
+			if (freeToSystemFreeSpaceSystem)
+			{
+				_freeToSystemFreespaceSystem.Add(slot);
+			}
+			else
+			{
+				_freeToUserFreespaceSystem.Add(slot);
+			}
 		}
 	}
 }

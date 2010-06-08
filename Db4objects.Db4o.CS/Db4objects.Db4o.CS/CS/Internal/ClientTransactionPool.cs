@@ -52,6 +52,9 @@ namespace Db4objects.Db4o.CS.Internal
 					_fileName2Container.Put(fileName, entry);
 				}
 				Transaction transaction = entry.NewTransaction();
+				ObjectContainerSession objectContainerSession = new ObjectContainerSession(entry.
+					Container(), transaction);
+				transaction.SetOutSideRepresentation(objectContainerSession);
 				_transaction2Container.Put(transaction, entry);
 				return transaction;
 			}
@@ -64,7 +67,7 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				ClientTransactionPool.ContainerCount entry = (ClientTransactionPool.ContainerCount
 					)_transaction2Container.Get(transaction);
-				entry._container.CloseTransaction(transaction, false, mode.IsFatal() ? false : rollbackOnClose
+				entry.Container().CloseTransaction(transaction, false, mode.IsFatal() ? false : rollbackOnClose
 					);
 				_transaction2Container.Remove(transaction);
 				entry.Release();
@@ -132,14 +135,19 @@ namespace Db4objects.Db4o.CS.Internal
 			return _closed == true || _mainContainer.IsClosed();
 		}
 
-		private class ContainerCount
+		public class ContainerCount
 		{
-			public LocalObjectContainer _container;
+			private LocalObjectContainer _container;
 
 			private int _count;
 
 			public ContainerCount(LocalObjectContainer container) : this(container, 0)
 			{
+			}
+
+			public virtual LocalObjectContainer Container()
+			{
+				return _container;
 			}
 
 			public ContainerCount(LocalObjectContainer container, int count)

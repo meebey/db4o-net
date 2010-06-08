@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
@@ -31,8 +30,7 @@ namespace Db4objects.Db4o
 	/// <see cref="Main(java.lang.String[])">Main(java.lang.String[])</see>
 	/// 
 	/// </remarks>
-	/// <seealso cref="Db4objects.Db4o.Ext.ExtDb4oFactory">ExtDb4o for extended functionality.
-	/// 	</seealso>
+	/// <seealso cref="ExtDb4o">ExtDb4o for extended functionality.</seealso>
 	public class Db4oFactory
 	{
 		internal static readonly Config4Impl i_config = new Config4Impl();
@@ -375,22 +373,6 @@ namespace Db4objects.Db4o
 		{
 			return ObjectContainerFactory.OpenObjectContainer(Db4oLegacyConfigurationBridge.AsEmbeddedConfiguration
 				(config), databaseFileName);
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseFileLockedException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
-		protected static IObjectContainer OpenMemoryFile1(IConfiguration config, MemoryFile
-			 memoryFile)
-		{
-			Config4Impl.AssertIsNotTainted(config);
-			if (memoryFile == null)
-			{
-				memoryFile = new MemoryFile();
-			}
-			IObjectContainer oc = new InMemoryObjectContainer(config, memoryFile);
-			Db4objects.Db4o.Internal.Messages.LogMsg(config, 5, "Memory File");
-			return oc;
 		}
 
 		/// <summary>

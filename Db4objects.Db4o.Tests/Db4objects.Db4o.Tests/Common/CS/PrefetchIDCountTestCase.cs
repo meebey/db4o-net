@@ -9,6 +9,7 @@ using Db4objects.Db4o.CS;
 using Db4objects.Db4o.CS.Config;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Events;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Freespace;
@@ -43,37 +44,34 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				), Db4oClientServer.ArbitraryPort);
 			Lock4 Lock = new Lock4();
 			server.ClientDisconnected += new System.EventHandler<Db4objects.Db4o.Events.StringEventArgs>
-				(new _IEventListener4_38(Lock).OnEvent);
+				(new _IEventListener4_39(Lock).OnEvent);
 			server.GrantAccess(User, Password);
 			IObjectContainer client = OpenClient(server.Port());
 			ServerMessageDispatcherImpl msgDispatcher = FirstMessageDispatcherFor(server);
 			Transaction transaction = msgDispatcher.Transaction();
-			LocalObjectContainer container = (LocalObjectContainer)server.ObjectContainer();
 			ITransactionalIdSystem idSystem = transaction.IdSystem();
 			int prefetchedID = idSystem.PrefetchID();
 			Assert.IsGreater(0, prefetchedID);
-			PrefetchIDCountTestCase.DebugFreespaceManager freespaceManager = new PrefetchIDCountTestCase.DebugFreespaceManager
-				(container);
-			container.InstallDebugFreespaceManager(freespaceManager);
-			Lock.Run(new _IClosure4_60(client, Lock, freespaceManager, prefetchedID));
+			Lock.Run(new _IClosure4_58(client, Lock, idSystem, prefetchedID));
+			// This wont work with the PointerBasedIdSystem
 			server.Close();
 		}
 
-		private sealed class _IEventListener4_38
+		private sealed class _IEventListener4_39
 		{
-			public _IEventListener4_38(Lock4 Lock)
+			public _IEventListener4_39(Lock4 Lock)
 			{
 				this.Lock = Lock;
 			}
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.StringEventArgs args)
 			{
-				Lock.Run(new _IClosure4_39(Lock));
+				Lock.Run(new _IClosure4_40(Lock));
 			}
 
-			private sealed class _IClosure4_39 : IClosure4
+			private sealed class _IClosure4_40 : IClosure4
 			{
-				public _IClosure4_39(Lock4 Lock)
+				public _IClosure4_40(Lock4 Lock)
 				{
 					this.Lock = Lock;
 				}
@@ -90,14 +88,14 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			private readonly Lock4 Lock;
 		}
 
-		private sealed class _IClosure4_60 : IClosure4
+		private sealed class _IClosure4_58 : IClosure4
 		{
-			public _IClosure4_60(IObjectContainer client, Lock4 Lock, PrefetchIDCountTestCase.DebugFreespaceManager
-				 freespaceManager, int prefetchedID)
+			public _IClosure4_58(IObjectContainer client, Lock4 Lock, ITransactionalIdSystem 
+				idSystem, int prefetchedID)
 			{
 				this.client = client;
 				this.Lock = Lock;
-				this.freespaceManager = freespaceManager;
+				this.idSystem = idSystem;
 				this.prefetchedID = prefetchedID;
 			}
 
@@ -105,15 +103,35 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			{
 				client.Close();
 				Lock.Snooze(100000);
-				Assert.IsTrue(freespaceManager.WasFreed(prefetchedID));
+				Assert.Expect(typeof(InvalidIDException), new _ICodeBlock_63(idSystem, prefetchedID
+					));
 				return null;
+			}
+
+			private sealed class _ICodeBlock_63 : ICodeBlock
+			{
+				public _ICodeBlock_63(ITransactionalIdSystem idSystem, int prefetchedID)
+				{
+					this.idSystem = idSystem;
+					this.prefetchedID = prefetchedID;
+				}
+
+				/// <exception cref="System.Exception"></exception>
+				public void Run()
+				{
+					idSystem.CommittedSlot(prefetchedID);
+				}
+
+				private readonly ITransactionalIdSystem idSystem;
+
+				private readonly int prefetchedID;
 			}
 
 			private readonly IObjectContainer client;
 
 			private readonly Lock4 Lock;
 
-			private readonly PrefetchIDCountTestCase.DebugFreespaceManager freespaceManager;
+			private readonly ITransactionalIdSystem idSystem;
 
 			private readonly int prefetchedID;
 		}
@@ -153,7 +171,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				return null;
 			}
 
-			public override Slot AllocateTransactionLogSlot(int length)
+			public override Slot AllocateSafeSlot(int length)
 			{
 				return null;
 			}
@@ -183,7 +201,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 
 			// TODO Auto-generated method stub
-			public override void FreeTransactionLogSlot(Slot slot)
+			public override void FreeSafeSlot(Slot slot)
 			{
 			}
 
@@ -198,18 +216,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 
 			// TODO Auto-generated method stub
-			public override void Read(LocalObjectContainer container, int freeSpaceID)
-			{
-			}
-
-			// TODO Auto-generated method stub
 			public override int SlotCount()
 			{
 				// TODO Auto-generated method stub
 				return 0;
 			}
 
-			public override void Start(int slotAddress)
+			public override void Start(int id)
 			{
 			}
 
@@ -231,16 +244,25 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 
 			// TODO Auto-generated method stub
-			public override int Write(LocalObjectContainer container)
+			public override void Write(LocalObjectContainer container)
 			{
-				// TODO Auto-generated method stub
-				return 0;
 			}
 
 			public override bool IsStarted()
 			{
 				return false;
 			}
+
+			public override Slot AllocateTransactionLogSlot(int length)
+			{
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public override void Read(LocalObjectContainer container, Slot slot)
+			{
+			}
+			// TODO Auto-generated method stub
 		}
 	}
 }

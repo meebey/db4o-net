@@ -57,7 +57,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return new Slot(sizeNode._peer._key, sizeNode._key);
 		}
 
-		public override void FreeTransactionLogSlot(Slot slot)
+		public override Slot AllocateSafeSlot(int length)
+		{
+			return AllocateSlot(length);
+		}
+
+		public override void FreeSafeSlot(Slot slot)
 		{
 			Free(slot);
 		}
@@ -157,13 +162,13 @@ namespace Db4objects.Db4o.Internal.Freespace
 			int address = node._peer._key;
 			_freeByAddress = _freeByAddress.RemoveNode(node._peer);
 			int remainingBlocks = blocksFound - length;
-			if (CanDiscard(remainingBlocks))
+			if (SplitRemainder(remainingBlocks))
 			{
-				length = blocksFound;
+				AddFreeSlotNodes(address + length, remainingBlocks);
 			}
 			else
 			{
-				AddFreeSlotNodes(address + length, remainingBlocks);
+				length = blocksFound;
 			}
 			if (DTrace.enabled)
 			{
@@ -175,11 +180,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 		internal virtual int MarshalledLength()
 		{
 			return TreeInt.MarshalledLength((TreeInt)_freeBySize);
-		}
-
-		public override void Read(LocalObjectContainer container, int freeSlotsID)
-		{
-			ReadById(container, freeSlotsID);
 		}
 
 		private void Read(ByteArrayBuffer reader)
@@ -210,9 +210,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly ByRef addressTree;
 		}
 
-		internal virtual void Read(LocalObjectContainer container, Slot slot)
+		public override void Read(LocalObjectContainer container, Slot slot)
 		{
-			if (slot.IsNull())
+			if (Slot.IsNull(slot))
 			{
 				return;
 			}
@@ -223,20 +223,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 			}
 			Read(buffer);
 			container.Free(slot);
-		}
-
-		private void ReadById(LocalObjectContainer container, int freeSlotsID)
-		{
-			if (freeSlotsID <= 0)
-			{
-				return;
-			}
-			if (DiscardLimit() == int.MaxValue)
-			{
-				return;
-			}
-			Read(container, container.ReadPointerSlot(freeSlotsID));
-			container.Free(freeSlotsID, Const4.PointerLength);
 		}
 
 		private void RemoveFromBothTrees(FreeSlotNode sizeNode)
@@ -256,7 +242,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return Tree.Size(_freeByAddress);
 		}
 
-		public override void Start(int slotAddress)
+		public override void Start(int id)
 		{
 		}
 
@@ -283,12 +269,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			{
 				return;
 			}
-			_freeByAddress.Traverse(new _IVisitor4_249(visitor));
+			_freeByAddress.Traverse(new _IVisitor4_236(visitor));
 		}
 
-		private sealed class _IVisitor4_249 : IVisitor4
+		private sealed class _IVisitor4_236 : IVisitor4
 		{
-			public _IVisitor4_249(IVisitor4 visitor)
+			public _IVisitor4_236(IVisitor4 visitor)
 			{
 				this.visitor = visitor;
 			}
@@ -304,22 +290,21 @@ namespace Db4objects.Db4o.Internal.Freespace
 			private readonly IVisitor4 visitor;
 		}
 
-		public override int Write(LocalObjectContainer container)
+		public override void Write(LocalObjectContainer container)
 		{
-			int pointerSlot = container.AllocatePointerSlot();
 			Slot slot = container.AllocateSlot(MarshalledLength());
-			Pointer4 pointer = new Pointer4(pointerSlot, slot);
-			Write(container, pointer);
-			return pointer._id;
-		}
-
-		internal virtual void Write(LocalObjectContainer container, Pointer4 pointer)
-		{
-			ByteArrayBuffer buffer = new ByteArrayBuffer(pointer.Length());
+			while (slot.Length() < MarshalledLength())
+			{
+				// This can happen if DatabaseGrowthSize is configured.
+				// Allocating a slot may produce an additional entry
+				// in this FreespaceManager.
+				container.Free(slot);
+				slot = container.AllocateSlot(MarshalledLength());
+			}
+			ByteArrayBuffer buffer = new ByteArrayBuffer(slot.Length());
 			TreeInt.Write(buffer, (TreeInt)_freeBySize);
-			container.WriteEncrypt(buffer, pointer.Address(), 0);
-			container.SyncFiles();
-			container.WritePointer(pointer.Id(), pointer._slot);
+			container.WriteEncrypt(buffer, slot.Address(), 0);
+			container.SystemData().InMemoryFreespaceSlot(slot);
 		}
 
 		internal sealed class ToStringVisitor : IVisitor4

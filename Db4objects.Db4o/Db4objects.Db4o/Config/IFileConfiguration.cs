@@ -250,5 +250,35 @@ namespace Db4objects.Db4o.Config
 		{
 			set;
 		}
+
+		/// <summary>
+		/// turns asynchronous sync on and off.<br /><br />
+		/// One of the most costly operations during commit is the call to
+		/// flush the buffers of the database file.
+		/// </summary>
+		/// <remarks>
+		/// turns asynchronous sync on and off.<br /><br />
+		/// One of the most costly operations during commit is the call to
+		/// flush the buffers of the database file. In regular mode the
+		/// commit call has to wait until this operation has completed.
+		/// When asynchronous sync is turned on, the sync operation will
+		/// run in a dedicated thread, blocking all other file access
+		/// until it has completed. This way the commit call can return
+		/// immediately. This will allow db4o and other processes to
+		/// continue running side-by-side while the flush call executes.
+		/// Use this setting with care: It means that you can not be sure
+		/// when a commit call has actually made the changes of a
+		/// transaction durable (flushed through OS and file system
+		/// buffers). The latency time until flushing happens is extremely
+		/// short. The dedicated sync thread does nothing else
+		/// except for calling sync and writing the header of the database
+		/// file when needed. A setup with this option still guarantees
+		/// ACID transaction processing: A database file always will be
+		/// either in the state before commit or in the state after
+		/// commit. Corruption can not occur. You can just not rely
+		/// on the transaction already having been applied when the
+		/// commit() call returns.
+		/// </remarks>
+		void AsynchronousSync(bool flag);
 	}
 }

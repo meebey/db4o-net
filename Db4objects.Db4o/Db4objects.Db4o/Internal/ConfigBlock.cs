@@ -6,7 +6,6 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Fileheader;
-using Db4objects.Db4o.Internal.Handlers;
 using Sharpen;
 
 namespace Db4objects.Db4o.Internal
@@ -77,13 +76,6 @@ namespace Db4objects.Db4o.Internal
 		// Unicode byte
 		// complete possible data in config block
 		// (two transaction pointers, PDB ID, lost int, freespace address, converter_version, index id)
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		public static Db4objects.Db4o.Internal.ConfigBlock ForNewFile(LocalObjectContainer
-			 file)
-		{
-			return new Db4objects.Db4o.Internal.ConfigBlock(file, true, 0);
-		}
-
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.OldFormatException"></exception>
 		public static Db4objects.Db4o.Internal.ConfigBlock ForExistingFile(LocalObjectContainer
@@ -237,8 +229,9 @@ namespace Db4objects.Db4o.Internal
 			}
 			if (oldLength > FreespaceAddressOffset)
 			{
-				SystemData().FreespaceAddress(reader.ReadInt());
+				reader.ReadInt();
 			}
+			// was BTreeFreespaceID 
 			if (oldLength > ConverterVersionOffset)
 			{
 				SystemData().ConverterVersion(reader.ReadInt());
@@ -251,7 +244,6 @@ namespace Db4objects.Db4o.Internal
 					SystemData().UuidIndexId(uuidIndexId);
 				}
 			}
-			_container.EnsureFreespaceSlot();
 			if (FileHeader.LockedByOtherSession(_container, lastAccessTime))
 			{
 				_timerFileLock.CheckIfOtherSessionAlive(_container, _address, AccessTimeOffset, lastAccessTime
@@ -264,10 +256,6 @@ namespace Db4objects.Db4o.Internal
 				Cool.SleepIgnoringInterruption(100);
 				_container.SyncFiles();
 				TimerFileLock().CheckOpenTime();
-			}
-			if (oldLength < Length)
-			{
-				Write();
 			}
 		}
 
@@ -287,49 +275,10 @@ namespace Db4objects.Db4o.Internal
 			return _container.ConfigImpl;
 		}
 
-		public void Write()
-		{
-			TimerFileLock().CheckHeaderLock();
-			AddressChanged(_container.AllocateSlot(Length).Address());
-			StatefulBuffer writer = _container.CreateStatefulBuffer(_container.Transaction, _address
-				, Length);
-			IntHandler.WriteInt(Length, writer);
-			for (int i = 0; i < 2; i++)
-			{
-				writer.WriteLong(TimerFileLock().OpenTime());
-			}
-			writer.WriteByte(SystemData().StringEncoding());
-			IntHandler.WriteInt(SystemData().TransactionPointer1(), writer);
-			IntHandler.WriteInt(SystemData().TransactionPointer2(), writer);
-			IntHandler.WriteInt(_bootRecordID, writer);
-			IntHandler.WriteInt(0, writer);
-			// dead byte from wrong attempt for blocksize
-			writer.Append(PasswordToken());
-			writer.WriteByte(SystemData().FreespaceSystem());
-			_container.EnsureFreespaceSlot();
-			IntHandler.WriteInt(SystemData().FreespaceAddress(), writer);
-			IntHandler.WriteInt(SystemData().ConverterVersion(), writer);
-			IntHandler.WriteInt(SystemData().UuidIndexId(), writer);
-			writer.Write();
-			WritePointer();
-			_container.SyncFiles();
-		}
-
 		private void AddressChanged(int address)
 		{
 			_address = address;
 			TimerFileLock().SetAddresses(_address, OpenTimeOffset, AccessTimeOffset);
-		}
-
-		private void WritePointer()
-		{
-			TimerFileLock().CheckHeaderLock();
-			StatefulBuffer writer = _container.CreateStatefulBuffer(_container.Transaction, 0
-				, Const4.IdLength);
-			writer.MoveForward(2);
-			IntHandler.WriteInt(_address, writer);
-			writer.Write();
-			TimerFileLock().WriteHeaderLock();
 		}
 
 		public int Address()

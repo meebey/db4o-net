@@ -108,10 +108,5 @@ namespace Db4objects.Db4o.Internal.Ids
 			_transactionLogHandler.CompleteInterruptedTransaction(transactionId1, transactionId2
 				);
 		}
-
-		public ITransactionalIdSystem FreespaceIdSystem()
-		{
-			return null;
-		}
 	}
 }

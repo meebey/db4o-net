@@ -26,10 +26,10 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 					fm[i].Free(new Slot(5, 10));
 					fm[i].Free(new Slot(100, 5));
 					fm[i].Free(new Slot(140, 27));
-					slot = fm[i].AllocateTransactionLogSlot(28);
+					slot = fm[i].AllocateSafeSlot(28);
 					Assert.IsNull(slot);
 					Assert.AreEqual(3, fm[i].SlotCount());
-					slot = fm[i].AllocateTransactionLogSlot(27);
+					slot = fm[i].AllocateSafeSlot(27);
 					Assert.AreEqual(2, fm[i].SlotCount());
 					Assert.AreEqual(new Slot(140, 27), slot);
 				}
@@ -77,7 +77,6 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				Assert.IsNull(slot);
 				slot = fm[i].AllocateSlot(1);
 				Assert.IsNotNull(slot);
-				Assert.AreEqual(1, fm[i].SlotCount());
 			}
 		}
 
@@ -101,11 +100,11 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				fm[i].Free(new Slot(140, 27));
 				Assert.AreEqual(42, fm[i].TotalFreespace());
 				fm[i].AllocateSlot(8);
-				Assert.AreEqual(34, fm[i].TotalFreespace());
+				Assert.AreEqual(32, fm[i].TotalFreespace());
 				fm[i].AllocateSlot(6);
-				Assert.AreEqual(28, fm[i].TotalFreespace());
+				Assert.AreEqual(26, fm[i].TotalFreespace());
 				fm[i].Free(new Slot(120, 14));
-				Assert.AreEqual(42, fm[i].TotalFreespace());
+				Assert.AreEqual(40, fm[i].TotalFreespace());
 			}
 		}
 
@@ -137,18 +136,18 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			{
 				ArrayList removed = new ArrayList();
 				ArrayList added = new ArrayList();
-				fm[i].Listener(new _IFreespaceListener_136(removed, added));
-				fm[i].Free(new Slot(5, 10));
-				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(10)));
-				fm[i].AllocateSlot(2);
-				Assert.IsTrue(removed.Contains(new FreespaceManagerTestCase.Freespace(10)));
-				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(8)));
+				fm[i].Listener(new _IFreespaceListener_135(removed, added));
+				fm[i].Free(new Slot(5, 100));
+				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(100)));
+				fm[i].AllocateSlot(30);
+				Assert.IsTrue(removed.Contains(new FreespaceManagerTestCase.Freespace(100)));
+				Assert.IsTrue(added.Contains(new FreespaceManagerTestCase.Freespace(70)));
 			}
 		}
 
-		private sealed class _IFreespaceListener_136 : IFreespaceListener
+		private sealed class _IFreespaceListener_135 : IFreespaceListener
 		{
-			public _IFreespaceListener_136(ArrayList removed, ArrayList added)
+			public _IFreespaceListener_135(ArrayList removed, ArrayList added)
 			{
 				this.removed = removed;
 				this.added = added;

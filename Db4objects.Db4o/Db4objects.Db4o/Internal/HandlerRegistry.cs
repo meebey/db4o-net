@@ -3,7 +3,6 @@
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Diagnostic;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Handlers.Array;
@@ -56,7 +55,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal IDb4oReplicationReferenceProvider _replicationReferenceProvider;
 
-		public readonly DiagnosticProcessor _diagnosticProcessor;
+		private readonly Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor _diagnosticProcessor;
 
 		public bool i_encrypt;
 
@@ -615,6 +614,12 @@ namespace Db4objects.Db4o.Internal
 		private IReflectClass ReflectClassFor(Type clazz)
 		{
 			return Container().Reflector().ForClass(clazz);
+		}
+
+		public Db4objects.Db4o.Internal.Diagnostic.DiagnosticProcessor DiagnosticProcessor
+			()
+		{
+			return _diagnosticProcessor;
 		}
 
 		private class TypeInfo

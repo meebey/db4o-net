@@ -32,10 +32,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return _blockConverter.ToNonBlockedLength(slot);
 		}
 
-		public virtual Slot AllocateTransactionLogSlot(int length)
+		public virtual Slot AllocateSafeSlot(int length)
 		{
-			Slot slot = _delegate.AllocateTransactionLogSlot(_blockConverter.BytesToBlocks(length
-				));
+			Slot slot = _delegate.AllocateSafeSlot(_blockConverter.BytesToBlocks(length));
 			if (slot == null)
 			{
 				return null;
@@ -68,9 +67,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_delegate.FreeSelf();
 		}
 
-		public virtual void FreeTransactionLogSlot(Slot slot)
+		public virtual void FreeSafeSlot(Slot slot)
 		{
-			_delegate.FreeTransactionLogSlot(_blockConverter.ToBlockedLength(slot));
+			_delegate.FreeSafeSlot(_blockConverter.ToBlockedLength(slot));
 		}
 
 		public virtual void Listener(IFreespaceListener listener)
@@ -83,17 +82,12 @@ namespace Db4objects.Db4o.Internal.Freespace
 			throw new InvalidOperationException();
 		}
 
-		public virtual void Read(LocalObjectContainer container, int freeSpaceID)
-		{
-			throw new InvalidOperationException();
-		}
-
 		public virtual int SlotCount()
 		{
 			return _delegate.SlotCount();
 		}
 
-		public virtual void Start(int slotAddress)
+		public virtual void Start(int id)
 		{
 			throw new InvalidOperationException();
 		}
@@ -113,9 +107,9 @@ namespace Db4objects.Db4o.Internal.Freespace
 			_delegate.Traverse(visitor);
 		}
 
-		public virtual int Write(LocalObjectContainer container)
+		public virtual void Write(LocalObjectContainer container)
 		{
-			return _delegate.Write(container);
+			_delegate.Write(container);
 		}
 
 		public virtual void SlotFreed(Slot slot)
@@ -126,6 +120,22 @@ namespace Db4objects.Db4o.Internal.Freespace
 		public virtual bool IsStarted()
 		{
 			return _delegate.IsStarted();
+		}
+
+		public virtual Slot AllocateTransactionLogSlot(int length)
+		{
+			Slot slot = _delegate.AllocateTransactionLogSlot(_blockConverter.BytesToBlocks(length
+				));
+			if (slot == null)
+			{
+				return null;
+			}
+			return _blockConverter.ToNonBlockedLength(slot);
+		}
+
+		public virtual void Read(LocalObjectContainer container, Slot slot)
+		{
+			throw new InvalidOperationException();
 		}
 	}
 }

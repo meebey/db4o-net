@@ -2029,7 +2029,8 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public void Store(Transaction trans, object obj)
 		{
-			Store(trans, obj, UpdateDepthProvider().Unspecified(false));
+			Store(trans, obj, UpdateDepthProvider().Unspecified(NullModifiedObjectQuery.Instance
+				));
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -2046,8 +2047,8 @@ namespace Db4objects.Db4o.Internal
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public int StoreInternal(Transaction trans, object obj, bool checkJustSet)
 		{
-			return StoreInternal(trans, obj, UpdateDepthProvider().Unspecified(false), checkJustSet
-				);
+			return StoreInternal(trans, obj, UpdateDepthProvider().Unspecified(NullModifiedObjectQuery
+				.Instance), checkJustSet);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -2246,6 +2247,10 @@ namespace Db4objects.Db4o.Internal
 		public abstract void SetDirtyInSystemTransaction(PersistentBase a_object);
 
 		public abstract bool SetSemaphore(string name, int timeout);
+
+		public abstract bool SetSemaphore(Transaction trans, string name, int timeout);
+
+		public abstract void ReleaseSemaphore(Transaction trans, string name);
 
 		internal virtual void StringIO(LatinStringIO io)
 		{
@@ -2558,8 +2563,6 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract void WriteNew(Transaction trans, Pointer4 pointer, ClassMetadata 
 			classMetadata, ByteArrayBuffer buffer);
-
-		public abstract void WriteTransactionPointer(int pointer1, int pointer2);
 
 		public abstract void WriteUpdate(Transaction trans, Pointer4 pointer, ClassMetadata
 			 classMetadata, ArrayType arrayType, ByteArrayBuffer buffer);

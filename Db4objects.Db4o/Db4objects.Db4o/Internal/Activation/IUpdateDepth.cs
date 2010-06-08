@@ -17,6 +17,6 @@ namespace Db4objects.Db4o.Internal.Activation
 
 		IUpdateDepth Descend();
 
-		bool CanSkip(ClassMetadata clazz);
+		bool CanSkip(ObjectReference @ref);
 	}
 }

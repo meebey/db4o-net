@@ -3,6 +3,7 @@
 using System;
 using Db4objects.Db4o.IO;
 using Sharpen;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.IO
 {
@@ -99,6 +100,11 @@ namespace Db4objects.Db4o.IO
 			{
 				_length = (int)pos;
 			}
+		}
+
+		public virtual void Sync(IRunnable runnable)
+		{
+			runnable.Run();
 		}
 	}
 }

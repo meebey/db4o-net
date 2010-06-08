@@ -2,6 +2,7 @@
 
 using Db4oUnit.Mocking;
 using Db4objects.Db4o.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.Tests.Common.IO
 {
@@ -51,6 +52,13 @@ namespace Db4objects.Db4o.Tests.Common.IO
 		public virtual void ReturnValueForNextCall(int value)
 		{
 			_returnValue = value;
+		}
+
+		public virtual void Sync(IRunnable runnable)
+		{
+			Sync();
+			runnable.Run();
+			Sync();
 		}
 	}
 }

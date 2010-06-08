@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal
 					, "Class %: Instantiation failed.\n Add a constructor for use with db4o, ideally with zero arguments."
 					, "renaming %", "rename not possible. % already exists", "rename failed", "File close failed."
 					, "File % not available for readwrite access.", "File read access failed.", "File not found: % Creating new file"
-					, "Creation of file failed: %", "File write failed.", "File format incompatible."
+					, "Creation of file failed: %", "File write failed.", "File format incompatible: %"
 					, "Uncaught Exception. Engine closed.", "writing log for %", "% is closed. close() was called or open() failed."
 					, "Filename not specified.", "The database file is locked by another process.", 
 					"Class not available: %. Check CLASSPATH settings.", "finalized while performing a task.\n DO NOT USE CTRL + C OR System.exit() TO STOP THE ENGINE."

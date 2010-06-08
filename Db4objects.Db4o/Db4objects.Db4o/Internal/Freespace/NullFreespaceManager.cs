@@ -22,7 +22,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 			return null;
 		}
 
-		public virtual Slot AllocateTransactionLogSlot(int length)
+		public virtual Slot AllocateSafeSlot(int length)
 		{
 			return null;
 		}
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
-		public virtual void FreeTransactionLogSlot(Slot slot)
+		public virtual void FreeSafeSlot(Slot slot)
 		{
 		}
 
@@ -56,10 +56,6 @@ namespace Db4objects.Db4o.Internal.Freespace
 		}
 
 		public virtual void MigrateTo(IFreespaceManager fm)
-		{
-		}
-
-		public virtual void Read(LocalObjectContainer container, int freeSpaceID)
 		{
 		}
 
@@ -72,7 +68,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
-		public virtual void Start(int slotAddress)
+		public virtual void Start(int id)
 		{
 		}
 
@@ -90,14 +86,22 @@ namespace Db4objects.Db4o.Internal.Freespace
 		{
 		}
 
-		public virtual int Write(LocalObjectContainer container)
+		public virtual void Write(LocalObjectContainer container)
 		{
-			return 0;
 		}
 
 		public virtual bool IsStarted()
 		{
 			return false;
+		}
+
+		public virtual Slot AllocateTransactionLogSlot(int length)
+		{
+			return null;
+		}
+
+		public virtual void Read(LocalObjectContainer container, Slot slot)
+		{
 		}
 	}
 }

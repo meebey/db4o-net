@@ -1,7 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o;
-using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Fileheader;
 using Sharpen.Lang;
@@ -17,30 +17,27 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		private PBootRecord _bootRecord;
 
-		private readonly LocalObjectContainer _container;
-
 		public FileHeader0(LocalObjectContainer container)
 		{
-			// The header format is:
-			// Old format
-			// -------------------------
-			// {
-			// Y
-			// [Rest]
-			// New format
-			// -------------------------
-			// (byte)4
-			// block size in bytes 1 to 127
-			// [Rest]
-			// Rest (only ints)
-			// -------------------
-			// address of the extended configuration block, see YapConfigBlock
-			// headerLock
-			// YapClassCollection ID
-			// FreeBySize ID
-			_container = container;
 		}
 
+		// The header format is:
+		// Old format
+		// -------------------------
+		// {
+		// Y
+		// [Rest]
+		// New format
+		// -------------------------
+		// (byte)4
+		// block size in bytes 1 to 127
+		// [Rest]
+		// Rest (only ints)
+		// -------------------
+		// address of the extended configuration block, see YapConfigBlock
+		// headerLock
+		// YapClassCollection ID
+		// FreeBySize ID
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void Close()
 		{
@@ -73,15 +70,13 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		protected override void Read(LocalObjectContainer file, ByteArrayBuffer reader)
 		{
 			_configBlock = ConfigBlock.ForExistingFile(file, reader.ReadInt());
-			SkipConfigurationLockTime(reader);
-			ReadClassCollectionAndFreeSpace(file, reader);
-		}
-
-		private void SkipConfigurationLockTime(ByteArrayBuffer reader)
-		{
 			reader.IncrementOffset(Const4.IdLength);
+			SystemData systemData = file.SystemData();
+			systemData.ClassCollectionID(reader.ReadInt());
+			reader.ReadInt();
 		}
 
+		// was freespace ID, can no longer be read
 		private object GetBootRecord(LocalObjectContainer file)
 		{
 			file.ShowInternalClasses(true);
@@ -98,33 +93,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public override void InitNew(LocalObjectContainer file)
 		{
-			if (!IsInitialized())
-			{
-				return;
-			}
-			_configBlock = ConfigBlock.ForNewFile(file);
-			InitBootRecord(file);
-		}
-
-		private bool IsInitialized()
-		{
-			return _configBlock != null;
-		}
-
-		private void InitBootRecord(LocalObjectContainer file)
-		{
-			file.ShowInternalClasses(true);
-			try
-			{
-				_bootRecord = new PBootRecord();
-				file.StoreInternal(file.SystemTransaction(), _bootRecord, false);
-				_configBlock._bootRecordID = file.GetID(file.SystemTransaction(), _bootRecord);
-				WriteVariablePart(file, 1);
-			}
-			finally
-			{
-				file.ShowInternalClasses(false);
-			}
+			throw new InvalidOperationException();
 		}
 
 		public override void CompleteInterruptedTransaction(LocalObjectContainer container
@@ -133,11 +102,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			_configBlock.CompleteInterruptedTransaction();
 		}
 
-		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionPointer1
-			, int transactionPointer2)
+		public override void WriteTransactionPointer(Transaction systemTransaction, int transactionPointer
+			)
 		{
-			WriteTransactionPointer(systemTransaction, transactionPointer1, transactionPointer2
-				, _configBlock.Address(), ConfigBlock.TransactionOffset);
+			WriteTransactionPointer(systemTransaction, transactionPointer, _configBlock.Address
+				(), ConfigBlock.TransactionOffset);
 		}
 
 		public virtual MetaIndex GetUUIDMetaIndex()
@@ -151,31 +120,15 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		}
 
 		public override void WriteFixedPart(LocalObjectContainer file, bool startFileLockingThread
-			, bool shuttingDown, StatefulBuffer writer, int blockSize_, int freespaceID)
+			, bool shuttingDown, StatefulBuffer writer, int blockSize_)
 		{
-			writer.WriteByte(Const4.Yapfileversion);
-			writer.WriteByte((byte)blockSize_);
-			writer.WriteInt(_configBlock.Address());
-			writer.WriteInt((int)TimeToWrite(_configBlock.OpenTime(), shuttingDown));
-			writer.WriteInt(file.SystemData().ClassCollectionID());
-			writer.WriteInt(freespaceID);
-			writer.Write();
-			file.SyncFiles();
+			throw new InvalidOperationException();
 		}
 
-		public override void WriteVariablePart(LocalObjectContainer file, int part)
+		public override void WriteVariablePart(LocalObjectContainer file, bool shuttingDown
+			)
 		{
-			if (part == 1)
-			{
-				_configBlock.Write();
-			}
-			else
-			{
-				if (part == 2)
-				{
-					_bootRecord.Write(file);
-				}
-			}
+			throw new InvalidOperationException();
 		}
 
 		public override void ReadIdentity(LocalObjectContainer container)
@@ -184,11 +137,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			{
 				return;
 			}
-			object bootRecord = Debug4.readBootRecord ? GetBootRecord(container) : null;
+			object bootRecord = GetBootRecord(container);
 			if (!(bootRecord is PBootRecord))
 			{
-				InitBootRecord(container);
-				container.GenerateNewIdentity();
 				return;
 			}
 			_bootRecord = (PBootRecord)bootRecord;
@@ -197,15 +148,9 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			container.SystemData().Identity(_bootRecord.i_db);
 		}
 
-		public override IRunnable Commit()
+		public override IRunnable Commit(bool shuttingDown)
 		{
-			WriteVariablePart(_container, 2);
-			return Runnable4.DoNothing;
-		}
-
-		public override FileHeader Convert(LocalObjectContainer file)
-		{
-			return this;
+			throw new InvalidOperationException();
 		}
 	}
 }

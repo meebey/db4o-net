@@ -78,7 +78,7 @@ namespace Db4objects.Db4o.Internal.Ids
 		public virtual void Commit(FreespaceCommitter freespaceCommitter)
 		{
 			IVisitable slotChangeVisitable = new _IVisitable_55(this);
-			freespaceCommitter.Register(this);
+			freespaceCommitter.TransactionalIdSystem(this);
 			AccumulateFreeSlots(freespaceCommitter, false);
 			GlobalIdSystem().Commit(slotChangeVisitable, freespaceCommitter);
 		}

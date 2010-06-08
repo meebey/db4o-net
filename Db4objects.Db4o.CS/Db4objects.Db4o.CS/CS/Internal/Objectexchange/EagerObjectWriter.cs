@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 				Pair idSlotPair = ((Pair)idSlotPairIter.Current);
 				int id = (((int)idSlotPair.first));
 				Slot slot = ((Slot)idSlotPair.second);
-				if (slot == null || slot.IsNull())
+				if (Slot.IsNull(slot))
 				{
 					buffer.WriteInt(id);
 					buffer.WriteInt(0);

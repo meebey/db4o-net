@@ -14,18 +14,20 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public const byte PointerBased = 1;
 
-		public const byte Default = PointerBased;
+		public const byte StackedBtree = 2;
 
-		public const byte Btree = 2;
+		public const byte Default = StackedBtree;
 
 		public const byte InMemory = 3;
 
 		public const byte Custom = 4;
 
+		public const byte SingleBtree = 5;
+
 		public static IIdSystem NewInstance(LocalObjectContainer localContainer)
 		{
-			byte idSystemType = localContainer.SystemData().IdSystemType();
-			int idSystemId = localContainer.SystemData().IdSystemID();
+			SystemData systemData = localContainer.SystemData();
+			byte idSystemType = systemData.IdSystemType();
 			switch (idSystemType)
 			{
 				case Legacy:
@@ -38,11 +40,21 @@ namespace Db4objects.Db4o.Internal.Ids
 					return new PointerBasedIdSystem(localContainer);
 				}
 
-				case Btree:
+				case StackedBtree:
 				{
-					// return new BTreeIdSystem(localContainer, new BTreeIdSystem(localContainer, new InMemoryIdSystem(localContainer)));
-					// return new BTreeIdSystem(localContainer, new PointerBasedIdSystem(localContainer));
-					return new BTreeIdSystem(localContainer, new InMemoryIdSystem(localContainer));
+					InMemoryIdSystem inMemoryIdSystem = new InMemoryIdSystem(localContainer);
+					BTreeIdSystem bTreeIdSystem = new BTreeIdSystem(localContainer, inMemoryIdSystem);
+					systemData.FreespaceIdSystem(bTreeIdSystem.FreespaceIdSystem());
+					return new BTreeIdSystem(localContainer, bTreeIdSystem);
+				}
+
+				case SingleBtree:
+				{
+					InMemoryIdSystem smallInMemoryIdSystem = new InMemoryIdSystem(localContainer);
+					BTreeIdSystem smallBTreeIdSystem = new BTreeIdSystem(localContainer, smallInMemoryIdSystem
+						);
+					systemData.FreespaceIdSystem(smallBTreeIdSystem.FreespaceIdSystem());
+					return smallBTreeIdSystem;
 				}
 
 				case InMemory:
@@ -59,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Ids
 						throw new Db4oFatalException("Custom IdSystem configured but no factory was found. See IdSystemConfiguration#useCustomSystem()"
 							);
 					}
-					return customIdSystemFactory.NewInstance(localContainer, idSystemId);
+					return customIdSystemFactory.NewInstance(localContainer);
 				}
 
 				default:

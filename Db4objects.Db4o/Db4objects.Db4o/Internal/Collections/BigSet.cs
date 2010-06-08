@@ -3,9 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Db4objects.Db4o.Collections;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Collections;
 using Db4objects.Db4o.Marshall;
@@ -13,7 +13,7 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Collections
 {
 	/// <exclude></exclude>
-	public partial class BigSet<E> : ISet<E>, IBigSetPersistence
+	public partial class BigSet<E> : Db4objects.Db4o.Collections.ISet<E>, IBigSetPersistence
 	{
 		private Db4objects.Db4o.Internal.Btree.BTree _bTree;
 
@@ -56,7 +56,7 @@ namespace Db4objects.Db4o.Internal.Collections
 		private int Store(E obj)
 		{
 			return Container().Store(_transaction, obj, Container().UpdateDepthProvider().Unspecified
-				(false));
+				(NullModifiedObjectQuery.Instance));
 		}
 
 		private void Add(int id)

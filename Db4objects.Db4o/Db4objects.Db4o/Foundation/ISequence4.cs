@@ -23,6 +23,8 @@ namespace Db4objects.Db4o.Foundation
 
 		bool Contains(object obj);
 
+		bool ContainsAll(IEnumerable iter);
+
 		object[] ToArray();
 
 		object[] ToArray(object[] array);

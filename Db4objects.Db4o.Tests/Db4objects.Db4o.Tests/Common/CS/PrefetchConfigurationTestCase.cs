@@ -367,7 +367,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			}
 		}
 
-		private void Purge(ISet purged, PrefetchConfigurationTestCase.Item item)
+		private void Purge(Sharpen.Util.ISet purged, PrefetchConfigurationTestCase.Item item
+			)
 		{
 			if (purged.Contains(item))
 			{

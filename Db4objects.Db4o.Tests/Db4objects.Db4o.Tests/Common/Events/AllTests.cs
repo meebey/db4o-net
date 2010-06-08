@@ -6,7 +6,7 @@ using Db4objects.Db4o.Tests.Common.Events;
 
 namespace Db4objects.Db4o.Tests.Common.Events
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -15,13 +15,19 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(ActivationEventsTestCase), typeof(ClassRegistrationEventsTestCase
-				), typeof(CreationEventsTestCase), typeof(DeleteEventOnClientTestCase), typeof(DeleteOnDeletingCallbackTestCase
-				), typeof(DeletionEventExceptionTestCase), typeof(DeletionEventsTestCase), typeof(
-				EventArgsTransactionTestCase), typeof(EventCountTestCase), typeof(ExceptionPropagationInEventsTestSuite
-				), typeof(InstantiationEventsTestCase), typeof(ObjectContainerEventsTestCase), typeof(
-				ObjectContainerOpenEventTestCase), typeof(QueryEventsTestCase), typeof(UpdateInCallbackThrowsTestCase
-				) };
+			return ComposeTests(new Type[] { typeof(ActivationEventsTestCase), typeof(ClassRegistrationEventsTestCase
+				), typeof(CreationEventsTestCase), typeof(DeleteEventOnClientTestCase), typeof(DeletionEventExceptionTestCase
+				), typeof(DeletionEventsTestCase), typeof(EventArgsTransactionTestCase), typeof(
+				EventCountTestCase), typeof(ExceptionPropagationInEventsTestSuite), typeof(InstantiationEventsTestCase
+				), typeof(ObjectContainerEventsTestCase), typeof(ObjectContainerOpenEventTestCase
+				), typeof(QueryEventsTestCase), typeof(UpdateInCallbackThrowsTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(DeleteOnDeletingCallbackTestCase) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

@@ -13,9 +13,17 @@ using Db4objects.Db4o.Marshall;
 namespace Db4objects.Db4o.Internal.Ids
 {
 	/// <exclude></exclude>
-	public class BTreeIdSystem : IIdSystem
+	public class BTreeIdSystem : IStackableIdSystem
 	{
+		private const int BtreeIdIndex = 0;
+
+		private const int IdGeneratorIndex = 1;
+
+		private const int ChildIdIndex = 2;
+
 		private readonly LocalObjectContainer _container;
+
+		private readonly IStackableIdSystem _parentIdSystem;
 
 		private readonly ITransactionalIdSystem _transactionalIdSystem;
 
@@ -25,12 +33,14 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		private PersistentIntegerArray _persistentState;
 
-		public BTreeIdSystem(LocalObjectContainer container, ITransactionalIdSystem transactionalIdSystem
+		public BTreeIdSystem(LocalObjectContainer container, IStackableIdSystem parentIdSystem
 			, int maxValidId)
 		{
 			_container = container;
-			_transactionalIdSystem = transactionalIdSystem;
-			int persistentArrayId = SystemData().IdSystemID();
+			_parentIdSystem = parentIdSystem;
+			_transactionalIdSystem = container.NewTransactionalIdSystem(null, new _IClosure4_40
+				(parentIdSystem));
+			int persistentArrayId = parentIdSystem.ChildId();
 			if (persistentArrayId == 0)
 			{
 				InitializeNew();
@@ -39,13 +49,28 @@ namespace Db4objects.Db4o.Internal.Ids
 			{
 				InitializeExisting(persistentArrayId);
 			}
-			_idGenerator = new SequentialIdGenerator(new _IFunction4_39(this), IdGeneratorValue
+			_idGenerator = new SequentialIdGenerator(new _IFunction4_52(this), IdGeneratorValue
 				(), _container.Handlers.LowestValidId(), maxValidId);
 		}
 
-		private sealed class _IFunction4_39 : IFunction4
+		private sealed class _IClosure4_40 : IClosure4
 		{
-			public _IFunction4_39(BTreeIdSystem _enclosing)
+			public _IClosure4_40(IStackableIdSystem parentIdSystem)
+			{
+				this.parentIdSystem = parentIdSystem;
+			}
+
+			public object Run()
+			{
+				return parentIdSystem;
+			}
+
+			private readonly IStackableIdSystem parentIdSystem;
+		}
+
+		private sealed class _IFunction4_52 : IFunction4
+		{
+			public _IFunction4_52(BTreeIdSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -58,31 +83,15 @@ namespace Db4objects.Db4o.Internal.Ids
 			private readonly BTreeIdSystem _enclosing;
 		}
 
-		public BTreeIdSystem(LocalObjectContainer container, IIdSystem idSystem) : this(container
-			, container.NewTransactionalIdSystem(null, new _IClosure4_47(idSystem)), int.MaxValue
-			)
+		public BTreeIdSystem(LocalObjectContainer container, IStackableIdSystem idSystem)
+			 : this(container, idSystem, int.MaxValue)
 		{
-		}
-
-		private sealed class _IClosure4_47 : IClosure4
-		{
-			public _IClosure4_47(IIdSystem idSystem)
-			{
-				this.idSystem = idSystem;
-			}
-
-			public object Run()
-			{
-				return idSystem;
-			}
-
-			private readonly IIdSystem idSystem;
 		}
 
 		private void InitializeExisting(int persistentArrayId)
 		{
-			_persistentState = new PersistentIntegerArray(_transactionalIdSystem, persistentArrayId
-				);
+			_persistentState = new PersistentIntegerArray(SlotChangeFactory.IdSystem, _transactionalIdSystem
+				, persistentArrayId);
 			_persistentState.Read(Transaction());
 			_bTree = new BTree(Transaction(), BTreeConfiguration(), BTreeId(), new BTreeIdSystem.IdSlotMappingHandler
 				());
@@ -91,27 +100,22 @@ namespace Db4objects.Db4o.Internal.Ids
 		private Db4objects.Db4o.Internal.Btree.BTreeConfiguration BTreeConfiguration()
 		{
 			return new Db4objects.Db4o.Internal.Btree.BTreeConfiguration(_transactionalIdSystem
-				, SlotChangeFactory.FreeSpace, 64, false);
+				, SlotChangeFactory.IdSystem, 64, false);
 		}
 
 		private int IdGeneratorValue()
 		{
-			return _persistentState.Array()[1];
+			return _persistentState.Array()[IdGeneratorIndex];
 		}
 
 		private void IdGeneratorValue(int value)
 		{
-			_persistentState.Array()[1] = value;
+			_persistentState.Array()[IdGeneratorIndex] = value;
 		}
 
 		private int BTreeId()
 		{
-			return _persistentState.Array()[0];
-		}
-
-		private Db4objects.Db4o.Internal.SystemData SystemData()
-		{
-			return _container.SystemData();
+			return _persistentState.Array()[BtreeIdIndex];
 		}
 
 		private void InitializeNew()
@@ -119,10 +123,10 @@ namespace Db4objects.Db4o.Internal.Ids
 			_bTree = new BTree(Transaction(), BTreeConfiguration(), new BTreeIdSystem.IdSlotMappingHandler
 				());
 			int idGeneratorValue = _container.Handlers.LowestValidId() - 1;
-			_persistentState = new PersistentIntegerArray(_transactionalIdSystem, new int[] { 
-				_bTree.GetID(), idGeneratorValue });
+			_persistentState = new PersistentIntegerArray(SlotChangeFactory.IdSystem, _transactionalIdSystem
+				, new int[] { _bTree.GetID(), idGeneratorValue, 0 });
 			_persistentState.Write(Transaction());
-			SystemData().IdSystemID(_persistentState.GetID());
+			_parentIdSystem.ChildId(_persistentState.GetID());
 		}
 
 		private int FindFreeId(int start)
@@ -167,7 +171,7 @@ namespace Db4objects.Db4o.Internal.Ids
 			)
 		{
 			_container.FreespaceManager().BeginCommit();
-			slotChanges.Accept(new _IVisitor4_126(this));
+			slotChanges.Accept(new _IVisitor4_129(this));
 			// TODO: Maybe we want a BTree that doesn't allow duplicates.
 			_bTree.Commit(Transaction());
 			IdGeneratorValue(_idGenerator.PersistentGeneratorValue());
@@ -175,6 +179,9 @@ namespace Db4objects.Db4o.Internal.Ids
 			{
 				_idGenerator.SetClean();
 				_persistentState.SetStateDirty();
+			}
+			if (_persistentState.IsDirty())
+			{
 				_persistentState.Write(Transaction());
 			}
 			_container.FreespaceManager().EndCommit();
@@ -182,9 +189,9 @@ namespace Db4objects.Db4o.Internal.Ids
 			_transactionalIdSystem.Clear();
 		}
 
-		private sealed class _IVisitor4_126 : IVisitor4
+		private sealed class _IVisitor4_129 : IVisitor4
 		{
-			public _IVisitor4_126(BTreeIdSystem _enclosing)
+			public _IVisitor4_129(BTreeIdSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -217,12 +224,12 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual void ReturnUnusedIds(IVisitable visitable)
 		{
-			visitable.Accept(new _IVisitor4_162(this));
+			visitable.Accept(new _IVisitor4_168(this));
 		}
 
-		private sealed class _IVisitor4_162 : IVisitor4
+		private sealed class _IVisitor4_168 : IVisitor4
 		{
-			public _IVisitor4_162(BTreeIdSystem _enclosing)
+			public _IVisitor4_168(BTreeIdSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -257,12 +264,12 @@ namespace Db4objects.Db4o.Internal.Ids
 			public virtual IPreparedComparison PrepareComparison(IContext context, object sourceMapping
 				)
 			{
-				return new _IPreparedComparison_185(sourceMapping);
+				return new _IPreparedComparison_191(sourceMapping);
 			}
 
-			private sealed class _IPreparedComparison_185 : IPreparedComparison
+			private sealed class _IPreparedComparison_191 : IPreparedComparison
 			{
-				public _IPreparedComparison_185(object sourceMapping)
+				public _IPreparedComparison_191(object sourceMapping)
 				{
 					this.sourceMapping = sourceMapping;
 				}
@@ -286,6 +293,17 @@ namespace Db4objects.Db4o.Internal.Ids
 		public virtual ITransactionalIdSystem FreespaceIdSystem()
 		{
 			return _transactionalIdSystem;
+		}
+
+		public virtual int ChildId()
+		{
+			return _persistentState.Array()[ChildIdIndex];
+		}
+
+		public virtual void ChildId(int id)
+		{
+			_persistentState.Array()[ChildIdIndex] = id;
+			_persistentState.SetStateDirty();
 		}
 	}
 }

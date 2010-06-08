@@ -67,6 +67,11 @@ namespace Db4objects.Db4o.Foundation
 				return _sequence.Contains(obj);
 			}
 
+			public virtual bool ContainsAll(IEnumerable iter)
+			{
+				return _sequence.ContainsAll(iter);
+			}
+
 			public virtual object[] ToArray()
 			{
 				return _sequence.ToArray();

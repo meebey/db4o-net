@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.IO
 {
@@ -69,6 +70,11 @@ namespace Db4objects.Db4o.IO
 		public virtual void Write(long position, byte[] bytes, int bytesToWrite)
 		{
 			_bin.Write(position, bytes, bytesToWrite);
+		}
+
+		public virtual void Sync(IRunnable runnable)
+		{
+			_bin.Sync(runnable);
 		}
 	}
 }

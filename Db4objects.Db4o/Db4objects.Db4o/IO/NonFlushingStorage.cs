@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.IO
 {
@@ -36,6 +37,11 @@ namespace Db4objects.Db4o.IO
 
 			public override void Sync()
 			{
+			}
+
+			public override void Sync(IRunnable runnable)
+			{
+				runnable.Run();
 			}
 		}
 	}

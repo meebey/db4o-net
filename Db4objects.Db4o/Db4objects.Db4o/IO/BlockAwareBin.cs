@@ -5,6 +5,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.IO;
+using Sharpen.Lang;
 
 namespace Db4objects.Db4o.IO
 {
@@ -146,6 +147,20 @@ namespace Db4objects.Db4o.IO
 			try
 			{
 				base.Sync();
+			}
+			catch (Db4oIOException e)
+			{
+				_readOnly = true;
+				throw;
+			}
+		}
+
+		public override void Sync(IRunnable runnable)
+		{
+			ValidateReadOnly();
+			try
+			{
+				base.Sync(runnable);
 			}
 			catch (Db4oIOException e)
 			{

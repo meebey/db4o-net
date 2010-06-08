@@ -20,9 +20,9 @@ namespace Db4objects.Db4o.Internal.Config
 			_config.UsePointerBasedIdSystem();
 		}
 
-		public virtual void UseBTreeSystem()
+		public virtual void UseStackedBTreeSystem()
 		{
-			_config.UseBTreeIdSystem();
+			_config.UseStackedBTreeIdSystem();
 		}
 
 		public virtual void UseInMemorySystem()
@@ -33,6 +33,11 @@ namespace Db4objects.Db4o.Internal.Config
 		public virtual void UseCustomSystem(IIdSystemFactory factory)
 		{
 			_config.UseCustomIdSystem(factory);
+		}
+
+		public virtual void UseSingleBTreeSystem()
+		{
+			_config.UseSingleBTreeIdSystem();
 		}
 	}
 }

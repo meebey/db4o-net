@@ -193,7 +193,8 @@ namespace Db4objects.Db4o.Internal
 		public sealed override void Store(object obj, int depth)
 		{
 			Store(null, obj, depth == Const4.Unspecified ? (IUpdateDepth)UpdateDepthProvider(
-				).Unspecified(false) : (IUpdateDepth)UpdateDepthProvider().ForDepth(depth));
+				).Unspecified(NullModifiedObjectQuery.Instance) : (IUpdateDepth)UpdateDepthProvider
+				().ForDepth(depth));
 		}
 
 		public sealed override IStoredClass StoredClass(object clazz)
