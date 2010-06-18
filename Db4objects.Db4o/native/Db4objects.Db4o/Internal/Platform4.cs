@@ -588,6 +588,11 @@ namespace Db4objects.Db4o.Internal
             return DateTime.Now;
         }
 
+		internal static bool IsJavaEnum(IReflector genericReflector, IReflectClass iReflectClass)
+		{
+			return false;
+		}
+
 		internal static bool IsEnum(IReflector genericReflector, IReflectClass iReflectClass)
 		{
 		    Type type = GetNetType(iReflectClass);
