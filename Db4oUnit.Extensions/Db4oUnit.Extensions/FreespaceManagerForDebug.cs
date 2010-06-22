@@ -17,12 +17,12 @@ namespace Db4oUnit.Extensions
 			_listener = listener;
 		}
 
-		public virtual Slot AllocateTransactionLogSlot(int length)
+		public virtual Slot AllocateSafeSlot(int length)
 		{
 			return null;
 		}
 
-		public virtual void FreeTransactionLogSlot(Slot slot)
+		public virtual void FreeSafeSlot(Slot slot)
 		{
 		}
 
@@ -57,11 +57,7 @@ namespace Db4oUnit.Extensions
 			return null;
 		}
 
-		public virtual void Read(LocalObjectContainer container, int freeSlotsID)
-		{
-		}
-
-		public virtual void Start(int slotAddress)
+		public virtual void Start(int id)
 		{
 		}
 
@@ -74,9 +70,8 @@ namespace Db4oUnit.Extensions
 		{
 		}
 
-		public virtual int Write(LocalObjectContainer container)
+		public virtual void Write(LocalObjectContainer container)
 		{
-			return 0;
 		}
 
 		public virtual void Listener(IFreespaceListener listener)
@@ -102,6 +97,15 @@ namespace Db4oUnit.Extensions
 		public virtual bool IsStarted()
 		{
 			return false;
+		}
+
+		public virtual Slot AllocateTransactionLogSlot(int length)
+		{
+			return null;
+		}
+
+		public virtual void Read(LocalObjectContainer container, Slot slot)
+		{
 		}
 	}
 }

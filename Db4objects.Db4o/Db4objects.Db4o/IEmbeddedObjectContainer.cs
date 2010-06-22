@@ -15,16 +15,6 @@ namespace Db4objects.Db4o
 	/// <since>7.10</since>
 	public interface IEmbeddedObjectContainer : IObjectContainer
 	{
-		/// <summary>opens a new ObjectContainer against the database file.</summary>
-		/// <remarks>
-		/// opens a new ObjectContainer against the database file.
-		/// The ObjectContainer will have it's own transaction and
-		/// it's own reference system.
-		/// </remarks>
-		/// <returns>the new ObjectContainer session.</returns>
-		/// <since>7.10</since>
-		IObjectContainer OpenSession();
-
 		/// <summary>backs up a database file of an open ObjectContainer.</summary>
 		/// <remarks>
 		/// backs up a database file of an open ObjectContainer.

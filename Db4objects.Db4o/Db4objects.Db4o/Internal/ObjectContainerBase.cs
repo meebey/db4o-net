@@ -2811,6 +2811,8 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract bool IsStored(object arg1);
 
+		public abstract IObjectContainer OpenSession();
+
 		public abstract object PeekPersisted(object arg1, int arg2, bool arg3);
 
 		public abstract void Purge(object arg1);

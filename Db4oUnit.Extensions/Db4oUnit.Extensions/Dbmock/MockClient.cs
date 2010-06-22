@@ -316,5 +316,10 @@ namespace Db4oUnit.Extensions.Dbmock
 		{
 			throw new NotImplementedException();
 		}
+
+		public virtual IObjectContainer OpenSession()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

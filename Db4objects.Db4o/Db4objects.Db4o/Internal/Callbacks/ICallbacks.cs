@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Internal.Callbacks
 			);
 
 		void CommitOnCompleted(Transaction transaction, CallbackObjectInfoCollections objectInfoCollections
-			);
+			, bool isOwnCommit);
 
 		bool CaresAboutDeleting();
 

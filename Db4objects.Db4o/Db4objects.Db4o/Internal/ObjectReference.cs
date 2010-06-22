@@ -213,7 +213,7 @@ namespace Db4objects.Db4o.Internal
 			container.WriteNew(trans, pointer, _class, buffer);
 			object obj = _object;
 			ObjectOnNew(trans, obj);
-			if (!_class.IsPrimitive())
+			if (_class.HasIdentity())
 			{
 				_object = container.NewWeakReference(this, obj);
 			}

@@ -296,5 +296,10 @@ namespace Db4objects.Db4o.Internal
 		{
 			return _offset == _buffer.Length;
 		}
+
+		public virtual int RemainingByteCount()
+		{
+			return _buffer.Length - _offset;
+		}
 	}
 }

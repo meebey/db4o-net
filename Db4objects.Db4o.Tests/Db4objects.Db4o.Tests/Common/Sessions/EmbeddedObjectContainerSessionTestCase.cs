@@ -66,7 +66,7 @@ namespace Db4objects.Db4o.Tests.Common.Sessions
 
 		private IObjectContainer OpenSession()
 		{
-			return ((IEmbeddedObjectContainer)Db()).OpenSession();
+			return Db().Ext().OpenSession();
 		}
 
 		private void AssertIsolation(IObjectContainer session1, IObjectContainer session2

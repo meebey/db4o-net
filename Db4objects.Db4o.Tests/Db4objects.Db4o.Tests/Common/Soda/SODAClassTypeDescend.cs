@@ -4,9 +4,9 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Tests.Common.Staging;
+using Db4objects.Db4o.Tests.Common.Soda;
 
-namespace Db4objects.Db4o.Tests.Common.Staging
+namespace Db4objects.Db4o.Tests.Common.Soda
 {
 	public class SODAClassTypeDescend : AbstractDb4oTestCase
 	{

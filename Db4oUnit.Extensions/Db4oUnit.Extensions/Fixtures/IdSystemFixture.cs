@@ -20,7 +20,7 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		public IdSystemFixture()
 		{
-			_idSystemType = StandardIdSystemFactory.Btree;
+			_idSystemType = StandardIdSystemFactory.StackedBtree;
 		}
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
@@ -35,9 +35,9 @@ namespace Db4oUnit.Extensions.Fixtures
 					break;
 				}
 
-				case StandardIdSystemFactory.Btree:
+				case StandardIdSystemFactory.StackedBtree:
 				{
-					embeddedConfiguration.IdSystem.UseBTreeSystem();
+					embeddedConfiguration.IdSystem.UseStackedBTreeSystem();
 					break;
 				}
 
@@ -53,7 +53,7 @@ namespace Db4oUnit.Extensions.Fixtures
 					break;
 				}
 			}
-			embeddedConfiguration.File.Freespace.UseBTreeSystem();
+			// embeddedConfiguration.file().freespace().useBTreeSystem();
 			return base.CreateDatabase(config);
 		}
 
@@ -68,7 +68,7 @@ namespace Db4oUnit.Extensions.Fixtures
 					break;
 				}
 
-				case StandardIdSystemFactory.Btree:
+				case StandardIdSystemFactory.StackedBtree:
 				{
 					idSystemType = "BTree";
 					break;

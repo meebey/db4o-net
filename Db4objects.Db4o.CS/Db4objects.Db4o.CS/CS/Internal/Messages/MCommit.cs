@@ -43,7 +43,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			lock (ContainerLock())
 			{
 				Msg.CommittedInfo.SetTransaction(serverTransaction);
-				MCommittedInfo message = Msg.CommittedInfo.Encode(committedInfo);
+				MCommittedInfo message = Msg.CommittedInfo.Encode(committedInfo, ServerMessageDispatcher
+					().DispatcherID());
 				message.SetMessageDispatcher(ServerMessageDispatcher());
 				ServerMessageDispatcher().Server().AddCommittedInfoMsg(message);
 			}

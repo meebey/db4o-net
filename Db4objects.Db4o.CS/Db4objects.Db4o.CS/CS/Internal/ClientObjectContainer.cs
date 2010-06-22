@@ -74,13 +74,15 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly ClientHeartbeat _heartbeat;
 
-		private readonly ClassInfoHelper _classInfoHelper = new ClassInfoHelper();
+		private readonly ClassInfoHelper _classInfoHelper;
 
 		private IClientSlotCache _clientSlotCache;
 
-		private sealed class _IMessageListener_81 : ClientObjectContainer.IMessageListener
+		private int _serverSideID = 0;
+
+		private sealed class _IMessageListener_83 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_81()
+			public _IMessageListener_83()
 			{
 			}
 
@@ -92,7 +94,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_81
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_83
 			();
 
 		private bool _bypassSlotCache = false;
@@ -122,6 +124,8 @@ namespace Db4objects.Db4o.CS.Internal
 			_password = password;
 			_login = login;
 			_heartbeat = new ClientHeartbeat(this);
+			_classInfoHelper = new ClassInfoHelper(Db4oClientServerLegacyConfigurationBridge.
+				AsLegacy(config));
 			SetAndConfigSocket(socket);
 			Open();
 			config.ApplyConfigurationItems(this);
@@ -158,7 +162,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void InitalizeClientSlotCache()
 		{
-			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_138
+			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_141
 				(this).OnEvent);
 			if (ConfigImpl.PrefetchSlotCacheSize() > 0)
 			{
@@ -168,9 +172,9 @@ namespace Db4objects.Db4o.CS.Internal
 			_clientSlotCache = new NullClientSlotCache();
 		}
 
-		private sealed class _IEventListener4_138
+		private sealed class _IEventListener4_141
 		{
-			public _IEventListener4_138(ClientObjectContainer _enclosing)
+			public _IEventListener4_141(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -649,6 +653,10 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				_handlers.OldEncryptionOff();
 			}
+			if (payLoad.RemainingByteCount() > 0)
+			{
+				_serverSideID = payLoad.ReadInt();
+			}
 		}
 
 		private Msg ReadLoginMessage(Socket4Adapter iSocket)
@@ -831,13 +839,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_660(this, trans, result));
+			WithEnvironment(new _IRunnable_666(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_660 : IRunnable
+		private sealed class _IRunnable_666 : IRunnable
 		{
-			public _IRunnable_660(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_666(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1180,13 +1188,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_930(this, trans, result));
+			WithEnvironment(new _IRunnable_936(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_930 : IRunnable
+		private sealed class _IRunnable_936 : IRunnable
 		{
-			public _IRunnable_930(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_936(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1494,6 +1502,19 @@ namespace Db4objects.Db4o.CS.Internal
 		protected override void CloseIdSystem()
 		{
 		}
+
 		// do nothing
+		public override IObjectContainer OpenSession()
+		{
+			lock (Lock())
+			{
+				return new ObjectContainerSession(this);
+			}
+		}
+
+		public virtual int ServerSideID()
+		{
+			return _serverSideID;
+		}
 	}
 }

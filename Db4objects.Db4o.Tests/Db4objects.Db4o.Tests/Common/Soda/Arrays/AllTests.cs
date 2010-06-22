@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Common.Soda.Arrays;
 using Db4objects.Db4o.Tests.Common.Soda.Arrays.Object;
 using Db4objects.Db4o.Tests.Common.Soda.Arrays.Typed;
 using Db4objects.Db4o.Tests.Common.Soda.Arrays.Untyped;
@@ -17,7 +18,8 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays
 				), typeof(STArrStringUTestCase), typeof(STArrStringUNTestCase), typeof(STArrIntegerOTestCase
 				), typeof(STArrIntegerONTestCase), typeof(STArrIntegerTTestCase), typeof(STArrIntegerTNTestCase
 				), typeof(STArrIntegerUTestCase), typeof(STArrIntegerUNTestCase), typeof(STArrIntegerWTTestCase
-				), typeof(STArrIntegerWTONTestCase), typeof(STArrIntegerWUONTestCase) };
+				), typeof(STArrIntegerWTONTestCase), typeof(STArrIntegerWUONTestCase), typeof(ArrayDescendSubQueryTestCase
+				) };
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Internal.Activation
 			IActivationContext cascadingContext = ForObject(obj);
 			Db4objects.Db4o.Internal.ClassMetadata classMetadata = cascadingContext.ClassMetadata
 				();
-			if (classMetadata == null || classMetadata.IsPrimitive())
+			if (classMetadata == null || !classMetadata.HasIdentity())
 			{
 				return;
 			}

@@ -22,7 +22,8 @@ namespace Db4objects.Db4o.Tests.Common.Ext
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{
-			return new Type[] { typeof(UnavailableClassesWithTranslatorTestCase), typeof(UnavailableClassesWithTypeHandlerTestCase
+			return new Type[] { typeof(TransientFieldRefreshNoClassesOnServerTestCase), typeof(
+				UnavailableClassesWithTranslatorTestCase), typeof(UnavailableClassesWithTypeHandlerTestCase
 				) };
 		}
 		#endif // !SILVERLIGHT

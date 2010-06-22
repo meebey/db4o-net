@@ -26,7 +26,8 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{
-			return new Type[] { typeof(DeleteOnDeletingCallbackTestCase) };
+			return new Type[] { typeof(DeleteOnDeletingCallbackTestCase), typeof(OwnCommitCallbackFlaggedNetworkingTestSuite
+				) };
 		}
 		#endif // !SILVERLIGHT
 	}

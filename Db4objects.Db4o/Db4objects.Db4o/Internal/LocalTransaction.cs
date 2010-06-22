@@ -49,7 +49,8 @@ namespace Db4objects.Db4o.Internal
 
 			public void DispatchCommitted(CallbackObjectInfoCollections committedInfo)
 			{
-				this._enclosing.Callbacks().CommitOnCompleted(this._enclosing, committedInfo);
+				this._enclosing.Callbacks().CommitOnCompleted(this._enclosing, committedInfo, false
+					);
 			}
 
 			private readonly LocalTransaction _enclosing;

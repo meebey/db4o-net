@@ -54,8 +54,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private readonly bool _isEmbeddedServer;
 
-		private readonly Db4objects.Db4o.CS.Internal.ClassInfoHelper _classInfoHelper = new 
-			Db4objects.Db4o.CS.Internal.ClassInfoHelper();
+		private readonly Db4objects.Db4o.CS.Internal.ClassInfoHelper _classInfoHelper;
 
 		private System.EventHandler<Db4objects.Db4o.Events.StringEventArgs> _clientDisconnected;
 
@@ -81,6 +80,8 @@ namespace Db4objects.Db4o.CS.Internal
 			_name = "db4o ServerSocket FILE: " + container.ToString() + "  PORT:" + _port;
 			_container.SetServer(true);
 			ConfigureObjectServer();
+			_classInfoHelper = new Db4objects.Db4o.CS.Internal.ClassInfoHelper(Db4oClientServerLegacyConfigurationBridge
+				.AsLegacy(serverConfig));
 			_container.ClassCollection().CheckAllClassChanges();
 			bool ok = false;
 			try
@@ -109,12 +110,12 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				return;
 			}
-			_startupLock.Run(new _IClosure4_98(this));
+			_startupLock.Run(new _IClosure4_100(this));
 		}
 
-		private sealed class _IClosure4_98 : IClosure4
+		private sealed class _IClosure4_100 : IClosure4
 		{
-			public _IClosure4_98(ObjectServerImpl _enclosing)
+			public _IClosure4_100(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -145,12 +146,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void StartServerThread()
 		{
-			_startupLock.Run(new _IClosure4_117(this));
+			_startupLock.Run(new _IClosure4_119(this));
 		}
 
-		private sealed class _IClosure4_117 : IClosure4
+		private sealed class _IClosure4_119 : IClosure4
 		{
-			public _IClosure4_117(ObjectServerImpl _enclosing)
+			public _IClosure4_119(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -472,13 +473,13 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			while (_serverSocket != null)
 			{
-				WithEnvironment(new _IRunnable_352(this));
+				WithEnvironment(new _IRunnable_354(this));
 			}
 		}
 
-		private sealed class _IRunnable_352 : IRunnable
+		private sealed class _IRunnable_354 : IRunnable
 		{
-			public _IRunnable_352(ObjectServerImpl _enclosing)
+			public _IRunnable_354(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -526,12 +527,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void NotifyThreadStarted()
 		{
-			_startupLock.Run(new _IClosure4_395(this));
+			_startupLock.Run(new _IClosure4_397(this));
 		}
 
-		private sealed class _IClosure4_395 : IClosure4
+		private sealed class _IClosure4_397 : IClosure4
 		{
-			public _IClosure4_395(ObjectServerImpl _enclosing)
+			public _IClosure4_397(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

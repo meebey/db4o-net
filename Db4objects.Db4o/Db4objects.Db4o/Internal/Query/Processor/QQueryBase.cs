@@ -467,7 +467,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (candidate.Include())
 				{
 					TreeInt ids = new TreeInt(candidate._key);
-					ObjectByRef idsNew = new ObjectByRef(null);
+					ByRef idsNew = new ByRef();
 					IEnumerator itPath = executionPath.GetEnumerator();
 					while (itPath.MoveNext())
 					{
@@ -477,7 +477,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						{
 							ids.Traverse(new _IVisitor4_385(this, stream, fieldName, idsNew));
 						}
-						ids = (TreeInt)idsNew.value;
+						ids = (TreeInt)((TreeInt)idsNew.value);
 					}
 					if (ids != null)
 					{
@@ -489,7 +489,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			private sealed class _IVisitor4_385 : IVisitor4
 			{
 				public _IVisitor4_385(_IVisitor4_374 _enclosing, ObjectContainerBase stream, string
-					 fieldName, ObjectByRef idsNew)
+					 fieldName, ByRef idsNew)
 				{
 					this._enclosing = _enclosing;
 					this.stream = stream;
@@ -508,7 +508,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						CollectIdContext context = new CollectIdContext(this._enclosing._enclosing._trans
 							, oh, reader);
 						oh.ClassMetadata().CollectIDs(context, fieldName);
-						idsNew.value = context.Ids();
+						idsNew.value = ((TreeInt)TreeInt.Add(((TreeInt)idsNew.value), context.Ids()));
 					}
 				}
 
@@ -518,7 +518,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 				private readonly string fieldName;
 
-				private readonly ObjectByRef idsNew;
+				private readonly ByRef idsNew;
 			}
 
 			private sealed class _IVisitor4_402 : IVisitor4
@@ -1181,6 +1181,11 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				sb.Append("\n");
 			}
 			return sb.ToString();
+		}
+
+		public virtual QQuery Parent()
+		{
+			return i_parent;
 		}
 	}
 }

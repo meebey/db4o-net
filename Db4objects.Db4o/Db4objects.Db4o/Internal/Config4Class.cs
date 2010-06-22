@@ -343,7 +343,7 @@ namespace Db4objects.Db4o.Internal
 			return (IObjectAttribute)_config.Get(QueryAttributeProviderKey);
 		}
 
-		internal virtual bool StoreTransientFields()
+		public virtual bool StoreTransientFields()
 		{
 			return _config.GetAsBoolean(StoreTransientFieldsKey);
 		}

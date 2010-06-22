@@ -397,7 +397,7 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(ClassActivationDepthConfigurableKey, turnOn);
 		}
 
-		internal Config4Class ConfigClass(string className)
+		public Config4Class ConfigClass(string className)
 		{
 			Config4Class config = (Config4Class)ExceptionalClasses().Get(className);
 			return config;

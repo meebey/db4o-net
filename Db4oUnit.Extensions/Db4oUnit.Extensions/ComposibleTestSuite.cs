@@ -8,7 +8,7 @@ namespace Db4oUnit.Extensions
 {
 	public abstract class ComposibleTestSuite : Db4oTestSuite
 	{
-		protected virtual Type[] ComposeTests(Type[] testCases)
+		protected Type[] ComposeTests(Type[] testCases)
 		{
 			return Concat(testCases, ComposeWith());
 		}

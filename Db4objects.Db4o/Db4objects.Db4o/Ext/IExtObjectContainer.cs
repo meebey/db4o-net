@@ -356,6 +356,16 @@ namespace Db4objects.Db4o.Ext
 		/// <returns>Object the ObjectContainer lock object</returns>
 		object Lock();
 
+		/// <summary>opens a new ObjectContainer on top of this ObjectContainer.</summary>
+		/// <remarks>
+		/// opens a new ObjectContainer on top of this ObjectContainer.
+		/// The ObjectContainer will have it's own transaction and
+		/// it's own reference system.
+		/// </remarks>
+		/// <returns>the new ObjectContainer session.</returns>
+		/// <since>8.0</since>
+		IObjectContainer OpenSession();
+
 		/// <summary>
 		/// returns a transient copy of a persistent object with all members set
 		/// to the values that are currently stored to the database.

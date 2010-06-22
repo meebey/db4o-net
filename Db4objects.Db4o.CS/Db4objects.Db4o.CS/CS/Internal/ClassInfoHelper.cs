@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System.Collections;
 using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -13,6 +14,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private Hashtable4 _classMetaTable = new Hashtable4();
 
 		private Hashtable4 _genericClassTable = new Hashtable4();
+
+		private Config4Impl _config;
+
+		public ClassInfoHelper(Config4Impl config)
+		{
+			_config = config;
+		}
 
 		public virtual ClassInfo GetClassMeta(IReflectClass claxx)
 		{
@@ -33,8 +41,15 @@ namespace Db4objects.Db4o.CS.Internal
 			ClassInfo classMeta = ClassInfo.NewUserClass(claxx.GetName());
 			classMeta.SetSuperClass(MapSuperclass(claxx));
 			RegisterClassMeta(claxx.GetName(), classMeta);
-			classMeta.SetFields(MapFields(claxx.GetDeclaredFields()));
+			classMeta.SetFields(MapFields(claxx.GetDeclaredFields(), ShouldStoreTransientFields
+				(claxx)));
 			return classMeta;
+		}
+
+		private bool ShouldStoreTransientFields(IReflectClass claxx)
+		{
+			Config4Class configClass = _config.ConfigClass(claxx.GetName());
+			return configClass == null ? false : configClass.StoreTransientFields();
 		}
 
 		private ClassInfo MapSuperclass(IReflectClass claxx)
@@ -47,8 +62,13 @@ namespace Db4objects.Db4o.CS.Internal
 			return null;
 		}
 
-		private FieldInfo[] MapFields(IReflectField[] fields)
+		private FieldInfo[] MapFields(IReflectField[] fields, bool shouldStoreTransientFields
+			)
 		{
+			if (!shouldStoreTransientFields)
+			{
+				fields = FilterTransientFields(fields);
+			}
 			FieldInfo[] fieldsMeta = new FieldInfo[fields.Length];
 			for (int i = 0; i < fields.Length; ++i)
 			{
@@ -62,6 +82,21 @@ namespace Db4objects.Db4o.CS.Internal
 					, isArray, false);
 			}
 			return fieldsMeta;
+		}
+
+		private IReflectField[] FilterTransientFields(IReflectField[] fields)
+		{
+			IList filteredFields = new ArrayList();
+			for (int fieldIndex = 0; fieldIndex < fields.Length; ++fieldIndex)
+			{
+				IReflectField field = fields[fieldIndex];
+				if (!field.IsTransient())
+				{
+					filteredFields.Add(field);
+				}
+			}
+			return ((IReflectField[])Sharpen.Collections.ToArray(filteredFields, new IReflectField
+				[filteredFields.Count]));
 		}
 
 		private static bool IsObjectClass(IReflectClass claxx)

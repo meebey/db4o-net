@@ -398,14 +398,13 @@ namespace Db4objects.Db4o.Internal.Handlers.Array
 
 		public virtual void Defragment(IDefragmentContext context)
 		{
-			//context.classMetadata().isPrimitive()
-			if (Handlers4.IsPrimitive(_handler))
+			if (context.ClassMetadata().HasIdentity())
 			{
-				context.IncrementOffset(LinkLength());
+				DefragmentSlot(context);
 			}
 			else
 			{
-				DefragmentSlot(context);
+				context.IncrementOffset(LinkLength());
 			}
 		}
 

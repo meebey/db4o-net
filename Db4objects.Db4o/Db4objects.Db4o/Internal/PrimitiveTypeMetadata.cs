@@ -118,9 +118,9 @@ namespace Db4objects.Db4o.Internal
 			return _id == Handlers4.AnyArrayId || _id == Handlers4.AnyArrayNId;
 		}
 
-		public override bool IsPrimitive()
+		public override bool HasIdentity()
 		{
-			return true;
+			return false;
 		}
 
 		public override bool IsStronglyTyped()
@@ -213,27 +213,17 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual object DeepClone(object context)
 		{
-			if (true)
-			{
-				throw new InvalidOperationException();
-			}
-			TypeHandlerCloneContext typeHandlerCloneContext = (TypeHandlerCloneContext)context;
-			Db4objects.Db4o.Internal.PrimitiveTypeMetadata original = (Db4objects.Db4o.Internal.PrimitiveTypeMetadata
-				)typeHandlerCloneContext.original;
-			ITypeHandler4 delegateTypeHandler = typeHandlerCloneContext.CorrectHandlerVersion
-				(original.DelegateTypeHandler(null));
-			return new Db4objects.Db4o.Internal.PrimitiveTypeMetadata(original.Container(), delegateTypeHandler
-				, original._id, original.ClassReflector());
+			throw new InvalidOperationException();
 		}
 
 		protected override IAspectTraversalStrategy DetectAspectTraversalStrategy()
 		{
-			return new _IAspectTraversalStrategy_182();
+			return new _IAspectTraversalStrategy_178();
 		}
 
-		private sealed class _IAspectTraversalStrategy_182 : IAspectTraversalStrategy
+		private sealed class _IAspectTraversalStrategy_178 : IAspectTraversalStrategy
 		{
-			public _IAspectTraversalStrategy_182()
+			public _IAspectTraversalStrategy_178()
 			{
 			}
 

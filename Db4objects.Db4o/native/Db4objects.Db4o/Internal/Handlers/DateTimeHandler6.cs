@@ -25,6 +25,9 @@ namespace Db4objects.Db4o.Internal.Handlers
         {
             // do nothing
         }
-
+		//public override int LinkLength()
+		//{
+		//    return base.LinkLength() - Const4.LongLength;
+		//}
     }
 }

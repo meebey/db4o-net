@@ -13,10 +13,13 @@ namespace Db4objects.Db4o.Events
 	{
 		private readonly CallbackObjectInfoCollections _collections;
 
+		private readonly bool _isOwnCommit;
+
 		public CommitEventArgs(Transaction transaction, CallbackObjectInfoCollections collections
-			) : base(transaction)
+			, bool isOwnCommit) : base(transaction)
 		{
 			_collections = collections;
+			_isOwnCommit = isOwnCommit;
 		}
 
 		/// <summary>Returns a iteration</summary>
@@ -42,6 +45,11 @@ namespace Db4objects.Db4o.Events
 			{
 				return _collections.updated;
 			}
+		}
+
+		public virtual bool IsOwnCommit()
+		{
+			return _isOwnCommit;
 		}
 	}
 }

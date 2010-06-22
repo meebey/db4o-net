@@ -1039,7 +1039,7 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual IObjectContainer OpenSession()
+		public override IObjectContainer OpenSession()
 		{
 			lock (Lock())
 			{

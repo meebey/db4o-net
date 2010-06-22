@@ -17,20 +17,23 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		{
 			return ComposeTests(new Type[] { typeof(ActivateDepthTestCase), typeof(InterfaceQueryTestCase
 				), typeof(GenericClassWithExistingSuperClassTestCase), typeof(LazyQueryDeleteTestCase
-				), typeof(RemovedFieldDefragmentTestCase), typeof(SODAClassTypeDescend), typeof(
-				StoredClassUnknownClassQueryTestCase), typeof(UntypedFieldSortingTestCase) });
+				), typeof(OldVersionReflectFieldAfterRefactorTestCase), typeof(RemovedFieldDefragmentTestCase
+				), typeof(StoredClassUnknownClassQueryTestCase), typeof(UntypedFieldSortingTestCase
+				) });
 		}
 
 		// COR-1131
 		// COR-1959
+		// COR-1937
 		// COR-1542
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{
 			return new Type[] { typeof(ClientServerPingTestCase), typeof(DeepPrefetchingCacheConcurrencyTestCase
-				), typeof(PingTestCase) };
+				), typeof(OwnCommitCallbackFlaggedEmbeddedTestSuite), typeof(PingTestCase) };
 		}
 		#endif // !SILVERLIGHT
 		// COR-1762
+		// COR-1964
 	}
 }

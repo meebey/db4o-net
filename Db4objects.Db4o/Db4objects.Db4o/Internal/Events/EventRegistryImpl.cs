@@ -243,7 +243,7 @@ namespace Db4objects.Db4o.Internal.Events
 			public void Run()
 			{
 				if (null != this._enclosing._committing) this._enclosing._committing(null, new CommitEventArgs
-					(transaction, objectInfoCollections));
+					(transaction, objectInfoCollections, false));
 			}
 
 			private readonly EventRegistryImpl _enclosing;
@@ -254,30 +254,31 @@ namespace Db4objects.Db4o.Internal.Events
 		}
 
 		public virtual void CommitOnCompleted(Transaction transaction, CallbackObjectInfoCollections
-			 objectInfoCollections)
+			 objectInfoCollections, bool isOwnCommit)
 		{
 			if (!(_committed != null))
 			{
 				return;
 			}
 			WithExceptionHandlingInCallback(new _IRunnable_138(this, transaction, objectInfoCollections
-				));
+				, isOwnCommit));
 		}
 
 		private sealed class _IRunnable_138 : IRunnable
 		{
 			public _IRunnable_138(EventRegistryImpl _enclosing, Transaction transaction, CallbackObjectInfoCollections
-				 objectInfoCollections)
+				 objectInfoCollections, bool isOwnCommit)
 			{
 				this._enclosing = _enclosing;
 				this.transaction = transaction;
 				this.objectInfoCollections = objectInfoCollections;
+				this.isOwnCommit = isOwnCommit;
 			}
 
 			public void Run()
 			{
 				if (null != this._enclosing._committed) this._enclosing._committed(null, new CommitEventArgs
-					(transaction, objectInfoCollections));
+					(transaction, objectInfoCollections, isOwnCommit));
 			}
 
 			private readonly EventRegistryImpl _enclosing;
@@ -285,6 +286,8 @@ namespace Db4objects.Db4o.Internal.Events
 			private readonly Transaction transaction;
 
 			private readonly CallbackObjectInfoCollections objectInfoCollections;
+
+			private readonly bool isOwnCommit;
 		}
 
 		public virtual void CloseOnStarted(IObjectContainer container)

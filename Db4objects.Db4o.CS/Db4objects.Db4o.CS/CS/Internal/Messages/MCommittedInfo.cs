@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
+using Db4objects.Db4o.CS.Internal;
 using Db4objects.Db4o.CS.Internal.Messages;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -13,18 +14,21 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 	/// <exclude></exclude>
 	public class MCommittedInfo : MsgD, IClientSideMessage
 	{
-		public virtual MCommittedInfo Encode(CallbackObjectInfoCollections callbackInfo)
+		public virtual MCommittedInfo Encode(CallbackObjectInfoCollections callbackInfo, 
+			int dispatcherID)
 		{
-			byte[] bytes = EncodeInfo(callbackInfo);
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			PrimitiveCodec.WriteInt(os, dispatcherID);
+			byte[] bytes = EncodeInfo(callbackInfo, os);
 			MCommittedInfo committedInfo = (MCommittedInfo)GetWriterForLength(Transaction(), 
-				bytes.Length);
+				bytes.Length + Const4.IntLength);
 			committedInfo._payLoad.Append(bytes);
 			return committedInfo;
 		}
 
-		private byte[] EncodeInfo(CallbackObjectInfoCollections callbackInfo)
+		private byte[] EncodeInfo(CallbackObjectInfoCollections callbackInfo, ByteArrayOutputStream
+			 os)
 		{
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			EncodeObjectInfoCollection(os, callbackInfo.added, new MCommittedInfo.InternalIDEncoder
 				(this));
 			EncodeObjectInfoCollection(os, callbackInfo.deleted, new MCommittedInfo.FrozenObjectInfoEncoder
@@ -38,30 +42,30 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 			public void Encode(ByteArrayOutputStream os, IObjectInfo info)
 			{
-				this._enclosing.WriteLong(os, info.GetInternalID());
+				PrimitiveCodec.WriteLong(os, info.GetInternalID());
 				long sourceDatabaseId = ((FrozenObjectInfo)info).SourceDatabaseId(this._enclosing
 					.Transaction());
-				this._enclosing.WriteLong(os, sourceDatabaseId);
-				this._enclosing.WriteLong(os, ((FrozenObjectInfo)info).UuidLongPart());
-				this._enclosing.WriteLong(os, info.GetVersion());
+				PrimitiveCodec.WriteLong(os, sourceDatabaseId);
+				PrimitiveCodec.WriteLong(os, ((FrozenObjectInfo)info).UuidLongPart());
+				PrimitiveCodec.WriteLong(os, info.GetVersion());
 			}
 
 			public IObjectInfo Decode(ByteArrayInputStream @is)
 			{
-				long id = this._enclosing.ReadLong(@is);
+				long id = PrimitiveCodec.ReadLong(@is);
 				if (id == -1)
 				{
 					return null;
 				}
-				long sourceDatabaseId = this._enclosing.ReadLong(@is);
+				long sourceDatabaseId = PrimitiveCodec.ReadLong(@is);
 				Db4oDatabase sourceDatabase = null;
 				if (sourceDatabaseId > 0)
 				{
 					sourceDatabase = (Db4oDatabase)this._enclosing.Container().GetByID(this._enclosing
 						.Transaction(), sourceDatabaseId);
 				}
-				long uuidLongPart = this._enclosing.ReadLong(@is);
-				long version = this._enclosing.ReadLong(@is);
+				long uuidLongPart = PrimitiveCodec.ReadLong(@is);
+				long version = PrimitiveCodec.ReadLong(@is);
 				return new FrozenObjectInfo(null, id, sourceDatabase, uuidLongPart, version);
 			}
 
@@ -77,12 +81,12 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		{
 			public void Encode(ByteArrayOutputStream os, IObjectInfo info)
 			{
-				this._enclosing.WriteLong(os, info.GetInternalID());
+				PrimitiveCodec.WriteLong(os, info.GetInternalID());
 			}
 
 			public IObjectInfo Decode(ByteArrayInputStream @is)
 			{
-				long id = this._enclosing.ReadLong(@is);
+				long id = PrimitiveCodec.ReadLong(@is);
 				if (id == -1)
 				{
 					return null;
@@ -114,12 +118,11 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 				IObjectInfo obj = (IObjectInfo)iter.Current;
 				encoder.Encode(os, obj);
 			}
-			WriteLong(os, -1);
+			PrimitiveCodec.WriteLong(os, -1);
 		}
 
-		public virtual CallbackObjectInfoCollections Decode()
+		public virtual CallbackObjectInfoCollections Decode(ByteArrayInputStream @is)
 		{
-			ByteArrayInputStream @is = new ByteArrayInputStream(_payLoad._buffer);
 			IObjectInfoCollection added = DecodeObjectInfoCollection(@is, new MCommittedInfo.InternalIDEncoder
 				(this));
 			IObjectInfoCollection deleted = DecodeObjectInfoCollection(@is, new MCommittedInfo.FrozenObjectInfoEncoder
@@ -145,38 +148,24 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			return new ObjectInfoCollectionImpl(collection);
 		}
 
-		private void WriteLong(ByteArrayOutputStream os, long l)
-		{
-			for (int i = 0; i < 64; i += 8)
-			{
-				os.Write((int)(l >> i));
-			}
-		}
-
-		private long ReadLong(ByteArrayInputStream @is)
-		{
-			long l = 0;
-			for (int i = 0; i < 64; i += 8)
-			{
-				l += ((long)(@is.Read())) << i;
-			}
-			return l;
-		}
-
 		public virtual bool ProcessAtClient()
 		{
-			CallbackObjectInfoCollections callbackInfos = Decode();
-			Container().ThreadPool().Start(new _IRunnable_125(this, callbackInfos));
+			ByteArrayInputStream @is = new ByteArrayInputStream(_payLoad._buffer);
+			int dispatcherID = PrimitiveCodec.ReadInt(@is);
+			CallbackObjectInfoCollections callbackInfos = Decode(@is);
+			Container().ThreadPool().Start(new _IRunnable_111(this, callbackInfos, dispatcherID
+				));
 			return true;
 		}
 
-		private sealed class _IRunnable_125 : IRunnable
+		private sealed class _IRunnable_111 : IRunnable
 		{
-			public _IRunnable_125(MCommittedInfo _enclosing, CallbackObjectInfoCollections callbackInfos
-				)
+			public _IRunnable_111(MCommittedInfo _enclosing, CallbackObjectInfoCollections callbackInfos
+				, int dispatcherID)
 			{
 				this._enclosing = _enclosing;
 				this.callbackInfos = callbackInfos;
+				this.dispatcherID = dispatcherID;
 			}
 
 			public void Run()
@@ -186,19 +175,22 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					return;
 				}
 				this._enclosing.Container().Callbacks().CommitOnCompleted(this._enclosing.Transaction
-					(), callbackInfos);
+					(), callbackInfos, dispatcherID == ((ClientObjectContainer)this._enclosing.Container
+					()).ServerSideID());
 			}
 
 			private readonly MCommittedInfo _enclosing;
 
 			private readonly CallbackObjectInfoCollections callbackInfos;
+
+			private readonly int dispatcherID;
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
 		protected virtual void WriteByteArray(ByteArrayOutputStream os, byte[] signaturePart
 			)
 		{
-			WriteLong(os, signaturePart.Length);
+			PrimitiveCodec.WriteLong(os, signaturePart.Length);
 			os.Write(signaturePart);
 		}
 	}

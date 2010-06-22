@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.CS.Internal.Objectexchange
 				// most probably ClassMetadata reading
 				return Iterators.EmptyIterator;
 			}
-			if (classMetadata.IsPrimitive())
+			if (!classMetadata.HasIdentity())
 			{
 				throw new InvalidOperationException(classMetadata.ToString());
 			}

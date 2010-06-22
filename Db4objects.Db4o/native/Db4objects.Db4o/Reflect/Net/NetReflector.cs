@@ -5,19 +5,19 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Reflect.Net
 {
-	public class NetReflector : Db4objects.Db4o.Reflect.IReflector
+	public class NetReflector : IReflector
 	{
-		protected Db4objects.Db4o.Reflect.IReflector _parent;
+		protected IReflector _parent;
 
-		private Db4objects.Db4o.Reflect.IReflectArray _array;
+		private IReflectArray _array;
 		
-		private Db4objects.Db4o.Reflect.IReflectorConfiguration _config;
+		private IReflectorConfiguration _config;
 
-		public virtual Db4objects.Db4o.Reflect.IReflectArray Array()
+		public virtual IReflectArray Array()
 		{
-			if (_array == null)
+			if(_array == null)
 			{
-				_array = new Db4objects.Db4o.Reflect.Net.NetArray(Parent());
+				_array = new NetArray(Parent());
 			}
 			return _array;
 		}
@@ -27,23 +27,23 @@ namespace Db4objects.Db4o.Reflect.Net
 			return new NetReflector();
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ForClass(System.Type forType)
+		public virtual IReflectClass ForClass(Type forType)
 		{
-            System.Type underlyingType = GetUnderlyingType(forType);
-            if (underlyingType.IsPrimitive)
+            Type underlyingType = GetUnderlyingType(forType);
+			if (underlyingType.IsPrimitive)
             {
                 return CreateClass(forType);
             }
             return CreateClass(underlyingType);
 		}
 
-		protected virtual Db4objects.Db4o.Reflect.IReflectClass CreateClass(Type type)
+		protected virtual IReflectClass CreateClass(Type type)
 		{
 			if(type == null)
 			{
 				return null;
 			}
-			return new Db4objects.Db4o.Reflect.Net.NetClass(Parent(), this, type);
+			return new NetClass(Parent(), this, type);
 		}
 
 		private static Type GetUnderlyingType(Type type)
@@ -60,7 +60,7 @@ namespace Db4objects.Db4o.Reflect.Net
             return type;
         }
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ForName(string className)
+		public virtual IReflectClass ForName(string className)
 		{
 			try
 			{
@@ -74,7 +74,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return null;
 		}
 
-		public virtual Db4objects.Db4o.Reflect.IReflectClass ForObject(object a_object)
+		public virtual IReflectClass ForObject(object a_object)
 		{
 			if (a_object == null)
 			{
@@ -83,7 +83,7 @@ namespace Db4objects.Db4o.Reflect.Net
 			return Parent().ForClass(a_object.GetType());
 		}
 
-		public virtual bool IsCollection(Db4objects.Db4o.Reflect.IReflectClass candidate)
+		public virtual bool IsCollection(IReflectClass candidate)
 		{
 			if (candidate.IsArray())
 			{
@@ -102,14 +102,12 @@ namespace Db4objects.Db4o.Reflect.Net
 			return true;
 		}
 
-		public static Db4objects.Db4o.Reflect.IReflectClass[] ToMeta(
-			Db4objects.Db4o.Reflect.IReflector reflector,
-			System.Type[] clazz)
+		public static IReflectClass[] ToMeta(IReflector reflector, Type[] clazz)
 		{
-			Db4objects.Db4o.Reflect.IReflectClass[] claxx = null;
+			IReflectClass[] claxx = null;
 			if (clazz != null)
 			{
-				claxx = new Db4objects.Db4o.Reflect.IReflectClass[clazz.Length];
+				claxx = new IReflectClass[clazz.Length];
 				for (int i = 0; i < clazz.Length; i++)
 				{
 					if (clazz[i] != null)
@@ -121,12 +119,12 @@ namespace Db4objects.Db4o.Reflect.Net
 			return claxx;
 		}
 
-		public static System.Type[] ToNative(Db4objects.Db4o.Reflect.IReflectClass[] claxx)
+		public static Type[] ToNative(IReflectClass[] claxx)
 		{
-			System.Type[] clazz = null;
+			Type[] clazz = null;
 			if (claxx != null)
 			{
-				clazz = new System.Type[claxx.Length];
+				clazz = new Type[claxx.Length];
 				for (int i = 0; i < claxx.Length; i++)
 				{
 					if (claxx[i] != null)
@@ -154,12 +152,12 @@ namespace Db4objects.Db4o.Reflect.Net
 			_parent = reflector;
 		}
 
-        public virtual void Configuration(Db4objects.Db4o.Reflect.IReflectorConfiguration config)
+        public virtual void Configuration(IReflectorConfiguration config)
 		{
 			_config = config;
 		}
 		
-        public virtual Db4objects.Db4o.Reflect.IReflectorConfiguration Configuration()
+        public virtual IReflectorConfiguration Configuration()
 		{
 			return _config;
 		}
@@ -178,6 +176,5 @@ namespace Db4objects.Db4o.Reflect.Net
 			
 			return _parent;
 		}
-		
 	}
 }

@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		public virtual string GetClassName()
 		{
-			return _claxx.GetName();
+			return _claxx == null ? null : _claxx.GetName();
 		}
 
 		public override bool CanBeIndexLeaf()
@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			string str = "QConClass ";
 			if (_claxx != null)
 			{
-				str += _claxx.ToString() + " ";
+				str += _claxx.GetName() + " ";
 			}
 			return str + base.ToString();
 		}

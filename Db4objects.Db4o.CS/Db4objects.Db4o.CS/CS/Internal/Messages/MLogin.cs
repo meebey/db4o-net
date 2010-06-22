@@ -27,7 +27,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 						int encrypt = Container()._handlers.i_encrypt ? 1 : 0;
 						ServerMessageDispatcher().Login();
 						return Msg.LoginOk.GetWriterForInts(Transaction(), new int[] { blockSize, encrypt
-							 });
+							, ServerMessageDispatcher().DispatcherID() });
 					}
 				}
 			}

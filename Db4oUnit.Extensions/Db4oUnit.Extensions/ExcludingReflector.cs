@@ -20,7 +20,22 @@ namespace Db4oUnit.Extensions
 			}
 		}
 
+		public ExcludingReflector(ByRef loaderClass, Type[] excludedClasses)
+		{
+			_excludedClasses = new Collection4();
+			for (int claxxIndex = 0; claxxIndex < excludedClasses.Length; ++claxxIndex)
+			{
+				Type claxx = excludedClasses[claxxIndex];
+				_excludedClasses.Add(claxx.FullName);
+			}
+		}
+
 		public ExcludingReflector(Collection4 excludedClasses)
+		{
+			_excludedClasses = excludedClasses;
+		}
+
+		public ExcludingReflector(ByRef loaderClass, Collection4 excludedClasses)
 		{
 			_excludedClasses = excludedClasses;
 		}

@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal.Callbacks
 		}
 
 		public virtual void CommitOnCompleted(Transaction transaction, CallbackObjectInfoCollections
-			 objectInfoCollections)
+			 objectInfoCollections, bool isOwnCommit)
 		{
 		}
 

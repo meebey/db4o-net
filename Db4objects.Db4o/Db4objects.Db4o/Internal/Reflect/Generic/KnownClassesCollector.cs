@@ -80,7 +80,7 @@ namespace Db4objects.Db4o.Internal.Reflect.Generic
 			{
 				return;
 			}
-			if (IsPrimitiveType(clazz))
+			if (!HasIdentity(clazz))
 			{
 				return;
 			}
@@ -96,10 +96,10 @@ namespace Db4objects.Db4o.Internal.Reflect.Generic
 			return _container._handlers.IclassInternal.IsAssignableFrom(clazz);
 		}
 
-		private bool IsPrimitiveType(IReflectClass clazz)
+		private bool HasIdentity(IReflectClass clazz)
 		{
 			ClassMetadata clazzMeta = _container.ClassMetadataForReflectClass(clazz);
-			return clazzMeta != null && clazzMeta.IsPrimitive();
+			return clazzMeta == null || clazzMeta.HasIdentity();
 		}
 	}
 }

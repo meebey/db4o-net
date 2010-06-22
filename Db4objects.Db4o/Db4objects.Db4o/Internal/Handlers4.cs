@@ -156,11 +156,6 @@ namespace Db4objects.Db4o.Internal
 			return handler is ICascadingTypeHandler;
 		}
 
-		public static bool IsPrimitive(ITypeHandler4 handler)
-		{
-			return handler is PrimitiveHandler;
-		}
-
 		public static bool IsUntyped(ITypeHandler4 handler)
 		{
 			return handler is OpenTypeHandler;
@@ -313,7 +308,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			QueryingReadContext queryingReadContext = new QueryingReadContext(context.Transaction
 				(), context.HandlerVersion(), context.Buffer(), 0, context.Collector());
-			IClosure4 collectIDsFromQueryingContext = new _IClosure4_267(handler, queryingReadContext
+			IClosure4 collectIDsFromQueryingContext = new _IClosure4_263(handler, queryingReadContext
 				);
 			if (doWithSlotIndirection)
 			{
@@ -326,9 +321,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_267 : IClosure4
+		private sealed class _IClosure4_263 : IClosure4
 		{
-			public _IClosure4_267(ITypeHandler4 handler, QueryingReadContext queryingReadContext
+			public _IClosure4_263(ITypeHandler4 handler, QueryingReadContext queryingReadContext
 				)
 			{
 				this.handler = handler;

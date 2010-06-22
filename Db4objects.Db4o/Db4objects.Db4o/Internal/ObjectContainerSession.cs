@@ -617,5 +617,13 @@ namespace Db4objects.Db4o.Internal
 		{
 			return ConfigImpl.UpdateDepthProvider();
 		}
+
+		public virtual IObjectContainer OpenSession()
+		{
+			lock (Lock())
+			{
+				return new Db4objects.Db4o.Internal.ObjectContainerSession(_server);
+			}
+		}
 	}
 }
