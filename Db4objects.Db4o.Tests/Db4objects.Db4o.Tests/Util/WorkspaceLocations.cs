@@ -7,7 +7,15 @@ namespace Db4objects.Db4o.Tests.Util
 	/// <exclude></exclude>
 	public class WorkspaceLocations
 	{
-		public static readonly string TestFolder = WorkspaceServices.WorkspacePath("db4oj.tests/test"
-			);
+		private static string _testFolder = null;
+
+		public static string GetTestFolder()
+		{
+			if (_testFolder == null)
+			{
+				_testFolder = WorkspaceServices.WorkspacePath("db4oj.tests/test");
+			}
+			return _testFolder;
+		}
 	}
 }

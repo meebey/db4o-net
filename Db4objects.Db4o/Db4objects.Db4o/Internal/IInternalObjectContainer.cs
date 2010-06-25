@@ -6,6 +6,7 @@ using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
+using Db4objects.Db4o.Internal.Events;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Reflect;
 
@@ -27,8 +28,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			get;
 		}
-
-		void OnCommittedListener();
 
 		NativeQueryHandler GetNativeQueryHandler();
 
@@ -61,5 +60,7 @@ namespace Db4objects.Db4o.Internal
 		void StoreAll(Db4objects.Db4o.Internal.Transaction trans, IEnumerator objects);
 
 		IUpdateDepthProvider UpdateDepthProvider();
+
+		EventRegistryImpl NewEventRegistry();
 	}
 }

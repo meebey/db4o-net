@@ -37,23 +37,13 @@ namespace Db4objects.Db4o.Events
 			}
 			if (callbacks is NullCallbacks)
 			{
-				EventRegistryImpl impl = NewEventRegistryFor(container);
+				EventRegistryImpl impl = container.NewEventRegistry();
 				container.Callbacks(impl);
 				return impl;
 			}
 			// TODO: create a MulticastingCallbacks and register both
 			// the current one and the new one
 			throw new ArgumentException();
-		}
-
-		private static EventRegistryImpl NewEventRegistryFor(IInternalObjectContainer container
-			)
-		{
-			if (container is ObjectContainerBase && ((ObjectContainerBase)container).IsClient)
-			{
-				return new ClientEventRegistryImpl(container);
-			}
-			return new EventRegistryImpl(container);
 		}
 	}
 }

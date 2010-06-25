@@ -264,5 +264,18 @@ namespace Db4objects.Db4o.Internal.Config
 		{
 			_config.NameProvider(provider);
 		}
+
+		public virtual int MaxStackDepth
+		{
+			get
+			{
+				return _config.MaxStackDepth();
+			}
+			set
+			{
+				int maxStackDepth = value;
+				_config.MaxStackDepth(maxStackDepth);
+			}
+		}
 	}
 }

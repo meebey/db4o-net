@@ -37,7 +37,10 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		protected override void DoClean()
 		{
-			_databaseFile.Delete();
+			if (_databaseFile.Exists())
+			{
+				_databaseFile.Delete();
+			}
 		}
 	}
 }

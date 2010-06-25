@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Db4oTool.MSBuild.Tests.Project")]
-[assembly: AssemblyDescription("Db4oTool.MSBuild.Tests.Project 8.0.152.14430 (.NET)")]
+[assembly: AssemblyDescription("Db4oTool.MSBuild.Tests.Project 8.0.153.14430 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -18,5 +18,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("5bcf9472-5c8f-4fce-854d-4ad961cc8799")]
 
-[assembly: AssemblyVersion("8.0.152.14430")]
-[assembly: AssemblyFileVersion("8.0.152.14430")]
+[assembly: AssemblyVersion("8.0.153.14430")]
+[assembly: AssemblyFileVersion("8.0.153.14430")]

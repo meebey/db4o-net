@@ -3,6 +3,7 @@
 using System.Collections;
 using System.IO;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Common.Reflect.Custom;
@@ -24,7 +25,7 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 	/// See CustomReflector, CustomClassRepository, CustomClass, CustomField and CustomUidField
 	/// for details.
 	/// </remarks>
-	public class CustomReflectorTestCase : ITestCase, ITestLifeCycle
+	public class CustomReflectorTestCase : ITestCase, ITestLifeCycle, IOptOutTemporary
 	{
 		private static readonly string CatClass = "Cat";
 

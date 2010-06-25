@@ -22,6 +22,7 @@ using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Core;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Typehandlers;
+using Sharpen;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -262,6 +263,9 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec NameProviderKey = new KeySpec(new _INameProvider_199
 			());
 
+		private static readonly KeySpec MaxStackDepthKey = new KeySpec("Dalvik".Equals(Runtime
+			.GetProperty("java.vm.name")) ? 2 : Const4.DefaultMaxStackDepth);
+
 		private ObjectContainerBase _container;
 
 		private bool _internStrings;
@@ -276,6 +280,7 @@ namespace Db4objects.Db4o.Internal
 
 		private bool _prefetchSlotCacheSizeModifiedExternally;
 
+		// TODO find a better place to do this, and use AndroidConfiguration instead.
 		//  is null in the global configuration until deepClone is called
 		// The following are very frequently being asked for, so they show up in the profiler. 
 		// Let's keep them out of the Hashtable.
@@ -1454,6 +1459,16 @@ namespace Db4objects.Db4o.Internal
 		public bool AsynchronousSync()
 		{
 			return _config.GetAsBoolean(AsynchronousSyncKey);
+		}
+
+		public int MaxStackDepth()
+		{
+			return _config.GetAsInt(MaxStackDepthKey);
+		}
+
+		public void MaxStackDepth(int maxStackDepth)
+		{
+			_config.Put(MaxStackDepthKey, maxStackDepth);
 		}
 	}
 }

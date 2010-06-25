@@ -52,9 +52,14 @@ namespace Db4oUnit
 			return Run(TestPlatform.GetStdErr());
 		}
 
+		protected virtual TestResult CreateTestResult()
+		{
+			return new TestResult();
+		}
+
 		public virtual int Run(TextWriter writer)
 		{
-			TestResult result = new TestResult();
+			TestResult result = CreateTestResult();
 			new TestRunner(_suite).Run(new CompositeTestListener(new ConsoleListener(writer), 
 				result));
 			ReportResult(result, writer);

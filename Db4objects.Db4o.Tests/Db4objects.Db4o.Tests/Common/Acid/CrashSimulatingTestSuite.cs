@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o;
@@ -15,7 +16,7 @@ using Db4objects.Db4o.Tests.Common.Acid;
 namespace Db4objects.Db4o.Tests.Common.Acid
 {
 	/// <exclude></exclude>
-	public class CrashSimulatingTestSuite : FixtureBasedTestSuite
+	public class CrashSimulatingTestSuite : FixtureBasedTestSuite, IOptOutVerySlow
 	{
 		internal const bool Verbose = false;
 
@@ -36,14 +37,14 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				(UseLogfile, new CrashSimulatingTestSuite.LabeledBoolean[] { new CrashSimulatingTestSuite.LabeledBoolean
 				("no logfile", false) }), new SimpleFixtureProvider(WriteTrash, new CrashSimulatingTestSuite.LabeledBoolean
 				[] { new CrashSimulatingTestSuite.LabeledBoolean("write trash", true) }), new SimpleFixtureProvider
-				(FreespaceManager, new CrashSimulatingTestSuite.LabeledConfig[] { new _LabeledConfig_43
+				(FreespaceManager, new CrashSimulatingTestSuite.LabeledConfig[] { new _LabeledConfig_44
 				("BTreeFreespaceManager") }), new SimpleFixtureProvider(IdSystem, new CrashSimulatingTestSuite.LabeledConfig
-				[] { new _LabeledConfig_51("BTreeIdSystem") }) };
+				[] { new _LabeledConfig_52("BTreeIdSystem") }) };
 		}
 
-		private sealed class _LabeledConfig_43 : CrashSimulatingTestSuite.LabeledConfig
+		private sealed class _LabeledConfig_44 : CrashSimulatingTestSuite.LabeledConfig
 		{
-			public _LabeledConfig_43(string baseArg1) : base(baseArg1)
+			public _LabeledConfig_44(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -54,9 +55,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 		}
 
-		private sealed class _LabeledConfig_51 : CrashSimulatingTestSuite.LabeledConfig
+		private sealed class _LabeledConfig_52 : CrashSimulatingTestSuite.LabeledConfig
 		{
-			public _LabeledConfig_51(string baseArg1) : base(baseArg1)
+			public _LabeledConfig_52(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -81,16 +82,16 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 				("no logfile", false) }), new SimpleFixtureProvider(WriteTrash, new CrashSimulatingTestSuite.LabeledBoolean
 				[] { new CrashSimulatingTestSuite.LabeledBoolean("write trash", true), new CrashSimulatingTestSuite.LabeledBoolean
 				("don't write trash", false) }), new SimpleFixtureProvider(FreespaceManager, new 
-				CrashSimulatingTestSuite.LabeledConfig[] { new _LabeledConfig_75("InMemoryFreespaceManager"
-				), new _LabeledConfig_79("BTreeFreespaceManager") }), new SimpleFixtureProvider(
-				IdSystem, new CrashSimulatingTestSuite.LabeledConfig[] { new _LabeledConfig_87("PointerBasedIdSystem"
-				), new _LabeledConfig_91("BTreeIdSystem"), new _LabeledConfig_95("InMemoryIdSystem"
+				CrashSimulatingTestSuite.LabeledConfig[] { new _LabeledConfig_76("InMemoryFreespaceManager"
+				), new _LabeledConfig_80("BTreeFreespaceManager") }), new SimpleFixtureProvider(
+				IdSystem, new CrashSimulatingTestSuite.LabeledConfig[] { new _LabeledConfig_88("PointerBasedIdSystem"
+				), new _LabeledConfig_92("BTreeIdSystem"), new _LabeledConfig_96("InMemoryIdSystem"
 				) }) };
 		}
 
-		private sealed class _LabeledConfig_75 : CrashSimulatingTestSuite.LabeledConfig
+		private sealed class _LabeledConfig_76 : CrashSimulatingTestSuite.LabeledConfig
 		{
-			public _LabeledConfig_75(string baseArg1) : base(baseArg1)
+			public _LabeledConfig_76(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -100,9 +101,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 		}
 
-		private sealed class _LabeledConfig_79 : CrashSimulatingTestSuite.LabeledConfig
+		private sealed class _LabeledConfig_80 : CrashSimulatingTestSuite.LabeledConfig
 		{
-			public _LabeledConfig_79(string baseArg1) : base(baseArg1)
+			public _LabeledConfig_80(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -112,9 +113,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 		}
 
-		private sealed class _LabeledConfig_87 : CrashSimulatingTestSuite.LabeledConfig
+		private sealed class _LabeledConfig_88 : CrashSimulatingTestSuite.LabeledConfig
 		{
-			public _LabeledConfig_87(string baseArg1) : base(baseArg1)
+			public _LabeledConfig_88(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -125,9 +126,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 		}
 
-		private sealed class _LabeledConfig_91 : CrashSimulatingTestSuite.LabeledConfig
+		private sealed class _LabeledConfig_92 : CrashSimulatingTestSuite.LabeledConfig
 		{
-			public _LabeledConfig_91(string baseArg1) : base(baseArg1)
+			public _LabeledConfig_92(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -138,9 +139,9 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			}
 		}
 
-		private sealed class _LabeledConfig_95 : CrashSimulatingTestSuite.LabeledConfig
+		private sealed class _LabeledConfig_96 : CrashSimulatingTestSuite.LabeledConfig
 		{
-			public _LabeledConfig_95(string baseArg1) : base(baseArg1)
+			public _LabeledConfig_96(string baseArg1) : base(baseArg1)
 			{
 			}
 
@@ -155,7 +156,7 @@ namespace Db4objects.Db4o.Tests.Common.Acid
 			return new Type[] { typeof(CrashSimulatingTestSuite.CrashSimulatingTestCase) };
 		}
 
-		public class CrashSimulatingTestCase : ITestCase, IOptOutMultiSession
+		public class CrashSimulatingTestCase : ITestCase, IOptOutMultiSession, IOptOutVerySlow
 		{
 			// The cache may touch more bytes than the ones we modified.
 			// We should be safe even if we don't get this test to pass.

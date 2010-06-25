@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
 using Db4objects.Db4o;
@@ -14,7 +15,7 @@ using Db4objects.Db4o.Tests.Util;
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
 	/// <exclude></exclude>
-	public class OldFormatExceptionTestCase : ITestCase, IOptOutNoFileSystemData
+	public class OldFormatExceptionTestCase : ITestCase, IOptOutNoFileSystemData, IOptOutWorkspaceIssue
 	{
 		public static void Main(string[] args)
 		{
@@ -38,7 +39,7 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 				return;
 			}
 			string oldDatabaseFilePath = OldDatabaseFilePath();
-			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_42(this, oldDatabaseFilePath
+			Assert.Expect(typeof(OldFormatException), new _ICodeBlock_43(this, oldDatabaseFilePath
 				));
 			IObjectContainer container = null;
 			try
@@ -54,9 +55,9 @@ namespace Db4objects.Db4o.Tests.Common.Exceptions
 			}
 		}
 
-		private sealed class _ICodeBlock_42 : ICodeBlock
+		private sealed class _ICodeBlock_43 : ICodeBlock
 		{
-			public _ICodeBlock_42(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
+			public _ICodeBlock_43(OldFormatExceptionTestCase _enclosing, string oldDatabaseFilePath
 				)
 			{
 				this._enclosing = _enclosing;

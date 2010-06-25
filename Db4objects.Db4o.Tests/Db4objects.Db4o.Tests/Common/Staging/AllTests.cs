@@ -30,10 +30,12 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		protected override Type[] ComposeWith()
 		{
 			return new Type[] { typeof(ClientServerPingTestCase), typeof(DeepPrefetchingCacheConcurrencyTestCase
-				), typeof(OwnCommitCallbackFlaggedEmbeddedTestSuite), typeof(PingTestCase) };
+				), typeof(OwnCommitCallbackFlaggedEmbeddedTestSuite), typeof(PingTestCase), typeof(
+				TAUnavailableClassAtServer) };
 		}
 		#endif // !SILVERLIGHT
 		// COR-1762
 		// COR-1964
+		//COR-1987
 	}
 }

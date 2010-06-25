@@ -13,21 +13,22 @@ namespace Db4objects.Db4o.Tests.Common.Threading
 	{
 		internal IThreadPool4 _subject = new ThreadPool4Impl();
 
+		//	ThreadPool4 _subject = new ParkingThreadPool4Impl();
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestFailureEvent()
 		{
 			ByRef executed = ByRef.NewInstance(false);
 			Exception exception = new Exception();
 			_subject.UncaughtException += new System.EventHandler<UncaughtExceptionEventArgs>
-				(new _IEventListener4_18(exception, executed).OnEvent);
-			_subject.Start(new _IRunnable_25(exception));
+				(new _IEventListener4_19(exception, executed).OnEvent);
+			_subject.Start(new _IRunnable_26(exception));
 			_subject.Join(1000);
 			Assert.IsTrue((((bool)executed.value)));
 		}
 
-		private sealed class _IEventListener4_18
+		private sealed class _IEventListener4_19
 		{
-			public _IEventListener4_18(Exception exception, ByRef executed)
+			public _IEventListener4_19(Exception exception, ByRef executed)
 			{
 				this.exception = exception;
 				this.executed = executed;
@@ -44,9 +45,9 @@ namespace Db4objects.Db4o.Tests.Common.Threading
 			private readonly ByRef executed;
 		}
 
-		private sealed class _IRunnable_25 : IRunnable
+		private sealed class _IRunnable_26 : IRunnable
 		{
-			public _IRunnable_25(Exception exception)
+			public _IRunnable_26(Exception exception)
 			{
 				this.exception = exception;
 			}
@@ -63,14 +64,14 @@ namespace Db4objects.Db4o.Tests.Common.Threading
 		public virtual void TestDaemon()
 		{
 			ByRef isDaemon = ByRef.NewInstance();
-			_subject.StartLowPriority(new _IRunnable_58(isDaemon));
+			_subject.StartLowPriority(new _IRunnable_59(isDaemon));
 			_subject.Join(1000);
 			Assert.IsTrue((((bool)isDaemon.value)));
 		}
 
-		private sealed class _IRunnable_58 : IRunnable
+		private sealed class _IRunnable_59 : IRunnable
 		{
-			public _IRunnable_58(ByRef isDaemon)
+			public _IRunnable_59(ByRef isDaemon)
 			{
 				this.isDaemon = isDaemon;
 			}

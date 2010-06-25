@@ -21,6 +21,7 @@ using Sharpen.Util;
 namespace Db4objects.Db4o.Tests.Common.Diagnostics
 {
 	public class MissingClassDiagnosticsTestCase : ITestCase, ITestLifeCycle, IOptOutMultiSession
+		, IOptOutStackOverflow
 	{
 		private static readonly string DbUri = "test_db";
 

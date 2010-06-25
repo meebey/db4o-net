@@ -12,7 +12,7 @@ using Db4objects.Db4o.Tests.Common.Migration;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
 {
-	public class MigrationHopsTestCase : TestWithTempFile
+	public class MigrationHopsTestCase : TestWithTempFile, IOptOutTemporary
 	{
 		private Db4oLibraryEnvironmentProvider _environmentProvider;
 

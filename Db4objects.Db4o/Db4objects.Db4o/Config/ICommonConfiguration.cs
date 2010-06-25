@@ -631,5 +631,24 @@ namespace Db4objects.Db4o.Config
 		/// .
 		/// </summary>
 		void NameProvider(INameProvider provider);
+
+		/// <summary><p>Sets the max stack depth that will be used for recursive storing and activating an object.
+		/// 	</summary>
+		/// <remarks>
+		/// <p>Sets the max stack depth that will be used for recursive storing and activating an object.
+		/// <p>The default value is set to
+		/// <see cref="Db4objects.Db4o.Internal.Const4.DefaultMaxStackDepth">Db4objects.Db4o.Internal.Const4.DefaultMaxStackDepth
+		/// 	</see>
+		/// <p>On Android platform, we recomend setting this to 2.
+		/// </remarks>
+		/// <value>the desired max stack depth.</value>
+		/// <summary>gets the configured max stack depth.</summary>
+		/// <remarks>gets the configured max stack depth.</remarks>
+		/// <returns>the configured max stack depth.</returns>
+		int MaxStackDepth
+		{
+			get;
+			set;
+		}
 	}
 }

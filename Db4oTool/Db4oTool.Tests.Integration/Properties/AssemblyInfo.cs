@@ -8,7 +8,7 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Db4oTool.Test.Integration")]
-[assembly: AssemblyDescription("Db4oTool.Tests.Integration 8.0.152.14430 (.NET)")]
+[assembly: AssemblyDescription("Db4oTool.Tests.Integration 8.0.153.14430 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -18,7 +18,7 @@ using System.Security;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("8.0.152.14430")]
+[assembly: AssemblyVersion("8.0.153.14430")]
 
 #if !CF && !SILVERLIGHT
 [assembly: AllowPartiallyTrustedCallers]

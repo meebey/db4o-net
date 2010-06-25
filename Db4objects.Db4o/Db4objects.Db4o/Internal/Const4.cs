@@ -196,6 +196,8 @@ namespace Db4objects.Db4o.Internal
 		public static readonly string VirtualFieldPrefix = "v4o";
 
 		public const int InvalidObjectId = 1;
+
+		public const int DefaultMaxStackDepth = 20;
 		// make sure we don't fall over the -1 cliff
 		// TODO: Is this the right place for the knowledge, that an indirection
 		//       within a slot is an address and a length?

@@ -947,5 +947,12 @@ namespace Db4objects.Db4o.Config
 		/// <param name="typeHandler">to be used for the classes that match the predicate.</param>
 		void RegisterTypeHandler(ITypeHandlerPredicate predicate, ITypeHandler4 typeHandler
 			);
+
+		/// <seealso cref="ICommonConfiguration.MaxStackDepth()">ICommonConfiguration.MaxStackDepth()
+		/// 	</seealso>
+		int MaxStackDepth();
+
+		/// <seealso cref="ICommonConfiguration.MaxStackDepth(int)"></seealso>
+		void MaxStackDepth(int maxStackDepth);
 	}
 }

@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System.IO;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
@@ -25,7 +26,8 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 
 		private const int NumItems = 10;
 
-		private static readonly string BackupPath = "backup";
+		private static readonly string BackupPath = Path.Combine(Path.GetTempPath(), "backup"
+			);
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestMemoryBackup()

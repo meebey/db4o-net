@@ -7,7 +7,7 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class PersistStaticFieldValuesTestCase : AbstractDb4oTestCase
+	public class PersistStaticFieldValuesTestCase : AbstractDb4oTestCase, IOptOutTemporary
 	{
 		public class Data
 		{

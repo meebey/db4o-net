@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
+using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Foundation.IO;
@@ -8,7 +9,7 @@ using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Header
 {
-	public class OldHeaderTest : ITestLifeCycle, IOptOutNoFileSystemData
+	public class OldHeaderTest : ITestLifeCycle, IOptOutNoFileSystemData, IOptOutWorkspaceIssue
 	{
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void Test()

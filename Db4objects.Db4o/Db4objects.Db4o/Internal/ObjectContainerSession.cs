@@ -10,6 +10,7 @@ using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
+using Db4objects.Db4o.Internal.Events;
 using Db4objects.Db4o.Internal.Query;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
@@ -559,11 +560,6 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		public virtual void OnCommittedListener()
-		{
-		}
-
-		// do nothing
 		public virtual ClassMetadata ClassMetadataForReflectClass(IReflectClass reflectClass
 			)
 		{
@@ -624,6 +620,11 @@ namespace Db4objects.Db4o.Internal
 			{
 				return new Db4objects.Db4o.Internal.ObjectContainerSession(_server);
 			}
+		}
+
+		public virtual EventRegistryImpl NewEventRegistry()
+		{
+			return new EventRegistryImpl();
 		}
 	}
 }

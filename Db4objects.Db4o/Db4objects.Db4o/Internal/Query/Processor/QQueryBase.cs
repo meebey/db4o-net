@@ -481,7 +481,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 					}
 					if (ids != null)
 					{
-						ids.Traverse(new _IVisitor4_402(result));
+						ids.Traverse(new _IVisitor4_406(result));
 					}
 				}
 			}
@@ -508,8 +508,23 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 						CollectIdContext context = new CollectIdContext(this._enclosing._enclosing._trans
 							, oh, reader);
 						oh.ClassMetadata().CollectIDs(context, fieldName);
-						idsNew.value = ((TreeInt)TreeInt.Add(((TreeInt)idsNew.value), context.Ids()));
+						Tree.Traverse(context.Ids(), new _IVisitor4_394(idsNew));
 					}
+				}
+
+				private sealed class _IVisitor4_394 : IVisitor4
+				{
+					public _IVisitor4_394(ByRef idsNew)
+					{
+						this.idsNew = idsNew;
+					}
+
+					public void Visit(object node)
+					{
+						idsNew.value = TreeInt.Add(((TreeInt)idsNew.value), ((TreeInt)node)._key);
+					}
+
+					private readonly ByRef idsNew;
 				}
 
 				private readonly _IVisitor4_374 _enclosing;
@@ -521,9 +536,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				private readonly ByRef idsNew;
 			}
 
-			private sealed class _IVisitor4_402 : IVisitor4
+			private sealed class _IVisitor4_406 : IVisitor4
 			{
-				public _IVisitor4_402(IdListQueryResult result)
+				public _IVisitor4_406(IdListQueryResult result)
 				{
 					this.result = result;
 				}
@@ -561,7 +576,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			QQueryBase.CreateCandidateCollectionResult r = CreateCandidateCollection();
 			Collection4 executionPath = ExecutionPath(r);
 			IEnumerator candidateCollection = new Iterator4Impl(r.candidateCollection);
-			MappingIterator executeCandidates = new _MappingIterator_434(executionPath, candidateCollection
+			MappingIterator executeCandidates = new _MappingIterator_438(executionPath, candidateCollection
 				);
 			CompositeIterator4 resultingIDs = new CompositeIterator4(executeCandidates);
 			if (!r.checkDuplicates)
@@ -571,9 +586,9 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 			return CheckDuplicates(resultingIDs);
 		}
 
-		private sealed class _MappingIterator_434 : MappingIterator
+		private sealed class _MappingIterator_438 : MappingIterator
 		{
-			public _MappingIterator_434(Collection4 executionPath, IEnumerator baseArg1) : base
+			public _MappingIterator_438(Collection4 executionPath, IEnumerator baseArg1) : base
 				(baseArg1)
 			{
 				this.executionPath = executionPath;
@@ -734,12 +749,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private IEnumerator CheckDuplicates(CompositeIterator4 executeAllCandidates)
 		{
-			return Iterators.Filter(executeAllCandidates, new _IPredicate4_569());
+			return Iterators.Filter(executeAllCandidates, new _IPredicate4_573());
 		}
 
-		private sealed class _IPredicate4_569 : IPredicate4
+		private sealed class _IPredicate4_573 : IPredicate4
 		{
-			public _IPredicate4_569()
+			public _IPredicate4_573()
 			{
 				this.ids = new TreeInt(0);
 			}
@@ -1085,12 +1100,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool HasOrJoins()
 		{
-			return ForEachConstraintRecursively(new _IFunction4_851());
+			return ForEachConstraintRecursively(new _IFunction4_855());
 		}
 
-		private sealed class _IFunction4_851 : IFunction4
+		private sealed class _IFunction4_855 : IFunction4
 		{
-			public _IFunction4_851()
+			public _IFunction4_855()
 			{
 			}
 
@@ -1112,12 +1127,12 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private void RemoveJoins()
 		{
-			ForEachConstraintRecursively(new _IFunction4_867());
+			ForEachConstraintRecursively(new _IFunction4_871());
 		}
 
-		private sealed class _IFunction4_867 : IFunction4
+		private sealed class _IFunction4_871 : IFunction4
 		{
-			public _IFunction4_867()
+			public _IFunction4_871()
 			{
 			}
 
