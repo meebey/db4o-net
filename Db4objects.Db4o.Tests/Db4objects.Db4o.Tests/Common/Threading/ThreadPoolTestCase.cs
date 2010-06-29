@@ -13,7 +13,6 @@ namespace Db4objects.Db4o.Tests.Common.Threading
 	{
 		internal IThreadPool4 _subject = new ThreadPool4Impl();
 
-		//	ThreadPool4 _subject = new ParkingThreadPool4Impl();
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestFailureEvent()
 		{

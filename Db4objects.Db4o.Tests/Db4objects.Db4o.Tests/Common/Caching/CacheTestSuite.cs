@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 			{
 				// initializer
 				FixtureProviders(new IFixtureProvider[] { new SubjectFixtureProvider(new IDeferred4
-					[] { new _IDeferred4_15(), new _IDeferred4_19(), new _IDeferred4_23(), new _IDeferred4_28
+					[] { new _IDeferred4_12(), new _IDeferred4_16(), new _IDeferred4_20(), new _IDeferred4_25
 					() }) });
 				// The following doesn' sharpen. Ignore for now.
 				//			,new Deferred4() {
@@ -42,9 +42,9 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 			}
 		}
 
-		private sealed class _IDeferred4_15 : IDeferred4
+		private sealed class _IDeferred4_12 : IDeferred4
 		{
-			public _IDeferred4_15()
+			public _IDeferred4_12()
 			{
 			}
 
@@ -54,9 +54,9 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 			}
 		}
 
-		private sealed class _IDeferred4_19 : IDeferred4
+		private sealed class _IDeferred4_16 : IDeferred4
 		{
-			public _IDeferred4_19()
+			public _IDeferred4_16()
 			{
 			}
 
@@ -66,9 +66,9 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 			}
 		}
 
-		private sealed class _IDeferred4_23 : IDeferred4
+		private sealed class _IDeferred4_20 : IDeferred4
 		{
-			public _IDeferred4_23()
+			public _IDeferred4_20()
 			{
 			}
 
@@ -78,9 +78,9 @@ namespace Db4objects.Db4o.Tests.Common.Caching
 			}
 		}
 
-		private sealed class _IDeferred4_28 : IDeferred4
+		private sealed class _IDeferred4_25 : IDeferred4
 		{
-			public _IDeferred4_28()
+			public _IDeferred4_25()
 			{
 			}
 
