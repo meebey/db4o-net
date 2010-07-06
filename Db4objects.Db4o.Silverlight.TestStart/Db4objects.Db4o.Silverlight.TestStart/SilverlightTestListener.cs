@@ -32,6 +32,11 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			_failures.Add(new TestFailure(test.Label(), failure));
 			MarkLastAsError();
 		}
+		
+		public void Failure(String msg, Exception failure)
+		{
+			_failures.Add(new TestFailure(msg, failure));
+		}
 
 		public void RunFinished()
 		{
@@ -106,5 +111,6 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 		private DateTime _startTime;
 		private readonly IList<TestFailure> _failures = new List<TestFailure>();
 		private readonly Dispatcher _dispatcher;
+		
 	}
 }
