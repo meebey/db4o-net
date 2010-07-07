@@ -11,12 +11,12 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 	internal class CecilMethodBuilder : IMethodBuilder
 	{
 		private readonly MethodDefinition _method;
-		private readonly CilWorker _worker;
+		private readonly ILProcessor _il;
 
 		public CecilMethodBuilder(MethodDefinition method)
 		{
 			_method = method;
-			_worker = method.Body.CilWorker;
+			_il = method.Body.GetILProcessor();
 		}
 
 		public IReferenceProvider References
@@ -31,16 +31,16 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 			switch (code)
 			{
 				case TypeCode.SByte:
-					_worker.Emit(OpCodes.Ldc_I4_S, (SByte)value);
+					_il.Emit(OpCodes.Ldc_I4_S, (SByte)value);
 					break;
 				case TypeCode.Int32:
-					_worker.Emit(OpCodes.Ldc_I4, (Int32)value);
+					_il.Emit(OpCodes.Ldc_I4, (Int32)value);
 					break;
 				case TypeCode.Int64:
-					_worker.Emit(OpCodes.Ldc_I8, (Int64)value);
+					_il.Emit(OpCodes.Ldc_I8, (Int64)value);
 					break;
 				case TypeCode.String:
-					_worker.Emit(OpCodes.Ldstr, (String)value);
+					_il.Emit(OpCodes.Ldstr, (String)value);
 					break;
 				default:
 					throw new NotImplementedException(code.ToString());
@@ -52,22 +52,22 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 			switch (index)
 			{
 				case 0:
-					_worker.Emit(OpCodes.Ldarg_0);
+					_il.Emit(OpCodes.Ldarg_0);
 					break;
 				case 1:
-					_worker.Emit(OpCodes.Ldarg_1);
+					_il.Emit(OpCodes.Ldarg_1);
 					break;
 				default:
 					// TODO: This is wrong. Emit expects an VariableDefinition for a Ldarg .
                     //       But actually no code passes idexes other than 0 and 1 
-                    _worker.Emit(OpCodes.Ldarg, index);
+                    _il.Emit(OpCodes.Ldarg, index);
 					break;
 			}
 		}
 
 		public void Pop()
 		{
-			_worker.Emit(OpCodes.Pop);
+			_il.Emit(OpCodes.Pop);
 		}
 
 		public void LoadArrayElement(ITypeRef elementType)
@@ -97,7 +97,7 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 
 		public void Invoke(IMethodRef method, CallingConvention convention)
 		{
-			_worker.Emit(OpCodeForConvention(convention), CecilMethodRef.GetReference(method));
+			_il.Emit(OpCodeForConvention(convention), CecilMethodRef.GetReference(method));
 		}
 
 		private static OpCode OpCodeForConvention(CallingConvention convention)
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 
 		public void LoadField(IFieldRef fieldRef)
 		{
-			_worker.Emit(OpCodes.Ldfld, GetReference(fieldRef));
+			_il.Emit(OpCodes.Ldfld, GetReference(fieldRef));
 		}
 
 		private static FieldReference GetReference(IFieldRef fieldRef)
@@ -124,19 +124,19 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 
 		public void LoadStaticField(IFieldRef fieldRef)
 		{
-			_worker.Emit(OpCodes.Ldsfld, GetReference(fieldRef));
+			_il.Emit(OpCodes.Ldsfld, GetReference(fieldRef));
 		}
 
 		public void Box(ITypeRef boxedType)
 		{
 			TypeReference type = CecilTypeRef.GetReference(boxedType);
 			if (!type.IsValueType) return;
-			_worker.Emit(OpCodes.Box, type);
+			_il.Emit(OpCodes.Box, type);
 		}
 
 		public void EndMethod()
 		{
-			_worker.Emit(OpCodes.Ret);
+			_il.Emit(OpCodes.Ret);
 		}
 
 		public void Print(TextWriter @out)

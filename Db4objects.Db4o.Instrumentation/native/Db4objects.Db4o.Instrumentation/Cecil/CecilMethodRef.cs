@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 
 		public ITypeRef ReturnType
 		{
-			get { return TypeRef(_reference.ReturnType.ReturnType); }
+			get { return TypeRef(_reference.ReturnType); }
 		}
 
 		public ITypeRef[] ParamTypes

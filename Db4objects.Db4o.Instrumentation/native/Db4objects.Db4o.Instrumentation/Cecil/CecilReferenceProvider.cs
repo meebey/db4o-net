@@ -9,23 +9,9 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 {
 	public class CecilReferenceProvider : IReferenceProvider
 	{
-		private static readonly object AnnotationKey = new object();
-
 		public static CecilReferenceProvider ForModule(ModuleDefinition module)
 		{
-			System.Collections.IDictionary annotations = Annotations(module);
-			CecilReferenceProvider provider = (CecilReferenceProvider) annotations[AnnotationKey];
-			if (null == provider)
-			{
-				provider = new CecilReferenceProvider(module);
-				annotations[AnnotationKey] = provider;
-			}
-			return provider;
-		}
-
-		private static IDictionary Annotations(ModuleDefinition module)
-		{
-			return (module as IAnnotationProvider).Annotations;
+			return new CecilReferenceProvider(module);
 		}
 
 		private readonly ModuleDefinition _module;
