@@ -32,7 +32,7 @@ namespace Db4objects.Db4o.NativeQueries
 		protected static ICachingStrategy<string, AssemblyDefinition> _assemblyCachingStrategy = 
 				new SingleItemCachingStrategy<string, AssemblyDefinition>( delegate(string location)
 																			{
-																				return AssemblyFactory.GetAssembly(location);
+																				return AssemblyDefinition.ReadAssembly(location);
 																			});
 
 		protected static ICachingStrategy<MethodBase, IExpression> _expressionCachingStrategy = 
@@ -60,9 +60,7 @@ namespace Db4objects.Db4o.NativeQueries
 		{
 			string location = GetAssemblyLocation(method);
 			AssemblyDefinition assembly = _assemblyCachingStrategy.Get(location);
-			TypeDefinition type = FindTypeDefinition(assembly.MainModule, method.DeclaringType);
-			if (null == type) UnsupportedPredicate(string.Format("Unable to load type '{0}' from assembly '{1}'", method.DeclaringType.FullName, location));
-			MethodDefinition methodDef = type.Methods.GetMethod(method.Name, GetParameterTypes(method));
+			MethodDefinition methodDef = (MethodDefinition)assembly.MainModule.LookupToken(method.MetadataToken);
 			if (null == methodDef) UnsupportedPredicate(string.Format("Unable to load the definition of '{0}' from assembly '{1}'", method, location));
 			
 			return methodDef;
@@ -121,7 +119,7 @@ namespace Db4objects.Db4o.NativeQueries
 
 		private static TypeDefinition FindTypeDefinition(ModuleDefinition module, string name)
 		{
-			return module.Types[name];
+			return module.GetType(name);
 		}
 
 		private static string GetAssemblyLocation(MethodBase method)
@@ -149,7 +147,7 @@ namespace Db4objects.Db4o.NativeQueries
 				UnsupportedPredicate("A predicate must take a single argument.");
 			if (0 != method.Body.ExceptionHandlers.Count)
 				UnsupportedPredicate("A predicate can not contain exception handlers.");
-			if (method.DeclaringType.Module.Import(typeof(bool)) != method.ReturnType.ReturnType)
+			if (method.ReturnType.FullName != typeof(bool).FullName)
 				UnsupportedPredicate("A predicate must have a boolean return type.");
 		}
 
@@ -301,8 +299,37 @@ namespace Db4objects.Db4o.NativeQueries
 		{
 			MethodReference method = methodRef.Method;
 			AssemblyDefinition assemblyDef = new AssemblyResolver(_assemblyCachingStrategy).ForTypeReference(method.DeclaringType);
-			TypeDefinition type = assemblyDef.MainModule.Types[method.DeclaringType.FullName];
-			return type.Methods.GetMethod(method.Name, method.Parameters);
+			TypeDefinition type = assemblyDef.MainModule.GetType(method.DeclaringType.FullName);
+			return GetMethod(type, method);
+		}
+
+		private static MethodDefinition GetMethod(TypeDefinition type, MethodReference template)
+		{
+			foreach (MethodDefinition method in type.Methods)
+			{
+				if (method.Name != template.Name) continue;
+				if (method.Parameters.Count != template.Parameters.Count) continue;
+				if (!ParametersMatch(method.Parameters, template.Parameters)) continue;
+
+				return method;
+			}
+
+			return null;
+		}
+
+		private static bool ParametersMatch(IList<ParameterDefinition> parameters, IList<ParameterDefinition> templates)
+		{
+			if (parameters.Count != templates.Count) return false;
+
+			for (int i = 0; i < parameters.Count; i++)
+			{
+				ParameterDefinition parameter = parameters[i];
+				ParameterDefinition template = templates[i];
+
+				if (parameter.ParameterType.FullName != template.ParameterType.FullName) return false;
+			}
+
+			return true;
 		}
 
 		class Visitor : AbstractCodeStructureVisitor
@@ -572,7 +599,7 @@ namespace Db4objects.Db4o.NativeQueries
 				}
 			}
 
-			private void ProcessOperatorMethodInvocation(MethodInvocationExpression node, IMemberReference methodReference)
+			private void ProcessOperatorMethodInvocation(MethodInvocationExpression node, MemberReference methodReference)
 			{
 				switch (methodReference.Name)
 				{
