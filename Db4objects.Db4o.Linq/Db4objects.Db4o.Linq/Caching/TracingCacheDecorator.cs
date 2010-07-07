@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 
+#if !SILVERLIGHT
+
 namespace Db4objects.Db4o.Linq.Caching
 {
 	public class TracingCacheDecorator<TKey, TValue> : ICache4<TKey, TValue>
@@ -33,3 +35,5 @@ namespace Db4objects.Db4o.Linq.Caching
 		}
 	}
 }
+
+#endif

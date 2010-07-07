@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2009 - 2010  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2009 - 2010  Versant Inc.  http://www.db4o.com */
 
 using System;
 

@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections.Generic;
@@ -6,11 +6,37 @@ using System.Linq.Expressions;
 
 namespace Db4objects.Db4o.Linq.Expressions
 {
+	class Set<T>
+	{
+#if SILVERLIGHT
+		Dictionary<T, T> items = new Dictionary<T, T>();
+#else
+		HashSet<T> items = new HashSet<T>();
+#endif
+		public bool Contains(T item)
+		{
+#if SILVERLIGHT
+			return items.ContainsKey(item);
+#else
+			return items.Contains(item);
+#endif
+		}
+
+		public void Add(T item)
+		{
+#if SILVERLIGHT
+			items.Add (item, item);
+#else
+			items.Add(item);
+#endif
+		}
+	}
+
 	public class SubtreeEvaluator : ExpressionTransformer
 	{
-		private HashSet<Expression> _candidates;
+		private Set<Expression> _candidates;
 
-		private SubtreeEvaluator(HashSet<Expression> candidates)
+		private SubtreeEvaluator(Set<Expression> candidates)
 		{
 			_candidates = candidates;
 		}
@@ -47,10 +73,10 @@ namespace Db4objects.Db4o.Linq.Expressions
 		class Nominator : ExpressionTransformer
 		{
 			readonly Func<Expression, bool> _predicate;
-			readonly HashSet<Expression> _candidates = new HashSet<Expression>();
+			readonly Set<Expression> _candidates = new Set<Expression>();
 			bool cannotBeEvaluated;
 
-			public HashSet<Expression> Candidates
+			public Set<Expression> Candidates
 			{
 				get { return _candidates; }
 			}

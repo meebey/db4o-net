@@ -1,8 +1,9 @@
-﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
-#if CF
+#if CF || SILVERLIGHT
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Db4objects.Db4o.Internal.Caching;
@@ -30,10 +31,21 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 		private AssemblyDefinition GetAssembly(Assembly assembly)
 		{
-			return _assemblyCache.Produce(assembly,
-						newAssembly => AssemblyFactory.GetAssembly(newAssembly.ManifestModule.FullyQualifiedName));
+			return _assemblyCache.Produce(assembly, ReadAssembly);
 		}
 
+		private static AssemblyDefinition ReadAssembly(Assembly assembly)
+		{
+#if CF
+			return AssemblyDefinition.ReadAssembly(assembly.ManifestModule.FullyQualifiedName);
+#elif SILVERLIGHT
+			var reference = AssemblyNameReference.Parse(assembly.FullName);
+			var streamInfo = System.Windows.Application.GetResourceStream(new Uri(reference.Name + ".dll", UriKind.Relative));
+			return AssemblyDefinition.ReadAssembly(streamInfo.Stream);
+#endif
+		}
+
+#if CF
 		private static string GetFullName(Type type)
 		{
 			if (type.DeclaringType != null) return type.FullName.Replace('+', '/');
@@ -43,7 +55,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		private TypeDefinition GetType(Type type)
 		{
 			var assembly = GetAssembly(type.Assembly);
-			return assembly.MainModule.Types[GetFullName(type)];
+			return assembly.MainModule.GetType(GetFullName(type));
 		}
 
 		private static bool ParameterMatch(ParameterDefinition parameter, ParameterInfo info)
@@ -51,7 +63,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 			return parameter.ParameterType.FullName == GetFullName(info.ParameterType);
 		}
 
-		private static bool ParametersMatch(ParameterDefinitionCollection parameters, ParameterInfo[] infos)
+		private static bool ParametersMatch(IList<ParameterDefinition> parameters, ParameterInfo[] infos)
 		{
 			if (parameters.Count != infos.Length) return false;
 
@@ -64,7 +76,7 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		private static bool MethodMatch(MethodDefinition method, MethodInfo info)
 		{
 			if (method.Name != info.Name) return false;
-			if (method.ReturnType.ReturnType.Name != info.ReturnType.Name) return false;
+			if (method.ReturnType.Name != info.ReturnType.Name) return false;
 
 			return ParametersMatch(method.Parameters, info.GetParameters());
 		}
@@ -79,6 +91,14 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 			return matches.FirstOrDefault();
 		}
+
+#elif SILVERLIGHT
+		private MethodDefinition GetMethod(MethodInfo method)
+		{
+			var assembly = GetAssembly(method.DeclaringType.Assembly);
+			return (MethodDefinition)assembly.MainModule.LookupToken(method.MetadataToken);
+		}
+#endif
 
 		public MethodDefinition ResolveMethod(MethodInfo method)
 		{

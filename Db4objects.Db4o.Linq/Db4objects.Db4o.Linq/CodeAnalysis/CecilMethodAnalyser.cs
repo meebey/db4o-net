@@ -1,6 +1,6 @@
-﻿/* Copyright (C) 2007 - 2010  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2007 - 2010  Versant Inc.  http://www.db4o.com */
 
-#if CF
+#if CF || SILVERLIGHT
 
 using System;
 using System.Reflection;

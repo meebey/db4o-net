@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Linq.Expressions;

@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Linq.Expressions
 
 		public override IQueryBuilderRecord Process(LambdaExpression expression)
 		{
-			if (!StartsWithParameterReference(expression.Body)) 
+			if (!StartsWithParameterReference(expression.Body))
 				CannotOptimize(expression.Body);
 
 			return ApplyDirection(base.Process(expression));

@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
 
 #if !CF_3_5
 

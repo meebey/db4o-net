@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Db4objects.Db4o.Internal.Caching;
 using Db4objects.Db4o.Linq.Caching;
 using Db4objects.Db4o.Linq.Internals;

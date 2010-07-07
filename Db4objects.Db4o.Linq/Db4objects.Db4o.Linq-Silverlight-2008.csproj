@@ -5,20 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4F7E0FA5-7023-4C49-90DD-BC6A1DCC733D}</ProjectGuid>
+    <ProjectGuid>{23531440-0922-43EB-A483-6592FFC2F093}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Db4objects.Db4o.Linq</RootNamespace>
     <AssemblyName>Db4objects.Db4o.Linq</AssemblyName>
-    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PlatformFamilyName>PocketPC</PlatformFamilyName>
-    <PlatformID>3C41C503-53EF-4c2a-8DD4-A8217CAD115E</PlatformID>
-    <OSVersion>4.20</OSVersion>
-    <DeployDirSuffix>Db4objects.Db4o.Linq</DeployDirSuffix>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <NativePlatformName>Pocket PC 2003</NativePlatformName>
-    <FormFactorID>
-    </FormFactorID>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -27,42 +23,47 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;PocketPC;CF_3_5,CF</DefineConstants>
-    <NoStdLib>true</NoStdLib>
-    <NoConfig>true</NoConfig>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;PocketPC;CF_3_5,CF</DefineConstants>
-    <NoStdLib>true</NoStdLib>
-    <NoConfig>true</NoConfig>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <NoWarn>1591;1572;1573;1574;0419;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
+    <Reference Include="system, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0\system.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0\System.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="Cecil.FlowAnalysis, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\compact-2.0\Cecil.FlowAnalysis.dll</HintPath>
+      <HintPath>..\Libs\silverlight\Cecil.FlowAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+    <Reference Include="Mono.Cecil, Version=0.9.3.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\compact-2.0\Mono.Cecil.dll</HintPath>
+      <HintPath>..\Libs\silverlight\Mono.Cecil.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-Silverlight-2008.csproj">
+      <Project>{76FFA4C5-6CC6-4C8C-BACF-B1C76AE0CA65}</Project>
+      <Name>Db4objects.Db4o-Silverlight-2008</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Db4objects.Db4o.Linq\Caching\CacheFactory.cs" />
@@ -111,24 +112,7 @@
     <Compile Include="ExtensionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-CF-2008.csproj">
-      <Project>{95FD1C64-F1A3-4C8A-B170-D518E899B2FE}</Project>
-      <Name>Db4objects.Db4o-CF-2008</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libs\compact-3.5\System.Linq.Expressions\System.Linq.Expressions-CF-2008.csproj">
-      <Project>{92FFA693-E97C-42AF-B479-E311BB4A7321}</Project>
-      <Name>System.Linq.Expressions-CF-2008</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
-        <HostingProcess disable="1" />
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -136,4 +120,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

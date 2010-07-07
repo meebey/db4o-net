@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
 using System.Linq.Expressions;
 using Db4objects.Db4o.Linq.Internals;
 
@@ -43,16 +43,16 @@ namespace Db4objects.Db4o.Linq.Expressions
 			VisitExpressionList(method.Arguments);
 			if (IsNonOptimizeableBooleanMethodCall(method))
 			{
-				return ExpandExpression(method, true); 
+				return ExpandExpression(method, true);
 			}
 
-			return base.VisitMethodCall(method); 
+			return base.VisitMethodCall(method);
 		}
 
 		private static bool IsNonOptimizeableBooleanMethodCall(Expression expression)
 		{
-			return expression.NodeType == ExpressionType.Call 
-					&& expression.Type == typeof(bool) 
+			return expression.NodeType == ExpressionType.Call
+					&& expression.Type == typeof(bool)
 					&& !IsOptimizeableMethodCall((MethodCallExpression) expression);
 		}
 
