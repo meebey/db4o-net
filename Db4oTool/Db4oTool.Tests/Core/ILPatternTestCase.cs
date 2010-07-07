@@ -44,11 +44,11 @@ namespace Db4oTool.Tests.Core
 			Assert.IsTrue(sequence.IsBackwardsMatch(lastInstruction));
 		}
 
-		delegate void CilWorkerAction(CilWorker worker);
+		delegate void Emitter(ILProcessor il);
 
-		private static Instruction CreateTestMethodAndReturnLastInstruction(CilWorkerAction action)
+		private static Instruction CreateTestMethodAndReturnLastInstruction(Emitter emitter)
 		{
-			return LastInstruction(CreateTestMethod(action));
+			return LastInstruction(CreateTestMethod(emitter));
 		}
 
 		private static Instruction LastInstruction(MethodDefinition method)
@@ -56,30 +56,33 @@ namespace Db4oTool.Tests.Core
 			return method.Body.Instructions[method.Body.Instructions.Count - 1];
 		}
 
-		static MethodDefinition CreateTestMethod(CilWorkerAction action)
+		static MethodDefinition CreateTestMethod(Emitter emitter)
 		{
-			MethodDefinition test = new MethodDefinition("Test", MethodAttributes.Public, null);
-			action(test.Body.CilWorker);
+			TypeReference type = new TypeReference ("", "Test", null);
+			MethodDefinition test = new MethodDefinition("Test", MethodAttributes.Public, type);
+			emitter(test.Body.GetILProcessor());
 			return test;
 		}
 
-		private static void TestSequence1(CilWorker worker)
+		private static void TestSequence1(ILProcessor il)
 		{
-			FieldDefinition blank = new FieldDefinition("Test", null, FieldAttributes.Public);
-			worker.Emit(OpCodes.Nop);
-			worker.Emit(OpCodes.Ldsfld, blank);
-			worker.Emit(OpCodes.Stsfld, blank);
-			worker.Emit(OpCodes.Ret);
+			TypeReference type = new TypeReference("", "Test", null);
+			FieldDefinition blank = new FieldDefinition("Test", FieldAttributes.Public, type);
+			il.Emit(OpCodes.Nop);
+			il.Emit(OpCodes.Ldsfld, blank);
+			il.Emit(OpCodes.Stsfld, blank);
+			il.Emit(OpCodes.Ret);
 		}
 
-		private static void TestSequence2(CilWorker worker)
+		private static void TestSequence2(ILProcessor il)
 		{
-			FieldDefinition blank = new FieldDefinition("Test", null, FieldAttributes.Public);
-			worker.Emit(OpCodes.Nop);
-			worker.Emit(OpCodes.Ldfld, blank);
-			worker.Emit(OpCodes.Stsfld, blank);
-			worker.Emit(OpCodes.Ret);
-			worker.Emit(OpCodes.Nop);
+			TypeReference type = new TypeReference ("", "Test", null);
+			FieldDefinition blank = new FieldDefinition("Test", FieldAttributes.Public, type);
+			il.Emit(OpCodes.Nop);
+			il.Emit(OpCodes.Ldfld, blank);
+			il.Emit(OpCodes.Stsfld, blank);
+			il.Emit(OpCodes.Ret);
+			il.Emit(OpCodes.Nop);
 		}
 	}
 }

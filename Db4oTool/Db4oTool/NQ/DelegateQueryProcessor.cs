@@ -37,16 +37,16 @@ namespace Db4oTool.NQ
 
 		public void Process(MethodDefinition parent, Instruction queryInvocation)
 		{
-			CilWorker worker = parent.Body.CilWorker;
+			ILProcessor il = parent.Body.GetILProcessor ();
 			if (IsCachedStaticFieldPattern(queryInvocation))
 			{	
 				_context.TraceVerbose("static delegate field pattern found in {0}", parent.Name);
-				ProcessCachedStaticFieldPattern(worker, queryInvocation);
+				ProcessCachedStaticFieldPattern(il, queryInvocation);
 			}
 			else if (IsPredicateCreationPattern(queryInvocation))
 			{
 				_context.TraceVerbose("simple delegate pattern found in {0}", parent.Name);
-				ProcessPredicateCreationPattern(worker, queryInvocation);
+				ProcessPredicateCreationPattern(il, queryInvocation);
 			}
 			else
 			{
@@ -54,7 +54,7 @@ namespace Db4oTool.NQ
 			}
 		}
 
-		private void ProcessPredicateCreationPattern(CilWorker worker, Instruction queryInvocation)
+		private void ProcessPredicateCreationPattern(ILProcessor il, Instruction queryInvocation)
 		{
 		    MethodReference predicateReference = GetMethodReferenceFromInlinePredicatePattern(queryInvocation);
 		    MethodDefinition predicateMethod = Resolve(predicateReference);
@@ -69,11 +69,11 @@ namespace Db4oTool.NQ
                 
             _optimizer.OptimizePredicate(syntheticPredicate, predicateMethod, expression);
 
-            RemovePreviousInstrunctions(worker, queryInvocation, 2);
+            RemovePreviousInstrunctions(il, queryInvocation, 2);
 
             InjectSyntheticPredicateInstantiation(
                     queryInvocation,
-                    worker,
+                    il,
                     syntheticPredicate,
                     fields.Keys,
                     predicateReference.DeclaringType);
@@ -81,7 +81,7 @@ namespace Db4oTool.NQ
 		    ReplaceByExecuteEnhancedFilter(queryInvocation);
 		}
 
-		private TypeDefinition NewSyntheticPredicateFor(IExpression expression, IMemberReference predicateMethod, out IDictionary<FieldReference, FieldDefinition> fields)
+		private TypeDefinition NewSyntheticPredicateFor(IExpression expression, MemberReference predicateMethod, out IDictionary<FieldReference, FieldDefinition> fields)
 	    {
 	        TypeDefinition syntheticPredicate = NewSyntheticPredicateFor(predicateMethod);
 
@@ -100,10 +100,10 @@ namespace Db4oTool.NQ
 	        return fields.Count > 0;
 	    }
 
-	    private void InjectSyntheticPredicateInstantiation(Instruction queryInvocation, CilWorker cil, TypeDefinition syntheticPredicate, ICollection<FieldReference> fieldValuesReferences, TypeReference closureType)
+	    private void InjectSyntheticPredicateInstantiation(Instruction queryInvocation, ILProcessor cil, TypeDefinition syntheticPredicate, ICollection<FieldReference> fieldValuesReferences, TypeReference closureType)
 	    {
             VariableDefinition closureObjVar = new VariableDefinition(closureType);
-            cil.GetBody().Variables.Add(closureObjVar);
+            cil.Body.Variables.Add(closureObjVar);
 
             Instruction ip = cil.Create(OpCodes.Stloc, closureObjVar);
             cil.InsertBefore(queryInvocation, ip);
@@ -119,35 +119,35 @@ namespace Db4oTool.NQ
             cil.InsertBefore(queryInvocation, newObj);
 	    }
 
-	    private void PushParameters(CilWorker worker, VariableDefinition closureObj, Instruction ip, IEnumerable<FieldReference> fieldValuesReferences)
+	    private void PushParameters(ILProcessor il, VariableDefinition closureObj, Instruction ip, IEnumerable<FieldReference> fieldValuesReferences)
 	    {
 	        foreach (FieldReference fieldReference in fieldValuesReferences)
 	        {
-	            Instruction instruction = worker.Create(OpCodes.Ldloc, closureObj);
-	            worker.InsertAfter(ip, instruction);
+	            Instruction instruction = il.Create(OpCodes.Ldloc, closureObj);
+	            il.InsertAfter(ip, instruction);
 
                 if (IsPublicField(fieldReference))
                 {
-                    worker.InsertAfter(instruction, worker.Create(OpCodes.Ldfld, fieldReference));
+                    il.InsertAfter(instruction, il.Create(OpCodes.Ldfld, fieldReference));
                 }
                 else
                 {
-                    ip = PushFieldContentsUsingReflection(fieldReference, worker, instruction);
+                    ip = PushFieldContentsUsingReflection(fieldReference, il, instruction);
                 }
 	            ip = ip.Next.Next;
 	        }
 	    }
 
-	    private bool IsPublicField(IMemberReference reference)
+	    private bool IsPublicField(MemberReference reference)
 	    {
 	        TypeDefinition parentType = _reflector.ResolveTypeReference(reference.DeclaringType);
-	        return (parentType.Fields.GetField(reference.Name).Attributes & FieldAttributes.Public) == FieldAttributes.Public;
+			return (CecilReflector.GetField(parentType, reference.Name).Attributes & FieldAttributes.Public) == FieldAttributes.Public;
 	    }
 
 	    /**
          * Expects that the object reference is already in the stack
          */
-        private Instruction PushFieldContentsUsingReflection(FieldReference fieldReference, CilWorker cil, Instruction ip)
+        private Instruction PushFieldContentsUsingReflection(FieldReference fieldReference, ILProcessor cil, Instruction ip)
 	    {
             Instruction ldstr = cil.Create(OpCodes.Ldstr, fieldReference.Name);
             cil.InsertAfter(ip, ldstr);
@@ -165,22 +165,22 @@ namespace Db4oTool.NQ
             return InstantiateGenericMethod(getFieldMethod, extent);
 	    }
 
-	    private static void RemovePreviousInstrunctions(CilWorker worker, Instruction instruction, int n)
+	    private static void RemovePreviousInstrunctions(ILProcessor il, Instruction instruction, int n)
 	    {
 	        while (n-- > 0)
 	        {
-                worker.Remove(instruction.Previous);
+                il.Remove(instruction.Previous);
 	        }
         }
 
 	    private void AddConstructor(TypeDefinition type, IDictionary<FieldReference, FieldDefinition> fields)
 	    {
 	        const MethodAttributes methodAttributes = MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.Public;
-	        MethodDefinition ctor = new MethodDefinition(MethodDefinition.Ctor, methodAttributes, Import(typeof(void)));
+	        MethodDefinition ctor = new MethodDefinition(".ctor", methodAttributes, Import(typeof(void)));
             
             AddMethodParameters(ctor, fields.Values);
 
-            CilWorker cil = ctor.Body.CilWorker;
+            ILProcessor cil = ctor.Body.GetILProcessor ();
             cil.Emit(OpCodes.Ldarg_0);
             cil.Emit(OpCodes.Call, DefaultObjectConstructor());
 
@@ -188,12 +188,12 @@ namespace Db4oTool.NQ
 
             cil.Emit(OpCodes.Ret);
 
-            type.Constructors.Add(ctor);
+            type.Methods.Add(ctor);
         }
 
-	    private static void EmitFieldInitialization(MethodDefinition ctor, IEnumerable<FieldDefinition> fields, ParameterDefinitionCollection parameters)
+	    private static void EmitFieldInitialization(MethodDefinition ctor, IEnumerable<FieldDefinition> fields, IList<ParameterDefinition> parameters)
 	    {
-            CilWorker cil = ctor.Body.CilWorker;
+            ILProcessor cil = ctor.Body.GetILProcessor ();
 
 	        int i = 0;
             foreach (FieldDefinition fieldReference in fields)
@@ -206,11 +206,10 @@ namespace Db4oTool.NQ
 
 	    private static void AddMethodParameters(IMethodSignature method, IEnumerable<FieldDefinition> fields)
 	    {
-	    	int i = 0;
 	    	foreach (FieldDefinition parameter in fields)
             {
                 method.Parameters.Add(
-                    new ParameterDefinition(parameter.Name, i++, ParameterAttributes.None, parameter.FieldType));
+                    new ParameterDefinition(parameter.Name, ParameterAttributes.None, parameter.FieldType));
             }
 	    }
 
@@ -220,13 +219,26 @@ namespace Db4oTool.NQ
             foreach (IFieldRef field in fields)
 	        {
 	            CecilFieldRef cecilFieldRef = (CecilFieldRef) field;
-	            FieldDefinition fieldDefinition = ((FieldDefinition) cecilFieldRef.Reference).Clone();
+	            FieldDefinition fieldDefinition = CloneField((FieldDefinition) cecilFieldRef.Reference);
                 fieldMap.Add(cecilFieldRef.Reference, fieldDefinition);
 	            type.Fields.Add(fieldDefinition);
             }
 
 	        return fieldMap;
 	    }
+
+		private static FieldDefinition CloneField (FieldDefinition subject)
+		{
+			FieldDefinition clone = new FieldDefinition (subject.Name, subject.Attributes, subject.FieldType);
+
+			if (subject.HasConstant)
+				clone.Constant = subject.Constant;
+
+			if (subject.HasLayoutInfo)
+				clone.Offset = subject.Offset;
+
+			return clone;
+		}
 
 	    private static IList<IFieldRef> CollectAccessedFields(IExpression expression)
 	    {
@@ -236,7 +248,7 @@ namespace Db4oTool.NQ
 	        return fieldCollector.Fields;
 	    }
 
-	    private void ProcessCachedStaticFieldPattern(CilWorker worker, Instruction queryInvocation)
+	    private void ProcessCachedStaticFieldPattern(ILProcessor il, Instruction queryInvocation)
 		{
 			MethodReference predicateReference = GetMethodReferenceFromStaticFieldPattern(queryInvocation);
 			MethodDefinition predicateMethod = Resolve(predicateReference);
@@ -247,18 +259,18 @@ namespace Db4oTool.NQ
 			TypeDefinition syntheticPredicate = NewSyntheticPredicateFor(predicateMethod);
 			_optimizer.OptimizePredicate(syntheticPredicate, predicateMethod, expression);
 
-			Instruction newObj = worker.Create(OpCodes.Newobj, FindConstructor(syntheticPredicate, 0));
-			worker.Replace(queryInvocation.Previous, newObj);
+			Instruction newObj = il.Create(OpCodes.Newobj, FindConstructor(syntheticPredicate, 0));
+			il.Replace(queryInvocation.Previous, newObj);
 
 			ReplaceByExecuteEnhancedFilter(queryInvocation);
 		}
 
-		private TypeDefinition NewSyntheticPredicateFor(IMemberReference predicate)
+		private TypeDefinition NewSyntheticPredicateFor(MemberReference predicate)
 		{
 			ModuleDefinition module = MainModule();
-			TypeDefinition type = new TypeDefinition("Db4o$Predicate$" + module.Types.Count, predicate.DeclaringType.Namespace, TypeAttributes.Sealed|TypeAttributes.NotPublic, Import(typeof(object)));
+			TypeDefinition type = new TypeDefinition(predicate.DeclaringType.Namespace, "Db4o$Predicate$" + module.Types.Count, TypeAttributes.Sealed|TypeAttributes.NotPublic, Import(typeof(object)));
 
-			type.Constructors.Add(CreateDefaultConstructor());
+			type.Methods.Add(CreateDefaultConstructor());
 		
 			module.Types.Add(type);
 
@@ -268,11 +280,11 @@ namespace Db4oTool.NQ
 		private MethodDefinition CreateDefaultConstructor()
 		{
 			MethodDefinition ctor = new MethodDefinition(
-											MethodDefinition.Ctor,
+											".ctor",
 											MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.Public,
 											Import(typeof(void)));
 
-			CilWorker worker = ctor.Body.CilWorker;
+			ILProcessor worker = ctor.Body.GetILProcessor ();
 			worker.Emit(OpCodes.Ldarg_0);
 			worker.Emit(OpCodes.Call, DefaultObjectConstructor());
 			worker.Emit(OpCodes.Ret);
@@ -302,7 +314,17 @@ namespace Db4oTool.NQ
 
 		private static MethodReference FindConstructor(TypeDefinition type, int index)
 		{
-			return type.Constructors[index];
+			return GetConstructors(type)[index];
+		}
+
+		private static List<MethodDefinition> GetConstructors(TypeDefinition type)
+		{
+			List<MethodDefinition> constructors = new List<MethodDefinition>();
+			foreach (MethodDefinition method in type.Methods)
+			{
+				if (method.IsConstructor) constructors.Add(method);
+			}
+			return constructors;
 		}
 
 		private MethodReference ExecuteEnhancedFilterMethod()
@@ -316,9 +338,9 @@ namespace Db4oTool.NQ
 			if (methodDefinition != null)
 				return methodDefinition;
 
-			AssemblyDefinition assemblyDefinition = AssemblyFactory.GetAssembly(methodRef.DeclaringType.Module.Image.FileInformation.FullName);
-			TypeDefinition type = assemblyDefinition.MainModule.Types[methodRef.DeclaringType.Name];
-			return type.Methods.GetMethod(methodRef.Name, methodRef.Parameters);
+			AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(methodRef.DeclaringType.Module.FullyQualifiedName);
+			TypeDefinition type = assemblyDefinition.MainModule.GetType (methodRef.DeclaringType.Name);
+			return CecilReflector.GetMethod(type, methodRef);
 		}
 
 		private static MethodReference GetMethodReferenceFromInlinePredicatePattern(Instruction queryInvocation)

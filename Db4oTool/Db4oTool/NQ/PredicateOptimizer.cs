@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using Db4objects.Db4o.NativeQueries.Expr;
+using Db4oTool.Core;
 using Mono.Cecil;
 
 namespace Db4oTool.NQ
@@ -29,9 +30,7 @@ namespace Db4oTool.NQ
 
 		private static MethodDefinition GetMatchMethod(TypeDefinition type)
 		{
-			MethodDefinition[] methods = type.Methods.GetMethod("Match");
-			Debug.Assert(1 == methods.Length);
-			return methods[0];
+			return CecilReflector.GetMethod(type, "Match");
 		}
 
 		private static bool IsPredicateClass(TypeReference typeRef)

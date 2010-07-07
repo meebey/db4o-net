@@ -58,7 +58,7 @@ namespace Db4oTool.TA
 		private void CreateTagAttribute()
         {
             _instrumentationAttribute = new CustomAttribute(ImportConstructor(typeof(TagAttribute)));
-            _instrumentationAttribute.ConstructorParameters.Add(ITTransparentActivation);
+            _instrumentationAttribute.ConstructorArguments.Add(new CustomAttributeArgument(_context.Import (typeof (string)), ITTransparentActivation));
         }
 
         private MethodReference ImportConstructor(Type type)
@@ -195,7 +195,7 @@ namespace Db4oTool.TA
 
 		private FieldDefinition CreateActivatorField()
 		{
-			return new FieldDefinition("db4o$$ta$$activator", ActivatorType(), FieldAttributes.Private|FieldAttributes.NotSerialized);
+			return new FieldDefinition("db4o$$ta$$activator", FieldAttributes.Private|FieldAttributes.NotSerialized, ActivatorType());
 		}
 
 		private MethodDefinition CreateBindMethod(FieldReference activatorField)
@@ -214,7 +214,7 @@ namespace Db4oTool.TA
 
 			try
 			{
-				method.Body.Simplify();
+				MethodEditor.SimplifyMacros(method.Body);
 
 				_collectionsStep.Process(method);
 				
@@ -226,7 +226,7 @@ namespace Db4oTool.TA
 			}
 			finally
 			{
-				method.Body.Optimize();
+				MethodEditor.OptimizeMacros(method.Body);
 			}
 		}
 
@@ -241,34 +241,35 @@ namespace Db4oTool.TA
 		private static void PatchBaseConstructorInvocationOrder(MethodDefinition method)
 		{
 			Instruction ctorInvocation = (Instruction) Iterators.Next(InstrumentationUtil.Where(method.Body, IsBaseConstructorInvocation).GetEnumerator());
-			Instruction loadThis = GetLoadThisReferenceFor(ctorInvocation);
+			Instruction loadThis = GetLoadThisReferenceFor(method.Body, ctorInvocation);
 
-			MoveInstructions(loadThis, ctorInvocation, method.Body.Instructions[0], method.Body.CilWorker);
+			MoveInstructions(loadThis, ctorInvocation, method.Body.Instructions[0], method.Body.GetILProcessor ());
 		}
 
-		private static void MoveInstructions(Instruction start, Instruction end, Instruction insertionPoint, CilWorker worker)
+		private static void MoveInstructions(Instruction start, Instruction end, Instruction insertionPoint, ILProcessor il)
 		{
 			IList<Instruction> toBeMoved = new List<Instruction>();
-			while(start != end.Next)
+			Instruction boundary = end.Next;
+			while(start != boundary)
 			{
 				toBeMoved.Add(start);
 				Instruction next = start.Next;
-				worker.Remove(start);
+				il.Remove(start);
 				start = next;
 			}
 
 			foreach (Instruction instruction in toBeMoved)
 			{
-				worker.InsertBefore(insertionPoint, instruction);
+				il.InsertBefore(insertionPoint, instruction);
 			}
 		}
 
-		private static Instruction GetLoadThisReferenceFor(Instruction ctorInvocation)
+		private static Instruction GetLoadThisReferenceFor(MethodBody body, Instruction ctorInvocation)
 		{
 			Instruction current = ctorInvocation.Previous; 
 			while (current != null)
 			{
-				if (IsLoadThis(current)) return current;
+				if (IsLoadThis(body, current)) return current;
 				current = current.Previous;
 			}
 			
@@ -310,12 +311,12 @@ namespace Db4oTool.TA
 			return InstrumentationUtil.IsCallInstruction(instruction) && HasConstructorOperand(instruction);
 		}
 
-		private static bool IsLoadThis(Instruction instruction)
+		private static bool IsLoadThis(MethodBody body, Instruction instruction)
 		{
 			if (instruction.OpCode == OpCodes.Ldarg)
 			{
 				ParameterReference parameterReference = (ParameterReference)instruction.Operand;
-				return parameterReference.Sequence == 0;
+				return parameterReference == body.ThisParameter;
 			}
 			
 			if (instruction.OpCode == OpCodes.Ldarg_0)
@@ -482,7 +483,7 @@ namespace Db4oTool.TA
 			return !IsDelegate(fieldType);
 		}
 
-		private bool DeclaredInNonActivatableType(IMemberReference field)
+		private bool DeclaredInNonActivatableType(MemberReference field)
 		{
 			TypeDefinition declaringType = ResolveTypeReference(field.DeclaringType);
 			if (declaringType == null) return true;
@@ -509,9 +510,9 @@ namespace Db4oTool.TA
 				|| fullName == "System.MulticastDelegate";
 		}
 
-		private static bool IsTransient(TypeDefinition type, IMemberReference fieldRef)
+		private static bool IsTransient(TypeDefinition type, MemberReference fieldRef)
 	    {
-	        FieldDefinition field = type.Fields.GetField(fieldRef.Name);
+	        FieldDefinition field = CecilReflector.GetField (type, fieldRef.Name);
             if (field == null) return true;
 	        return field.IsNotSerialized;
 	    }

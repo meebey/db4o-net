@@ -1,5 +1,7 @@
 ﻿/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 
+using System.Collections.Generic;
+
 namespace Db4oTool.Core
 {
 	using Mono.Cecil;
@@ -46,7 +48,7 @@ namespace Db4oTool.Core
 			ProcessTypes(module.Types, ProcessType);
 		}
 
-		protected virtual void ProcessTypes(TypeDefinitionCollection types, System.Action<TypeDefinition> action)
+		protected virtual void ProcessTypes(IEnumerable<TypeDefinition> types, System.Action<TypeDefinition> action)
 		{
 			ProcessTypes(types, Accept, action);
 		}
@@ -61,10 +63,12 @@ namespace Db4oTool.Core
 			return true;
 		}
 
-		protected virtual void ProcessTypes(TypeDefinitionCollection types, System.Predicate<TypeDefinition> filter, System.Action<TypeDefinition> action)
+		protected virtual void ProcessTypes (IEnumerable<TypeDefinition> types, System.Predicate<TypeDefinition> filter, System.Action<TypeDefinition> action)
 		{
-			foreach (TypeDefinition typedef in types)
+			foreach (TypeDefinition typedef in new List<TypeDefinition>(types))
 			{
+				ProcessTypes(typedef.NestedTypes, filter, action);
+
 				if (!filter(typedef)) continue;
 
 				TraceVerbose("Entering type '{0}'", typedef);
@@ -76,16 +80,10 @@ namespace Db4oTool.Core
 		protected virtual void ProcessType(TypeDefinition type)
 		{
 			ProcessMethods(type.Methods);
-			ProcessMethods(type.Constructors);
 		}
 		
 		protected virtual void ProcessMethod(MethodDefinition method)
 		{	
-		}
-
-		protected void ProcessMethods(TypeDefinition type)
-		{
-			ProcessMethods(type.Methods);
 		}
 
 		protected void ProcessMethods(System.Collections.IEnumerable methods)

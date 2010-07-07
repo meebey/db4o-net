@@ -33,7 +33,7 @@ namespace Db4oTool.Tests.TA
 	{
 		protected static AssemblyDefinition GenerateAssembly(string resourceName, params Assembly[] references)
 		{
-			return AssemblyFactory.GetAssembly(
+			return AssemblyDefinition.ReadAssembly(
 						CompilationServices.EmitAssemblyFromResource(
 							ResourceServices.CompleteResourceName(
 													typeof(TATestCaseBase),
@@ -50,7 +50,7 @@ namespace Db4oTool.Tests.TA
 			StringWriter output = new StringWriter();
 			Trace.Listeners.Add(new TextWriterTraceListener(output));
 
-			string assemblyFullPath = testAssembly.MainModule.Image.FileInformation.FullName;
+			string assemblyFullPath = testAssembly.MainModule.FullyQualifiedName;
 			InstrumentationContext context = new InstrumentationContext(Configuration(assemblyFullPath), testAssembly);
 
 			new Db4oTool.TA.TAInstrumentation(instrumentCollections).Run(context);

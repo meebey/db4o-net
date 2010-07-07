@@ -15,7 +15,7 @@ namespace Db4oTool.TA
 		public MethodDefinition Emit()
 		{
 			MethodDefinition bind = NewExplicitMethod(typeof(IActivatable).GetMethod("Bind"));
-			CilWorker cil = bind.Body.CilWorker;
+			ILProcessor cil = bind.Body.GetILProcessor ();
 
 			Instruction activatorSetting = cil.Create(OpCodes.Ldarg_0);
 
@@ -51,7 +51,7 @@ namespace Db4oTool.TA
 			return bind;
 		}
 
-		private void LoadActivatorField(CilWorker cil)
+		private void LoadActivatorField(ILProcessor cil)
 		{
 			cil.Emit(OpCodes.Ldarg_0);
 			cil.Emit(OpCodes.Ldfld, _activatorField);

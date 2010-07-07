@@ -42,7 +42,10 @@ namespace Db4oTool.TA
 
 		private static MethodReference MethodReferenceFor(MethodReference source, TypeReference declaringType)
 		{
-			MethodReference newMethod = new MethodReference(source.Name, declaringType, source.ReturnType.ReturnType, true, false, MethodCallingConvention.Default);
+			MethodReference newMethod = new MethodReference(source.Name, source.ReturnType);
+			newMethod.DeclaringType = declaringType;
+			newMethod.HasThis = true;
+
 			foreach (ParameterDefinition param in source.Parameters)
 			{
 				newMethod.Parameters.Add(param);
@@ -121,7 +124,10 @@ namespace Db4oTool.TA
 				declaringType.GenericArguments.Add(argument);
 			}
 
-			MethodReference newCtor = new MethodReference(".ctor", declaringType, Context.Import(typeof(void)), originalCtor.HasThis, originalCtor.ExplicitThis, MethodCallingConvention.Default);
+			MethodReference newCtor = new MethodReference(".ctor", Context.Import(typeof(void)));
+			newCtor.DeclaringType = declaringType;
+			newCtor.HasThis = true;
+
 			foreach (ParameterDefinition parameter in originalCtor.Parameters)
 			{
 				newCtor.Parameters.Add(parameter);
@@ -157,7 +163,7 @@ namespace Db4oTool.TA
 					}
 				}
 			}
-			return HasReplacement(assignmentTargetType.GetOriginalType().FullName);
+			return HasReplacement(assignmentTargetType.GetElementType().FullName);
 		}
 
 		private static IEnumerable<Instruction> TAEnabledCollectionInstantiations(MethodBody methodBody)

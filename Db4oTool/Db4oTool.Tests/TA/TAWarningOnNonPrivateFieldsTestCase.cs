@@ -33,7 +33,7 @@ namespace Db4oTool.Tests.TA
 
 		private static string AssemblyPath(AssemblyDefinition assembly)
 		{
-			return assembly.MainModule.Image.FileInformation.FullName;
+			return assembly.MainModule.FullyQualifiedName;
 		}
 
 		private static string ResultFor(string typeName, string fieldName)

@@ -28,16 +28,16 @@ namespace Db4oTool.NQ
 
 		public void Process(MethodDefinition parent, Instruction queryInvocation)
 		{
-			CilWorker worker = parent.Body.CilWorker;
+			ILProcessor il = parent.Body.GetILProcessor ();
 			if (IsCachedStaticFieldPattern(queryInvocation))
 			{	
 				_context.TraceVerbose("static delegate field pattern found in {0}", parent.Name);
-				ProcessCachedStaticFieldPattern(worker, queryInvocation);
+				ProcessCachedStaticFieldPattern(il, queryInvocation);
 			}
 			else if (IsPredicateCreationPattern(queryInvocation))
 			{
 				_context.TraceVerbose("simple delegate pattern found in {0}", parent.Name);
-				ProcessPredicateCreationPattern(worker, queryInvocation);
+				ProcessPredicateCreationPattern(il, queryInvocation);
 			}
 			else
 			{
@@ -45,34 +45,34 @@ namespace Db4oTool.NQ
 			}
 		}
 
-		private void ProcessPredicateCreationPattern(CilWorker worker, Instruction queryInvocation)
+		private void ProcessPredicateCreationPattern(ILProcessor il, Instruction queryInvocation)
 		{
 			MethodReference predicateMethod = GetMethodReferenceFromInlinePredicatePattern(queryInvocation);
 
 			Instruction ldftn = GetNthPrevious(queryInvocation, 2);
-			worker.InsertBefore(ldftn, worker.Create(OpCodes.Dup));
+			il.InsertBefore(ldftn, il.Create(OpCodes.Dup));
 
-			worker.InsertBefore(queryInvocation, worker.Create(OpCodes.Ldtoken, predicateMethod));
+			il.InsertBefore(queryInvocation, il.Create(OpCodes.Ldtoken, predicateMethod));
 
 			// At this point the stack is like this:
 			//     runtime method handle, delegate reference, target object, ObjectContainer
-			worker.Replace(queryInvocation,
-			               worker.Create(OpCodes.Call,
+			il.Replace(queryInvocation,
+			               il.Create(OpCodes.Call,
 			                             InstantiateGenericMethod(
 			                             	_NativeQueryHandler_ExecuteInstrumentedDelegateQuery,
 			                             	GetQueryCallExtent(queryInvocation))));
 		}
 
-		private void ProcessCachedStaticFieldPattern(CilWorker worker, Instruction queryInvocation)
+		private void ProcessCachedStaticFieldPattern(ILProcessor il, Instruction queryInvocation)
 		{
 			MethodReference predicateMethod = GetMethodReferenceFromStaticFieldPattern(queryInvocation);
-			worker.InsertBefore(queryInvocation, worker.Create(OpCodes.Ldtoken, predicateMethod));
+			il.InsertBefore(queryInvocation, il.Create(OpCodes.Ldtoken, predicateMethod));
 
 			// At this point the stack is like this:
 			//     runtime method handle, delegate reference, ObjectContainer
 			
-			worker.Replace(queryInvocation,
-			               worker.Create(OpCodes.Call,
+			il.Replace(queryInvocation,
+			               il.Create(OpCodes.Call,
 			                             InstantiateGenericMethod(
 			                             	_NativeQueryHandler_ExecuteInstrumentedStaticDelegateQuery,
 			                             	GetQueryCallExtent(queryInvocation))));

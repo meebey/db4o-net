@@ -44,7 +44,7 @@ namespace Db4oTool.Core
 
 		public string AssemblyLocation
 		{
-			get { return _assembly.MainModule.Image.FileInformation.FullName; }
+			get { return _assembly.MainModule.FullyQualifiedName; }
 		}
 
 		public TypeReference Import(Type type)
@@ -59,11 +59,7 @@ namespace Db4oTool.Core
 
 		public void SaveAssembly()
 		{
-			if (PreserveDebugInfo())
-			{
-				_assembly.MainModule.SaveSymbols();
-			}
-			AssemblyFactory.SaveAssembly(_assembly, AssemblyLocation);
+			_assembly.Write(AssemblyLocation, new WriterParameters { WriteSymbols = PreserveDebugInfo () });
 		}
 
 		private bool PreserveDebugInfo()
@@ -120,17 +116,17 @@ namespace Db4oTool.Core
 
 		private static AssemblyDefinition LoadAssembly(Configuration configuration)
 		{
-			return AssemblyFactory.GetAssembly(configuration.AssemblyLocation);
+			return AssemblyDefinition.ReadAssembly(configuration.AssemblyLocation);
 		}
 
 		private void SetupAssembly(AssemblyDefinition assembly)
 		{
 			_assembly = assembly;
+
 			if (PreserveDebugInfo())
 			{
-				_assembly.MainModule.LoadSymbols();
+				_assembly.MainModule.ReadSymbols();
 			}
-			_assembly.MainModule.FullLoad(); // resolves all references
 		}
 	}
 }

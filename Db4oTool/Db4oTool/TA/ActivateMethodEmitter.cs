@@ -19,7 +19,7 @@ namespace Db4oTool.TA
 		{
 			MethodDefinition activate = NewExplicitMethod(typeof(IActivatable).GetMethod("Activate", new Type[] { typeof(ActivationPurpose) }));
 
-			CilWorker cil = activate.Body.CilWorker;
+			ILProcessor cil = activate.Body.GetILProcessor ();
 			cil.Emit(OpCodes.Ldarg_0);
 			cil.Emit(OpCodes.Ldfld, _activatorField);
 

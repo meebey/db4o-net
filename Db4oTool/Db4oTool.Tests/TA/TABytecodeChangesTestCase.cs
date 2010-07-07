@@ -1,4 +1,5 @@
 using Cecil.FlowAnalysis.Utilities;
+using Db4oTool.Core;
 using Db4oTool.Tests.Core;
 using Db4oUnit;
 using Mono.Cecil;
@@ -10,7 +11,7 @@ namespace Db4oTool.Tests.TA
 		public void TestThisFieldPattern()
 		{
 			string assemblyPath = InstrumentResource();
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly(assemblyPath);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(assemblyPath);
 			MethodDefinition method = GetMethodDefinition(assembly, "Subject", "get_Property");
 			string expected = @"
 System.String Subject::get_Property()
@@ -37,9 +38,9 @@ System.String Subject::get_Property()
 			return expected.Replace("\r\n", "\n").Trim();
 		}
 
-		private MethodDefinition GetMethodDefinition(AssemblyDefinition assembly, string typeName, string methodName)
+		private static MethodDefinition GetMethodDefinition(AssemblyDefinition assembly, string typeName, string methodName)
 		{
-			return assembly.MainModule.Types[typeName].Methods.GetMethod(methodName)[0];
+			return CecilReflector.GetMethod(assembly.MainModule.GetType(typeName), methodName);
 		}
 
 		private string InstrumentResource()

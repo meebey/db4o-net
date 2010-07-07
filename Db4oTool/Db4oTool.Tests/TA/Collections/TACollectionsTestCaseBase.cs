@@ -1,6 +1,7 @@
 ﻿/* Copyright (C) 2010 Versant Inc.   http://www.db4o.com */
 using System;
 using Db4objects.Db4o;
+using Db4oTool.Core;
 using Db4oTool.Tests.Core;
 using Db4oUnit;
 using Mono.Cecil;
@@ -14,7 +15,7 @@ namespace Db4oTool.Tests.TA.Collections
 		protected abstract Type ReplacementType { get; }	
 		protected abstract Type OriginalType { get; }
 		
-		internal static void AssertInstruction(Instruction actual, OpCode opCode, IMemberReference expectedCtor)
+		internal static void AssertInstruction(Instruction actual, OpCode opCode, MemberReference expectedCtor)
 		{
 			Assert.AreEqual(opCode, actual.OpCode);
 			MethodReference actualCtor = (MethodReference)actual.Operand;
@@ -46,7 +47,7 @@ namespace Db4oTool.Tests.TA.Collections
 		internal static MethodReference ContructorFor(TypeReference type, params Type[] parameterTypes)
 		{
 			TypeDefinition definition = type.Resolve();
-			return definition.Constructors.GetConstructor(false, parameterTypes);
+			return CecilReflector.GetMethod(definition, ".ctor", parameterTypes);
 		}
 
 		private string InstrumentAndRunInIsolatedAppDomain(Action<AssemblyDefinition> action)
@@ -58,7 +59,7 @@ namespace Db4oTool.Tests.TA.Collections
 
 			try
 			{
-				testDomain.DoCallBack(new IsolatedAppDomainTestRunner(assembly.MainModule.Image.FileInformation.FullName, action).Run);
+				testDomain.DoCallBack(new IsolatedAppDomainTestRunner(assembly.MainModule.FullyQualifiedName, action).Run);
 			}
 			finally
 			{
@@ -87,8 +88,9 @@ namespace Db4oTool.Tests.TA.Collections
 		
 		public static Instruction FindInstruction(AssemblyDefinition assembly, string typeName, string testMethodName, OpCode testInstruction)
 		{
-			TypeDefinition testType = assembly.MainModule.Types[typeName];
-			MethodDefinition testMethod = SingleMethod(testType.Methods.GetMethod(testMethodName));
+			TypeDefinition testType = assembly.MainModule.GetType(typeName);
+			MethodDefinition testMethod = CecilReflector.GetMethod(testType, testMethodName);
+			Assert.IsNotNull(testMethod);
 
 			Instruction current = testMethod.Body.Instructions[0];
 
@@ -102,16 +104,6 @@ namespace Db4oTool.Tests.TA.Collections
 			Assert.AreEqual(testInstruction, instruction.OpCode);
 			current = instruction;
 			return current;
-		}
-
-		private static MethodDefinition SingleMethod(MethodDefinition[] candidates)
-		{
-			if (candidates == null || candidates.Length > 1)
-			{
-				throw new ArgumentException("Must be exactly one method");
-			}
-
-			return candidates[0];
 		}
 
 		internal static TypeReference Import(AssemblyDefinition assembly, Type type)
@@ -202,7 +194,7 @@ namespace Db4oTool.Tests.TA.Collections
 
 		public void Run()
 		{
-			AssemblyDefinition instrumentedAssembly = AssemblyFactory.GetAssembly(_assemblyPath);
+			AssemblyDefinition instrumentedAssembly = AssemblyDefinition.ReadAssembly(_assemblyPath);
 			_test(instrumentedAssembly);
 		}
 

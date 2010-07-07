@@ -23,7 +23,7 @@ namespace Db4oTool.Tests.Core
 		
 		public void TestStackAnalysisResult()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly(GetType().Module.Assembly.Location);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(GetType().Module.Assembly.Location);
 
 			Type testsDeclaringType = typeof(StackAnalysisResultScenarios);			
 

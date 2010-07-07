@@ -19,16 +19,16 @@ namespace Db4oTool.Tests.Core
 			
 			MethodBody body = method.Body;
 			Instruction firstInstruction = body.Instructions[0];
-			CilWorker worker = body.CilWorker;
+			ILProcessor il = body.GetILProcessor();
 			
 			// ldstr "TRACE: " + method
-			worker.InsertBefore(firstInstruction,
-			                    worker.Create(OpCodes.Ldstr, "TRACE: " + method));
+			il.InsertBefore(firstInstruction,
+			                    il.Create(OpCodes.Ldstr, "TRACE: " + method));
 			
 			// call Console.WriteLine(string)
 			MethodReference Console_WriteLine = Import(typeof(Console).GetMethod("WriteLine", new Type[] { typeof(string) }));
-			worker.InsertBefore(firstInstruction,
-			                    worker.Create(OpCodes.Call, Console_WriteLine));
+			il.InsertBefore(firstInstruction,
+			                    il.Create(OpCodes.Call, Console_WriteLine));
 		}
 	}
 

@@ -1,6 +1,8 @@
 /* Copyright (C) 2010  Versant Inc.   http://www.db4o.com */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Db4objects.Db4o.Foundation;
 using Mono.Cecil;
 
@@ -76,13 +78,87 @@ namespace Db4oTool.Core
 			return null;
 		}
 
-		private static bool Contains(InterfaceCollection collection, string fullName)
+		private static bool Contains(IEnumerable<TypeReference> collection, string fullName)
 		{
 			foreach (TypeReference typeRef in collection)
 			{
 				if (typeRef.FullName == fullName) return true;
 			}
 			return false;
+		}
+
+		public static MethodDefinition GetMethod(TypeDefinition type, string methodName)
+		{
+			if (type == null) throw new ArgumentNullException("type");
+			if (methodName == null) throw new ArgumentNullException("methodName");
+
+			foreach (MethodDefinition method in type.Methods)
+			{
+				if (method.Name == methodName) return method;
+			}
+
+			return null;
+		}
+
+		public static MethodDefinition GetMethod(TypeDefinition type, MethodReference template)
+		{
+			return GetMethodInternal(type, template.Name, template.Parameters);
+		}
+
+		public static MethodDefinition GetMethod(TypeDefinition type, string methodName, Type [] parameterTypes)
+		{
+			return GetMethodInternal(type, methodName, parameterTypes);
+		}
+
+		static MethodDefinition GetMethodInternal(TypeDefinition type, string name, IList parameters)
+		{
+			if (type == null) throw new ArgumentNullException ("type");
+
+			foreach (MethodDefinition method in type.Methods)
+			{
+				if (method.Name != name) continue;
+				if (!ParametersMatch(method.Parameters, parameters)) continue;
+
+				return method;
+			}
+
+			return null;
+		}
+
+		static bool ParametersMatch(IList<ParameterDefinition> parameters, IList candidates)
+		{
+			if (parameters.Count != candidates.Count) return false;
+
+			for (int i = 0; i < parameters.Count; i++) {
+				string candidateTypeName;
+				object candidate = candidates[i];
+
+				if (candidate is Type)
+					candidateTypeName = (candidate as Type).FullName.Replace('+', '/');
+				else if (candidate is TypeReference)
+					candidateTypeName = (candidate as TypeReference).FullName;
+				else if (candidate is ParameterDefinition)
+					candidateTypeName = (candidate as ParameterDefinition).ParameterType.FullName;
+				else
+					return false;
+
+				if (parameters[i].ParameterType.FullName != candidateTypeName) return false;
+			}
+
+			return true;
+		}
+
+		public static FieldDefinition GetField(TypeDefinition type, string fieldName)
+		{
+			if (type == null) throw new ArgumentNullException("type");
+			if (fieldName == null) throw new ArgumentNullException("fieldName");
+
+			foreach (FieldDefinition field in type.Fields)
+			{
+				if (field.Name == fieldName) return field;
+			}
+
+			return null;
 		}
 	}
 

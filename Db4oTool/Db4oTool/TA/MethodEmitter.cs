@@ -22,7 +22,9 @@ namespace Db4oTool.TA
 		private static FieldReference FieldReferenceFor(FieldReference field)
 		{
 			if (!IsGeneric(field.DeclaringType)) return field;
-			return new FieldReference(field.Name, GenericReferenceFor(field.DeclaringType), field.FieldType);
+			FieldReference reference = new FieldReference(field.Name, field.FieldType);
+			reference.DeclaringType = GenericReferenceFor(field.DeclaringType);
+			return reference;
 		}
 
 		private static bool IsGeneric(TypeReference type)
@@ -44,10 +46,9 @@ namespace Db4oTool.TA
 		{
 			MethodAttributes attributes = MethodAttributes.SpecialName|MethodAttributes.Private|MethodAttributes.Virtual;
 			MethodDefinition definition = new MethodDefinition(method.DeclaringType.FullName + "." + method.Name, attributes, Import(method.ReturnType));
-			int parameterIndex = 0;
 			foreach (ParameterInfo pi in method.GetParameters())
 			{
-				definition.Parameters.Add(new ParameterDefinition(pi.Name, ++parameterIndex, Mono.Cecil.ParameterAttributes.None, Import(pi.ParameterType)));
+				definition.Parameters.Add(new ParameterDefinition(pi.Name, Mono.Cecil.ParameterAttributes.None, Import(pi.ParameterType)));
 			}
 			definition.Overrides.Add(_context.Import(method));
 			return definition;

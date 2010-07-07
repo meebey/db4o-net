@@ -94,6 +94,8 @@ namespace Db4oTool.Tests.Core
 				stdOut.Write(e.Data);
 			};
 
+			p.Start ();
+
 			p.BeginErrorReadLine();
 			p.BeginOutputReadLine();
 
@@ -101,7 +103,7 @@ namespace Db4oTool.Tests.Core
 			return new ProcessOutput(p.ExitCode, stdOut.ToString(), stdError.ToString());
 		}
 
-		public static Process StartProcess(string filename, params string[] args)
+		static Process StartProcess(string filename, params string[] args)
 		{
 			Process p = new Process();
 			p.StartInfo.CreateNoWindow = true;
@@ -111,7 +113,6 @@ namespace Db4oTool.Tests.Core
 			p.StartInfo.RedirectStandardError = true;
 			p.StartInfo.FileName = filename;
 			p.StartInfo.Arguments = string.Join(" ", quote(args));
-			p.Start();
 			return p;
 		}
 

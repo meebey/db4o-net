@@ -1,5 +1,6 @@
 /* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
 using System;
+using Db4oTool.Core;
 using Db4oUnit;
 using Mono.Cecil;
     
@@ -23,7 +24,7 @@ namespace Db4oTool.Tests.TA
 
         private static MethodDefinition InstrumentedMethod(AssemblyDefinition testAssembly)
         {
-            return testAssembly.MainModule.Types["InstrumentedType"].Methods.GetMethod("InstrumentedMethod")[0];
+            return CecilReflector.GetMethod(testAssembly.MainModule.GetType("InstrumentedType"), "InstrumentedMethod");
         }
 
         private static string FormatMethodBody(MethodDefinition instrumented)

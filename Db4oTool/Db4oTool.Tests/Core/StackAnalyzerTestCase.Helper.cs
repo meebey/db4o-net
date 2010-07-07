@@ -23,12 +23,12 @@ namespace Db4oTool.Tests.Core
 
 		private static TypeReference FindType(AssemblyDefinition assembly, string typeName)
 		{
-			return assembly.MainModule.Types[typeName.Replace('+', '/')];
+			return assembly.MainModule.GetType(typeName.Replace('+', '/'));
 		}
 
 		private TypeReference FindType(Type testsDeclaringType)
 		{
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly(GetType().Module.Assembly.Location);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(GetType().Module.Assembly.Location);
 			return FindType(assembly, testsDeclaringType.FullName);
 		}
 
@@ -109,6 +109,7 @@ namespace Db4oTool.Tests.Core
 			{
 				MethodDefinition methodDefinition = testMethod.Resolve();
 				if (!methodDefinition.IsPublic) continue;
+				if (methodDefinition.IsConstructor) continue;
 
 				try
 				{

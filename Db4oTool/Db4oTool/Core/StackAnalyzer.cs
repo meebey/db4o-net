@@ -135,17 +135,12 @@ namespace Db4oTool.Core
 			return (methodDefinition.IsStatic || methodDefinition.IsConstructor ? 0 : 1) + methodDefinition.Parameters.Count;
 		}
 
-		private bool IsNonVoidMethodCall(Instruction instruction)
+		private static bool IsNonVoidMethodCall(Instruction instruction)
 		{
 			if (instruction.OpCode != OpCodes.Call && instruction.OpCode != OpCodes.Callvirt) return false;
 
 			MethodReference method = (MethodReference) instruction.Operand;
-			return method.ReturnType.ReturnType.Resolve() != Import(typeof(void));
-		}
-
-		private TypeDefinition Import(Type type)
-		{
-			return _module.Import(type).Resolve();
+			return method.ReturnType.Resolve().FullName != "System.Void";
 		}
 
 		private readonly ModuleDefinition _module;

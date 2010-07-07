@@ -67,7 +67,7 @@ namespace Db4oTool.Tests.TA
 
 			Assert.AreEqual(sign, assembly.Name.HasPublicKey);
 			string[] messages = sign ? new string[] { "has been signed" } : new string[0];
-			InstrumentAndAssert(assembly.MainModule.Image.FileInformation.FullName, sign, messages);
+			InstrumentAndAssert(assembly.MainModule.FullyQualifiedName, sign, messages);
 		}
 
 		private static string GenerateKeyToSign()
