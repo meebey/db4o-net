@@ -2,11 +2,13 @@ using System;
 using System.IO;
 using System.Reflection;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Tests.Util;
+
 #if !CF && !SILVERLIGHT
 using Db4oUnit.Extensions.Util;
 using Mono.Cecil;
 #endif
+
+using Mono.Collections.Generic;
 using File = Sharpen.IO.File;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
@@ -155,15 +157,16 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			CleanStrongName(IOServices.CopyEnclosingAssemblyTo(typeof(Db4oUnit.Extensions.IDb4oTestCase), domainBase));
 		}
 
-		private void CleanStrongName(string path)
+		private static void CleanStrongName(string path)
 		{
-			AssemblyDefinition asm = AssemblyFactory.GetAssembly(path);
+			AssemblyDefinition asm = AssemblyDefinition.ReadAssembly(path);
 			CleanStrongNames(asm.Modules);
 			CleanStrongName(asm.Name);
-			AssemblyFactory.SaveAssembly(asm, path);
+
+			asm.Write(asm.MainModule.FullyQualifiedName, new WriterParameters {WriteSymbols = true});
 		}
 
-		private static void CleanStrongNames(ModuleDefinitionCollection modules)
+		private static void CleanStrongNames(Collection<ModuleDefinition> modules)
 		{
 			foreach (ModuleDefinition m in modules)
 			{
@@ -171,7 +174,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			}
 		}
 
-		private static void CleanStrongNames(AssemblyNameReferenceCollection references)
+		private static void CleanStrongNames(Collection<AssemblyNameReference> references)
 		{
 			foreach (AssemblyNameReference name in references)
 			{
@@ -194,7 +197,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		private string AssemblyVersionFor(string assembly)
 		{
 #if !CF && !SILVERLIGHT
-			return System.Reflection.Assembly.ReflectionOnlyLoadFrom(assembly).GetName().Version.ToString();
+			return Assembly.ReflectionOnlyLoadFrom(assembly).GetName().Version.ToString();
 #else
 			return System.Reflection.Assembly.LoadFrom(assembly).GetName().Version.ToString();
 #endif
