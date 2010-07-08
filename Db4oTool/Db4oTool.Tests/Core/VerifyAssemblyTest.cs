@@ -38,5 +38,15 @@ namespace Db4oTool.Tests.Core
 			if (output.ExitCode == 0 && !stdout.ToUpper().Contains("WARNING")) return;
 			Assert.Fail(stdout);
 		}
+
+		public bool IsLeafTest() 
+		{
+			return true;
+		}
+	
+		public ITest Transmogrify(IFunction4 fun) 
+		{
+			return fun.Apply(this);
+		}
 	}
 }
