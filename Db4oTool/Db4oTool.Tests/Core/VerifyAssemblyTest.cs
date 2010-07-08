@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Db4oUnit;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oTool.Tests.Core
 {
