@@ -47,7 +47,7 @@ namespace Db4oTool.Tests.Core
 	
 		public ITest Transmogrify(IFunction4 fun) 
 		{
-			return fun.Apply(this);
+			return (ITest) fun.Apply(this);
 		}
 	}
 }
