@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Db4objects.Db4o.Internal.Caching;
-using Db4objects.Db4o.Linq;
 using Db4objects.Db4o.Linq.Caching;
 
 using Mono.Cecil;
@@ -23,8 +22,6 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 
 		private MetadataResolver()
 		{
-//			_assemblyCache = new SingleItemCachingStrategy<Assembly, AssemblyDefinition>();
-//			_methodCache = new SingleItemCachingStrategy<MethodInfo, MethodDefinition>();
 			_assemblyCache = CacheFactory<Assembly, AssemblyDefinition>.For(CacheFactory.New2QXCache(5));
 			_methodCache = CacheFactory<MethodInfo, MethodDefinition>.For(CacheFactory.New2QXCache(5));
 		}
@@ -68,7 +65,9 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 			if (parameters.Count != infos.Length) return false;
 
 			for (int i = 0; i < parameters.Count; i++)
+			{
 				if (!ParameterMatch(parameters[i], infos[i])) return false;
+			}
 
 			return true;
 		}
@@ -85,9 +84,9 @@ namespace Db4objects.Db4o.Linq.CodeAnalysis
 		{
 			TypeDefinition type = GetType(method.DeclaringType);
 
-			var matches = from MethodDefinition meth in type.Methods
-						  where MethodMatch(meth, method)
-						  select meth;
+			var matches = from MethodDefinition candidate in type.Methods
+						  where MethodMatch(candidate, method)
+						  select candidate;
 
 			return matches.FirstOrDefault();
 		}

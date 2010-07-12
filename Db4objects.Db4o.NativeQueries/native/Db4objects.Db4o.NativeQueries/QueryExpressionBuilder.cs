@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Instrumentation.Cecil;
 using Db4objects.Db4o.TA;
+using Mono.Collections.Generic;
 
 namespace Db4objects.Db4o.NativeQueries
 {
@@ -59,11 +60,45 @@ namespace Db4objects.Db4o.NativeQueries
 		private static MethodDefinition GetMethodDefinition(MethodBase method)
 		{
 			string location = GetAssemblyLocation(method);
+#if CF
+			MethodDefinition methodDef = MethodDefinitionFor(method);
+#else
 			AssemblyDefinition assembly = _assemblyCachingStrategy.Get(location);
+
 			MethodDefinition methodDef = (MethodDefinition)assembly.MainModule.LookupToken(method.MetadataToken);
+#endif
 			if (null == methodDef) UnsupportedPredicate(string.Format("Unable to load the definition of '{0}' from assembly '{1}'", method, location));
 			
 			return methodDef;
+		}
+
+		private static MethodDefinition MethodDefinitionFor(MethodBase method)
+		{
+			string location = GetAssemblyLocation(method);
+			AssemblyDefinition assembly = _assemblyCachingStrategy.Get(location);
+
+#if CF
+			TypeDefinition declaringType = FindTypeDefinition(assembly.MainModule, method.DeclaringType);
+			if (declaringType == null)
+			{
+				return null;
+			}
+
+			foreach (MethodDefinition candidate in declaringType.Methods)
+			{
+				if (candidate.Name != method.Name) continue;
+				if (candidate.Parameters.Count != method.GetParameters().Length) continue;
+				if (!ParametersMatch(candidate.Parameters, GetParameterTypes(method, assembly.MainModule))) continue;
+				{
+					return candidate;
+				}
+			}
+
+			return null;
+
+#else
+			return (MethodDefinition) assembly.MainModule.LookupToken(method.MetadataToken);
+#endif
 		}
 
 		private static NQExpression AdjustBoxedValueTypes(NQExpression expression)
@@ -72,14 +107,14 @@ namespace Db4objects.Db4o.NativeQueries
 			return expression;
 		}
 
-		private static Type[] GetParameterTypes(MethodBase method)
+		private static IList<TypeReference> GetParameterTypes(MethodBase method, ModuleDefinition module)
 		{
-			ParameterInfo[] parameters = ParametersFor(method);
-			Type[] types = new Type[parameters.Length];
-			for (int i = 0; i < parameters.Length; ++i)
+			IList<TypeReference> types = new List<TypeReference>();
+			foreach (ParameterInfo parameter in ParametersFor(method))
 			{
-				types[i] = parameters[i].ParameterType;
+				types.Add(FindTypeDefinition(module, parameter.ParameterType));
 			}
+
 			return types;
 		}
 
@@ -317,20 +352,38 @@ namespace Db4objects.Db4o.NativeQueries
 			return null;
 		}
 
+#if CF
+		private static bool ParametersMatch(Collection<ParameterDefinition> parameters, IList<TypeReference> templates)
+		{
+			return ParametersMatch(parameters, templates, delegate(ParameterDefinition candidate, TypeReference template)
+			{
+				return candidate.ParameterType.FullName == template.FullName;
+			});
+		}
+#endif
+
 		private static bool ParametersMatch(IList<ParameterDefinition> parameters, IList<ParameterDefinition> templates)
+		{
+			return ParametersMatch(parameters, templates, delegate(ParameterDefinition candidate, ParameterDefinition template)
+			                                               	{
+			                                               		return candidate.ParameterType.FullName == template.ParameterType.FullName;
+			                                               	});
+		}
+
+		private static bool ParametersMatch<T>(IList<ParameterDefinition> parameters, IList<T> templates, ParameterMatch<T> predicate)
 		{
 			if (parameters.Count != templates.Count) return false;
 
 			for (int i = 0; i < parameters.Count; i++)
 			{
 				ParameterDefinition parameter = parameters[i];
-				ParameterDefinition template = templates[i];
-
-				if (parameter.ParameterType.FullName != template.ParameterType.FullName) return false;
+				if (!predicate(parameter, templates[i])) return false;
 			}
 
 			return true;
 		}
+
+		private delegate bool ParameterMatch<T>(ParameterDefinition candidate, T template);
 
 		class Visitor : AbstractCodeStructureVisitor
 		{

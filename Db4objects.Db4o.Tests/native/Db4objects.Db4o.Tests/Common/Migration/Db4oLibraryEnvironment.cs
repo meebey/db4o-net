@@ -6,9 +6,9 @@ using Db4objects.Db4o.Internal;
 #if !CF && !SILVERLIGHT
 using Db4oUnit.Extensions.Util;
 using Mono.Cecil;
+using Mono.Collections.Generic;
 #endif
 
-using Mono.Collections.Generic;
 using File = Sharpen.IO.File;
 
 namespace Db4objects.Db4o.Tests.Common.Migration

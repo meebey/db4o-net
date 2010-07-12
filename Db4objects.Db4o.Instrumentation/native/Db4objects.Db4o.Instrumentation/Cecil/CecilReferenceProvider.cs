@@ -25,7 +25,11 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 
 		public ITypeRef ForType(Type type)
 		{
+#if CF
+			return ForCecilType(ImportType(type));
+#else
 			return ForCecilType(_module.Import(type));
+#endif
 		}
 
 		public ITypeRef ForCecilType(TypeReference type)
@@ -41,8 +45,19 @@ namespace Db4objects.Db4o.Instrumentation.Cecil
 
 		public IMethodRef ForMethod(MethodInfo method)
 		{
+#if CF
+			return new CecilMethodRef(this, _module.Import(new MethodReference(method.Name, ImportType(method.ReturnType))));
+#else
 			return new CecilMethodRef(this, _module.Import(method));
+#endif
 		}
+
+#if CF
+		private TypeReference ImportType(Type type)
+		{
+			return _module.Import(new TypeReference(type.Namespace, type.Name, _module));
+		}
+#endif
 
 		public IMethodRef ForMethod(ITypeRef declaringType, string methodName, ITypeRef[] parameterTypes, ITypeRef returnType)
 		{
