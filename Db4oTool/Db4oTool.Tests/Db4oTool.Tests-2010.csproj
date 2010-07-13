@@ -189,9 +189,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Db4objects.Db4o.Instrumentation\Db4objects.Db4o.Instrumentation-2010.csproj">
       <Project>{DFE1C46F-BB18-4B6A-AE34-4366F58BEB5A}</Project>
       <Name>Db4objects.Db4o.Instrumentation-2010</Name>
