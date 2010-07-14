@@ -2,7 +2,6 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -19,9 +18,5 @@ using System.Security;
 [assembly: ComVisible(false)]
 
 [assembly: AssemblyVersion("8.0.153.14430")]
-
-#if !CF && !SILVERLIGHT
-[assembly: AllowPartiallyTrustedCallers]
-#endif
 
 [assembly: CLSCompliant(true)]
