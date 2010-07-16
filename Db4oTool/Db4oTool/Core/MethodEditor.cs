@@ -116,9 +116,9 @@ namespace Db4oTool.Core
 
 		static ParameterDefinition GetParameter (MethodBody self, int index)
 		{
-			var method = self.Method;
+		    MethodDefinition method = self.Method;
 
-			if (method.HasThis) {
+		    if (method.HasThis) {
 				if (index == 0)
 					return self.ThisParameter;
 
@@ -132,7 +132,7 @@ namespace Db4oTool.Core
 		{
 			if (self == null) throw new ArgumentNullException ("self");
 
-			foreach (var instruction in self.Instructions)
+			foreach (Instruction instruction in self.Instructions)
 			{
 				if (instruction.OpCode.OpCodeType != OpCodeType.Macro) continue;
 
@@ -287,9 +287,9 @@ namespace Db4oTool.Core
 		{
 			if (self == null) throw new ArgumentNullException ("self");
 
-			var method = self.Method;
+			MethodDefinition method = self.Method;
 
-			foreach (var instruction in self.Instructions)
+			foreach (Instruction instruction in self.Instructions)
 			{
 				int index;
 				switch (instruction.OpCode.Code)
@@ -437,7 +437,7 @@ namespace Db4oTool.Core
 
 		private static bool OptimizeBranch(Instruction instruction)
 		{
-			var offset = ((Instruction) instruction.Operand).Offset - (instruction.Offset + instruction.OpCode.Size + 4);
+			int offset = ((Instruction) instruction.Operand).Offset - (instruction.Offset + instruction.OpCode.Size + 4);
 			if (!(offset >= -128 && offset <= 127)) return false;
 
 			switch (instruction.OpCode.Code)
@@ -491,7 +491,7 @@ namespace Db4oTool.Core
 
 		private static void ComputeOffsets(MethodBody body)
 		{
-			var offset = 0;
+			int offset = 0;
 			foreach (Instruction instruction in body.Instructions)
 			{
 				instruction.Offset = offset;

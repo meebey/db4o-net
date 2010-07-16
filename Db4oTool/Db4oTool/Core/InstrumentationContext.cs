@@ -59,10 +59,18 @@ namespace Db4oTool.Core
 
 		public void SaveAssembly()
 		{
-			_assembly.Write(AssemblyLocation, new WriterParameters { WriteSymbols = PreserveDebugInfo () });
+			WriterParameters parameters = WriterParametersFor(PreserveDebugInfo());
+		    _assembly.Write(AssemblyLocation, parameters);
 		}
 
-		private bool PreserveDebugInfo()
+	    private WriterParameters WriterParametersFor(bool preserveDebugInfo)
+	    {
+	        WriterParameters parameters = new WriterParameters();
+	        parameters.WriteSymbols = preserveDebugInfo;
+	        return parameters;
+	    }
+
+	    private bool PreserveDebugInfo()
 		{
 			return _configuration.PreserveDebugInfo;
 		}
