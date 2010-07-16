@@ -163,8 +163,15 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			CleanStrongNames(asm.Modules);
 			CleanStrongName(asm.Name);
 
-			asm.Write(asm.MainModule.FullyQualifiedName, new WriterParameters {WriteSymbols = true});
+			asm.Write(asm.MainModule.FullyQualifiedName, WriterParametersFor(true));
 		}
+
+        private static WriterParameters WriterParametersFor(bool preserveDebugInfo)
+        {
+            WriterParameters parameters = new WriterParameters();
+            parameters.WriteSymbols = preserveDebugInfo;
+            return parameters;
+        }
 
 		private static void CleanStrongNames(Collection<ModuleDefinition> modules)
 		{
