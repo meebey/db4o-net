@@ -73,8 +73,8 @@ namespace Db4objects.Db4o.Config
 		/// when the database file is opened.
 		/// <br /><br />Aliases should be configured before opening a database file
 		/// or connecting to a server.<br /><br />
-		/// In client/server environment this setting should be used on the client
-		/// and on the server side.
+		/// In client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way.
 		/// </remarks>
 		void AddAlias(IAlias alias);
 
@@ -199,8 +199,8 @@ namespace Db4objects.Db4o.Config
 		/// version updating on.
 		/// <br /><br />If automatic updating is turned off, db4o will refuse
 		/// to open database files that use an older database file format.<br /><br />
-		/// In client-server environment this setting should be used on both client
-		/// and server.
+		/// In client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way.
 		/// </remarks>
 		bool AllowVersionUpdates
 		{
@@ -228,8 +228,8 @@ namespace Db4objects.Db4o.Config
 		/// <br />Higher values will reduce the overall number of
 		/// read and write operations and allow better performance
 		/// at the cost of more RAM use.<br /><br />
-		/// This setting should be used on both client and server in
-		/// client-server environment.
+		/// In client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way.
 		/// </remarks>
 		/// <value>the number of elements held in one BTree node.</value>
 		int BTreeNodeSize
@@ -244,8 +244,8 @@ namespace Db4objects.Db4o.Config
 		/// A tuning hint: If callbacks are not used, you can turn this feature off, to
 		/// prevent db4o from looking for callback methods in persistent classes. This will
 		/// increase the performance on system startup.<br /><br />
-		/// In client/server environment this setting should be used on both
-		/// client and server.
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way.
 		/// </remarks>
 		/// <value>false to turn callback methods off</value>
 		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
@@ -292,8 +292,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />This setting can be set to false in a production environment after
 		/// all persistent classes have been stored at least once and classes will not
 		/// be modified any further in the future.<br /><br />
-		/// In a client/server environment this setting should be configured both on the
-		/// client and and on the server.
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way.
 		/// <br /><br />Default value:<br />
 		/// <code>true</code>
 		/// </remarks>
@@ -329,8 +329,8 @@ namespace Db4objects.Db4o.Config
 		/// if an object can not be stored.
 		/// <br /><br />
 		/// The default for this setting is <b>true</b>.<br /><br />
-		/// In client/server environment this setting should be used on both
-		/// client and server.<br /><br />
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way.<br /><br />
 		/// </remarks>
 		/// <value>true to throw Exceptions if objects can not be stored.</value>
 		bool ExceptionsOnNotStorable
@@ -357,8 +357,8 @@ namespace Db4objects.Db4o.Config
 		/// wish to use to mark fields as transient. Multiple transient attributes
 		/// are possible by calling this method multiple times with different
 		/// attribute names.<br /><br />
-		/// In client/server environment the setting should be used on both
-		/// client and server.<br /><br />
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way. <br /><br />
 		/// </remarks>
 		/// <param name="attributeName">
 		/// - the fully qualified name of the attribute, including
@@ -528,8 +528,8 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />In a production environment this setting can be set to <code>false</code>,
 		/// if all persistent classes have public default constructors.
 		/// <br /><br />
-		/// In client-server environment this setting should be used on both client and server
-		/// side. <br /><br />
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way. <br /><br />
 		/// Default value:<br />
 		/// <code>true</code>
 		/// </remarks>
@@ -550,8 +550,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Store(object)">Db4objects.Db4o.IObjectContainer.Store(object)
 		/// 	</see>
 		/// will be updated.<br /><br />
-		/// In client-server environment this setting should be used on both client and
-		/// server sides.<br /><br />
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way. <br /><br />
 		/// </remarks>
 		/// <value>the depth of the desired update.</value>
 		/// <seealso cref="IObjectClass.UpdateDepth(int)">IObjectClass.UpdateDepth(int)</seealso>

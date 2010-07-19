@@ -72,12 +72,53 @@ namespace Db4oUnit
 		/// <exception cref="System.Exception"></exception>
 		protected virtual IEnumerator FromClass(Type clazz)
 		{
-			return (IEnumerator)WithContext(new _IClosure4_51(this, clazz));
+			if (typeof(IClassLevelFixtureTest).IsAssignableFrom(clazz))
+			{
+				return Iterators.Iterate(new ClassLevelFixtureTestSuite[] { new ClassLevelFixtureTestSuite
+					(clazz, new _IClosure4_52(this, clazz)) });
+			}
+			return (IEnumerator)WithContext(new _IClosure4_63(this, clazz));
 		}
 
-		private sealed class _IClosure4_51 : IClosure4
+		private sealed class _IClosure4_52 : IClosure4
 		{
-			public _IClosure4_51(ReflectionTestSuiteBuilder _enclosing, Type clazz)
+			public _IClosure4_52(ReflectionTestSuiteBuilder _enclosing, Type clazz)
+			{
+				this._enclosing = _enclosing;
+				this.clazz = clazz;
+			}
+
+			public object Run()
+			{
+				return (IEnumerator)this._enclosing.WithContext(new _IClosure4_54(this, clazz));
+			}
+
+			private sealed class _IClosure4_54 : IClosure4
+			{
+				public _IClosure4_54(_IClosure4_52 _enclosing, Type clazz)
+				{
+					this._enclosing = _enclosing;
+					this.clazz = clazz;
+				}
+
+				public object Run()
+				{
+					return new ContextfulIterator(this._enclosing._enclosing.SuiteFor(clazz));
+				}
+
+				private readonly _IClosure4_52 _enclosing;
+
+				private readonly Type clazz;
+			}
+
+			private readonly ReflectionTestSuiteBuilder _enclosing;
+
+			private readonly Type clazz;
+		}
+
+		private sealed class _IClosure4_63 : IClosure4
+		{
+			public _IClosure4_63(ReflectionTestSuiteBuilder _enclosing, Type clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;
@@ -129,12 +170,12 @@ namespace Db4oUnit
 		// just removing the 'parameter not used' warning
 		private IEnumerator FromMethods(Type clazz)
 		{
-			return Iterators.Map(clazz.GetMethods(), new _IFunction4_84(this, clazz));
+			return Iterators.Map(clazz.GetMethods(), new _IFunction4_96(this, clazz));
 		}
 
-		private sealed class _IFunction4_84 : IFunction4
+		private sealed class _IFunction4_96 : IFunction4
 		{
-			public _IFunction4_84(ReflectionTestSuiteBuilder _enclosing, Type clazz)
+			public _IFunction4_96(ReflectionTestSuiteBuilder _enclosing, Type clazz)
 			{
 				this._enclosing = _enclosing;
 				this.clazz = clazz;
@@ -201,12 +242,12 @@ namespace Db4oUnit
 
 		protected ITest FromMethod(Type clazz, MethodInfo method)
 		{
-			return new ContextfulTest(new _ITestFactory_131(this, clazz, method));
+			return new ContextfulTest(new _ITestFactory_143(this, clazz, method));
 		}
 
-		private sealed class _ITestFactory_131 : ITestFactory
+		private sealed class _ITestFactory_143 : ITestFactory
 		{
-			public _ITestFactory_131(ReflectionTestSuiteBuilder _enclosing, Type clazz, MethodInfo
+			public _ITestFactory_143(ReflectionTestSuiteBuilder _enclosing, Type clazz, MethodInfo
 				 method)
 			{
 				this._enclosing = _enclosing;

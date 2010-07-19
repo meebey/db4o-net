@@ -9,7 +9,7 @@ namespace Db4oUnit.Fixtures
 {
 	public sealed class TestWithFixture : ITest
 	{
-		private readonly ITest _test;
+		private ITest _test;
 
 		private readonly FixtureVariable _variable;
 
@@ -80,6 +80,36 @@ namespace Db4oUnit.Fixtures
 		private object FixtureLabel()
 		{
 			return (_fixtureLabel == null ? _value : _fixtureLabel);
+		}
+
+		public bool IsLeafTest()
+		{
+			BooleanByRef isLeaf = new BooleanByRef();
+			RunDecorated(new _IRunnable_58(this, isLeaf));
+			return isLeaf.value;
+		}
+
+		private sealed class _IRunnable_58 : IRunnable
+		{
+			public _IRunnable_58(TestWithFixture _enclosing, BooleanByRef isLeaf)
+			{
+				this._enclosing = _enclosing;
+				this.isLeaf = isLeaf;
+			}
+
+			public void Run()
+			{
+				isLeaf.value = this._enclosing._test.IsLeafTest();
+			}
+
+			private readonly TestWithFixture _enclosing;
+
+			private readonly BooleanByRef isLeaf;
+		}
+
+		public ITest Transmogrify(IFunction4 fun)
+		{
+			return ((ITest)fun.Apply(this));
 		}
 	}
 }

@@ -185,6 +185,16 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			{
 				return _library.environment;
 			}
+
+			public bool IsLeafTest()
+			{
+				return true;
+			}
+
+			public ITest Transmogrify(IFunction4 fun)
+			{
+				return ((ITest)fun.Apply(this));
+			}
 		}
 	}
 }

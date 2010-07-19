@@ -26,6 +26,8 @@ namespace Db4objects.Db4o.Internal
 
 		private int _declaredAspectCount;
 
+		private int _currentParentSourceID;
+
 		public DefragmentContextImpl(ByteArrayBuffer source, Db4objects.Db4o.Internal.DefragmentContextImpl
 			 context) : this(source, context._services, context._objectHeader)
 		{
@@ -99,7 +101,7 @@ namespace Db4objects.Db4o.Internal
 			int mapped = -1;
 			try
 			{
-				mapped = _services.MappedID(orig);
+				mapped = _services.StrictMappedID(orig);
 			}
 			catch (MappingNotFoundException)
 			{
@@ -124,27 +126,37 @@ namespace Db4objects.Db4o.Internal
 			return WriteMappedID(id);
 		}
 
-		public int CopyID(bool flipNegative, bool lenient)
+		public int CopyID(bool flipNegative)
 		{
 			int id = _source.ReadInt();
-			return InternalCopyID(flipNegative, lenient, id);
+			return InternalCopyID(flipNegative, id);
 		}
 
 		public int CopyIDReturnOriginalID()
 		{
+			return CopyIDReturnOriginalID(false);
+		}
+
+		public int CopyIDReturnOriginalID(bool flipNegative)
+		{
 			int id = _source.ReadInt();
-			InternalCopyID(false, false, id);
+			InternalCopyID(flipNegative, id);
+			bool flipped = flipNegative && (id < 0);
+			if (flipped)
+			{
+				return -id;
+			}
 			return id;
 		}
 
-		private int InternalCopyID(bool flipNegative, bool lenient, int id)
+		private int InternalCopyID(bool flipNegative, int id)
 		{
 			bool flipped = flipNegative && (id < 0);
 			if (flipped)
 			{
 				id = -id;
 			}
-			int mapped = _services.MappedID(id, lenient);
+			int mapped = _services.MappedID(id);
 			if (flipped)
 			{
 				mapped = -mapped;
@@ -226,29 +238,18 @@ namespace Db4objects.Db4o.Internal
 			return _services;
 		}
 
-		public static void ProcessCopy(IDefragmentServices services, int sourceID, ISlotCopyHandler
+		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
 			 command)
 		{
-			ProcessCopy(services, sourceID, command, false);
-		}
-
-		public static void ProcessCopy(IDefragmentServices context, int sourceID, ISlotCopyHandler
-			 command, bool registerAddressMapping)
-		{
 			ByteArrayBuffer sourceReader = context.SourceBufferByID(sourceID);
-			ProcessCopy(context, sourceID, command, registerAddressMapping, sourceReader);
+			ProcessCopy(context, sourceID, command, sourceReader);
 		}
 
 		public static void ProcessCopy(IDefragmentServices services, int sourceID, ISlotCopyHandler
-			 command, bool registerAddressMapping, ByteArrayBuffer sourceReader)
+			 command, ByteArrayBuffer sourceReader)
 		{
-			int targetID = services.MappedID(sourceID);
+			int targetID = services.StrictMappedID(sourceID);
 			Slot targetSlot = services.AllocateTargetSlot(sourceReader.Length());
-			if (registerAddressMapping)
-			{
-				int sourceAddress = services.SourceAddressByID(sourceID);
-				services.MapIDs(sourceAddress, targetSlot.Address(), false);
-			}
 			services.Mapping().MapId(targetID, targetSlot);
 			Db4objects.Db4o.Internal.DefragmentContextImpl context = new Db4objects.Db4o.Internal.DefragmentContextImpl
 				(sourceReader, services);
@@ -290,7 +291,7 @@ namespace Db4objects.Db4o.Internal
 
 		public int WriteMappedID(int originalID)
 		{
-			int mapped = _services.MappedID(originalID, false);
+			int mapped = _services.MappedID(originalID);
 			_target.WriteInt(mapped);
 			return mapped;
 		}
@@ -327,7 +328,7 @@ namespace Db4objects.Db4o.Internal
 
 		public int MappedID(int origID)
 		{
-			return Mapping().MappedID(origID);
+			return Mapping().StrictMappedID(origID);
 		}
 
 		public IObjectContainer ObjectContainer()
@@ -451,6 +452,29 @@ namespace Db4objects.Db4o.Internal
 		{
 			return Db4objects.Db4o.Internal.Marshall.SlotFormat.ForHandlerVersion(HandlerVersion
 				());
+		}
+
+		public void CurrentParentSourceID(int id)
+		{
+			_currentParentSourceID = id;
+		}
+
+		public int ConsumeCurrentParentSourceID()
+		{
+			int id = _currentParentSourceID;
+			_currentParentSourceID = 0;
+			return id;
+		}
+
+		public void CopyAddress()
+		{
+			int sourceEntryAddress = _source.ReadInt();
+			int sourceId = ConsumeCurrentParentSourceID();
+			int sourceObjectAddress = _services.SourceAddressByID(sourceId);
+			int entryOffset = sourceEntryAddress - sourceObjectAddress;
+			int targetObjectAddress = _services.TargetAddressByID(_services.StrictMappedID(sourceId
+				));
+			_target.WriteInt(targetObjectAddress + entryOffset);
 		}
 	}
 }

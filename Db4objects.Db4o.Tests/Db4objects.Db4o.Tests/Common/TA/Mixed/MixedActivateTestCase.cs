@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 {
 	public class MixedActivateTestCase : ItemTestCaseBase, IOptOutTemporary
 	{
-		private const int ItemDepth = 10;
+		private readonly int ItemDepth = 10;
 
 		public static void Main(string[] args)
 		{

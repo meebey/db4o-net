@@ -38,17 +38,23 @@ namespace Db4oUnit.Extensions.Fixtures
 		/// <exception cref="System.Exception"></exception>
 		public override void Close()
 		{
-			PreClose();
-			if (null != _db)
+			try
 			{
-				Assert.IsTrue(_db.Close());
-				try
+				PreClose();
+			}
+			finally
+			{
+				if (null != _db)
 				{
-					ThreadPool().Join(3000);
-				}
-				finally
-				{
-					_db = null;
+					Assert.IsTrue(_db.Close());
+					try
+					{
+						ThreadPool().Join(3000);
+					}
+					finally
+					{
+						_db = null;
+					}
 				}
 			}
 		}

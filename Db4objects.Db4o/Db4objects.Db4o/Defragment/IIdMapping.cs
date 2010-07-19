@@ -12,18 +12,12 @@ namespace Db4objects.Db4o.Defragment
 	{
 		/// <summary>Returns a previously registered mapping ID for the given ID if it exists.
 		/// 	</summary>
-		/// <remarks>
-		/// Returns a previously registered mapping ID for the given ID if it exists.
-		/// If lenient mode is set to true, will provide the mapping ID for the next
-		/// smaller original ID a mapping exists for, plus the difference between the
-		/// found ID and the original ID. Otherwise it returns 0.
-		/// </remarks>
+		/// <remarks>Returns a previously registered mapping ID for the given ID if it exists.
+		/// 	</remarks>
 		/// <param name="origID">The original ID</param>
-		/// <param name="lenient">If true, lenient mode will be used for lookup, strict mode otherwise.
-		/// 	</param>
 		/// <returns>The mapping ID for the given original ID or 0, if none has been registered.
 		/// 	</returns>
-		int MappedId(int origId, bool lenient);
+		int MappedId(int origId);
 
 		/// <summary>Registers a mapping for the given IDs.</summary>
 		/// <remarks>Registers a mapping for the given IDs.</remarks>
@@ -50,5 +44,8 @@ namespace Db4objects.Db4o.Defragment
 		/// <summary>Shuts down the mapping after use.</summary>
 		/// <remarks>Shuts down the mapping after use.</remarks>
 		void Close();
+
+		/// <summary>returns the slot address for an ID</summary>
+		int AddressForId(int id);
 	}
 }

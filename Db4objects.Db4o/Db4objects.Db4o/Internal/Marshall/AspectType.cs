@@ -45,7 +45,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 				default:
 				{
 					throw new ArgumentException();
-					break;
 				}
 			}
 		}

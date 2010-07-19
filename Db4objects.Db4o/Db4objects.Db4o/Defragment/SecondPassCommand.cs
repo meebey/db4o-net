@@ -3,7 +3,6 @@
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Internal.Marshall;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -39,13 +38,13 @@ namespace Db4objects.Db4o.Defragment
 			{
 				Sharpen.Runtime.Err.WriteLine("MAPPING NOT FOUND: " + id);
 			}
-			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_35(classMetadata
+			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_34(classMetadata
 				, classIndexID));
 		}
 
-		private sealed class _ISlotCopyHandler_35 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_34 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_35(ClassMetadata classMetadata, int classIndexID)
+			public _ISlotCopyHandler_34(ClassMetadata classMetadata, int classIndexID)
 			{
 				this.classMetadata = classMetadata;
 				this.classIndexID = classIndexID;
@@ -67,16 +66,13 @@ namespace Db4objects.Db4o.Defragment
 			, int id)
 		{
 			ByteArrayBuffer sourceBuffer = services.SourceBufferByID(id);
-			ObjectHeader objHead = services.SourceObjectHeader(sourceBuffer);
-			sourceBuffer._offset = 0;
-			bool registerAddresses = services.HasFieldIndex(objHead.ClassMetadata());
-			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_47(this, services
-				), registerAddresses, sourceBuffer);
+			DefragmentContextImpl.ProcessCopy(services, id, new _ISlotCopyHandler_43(this, services
+				), sourceBuffer);
 		}
 
-		private sealed class _ISlotCopyHandler_47 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_43 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_47(SecondPassCommand _enclosing, DefragmentServicesImpl 
+			public _ISlotCopyHandler_43(SecondPassCommand _enclosing, DefragmentServicesImpl 
 				services)
 			{
 				this._enclosing = _enclosing;
@@ -107,12 +103,12 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessClassCollection(DefragmentServicesImpl services)
 		{
 			DefragmentContextImpl.ProcessCopy(services, services.SourceClassCollectionID(), new 
-				_ISlotCopyHandler_62(services));
+				_ISlotCopyHandler_58(services));
 		}
 
-		private sealed class _ISlotCopyHandler_62 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_58 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_62(DefragmentServicesImpl services)
+			public _ISlotCopyHandler_58(DefragmentServicesImpl services)
 			{
 				this.services = services;
 			}

@@ -3,11 +3,10 @@
 using System;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.Fieldindex;
-using Db4objects.Db4o.Tests.Common.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Fieldindex
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		public static void Main(string[] args)
 		{
@@ -16,12 +15,18 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 		protected override Type[] TestCases()
 		{
-			Type[] fieldBased = new Type[] { typeof(IndexedNodeTestCase), typeof(FieldIndexTestCase
-				), typeof(FieldIndexProcessorTestCase), typeof(StringFieldIndexTestCase) };
-			Type[] neutral = new Type[] { typeof(DoubleFieldIndexTestCase), typeof(RuntimeFieldIndexTestCase
-				), typeof(SecondLevelIndexTestCase), typeof(StringIndexTestCase), typeof(StringIndexCorruptionTestCase
-				), typeof(StringIndexWithSuperClassTestCase) };
-			return Db4oUnitTestUtil.MergeClasses(neutral, fieldBased);
+			return ComposeTests(new Type[] { typeof(IndexedNodeTestCase), typeof(FieldIndexTestCase
+				), typeof(FieldIndexProcessorTestCase), typeof(StringFieldIndexTestCase), typeof(
+				DoubleFieldIndexTestCase), typeof(RuntimeFieldIndexTestCase), typeof(SecondLevelIndexTestCase
+				), typeof(StringFieldIndexDefragmentTestCase), typeof(StringIndexTestCase), typeof(
+				StringIndexCorruptionTestCase), typeof(StringIndexWithSuperClassTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(CommitAfterDroppedFieldIndexTestCase) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

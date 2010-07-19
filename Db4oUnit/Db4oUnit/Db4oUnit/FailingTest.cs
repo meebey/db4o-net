@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit
 {
@@ -32,6 +33,16 @@ namespace Db4oUnit
 		public virtual void Run()
 		{
 			throw new TestException(_error);
+		}
+
+		public virtual bool IsLeafTest()
+		{
+			return true;
+		}
+
+		public virtual ITest Transmogrify(IFunction4 fun)
+		{
+			return ((ITest)fun.Apply(this));
 		}
 	}
 }

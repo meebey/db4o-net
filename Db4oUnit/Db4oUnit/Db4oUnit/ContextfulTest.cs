@@ -9,7 +9,7 @@ namespace Db4oUnit
 {
 	public class ContextfulTest : Contextful, ITest
 	{
-		private readonly ITestFactory _factory;
+		private ITestFactory _factory;
 
 		public ContextfulTest(ITestFactory factory)
 		{
@@ -36,14 +36,34 @@ namespace Db4oUnit
 			private readonly ContextfulTest _enclosing;
 		}
 
-		public virtual void Run()
+		public virtual bool IsLeafTest()
 		{
-			Run(new _IRunnable_26(this));
+			return ((bool)Run(new _IClosure4_26(this)));
 		}
 
-		private sealed class _IRunnable_26 : IRunnable
+		private sealed class _IClosure4_26 : IClosure4
 		{
-			public _IRunnable_26(ContextfulTest _enclosing)
+			public _IClosure4_26(ContextfulTest _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Run()
+			{
+				return this._enclosing.TestInstance().IsLeafTest();
+			}
+
+			private readonly ContextfulTest _enclosing;
+		}
+
+		public virtual void Run()
+		{
+			Run(new _IRunnable_34(this));
+		}
+
+		private sealed class _IRunnable_34 : IRunnable
+		{
+			public _IRunnable_34(ContextfulTest _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -59,6 +79,11 @@ namespace Db4oUnit
 		private ITest TestInstance()
 		{
 			return _factory.NewInstance();
+		}
+
+		public virtual ITest Transmogrify(IFunction4 fun)
+		{
+			return ((ITest)fun.Apply(this));
 		}
 	}
 }

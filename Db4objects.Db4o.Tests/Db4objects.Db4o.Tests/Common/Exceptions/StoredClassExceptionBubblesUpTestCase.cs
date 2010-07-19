@@ -12,6 +12,7 @@ using Db4objects.Db4o.Tests.Common.Exceptions;
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
 	public class StoredClassExceptionBubblesUpTestCase : AbstractDb4oTestCase, IOptOutMultiSession
+		, IOptOutDefragSolo
 	{
 		public static void Main(string[] args)
 		{

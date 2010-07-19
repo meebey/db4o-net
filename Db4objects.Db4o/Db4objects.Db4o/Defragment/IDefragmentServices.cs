@@ -38,13 +38,15 @@ namespace Db4objects.Db4o.Defragment
 
 		ClassMetadata ClassMetadataForId(int id);
 
-		int MappedID(int id, bool lenient);
+		int MappedID(int id);
 
 		void RegisterUnindexed(int id);
 
 		IdSource UnindexedIDs();
 
 		int SourceAddressByID(int sourceID);
+
+		int TargetAddressByID(int sourceID);
 
 		int TargetNewId();
 

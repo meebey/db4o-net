@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
@@ -9,6 +10,7 @@ using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -74,7 +76,7 @@ namespace Db4objects.Db4o.Defragment
 			_commitFrequency = commitFrequency;
 		}
 
-		public override int MappedId(int oldID, bool lenient)
+		public override int MappedId(int oldID)
 		{
 			if (_cache.Orig() == oldID)
 			{
@@ -93,23 +95,7 @@ namespace Db4objects.Db4o.Defragment
 				_cache = (MappedIDPair)pointer.Key();
 				return _cache.Mapped();
 			}
-			if (lenient)
-			{
-				return MapLenient(oldID, range);
-			}
 			return 0;
-		}
-
-		private int MapLenient(int oldID, IBTreeRange range)
-		{
-			range = range.Smaller();
-			BTreePointer pointer = range.LastPointer();
-			if (pointer == null)
-			{
-				return 0;
-			}
-			MappedIDPair mappedIDs = (MappedIDPair)pointer.Key();
-			return mappedIDs.Mapped() + (oldID - mappedIDs.Orig());
 		}
 
 		protected override void MapNonClassIDs(int origID, int mappedID)
@@ -168,12 +154,12 @@ namespace Db4objects.Db4o.Defragment
 
 		public override IVisitable SlotChanges()
 		{
-			return new _IVisitable_142(this);
+			return new _IVisitable_130(this);
 		}
 
-		private sealed class _IVisitable_142 : IVisitable
+		private sealed class _IVisitable_130 : IVisitable
 		{
-			public _IVisitable_142(DatabaseIdMapping _enclosing)
+			public _IVisitable_130(DatabaseIdMapping _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -192,6 +178,20 @@ namespace Db4objects.Db4o.Defragment
 			}
 
 			private readonly DatabaseIdMapping _enclosing;
+		}
+
+		public override int AddressForId(int id)
+		{
+			IQuery query = _mappingDb.Query();
+			query.Constrain(typeof(IdSlotMapping));
+			query.Descend("_id").Constrain(id);
+			IObjectSet objectSet = query.Execute();
+			if (objectSet.Count != 1)
+			{
+				throw new InvalidOperationException();
+			}
+			IdSlotMapping mapping = ((IdSlotMapping)objectSet.Next());
+			return mapping.Slot().Address();
 		}
 	}
 }

@@ -10,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.Exceptions;
 namespace Db4objects.Db4o.Tests.Common.Exceptions
 {
 	public class DatabaseReadonlyExceptionTestCase : AbstractDb4oTestCase, IOptOutTA, 
-		IOptOutInMemory
+		IOptOutInMemory, IOptOutDefragSolo
 	{
 		public static void Main(string[] args)
 		{

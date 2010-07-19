@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 	{
 		private readonly object _lock = new object();
 
-		private const int Count = 1;
+		private readonly int Count = 1;
 
 		public class Item
 		{

@@ -104,7 +104,25 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual void Traverse(IVisitor4 visitor)
 		{
-			_delegate.Traverse(visitor);
+			_delegate.Traverse(new _IVisitor4_89(this, visitor));
+		}
+
+		private sealed class _IVisitor4_89 : IVisitor4
+		{
+			public _IVisitor4_89(BlockAwareFreespaceManager _enclosing, IVisitor4 visitor)
+			{
+				this._enclosing = _enclosing;
+				this.visitor = visitor;
+			}
+
+			public void Visit(object slot)
+			{
+				visitor.Visit(this._enclosing._blockConverter.ToNonBlockedLength(((Slot)slot)));
+			}
+
+			private readonly BlockAwareFreespaceManager _enclosing;
+
+			private readonly IVisitor4 visitor;
 		}
 
 		public virtual void Write(LocalObjectContainer container)

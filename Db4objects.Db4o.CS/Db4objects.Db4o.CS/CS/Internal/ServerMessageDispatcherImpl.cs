@@ -298,7 +298,12 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				exc = new Db4oException(exc);
 			}
-			message.WriteException((Exception)exc);
+			// Writing exceptions can produce ClassMetadata in
+			// the main ObjectContainer.
+			lock (_mainLock)
+			{
+				message.WriteException((Exception)exc);
+			}
 		}
 
 		private void TriggerMessageReceived(IMessage message)

@@ -48,7 +48,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			ByteArrayBuffer target = context.TargetBuffer();
 			Db4objects.Db4o.Internal.Marshall.ObjectHeader header = new Db4objects.Db4o.Internal.Marshall.ObjectHeader
 				(context.Services().SystemTrans().Container(), null, source);
-			int newID = context.Mapping().MappedID(header.ClassMetadata().GetID());
+			int newID = context.Mapping().StrictMappedID(header.ClassMetadata().GetID());
 			Db4objects.Db4o.Internal.Marshall.SlotFormat slotFormat = header.SlotFormat();
 			slotFormat.WriteObjectClassID(target, newID);
 			slotFormat.SkipMarshallerInfo(target);

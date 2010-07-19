@@ -10,7 +10,8 @@ namespace Db4objects.Db4o.Internal
 	{
 		public override void DefragIndexEntry(DefragmentContextImpl context)
 		{
-			context.CopyID(true, false);
+			int sourceId = context.CopyIDReturnOriginalID(true);
+			context.CurrentParentSourceID(sourceId);
 		}
 	}
 }

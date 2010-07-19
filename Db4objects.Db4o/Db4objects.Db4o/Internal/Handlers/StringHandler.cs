@@ -191,8 +191,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 
 		public virtual void DefragIndexEntry(DefragmentContextImpl context)
 		{
-			// address
-			context.CopyID(false, true);
+			context.CopyAddress();
 			// length
 			context.IncrementIntSize();
 		}
@@ -261,12 +260,12 @@ namespace Db4objects.Db4o.Internal.Handlers
 			)
 		{
 			ByteArrayBuffer sourceBuffer = Val(obj, context);
-			return new _IPreparedComparison_230(this, context, sourceBuffer);
+			return new _IPreparedComparison_229(this, context, sourceBuffer);
 		}
 
-		private sealed class _IPreparedComparison_230 : IPreparedComparison
+		private sealed class _IPreparedComparison_229 : IPreparedComparison
 		{
-			public _IPreparedComparison_230(StringHandler _enclosing, IContext context, ByteArrayBuffer
+			public _IPreparedComparison_229(StringHandler _enclosing, IContext context, ByteArrayBuffer
 				 sourceBuffer)
 			{
 				this._enclosing = _enclosing;

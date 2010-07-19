@@ -48,6 +48,16 @@ namespace Db4objects.Db4o.Tests.Common.Internal.Convert
 					this._enclosing._enclosing.AssertConverterBehaviorForVersion((((int)version)));
 				}
 
+				public bool IsLeafTest()
+				{
+					return true;
+				}
+
+				public ITest Transmogrify(IFunction4 fun)
+				{
+					return ((ITest)fun.Apply(this));
+				}
+
 				private readonly _IFunction4_17 _enclosing;
 
 				private readonly object version;

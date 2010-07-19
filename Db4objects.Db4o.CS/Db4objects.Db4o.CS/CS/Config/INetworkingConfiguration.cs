@@ -6,8 +6,14 @@ using Db4objects.Db4o.Messaging;
 
 namespace Db4objects.Db4o.CS.Config
 {
-	/// <summary>Configuration interface for networking configuration settings.</summary>
-	/// <remarks>Configuration interface for networking configuration settings.</remarks>
+	/// <summary>
+	/// Configuration interface for networking configuration settings.<br /><br />
+	/// The network settings should be configured in exactly the same on the server and client.
+	/// </summary>
+	/// <remarks>
+	/// Configuration interface for networking configuration settings.<br /><br />
+	/// The network settings should be configured in exactly the same on the server and client.
+	/// </remarks>
 	/// <since>7.5</since>
 	public interface INetworkingConfiguration
 	{

@@ -40,5 +40,11 @@ namespace Db4oUnit
 			_listener1.TestStarted(test);
 			_listener2.TestStarted(test);
 		}
+
+		public virtual void Failure(string msg, Exception failure)
+		{
+			_listener1.Failure(msg, failure);
+			_listener2.Failure(msg, failure);
+		}
 	}
 }

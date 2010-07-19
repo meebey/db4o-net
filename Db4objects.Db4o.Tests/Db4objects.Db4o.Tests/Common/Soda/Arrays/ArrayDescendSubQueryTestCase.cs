@@ -82,10 +82,9 @@ namespace Db4objects.Db4o.Tests.Common.Soda.Arrays
 			topQuery.Descend("_title").Constrain("ddd");
 			IQuery subQuery = topQuery.Descend("_cites").Descend("_author");
 			IObjectSet result = subQuery.Execute();
-			while (result.HasNext())
-			{
-				Sharpen.Runtime.Out.WriteLine(result.Next());
-			}
+			//		while(result.hasNext()) {
+			//			System.out.println(result.next());
+			//		}
 			Assert.AreEqual(2, result.Count);
 		}
 	}

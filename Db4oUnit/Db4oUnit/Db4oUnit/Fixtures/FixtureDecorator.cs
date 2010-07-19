@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4oUnit.Fixtures;
+using Db4objects.Db4o.Foundation;
 
 namespace Db4oUnit.Fixtures
 {
@@ -23,12 +24,37 @@ namespace Db4oUnit.Fixtures
 
 		public ITest Decorate(ITest test)
 		{
+			string label = Label();
+			return test.Transmogrify(new _IFunction4_22(this, label));
+		}
+
+		private sealed class _IFunction4_22 : IFunction4
+		{
+			public _IFunction4_22(FixtureDecorator _enclosing, string label)
+			{
+				this._enclosing = _enclosing;
+				this.label = label;
+			}
+
+			public object Apply(object innerTest)
+			{
+				return new TestWithFixture(((ITest)innerTest), label, this._enclosing._provider, 
+					this._enclosing._fixture);
+			}
+
+			private readonly FixtureDecorator _enclosing;
+
+			private readonly string label;
+		}
+
+		private string Label()
+		{
 			string label = _provider.Label + "[" + _fixtureIndex + "]";
 			if (_fixture is ILabeled)
 			{
 				label += ":" + ((ILabeled)_fixture).Label();
 			}
-			return new TestWithFixture(test, label, _provider, _fixture);
+			return label;
 		}
 	}
 }

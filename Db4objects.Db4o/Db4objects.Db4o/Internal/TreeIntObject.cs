@@ -90,5 +90,12 @@ namespace Db4objects.Db4o.Internal
 		{
 			return true;
 		}
+
+		public static Db4objects.Db4o.Internal.TreeIntObject Add(Db4objects.Db4o.Internal.TreeIntObject
+			 tree, int key, object value)
+		{
+			return ((Db4objects.Db4o.Internal.TreeIntObject)Tree.Add(tree, new Db4objects.Db4o.Internal.TreeIntObject
+				(key, value)));
+		}
 	}
 }

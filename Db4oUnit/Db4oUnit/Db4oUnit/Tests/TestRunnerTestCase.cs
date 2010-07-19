@@ -54,12 +54,17 @@ namespace Db4oUnit.Tests
 				recorder.Record(new MethodCall("runFinished", new object[] {  }));
 			}
 
+			public void Failure(string msg, Exception failure)
+			{
+				recorder.Record(new MethodCall("failure", new object[] { msg, failure }));
+			}
+
 			private readonly MethodCallRecorder recorder;
 		}
 
 		public virtual void TestRunWithException()
 		{
-			ITest test = new _ITest_54();
+			ITest test = new _ITest_58();
 			//$NON-NLS-1$
 			IEnumerable tests = Iterators.Iterable(new object[] { test });
 			TestResult result = new TestResult();
@@ -67,9 +72,9 @@ namespace Db4oUnit.Tests
 			Assert.AreEqual(1, result.Failures.Count);
 		}
 
-		private sealed class _ITest_54 : ITest
+		private sealed class _ITest_58 : ITest
 		{
-			public _ITest_54()
+			public _ITest_58()
 			{
 			}
 
@@ -81,6 +86,16 @@ namespace Db4oUnit.Tests
 			public void Run()
 			{
 				Assert.AreEqual(0, 1);
+			}
+
+			public bool IsLeafTest()
+			{
+				return true;
+			}
+
+			public ITest Transmogrify(IFunction4 fun)
+			{
+				return ((ITest)fun.Apply(this));
 			}
 		}
 	}

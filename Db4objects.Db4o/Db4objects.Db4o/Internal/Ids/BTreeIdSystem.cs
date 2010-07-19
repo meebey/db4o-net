@@ -173,6 +173,7 @@ namespace Db4objects.Db4o.Internal.Ids
 			_container.FreespaceManager().BeginCommit();
 			slotChanges.Accept(new _IVisitor4_129(this));
 			// TODO: Maybe we want a BTree that doesn't allow duplicates.
+			// Then we could do the following in one step without removing first.
 			_bTree.Commit(Transaction());
 			IdGeneratorValue(_idGenerator.PersistentGeneratorValue());
 			if (_idGenerator.IsDirty())
@@ -202,14 +203,12 @@ namespace Db4objects.Db4o.Internal.Ids
 				{
 					return;
 				}
-				if (((SlotChange)slotChange).RemoveId())
-				{
-					this._enclosing._bTree.Remove(this._enclosing.Transaction(), new IdSlotMapping(((
-						TreeInt)slotChange)._key, 0, 0));
-					return;
-				}
 				this._enclosing._bTree.Remove(this._enclosing.Transaction(), new IdSlotMapping(((
 					TreeInt)slotChange)._key, 0, 0));
+				if (((SlotChange)slotChange).RemoveId())
+				{
+					return;
+				}
 				this._enclosing._bTree.Add(this._enclosing.Transaction(), new IdSlotMapping(((TreeInt
 					)slotChange)._key, ((SlotChange)slotChange).NewSlot()));
 				if (DTrace.enabled)
@@ -224,12 +223,12 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual void ReturnUnusedIds(IVisitable visitable)
 		{
-			visitable.Accept(new _IVisitor4_168(this));
+			visitable.Accept(new _IVisitor4_167(this));
 		}
 
-		private sealed class _IVisitor4_168 : IVisitor4
+		private sealed class _IVisitor4_167 : IVisitor4
 		{
-			public _IVisitor4_168(BTreeIdSystem _enclosing)
+			public _IVisitor4_167(BTreeIdSystem _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -264,12 +263,12 @@ namespace Db4objects.Db4o.Internal.Ids
 			public virtual IPreparedComparison PrepareComparison(IContext context, object sourceMapping
 				)
 			{
-				return new _IPreparedComparison_191(sourceMapping);
+				return new _IPreparedComparison_190(sourceMapping);
 			}
 
-			private sealed class _IPreparedComparison_191 : IPreparedComparison
+			private sealed class _IPreparedComparison_190 : IPreparedComparison
 			{
-				public _IPreparedComparison_191(object sourceMapping)
+				public _IPreparedComparison_190(object sourceMapping)
 				{
 					this.sourceMapping = sourceMapping;
 				}
@@ -304,6 +303,11 @@ namespace Db4objects.Db4o.Internal.Ids
 		{
 			_persistentState.Array()[ChildIdIndex] = id;
 			_persistentState.SetStateDirty();
+		}
+
+		public virtual void TraverseIds(IVisitor4 visitor)
+		{
+			_bTree.TraverseKeys(_container.SystemTransaction(), visitor);
 		}
 	}
 }

@@ -40,11 +40,13 @@ namespace Db4objects.Db4o.Defragment
 
 		protected abstract void MapNonClassIDs(int origID, int mappedID);
 
+		public abstract int AddressForId(int arg1);
+
 		public abstract void Close();
 
 		public abstract void MapId(int arg1, Slot arg2);
 
-		public abstract int MappedId(int arg1, bool arg2);
+		public abstract int MappedId(int arg1);
 
 		public abstract void Open();
 

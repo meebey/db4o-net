@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
+using Db4oUnit.Extensions.Fixtures;
 using Db4objects.Db4o.Events;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
@@ -10,7 +11,7 @@ using Db4objects.Db4o.Internal;
 
 namespace Db4objects.Db4o.Tests.Common.Events
 {
-	public class ObjectContainerEventsTestCase : AbstractDb4oTestCase
+	public class ObjectContainerEventsTestCase : AbstractDb4oTestCase, IOptOutDefragSolo
 	{
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TestClose()
@@ -19,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			LocalObjectContainer session = FileSession();
 			Collection4 actual = new Collection4();
 			EventRegistry().Closing += new System.EventHandler<Db4objects.Db4o.Events.ObjectContainerEventArgs>
-				(new _IEventListener4_20(actual).OnEvent);
+				(new _IEventListener4_21(actual).OnEvent);
 			Fixture().Close();
 			if (IsEmbedded())
 			{
@@ -32,9 +33,9 @@ namespace Db4objects.Db4o.Tests.Common.Events
 			}
 		}
 
-		private sealed class _IEventListener4_20
+		private sealed class _IEventListener4_21
 		{
-			public _IEventListener4_20(Collection4 actual)
+			public _IEventListener4_21(Collection4 actual)
 			{
 				this.actual = actual;
 			}

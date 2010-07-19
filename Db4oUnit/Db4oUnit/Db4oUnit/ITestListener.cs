@@ -14,5 +14,7 @@ namespace Db4oUnit
 		void TestFailed(ITest test, Exception failure);
 
 		void RunFinished();
+
+		void Failure(string msg, Exception failure);
 	}
 }

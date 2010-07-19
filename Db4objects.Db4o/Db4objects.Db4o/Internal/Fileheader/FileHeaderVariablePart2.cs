@@ -214,7 +214,8 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				// If all four versions of the header are the same,
 				// it's bound to be OK. (unless all bytes are zero or
 				// greyed out by some kind of overwriting algorithm.)
-				if (!CheckSumOK(buffer, 0))
+				int firstOffset = 0;
+				if (!CheckSumOK(buffer, firstOffset))
 				{
 					throw new Db4oFileHeaderCorruptionException();
 				}

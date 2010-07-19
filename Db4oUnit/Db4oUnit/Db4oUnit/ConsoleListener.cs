@@ -57,5 +57,11 @@ namespace Db4oUnit
 				TestPlatform.PrintStackTrace(_writer, x);
 			}
 		}
+
+		public virtual void Failure(string msg, Exception failure)
+		{
+			Print("\t ! " + msg);
+			PrintFailure(failure);
+		}
 	}
 }

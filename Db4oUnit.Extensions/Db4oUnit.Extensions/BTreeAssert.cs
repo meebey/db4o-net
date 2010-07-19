@@ -6,6 +6,7 @@ using Db4oUnit.Extensions;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
+using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
@@ -40,12 +41,12 @@ namespace Db4oUnit.Extensions
 
 		public static void DumpKeys(Transaction trans, BTree tree)
 		{
-			tree.TraverseKeys(trans, new _IVisitor4_36());
+			tree.TraverseKeys(trans, new _IVisitor4_37());
 		}
 
-		private sealed class _IVisitor4_36 : IVisitor4
+		private sealed class _IVisitor4_37 : IVisitor4
 		{
-			public _IVisitor4_36()
+			public _IVisitor4_37()
 			{
 			}
 
@@ -111,15 +112,17 @@ namespace Db4oUnit.Extensions
 			Slot bTreeSlot = idSystem.CurrentSlot(bTree.GetID());
 			allSlots.Add(bTreeSlot);
 			Collection4 freedSlots = new Collection4();
-			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(new _ISlotListener_97
+			IFreespaceManager freespaceManager = container.FreespaceManager();
+			container.InstallDebugFreespaceManager(new FreespaceManagerForDebug(new _ISlotListener_99
 				(freedSlots)));
 			block.Run();
+			container.InstallDebugFreespaceManager(freespaceManager);
 			Assert.IsTrue(freedSlots.ContainsAll(allSlots.GetEnumerator()));
 		}
 
-		private sealed class _ISlotListener_97 : ISlotListener
+		private sealed class _ISlotListener_99 : ISlotListener
 		{
-			public _ISlotListener_97(Collection4 freedSlots)
+			public _ISlotListener_99(Collection4 freedSlots)
 			{
 				this.freedSlots = freedSlots;
 			}

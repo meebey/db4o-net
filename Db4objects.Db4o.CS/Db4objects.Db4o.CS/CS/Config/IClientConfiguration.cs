@@ -76,7 +76,6 @@ namespace Db4objects.Db4o.CS.Config
 		/// <see cref="#timeoutServerSocket(int)">#timeoutServerSocket(int)</see>
 		/// .
 		/// <br />
-		/// This setting can be used on both client and server.<br /><br />
 		/// </remarks>
 		/// <value>time in milliseconds</value>
 		int TimeoutClientSocket

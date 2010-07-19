@@ -69,13 +69,13 @@ namespace Db4objects.Db4o.Internal
 			return GetID() == 0;
 		}
 
-		public virtual void SetID(int a_id)
+		public virtual void SetID(int id)
 		{
 			if (DTrace.enabled)
 			{
-				DTrace.PersistentbaseSetId.Log(a_id);
+				DTrace.PersistentbaseSetId.Log(id);
 			}
-			_id = a_id;
+			_id = id;
 		}
 
 		public void SetStateClean()

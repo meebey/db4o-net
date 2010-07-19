@@ -2043,7 +2043,15 @@ namespace Db4objects.Db4o.Internal
 		{
 			lock (_lock)
 			{
-				return StoreInternal(trans, obj, depth, true);
+				try
+				{
+					ShowInternalClasses(true);
+					return StoreInternal(trans, obj, depth, true);
+				}
+				finally
+				{
+					ShowInternalClasses(false);
+				}
 			}
 		}
 
@@ -2061,13 +2069,13 @@ namespace Db4objects.Db4o.Internal
 			, bool checkJustSet)
 		{
 			CheckReadOnly();
-			return (((int)AsTopLevelStore(new _IFunction4_1593(this, obj, depth, checkJustSet
+			return (((int)AsTopLevelStore(new _IFunction4_1598(this, obj, depth, checkJustSet
 				), trans)));
 		}
 
-		private sealed class _IFunction4_1593 : IFunction4
+		private sealed class _IFunction4_1598 : IFunction4
 		{
-			public _IFunction4_1593(ObjectContainerBase _enclosing, object obj, IUpdateDepth 
+			public _IFunction4_1598(ObjectContainerBase _enclosing, object obj, IUpdateDepth 
 				depth, bool checkJustSet)
 			{
 				this._enclosing = _enclosing;
@@ -2440,6 +2448,7 @@ namespace Db4objects.Db4o.Internal
 		{
 			if (StackIsSmall())
 			{
+				CheckStillToSet();
 				if (@ref.ContinueSet(transaction, updateDepth))
 				{
 					return;

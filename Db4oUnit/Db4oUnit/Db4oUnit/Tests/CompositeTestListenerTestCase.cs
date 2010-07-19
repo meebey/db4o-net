@@ -41,6 +41,11 @@ namespace Db4oUnit.Tests
 				Record("testStarted", new object[] { test });
 			}
 
+			public void Failure(string msg, Exception failure)
+			{
+				Record("failure", new object[] { msg, failure });
+			}
+
 			private void Record(string name)
 			{
 				Record(name, new object[0]);

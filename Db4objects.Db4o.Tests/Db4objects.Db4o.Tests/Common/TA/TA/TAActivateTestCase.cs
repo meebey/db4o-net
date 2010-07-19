@@ -16,7 +16,7 @@ namespace Db4objects.Db4o.Tests.Common.TA.TA
 			new TAActivateTestCase().RunAll();
 		}
 
-		private const int ItemDepth = 10;
+		private readonly int ItemDepth = 10;
 
 		/// <exception cref="System.Exception"></exception>
 		protected override void AssertItemValue(object obj)

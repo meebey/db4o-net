@@ -13,13 +13,13 @@ namespace Db4objects.Db4o.Tests.Common.Btree
 
 		private const int Last = 11;
 
-		private readonly int[] EvenValues = new int[] { 4, 7, 9, 11 };
+		private static readonly int[] EvenValues = new int[] { 4, 7, 9, 11 };
 
-		private readonly int[] OddValues = new int[] { 4, 7, 8, 9, 11 };
+		private static readonly int[] OddValues = new int[] { 4, 7, 8, 9, 11 };
 
-		private readonly int[] NonMatches = new int[] { 3, 5, 6, 10, 12 };
+		private static readonly int[] NonMatches = new int[] { 3, 5, 6, 10, 12 };
 
-		private readonly int[] Matches = new int[] { 4, 7, 9, 11 };
+		private static readonly int[] Matches = new int[] { 4, 7, 9, 11 };
 
 		private const int Before = First - 1;
 

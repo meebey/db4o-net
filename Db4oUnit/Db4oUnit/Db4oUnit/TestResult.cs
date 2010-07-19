@@ -29,6 +29,10 @@ namespace Db4oUnit
 			_failures.Add(new TestFailure(test.Label(), failure));
 		}
 
+		public virtual void Failure(string msg, Exception failure)
+		{
+		}
+
 		public virtual int TestCount
 		{
 			get

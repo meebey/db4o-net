@@ -23,12 +23,23 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void CreateIndex()
 		{
-			_fieldMetadata.CreateIndex();
+			lock (Lock())
+			{
+				_fieldMetadata.CreateIndex();
+			}
 		}
 
 		public virtual void DropIndex()
 		{
-			_fieldMetadata.DropIndex();
+			lock (Lock())
+			{
+				_fieldMetadata.DropIndex();
+			}
+		}
+
+		private object Lock()
+		{
+			return _transaction.Container().Lock();
 		}
 
 		public virtual Db4objects.Db4o.Internal.FieldMetadata FieldMetadata()
@@ -63,7 +74,10 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void Rename(string name)
 		{
-			_fieldMetadata.Rename(name);
+			lock (Lock())
+			{
+				_fieldMetadata.Rename(name);
+			}
 		}
 
 		public virtual void TraverseValues(IVisitor4 visitor)

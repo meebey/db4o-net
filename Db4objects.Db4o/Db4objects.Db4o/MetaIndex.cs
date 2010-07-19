@@ -20,11 +20,11 @@ namespace Db4objects.Db4o
 
 		public int indexLength;
 
-		private const int patchAddress = 0;
+		private readonly int patchAddress = 0;
 
-		private const int patchEntries = 0;
+		private readonly int patchEntries = 0;
 
-		private const int patchLength = 0;
+		private readonly int patchLength = 0;
 
 		// The number of entries an the length are redundant, because the handler should
 		// return a fixed length, but we absolutely want to make sure, we don't free

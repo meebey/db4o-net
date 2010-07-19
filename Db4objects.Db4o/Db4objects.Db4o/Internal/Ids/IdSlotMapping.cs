@@ -7,14 +7,15 @@ namespace Db4objects.Db4o.Internal.Ids
 	/// <exclude></exclude>
 	public class IdSlotMapping
 	{
-		public readonly int _id;
+		public int _id;
 
-		public readonly int _address;
+		public int _address;
 
-		public readonly int _length;
+		public int _length;
 
 		public IdSlotMapping(int id, int address, int length)
 		{
+			// persistent and indexed in DatabaseIdMapping, don't change the name
 			_id = id;
 			_address = address;
 			_length = length;

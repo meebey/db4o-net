@@ -50,7 +50,6 @@ namespace Db4oUnit.Extensions.Fixtures
 				default:
 				{
 					throw new InvalidOperationException();
-					break;
 				}
 			}
 			// embeddedConfiguration.file().freespace().useBTreeSystem();
@@ -83,7 +82,6 @@ namespace Db4oUnit.Extensions.Fixtures
 				default:
 				{
 					throw new InvalidOperationException();
-					break;
 				}
 			}
 			return "IdSystem-" + idSystemType + " " + base.Label();

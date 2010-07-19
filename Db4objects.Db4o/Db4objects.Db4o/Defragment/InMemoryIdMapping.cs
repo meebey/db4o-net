@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -26,7 +27,7 @@ namespace Db4objects.Db4o.Defragment
 
 		private Tree _tree;
 
-		public override int MappedId(int oldID, bool lenient)
+		public override int MappedId(int oldID)
 		{
 			int classID = MappedClassID(oldID);
 			if (classID != 0)
@@ -37,17 +38,6 @@ namespace Db4objects.Db4o.Defragment
 			if (res != null)
 			{
 				return ((int)res._object);
-			}
-			if (lenient)
-			{
-				TreeIntObject nextSmaller = (TreeIntObject)Tree.FindSmaller(_tree, new TreeInt(oldID
-					));
-				if (nextSmaller != null)
-				{
-					int baseOldID = nextSmaller._key;
-					int baseNewID = ((int)nextSmaller._object);
-					return baseNewID + oldID - baseOldID;
-				}
 			}
 			return 0;
 		}
@@ -63,6 +53,16 @@ namespace Db4objects.Db4o.Defragment
 		protected override void MapNonClassIDs(int origID, int mappedID)
 		{
 			_tree = Tree.Add(_tree, new TreeIntObject(origID, mappedID));
+		}
+
+		public override int AddressForId(int id)
+		{
+			IdSlotTree node = (IdSlotTree)_idsToSlots.Find(id);
+			if (node == null)
+			{
+				throw new InvalidOperationException();
+			}
+			return node.Slot().Address();
 		}
 
 		public override void MapId(int id, Slot slot)

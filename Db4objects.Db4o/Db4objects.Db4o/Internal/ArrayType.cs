@@ -50,7 +50,6 @@ namespace Db4objects.Db4o.Internal
 				default:
 				{
 					throw new ArgumentException();
-					break;
 				}
 			}
 		}

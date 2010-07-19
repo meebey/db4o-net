@@ -30,9 +30,7 @@ namespace Db4objects.Db4o.Config
 		/// will not be an exact multiple of the block size. A
 		/// recommended setting for large database files is 8, since
 		/// internal pointers have this length.<br /><br />
-		/// This setting is only effective when the database is first created, in
-		/// client-server environment in most cases it means that the setting
-		/// should be used on the server side.
+		/// This setting is only effective when the database is first created.
 		/// </remarks>
 		/// <value>the size in bytes from 1 to 127</value>
 		int BlockSize
@@ -176,7 +174,6 @@ namespace Db4objects.Db4o.Config
 		/// allocation of storage space to be slightly greater than the anticipated
 		/// database file size.
 		/// <br /><br />
-		/// In client-server environment this setting should be used on the server side. <br /><br />
 		/// Default configuration: 0<br /><br />
 		/// </remarks>
 		/// <value>the number of bytes to reserve</value>
@@ -195,8 +192,6 @@ namespace Db4objects.Db4o.Config
 		/// configures the path to be used to store and read
 		/// Blob data.
 		/// <br /><br />
-		/// In client-server environment this setting should be used on the
-		/// server side. <br /><br />
 		/// </remarks>
 		/// <value>the path to be used</value>
 		/// <exception cref="System.IO.IOException"></exception>
@@ -216,8 +211,6 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Readonly mode allows to open an unlimited number of reading
 		/// processes on one database file. It is also convenient
 		/// for deploying db4o database files on CD-ROM.<br /><br />
-		/// In client-server environment this setting should be used
-		/// ONLY on client side.<br /><br />
 		/// </remarks>
 		/// <value>
 		/// <code>true</code> for configuring readOnly mode for subsequent
@@ -279,6 +272,9 @@ namespace Db4objects.Db4o.Config
 		/// on the transaction already having been applied when the
 		/// commit() call returns.
 		/// </remarks>
-		void AsynchronousSync(bool flag);
+		bool AsynchronousSync
+		{
+			set;
+		}
 	}
 }

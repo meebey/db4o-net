@@ -40,6 +40,18 @@ namespace Db4objects.Db4o.Foundation
 			return -1;
 		}
 
+		public static int IndexOf(int[] array, int element)
+		{
+			for (int i = 0; i < array.Length; i++)
+			{
+				if (array[i] == element)
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
+
 		public static bool Equals(byte[] x, byte[] y)
 		{
 			if (x == y)

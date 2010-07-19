@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Defragment
 				SecondPass(context, config);
 				DefragUnindexed(context);
 				context.CommitIds();
-				newClassCollectionID = context.MappedID(context.SourceClassCollectionID());
+				newClassCollectionID = context.StrictMappedID(context.SourceClassCollectionID());
 				context.TargetClassCollectionID(newClassCollectionID);
 				int sourceIdentityID = context.DatabaseIdentityID(DefragmentServicesImpl.Sourcedb
 					);
@@ -284,14 +284,13 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.HasMoreIds())
 			{
 				int origID = unindexedIDs.NextId();
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_222(), 
-					true);
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_221());
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_222 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_221 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_222()
+			public _ISlotCopyHandler_221()
 			{
 			}
 
@@ -408,12 +407,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_315(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_314(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_315 : IVisitor4
+		private sealed class _IVisitor4_314 : IVisitor4
 		{
-			public _IVisitor4_315(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_314(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

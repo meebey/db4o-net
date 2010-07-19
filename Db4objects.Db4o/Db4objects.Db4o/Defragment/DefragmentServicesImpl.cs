@@ -113,6 +113,7 @@ namespace Db4objects.Db4o.Defragment
 			FileStorage storage = new FileStorage();
 			storage.Delete(fileName);
 			IConfiguration db4oConfig = DefragmentConfig.VanillaDb4oConfig(blockSize);
+			db4oConfig.ObjectClass(typeof(IdSlotMapping)).ObjectField("_id").Indexed(true);
 			db4oConfig.Storage = storage;
 			return (LocalObjectContainer)Db4oFactory.OpenFile(db4oConfig, fileName).Ext();
 		}
@@ -127,14 +128,14 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual int MappedID(int oldID, int defaultID)
 		{
-			int mapped = InternalMappedID(oldID, false);
+			int mapped = InternalMappedID(oldID);
 			return (mapped != 0 ? mapped : defaultID);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
-		public virtual int MappedID(int oldID)
+		public virtual int StrictMappedID(int oldID)
 		{
-			int mapped = InternalMappedID(oldID, false);
+			int mapped = InternalMappedID(oldID);
 			if (mapped == 0)
 			{
 				throw new MappingNotFoundException(oldID);
@@ -142,14 +143,13 @@ namespace Db4objects.Db4o.Defragment
 			return mapped;
 		}
 
-		/// <exception cref="Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
-		public virtual int MappedID(int id, bool lenient)
+		public virtual int MappedID(int id)
 		{
 			if (id == 0)
 			{
 				return 0;
 			}
-			int mapped = InternalMappedID(id, lenient);
+			int mapped = InternalMappedID(id);
 			if (mapped == 0)
 			{
 				_listener.NotifyDefragmentInfo(new DefragmentInfo("No mapping found for ID " + id
@@ -160,7 +160,7 @@ namespace Db4objects.Db4o.Defragment
 		}
 
 		/// <exception cref="Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
-		private int InternalMappedID(int oldID, bool lenient)
+		private int InternalMappedID(int oldID)
 		{
 			if (oldID == 0)
 			{
@@ -170,7 +170,7 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return oldID;
 			}
-			return _mapping.MappedId(oldID, lenient);
+			return _mapping.MappedId(oldID);
 		}
 
 		public virtual void MapIDs(int oldID, int newID, bool isClassID)
@@ -311,12 +311,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_230(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_231(this, collector));
 		}
 
-		private sealed class _IVisitor4_230 : IVisitor4
+		private sealed class _IVisitor4_231 : IVisitor4
 		{
-			public _IVisitor4_230(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_231(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -417,44 +417,6 @@ namespace Db4objects.Db4o.Defragment
 			return new ObjectHeader(_sourceDb, buffer);
 		}
 
-		public virtual bool HasFieldIndex(ClassMetadata clazz)
-		{
-			// actually only two states are used here, the third is implicit in null
-			TernaryBool cachedHasFieldIndex = ((TernaryBool)_hasFieldIndexCache.Get(clazz));
-			if (cachedHasFieldIndex != null)
-			{
-				return cachedHasFieldIndex.DefiniteYes();
-			}
-			BooleanByRef hasFieldIndex = new BooleanByRef(false);
-			ClassMetadata curClazz = clazz;
-			while (!hasFieldIndex.value && curClazz != null)
-			{
-				curClazz.TraverseDeclaredFields(new _IProcedure4_313(hasFieldIndex));
-				curClazz = curClazz.GetAncestor();
-			}
-			_hasFieldIndexCache.Put(clazz, TernaryBool.ForBoolean(hasFieldIndex.value));
-			return hasFieldIndex.value;
-		}
-
-		private sealed class _IProcedure4_313 : IProcedure4
-		{
-			public _IProcedure4_313(BooleanByRef hasFieldIndex)
-			{
-				this.hasFieldIndex = hasFieldIndex;
-			}
-
-			public void Apply(object arg)
-			{
-				FieldMetadata curField = (FieldMetadata)arg;
-				if (curField.HasIndex() && Handlers4.IsIndirectedIndexed(curField.GetHandler()))
-				{
-					hasFieldIndex.value = true;
-				}
-			}
-
-			private readonly BooleanByRef hasFieldIndex;
-		}
-
 		public virtual int BlockSize()
 		{
 			return _sourceDb.BlockSize();
@@ -463,6 +425,11 @@ namespace Db4objects.Db4o.Defragment
 		public virtual int SourceAddressByID(int sourceID)
 		{
 			return CommittedSlot(Sourcedb, sourceID).Address();
+		}
+
+		public virtual int TargetAddressByID(int sourceID)
+		{
+			return _mapping.AddressForId(sourceID);
 		}
 
 		public virtual bool Accept(IStoredClass klass)

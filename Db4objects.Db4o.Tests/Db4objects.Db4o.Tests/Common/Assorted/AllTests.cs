@@ -25,15 +25,15 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				), typeof(GetSingleSimpleArrayTestCase), typeof(HandlerRegistryTestCase), typeof(
 				IndexCreateDropTestCase), typeof(IndexedBlockSizeQueryTestCase), typeof(InvalidOffsetInDeleteTestCase
 				), typeof(KnownClassesTestCase), typeof(LazyObjectReferenceTestCase), typeof(LockedTreeTestCase
-				), typeof(LongLinkedListTestCase), typeof(MultiDeleteTestCase), typeof(ObjectUpdateFileSizeTestCase
-				), typeof(ObjectConstructorTestCase), typeof(ObjectContainerMemberTestCase), typeof(
-				PlainObjectTestCase), typeof(PeekPersistedTestCase), typeof(PersistentIntegerArrayTestCase
-				), typeof(PersistStaticFieldValuesTestCase), typeof(PreventMultipleOpenTestCase)
-				, typeof(QueryByInterface), typeof(ReAddCascadedDeleteTestCase), typeof(RepeatDeleteReaddTestCase
-				), typeof(RollbackDeleteTestCase), typeof(RollbackTestCase), typeof(RollbackUpdateTestCase
-				), typeof(RollbackUpdateCascadeTestCase), typeof(SimplestPossibleNullMemberTestCase
-				), typeof(SimplestPossibleTestCase), typeof(SimplestPossibleParentChildTestCase)
-				, typeof(SystemInfoTestCase), typeof(TransientCloneTestCase), typeof(UnknownReferenceDeactivationTestCase
+				), typeof(LongLinkedListTestCase), typeof(ManyRollbacksTestCase), typeof(MultiDeleteTestCase
+				), typeof(ObjectUpdateFileSizeTestCase), typeof(ObjectConstructorTestCase), typeof(
+				ObjectContainerMemberTestCase), typeof(PlainObjectTestCase), typeof(PeekPersistedTestCase
+				), typeof(PersistentIntegerArrayTestCase), typeof(PersistStaticFieldValuesTestSuite
+				), typeof(PreventMultipleOpenTestCase), typeof(QueryByInterface), typeof(ReAddCascadedDeleteTestCase
+				), typeof(RepeatDeleteReaddTestCase), typeof(RollbackDeleteTestCase), typeof(RollbackTestCase
+				), typeof(RollbackUpdateTestCase), typeof(RollbackUpdateCascadeTestCase), typeof(
+				SimplestPossibleNullMemberTestCase), typeof(SimplestPossibleTestCase), typeof(SimplestPossibleParentChildTestCase
+				), typeof(SystemInfoTestCase), typeof(TransientCloneTestCase), typeof(UnknownReferenceDeactivationTestCase
 				), typeof(WithTransactionTestCase) });
 		}
 

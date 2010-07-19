@@ -3,7 +3,6 @@
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Btree
@@ -13,7 +12,7 @@ namespace Db4objects.Db4o.Internal.Btree
 	{
 		private readonly IIndexable4 _valueHandler;
 
-		private readonly IntHandler _parentIdHandler;
+		private readonly IDHandler _parentIdHandler;
 
 		public FieldIndexKeyHandler(IIndexable4 delegate_)
 		{
@@ -77,13 +76,13 @@ namespace Db4objects.Db4o.Internal.Btree
 				, source.Value());
 			IPreparedComparison preparedParentIdComparison = _parentIdHandler.NewPrepareCompare
 				(source.ParentID());
-			return new _IPreparedComparison_68(preparedValueComparison, preparedParentIdComparison
+			return new _IPreparedComparison_67(preparedValueComparison, preparedParentIdComparison
 				);
 		}
 
-		private sealed class _IPreparedComparison_68 : IPreparedComparison
+		private sealed class _IPreparedComparison_67 : IPreparedComparison
 		{
-			public _IPreparedComparison_68(IPreparedComparison preparedValueComparison, IPreparedComparison
+			public _IPreparedComparison_67(IPreparedComparison preparedValueComparison, IPreparedComparison
 				 preparedParentIdComparison)
 			{
 				this.preparedValueComparison = preparedValueComparison;

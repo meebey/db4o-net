@@ -10,10 +10,11 @@ namespace Db4oUnit.Tests
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(TestExceptionWithInnerCause), typeof(AssertTestCase), 
-				typeof(CompositeTestListenerTestCase), typeof(ExceptionInTearDownDoesNotShadowTestCase
-				), typeof(FrameworkTestCase), typeof(ReflectionTestSuiteBuilderTestCase), typeof(
-				ReinstantiatePerMethodTest), typeof(TestLifeCycleTestCase), typeof(TestRunnerTestCase
+			return new Type[] { typeof(AssertTestCase), typeof(ClassLevelFixtureTestTestCase)
+				, typeof(CompositeTestListenerTestCase), typeof(ExceptionInTearDownDoesNotShadowTestCase
+				), typeof(FrameworkTestCase), typeof(OpaqueTestSuiteFailureTestCase), typeof(OpaqueTestSuiteTestCase
+				), typeof(ReflectionTestSuiteBuilderTestCase), typeof(ReinstantiatePerMethodTest
+				), typeof(TestExceptionWithInnerCause), typeof(TestLifeCycleTestCase), typeof(TestRunnerTestCase
 				), typeof(Db4oUnit.Tests.Data.AllTests), typeof(Db4oUnit.Tests.Fixtures.AllTests
 				) };
 		}

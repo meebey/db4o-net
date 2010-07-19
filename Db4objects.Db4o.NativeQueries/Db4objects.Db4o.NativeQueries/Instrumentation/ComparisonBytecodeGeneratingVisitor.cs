@@ -142,7 +142,6 @@ namespace Db4objects.Db4o.NativeQueries.Instrumentation
 				default:
 				{
 					throw new Exception("Unknown operand: " + operand.Op());
-					break;
 				}
 			}
 			Box(_opClass, !oldInArithmetic);

@@ -126,9 +126,13 @@ namespace Db4objects.Db4o.Internal.Config
 			}
 		}
 
-		public virtual void AsynchronousSync(bool flag)
+		public virtual bool AsynchronousSync
 		{
-			_config.AsynchronousSync(flag);
+			set
+			{
+				bool flag = value;
+				_config.AsynchronousSync(flag);
+			}
 		}
 	}
 }

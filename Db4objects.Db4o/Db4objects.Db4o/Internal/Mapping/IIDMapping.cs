@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Internal.Mapping
 		/// <exception cref="MappingNotFoundException">if the given id does not refer to a system handler or the empty reference (0) and if no mapping is found
 		/// 	</exception>
 		/// <exception cref="Db4objects.Db4o.Internal.Mapping.MappingNotFoundException"></exception>
-		int MappedID(int oldID);
+		int StrictMappedID(int oldID);
 
 		void MapIDs(int oldID, int newID, bool isClassID);
 	}

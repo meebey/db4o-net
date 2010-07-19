@@ -49,18 +49,8 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 			private void AssertMapping(bool useClassId)
 			{
 				_idMapping.MapId(1, 2, useClassId);
-				int mappedId = _idMapping.MappedId(1, useClassId);
+				int mappedId = _idMapping.MappedId(1);
 				Assert.AreEqual(2, mappedId);
-			}
-
-			public virtual void TestLenientMapping()
-			{
-				_idMapping.MapId(10, 20, false);
-				_idMapping.MapId(30, 50, false);
-				int mappedId = _idMapping.MappedId(2, false);
-				Assert.AreEqual(0, mappedId);
-				mappedId = _idMapping.MappedId(20, true);
-				Assert.AreEqual(30, mappedId);
 			}
 
 			public virtual void TestSlotMapping()
@@ -77,13 +67,13 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 					_idMapping.MapId(testableIdSlotMapping._id, testableIdSlotMapping.Slot());
 				}
 				IList actual = new ArrayList();
-				_idMapping.SlotChanges().Accept(new _IVisitor4_75(actual));
+				_idMapping.SlotChanges().Accept(new _IVisitor4_66(actual));
 				IteratorAssert.SameContent(expected, actual);
 			}
 
-			private sealed class _IVisitor4_75 : IVisitor4
+			private sealed class _IVisitor4_66 : IVisitor4
 			{
-				public _IVisitor4_75(IList actual)
+				public _IVisitor4_66(IList actual)
 				{
 					this.actual = actual;
 				}
