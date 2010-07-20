@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 
 			public class PsfvHelper
 			{
-				private string name;
+				public string name;
 
 				public PsfvHelper(string name) : base()
 				{

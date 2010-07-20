@@ -7,6 +7,7 @@ using Db4objects.Db4o.Consistency;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
@@ -70,17 +71,21 @@ namespace Db4objects.Db4o.Consistency
 
 			internal readonly IList invalidObjectIds;
 
-			public ConsistencyReport(IList bogusSlots, IList overlaps, IList invalidClassIds)
+			internal readonly IList invalidFieldIndexEntries;
+
+			public ConsistencyReport(IList bogusSlots, IList overlaps, IList invalidClassIds, 
+				IList invalidFieldIndexEntries)
 			{
 				this.bogusSlots = bogusSlots;
 				this.overlaps = overlaps;
 				this.invalidObjectIds = invalidClassIds;
+				this.invalidFieldIndexEntries = invalidFieldIndexEntries;
 			}
 
 			public virtual bool Consistent()
 			{
 				return bogusSlots.Count == 0 && overlaps.Count == 0 && invalidObjectIds.Count == 
-					0;
+					0 && invalidFieldIndexEntries.Count == 0;
 			}
 
 			public override string ToString()
@@ -91,11 +96,14 @@ namespace Db4objects.Db4o.Consistency
 				}
 				StringBuilder message = new StringBuilder("INCONSISTENCIES DETECTED\n").Append(overlaps
 					.Count + " overlaps\n").Append(bogusSlots.Count + " bogus slots\n").Append(invalidObjectIds
-					.Count + " invalid class ids\n");
+					.Count + " invalid class ids\n").Append(invalidFieldIndexEntries.Count + " invalid field index entries\n"
+					);
 				message.Append("(slot lengths are non-blocked)\n");
 				AppendInconsistencyReport(message, "OVERLAPS", overlaps);
 				AppendInconsistencyReport(message, "BOGUS SLOTS", bogusSlots);
 				AppendInconsistencyReport(message, "INVALID OBJECT IDS", invalidObjectIds);
+				AppendInconsistencyReport(message, "INVALID FIELD INDEX ENTRIES", invalidFieldIndexEntries
+					);
 				return message.ToString();
 			}
 
@@ -131,7 +139,7 @@ namespace Db4objects.Db4o.Consistency
 			MapIdSystem();
 			MapFreespace();
 			return new ConsistencyChecker.ConsistencyReport(bogusSlots, CollectOverlaps(), CheckClassIndices
-				());
+				(), CheckFieldIndices());
 		}
 
 		private IList CheckClassIndices()
@@ -151,42 +159,118 @@ namespace Db4objects.Db4o.Consistency
 					continue;
 				}
 				BTreeClassIndexStrategy index = (BTreeClassIndexStrategy)clazz.Index();
-				index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_123(idSystem, invalidIds
-					, clazz));
+				index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_132(this, invalidIds, clazz
+					));
 			}
 			return invalidIds;
 		}
 
-		private sealed class _IVisitor4_123 : IVisitor4
+		private sealed class _IVisitor4_132 : IVisitor4
 		{
-			public _IVisitor4_123(IIdSystem idSystem, IList invalidIds, ClassMetadata clazz)
+			public _IVisitor4_132(ConsistencyChecker _enclosing, IList invalidIds, ClassMetadata
+				 clazz)
 			{
-				this.idSystem = idSystem;
+				this._enclosing = _enclosing;
 				this.invalidIds = invalidIds;
 				this.clazz = clazz;
 			}
 
 			public void Visit(object id)
 			{
-				try
-				{
-					Slot slot = idSystem.CommittedSlot((((int)id)));
-					if (Slot.IsNull(slot))
-					{
-						invalidIds.Add(new Pair(clazz.GetName(), ((int)id)));
-					}
-				}
-				catch (InvalidIDException)
+				if (!this._enclosing.IdIsValid((((int)id))))
 				{
 					invalidIds.Add(new Pair(clazz.GetName(), ((int)id)));
 				}
 			}
 
-			private readonly IIdSystem idSystem;
+			private readonly ConsistencyChecker _enclosing;
 
 			private readonly IList invalidIds;
 
 			private readonly ClassMetadata clazz;
+		}
+
+		private IList CheckFieldIndices()
+		{
+			IList invalidIds = new ArrayList();
+			ClassMetadataIterator clazzIter = _db.ClassCollection().Iterator();
+			while (clazzIter.MoveNext())
+			{
+				ClassMetadata clazz = clazzIter.CurrentClass();
+				clazz.TraverseDeclaredFields(new _IProcedure4_148(this, invalidIds, clazz));
+			}
+			return invalidIds;
+		}
+
+		private sealed class _IProcedure4_148 : IProcedure4
+		{
+			public _IProcedure4_148(ConsistencyChecker _enclosing, IList invalidIds, ClassMetadata
+				 clazz)
+			{
+				this._enclosing = _enclosing;
+				this.invalidIds = invalidIds;
+				this.clazz = clazz;
+			}
+
+			public void Apply(object field)
+			{
+				if (!((FieldMetadata)field).HasIndex())
+				{
+					return;
+				}
+				BTree fieldIndex = ((FieldMetadata)field).GetIndex(this._enclosing._db.SystemTransaction
+					());
+				fieldIndex.TraverseKeys(this._enclosing._db.SystemTransaction(), new _IVisitor4_154
+					(this, invalidIds, clazz, field));
+			}
+
+			private sealed class _IVisitor4_154 : IVisitor4
+			{
+				public _IVisitor4_154(_IProcedure4_148 _enclosing, IList invalidIds, ClassMetadata
+					 clazz, object field)
+				{
+					this._enclosing = _enclosing;
+					this.invalidIds = invalidIds;
+					this.clazz = clazz;
+					this.field = field;
+				}
+
+				public void Visit(object fieldIndexKey)
+				{
+					int parentID = ((FieldIndexKey)fieldIndexKey).ParentID();
+					if (!this._enclosing._enclosing.IdIsValid(parentID))
+					{
+						invalidIds.Add(new Pair(clazz.GetName() + "#" + ((FieldMetadata)field).GetName(), 
+							parentID));
+					}
+				}
+
+				private readonly _IProcedure4_148 _enclosing;
+
+				private readonly IList invalidIds;
+
+				private readonly ClassMetadata clazz;
+
+				private readonly object field;
+			}
+
+			private readonly ConsistencyChecker _enclosing;
+
+			private readonly IList invalidIds;
+
+			private readonly ClassMetadata clazz;
+		}
+
+		private bool IdIsValid(int id)
+		{
+			try
+			{
+				return !Slot.IsNull(_db.IdSystem().CommittedSlot(id));
+			}
+			catch (InvalidIDException)
+			{
+				return false;
+			}
 		}
 
 		private IList CollectOverlaps()
@@ -194,13 +278,13 @@ namespace Db4objects.Db4o.Consistency
 			IBlockConverter blockConverter = _db.BlockConverter();
 			IList overlaps = new ArrayList();
 			ByRef prevSlot = ByRef.NewInstance();
-			mappings.Traverse(new _IVisitor4_144(prevSlot, blockConverter, overlaps));
+			mappings.Traverse(new _IVisitor4_181(prevSlot, blockConverter, overlaps));
 			return overlaps;
 		}
 
-		private sealed class _IVisitor4_144 : IVisitor4
+		private sealed class _IVisitor4_181 : IVisitor4
 		{
-			public _IVisitor4_144(ByRef prevSlot, IBlockConverter blockConverter, IList overlaps
+			public _IVisitor4_181(ByRef prevSlot, IBlockConverter blockConverter, IList overlaps
 				)
 			{
 				this.prevSlot = prevSlot;
@@ -234,12 +318,12 @@ namespace Db4objects.Db4o.Consistency
 
 		private void MapFreespace()
 		{
-			_db.FreespaceManager().Traverse(new _IVisitor4_159(this));
+			_db.FreespaceManager().Traverse(new _IVisitor4_196(this));
 		}
 
-		private sealed class _IVisitor4_159 : IVisitor4
+		private sealed class _IVisitor4_196 : IVisitor4
 		{
-			public _IVisitor4_159(ConsistencyChecker _enclosing)
+			public _IVisitor4_196(ConsistencyChecker _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -262,13 +346,13 @@ namespace Db4objects.Db4o.Consistency
 			IIdSystem idSystem = _db.IdSystem();
 			if (idSystem is BTreeIdSystem)
 			{
-				((BTreeIdSystem)idSystem).TraverseIds(new _IVisitor4_172(this));
+				((BTreeIdSystem)idSystem).TraverseIds(new _IVisitor4_209(this));
 			}
 		}
 
-		private sealed class _IVisitor4_172 : IVisitor4
+		private sealed class _IVisitor4_209 : IVisitor4
 		{
-			public _IVisitor4_172(ConsistencyChecker _enclosing)
+			public _IVisitor4_209(ConsistencyChecker _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
