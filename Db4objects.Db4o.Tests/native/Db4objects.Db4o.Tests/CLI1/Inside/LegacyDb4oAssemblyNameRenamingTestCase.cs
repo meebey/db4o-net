@@ -23,7 +23,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Inside
 
 		public void TestLegacyDb4oAssemblyNames()
 		{
-			AssertNameRead("desktop, db4o", "desktop, Db4objects.Db4o");
 			AssertNameRead("desktop.1, db4o-4.0-net1", "desktop.1, Db4objects.Db4o");
 			AssertNameRead("cf1, db4o-4.0-compact1", "cf1, Db4objects.Db4o");
 		}

@@ -76,7 +76,7 @@ namespace Db4objects.Db4o.Internal
 			return typeof(Platform4).Assembly.GetName().Name;
 		}
 		
-		private static readonly string[] oldAssemblyNames = new string[] { "db4o", "db4o-4.0-net1", "db4o-4.0-compact1" };
+		private static readonly string[] oldAssemblyNames = new string[] { "db4o-4.0-net1", "db4o-4.0-compact1" };
 		private static readonly byte[][] oldAssemblies;
 
 		private static readonly string[][] NamespaceRenamings = new string[][]

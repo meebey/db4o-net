@@ -282,7 +282,11 @@ namespace Db4objects.Db4o.Tests.CLI1
 			configuration.ExceptionsOnNotStorable(false);
             configuration.AllowVersionUpdates(true);
             configuration.AddAlias(new WildcardAlias("*GenerateDb4o52File", "*" + GetType().Assembly.GetName().Name));
-            IObjectClass itemConfig = configuration.ObjectClass(typeof(Db4o52Regression.Item));
+
+			configuration.AddAlias(new WildcardAlias("com.db4o.ext.*, db4o", "Db4objects.Db4o.Ext.*, Db4objects.Db4o"));
+			configuration.AddAlias(new WildcardAlias("com.db4o.*, db4o", "Db4objects.Db4o.*, Db4objects.Db4o"));
+            
+			IObjectClass itemConfig = configuration.ObjectClass(typeof(Db4o52Regression.Item));
             itemConfig.ObjectField("_name").Indexed(true);
             return configuration;
         }
