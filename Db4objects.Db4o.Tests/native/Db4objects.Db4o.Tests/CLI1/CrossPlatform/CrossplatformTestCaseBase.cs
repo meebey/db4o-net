@@ -254,7 +254,7 @@ public class ClientCrossPlatform {
 						exceptions.Push(e);
 					}
 				}
-				Cool.SleepIgnoringInterruption(timeToWait);
+				Runtime4.Sleep(timeToWait);
 				if (i == 10)
 				{
 					timeToWait = 1000;
