@@ -9,9 +9,9 @@ using Db4oUnit.Mocking;
 
 namespace Db4objects.Db4o.Linq.Tests.Caching
 {
-	class GenericCacheFactoryTestCase : ITestCase
+	public class GenericCacheFactoryTestCase : ITestCase
 	{
-		class Cache4Mock : ICache4
+		public class Cache4Mock : ICache4
 		{
 			private readonly MethodCallRecorder _recorder = new MethodCallRecorder();
 

@@ -6,8 +6,8 @@ namespace Db4objects.Db4o.Linq.Tests.CodeAnalysis
 	{
 		public class Person
 		{
-			private string _name;
-			private int _age;
+			public string _name;
+			public int _age;
 
 			public string Name
 			{

@@ -15,7 +15,11 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 	internal class QueryPrettyPrinter
 	{
 		private readonly StringBuilder _builder = new StringBuilder();
-		private readonly HashSet<QConJoin> _visitedJoins = new HashSet<QConJoin>();
+#if SILVERLIGHT
+        private readonly IDictionary<QConJoin, QConJoin> _visitedJoins = new Dictionary<QConJoin, QConJoin>();
+#else
+        private readonly HashSet<QConJoin> _visitedJoins = new HashSet<QConJoin>();
+#endif
 
 		public QueryPrettyPrinter(IQuery query)
 		{
@@ -110,13 +114,21 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 
 		protected virtual void Visit(QConJoin join)
 		{
+#if SILVERLIGHT
+            if (_visitedJoins.ContainsKey(join)) return;
+#else
 			if (_visitedJoins.Contains(join)) return;
+#endif
 			_builder.Append("(");
 			VisitJoinBranch(join.Constraint2());
 			_builder.AppendFormat(" {0} ", join.IsOr() ? "or" : "and");
 			VisitJoinBranch(join.Constraint1());
 			_builder.Append(")");
+#if SILVERLIGHT
+            _visitedJoins.Add(join, join);
+#else
 			_visitedJoins.Add(join);
+#endif
 		}
 
 		private void VisitJoinBranch(QCon branch)
@@ -165,7 +177,7 @@ namespace Db4objects.Db4o.Linq.Tests.Queries
 			{
 				case "QEMulti":
 				{
-					StringBuilder sb = new StringBuilder();
+					var sb = new StringBuilder();
 					foreach (QE qe in ((QEMulti)evaluator).Evaluators())
 					{
 						sb.Append(EvaluatorToString(qe));

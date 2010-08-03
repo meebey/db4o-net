@@ -2,7 +2,7 @@
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-	class QueryReuseTestCase : AbstractDb4oLinqTestCase
+	public class QueryReuseTestCase : AbstractDb4oLinqTestCase
 	{
 		public class Item
 		{

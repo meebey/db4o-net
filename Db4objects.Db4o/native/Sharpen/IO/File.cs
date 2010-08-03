@@ -111,8 +111,12 @@ namespace Sharpen.IO
 
 		public string[] List()
 		{
+#if SILVERLIGHT
+            throw new NotImplementedException();
+#else
 			return Directory.GetFiles(_path);
-		}
+#endif
+        }
 
 		public bool Mkdir()
 		{

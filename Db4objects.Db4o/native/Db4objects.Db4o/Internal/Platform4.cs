@@ -623,7 +623,7 @@ namespace Db4objects.Db4o.Internal
             container.Handlers.RegisterNetTypeHandler(dateTimeHandler);
             container.Handlers.RegisterHandlerVersion(dateTimeHandler, 6, new DateTimeHandler6());
 
-#if !CF && !SILVERLIGHT
+#if !CF
         	DateTimeOffsetTypeHandler dateTimeOffsetHandler = new DateTimeOffsetTypeHandler();
         	container.ConfigImpl.RegisterTypeHandler(new SingleClassTypeHandlerPredicate(typeof(DateTimeOffset)), dateTimeOffsetHandler);
 			container.Handlers.RegisterHandlerVersion(dateTimeOffsetHandler, 9, new StandardReferenceTypeHandler());

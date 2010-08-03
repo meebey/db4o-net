@@ -4,7 +4,7 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-	class UntypedQueryTestCase : AbstractDb4oLinqTestCase
+	public class UntypedQueryTestCase : AbstractDb4oLinqTestCase
 	{
 		private static object[] People = {
 											new Person("adriano"),
@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Linq.Tests
 		}
 	}
 
-	class Person
+	public class Person
 	{
 		public string Name;
 

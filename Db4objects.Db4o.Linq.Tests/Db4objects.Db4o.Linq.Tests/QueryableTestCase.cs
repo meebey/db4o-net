@@ -8,7 +8,7 @@ using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-	class QueryableTestCase : AbstractDb4oLinqTestCase
+	public class QueryableTestCase : AbstractDb4oLinqTestCase
 	{
 #if !CF_3_5
 		public class Person

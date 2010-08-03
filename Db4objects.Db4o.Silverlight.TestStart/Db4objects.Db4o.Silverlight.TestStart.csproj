@@ -83,6 +83,10 @@
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Db4objects.Db4o.Linq.Tests\Db4objects.Db4o.Linq.Tests-Silverlight-2008.csproj">
+      <Project>{66106A5C-4C38-4680-BDB0-38F39BE3D3A9}</Project>
+      <Name>Db4objects.Db4o.Linq.Tests-Silverlight-2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Db4objects.Db4o.Tests\Db4objects.Db4o.Tests-Silverlight-2008.csproj">
       <Project>{C388ABDD-CB2C-4438-8942-C3A935AC8E2D}</Project>
       <Name>Db4objects.Db4o.Tests-Silverlight-2008</Name>

@@ -15,17 +15,26 @@ namespace Db4objects.Db4o.Linq.Tests
 {
 	public abstract class AbstractDb4oLinqTestCase : AbstractDb4oTestCase
 	{
+#if SILVERLIGHT && NET_3_5
 		public static void AssertSet<T>(IEnumerable<T> expected, IEnumerable<T> actual)
 		{
-			var expectedSet = new HashSet<T>(expected);
+			var message = string.Format("Expected {0}, got {1}", Iterators.ToString(expected), Iterators.ToString(actual));
+			Assert.AreEqual(expected.Count(), actual.Count(), message);
+            Iterator4Assert.SameContent(expected.GetEnumerator(), actual.GetEnumerator());
+		}
+#else
+		public static void AssertSet<T>(IEnumerable<T> expected, IEnumerable<T> actual)
+		{
+            var expectedSet = new HashSet<T>(expected);
 			var actualSet = new HashSet<T>(actual);
 
 			var message = string.Format("Expected {0}, got {1}", Iterators.ToString(expectedSet), Iterators.ToString(actualSet));
 			Assert.AreEqual(expectedSet.Count, actualSet.Count, message);
 			Assert.IsTrue(expectedSet.SetEquals(actualSet), message);
 		}
+#endif
 
-		public static void AssertSequence<T>(IEnumerable<T> expected, IEnumerable<T> candidate)
+        public static void AssertSequence<T>(IEnumerable<T> expected, IEnumerable<T> candidate)
 		{
 			Iterator4Assert.AreEqual(expected.GetEnumerator(), candidate.GetEnumerator());
 		}

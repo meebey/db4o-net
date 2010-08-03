@@ -6,7 +6,7 @@ namespace Db4objects.Db4o.Linq.Tests
 {
 	public class CollectionContainsObjectTestCase : AbstractDb4oLinqTestCase
 	{
-		class Role
+	    public class Role
 		{
 			public Role(string id)
 			{
@@ -36,10 +36,10 @@ namespace Db4objects.Db4o.Linq.Tests
 				return Id.GetHashCode();
 			}
 			
-			private readonly string _id;
+			public string _id;
 		}
 
-		abstract class Person
+		abstract public class Person
 		{
 			protected abstract IEnumerable<Role> GetRoles();
 
@@ -63,9 +63,9 @@ namespace Db4objects.Db4o.Linq.Tests
 			}
 		}
 
-		class IListPerson : Person
+		public class IListPerson : Person
 		{
-			public readonly IList<Role> Roles;
+			public IList<Role> Roles;
 
 			public IListPerson(IList<Role> roles)
 			{
@@ -78,9 +78,9 @@ namespace Db4objects.Db4o.Linq.Tests
 			}
 		}
 
-		class ArrayPerson : Person
+		public class ArrayPerson : Person
 		{
-			public readonly Role[] Roles;
+			public Role[] Roles;
 
 			public ArrayPerson(Role[] roles)
 			{

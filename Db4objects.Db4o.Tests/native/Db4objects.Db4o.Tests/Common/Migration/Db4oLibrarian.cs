@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
@@ -18,6 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		public Db4oLibrary[] Libraries()
 		{
+#if !SILVERLIGHT
             List <Db4oLibrary> libraries = new List<Db4oLibrary>();
 			foreach (string path in Directory.GetDirectories(LibraryPath()))
 			{
@@ -30,6 +33,9 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				libraries.Add(ForFile(db4oLib));
 			}
 			return libraries.ToArray();
+#else
+            throw new NotImplementedException();
+#endif
 		}
 
 		private static bool IsVersionOrGreater(string path, string minimumVersion)
@@ -66,8 +72,12 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 		private static string FindLibraryFile(string directory)
 		{
-			string[] found = Directory.GetFiles(directory, "*.dll");
+#if !SILVERLIGHT
+            string[] found = Directory.GetFiles(directory, "*.dll");
 			return found.Length == 1 ? found[0] : null;
+#else
+            throw new NotImplementedException();
+#endif
 		}
 
 		private Db4oLibraryEnvironment EnvironmentFor(string db4oLib)

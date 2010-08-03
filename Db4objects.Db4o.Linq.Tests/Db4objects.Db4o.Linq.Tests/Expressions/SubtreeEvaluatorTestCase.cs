@@ -12,7 +12,7 @@ namespace Db4objects.Db4o.Linq.Tests.Expressions
 {
 	public class SubtreeEvaluatorTestCase : AbstractDb4oTestCase
 	{
-		class Parameter
+		public class Parameter
 		{
 			public int ID { get; set; }
 		}

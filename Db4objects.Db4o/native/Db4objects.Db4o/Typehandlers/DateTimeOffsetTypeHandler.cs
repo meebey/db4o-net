@@ -1,5 +1,5 @@
 ﻿/* Copyright (C) 2009  Versant Inc.  http://www.db4o.com */
-#if !CF && !SILVERLIGHT
+#if !CF
 using System;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;

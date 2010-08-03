@@ -2,10 +2,11 @@
 using System;
 using System.Linq;
 using Db4objects.Db4o.Config;
+using Db4oUnit.Extensions.Fixtures;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-	class DateTimeOffsetQueryTestCase : AbstractDb4oLinqTestCase
+	public class DateTimeOffsetQueryTestCase : AbstractDb4oLinqTestCase, IOptOutSilverlight
 	{
 #if !CF
 		protected override void Configure(IConfiguration config)
@@ -48,7 +49,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				from candidate in Items where ((DateTimeOffset)candidate.Untyped) > now select candidate);
 		}
 
-		private class Item
+		public class Item
 		{
 			public Item(DateTimeOffset dateTimeOffset)
 			{
@@ -88,9 +89,9 @@ namespace Db4objects.Db4o.Linq.Tests
 				return untyped.GetHashCode() + indexed.GetHashCode() + nonIndexed.GetHashCode();
 			}
 
-			private readonly DateTimeOffset indexed;
-			private readonly DateTimeOffset nonIndexed;
-			private readonly object untyped;
+			public DateTimeOffset indexed;
+            public DateTimeOffset nonIndexed;
+            public object untyped;
 		}
 
 		private static Item[] Items = new[]

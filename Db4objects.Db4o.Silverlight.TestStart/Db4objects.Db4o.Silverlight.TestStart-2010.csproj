@@ -2,6 +2,8 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    
+    
   <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -14,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Db4objects.Db4o.Silverlight.TestStart</RootNamespace>
     <AssemblyName>Db4objects.Db4o.Silverlight.TestStart</AssemblyName>
-    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightApplication>true</SilverlightApplication>
     <SupportedCultures>
     </SupportedCultures>
@@ -37,6 +39,7 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation/>
+    <TargetFrameworkProfile/>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,6 +105,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Db4objects.Db4o.Linq.Tests\Db4objects.Db4o.Linq.Tests-Silverlight-2010.csproj">
+      <Project>{C53361EB-4B4F-4D0F-9ECC-8F216F15A705}</Project>
+      <Name>Db4objects.Db4o.Linq.Tests-Silverlight-2010</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Db4objects.Db4o.Optional\Db4objects.Db4o.Optional-Silverlight-2010.csproj">
       <Project>{97B6DEA6-255B-4B49-8973-38943AC2E70C}</Project>
       <Name>Db4objects.Db4o.Optional-Silverlight-2010</Name>

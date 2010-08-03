@@ -23,6 +23,7 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			{
 				Type[] testCases = new[]
 				                   	{
+				                   		typeof(Linq.Tests.AllTests),
 				                   		typeof(Tests.Common.AllTests), 
 										typeof(Tests.CLI1.AllTests),
 										typeof(Tests.CLI2.AllTests),
@@ -53,7 +54,7 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			return new Db4oTestSuiteBuilder(new SilverlightFixture(), testCases);
 		}
 
-		private void increaseDiskQuota_Click(object sender, System.Windows.RoutedEventArgs e)
+		private void OnIncreaseDiskQuotaClick(object sender, System.Windows.RoutedEventArgs e)
 		{
 			var isolatedStorageManager = IsolatedStorageFile.GetUserStoreForApplication();
 			isolatedStorageManager.IncreaseQuotaTo(1024*1024*100);

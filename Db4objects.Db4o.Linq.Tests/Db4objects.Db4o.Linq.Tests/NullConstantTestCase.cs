@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-	class Item
+    public class Item
 	{
 		public Item(string id) : this(id, null)
 		{

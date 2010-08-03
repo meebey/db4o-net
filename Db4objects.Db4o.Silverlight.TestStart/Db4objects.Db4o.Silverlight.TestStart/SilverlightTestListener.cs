@@ -87,7 +87,8 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 		{
 			Dispatch(delegate
 			{
-				object result = HtmlPage.Window.Eval(functionName + "(" + ToStringArgumentList(args) + ");");
+			    string code = functionName + "(" + ToStringArgumentList(args) + ");";
+			    object result = HtmlPage.Window.Eval(code);
 				if (result != null)
 				{
 					_latestAppended = result;
@@ -98,9 +99,14 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 
 		private static string ToStringArgumentList(IEnumerable<object> objects)
 		{
-			string arguments = objects.Aggregate("", (acc, current) => acc + "," + AddQuotes(current.ToJScriptString()));
+			string arguments = objects.Aggregate("", (acc, current) => acc + "," + AddQuotes(RemoveInternalQuotes(current.ToJScriptString())));
 			return RemoveExtraCommaAtStart(arguments);
 		}
+
+	    private static string RemoveInternalQuotes(string source)
+	    {
+	        return source.Replace('"', '\'');
+	    }
 
 		private static string AddQuotes(object item)
 		{

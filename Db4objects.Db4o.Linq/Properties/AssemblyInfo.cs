@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 [assembly: AssemblyTitle("Db4objects.Db4o.Linq")]
-[assembly: AssemblyDescription("Db4objects.Db4o.Linq 8.0.156.14430 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Db4o.Linq 8.0.158.42 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -16,9 +16,9 @@ using System.Security;
 
 [assembly: ComVisible (false)]
 
-[assembly: AssemblyVersion("8.0.156.14430")]
+[assembly: AssemblyVersion("8.0.158.42")]
 
-#if !CF
+#if !CF &&!SILVERLIGHT
 [assembly: AllowPartiallyTrustedCallers]
 #endif
 

@@ -7,7 +7,7 @@ using Db4oUnit;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-    class ByteQueryTestCase : AbstractDb4oLinqTestCase
+    public class ByteQueryTestCase : AbstractDb4oLinqTestCase
     {
         public class Item
         {

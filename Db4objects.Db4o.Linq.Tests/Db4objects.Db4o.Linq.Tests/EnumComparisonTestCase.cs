@@ -5,18 +5,18 @@ using System.Collections.Generic;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-    class EnumComparisonTestCase : AbstractDb4oLinqTestCase
+    public class EnumComparisonTestCase : AbstractDb4oLinqTestCase
     {
         #region Test Subject
 
-        internal enum Sex
+        public enum Sex
         {
             Undefined,
             Male,
             Female,
         }
 
-        internal enum Style : ulong
+        public enum Style : ulong
         {
             Undefined,
             Fashion,
@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Linq.Tests
             Traditional,
         }
         
-        internal class Person
+        public class Person
         {
             public Person(string name, Sex sex, Style style)
             {
@@ -72,9 +72,9 @@ namespace Db4objects.Db4o.Linq.Tests
 
         	public Style StyleField;
 
-            private readonly string _name;
-            private readonly Sex _sex;
-            private readonly Style _style;
+            public string _name;
+            public Sex _sex;
+            public Style _style;
         }
 
         private static Person[] Persons = new[] 

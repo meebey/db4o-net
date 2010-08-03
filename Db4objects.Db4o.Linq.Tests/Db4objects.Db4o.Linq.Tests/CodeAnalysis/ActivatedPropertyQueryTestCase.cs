@@ -21,8 +21,8 @@ namespace Db4objects.Db4o.Linq.Tests.CodeAnalysis
 		[DoNotInstrument]
 		public class Person : IActivatable
 		{
-			private string _name;
-			private int _age;
+			public string _name;
+			public int _age;
 
 			public string Name
 			{

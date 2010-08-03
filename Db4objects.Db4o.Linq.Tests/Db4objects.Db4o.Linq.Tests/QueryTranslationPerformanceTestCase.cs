@@ -1,11 +1,12 @@
 ﻿/* Copyright (C) 2007 - 2008  Versant Inc.  http://www.db4o.com */
+using System;
 using System.Diagnostics;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 
 namespace Db4objects.Db4o.Linq.Tests
 {
-	class QueryTranslationPerformanceTestCase : AbstractDb4oTestCase
+	public class QueryTranslationPerformanceTestCase : AbstractDb4oTestCase
 	{
 #if CF_3_5
 		private const int TIME_LIMIT_WITH_FIRST_TIME_OVERHEAD = 6000;
@@ -29,15 +30,13 @@ namespace Db4objects.Db4o.Linq.Tests
 
 		private long TimeToTranslateQuery()
 		{
-			Stopwatch sw = new Stopwatch();
-			sw.Start();
+		    long start = DateTime.Now.Ticks;
+            var result = from TestSubject candidate in Db()
+                         where candidate.Name == "Acv"
+                         select candidate;
 
-			var result = from TestSubject candidate in Db()
-			             where candidate.Name == "Acv"
-			             select candidate;
-
-			sw.Stop();
-			return sw.ElapsedMilliseconds;
+		    long elapsedTicks = DateTime.Now.Ticks - start;
+		    return TimeSpan.FromTicks(elapsedTicks).Milliseconds;
 		}
 
 		protected override void Store()
@@ -46,7 +45,7 @@ namespace Db4objects.Db4o.Linq.Tests
 			Store(new TestSubject("Gcrav"));
 		}
 
-		class TestSubject
+		public class TestSubject
 		{
 			public TestSubject(string name)
 			{
@@ -58,7 +57,7 @@ namespace Db4objects.Db4o.Linq.Tests
 				get { return _name; }
 			}
 
-			private readonly string _name;
+			public readonly string _name;
 		}
 	}
 }
