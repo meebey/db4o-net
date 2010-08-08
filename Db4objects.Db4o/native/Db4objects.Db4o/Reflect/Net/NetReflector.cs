@@ -7,11 +7,23 @@ namespace Db4objects.Db4o.Reflect.Net
 {
 	public class NetReflector : IReflector
 	{
-		protected IReflector _parent;
+
+	    protected IReflector _parent;
 
 		private IReflectArray _array;
 		
 		private IReflectorConfiguration _config;
+
+        public NetReflector(IReflectorConfiguration config)
+        {
+            _config = config;
+        }
+
+        public NetReflector() : this(new DefaultConfiguration())
+        {
+
+        }
+
 
 		public virtual IReflectArray Array()
 		{
@@ -24,13 +36,17 @@ namespace Db4objects.Db4o.Reflect.Net
 
 		public virtual object DeepClone(object obj)
 		{
-			return new NetReflector();
+			return new NetReflector(_config);
 		}
 
 		public virtual IReflectClass ForClass(Type forType)
 		{
-            Type underlyingType = GetUnderlyingType(forType);
-			if (underlyingType.IsPrimitive)
+            if(forType == null)
+            {
+                return null;
+            }
+		    Type underlyingType = GetUnderlyingType(forType);
+            if (underlyingType.IsPrimitive)
             {
                 return CreateClass(forType);
             }
@@ -176,5 +192,19 @@ namespace Db4objects.Db4o.Reflect.Net
 			
 			return _parent;
 		}
+
+        private class DefaultConfiguration : IReflectorConfiguration
+	    {
+            public bool TestConstructors()
+            {
+                return false;
+            }
+
+            public bool CallConstructor(IReflectClass clazz)
+            {
+                return false;
+            }
+	    }
+
 	}
 }
