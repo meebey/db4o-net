@@ -1,4 +1,5 @@
-/* Copyright (C) 2007   Versant Inc.   http://www.db4o.com */
+/* Copyright (C) 2004 - 1010  Versant Inc.   http://www.db4o.com */
+using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o
@@ -30,7 +31,7 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer">IExtObjectContainer for extended functionality.
 	/// 	</seealso>
-	public interface IObjectContainer : System.IDisposable, ISodaQueryFactory
+	public interface IObjectContainer : System.IDisposable, ISodaQueryFactory, IQLinable
 	{
 		/// <summary>activates all members on a stored object to the specified depth.</summary>
 		/// <remarks>
