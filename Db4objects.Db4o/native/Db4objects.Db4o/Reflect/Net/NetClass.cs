@@ -1,6 +1,7 @@
 /* Copyright (C) 2007 Versant Inc.   http://www.db4o.com */
 using System;
 using System.Reflection;
+using Db4objects.Db4o.Internal;
 using Sharpen.Lang;
 using Db4objects.Db4o.Reflect.Core;
 
@@ -226,6 +227,10 @@ namespace Db4objects.Db4o.Reflect.Net
 			CreateConstructor();
 			return _constructor.CanBeInstantiated().DefiniteYes();
 		}
-		
+
+	    public bool IsImmutable()
+	    {
+	        return IsPrimitive() || Platform4.IsSimple(_type);
+	    }
 	}
 }
