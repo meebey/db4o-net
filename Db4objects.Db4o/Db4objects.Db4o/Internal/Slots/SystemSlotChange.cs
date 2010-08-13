@@ -19,8 +19,8 @@ namespace Db4objects.Db4o.Internal.Slots
 		}
 
 		// FIXME: If we are doing a delete, we should also free our pointer here.
-		protected override Slot ModifiedSlotInUnderlyingIdSystem(TransactionalIdSystemImpl
-			 idSystem)
+		protected override Slot ModifiedSlotInParentIdSystem(TransactionalIdSystemImpl idSystem
+			)
 		{
 			return null;
 		}

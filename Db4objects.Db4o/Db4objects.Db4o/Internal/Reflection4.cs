@@ -2,7 +2,10 @@
 
 using System;
 using System.Reflection;
+using System.Text;
+using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
+using Sharpen;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -13,6 +16,11 @@ namespace Db4objects.Db4o.Internal
 	/// </exclude>
 	public class Reflection4
 	{
+		public static object InvokeStatic(Type clazz, string methodName)
+		{
+			return Invoke(clazz, methodName, null, null, null);
+		}
+
 		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object Invoke(object obj, string methodName)
 		{
@@ -141,10 +149,17 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		/// <exception cref="System.MemberAccessException"></exception>
+		/// <exception cref="Db4objects.Db4o.Internal.ReflectException"></exception>
 		public static object GetFieldValue(object obj, string fieldName)
 		{
-			return GetField(obj.GetType(), fieldName).GetValue(obj);
+			try
+			{
+				return GetField(obj.GetType(), fieldName).GetValue(obj);
+			}
+			catch (Exception e)
+			{
+				throw new ReflectException(e);
+			}
 		}
 
 		public static object NewInstance(object template)
@@ -157,6 +172,67 @@ namespace Db4objects.Db4o.Internal
 			{
 				throw new ReflectException(e);
 			}
+		}
+
+		public static string Dump(object obj)
+		{
+			return DumpPreventRecursion(obj, new IdentitySet4(), 2);
+		}
+
+		private static string DumpPreventRecursion(object obj, IdentitySet4 dumped, int stackLimit
+			)
+		{
+			stackLimit--;
+			if (obj == null)
+			{
+				return "null";
+			}
+			Type clazz = obj.GetType();
+			if (Platform4.IsSimple(clazz))
+			{
+				return obj.ToString();
+			}
+			StringBuilder sb = new StringBuilder();
+			sb.Append(clazz.FullName);
+			sb.Append(" (");
+			sb.Append(Runtime.IdentityHashCode(obj));
+			sb.Append(")");
+			if (dumped.Contains(obj) || stackLimit <= 0)
+			{
+				return sb.ToString();
+			}
+			dumped.Add(obj);
+			FieldInfo[] fields = Sharpen.Runtime.GetDeclaredFields(clazz);
+			for (int fieldIndex = 0; fieldIndex < fields.Length; ++fieldIndex)
+			{
+				FieldInfo field = fields[fieldIndex];
+				Platform4.SetAccessible(field);
+				try
+				{
+					if (field.GetValue(null) == field.GetValue(obj))
+					{
+						continue;
+					}
+				}
+				catch (Exception)
+				{
+				}
+				// static field.getModifiers() wouldn't sharpen 
+				sb.Append("\n");
+				sb.Append("\t");
+				sb.Append(field.Name);
+				sb.Append(": ");
+				try
+				{
+					sb.Append(DumpPreventRecursion(field.GetValue(obj), dumped, stackLimit));
+				}
+				catch (Exception e)
+				{
+					sb.Append("Exception caught: ");
+					sb.Append(e);
+				}
+			}
+			return sb.ToString();
 		}
 	}
 }

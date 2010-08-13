@@ -19,9 +19,10 @@ namespace Db4objects.Db4o.Tests.Common.IO
 			return ComposeTests(new Type[] { typeof(BlockAwareBinTestSuite), typeof(MemoryBinGrowthTestCase
 				), typeof(MemoryBinIsReusableTestCase), typeof(MemoryIoAdapterTestCase), typeof(
 				NonFlushingStorageTestCase), typeof(RandomAccessFileStorageFactoryTestCase), typeof(
-				SaveAsStorageTestCase), typeof(StorageTestSuite) });
+				StorageTestSuite) });
 		}
 
+		// SaveAsStorageTestCase.class,  COR-2036
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{

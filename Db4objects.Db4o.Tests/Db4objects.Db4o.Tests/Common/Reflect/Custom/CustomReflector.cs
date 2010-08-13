@@ -12,8 +12,8 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 	/// <remarks>Type information is handled by CustomClassRepository.</remarks>
 	public class CustomReflector : IReflector
 	{
-		private readonly IReflector _delegate = Platform4.ReflectorForType(typeof(object)
-			);
+		private readonly IReflector _delegate = Platform4.ReflectorForType(typeof(Db4objects.Db4o.Tests.Common.Reflect.Custom.CustomReflector
+			));
 
 		private readonly CustomClassRepository _classRepository;
 

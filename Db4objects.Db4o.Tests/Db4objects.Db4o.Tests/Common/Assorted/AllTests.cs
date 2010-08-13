@@ -33,6 +33,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 				), typeof(RepeatDeleteReaddTestCase), typeof(RollbackDeleteTestCase), typeof(RollbackTestCase
 				), typeof(RollbackUpdateTestCase), typeof(RollbackUpdateCascadeTestCase), typeof(
 				SimplestPossibleNullMemberTestCase), typeof(SimplestPossibleTestCase), typeof(SimplestPossibleParentChildTestCase
+				), typeof(StaticFieldUpdateTestCase), typeof(StaticFieldUpdateConsistencyTestCase
 				), typeof(SystemInfoTestCase), typeof(TransientCloneTestCase), typeof(UnknownReferenceDeactivationTestCase
 				), typeof(WithTransactionTestCase) });
 		}

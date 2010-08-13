@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
+using Sharpen;
 
 namespace Db4oUnit
 {
@@ -41,6 +42,20 @@ namespace Db4oUnit
 		public static void AreEqual(object[] expected, object[] actual)
 		{
 			AreEqualImpl(expected, actual);
+		}
+
+		public static void AreEqual(string[] expected, string[] actual)
+		{
+			// JDK 1.1 needs the conversion
+			AreEqualImpl(StringArrayToObjectArray(expected), StringArrayToObjectArray(actual)
+				);
+		}
+
+		private static object[] StringArrayToObjectArray(string[] expected)
+		{
+			object[] expectedAsObject = new object[expected.Length];
+			System.Array.Copy(expected, 0, expectedAsObject, 0, expected.Length);
+			return expectedAsObject;
 		}
 
 		private static string IndexMessage(int i)

@@ -34,7 +34,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			IClientMessageDispatcher clientDispatcher = ((ClientObjectContainer)Db()).MessageDispatcher
 				();
 			clientDispatcher.Close();
-			Cool.SleepIgnoringInterruption(1000);
+			Runtime4.Sleep(1000);
 			Assert.IsFalse(serverDispatcher.IsMessageDispatcherAlive());
 		}
 	}

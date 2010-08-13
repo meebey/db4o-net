@@ -15,7 +15,8 @@ namespace Db4objects.Db4o.Tests.Common.Uuid
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(UUIDDefragmentTestCase), typeof(UUIDTestCase) };
+			return new Type[] { typeof(DeleteUUIDTestCase), typeof(UUIDDefragmentTestCase), typeof(
+				UUIDTestCase) };
 		}
 	}
 }

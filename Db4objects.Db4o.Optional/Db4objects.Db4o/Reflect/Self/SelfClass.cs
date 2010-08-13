@@ -1,6 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
+using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Self;
 
@@ -202,6 +203,11 @@ namespace Db4objects.Db4o.Reflect.Self
 		public virtual bool EnsureCanBeInstantiated()
 		{
 			return true;
+		}
+
+		public virtual bool IsImmutable()
+		{
+			return IsPrimitive() || Platform4.IsSimple(_class);
 		}
 	}
 }

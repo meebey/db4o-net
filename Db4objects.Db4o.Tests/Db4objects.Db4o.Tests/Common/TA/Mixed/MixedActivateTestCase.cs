@@ -2,7 +2,6 @@
 
 using System;
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o.Activation;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.TA;
@@ -11,7 +10,7 @@ using Db4objects.Db4o.Tests.Common.TA.Mixed;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 {
-	public class MixedActivateTestCase : ItemTestCaseBase, IOptOutTemporary
+	public class MixedActivateTestCase : ItemTestCaseBase
 	{
 		private readonly int ItemDepth = 10;
 

@@ -29,6 +29,10 @@ namespace Db4objects.Db4o.Foundation
 				object value = _value.Get();
 				return value == null ? DefaultValue() : value;
 			}
+			set
+			{
+				_value.Set(value);
+			}
 		}
 
 		protected virtual object DefaultValue()

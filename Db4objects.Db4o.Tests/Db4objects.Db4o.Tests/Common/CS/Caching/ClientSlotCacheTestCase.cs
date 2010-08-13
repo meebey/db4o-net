@@ -1,7 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 #if !SILVERLIGHT
-using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
@@ -217,7 +216,7 @@ namespace Db4objects.Db4o.Tests.Common.CS.Caching
 				clientSlotCache = (IClientSlotCache)Reflection4.GetFieldValue(Container(), "_clientSlotCache"
 					);
 			}
-			catch (MemberAccessException e)
+			catch (ReflectException e)
 			{
 				Assert.Fail("Can't get field _clientSlotCache on  container. " + e.ToString());
 			}

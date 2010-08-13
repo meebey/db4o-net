@@ -5,44 +5,44 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Tests.Common.Foundation
 {
-	public class CoolTestCase : ITestCase
+	public class Runtime4TestCase : ITestCase
 	{
 		public virtual void TestLoopWithTimeoutReturnsWhenBlockIsFalse()
 		{
 			StopWatch watch = new AutoStopWatch();
-			Cool.LoopWithTimeout(500, new _IConditionalBlock_14());
+			Runtime4.Retry(500, new _IClosure4_14());
 			Assert.IsSmaller(500, watch.Peek());
 		}
 
-		private sealed class _IConditionalBlock_14 : IConditionalBlock
+		private sealed class _IClosure4_14 : IClosure4
 		{
-			public _IConditionalBlock_14()
+			public _IClosure4_14()
 			{
 			}
 
-			public bool Run()
+			public object Run()
 			{
-				return false;
+				return true;
 			}
 		}
 
 		public virtual void TestLoopWithTimeoutReturnsAfterTimeout()
 		{
 			StopWatch watch = new AutoStopWatch();
-			Cool.LoopWithTimeout(500, new _IConditionalBlock_24());
+			Runtime4.Retry(500, new _IClosure4_24());
 			watch.Stop();
 			Assert.IsGreaterOrEqual(500, watch.Elapsed());
 		}
 
-		private sealed class _IConditionalBlock_24 : IConditionalBlock
+		private sealed class _IClosure4_24 : IClosure4
 		{
-			public _IConditionalBlock_24()
+			public _IClosure4_24()
 			{
 			}
 
-			public bool Run()
+			public object Run()
 			{
-				return true;
+				return false;
 			}
 		}
 	}

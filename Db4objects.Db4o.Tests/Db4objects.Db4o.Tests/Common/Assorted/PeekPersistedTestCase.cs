@@ -8,7 +8,7 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class PeekPersistedTestCase : AbstractDb4oTestCase, IOptOutStackOverflow
+	public class PeekPersistedTestCase : AbstractDb4oTestCase, IOptOutStackOverflowIssue
 	{
 		public sealed class Item
 		{

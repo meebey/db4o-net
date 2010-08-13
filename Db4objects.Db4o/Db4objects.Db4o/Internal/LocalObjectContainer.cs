@@ -13,10 +13,12 @@ using Db4objects.Db4o.Internal.Events;
 using Db4objects.Db4o.Internal.Fileheader;
 using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Ids;
+using Db4objects.Db4o.Internal.Qlin;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Qlin;
 using Sharpen;
 using Sharpen.Lang;
 
@@ -61,16 +63,16 @@ namespace Db4objects.Db4o.Internal
 			{
 				systemIdSystem = SystemTransaction().IdSystem();
 			}
-			IClosure4 idSystem = new _IClosure4_56(this);
+			IClosure4 idSystem = new _IClosure4_58(this);
 			ITransactionalIdSystem transactionalIdSystem = NewTransactionalIdSystem(systemIdSystem
 				, idSystem);
 			return new LocalTransaction(this, parentTransaction, transactionalIdSystem, referenceSystem
 				);
 		}
 
-		private sealed class _IClosure4_56 : IClosure4
+		private sealed class _IClosure4_58 : IClosure4
 		{
-			public _IClosure4_56(LocalObjectContainer _enclosing)
+			public _IClosure4_58(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -86,13 +88,13 @@ namespace Db4objects.Db4o.Internal
 		public virtual ITransactionalIdSystem NewTransactionalIdSystem(ITransactionalIdSystem
 			 systemIdSystem, IClosure4 idSystem)
 		{
-			return new TransactionalIdSystemImpl(new _IClosure4_67(this), idSystem, (TransactionalIdSystemImpl
+			return new TransactionalIdSystemImpl(new _IClosure4_69(this), idSystem, (TransactionalIdSystemImpl
 				)systemIdSystem);
 		}
 
-		private sealed class _IClosure4_67 : IClosure4
+		private sealed class _IClosure4_69 : IClosure4
 		{
-			public _IClosure4_67(LocalObjectContainer _enclosing)
+			public _IClosure4_69(LocalObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -445,11 +447,11 @@ namespace Db4objects.Db4o.Internal
 			return trans.IdSystem().NewId(SlotChangeFactory.UserObjects);
 		}
 
-		public override void RaiseVersion(long a_minimumVersion)
+		public override void RaiseVersion(long minimumVersion)
 		{
 			lock (Lock())
 			{
-				_timeStampIdGenerator.SetMinimumNext(a_minimumVersion);
+				_timeStampIdGenerator.SetMinimumNext(minimumVersion);
 			}
 		}
 
@@ -649,12 +651,12 @@ namespace Db4objects.Db4o.Internal
 					return;
 				}
 			}
-			_semaphoresLock.Run(new _IClosure4_568(this, trans, name));
+			_semaphoresLock.Run(new _IClosure4_570(this, trans, name));
 		}
 
-		private sealed class _IClosure4_568 : IClosure4
+		private sealed class _IClosure4_570 : IClosure4
 		{
-			public _IClosure4_568(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_570(LocalObjectContainer _enclosing, Transaction trans, string 
 				name)
 			{
 				this._enclosing = _enclosing;
@@ -686,13 +688,13 @@ namespace Db4objects.Db4o.Internal
 			if (_semaphores != null)
 			{
 				Hashtable4 semaphores = _semaphores;
-				_semaphoresLock.Run(new _IClosure4_582(this, semaphores, trans));
+				_semaphoresLock.Run(new _IClosure4_584(this, semaphores, trans));
 			}
 		}
 
-		private sealed class _IClosure4_582 : IClosure4
+		private sealed class _IClosure4_584 : IClosure4
 		{
-			public _IClosure4_582(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
+			public _IClosure4_584(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -702,14 +704,14 @@ namespace Db4objects.Db4o.Internal
 
 			public object Run()
 			{
-				semaphores.ForEachKeyForIdentity(new _IVisitor4_583(semaphores), trans);
+				semaphores.ForEachKeyForIdentity(new _IVisitor4_585(semaphores), trans);
 				this._enclosing._semaphoresLock.Awake();
 				return null;
 			}
 
-			private sealed class _IVisitor4_583 : IVisitor4
+			private sealed class _IVisitor4_585 : IVisitor4
 			{
-				public _IVisitor4_583(Hashtable4 semaphores)
+				public _IVisitor4_585(Hashtable4 semaphores)
 				{
 					this.semaphores = semaphores;
 				}
@@ -760,13 +762,13 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			BooleanByRef acquired = new BooleanByRef();
-			_semaphoresLock.Run(new _IClosure4_619(this, trans, name, acquired, timeout));
+			_semaphoresLock.Run(new _IClosure4_621(this, trans, name, acquired, timeout));
 			return acquired.value;
 		}
 
-		private sealed class _IClosure4_619 : IClosure4
+		private sealed class _IClosure4_621 : IClosure4
 		{
-			public _IClosure4_619(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_621(LocalObjectContainer _enclosing, Transaction trans, string 
 				name, BooleanByRef acquired, int timeout)
 			{
 				this._enclosing = _enclosing;
@@ -984,13 +986,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_787(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_789(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_787 : IVisitor4
+		private sealed class _IVisitor4_789 : IVisitor4
 		{
-			public _IVisitor4_787(IntArrayList ids)
+			public _IVisitor4_789(IntArrayList ids)
 			{
 				this.ids = ids;
 			}
@@ -1132,6 +1134,11 @@ namespace Db4objects.Db4o.Internal
 		public override EventRegistryImpl NewEventRegistry()
 		{
 			return new EventRegistryImpl();
+		}
+
+		public override IQLin From(Type clazz)
+		{
+			return new QLinRoot(Query(), clazz);
 		}
 	}
 }

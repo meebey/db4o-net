@@ -11,7 +11,9 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Callbacks;
 using Db4objects.Db4o.Internal.Events;
+using Db4objects.Db4o.Internal.Qlin;
 using Db4objects.Db4o.Internal.Query;
+using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -22,7 +24,7 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public partial class ObjectContainerSession : IInternalObjectContainer, ITransientClass
-		, IObjectContainerSpec
+		, IObjectContainerSpec, IQLinable
 	{
 		protected readonly ObjectContainerBase _server;
 
@@ -625,6 +627,11 @@ namespace Db4objects.Db4o.Internal
 		public virtual EventRegistryImpl NewEventRegistry()
 		{
 			return new EventRegistryImpl();
+		}
+
+		public virtual IQLin From(Type clazz)
+		{
+			return new QLinRoot(Query(), clazz);
 		}
 	}
 }

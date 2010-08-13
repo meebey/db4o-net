@@ -645,7 +645,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private bool IsClassOnlyQuery()
 		{
-			if (_constraints._next != null)
+			if (((List4)_constraints._next) != null)
 			{
 				return false;
 			}

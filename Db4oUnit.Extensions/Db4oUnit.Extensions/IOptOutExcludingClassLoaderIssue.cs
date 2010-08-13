@@ -4,7 +4,8 @@ using Db4oUnit.Extensions;
 
 namespace Db4oUnit.Extensions
 {
-	public interface IOptOutCtorIssue : IOptOutTemporary
+	public interface IOptOutExcludingClassLoaderIssue : IOptOutAndroid
 	{
+		// related to issue UNIT-34
 	}
 }

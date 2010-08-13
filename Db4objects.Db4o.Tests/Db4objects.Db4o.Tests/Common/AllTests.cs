@@ -23,9 +23,9 @@ namespace Db4objects.Db4o.Tests.Common
 				), typeof(Db4objects.Db4o.Tests.Common.Freespace.AllTests), typeof(Db4objects.Db4o.Tests.Common.Handlers.AllTests
 				), typeof(Db4objects.Db4o.Tests.Common.Header.AllTests), typeof(Db4objects.Db4o.Tests.Common.Interfaces.AllTests
 				), typeof(Db4objects.Db4o.Tests.Common.Internal.AllTests), typeof(Db4objects.Db4o.Tests.Common.Ids.AllTests
-				), typeof(Db4objects.Db4o.Tests.Common.IO.AllTests), typeof(Db4objects.Db4o.Tests.Common.Refactor.AllTests
-				), typeof(Db4objects.Db4o.Tests.Common.References.AllTests), typeof(Db4objects.Db4o.Tests.Common.Reflect.AllTests
-				), typeof(Db4objects.Db4o.Tests.Common.Regression.AllTests), typeof(Db4objects.Db4o.Tests.Common.Querying.AllTests
+				), typeof(Db4objects.Db4o.Tests.Common.IO.AllTests), typeof(Db4objects.Db4o.Tests.Common.Querying.AllTests
+				), typeof(Db4objects.Db4o.Tests.Common.Refactor.AllTests), typeof(Db4objects.Db4o.Tests.Common.References.AllTests
+				), typeof(Db4objects.Db4o.Tests.Common.Reflect.AllTests), typeof(Db4objects.Db4o.Tests.Common.Regression.AllTests
 				), typeof(Db4objects.Db4o.Tests.Common.Sessions.AllTests), typeof(Db4objects.Db4o.Tests.Common.Store.AllTests
 				), typeof(Db4objects.Db4o.Tests.Common.Soda.AllTests), typeof(Db4objects.Db4o.Tests.Common.Stored.AllTests
 				), typeof(AllCommonTATests), typeof(Db4objects.Db4o.Tests.Common.TP.AllTests), typeof(
@@ -37,7 +37,8 @@ namespace Db4objects.Db4o.Tests.Common
 		#if !SILVERLIGHT
 		protected override Type[] ComposeWith()
 		{
-			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.CS.AllTests) };
+			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.CS.AllTests), typeof(Db4objects.Db4o.Tests.Common.Qlin.AllTests
+				) };
 		}
 		#endif // !SILVERLIGHT
 	}

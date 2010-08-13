@@ -471,17 +471,21 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void Listen()
 		{
+			// we are keeping a reference to container to avoid race conditions upon closing this server
+			LocalObjectContainer threadContainer = _container;
 			while (_serverSocket != null)
 			{
-				WithEnvironment(new _IRunnable_354(this));
+				threadContainer.WithEnvironment(new _IRunnable_356(this, threadContainer));
 			}
 		}
 
-		private sealed class _IRunnable_354 : IRunnable
+		private sealed class _IRunnable_356 : IRunnable
 		{
-			public _IRunnable_354(ObjectServerImpl _enclosing)
+			public _IRunnable_356(ObjectServerImpl _enclosing, LocalObjectContainer threadContainer
+				)
 			{
 				this._enclosing = _enclosing;
+				this.threadContainer = threadContainer;
 			}
 
 			public void Run()
@@ -491,7 +495,7 @@ namespace Db4objects.Db4o.CS.Internal
 					ISocket4 socket = this._enclosing._serverSocket.Accept();
 					ServerMessageDispatcherImpl messageDispatcher = new ServerMessageDispatcherImpl(this
 						._enclosing, new ClientTransactionHandle(this._enclosing._transactionPool), socket
-						, this._enclosing.NewThreadId(), false, this._enclosing._container.Lock());
+						, this._enclosing.NewThreadId(), false, threadContainer.Lock());
 					this._enclosing.AddServerMessageDispatcher(messageDispatcher);
 					this._enclosing.ThreadPool().Start(messageDispatcher);
 				}
@@ -501,6 +505,8 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 
 			private readonly ObjectServerImpl _enclosing;
+
+			private readonly LocalObjectContainer threadContainer;
 		}
 
 		// CatchAll because we can get expected timeout exceptions
@@ -527,12 +533,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void NotifyThreadStarted()
 		{
-			_startupLock.Run(new _IClosure4_397(this));
+			_startupLock.Run(new _IClosure4_399(this));
 		}
 
-		private sealed class _IClosure4_397 : IClosure4
+		private sealed class _IClosure4_399 : IClosure4
 		{
-			public _IClosure4_397(ObjectServerImpl _enclosing)
+			public _IClosure4_399(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

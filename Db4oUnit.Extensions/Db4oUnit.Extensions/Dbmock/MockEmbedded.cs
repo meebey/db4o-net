@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Query;
 
 namespace Db4oUnit.Extensions.Dbmock
@@ -129,6 +130,11 @@ namespace Db4oUnit.Extensions.Dbmock
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public virtual void Store(object obj)
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual IQLin From(Type clazz)
 		{
 			throw new NotImplementedException();
 		}

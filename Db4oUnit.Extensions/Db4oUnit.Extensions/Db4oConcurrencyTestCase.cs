@@ -32,7 +32,7 @@ namespace Db4oUnit.Extensions
 		{
 			while (!AreAllTasksDone())
 			{
-				Cool.SleepIgnoringInterruption(1);
+				Runtime4.Sleep(1);
 			}
 		}
 

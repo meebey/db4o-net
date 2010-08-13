@@ -8,7 +8,7 @@ using Db4objects.Db4o.Tests.Common.Assorted;
 
 namespace Db4objects.Db4o.Tests.Common.Assorted
 {
-	public class LongLinkedListTestCase : AbstractDb4oTestCase, IOptOutStackOverflow
+	public class LongLinkedListTestCase : AbstractDb4oTestCase
 	{
 		private const int Count = 1000;
 

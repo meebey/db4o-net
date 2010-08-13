@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			return new Type[] { typeof(ArrayIterator4TestCase), typeof(Arrays4TestCase), typeof(
 				BitMap4TestCase), typeof(BlockingQueueTestCase), typeof(BufferTestCase), typeof(
 				CircularBufferTestCase), typeof(Collection4TestCase), typeof(CompositeIterator4TestCase
-				), typeof(CoolTestCase), typeof(DynamicVariableTestCase), typeof(EnvironmentsTestCase
+				), typeof(Runtime4TestCase), typeof(DynamicVariableTestCase), typeof(EnvironmentsTestCase
 				), typeof(HashSet4TestCase), typeof(Hashtable4TestCase), typeof(IdentityHashtable4TestCase
 				), typeof(IdentitySet4TestCase), typeof(IntArrayListTestCase), typeof(IntMatcherTestCase
 				), typeof(Iterable4AdaptorTestCase), typeof(IteratorsTestCase), typeof(Map4TestCase

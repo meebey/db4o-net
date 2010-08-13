@@ -22,10 +22,12 @@ using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Internal.Convert;
 using Db4objects.Db4o.Internal.Encoding;
 using Db4objects.Db4o.Internal.Events;
+using Db4objects.Db4o.Internal.Qlin;
 using Db4objects.Db4o.Internal.Query.Processor;
 using Db4objects.Db4o.Internal.Query.Result;
 using Db4objects.Db4o.Internal.References;
 using Db4objects.Db4o.Internal.Slots;
+using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Reflect;
 using Sharpen;
 using Sharpen.Lang;
@@ -82,9 +84,9 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private int _serverSideID = 0;
 
-		private sealed class _IMessageListener_85 : ClientObjectContainer.IMessageListener
+		private sealed class _IMessageListener_87 : ClientObjectContainer.IMessageListener
 		{
-			public _IMessageListener_85()
+			public _IMessageListener_87()
 			{
 			}
 
@@ -96,7 +98,7 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_85
+		private ClientObjectContainer.IMessageListener _messageListener = new _IMessageListener_87
 			();
 
 		private bool _bypassSlotCache = false;
@@ -164,7 +166,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void InitalizeClientSlotCache()
 		{
-			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_143
+			ConfigImpl.PrefetchSettingsChanged += new System.EventHandler<EventArgs>(new _IEventListener4_145
 				(this).OnEvent);
 			if (ConfigImpl.PrefetchSlotCacheSize() > 0)
 			{
@@ -174,9 +176,9 @@ namespace Db4objects.Db4o.CS.Internal
 			_clientSlotCache = new NullClientSlotCache();
 		}
 
-		private sealed class _IEventListener4_143
+		private sealed class _IEventListener4_145
 		{
-			public _IEventListener4_143(ClientObjectContainer _enclosing)
+			public _IEventListener4_145(ClientObjectContainer _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -841,13 +843,13 @@ namespace Db4objects.Db4o.CS.Internal
 		private AbstractQueryResult ReadQueryResult(Transaction trans)
 		{
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_668(this, trans, result));
+			WithEnvironment(new _IRunnable_670(this, trans, result));
 			return ((AbstractQueryResult)result.value);
 		}
 
-		private sealed class _IRunnable_668 : IRunnable
+		private sealed class _IRunnable_670 : IRunnable
 		{
-			public _IRunnable_668(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_670(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1190,13 +1192,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_938(this, trans, result));
+			WithEnvironment(new _IRunnable_940(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_938 : IRunnable
+		private sealed class _IRunnable_940 : IRunnable
 		{
-			public _IRunnable_938(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_940(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1522,6 +1524,11 @@ namespace Db4objects.Db4o.CS.Internal
 		public override EventRegistryImpl NewEventRegistry()
 		{
 			return new ClientEventRegistryImpl(this);
+		}
+
+		public override IQLin From(Type clazz)
+		{
+			return new QLinRoot(Query(), clazz);
 		}
 	}
 }

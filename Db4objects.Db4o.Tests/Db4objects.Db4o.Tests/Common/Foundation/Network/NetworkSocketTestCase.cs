@@ -274,9 +274,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation.Network
 				_thread.Start();
 				while (!IsRunning())
 				{
-					Cool.SleepIgnoringInterruption(10);
+					Runtime4.Sleep(10);
 				}
-				Cool.SleepIgnoringInterruption(10);
+				Runtime4.Sleep(10);
 			}
 
 			public virtual Exception Caught()

@@ -369,5 +369,14 @@ namespace Db4objects.Db4o.Reflect.Generic
 			}
 			return _delegate.NullValue();
 		}
+
+		public virtual bool IsImmutable()
+		{
+			if (_delegate != null)
+			{
+				return _delegate.IsImmutable();
+			}
+			return IsPrimitive();
+		}
 	}
 }

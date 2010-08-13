@@ -69,7 +69,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		{
 			public virtual void ProcessMessage(IMessageContext con, object message)
 			{
-				Cool.SleepIgnoringInterruption(3000);
+				Runtime4.Sleep(3000);
 			}
 		}
 

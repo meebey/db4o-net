@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Foundation
 			else
 			{
 				_last._next = new List4(element);
-				_last = _last._next;
+				_last = ((List4)_last._next);
 			}
 			_size++;
 		}
@@ -172,7 +172,7 @@ namespace Db4objects.Db4o.Foundation
 				{
 					return current;
 				}
-				current = current._next;
+				current = ((List4)current._next);
 			}
 			return null;
 		}
@@ -186,7 +186,7 @@ namespace Db4objects.Db4o.Foundation
 				{
 					return current;
 				}
-				current = current._next;
+				current = ((List4)current._next);
 			}
 			return null;
 		}
@@ -259,7 +259,7 @@ namespace Db4objects.Db4o.Foundation
 			List4 cur = _first;
 			while (index > 0 && cur != null)
 			{
-				cur = cur._next;
+				cur = ((List4)cur._next);
 				index--;
 			}
 			if (cur == null)
@@ -317,7 +317,7 @@ namespace Db4objects.Db4o.Foundation
 					return true;
 				}
 				previous = current;
-				current = current._next;
+				current = ((List4)current._next);
 			}
 			return false;
 		}
@@ -344,11 +344,11 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (removed == _first)
 			{
-				_first = removed._next;
+				_first = ((List4)removed._next);
 			}
 			else
 			{
-				previous._next = removed._next;
+				previous._next = ((List4)removed._next);
 			}
 			if (removed == _last)
 			{
@@ -372,7 +372,7 @@ namespace Db4objects.Db4o.Foundation
 					return index;
 				}
 				index++;
-				current = current._next;
+				current = ((List4)current._next);
 			}
 			return -1;
 		}

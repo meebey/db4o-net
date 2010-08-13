@@ -164,5 +164,10 @@ namespace Db4objects.Db4o.Tests.Common.Reflect.Custom
 		{
 			return true;
 		}
+
+		public virtual bool IsImmutable()
+		{
+			return false;
+		}
 	}
 }

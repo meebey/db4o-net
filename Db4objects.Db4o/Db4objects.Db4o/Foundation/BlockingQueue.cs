@@ -46,8 +46,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool HasNext()
 		{
-			bool hasNext = (bool)_lock.Run(new _IClosure4_29(this));
-			return hasNext;
+			return (((bool)_lock.Run(new _IClosure4_29(this))));
 		}
 
 		private sealed class _IClosure4_29 : IClosure4
@@ -67,12 +66,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IEnumerator Iterator()
 		{
-			return (IEnumerator)_lock.Run(new _IClosure4_38(this));
+			return ((IEnumerator)_lock.Run(new _IClosure4_37(this)));
 		}
 
-		private sealed class _IClosure4_38 : IClosure4
+		private sealed class _IClosure4_37 : IClosure4
 		{
-			public _IClosure4_38(BlockingQueue _enclosing)
+			public _IClosure4_37(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -88,12 +87,12 @@ namespace Db4objects.Db4o.Foundation
 		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
 		public virtual object Next()
 		{
-			return _lock.Run(new _IClosure4_46(this));
+			return _lock.Run(new _IClosure4_45(this));
 		}
 
-		private sealed class _IClosure4_46 : IClosure4
+		private sealed class _IClosure4_45 : IClosure4
 		{
-			public _IClosure4_46(BlockingQueue _enclosing)
+			public _IClosure4_45(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -119,12 +118,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Stop()
 		{
-			_lock.Run(new _IClosure4_62(this));
+			_lock.Run(new _IClosure4_61(this));
 		}
 
-		private sealed class _IClosure4_62 : IClosure4
+		private sealed class _IClosure4_61 : IClosure4
 		{
-			public _IClosure4_62(BlockingQueue _enclosing)
+			public _IClosure4_61(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -141,12 +140,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object NextMatching(IPredicate4 condition)
 		{
-			return _lock.Run(new _IClosure4_72(this, condition));
+			return _lock.Run(new _IClosure4_71(this, condition));
 		}
 
-		private sealed class _IClosure4_72 : IClosure4
+		private sealed class _IClosure4_71 : IClosure4
 		{
-			public _IClosure4_72(BlockingQueue _enclosing, IPredicate4 condition)
+			public _IClosure4_71(BlockingQueue _enclosing, IPredicate4 condition)
 			{
 				this._enclosing = _enclosing;
 				this.condition = condition;

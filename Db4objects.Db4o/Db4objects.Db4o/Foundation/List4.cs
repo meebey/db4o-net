@@ -4,7 +4,7 @@ using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Foundation
 {
-	/// <summary>elements in linked list Collection4</summary>
+	/// <summary>simplest possible linked list</summary>
 	/// <exclude></exclude>
 	public sealed class List4 : IUnversioned
 	{
@@ -37,7 +37,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return _element == null;
 			}
-			return obj.Equals(_element);
+			return ((object)obj).Equals(_element);
 		}
 
 		public static int Size(Db4objects.Db4o.Foundation.List4 list)
@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Foundation
 			while (nextList != null)
 			{
 				counter++;
-				nextList = nextList._next;
+				nextList = ((Db4objects.Db4o.Foundation.List4)nextList._next);
 			}
 			return counter;
 		}

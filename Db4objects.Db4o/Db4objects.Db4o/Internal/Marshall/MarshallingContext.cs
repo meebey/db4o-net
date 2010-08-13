@@ -316,10 +316,23 @@ namespace Db4objects.Db4o.Internal.Marshall
 			if (!_currentBuffer.HasParent())
 			{
 				object indexEntry = (obj == _currentMarshalledObject) ? _currentIndexEntry : obj;
-				fieldMetadata.AddIndexEntry(Transaction(), ObjectID(), indexEntry);
+				if (_isNew || !UpdateDepth().CanSkip(_reference))
+				{
+					fieldMetadata.AddIndexEntry(Transaction(), ObjectID(), indexEntry);
+				}
 				return;
 			}
 			_currentBuffer.RequestIndexEntry(fieldMetadata);
+		}
+
+		public virtual void PurgeFieldIndexEntriesOnUpdate(Db4objects.Db4o.Internal.Transaction
+			 transaction, ArrayType arrayType)
+		{
+			if (!UpdateDepth().CanSkip(_reference))
+			{
+				transaction.WriteUpdateAdjustIndexes(_reference.GetID(), _reference.ClassMetadata
+					(), arrayType);
+			}
 		}
 
 		public virtual ObjectReference Reference()

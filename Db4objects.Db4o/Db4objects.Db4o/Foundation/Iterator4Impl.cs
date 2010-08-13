@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Foundation
 				_current = Iterators.NoElement;
 				return false;
 			}
-			_current = _next._element;
-			_next = _next._next;
+			_current = ((object)_next._element);
+			_next = ((List4)_next._next);
 			return true;
 		}
 
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Foundation
 				{
 					throw new InvalidOperationException();
 				}
-				return _current;
+				return (object)_current;
 			}
 		}
 

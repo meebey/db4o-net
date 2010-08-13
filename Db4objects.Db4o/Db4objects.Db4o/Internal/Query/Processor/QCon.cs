@@ -369,15 +369,15 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					if (previous == null)
 					{
-						_children = current._next;
+						_children = ((List4)current._next);
 					}
 					else
 					{
-						previous._next = current._next;
+						previous._next = ((List4)current._next);
 					}
 				}
 				previous = current;
-				current = current._next;
+				current = ((List4)current._next);
 			}
 			_children = new List4(_children, a_with);
 		}

@@ -253,7 +253,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				// We give the other process a chance to 
 				// write its lock.
-				Cool.SleepIgnoringInterruption(100);
+				Runtime4.Sleep(100);
 				_container.SyncFiles();
 				TimerFileLock().CheckOpenTime();
 			}

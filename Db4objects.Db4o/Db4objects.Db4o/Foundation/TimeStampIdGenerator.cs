@@ -39,7 +39,7 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual long Generate()
 		{
-			long t = Runtime.CurrentTimeMillis();
+			long t = Now();
 			if (t > _lastTime)
 			{
 				_lastTime = t;
@@ -50,6 +50,11 @@ namespace Db4objects.Db4o.Foundation
 			_counter++;
 			UpdateTimeOnCounterLimitOverflow();
 			return Last();
+		}
+
+		protected virtual long Now()
+		{
+			return Runtime.CurrentTimeMillis();
 		}
 
 		private void UpdateTimeOnCounterLimitOverflow()

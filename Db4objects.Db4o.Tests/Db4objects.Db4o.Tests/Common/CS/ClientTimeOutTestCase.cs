@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			ClientTimeOutTestCase.Item item = new ClientTimeOutTestCase.Item("one");
 			Store(item);
-			Cool.SleepIgnoringInterruption(Timeout * 2);
+			Runtime4.Sleep(Timeout * 2);
 			Assert.AreSame(item, ((ClientTimeOutTestCase.Item)RetrieveOnlyInstance(typeof(ClientTimeOutTestCase.Item
 				))));
 		}
@@ -89,7 +89,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 			public virtual void ProcessMessage(IMessageContext con, object message)
 			{
 				_clientWasBlocked = true;
-				Cool.SleepIgnoringInterruption(Timeout * 3);
+				Runtime4.Sleep(Timeout * 3);
 			}
 		}
 

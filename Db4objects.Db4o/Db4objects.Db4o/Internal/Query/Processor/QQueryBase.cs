@@ -424,7 +424,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				{
 					((QCandidates)i.Current).Execute();
 				}
-				if (candidateCollection._next != null)
+				if (((List4)candidateCollection._next) != null)
 				{
 					checkDuplicates = true;
 				}

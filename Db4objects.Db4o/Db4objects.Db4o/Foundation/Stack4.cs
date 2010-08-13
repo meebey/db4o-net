@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Foundation
 				throw new InvalidOperationException();
 			}
 			object res = _tail._element;
-			_tail = _tail._next;
+			_tail = ((List4)_tail._next);
 			return res;
 		}
 

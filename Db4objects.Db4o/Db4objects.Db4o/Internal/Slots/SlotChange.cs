@@ -66,12 +66,10 @@ namespace Db4objects.Db4o.Internal.Slots
 			if (_currentOperation == SlotChange.SlotChangeOperation.update || _currentOperation
 				 == SlotChange.SlotChangeOperation.delete)
 			{
-				Slot slot = idSystem.CommittedSlot(_key);
-				// If we don't get a valid slot, the object may have just 
-				// been stored by the SystemTransaction and not committed yet.
+				Slot slot = ModifiedSlotInParentIdSystem(idSystem);
 				if (Slot.IsNull(slot))
 				{
-					slot = ModifiedSlotInUnderlyingIdSystem(idSystem);
+					slot = idSystem.CommittedSlot(_key);
 				}
 				// No old slot at all can be the case if the object
 				// has been deleted by another transaction and we add it again.
@@ -87,10 +85,10 @@ namespace Db4objects.Db4o.Internal.Slots
 			return false;
 		}
 
-		protected virtual Slot ModifiedSlotInUnderlyingIdSystem(TransactionalIdSystemImpl
-			 idSystem)
+		protected virtual Slot ModifiedSlotInParentIdSystem(TransactionalIdSystemImpl idSystem
+			)
 		{
-			return idSystem.ModifiedSlotInUnderlyingIdSystem(_key);
+			return idSystem.ModifiedSlotInParentIdSystem(_key);
 		}
 
 		public virtual bool IsDeleted()

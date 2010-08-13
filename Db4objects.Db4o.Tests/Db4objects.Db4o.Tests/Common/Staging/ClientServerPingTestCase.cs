@@ -94,7 +94,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 				while (NotStopped())
 				{
 					_dispatcher.Write(Msg.Ping);
-					Cool.SleepIgnoringInterruption(1);
+					Runtime4.Sleep(1);
 				}
 			}
 		}

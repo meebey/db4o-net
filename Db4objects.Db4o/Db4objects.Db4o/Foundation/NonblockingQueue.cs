@@ -33,14 +33,14 @@ namespace Db4objects.Db4o.Foundation
 			{
 				return null;
 			}
-			object ret = _next._element;
+			object ret = ((object)_next._element);
 			RemoveNext();
 			return ret;
 		}
 
 		private void RemoveNext()
 		{
-			_next = _next._next;
+			_next = ((List4)_next._next);
 			if (_next == null)
 			{
 				_insertionPoint = null;
@@ -57,7 +57,7 @@ namespace Db4objects.Db4o.Foundation
 			List4 previous = null;
 			while (null != current)
 			{
-				object element = current._element;
+				object element = ((object)current._element);
 				if (condition.Match(element))
 				{
 					if (previous == null)
@@ -66,12 +66,12 @@ namespace Db4objects.Db4o.Foundation
 					}
 					else
 					{
-						previous._next = current._next;
+						previous._next = ((List4)current._next);
 					}
 					return element;
 				}
 				previous = current;
-				current = current._next;
+				current = ((List4)current._next);
 			}
 			return null;
 		}
@@ -100,17 +100,12 @@ namespace Db4objects.Db4o.Foundation
 
 			public override bool MoveNext()
 			{
-				if (this.QueueWasModified())
+				if (origInsertionPoint != this._enclosing._insertionPoint || origNext != this._enclosing
+					._next)
 				{
 					throw new InvalidOperationException();
 				}
 				return base.MoveNext();
-			}
-
-			private bool QueueWasModified()
-			{
-				return origInsertionPoint != this._enclosing._insertionPoint || origNext != this.
-					_enclosing._next;
 			}
 
 			private readonly NonblockingQueue _enclosing;

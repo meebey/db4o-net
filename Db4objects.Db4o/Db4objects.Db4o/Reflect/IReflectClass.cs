@@ -62,5 +62,21 @@ namespace Db4objects.Db4o.Reflect
 		/// </remarks>
 		/// <returns>true, if instances of this class can be created, false otherwise</returns>
 		bool EnsureCanBeInstantiated();
+
+		/// <summary>
+		/// We need this for replication, to find out if a class needs to be traversed
+		/// or if it simply can be copied across.
+		/// </summary>
+		/// <remarks>
+		/// We need this for replication, to find out if a class needs to be traversed
+		/// or if it simply can be copied across. For now we will simply return
+		/// the classes that are
+		/// <see cref="IsPrimitive()">IsPrimitive()</see>
+		/// and
+		/// <see cref="Db4objects.Db4o.Internal.Platform4.IsSimple(System.Type{T})">Db4objects.Db4o.Internal.Platform4.IsSimple(System.Type&lt;T&gt;)
+		/// 	</see>
+		/// We can think about letting users add an Immutable annotation.
+		/// </remarks>
+		bool IsImmutable();
 	}
 }

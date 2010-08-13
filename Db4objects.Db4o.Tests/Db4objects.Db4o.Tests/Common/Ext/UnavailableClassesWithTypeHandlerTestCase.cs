@@ -15,7 +15,7 @@ using Db4objects.Db4o.Tests.Common.Ext;
 namespace Db4objects.Db4o.Tests.Common.Ext
 {
 	public class UnavailableClassesWithTypeHandlerTestCase : TestWithTempFile, IOptOutNetworkingCS
-		, IOptOutCtorIssue
+		, IOptOutExcludingClassLoaderIssue
 	{
 		public class HolderForClassWithTypeHandler
 		{

@@ -1,13 +1,12 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Mixed;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Mixed
 {
-	public class MixedArrayTestCase : ItemTestCaseBase, IOptOutStackOverflow
+	public class MixedArrayTestCase : ItemTestCaseBase
 	{
 		public static void Main(string[] args)
 		{

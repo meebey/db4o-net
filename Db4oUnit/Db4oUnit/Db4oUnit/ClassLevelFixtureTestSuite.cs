@@ -3,6 +3,7 @@
 using System;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Internal;
 
 namespace Db4oUnit
 {
@@ -22,13 +23,13 @@ namespace Db4oUnit
 		/// <exception cref="System.Exception"></exception>
 		protected override void SuiteSetUp()
 		{
-			_clazz.GetMethod(SetupMethodName, null).Invoke(null, null);
+			Reflection4.InvokeStatic(_clazz, SetupMethodName);
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		protected override void SuiteTearDown()
 		{
-			_clazz.GetMethod(TeardownMethodName, null).Invoke(null, null);
+			Reflection4.InvokeStatic(_clazz, TeardownMethodName);
 		}
 
 		public override string Label()

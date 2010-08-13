@@ -12,7 +12,8 @@ namespace Db4objects.Db4o.Tests.Common.TA
 		{
 			return new Type[] { typeof(Db4objects.Db4o.Tests.Common.TA.Diagnostics.AllTests), 
 				typeof(Db4objects.Db4o.Tests.Common.TA.Hierarchy.AllTests), typeof(Db4objects.Db4o.Tests.Common.TA.Nested.AllTests
-				), typeof(ReentrantActivationTestCase) };
+				), typeof(ReentrantActivationTestCase), typeof(TPExplicitStoreFieldIndexConsistencyTestCase
+				) };
 		}
 	}
 }

@@ -120,8 +120,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Deactivate">IObjectContainer.Deactivate(object, depth)
 		/// </see>
 		/// can be used to manually free memory by deactivating objects.<br/><br/>
-		/// In client/server environment the same setting should be used on both
-		/// client and server<br/><br/>.
+		/// In client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way. <br/><br/>.
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">configuring classes individually
 		/// </seealso>
@@ -160,8 +160,8 @@ namespace Db4objects.Db4o.Config
 		/// <see cref="Db4objects.Db4o.IObjectContainer.Deactivate">IObjectContainer.Deactivate(object, depth)
 		/// </see>
 		/// can be used to manually free memory by deactivating objects.<br/><br/>
-		/// In client/server environment the same setting should be used on both
-		/// client and server<br/><br/>.
+		/// In client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way. <br/><br/>.
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.MaximumActivationDepth">configuring classes individually
 		/// </seealso>
@@ -211,8 +211,6 @@ namespace Db4objects.Db4o.Config
 		/// <remarks>
 		/// turns automatic shutdown of the engine on and off.
 		/// The default and recommended setting is <code>true</code>.<br/><br/>
-		/// In client-server environment this setting should be used on both client
-		/// and server.
 		/// </remarks>
 		bool AutomaticShutDown
 		{
@@ -269,8 +267,8 @@ namespace Db4objects.Db4o.Config
 		/// </see>
 		/// .
 		/// <br/><br/>The default setting depends on the features supported by your current environment.<br/><br/>
-		/// In client/server environment this setting should be used on both
-		/// client and server.
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way.
 		/// <br/><br/>
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.IObjectClass.CallConstructor">Db4objects.Db4o.Config.IObjectClass.CallConstructor
@@ -423,7 +421,8 @@ namespace Db4objects.Db4o.Config
 		/// The following assemblies should be available for native query switch to take effect:
 		/// Db4objects.Db4o.NativeQueries.dll, Db4objects.Db4o.Instrumentation.dll.
 		/// <br/><br/>The default setting is <code>true</code>.<br/><br/>
-		/// In client-server environment this setting should be used on both client and server.<br/><br/>
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way. <br/><br/>
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries">Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries</seealso>
 		/// <summary>
@@ -438,7 +437,8 @@ namespace Db4objects.Db4o.Config
 		/// The following assemblies should be available for native query switch to take effect:
 		/// Db4objects.Db4o.NativeQueries.dll, Db4objects.Db4o.Instrumentation.dll.
 		/// <br/><br/>The default setting is <code>true</code>.<br/><br/>
-		/// In client-server environment this setting should be used on both client and server.<br/><br/>
+		/// In a client/server environment it is good practice to configure the
+		/// client and the server in exactly the same way. <br/><br/>
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries">Db4objects.Db4o.Config.ICommonConfiguration.OptimizeNativeQueries</seealso>
 		bool OptimizeNativeQueries
@@ -508,7 +508,9 @@ namespace Db4objects.Db4o.Config
 		/// not supplied from within the db4o library), the correct encoding
 		/// needs to be configured correctly again for all subsequent calls
 		/// that open database files.
-		/// <br/><br/>Example:<br/>
+		/// <br/><br/>
+		/// In client-server mode, the server and all clients need to have the same string encoding.<br/><br/>
+		/// Example:<br/>
 		/// <code>config.StringEncoding = StringEncodings.Utf8();</code>
 		/// </remarks>
 		/// <seealso cref="Db4objects.Db4o.Config.Encoding.StringEncodings">Db4objects.Db4o.Config.Encoding.StringEncodings

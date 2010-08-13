@@ -103,7 +103,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 				}
 				Db().Commit();
 			}
-			Cool.SleepIgnoringInterruption(1000);
+			Runtime4.Sleep(1000);
 			for (int i = 0; i < items.Length; i++)
 			{
 				lock (_lock)
@@ -111,7 +111,7 @@ namespace Db4objects.Db4o.Tests.Common.Concurrency
 					items[i].Check();
 				}
 			}
-			Cool.SleepIgnoringInterruption(3000);
+			Runtime4.Sleep(3000);
 		}
 
 		private sealed class _IEventListener4_74

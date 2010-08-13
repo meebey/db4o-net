@@ -107,8 +107,8 @@ namespace Db4objects.Db4o.Consistency
 				return message.ToString();
 			}
 
-			private void AppendInconsistencyReport(StringBuilder str, string title, ICollection
-				 entries)
+			private void AppendInconsistencyReport(StringBuilder str, string title, IList entries
+				)
 			{
 				if (entries.Count != 0)
 				{
@@ -159,15 +159,15 @@ namespace Db4objects.Db4o.Consistency
 					continue;
 				}
 				BTreeClassIndexStrategy index = (BTreeClassIndexStrategy)clazz.Index();
-				index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_132(this, invalidIds, clazz
+				index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_133(this, invalidIds, clazz
 					));
 			}
 			return invalidIds;
 		}
 
-		private sealed class _IVisitor4_132 : IVisitor4
+		private sealed class _IVisitor4_133 : IVisitor4
 		{
-			public _IVisitor4_132(ConsistencyChecker _enclosing, IList invalidIds, ClassMetadata
+			public _IVisitor4_133(ConsistencyChecker _enclosing, IList invalidIds, ClassMetadata
 				 clazz)
 			{
 				this._enclosing = _enclosing;
@@ -197,14 +197,14 @@ namespace Db4objects.Db4o.Consistency
 			while (clazzIter.MoveNext())
 			{
 				ClassMetadata clazz = clazzIter.CurrentClass();
-				clazz.TraverseDeclaredFields(new _IProcedure4_148(this, invalidIds, clazz));
+				clazz.TraverseDeclaredFields(new _IProcedure4_149(this, invalidIds, clazz));
 			}
 			return invalidIds;
 		}
 
-		private sealed class _IProcedure4_148 : IProcedure4
+		private sealed class _IProcedure4_149 : IProcedure4
 		{
-			public _IProcedure4_148(ConsistencyChecker _enclosing, IList invalidIds, ClassMetadata
+			public _IProcedure4_149(ConsistencyChecker _enclosing, IList invalidIds, ClassMetadata
 				 clazz)
 			{
 				this._enclosing = _enclosing;
@@ -220,13 +220,13 @@ namespace Db4objects.Db4o.Consistency
 				}
 				BTree fieldIndex = ((FieldMetadata)field).GetIndex(this._enclosing._db.SystemTransaction
 					());
-				fieldIndex.TraverseKeys(this._enclosing._db.SystemTransaction(), new _IVisitor4_154
+				fieldIndex.TraverseKeys(this._enclosing._db.SystemTransaction(), new _IVisitor4_155
 					(this, invalidIds, clazz, field));
 			}
 
-			private sealed class _IVisitor4_154 : IVisitor4
+			private sealed class _IVisitor4_155 : IVisitor4
 			{
-				public _IVisitor4_154(_IProcedure4_148 _enclosing, IList invalidIds, ClassMetadata
+				public _IVisitor4_155(_IProcedure4_149 _enclosing, IList invalidIds, ClassMetadata
 					 clazz, object field)
 				{
 					this._enclosing = _enclosing;
@@ -245,7 +245,7 @@ namespace Db4objects.Db4o.Consistency
 					}
 				}
 
-				private readonly _IProcedure4_148 _enclosing;
+				private readonly _IProcedure4_149 _enclosing;
 
 				private readonly IList invalidIds;
 
@@ -278,13 +278,13 @@ namespace Db4objects.Db4o.Consistency
 			IBlockConverter blockConverter = _db.BlockConverter();
 			IList overlaps = new ArrayList();
 			ByRef prevSlot = ByRef.NewInstance();
-			mappings.Traverse(new _IVisitor4_181(prevSlot, blockConverter, overlaps));
+			mappings.Traverse(new _IVisitor4_182(prevSlot, blockConverter, overlaps));
 			return overlaps;
 		}
 
-		private sealed class _IVisitor4_181 : IVisitor4
+		private sealed class _IVisitor4_182 : IVisitor4
 		{
-			public _IVisitor4_181(ByRef prevSlot, IBlockConverter blockConverter, IList overlaps
+			public _IVisitor4_182(ByRef prevSlot, IBlockConverter blockConverter, IList overlaps
 				)
 			{
 				this.prevSlot = prevSlot;
@@ -318,12 +318,12 @@ namespace Db4objects.Db4o.Consistency
 
 		private void MapFreespace()
 		{
-			_db.FreespaceManager().Traverse(new _IVisitor4_196(this));
+			_db.FreespaceManager().Traverse(new _IVisitor4_197(this));
 		}
 
-		private sealed class _IVisitor4_196 : IVisitor4
+		private sealed class _IVisitor4_197 : IVisitor4
 		{
-			public _IVisitor4_196(ConsistencyChecker _enclosing)
+			public _IVisitor4_197(ConsistencyChecker _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -346,13 +346,13 @@ namespace Db4objects.Db4o.Consistency
 			IIdSystem idSystem = _db.IdSystem();
 			if (idSystem is BTreeIdSystem)
 			{
-				((BTreeIdSystem)idSystem).TraverseIds(new _IVisitor4_209(this));
+				((BTreeIdSystem)idSystem).TraverseIds(new _IVisitor4_210(this));
 			}
 		}
 
-		private sealed class _IVisitor4_209 : IVisitor4
+		private sealed class _IVisitor4_210 : IVisitor4
 		{
-			public _IVisitor4_209(ConsistencyChecker _enclosing)
+			public _IVisitor4_210(ConsistencyChecker _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

@@ -127,7 +127,7 @@ namespace Db4objects.Db4o.Internal
 					}
 					// Let the database engine continue to do 
 					// some work if it likes to.
-					Cool.SleepIgnoringInterruption(1);
+					Runtime4.Sleep(1);
 				}
 				lock (this._enclosing._lock)
 				{

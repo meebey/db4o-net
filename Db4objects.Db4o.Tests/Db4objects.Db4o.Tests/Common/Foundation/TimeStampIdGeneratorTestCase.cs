@@ -45,5 +45,40 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				Assert.AreEqual(ids[i], roundTrip);
 			}
 		}
+
+		public virtual void TestContinousIncrement()
+		{
+			TimeStampIdGenerator generator = new TimeStampIdGenerator();
+			AssertContinousIncrement(generator);
+		}
+
+		private void AssertContinousIncrement(TimeStampIdGenerator generator)
+		{
+			long oldId = generator.Generate();
+			for (int i = 0; i < 1000000; i++)
+			{
+				long newId = generator.Generate();
+				Assert.IsGreater(oldId, newId);
+				oldId = newId;
+			}
+		}
+
+		public virtual void TestTimeStaysTheSame()
+		{
+			TimeStampIdGenerator generatorWithSameTime = new _TimeStampIdGenerator_61();
+			AssertContinousIncrement(generatorWithSameTime);
+		}
+
+		private sealed class _TimeStampIdGenerator_61 : TimeStampIdGenerator
+		{
+			public _TimeStampIdGenerator_61()
+			{
+			}
+
+			protected override long Now()
+			{
+				return 1;
+			}
+		}
 	}
 }

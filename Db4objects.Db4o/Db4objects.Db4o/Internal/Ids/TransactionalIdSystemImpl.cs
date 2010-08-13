@@ -2,7 +2,6 @@
 
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Freespace;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Slots;
 
@@ -13,19 +12,16 @@ namespace Db4objects.Db4o.Internal.Ids
 	{
 		private IdSlotChanges _slotChanges;
 
-		private Db4objects.Db4o.Internal.Ids.TransactionalIdSystemImpl _systemIdSystem;
+		private Db4objects.Db4o.Internal.Ids.TransactionalIdSystemImpl _parentIdSystem;
 
 		private readonly IClosure4 _globalIdSystem;
 
-		private readonly IClosure4 _freespaceManager;
-
 		public TransactionalIdSystemImpl(IClosure4 freespaceManager, IClosure4 globalIdSystem
-			, Db4objects.Db4o.Internal.Ids.TransactionalIdSystemImpl systemIdSystem)
+			, Db4objects.Db4o.Internal.Ids.TransactionalIdSystemImpl parentIdSystem)
 		{
-			_freespaceManager = freespaceManager;
 			_globalIdSystem = globalIdSystem;
 			_slotChanges = new IdSlotChanges(this, freespaceManager);
-			_systemIdSystem = systemIdSystem;
+			_parentIdSystem = parentIdSystem;
 		}
 
 		public virtual void CollectCallBackInfo(ICallbackInfoCollector collector)
@@ -34,12 +30,12 @@ namespace Db4objects.Db4o.Internal.Ids
 			{
 				return;
 			}
-			_slotChanges.TraverseSlotChanges(new _IVisitor4_34(collector));
+			_slotChanges.TraverseSlotChanges(new _IVisitor4_31(collector));
 		}
 
-		private sealed class _IVisitor4_34 : IVisitor4
+		private sealed class _IVisitor4_31 : IVisitor4
 		{
-			public _IVisitor4_34(ICallbackInfoCollector collector)
+			public _IVisitor4_31(ICallbackInfoCollector collector)
 			{
 				this.collector = collector;
 			}
@@ -77,15 +73,15 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		public virtual void Commit(FreespaceCommitter freespaceCommitter)
 		{
-			IVisitable slotChangeVisitable = new _IVisitable_55(this);
+			IVisitable slotChangeVisitable = new _IVisitable_52(this);
 			freespaceCommitter.TransactionalIdSystem(this);
 			AccumulateFreeSlots(freespaceCommitter, false);
 			GlobalIdSystem().Commit(slotChangeVisitable, freespaceCommitter);
 		}
 
-		private sealed class _IVisitable_55 : IVisitable
+		private sealed class _IVisitable_52 : IVisitable
 		{
-			public _IVisitable_55(TransactionalIdSystemImpl _enclosing)
+			public _IVisitable_52(TransactionalIdSystemImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -102,15 +98,15 @@ namespace Db4objects.Db4o.Internal.Ids
 			)
 		{
 			_slotChanges.AccumulateFreeSlots(accumulator, forFreespace, IsSystemIdSystem());
-			if (!IsSystemIdSystem())
+			if (_parentIdSystem != null)
 			{
-				_systemIdSystem.AccumulateFreeSlots(accumulator, forFreespace);
+				_parentIdSystem.AccumulateFreeSlots(accumulator, forFreespace);
 			}
 		}
 
 		private bool IsSystemIdSystem()
 		{
-			return _systemIdSystem == null;
+			return _parentIdSystem == null;
 		}
 
 		public virtual void CompleteInterruptedTransaction(int transactionId1, int transactionId2
@@ -152,16 +148,16 @@ namespace Db4objects.Db4o.Internal.Ids
 					return change.NewSlot();
 				}
 			}
-			return ModifiedSlotInUnderlyingIdSystem(id);
+			return ModifiedSlotInParentIdSystem(id);
 		}
 
-		public virtual Slot ModifiedSlotInUnderlyingIdSystem(int id)
+		public Slot ModifiedSlotInParentIdSystem(int id)
 		{
-			if (IsSystemIdSystem())
+			if (_parentIdSystem == null)
 			{
 				return null;
 			}
-			return _systemIdSystem.ModifiedSlot(id);
+			return _parentIdSystem.ModifiedSlot(id);
 		}
 
 		public virtual void Rollback()
@@ -187,38 +183,11 @@ namespace Db4objects.Db4o.Internal.Ids
 
 		private void TraverseSlotChanges(IVisitor4 visitor)
 		{
-			if (!IsSystemIdSystem())
+			if (_parentIdSystem != null)
 			{
-				_systemIdSystem.TraverseSlotChanges(visitor);
+				_parentIdSystem.TraverseSlotChanges(visitor);
 			}
 			_slotChanges.TraverseSlotChanges(visitor);
-		}
-
-		private void FreespaceBeginCommit()
-		{
-			if (FreespaceManager() == null)
-			{
-				return;
-			}
-			FreespaceManager().BeginCommit();
-		}
-
-		private void FreespaceEndCommit()
-		{
-			if (FreespaceManager() == null)
-			{
-				return;
-			}
-			FreespaceManager().EndCommit();
-		}
-
-		private void CommitFreespace()
-		{
-			if (FreespaceManager() == null)
-			{
-				return;
-			}
-			FreespaceManager().Commit();
 		}
 
 		public virtual int NewId(SlotChangeFactory slotChangeFactory)
@@ -255,11 +224,6 @@ namespace Db4objects.Db4o.Internal.Ids
 			)
 		{
 			_slotChanges.NotifySlotDeleted(id, slotChangeFactory);
-		}
-
-		private IFreespaceManager FreespaceManager()
-		{
-			return ((IFreespaceManager)_freespaceManager.Run());
 		}
 
 		private IIdSystem GlobalIdSystem()

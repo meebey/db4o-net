@@ -1,14 +1,13 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o.Tests.Common.TA;
 using Db4objects.Db4o.Tests.Common.TA.Nonta;
 
 namespace Db4objects.Db4o.Tests.Common.TA.Nonta
 {
 	/// <exclude></exclude>
-	public class NonTALinkedListTestCase : NonTAItemTestCaseBase, IOptOutStackOverflow
+	public class NonTALinkedListTestCase : NonTAItemTestCaseBase
 	{
 		private static readonly LinkedList List = LinkedList.NewList(10);
 

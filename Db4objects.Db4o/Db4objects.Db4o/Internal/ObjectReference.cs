@@ -514,11 +514,8 @@ namespace Db4objects.Db4o.Internal
 			ObjectContainerBase container = transaction.Container();
 			LogEvent(container, "update", Const4.State);
 			SetStateClean();
-			if (!context.UpdateDepth().CanSkip(this))
-			{
-				transaction.WriteUpdateAdjustIndexes(GetID(), _class, container._handlers.ArrayType
-					(obj));
-			}
+			context.PurgeFieldIndexEntriesOnUpdate(transaction, container._handlers.ArrayType
+				(obj));
 			Handlers4.Write(_class.TypeHandler(), context, obj);
 			if (context.UpdateDepth().CanSkip(this))
 			{

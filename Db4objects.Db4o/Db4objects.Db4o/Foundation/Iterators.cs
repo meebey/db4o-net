@@ -223,6 +223,32 @@ namespace Db4objects.Db4o.Foundation
 			return new ArrayIterator4(array);
 		}
 
+		public static IEnumerator Revert(IEnumerator iterator)
+		{
+			iterator.Reset();
+			List4 tail = null;
+			while (iterator.MoveNext())
+			{
+				tail = new List4(tail, iterator.Current);
+			}
+			return Iterate(tail);
+		}
+
+		public static IEnumerator Iterate(List4 list)
+		{
+			if (list == null)
+			{
+				return EmptyIterator;
+			}
+			Collection4 collection = new Collection4();
+			while (list != null)
+			{
+				collection.Add(list._element);
+				list = ((List4)list._next);
+			}
+			return collection.GetEnumerator();
+		}
+
 		public static int Size(IEnumerable iterable)
 		{
 			return Size(iterable.GetEnumerator());
@@ -287,12 +313,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static object[] ToArray(IEnumerator tests)
 		{
-			return ToArray(tests, new _IArrayFactory_209());
+			return ToArray(tests, new _IArrayFactory_230());
 		}
 
-		private sealed class _IArrayFactory_209 : IArrayFactory
+		private sealed class _IArrayFactory_230 : IArrayFactory
 		{
-			public _IArrayFactory_209()
+			public _IArrayFactory_230()
 			{
 			}
 
@@ -324,12 +350,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Map(IEnumerable iterable, IFunction4 function)
 		{
-			return new _IEnumerable_232(iterable, function);
+			return new _IEnumerable_253(iterable, function);
 		}
 
-		private sealed class _IEnumerable_232 : IEnumerable
+		private sealed class _IEnumerable_253 : IEnumerable
 		{
-			public _IEnumerable_232(IEnumerable iterable, IFunction4 function)
+			public _IEnumerable_253(IEnumerable iterable, IFunction4 function)
 			{
 				this.iterable = iterable;
 				this.function = function;
@@ -347,13 +373,13 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable CrossProduct(IEnumerable iterables)
 		{
-			return CrossProduct((IEnumerable[])ToArray(iterables.GetEnumerator(), new _IArrayFactory_240
+			return CrossProduct((IEnumerable[])ToArray(iterables.GetEnumerator(), new _IArrayFactory_261
 				()));
 		}
 
-		private sealed class _IArrayFactory_240 : IArrayFactory
+		private sealed class _IArrayFactory_261 : IArrayFactory
 		{
-			public _IArrayFactory_240()
+			public _IArrayFactory_261()
 			{
 			}
 
@@ -373,14 +399,14 @@ namespace Db4objects.Db4o.Foundation
 		{
 			if (level == iterables.Length - 1)
 			{
-				return Map(iterables[level], new _IFunction4_255(row));
+				return Map(iterables[level], new _IFunction4_276(row));
 			}
-			return ConcatMap(iterables[level], new _IFunction4_263(iterables, level, row));
+			return ConcatMap(iterables[level], new _IFunction4_284(iterables, level, row));
 		}
 
-		private sealed class _IFunction4_255 : IFunction4
+		private sealed class _IFunction4_276 : IFunction4
 		{
-			public _IFunction4_255(IEnumerable row)
+			public _IFunction4_276(IEnumerable row)
 			{
 				this.row = row;
 			}
@@ -393,9 +419,9 @@ namespace Db4objects.Db4o.Foundation
 			private readonly IEnumerable row;
 		}
 
-		private sealed class _IFunction4_263 : IFunction4
+		private sealed class _IFunction4_284 : IFunction4
 		{
-			public _IFunction4_263(IEnumerable[] iterables, int level, IEnumerable row)
+			public _IFunction4_284(IEnumerable[] iterables, int level, IEnumerable row)
 			{
 				this.iterables = iterables;
 				this.level = level;
@@ -416,12 +442,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Iterable(object[] objects)
 		{
-			return new _IEnumerable_271(objects);
+			return new _IEnumerable_292(objects);
 		}
 
-		private sealed class _IEnumerable_271 : IEnumerable
+		private sealed class _IEnumerable_292 : IEnumerable
 		{
-			public _IEnumerable_271(object[] objects)
+			public _IEnumerable_292(object[] objects)
 			{
 				this.objects = objects;
 			}
@@ -441,12 +467,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Iterable(IEnumerator iterator)
 		{
-			return new _IEnumerable_283(iterator);
+			return new _IEnumerable_304(iterator);
 		}
 
-		private sealed class _IEnumerable_283 : IEnumerable
+		private sealed class _IEnumerable_304 : IEnumerable
 		{
-			public _IEnumerable_283(IEnumerator iterator)
+			public _IEnumerable_304(IEnumerator iterator)
 			{
 				this.iterator = iterator;
 			}
@@ -466,12 +492,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerator Take(int count, IEnumerator iterator)
 		{
-			return new _IEnumerator_295(count, iterator);
+			return new _IEnumerator_316(count, iterator);
 		}
 
-		private sealed class _IEnumerator_295 : IEnumerator
+		private sealed class _IEnumerator_316 : IEnumerator
 		{
-			public _IEnumerator_295(int count, IEnumerator iterator)
+			public _IEnumerator_316(int count, IEnumerator iterator)
 			{
 				this.count = count;
 				this.iterator = iterator;
@@ -523,13 +549,13 @@ namespace Db4objects.Db4o.Foundation
 			{
 				throw new ArgumentException();
 			}
-			return Take(toExclusive - fromInclusive, Series(fromInclusive - 1, new _IFunction4_329
+			return Take(toExclusive - fromInclusive, Series(fromInclusive - 1, new _IFunction4_350
 				()).GetEnumerator());
 		}
 
-		private sealed class _IFunction4_329 : IFunction4
+		private sealed class _IFunction4_350 : IFunction4
 		{
-			public _IFunction4_329()
+			public _IFunction4_350()
 			{
 			}
 
@@ -541,12 +567,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public static IEnumerable Series(object seed, IFunction4 function)
 		{
-			return new _IEnumerable_335(seed, function);
+			return new _IEnumerable_356(seed, function);
 		}
 
-		private sealed class _IEnumerable_335 : IEnumerable
+		private sealed class _IEnumerable_356 : IEnumerable
 		{
-			public _IEnumerable_335(object seed, IFunction4 function)
+			public _IEnumerable_356(object seed, IFunction4 function)
 			{
 				this.seed = seed;
 				this.function = function;
@@ -554,12 +580,12 @@ namespace Db4objects.Db4o.Foundation
 
 			public IEnumerator GetEnumerator()
 			{
-				return new _IEnumerator_337(seed, function);
+				return new _IEnumerator_358(seed, function);
 			}
 
-			private sealed class _IEnumerator_337 : IEnumerator
+			private sealed class _IEnumerator_358 : IEnumerator
 			{
-				public _IEnumerator_337(object seed, IFunction4 function)
+				public _IEnumerator_358(object seed, IFunction4 function)
 				{
 					this.seed = seed;
 					this.function = function;

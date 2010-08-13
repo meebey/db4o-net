@@ -4,8 +4,8 @@ using Db4oUnit.Extensions;
 
 namespace Db4oUnit.Extensions
 {
-	public interface IOptOutStaticFieldIssue : IOptOutTemporary
+	public interface IOptOutBigMathIssue : IOptOutAndroid
 	{
-		// related to issue COR-1985
+		// related to issue COR-2007
 	}
 }

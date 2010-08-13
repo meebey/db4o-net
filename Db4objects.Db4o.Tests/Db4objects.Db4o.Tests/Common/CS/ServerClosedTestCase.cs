@@ -31,7 +31,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				ServerMessageDispatcherImpl serverDispatcher = (ServerMessageDispatcherImpl)iter.
 					Current;
 				serverDispatcher.Socket().Close();
-				Cool.SleepIgnoringInterruption(1000);
+				Runtime4.Sleep(1000);
 				Assert.Expect(typeof(DatabaseClosedException), new _ICodeBlock_30(db));
 				Assert.IsTrue(db.IsClosed());
 			}

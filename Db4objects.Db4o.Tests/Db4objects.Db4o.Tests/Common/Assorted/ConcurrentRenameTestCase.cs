@@ -54,7 +54,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 					for (int i = 0; i < NumIterations; i++)
 					{
 						Exercise(_db);
-						Cool.SleepIgnoringInterruption(1);
+						Runtime4.Sleep(1);
 					}
 				}
 				catch (Exception ex)

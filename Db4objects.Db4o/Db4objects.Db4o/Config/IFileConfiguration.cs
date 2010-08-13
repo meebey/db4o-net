@@ -150,7 +150,7 @@ namespace Db4objects.Db4o.Config
 		/// has no effect on open ObjectContainers. It will only affect how
 		/// ObjectContainers are opened.<br/><br/>
 		/// The default setting is <code>true</code>.<br/><br/>
-		/// In client-server environment this setting should be used on both client and server.<br/><br/>
+		/// 
 		/// </remarks>
 		bool LockDatabaseFile
 		{

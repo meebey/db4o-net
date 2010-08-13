@@ -6,6 +6,7 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
+using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
@@ -318,6 +319,11 @@ namespace Db4oUnit.Extensions.Dbmock
 		}
 
 		public virtual IObjectContainer OpenSession()
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual IQLin From(Type clazz)
 		{
 			throw new NotImplementedException();
 		}

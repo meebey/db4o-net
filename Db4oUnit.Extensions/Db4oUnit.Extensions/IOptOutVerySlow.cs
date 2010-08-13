@@ -4,7 +4,8 @@ using Db4oUnit.Extensions;
 
 namespace Db4oUnit.Extensions
 {
-	public interface IOptOutVerySlow : IOptOutTemporary
+	public interface IOptOutVerySlow : IOptOutAndroid
 	{
+		// related to UNIT-35
 	}
 }
