@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle ("Db4objects.Db4o.Data.Services.Tests")]
-[assembly: AssemblyDescription("Db4objects.Db4o.Data.Services.Tests 8.0.160.14430 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Db4o.Data.Services.Tests 8.0.161.14430 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible (false)]
 
-[assembly: AssemblyVersion("8.0.160.14430")]
+[assembly: AssemblyVersion("8.0.161.14430")]

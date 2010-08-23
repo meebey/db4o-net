@@ -158,7 +158,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 			public object Run()
 			{
-				this._enclosing.ThreadPool().Start(this._enclosing);
+				this._enclosing.ThreadPool().Start(this._enclosing._name, this._enclosing);
 				return null;
 			}
 
@@ -447,7 +447,6 @@ namespace Db4objects.Db4o.CS.Internal
 
 		public virtual void Run()
 		{
-			SetThreadName();
 			LogListeningOnPort();
 			NotifyThreadStarted();
 			Listen();
@@ -461,12 +460,8 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 			_committedCallbacksDispatcher = new CommittedCallbacksDispatcher(this, committedInfosQueue
 				);
-			ThreadPool().Start(_committedCallbacksDispatcher);
-		}
-
-		private void SetThreadName()
-		{
-			Thread.CurrentThread().SetName(_name);
+			ThreadPool().Start("Server commit callback dispatcher thread", _committedCallbacksDispatcher
+				);
 		}
 
 		private void Listen()
@@ -475,13 +470,13 @@ namespace Db4objects.Db4o.CS.Internal
 			LocalObjectContainer threadContainer = _container;
 			while (_serverSocket != null)
 			{
-				threadContainer.WithEnvironment(new _IRunnable_356(this, threadContainer));
+				threadContainer.WithEnvironment(new _IRunnable_351(this, threadContainer));
 			}
 		}
 
-		private sealed class _IRunnable_356 : IRunnable
+		private sealed class _IRunnable_351 : IRunnable
 		{
-			public _IRunnable_356(ObjectServerImpl _enclosing, LocalObjectContainer threadContainer
+			public _IRunnable_351(ObjectServerImpl _enclosing, LocalObjectContainer threadContainer
 				)
 			{
 				this._enclosing = _enclosing;
@@ -497,7 +492,8 @@ namespace Db4objects.Db4o.CS.Internal
 						._enclosing, new ClientTransactionHandle(this._enclosing._transactionPool), socket
 						, this._enclosing.NewThreadId(), false, threadContainer.Lock());
 					this._enclosing.AddServerMessageDispatcher(messageDispatcher);
-					this._enclosing.ThreadPool().Start(messageDispatcher);
+					this._enclosing.ThreadPool().Start("server message dispatcher (still initializing)"
+						, messageDispatcher);
 				}
 				catch (Exception)
 				{
@@ -533,12 +529,12 @@ namespace Db4objects.Db4o.CS.Internal
 
 		private void NotifyThreadStarted()
 		{
-			_startupLock.Run(new _IClosure4_399(this));
+			_startupLock.Run(new _IClosure4_394(this));
 		}
 
-		private sealed class _IClosure4_399 : IClosure4
+		private sealed class _IClosure4_394 : IClosure4
 		{
-			public _IClosure4_399(ObjectServerImpl _enclosing)
+			public _IClosure4_394(ObjectServerImpl _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

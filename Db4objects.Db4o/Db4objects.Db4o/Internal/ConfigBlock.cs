@@ -96,7 +96,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Read(address);
 			}
-			stream.ThreadPool().Start(TimerFileLock());
+			stream.ThreadPool().Start("db4o file lock", TimerFileLock());
 		}
 
 		private Db4objects.Db4o.Internal.Fileheader.TimerFileLock TimerFileLock()

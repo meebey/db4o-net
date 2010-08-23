@@ -53,7 +53,8 @@ namespace Db4oUnit.Extensions.Concurrency
 			for (int i = 0; i < threadCount; ++i)
 			{
 				threads[i] = new Thread(new ConcurrencyTestMethod.RunnableTestMethod(this, toTest
-					, method, i, hasSequenceParameter));
+					, method, i, hasSequenceParameter), "ConcurrencyTestMethod.invokeConcurrencyMethod Thread["
+					 + i + "]");
 			}
 			// start threads simultaneously
 			for (int i = 0; i < threadCount; ++i)

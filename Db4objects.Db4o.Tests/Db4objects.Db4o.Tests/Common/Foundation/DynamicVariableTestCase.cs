@@ -86,7 +86,8 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Thread[] threads = new Thread[5];
 			for (int i = 0; i < threads.Length; i++)
 			{
-				threads[i] = new Thread(new _IRunnable_56(this, variable, failures));
+				threads[i] = new Thread(new _IRunnable_56(this, variable, failures), "DynamicVariableTestCase.checkVariableBehavior Thread["
+					 + i + "]");
 			}
 			return threads;
 		}

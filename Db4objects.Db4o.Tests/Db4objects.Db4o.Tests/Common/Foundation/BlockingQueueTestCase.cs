@@ -35,6 +35,77 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Assert.AreSame(data[2], queue.Next());
 		}
 
+		public virtual void TestTimeoutNext()
+		{
+			BlockingQueue queue = new BlockingQueue();
+			Assert.IsNull(AssertTakeAtLeast(200, new _IClosure4_32(queue)));
+			object obj = new object();
+			queue.Add(obj);
+			Assert.AreSame(obj, AssertTakeLessThan(50, new _IClosure4_43(queue)));
+			Assert.IsNull(AssertTakeAtLeast(200, new _IClosure4_50(queue)));
+		}
+
+		private sealed class _IClosure4_32 : IClosure4
+		{
+			public _IClosure4_32(BlockingQueue queue)
+			{
+				this.queue = queue;
+			}
+
+			public object Run()
+			{
+				return queue.Next(200);
+			}
+
+			private readonly BlockingQueue queue;
+		}
+
+		private sealed class _IClosure4_43 : IClosure4
+		{
+			public _IClosure4_43(BlockingQueue queue)
+			{
+				this.queue = queue;
+			}
+
+			public object Run()
+			{
+				return queue.Next(200);
+			}
+
+			private readonly BlockingQueue queue;
+		}
+
+		private sealed class _IClosure4_50 : IClosure4
+		{
+			public _IClosure4_50(BlockingQueue queue)
+			{
+				this.queue = queue;
+			}
+
+			public object Run()
+			{
+				return queue.Next(200);
+			}
+
+			private readonly BlockingQueue queue;
+		}
+
+		private object AssertTakeLessThan(long time, IClosure4 runnable)
+		{
+			long before = Runtime.CurrentTimeMillis();
+			object ret = runnable.Run();
+			Assert.IsSmallerOrEqual(time, Runtime.CurrentTimeMillis() - before);
+			return ret;
+		}
+
+		private object AssertTakeAtLeast(long time, IClosure4 runnable)
+		{
+			long before = Runtime.CurrentTimeMillis();
+			object ret = runnable.Run();
+			Assert.IsGreaterOrEqual(time, Runtime.CurrentTimeMillis() - before);
+			return ret;
+		}
+
 		public virtual void TestBlocking()
 		{
 			IQueue4 queue = new BlockingQueue();
@@ -59,12 +130,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			BlockingQueueTestCase.StopThread notifyThread = new BlockingQueueTestCase.StopThread
 				(queue);
 			notifyThread.Start();
-			Assert.Expect(typeof(BlockingQueueStoppedException), new _ICodeBlock_52(queue));
+			Assert.Expect(typeof(BlockingQueueStoppedException), new _ICodeBlock_96(queue));
 		}
 
-		private sealed class _ICodeBlock_52 : ICodeBlock
+		private sealed class _ICodeBlock_96 : ICodeBlock
 		{
-			public _ICodeBlock_52(BlockingQueue queue)
+			public _ICodeBlock_96(BlockingQueue queue)
 			{
 				this.queue = queue;
 			}

@@ -195,7 +195,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		private Thread StartGetAndReleaseThread(IExtObjectContainer client)
 		{
-			Thread t = new Thread(new SetSemaphoreTestCase.GetAndRelease(client));
+			Thread t = new Thread(new SetSemaphoreTestCase.GetAndRelease(client), "SetSemaphoreTestCase.startGetAndReleaseThread"
+				);
 			t.Start();
 			return t;
 		}

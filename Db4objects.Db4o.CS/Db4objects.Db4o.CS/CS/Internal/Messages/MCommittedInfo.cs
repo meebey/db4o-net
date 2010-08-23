@@ -153,8 +153,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 			ByteArrayInputStream @is = new ByteArrayInputStream(_payLoad._buffer);
 			int dispatcherID = PrimitiveCodec.ReadInt(@is);
 			CallbackObjectInfoCollections callbackInfos = Decode(@is);
-			Container().ThreadPool().Start(new _IRunnable_111(this, callbackInfos, dispatcherID
-				));
+			Container().ThreadPool().Start(ReflectPlatform.SimpleName(GetType()) + ": calling commit callbacks thread"
+				, new _IRunnable_111(this, callbackInfos, dispatcherID));
 			return true;
 		}
 

@@ -116,8 +116,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			IEmbeddedObjectContainer db = OpenDatabase();
 			IList exceptions = new ArrayList();
 			Thread[] threads = new Thread[] { new Thread(new ConcurrentRenameTestCase.QueryRunner
-				(db, exceptions)), new Thread(new ConcurrentRenameTestCase.RenameRunner(db, exceptions
-				)) };
+				(db, exceptions), "ConcurrentRenameTestCase.test Thread[0]"), new Thread(new ConcurrentRenameTestCase.RenameRunner
+				(db, exceptions), "ConcurrentRenameTestCase.test Thread[1]") };
 			for (int threadIndex = 0; threadIndex < threads.Length; ++threadIndex)
 			{
 				Thread thread = threads[threadIndex];

@@ -5,6 +5,7 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Tests;
+using Db4objects.Db4o.Internal;
 using Sharpen.Lang;
 
 namespace Db4oUnit.Extensions.Tests
@@ -15,12 +16,13 @@ namespace Db4oUnit.Extensions.Tests
 		{
 			public virtual void Test()
 			{
-				Container().ThreadPool().Start(new _IRunnable_13());
+				Container().ThreadPool().Start(ReflectPlatform.SimpleName(typeof(UnhandledExceptionInThreadTestCase
+					)) + " Throwing Exception Thread", new _IRunnable_15());
 			}
 
-			private sealed class _IRunnable_13 : IRunnable
+			private sealed class _IRunnable_15 : IRunnable
 			{
-				public _IRunnable_13()
+				public _IRunnable_15()
 				{
 				}
 

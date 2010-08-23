@@ -10,6 +10,10 @@ using Db4objects.Db4o.Tests.Common.Qlin;
 
 namespace Db4objects.Db4o.Tests.Common.Qlin
 {
+	/// <summary>
+	/// Syntax and implementation of QLin were inspired by:
+	/// http://www.h2database.com/html/jaqu.html
+	/// </summary>
 	public class BasicQLinTestCase : AbstractDb4oTestCase, ITestLifeCycle
 	{
 		public virtual void TestFromSelect()
@@ -246,6 +250,10 @@ namespace Db4objects.Db4o.Tests.Common.Qlin
 
 			public IList children = new ArrayList();
 
+			public Cat()
+			{
+			}
+
 			public Cat(string name)
 			{
 				this.name = name;
@@ -310,6 +318,10 @@ namespace Db4objects.Db4o.Tests.Common.Qlin
 		public class Dog : BasicQLinTestCase.IPet
 		{
 			private string _name;
+
+			public Dog()
+			{
+			}
 
 			public Dog(string name)
 			{

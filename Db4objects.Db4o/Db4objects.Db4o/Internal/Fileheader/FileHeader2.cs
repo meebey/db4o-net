@@ -87,7 +87,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			}
 			if (startFileLockingThread)
 			{
-				file.ThreadPool().Start(_timerFileLock);
+				file.ThreadPool().Start("db4o lock thread", _timerFileLock);
 			}
 		}
 

@@ -20,20 +20,20 @@ namespace Db4objects.Db4o.IO
 
 		public ThreadedSyncBin(IBin bin) : base(bin)
 		{
-			_thread = new Thread(new _IRunnable_22(this));
+			_thread = new Thread(new _IRunnable_23(this), "ThreadedSyncBin");
 			_thread.Start();
 		}
 
-		private sealed class _IRunnable_22 : IRunnable
+		private sealed class _IRunnable_23 : IRunnable
 		{
-			public _IRunnable_22(ThreadedSyncBin _enclosing)
+			public _IRunnable_23(ThreadedSyncBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Run()
 			{
-				IClosure4 closure = new _IClosure4_24(this);
+				IClosure4 closure = new _IClosure4_25(this);
 				while (true)
 				{
 					this._enclosing._lock.Run(closure);
@@ -44,9 +44,9 @@ namespace Db4objects.Db4o.IO
 				}
 			}
 
-			private sealed class _IClosure4_24 : IClosure4
+			private sealed class _IClosure4_25 : IClosure4
 			{
-				public _IClosure4_24(_IRunnable_22 _enclosing)
+				public _IClosure4_25(_IRunnable_23 _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.IO
 					return null;
 				}
 
-				private readonly _IRunnable_22 _enclosing;
+				private readonly _IRunnable_23 _enclosing;
 			}
 
 			private readonly ThreadedSyncBin _enclosing;
@@ -69,13 +69,13 @@ namespace Db4objects.Db4o.IO
 		{
 			WaitForPendingSync();
 			_closed = true;
-			_lock.Run(new _IClosure4_45(this));
+			_lock.Run(new _IClosure4_46(this));
 			base.Close();
 		}
 
-		private sealed class _IClosure4_45 : IClosure4
+		private sealed class _IClosure4_46 : IClosure4
 		{
-			public _IClosure4_45(ThreadedSyncBin _enclosing)
+			public _IClosure4_46(ThreadedSyncBin _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -127,12 +127,12 @@ namespace Db4objects.Db4o.IO
 		public override void Sync(IRunnable runnable)
 		{
 			WaitForPendingSync();
-			_lock.Run(new _IClosure4_84(this, runnable));
+			_lock.Run(new _IClosure4_85(this, runnable));
 		}
 
-		private sealed class _IClosure4_84 : IClosure4
+		private sealed class _IClosure4_85 : IClosure4
 		{
-			public _IClosure4_84(ThreadedSyncBin _enclosing, IRunnable runnable)
+			public _IClosure4_85(ThreadedSyncBin _enclosing, IRunnable runnable)
 			{
 				this._enclosing = _enclosing;
 				this.runnable = runnable;

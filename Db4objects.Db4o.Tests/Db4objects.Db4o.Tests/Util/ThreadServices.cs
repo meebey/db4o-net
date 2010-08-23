@@ -9,12 +9,13 @@ namespace Db4objects.Db4o.Tests.Util
 	public class ThreadServices
 	{
 		/// <exception cref="System.Exception"></exception>
-		public static void SpawnAndJoin(int threadCount, ICodeBlock codeBlock)
+		public static void SpawnAndJoin(string threadName, int threadCount, ICodeBlock codeBlock
+			)
 		{
 			Thread[] threads = new Thread[threadCount];
 			for (int i = 0; i < threadCount; i++)
 			{
-				threads[i] = new Thread(new _IRunnable_14(codeBlock));
+				threads[i] = new Thread(new _IRunnable_16(codeBlock), threadName);
 				threads[i].Start();
 			}
 			for (int i = 0; i < threads.Length; i++)
@@ -23,9 +24,9 @@ namespace Db4objects.Db4o.Tests.Util
 			}
 		}
 
-		private sealed class _IRunnable_14 : IRunnable
+		private sealed class _IRunnable_16 : IRunnable
 		{
-			public _IRunnable_14(ICodeBlock codeBlock)
+			public _IRunnable_16(ICodeBlock codeBlock)
 			{
 				this.codeBlock = codeBlock;
 			}

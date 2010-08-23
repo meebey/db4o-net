@@ -101,14 +101,15 @@ namespace Db4objects.Db4o.Tests.Common.Backup
 
 		private Thread StartBackupThread()
 		{
-			Thread thread = new Thread(new _IRunnable_91(this));
+			Thread thread = new Thread(new _IRunnable_92(this), "BackupStressTestCase.startBackupThread"
+				);
 			thread.Start();
 			return thread;
 		}
 
-		private sealed class _IRunnable_91 : IRunnable
+		private sealed class _IRunnable_92 : IRunnable
 		{
-			public _IRunnable_91(BackupStressTestCase _enclosing)
+			public _IRunnable_92(BackupStressTestCase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

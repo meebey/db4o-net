@@ -48,8 +48,8 @@ namespace Db4objects.Db4o.Internal.Weakref
 				return;
 			}
 			_timer = new SimpleTimer(new EnabledWeakReferenceSupport.Collector(this), _container
-				.ConfigImpl.WeakReferenceCollectionInterval(), "db4o WeakReference collector");
-			_container.ThreadPool().Start(_timer);
+				.ConfigImpl.WeakReferenceCollectionInterval());
+			_container.ThreadPool().Start("db4o WeakReference collector", _timer);
 		}
 
 		public virtual void Stop()

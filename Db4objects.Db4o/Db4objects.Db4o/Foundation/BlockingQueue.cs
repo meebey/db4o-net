@@ -3,11 +3,12 @@
 using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
+using Sharpen;
 
 namespace Db4objects.Db4o.Foundation
 {
 	/// <exclude></exclude>
-	public class BlockingQueue : IQueue4
+	public class BlockingQueue : IBlockingQueue4
 	{
 		protected NonblockingQueue _queue = new NonblockingQueue();
 
@@ -85,32 +86,88 @@ namespace Db4objects.Db4o.Foundation
 		}
 
 		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-		public virtual object Next()
+		public virtual object Next(long timeout)
 		{
-			return _lock.Run(new _IClosure4_45(this));
+			return (object)_lock.Run(new _IClosure4_45(this, timeout));
 		}
 
 		private sealed class _IClosure4_45 : IClosure4
 		{
-			public _IClosure4_45(BlockingQueue _enclosing)
+			public _IClosure4_45(BlockingQueue _enclosing, long timeout)
+			{
+				this._enclosing = _enclosing;
+				this.timeout = timeout;
+			}
+
+			public object Run()
+			{
+				this._enclosing.WaitForNext(timeout);
+				return this._enclosing._queue.HasNext() ? this._enclosing._queue.Next() : null;
+			}
+
+			private readonly BlockingQueue _enclosing;
+
+			private readonly long timeout;
+		}
+
+		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+		public virtual bool WaitForNext(long timeout)
+		{
+			return (((bool)_lock.Run(new _IClosure4_54(this, timeout))));
+		}
+
+		private sealed class _IClosure4_54 : IClosure4
+		{
+			public _IClosure4_54(BlockingQueue _enclosing, long timeout)
+			{
+				this._enclosing = _enclosing;
+				this.timeout = timeout;
+			}
+
+			public object Run()
+			{
+				long timeLeft = timeout;
+				long now = Runtime.CurrentTimeMillis();
+				while (timeLeft > 0)
+				{
+					if (this._enclosing._queue.HasNext())
+					{
+						return true;
+					}
+					if (this._enclosing._stopped)
+					{
+						throw new BlockingQueueStoppedException();
+					}
+					this._enclosing._lock.Snooze(timeLeft);
+					long l = now;
+					now = Runtime.CurrentTimeMillis();
+					timeLeft -= now - l;
+				}
+				return false;
+			}
+
+			private readonly BlockingQueue _enclosing;
+
+			private readonly long timeout;
+		}
+
+		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+		public virtual object Next()
+		{
+			return (object)_lock.Run(new _IClosure4_76(this));
+		}
+
+		private sealed class _IClosure4_76 : IClosure4
+		{
+			public _IClosure4_76(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public object Run()
 			{
-				while (true)
-				{
-					if (this._enclosing._queue.HasNext())
-					{
-						return this._enclosing._queue.Next();
-					}
-					if (this._enclosing._stopped)
-					{
-						throw new BlockingQueueStoppedException();
-					}
-					this._enclosing._lock.Snooze(int.MaxValue);
-				}
+				this._enclosing.WaitForNext();
+				return this._enclosing._queue.Next();
 			}
 
 			private readonly BlockingQueue _enclosing;
@@ -118,12 +175,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual void Stop()
 		{
-			_lock.Run(new _IClosure4_61(this));
+			_lock.Run(new _IClosure4_85(this));
 		}
 
-		private sealed class _IClosure4_61 : IClosure4
+		private sealed class _IClosure4_85 : IClosure4
 		{
-			public _IClosure4_61(BlockingQueue _enclosing)
+			public _IClosure4_85(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -140,12 +197,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual object NextMatching(IPredicate4 condition)
 		{
-			return _lock.Run(new _IClosure4_71(this, condition));
+			return _lock.Run(new _IClosure4_95(this, condition));
 		}
 
-		private sealed class _IClosure4_71 : IClosure4
+		private sealed class _IClosure4_95 : IClosure4
 		{
-			public _IClosure4_71(BlockingQueue _enclosing, IPredicate4 condition)
+			public _IClosure4_95(BlockingQueue _enclosing, IPredicate4 condition)
 			{
 				this._enclosing = _enclosing;
 				this.condition = condition;
@@ -159,6 +216,38 @@ namespace Db4objects.Db4o.Foundation
 			private readonly BlockingQueue _enclosing;
 
 			private readonly IPredicate4 condition;
+		}
+
+		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+		public virtual void WaitForNext()
+		{
+			_lock.Run(new _IClosure4_103(this));
+		}
+
+		private sealed class _IClosure4_103 : IClosure4
+		{
+			public _IClosure4_103(BlockingQueue _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public object Run()
+			{
+				while (true)
+				{
+					if (this._enclosing._queue.HasNext())
+					{
+						return null;
+					}
+					if (this._enclosing._stopped)
+					{
+						throw new BlockingQueueStoppedException();
+					}
+					this._enclosing._lock.Snooze(int.MaxValue);
+				}
+			}
+
+			private readonly BlockingQueue _enclosing;
 		}
 	}
 }

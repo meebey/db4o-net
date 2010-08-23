@@ -213,7 +213,8 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			_asynchronousMessageProcessor = new ClientAsynchronousMessageProcessor(_asynchronousMessageQueue
 				);
-			ThreadPool().Start(_asynchronousMessageProcessor);
+			ThreadPool().Start("Client Asynchronous Message Processor Thread for: " + ToString
+				(), _asynchronousMessageProcessor);
 		}
 
 		/// <exception cref="System.NotSupportedException"></exception>
@@ -714,7 +715,7 @@ namespace Db4objects.Db4o.CS.Internal
 				_blobTask.Add(msg);
 				if (needStart)
 				{
-					ThreadPool().StartLowPriority(_blobTask);
+					ThreadPool().StartLowPriority("Blob processor task", _blobTask);
 				}
 			}
 		}

@@ -6,6 +6,8 @@ using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
 {
+	/// <summary>Unbounded queue.</summary>
+	/// <remarks>Unbounded queue.</remarks>
 	/// <exclude></exclude>
 	public class NonblockingQueue : IQueue4
 	{
@@ -85,12 +87,12 @@ namespace Db4objects.Db4o.Foundation
 		{
 			List4 origInsertionPoint = _insertionPoint;
 			List4 origNext = _next;
-			return new _Iterator4Impl_81(this, origInsertionPoint, origNext, _next);
+			return new _Iterator4Impl_82(this, origInsertionPoint, origNext, _next);
 		}
 
-		private sealed class _Iterator4Impl_81 : Iterator4Impl
+		private sealed class _Iterator4Impl_82 : Iterator4Impl
 		{
-			public _Iterator4Impl_81(NonblockingQueue _enclosing, List4 origInsertionPoint, List4
+			public _Iterator4Impl_82(NonblockingQueue _enclosing, List4 origInsertionPoint, List4
 				 origNext, List4 baseArg1) : base(baseArg1)
 			{
 				this._enclosing = _enclosing;

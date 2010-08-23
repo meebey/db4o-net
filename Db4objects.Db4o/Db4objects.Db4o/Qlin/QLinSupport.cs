@@ -165,16 +165,10 @@ namespace Db4objects.Db4o.Qlin
 		{
 			if (!warned)
 			{
-				Sharpen.Runtime.Err.WriteLine("\nQLin is a new experimental query interface, that we wrote for the "
+				Sharpen.Runtime.Err.WriteLine("\nWarning: QLin is only a very limited implementation"
 					);
-				Sharpen.Runtime.Err.WriteLine("db4o replication system (dRS).\n");
-				Sharpen.Runtime.Err.WriteLine("It is not yet certain that QLin will go into the db4o 8.0 final release."
-					);
-				Sharpen.Runtime.Err.WriteLine("\nWe would love to have real LINQ for Java instead.\n"
-					);
-				Sharpen.Runtime.Err.WriteLine("Kudos to Thomas Mueller for the inspiration that it is possible to map"
-					);
-				Sharpen.Runtime.Err.WriteLine("expressions to fields: http://www.h2database.com/html/jaqu.html\n"
+				Sharpen.Runtime.Err.WriteLine("for the db4o replication system (dRS). ");
+				Sharpen.Runtime.Err.WriteLine("It may be removed from the db4o 8.0 final release\n"
 					);
 				warned = true;
 			}

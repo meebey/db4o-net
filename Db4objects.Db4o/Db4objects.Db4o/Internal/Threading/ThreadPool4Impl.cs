@@ -22,35 +22,28 @@ namespace Db4objects.Db4o.Internal.Threading
 			}
 		}
 
-		public virtual void StartLowPriority(IRunnable task)
+		public virtual void StartLowPriority(string taskName, IRunnable task)
 		{
-			Thread thread = ThreadFor(task);
-			ActivateThread(thread);
-		}
-
-		public virtual void Start(IRunnable task)
-		{
-			Thread thread = ThreadFor(task);
+			Thread thread = ThreadFor(taskName, task);
 			ActivateThread(thread);
 		}
 
 		public virtual void Start(string taskName, IRunnable task)
 		{
-			Thread thread = ThreadFor(task);
-			thread.SetName(taskName);
+			Thread thread = ThreadFor(taskName, task);
 			ActivateThread(thread);
 		}
 
-		private Thread ThreadFor(IRunnable task)
+		private Thread ThreadFor(string threadName, IRunnable task)
 		{
-			Thread thread = new Thread(new _IRunnable_47(this, task));
+			Thread thread = new Thread(new _IRunnable_41(this, task), threadName);
 			thread.SetDaemon(true);
 			return thread;
 		}
 
-		private sealed class _IRunnable_47 : IRunnable
+		private sealed class _IRunnable_41 : IRunnable
 		{
-			public _IRunnable_47(ThreadPool4Impl _enclosing, IRunnable task)
+			public _IRunnable_41(ThreadPool4Impl _enclosing, IRunnable task)
 			{
 				this._enclosing = _enclosing;
 				this.task = task;
