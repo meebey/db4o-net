@@ -1,7 +1,6 @@
 /* Copyright (C) 2004	Versant Inc.	  http://www.db4o.com */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -84,7 +83,7 @@ namespace Sharpen
 
 		public static long CurrentTimeMillis() 
 		{
-			return Runtime.ToJavaMilliseconds(DateTime.Now.ToUniversalTime());
+			return ToJavaMilliseconds(DateTime.Now.ToUniversalTime());
 		}
 
 		public static int FloatToIntBits(float value) 
@@ -94,7 +93,7 @@ namespace Sharpen
 
 		public static void Gc() 
 		{
-			System.GC.Collect();
+			GC.Collect();
 		}
 		
 		public static bool EqualsIgnoreCase(string lhs, string rhs) 
@@ -180,7 +179,7 @@ namespace Sharpen
 
 		public static long GetTimeForDate(DateTime dateTime) 
 		{
-			return Runtime.ToJavaMilliseconds(dateTime);
+			return ToJavaMilliseconds(dateTime);
 		}
 
 		public static int IdentityHashCode(object obj) 
@@ -199,6 +198,15 @@ namespace Sharpen
 			throw new NotImplementedException();
 #else
 			Monitor.Wait(obj, (int) timeout);
+#endif
+		}
+
+		public static void Wait(object obj) 
+		{
+#if CF
+			throw new NotImplementedException();
+#else
+			Monitor.Wait(obj);
 #endif
 		}
 
@@ -222,17 +230,17 @@ namespace Sharpen
 
 		public static void PrintStackTrace(Exception exception) 
 		{
-			PrintStackTrace(exception, Sharpen.Runtime.Err);
+			PrintStackTrace(exception, Err);
 		}
 
-		public static void PrintStackTrace(Exception exception, System.IO.TextWriter writer) 
+		public static void PrintStackTrace(Exception exception, TextWriter writer) 
 		{
 			writer.WriteLine(exception);
 		}
 
 		public static void RunFinalization() 
 		{
-			System.GC.WaitForPendingFinalizers();
+			GC.WaitForPendingFinalizers();
 		}
 
 		public static void RunFinalizersOnExit(bool flag) 
@@ -240,7 +248,7 @@ namespace Sharpen
 			// do nothing
 		}
 
-        public static System.Type GetType(string typeName)
+        public static Type GetType(string typeName)
         {
             return TypeReference.FromString(typeName).Resolve();
         }
@@ -257,7 +265,7 @@ namespace Sharpen
 
 		public static long ToNetTicks(long javaMilliseconds)
 		{
-			return (javaMilliseconds + Runtime.DIFFERENCE_IN_TICKS) * Runtime.RATIO;
+			return (javaMilliseconds + DIFFERENCE_IN_TICKS) * RATIO;
 		}
 
         public static string Getenv(string name)
