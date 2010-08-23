@@ -1,6 +1,7 @@
 /* Copyright (C) 2004   Versant Inc.   http://www.db4o.com */
 
 using System;
+using System.Threading;
 
 namespace Sharpen.Lang
 {
@@ -19,14 +20,20 @@ namespace Sharpen.Lang
 			_target = this;
 		}
 
+		public Thread(IRunnable target, string name)
+		{
+			_target = target;
+			SetName(name);
+		}
+
 		public Thread(IRunnable target)
 		{
-			this._target = target;
+			_target = target;
 		}
 
 		public Thread(System.Threading.Thread thread)
 		{
-			this._thread = thread;
+			_thread = thread;
 		}
 
 		public static Thread CurrentThread()
@@ -40,7 +47,7 @@ namespace Sharpen.Lang
 
 		public void SetName(string name)
 		{
-			this._name = name;
+			_name = name;
 #if !CF
 			if (_thread != null && name != null)
 			{
@@ -71,7 +78,7 @@ namespace Sharpen.Lang
 
 		public void Start()
 		{
-			_thread = new System.Threading.Thread(new System.Threading.ThreadStart(EntryPoint));
+			_thread = new System.Threading.Thread(EntryPoint);
 			_thread.IsBackground = _isDaemon;
 			if (_name != null)
 			{
@@ -126,7 +133,7 @@ namespace Sharpen.Lang
 			{
 				// don't let an unhandled exception bring
 				// the process down
-				Sharpen.Runtime.PrintStackTrace(e);
+				Runtime.PrintStackTrace(e);
 			}
 		}
 
