@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal
 	        return true;
 	    }
 
-        internal static string SimpleName(Type type)
+        public static string SimpleName(Type type)
         {
             return type.Name;
         }
