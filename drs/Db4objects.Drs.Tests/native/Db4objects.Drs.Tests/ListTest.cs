@@ -18,121 +18,121 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. */
+using System.Collections;
+using Db4oUnit;
+
 namespace Db4objects.Drs.Tests
 {
-	public class ListTest : Db4objects.Drs.Tests.DrsTestCase
-	{
-		public virtual void Test()
-		{
-			ActualTest();
-		}
+    public class ListTest : DrsTestCase
+    {
+        public virtual void Test()
+        {
+            ActualTest();
+        }
 
-		protected virtual void ActualTest()
-		{
-			StoreListToProviderA();
-			ReplicateAllToProviderBFirstTime();
-			ModifyInProviderB();
-			ReplicateAllStep2();
-			AddElementInProviderA();
-			ReplicateHolderStep3();
-		}
+        protected virtual void ActualTest()
+        {
+            StoreListToProviderA();
+            ReplicateAllToProviderBFirstTime();
+            ModifyInProviderB();
+            ReplicateAllStep2();
+            AddElementInProviderA();
+            ReplicateHolderStep3();
+        }
 
-		private void StoreListToProviderA()
-		{
-			Db4objects.Drs.Tests.ListHolder lh = CreateHolder();
-			Db4objects.Drs.Tests.ListContent lc1 = new Db4objects.Drs.Tests.ListContent("c1");
-			Db4objects.Drs.Tests.ListContent lc2 = new Db4objects.Drs.Tests.ListContent("c2");
-			lh.Add(lc1);
-			lh.Add(lc2);
-			A().Provider().StoreNew(lh);
-			A().Provider().Commit();
-			EnsureContent(A(), new string[] { "h1" }, new string[] { "c1", "c2" });
-		}
+        private void StoreListToProviderA()
+        {
+            ListHolder lh = CreateHolder();
+            ListContent lc1 = new ListContent("c1");
+            ListContent lc2 = new ListContent("c2");
+            lh.Add(lc1);
+            lh.Add(lc2);
+            A().Provider().StoreNew(lh);
+            A().Provider().Commit();
+            EnsureContent(A(), new string[] {"h1"}, new string[] {"c1", "c2"});
+        }
 
-		protected virtual Db4objects.Drs.Tests.ListHolder CreateHolder()
-		{
-			Db4objects.Drs.Tests.ListHolder lh = new Db4objects.Drs.Tests.ListHolder("h1");
-			lh.SetList(new System.Collections.ArrayList());
-			return lh;
-		}
+        protected virtual ListHolder CreateHolder()
+        {
+            ListHolder lh = new ListHolder("h1");
+            lh.SetList(new ArrayList());
+            return lh;
+        }
 
-		private void ReplicateAllToProviderBFirstTime()
-		{
-			ReplicateAll(A().Provider(), B().Provider());
-			EnsureContent(A(), new string[] { "h1" }, new string[] { "c1", "c2" });
-			EnsureContent(B(), new string[] { "h1" }, new string[] { "c1", "c2" });
-		}
+        private void ReplicateAllToProviderBFirstTime()
+        {
+            ReplicateAll(A().Provider(), B().Provider());
+            EnsureContent(A(), new string[] {"h1"}, new string[] {"c1", "c2"});
+            EnsureContent(B(), new string[] {"h1"}, new string[] {"c1", "c2"});
+        }
 
-		private void ModifyInProviderB()
-		{
-			Db4objects.Drs.Tests.ListHolder lh = (Db4objects.Drs.Tests.ListHolder)GetOneInstance
-				(B(), typeof(Db4objects.Drs.Tests.ListHolder));
-			lh.SetName("h2");
-			System.Collections.IEnumerator itor = lh.GetList().GetEnumerator();
+        private void ModifyInProviderB()
+        {
+            ListHolder lh = (ListHolder) GetOneInstance
+                                             (B(), typeof (ListHolder));
+            lh.SetName("h2");
+            IEnumerator itor = lh.GetList().GetEnumerator();
             itor.MoveNext();
-			Db4objects.Drs.Tests.ListContent lc1 = (Db4objects.Drs.Tests.ListContent)itor.Current;
+            ListContent lc1 = (ListContent) itor.Current;
             itor.MoveNext();
-			Db4objects.Drs.Tests.ListContent lc2 = (Db4objects.Drs.Tests.ListContent)itor.Current;
-			lc1.SetName("co1");
-			lc2.SetName("co2");
-			B().Provider().Update(lc1);
-			B().Provider().Update(lc2);
-			B().Provider().Update(lh.GetList());
-			B().Provider().Update(lh);
-			B().Provider().Commit();
-			EnsureContent(B(), new string[] { "h2" }, new string[] { "co1", "co2" });
-		}
+            ListContent lc2 = (ListContent) itor.Current;
+            lc1.SetName("co1");
+            lc2.SetName("co2");
+            B().Provider().Update(lc1);
+            B().Provider().Update(lc2);
+            B().Provider().Update(lh.GetList());
+            B().Provider().Update(lh);
+            B().Provider().Commit();
+            EnsureContent(B(), new string[] {"h2"}, new string[] {"co1", "co2"});
+        }
 
-		private void ReplicateAllStep2()
-		{
-			ReplicateAll(B().Provider(), A().Provider());
-			EnsureContent(B(), new string[] { "h2" }, new string[] { "co1", "co2" });
-			EnsureContent(A(), new string[] { "h2" }, new string[] { "co1", "co2" });
-		}
+        private void ReplicateAllStep2()
+        {
+            ReplicateAll(B().Provider(), A().Provider());
+            EnsureContent(B(), new string[] {"h2"}, new string[] {"co1", "co2"});
+            EnsureContent(A(), new string[] {"h2"}, new string[] {"co1", "co2"});
+        }
 
-		private void AddElementInProviderA()
-		{
-			Db4objects.Drs.Tests.ListHolder lh = (Db4objects.Drs.Tests.ListHolder)GetOneInstance
-				(A(), typeof(Db4objects.Drs.Tests.ListHolder));
-			lh.SetName("h3");
-			Db4objects.Drs.Tests.ListContent lc3 = new Db4objects.Drs.Tests.ListContent("co3");
-			A().Provider().StoreNew(lc3);
-			lh.GetList().Add(lc3);
-			A().Provider().Update(lh.GetList());
-			A().Provider().Update(lh);
-			A().Provider().Commit();
-			EnsureContent(A(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
-		}
+        private void AddElementInProviderA()
+        {
+            ListHolder lh = (ListHolder) GetOneInstance
+                                             (A(), typeof (ListHolder));
+            lh.SetName("h3");
+            ListContent lc3 = new ListContent("co3");
+            A().Provider().StoreNew(lc3);
+            lh.GetList().Add(lc3);
+            A().Provider().Update(lh.GetList());
+            A().Provider().Update(lh);
+            A().Provider().Commit();
+            EnsureContent(A(), new string[] {"h3"}, new string[] {"co1", "co2", "co3"});
+        }
 
-		private void ReplicateHolderStep3()
-		{
-			ReplicateClass(A().Provider(), B().Provider(), typeof(Db4objects.Drs.Tests.ListHolder)
-				);
-			EnsureContent(A(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
-			EnsureContent(B(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
-		}
+        private void ReplicateHolderStep3()
+        {
+            ReplicateClass(A().Provider(), B().Provider(), typeof (ListHolder)
+                );
+            EnsureContent(A(), new string[] {"h3"}, new string[] {"co1", "co2", "co3"});
+            EnsureContent(B(), new string[] {"h3"}, new string[] {"co1", "co2", "co3"});
+        }
 
-        private void EnsureContent(Db4objects.Drs.Tests.IDrsProviderFixture fixture, string[] holderNames
-			, string[] contentNames)
-		{
-			int holderCount = holderNames.Length;
-			EnsureInstanceCount(fixture, typeof(Db4objects.Drs.Tests.ListHolder), holderCount);
-			int i = 0;
-			System.Collections.IEnumerator objectSet = fixture.Provider().GetStoredObjects(typeof(Db4objects.Drs.Tests.ListHolder)
-				).GetEnumerator();
-			while (objectSet.MoveNext())
-			{
-				Db4objects.Drs.Tests.ListHolder lh = (Db4objects.Drs.Tests.ListHolder)objectSet.Current;
-				Db4oUnit.Assert.AreEqual(holderNames[i], lh.GetName());
-				System.Collections.IEnumerator itor = lh.GetList().GetEnumerator();
-				int idx = 0;
-				while (itor.MoveNext())
-				{
-					Db4oUnit.Assert.AreEqual(contentNames[idx], ((Db4objects.Drs.Tests.ListContent)itor
-						.Current).GetName());
-					idx++;
-				}
-			}
-		}
-	}
+        private void EnsureContent(IDrsProviderFixture fixture, string[] holderNames, string[] contentNames)
+        {
+            int holderCount = holderNames.Length;
+            EnsureInstanceCount(fixture, typeof (ListHolder), holderCount);
+            int i = 0;
+            IEnumerator objectSet = fixture.Provider().GetStoredObjects(typeof (ListHolder)).GetEnumerator();
+            while (objectSet.MoveNext())
+            {
+                ListHolder lh = (ListHolder) objectSet.Current;
+                Assert.AreEqual(holderNames[i], lh.GetName());
+                IEnumerator itor = lh.GetList().GetEnumerator();
+                int idx = 0;
+                while (itor.MoveNext())
+                {
+                    Assert.AreEqual(contentNames[idx], ((ListContent) itor.Current).GetName());
+                    idx++;
+                }
+            }
+        }
+    }
 }
