@@ -112,7 +112,7 @@ namespace Db4objects.Drs.Tests
 			EnsureContent(B(), new string[] { "h3" }, new string[] { "co1", "co2", "co3" });
 		}
 
-		private void EnsureContent(Db4objects.Drs.Tests.IDrsFixture fixture, string[] holderNames
+        private void EnsureContent(Db4objects.Drs.Tests.IDrsProviderFixture fixture, string[] holderNames
 			, string[] contentNames)
 		{
 			int holderCount = holderNames.Length;
