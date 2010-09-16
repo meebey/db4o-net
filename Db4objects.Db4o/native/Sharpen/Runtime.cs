@@ -105,6 +105,11 @@ namespace Sharpen
 #endif
 		}
 
+		public static int CompareOrdinal(String a, String b)
+		{
+			return String.CompareOrdinal(a, b);
+		}
+
 		public static string Substring(String s, int startIndex)
 		{
 			return s.Substring(startIndex);
