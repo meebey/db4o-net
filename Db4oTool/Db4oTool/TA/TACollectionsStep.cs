@@ -23,7 +23,7 @@ namespace Db4oTool.TA
 				StackAnalysisResult result = StackAnalyzer.IsConsumedBy(MethodCallOnSupportedCollections, cast, methodDefinition.DeclaringType.Module);
 				if (!result.Match)
 				{
-				    throw new InvalidOperationException(string.Format("Error: [{0}] Invalid use of cast result: '{1} {2}'. Cast to List<T> are allowed only for property access or method call.", methodDefinition, result.Consumer.OpCode, result.Consumer.Operand));
+				    throw new InvalidOperationException(string.Format("Error: [{0}] Invalid use of cast result: '{1}'.\r\nCasts to {2} are only allowed for property access/method calls.", methodDefinition, DebugInformation.InstructionInformationFor(result.Consumer, methodDefinition.Body.Instructions), cast.Operand));
 				}
 
 				TypeReference castTarget = (TypeReference) cast.Operand;
@@ -177,7 +177,6 @@ namespace Db4oTool.TA
 				return declaringType.HasGenericParameters && _collectionReplacements.ContainsKey(declaringType.FullName);
 			});
 		}
-
 
 		static TACollectionsStep()
 		{

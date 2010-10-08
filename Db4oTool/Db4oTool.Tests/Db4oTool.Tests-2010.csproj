@@ -94,6 +94,8 @@
     <Compile Include="Core\ContextVariable.cs" />
     <Compile Include="Core\ContextVariableTestCase.cs" />
     <Compile Include="Core\CustomInstrumentationTestCase.cs" />
+    <Compile Include="Core\DebugInformationTestSuite.cs" />
+    <Compile Include="Core\DebugInformationTestVariables.cs" />
     <Compile Include="Core\ExpectedStackAnalysisResultAttribute.cs" />
     <Compile Include="Core\ILPatternTestCase.cs" />
     <Compile Include="Core\InstallPerformanceCountersTestCase.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="Core\InstrumentingCFAssemblyTestCase.cs" />
     <Compile Include="Core\PreserveDebugInfoTestCase.cs" />
     <Compile Include="Core\ResourceServices.cs" />
+    <EmbeddedResource Include="Core\Resources\DebugInformationSubject.cs" />
     <Compile Include="Core\ShellUtilities.cs" />
     <Compile Include="Core\SignConfiguration.cs" />
     <Compile Include="Core\SingleResourceTestCase.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="Core\StackAnalyzerTestCase.Scenarios.cs" />
     <Compile Include="Core\StackAnalyzerTestCase.cs" />
     <Compile Include="Core\VerifyAssemblyTest.cs" />
+    <Compile Include="Db4oToolTestServices.cs" />
     <Compile Include="NQ\AllTests.cs" />
     <Compile Include="NQ\DelegateBuildTimeOptimizationTestCase.cs" />
     <Compile Include="NQ\OptimizedGenericClassTestCase.cs" />
@@ -117,6 +121,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="ProgramOptionsTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionServices.cs" />
     <Compile Include="TA\AllTests.cs" />
     <Compile Include="TA\Collections\AllTests.cs" />
     <Compile Include="TA\Collections\TACollectionsTestCaseBase.cs" />

@@ -14,7 +14,14 @@ namespace Db4oTool.Tests.TA.Collections
 		protected abstract string TestResource { get; }
 		protected abstract Type ReplacementType { get; }	
 		protected abstract Type OriginalType { get; }
-		
+
+		protected override Configuration Configuration(string assemblyLocation)
+		{
+			Configuration config = base.Configuration(assemblyLocation);
+			config.PreserveDebugInfo = true;
+			return config;
+		}
+
 		internal static void AssertInstruction(Instruction actual, OpCode opCode, MemberReference expectedCtor)
 		{
 			Assert.AreEqual(opCode, actual.OpCode);
@@ -110,8 +117,14 @@ namespace Db4oTool.Tests.TA.Collections
 			}
 			catch (InvalidOperationException e)
 			{
-				Assert.IsTrue(e.Message.Contains("Cast to List<T> are allowed only for property access or method call"));
+				string expected = ExpectedFailingCastMessage();
+				Assert.IsTrue(e.Message.Contains(expected), string.Format("Expected: {0}, Actual: {1}", expected, e.Message));
 			}
+		}
+
+		private string ExpectedFailingCastMessage()
+		{
+			return string.Format("Casts to {0} are only allowed for property access/method calls", OriginalType.ToString().Replace("[", "<").Replace("]", ">"));
 		}
 	}
 
