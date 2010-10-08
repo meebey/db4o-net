@@ -91,13 +91,22 @@ namespace Db4oTool.Tests.Core
 
         public static string EmitAssemblyFromResource(string resourceName, params Assembly[] references)
         {
-            string assemblyFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName + (Debug.Value ? ".Debug.dll" : ".dll"));
-            string sourceFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName);
-            File.WriteAllText(sourceFileName, ResourceServices.GetResourceAsString(resourceName));
-            DeleteAssemblyAndPdb(assemblyFileName);
-            EmitAssembly(assemblyFileName, references, sourceFileName);
-            return assemblyFileName;
+        	Action<string> noOpSourceHandler = delegate { };
+        	return EmitAssemblyFromResource(resourceName, noOpSourceHandler, references);
         }
+
+		public static string EmitAssemblyFromResource(string resourceName, Action<string> sourceHandler, Assembly[] references)
+		{
+			string assemblyFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName + (Debug.Value ? ".Debug.dll" : ".dll"));
+			string sourceFileName = Path.Combine(ShellUtilities.GetTempPath(), resourceName);
+			File.WriteAllText(sourceFileName, ResourceServices.GetResourceAsString(resourceName));
+			DeleteAssemblyAndPdb(assemblyFileName);
+			EmitAssembly(assemblyFileName, references, sourceFileName);
+
+			sourceHandler(sourceFileName);
+
+			return assemblyFileName;
+		}
 
         private static void DeleteAssemblyAndPdb(string path)
         {
