@@ -1,5 +1,4 @@
-﻿/* Copyright (C) 2010   Versant Inc.   http://www.db4o.com */
-
+﻿/* Copyright (C) 2004 - 2010 Versant Inc.   http://www.db4o.com */
 using System;
 using System.Collections.Generic;
 using Db4objects.Db4o.Collections;
