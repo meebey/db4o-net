@@ -15,6 +15,7 @@ namespace Db4oTool.Tests.Core
 					typeof(ByFilterTestCase),
 					typeof(ByNotAttributeTestCase),
 					typeof(ContextVariableTestCase),
+					typeof(DebugInformationTestSuite),
 					typeof(ILPatternTestCase),
 					typeof(InstallPerformanceCountersTestCase),
 					typeof(CustomInstrumentationTestCase),
