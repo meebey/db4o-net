@@ -3,42 +3,44 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Db4oTool.Core;
+using Db4oTool.TA;
 using Db4oTool.Tests.Core;
 using Db4oUnit;
 using Mono.Cecil;
 
 namespace Db4oTool.Tests.TA
 {
-	internal abstract class TATestCaseBase : ITestCase
+	public abstract class TATestCaseBase : ITestCase
 	{
-		protected static AssemblyDefinition GenerateAssembly(string resourceName, params Assembly[] references)
-		{
-			return AssemblyDefinition.ReadAssembly(
-						CompilationServices.EmitAssemblyFromResource(
-							ResourceServices.CompleteResourceName(
-													typeof(TATestCaseBase),
-													resourceName), references));
-		}
-
 		protected string InstrumentAssembly(AssemblyDefinition testAssembly)
 		{
 			return InstrumentAssembly(testAssembly, false);
 		}
 
-		protected string InstrumentAssembly(AssemblyDefinition testAssembly, bool instrumentCollections)
+		protected static AssemblyDefinition GenerateAssembly(string resourceName, params Assembly[] references)
+		{
+			return Db4oToolTestServices.AssemblyFromResource(resourceName, typeof (TATestCaseBase), true, delegate { }, references);
+		}
+
+		private string InstrumentAssembly(AssemblyDefinition assembly, IAssemblyInstrumentation instrumentation)
 		{
 			StringWriter output = new StringWriter();
 			Trace.Listeners.Add(new TextWriterTraceListener(output));
 
-			string assemblyFullPath = testAssembly.MainModule.FullyQualifiedName;
-			InstrumentationContext context = new InstrumentationContext(Configuration(assemblyFullPath), testAssembly);
+			string assemblyFullPath = assembly.MainModule.FullyQualifiedName;
+			InstrumentationContext context = new InstrumentationContext(Configuration(assemblyFullPath), assembly);
 
-			new Db4oTool.TA.TAInstrumentation(instrumentCollections).Run(context);
+			instrumentation.Run(context);
 			context.SaveAssembly();
 
 			VerifyAssembly(assemblyFullPath);
 
 			return output.ToString();
+		}
+
+		protected string InstrumentAssembly(AssemblyDefinition testAssembly, bool instrumentCollections)
+		{
+			return InstrumentAssembly(testAssembly, new TAInstrumentation(instrumentCollections));
 		}
 
 		protected static void VerifyAssembly(string assemblyPath)

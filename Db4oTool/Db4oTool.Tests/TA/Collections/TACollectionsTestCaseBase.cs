@@ -80,32 +80,12 @@ namespace Db4oTool.Tests.TA.Collections
 		public void TearDown()
 		{
 		}
-
+		
 		public Instruction FindInstruction(AssemblyDefinition assembly, string testMethodName, OpCode testInstruction)
 		{
-			return FindInstruction(assembly, TestResource, testMethodName, testInstruction);
+			return ReflectionServices.FindInstruction(assembly, TestResource, testMethodName, testInstruction);
 		}
 		
-		public static Instruction FindInstruction(AssemblyDefinition assembly, string typeName, string testMethodName, OpCode testInstruction)
-		{
-			TypeDefinition testType = assembly.MainModule.GetType(typeName);
-			MethodDefinition testMethod = CecilReflector.GetMethod(testType, testMethodName);
-			Assert.IsNotNull(testMethod);
-
-			Instruction current = testMethod.Body.Instructions[0];
-
-			Instruction instruction = current;
-			while (instruction != null && instruction.OpCode != testInstruction)
-			{
-				instruction = instruction.Next;
-			}
-
-			Assert.IsNotNull(instruction);
-			Assert.AreEqual(testInstruction, instruction.OpCode);
-			current = instruction;
-			return current;
-		}
-
 		internal static TypeReference Import(AssemblyDefinition assembly, Type type)
 		{
 			return assembly.MainModule.Import(type);
@@ -148,7 +128,7 @@ namespace Db4oTool.Tests.TA.Collections
 
 		public void AssertIt(AssemblyDefinition assembly)
 		{
-			Instruction current = TACollectionsTestCaseBase.FindInstruction(assembly, _testTypeName, _methodName, OpCodes.Newobj);
+			Instruction current = ReflectionServices.FindInstruction(assembly, _testTypeName, _methodName, OpCodes.Newobj);
 			MethodReference foundCtor = TACollectionsTestCaseBase.ContructorFor(TACollectionsTestCaseBase.Import(assembly, _type), _parameterTypes);
 			Assert.IsNotNull(foundCtor);
 			TACollectionsTestCaseBase.AssertInstruction(current, OpCodes.Newobj, foundCtor);
@@ -172,7 +152,7 @@ namespace Db4oTool.Tests.TA.Collections
 
 		public void AssertIt(AssemblyDefinition assembly)
 		{
-			Instruction current = TACollectionsTestCaseBase.FindInstruction(assembly, _testTypeName, _testMethodName, OpCodes.Castclass);
+			Instruction current = ReflectionServices.FindInstruction(assembly, _testTypeName, _testMethodName, OpCodes.Castclass);
 
 			TypeReference castTarget = ((TypeReference)current.Operand).Resolve();
 			Assert.AreEqual(assembly.MainModule.Import(_replacementType).Resolve(), castTarget);
