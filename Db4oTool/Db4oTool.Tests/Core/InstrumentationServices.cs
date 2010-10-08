@@ -1,3 +1,4 @@
+/* Copyright (C) 2007 - 2010  Versant Inc.   http://www.db4o.com */
 using Db4oTool.Core;
 
 namespace Db4oTool.Tests.Core
@@ -15,9 +16,7 @@ namespace Db4oTool.Tests.Core
 		public static string[] BuildCommandLine(string options, string path)
 		{
 			string[] cmdLine = options.Split(' ');
-			cmdLine = ArrayServices.Append(cmdLine, path);
-			//cmdLine = ArrayServices.Append(cmdLine, "-vv");
-			return cmdLine;
+			return ArrayServices.Append(cmdLine, path);
 		}
 
 		public static string InstrumentationUtilityPath
