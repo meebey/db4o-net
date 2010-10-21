@@ -19,6 +19,10 @@ namespace Db4objects.Db4o.Internal
 	[System.Serializable]
 	public class ReflectException : Db4oRecoverableException
 	{
+		public ReflectException(string msg, Exception cause) : base(msg, cause)
+		{
+		}
+
 		/// <summary>Constructor with the cause exception</summary>
 		/// <param name="cause">cause exception</param>
 		public ReflectException(Exception cause) : base(cause)

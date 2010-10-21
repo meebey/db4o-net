@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Db4objects.Drs.QuickStart")]
-[assembly: AssemblyDescription("QuickStart 8.0.161.14430 (.NET)")]
+[assembly: AssemblyDescription("QuickStart 8.0.170.14430 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("8.0.161.14430")]
+[assembly: AssemblyVersion("8.0.170.14430")]

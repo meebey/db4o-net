@@ -6,9 +6,26 @@ namespace Db4objects.Db4o.Foundation
 {
 	public interface IPausableBlockingQueue4 : IBlockingQueue4
 	{
-		void Pause();
+		/// <summary>
+		/// <p>
+		/// Pauses the queue, making calls to
+		/// <see cref="IQueue4.Next()">IQueue4.Next()</see>
+		/// block
+		/// until
+		/// <see cref="Resume()">Resume()</see>
+		/// is called.
+		/// </summary>
+		/// <returns>whether or not this call changed the state of the queue.</returns>
+		bool Pause();
 
-		void Resume();
+		/// <summary>
+		/// <p>
+		/// Resumes the queue, releasing blocked calls to
+		/// <see cref="IQueue4.Next()">IQueue4.Next()</see>
+		/// that can reach a next queue item..
+		/// </summary>
+		/// <returns>whether or not this call changed the state of the queue.</returns>
+		bool Resume();
 
 		bool IsPaused();
 

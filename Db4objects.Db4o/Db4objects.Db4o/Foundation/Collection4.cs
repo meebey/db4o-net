@@ -45,7 +45,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				throw new InvalidOperationException();
 			}
-			return _first._element;
+			return ((object)_first._element);
 		}
 
 		/// <summary>Adds an element to the end of this collection.</summary>
@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Foundation
 			List4 current = _first;
 			while (current != null)
 			{
-				if (current._element == obj)
+				if (((object)current._element) == obj)
 				{
 					return current;
 				}
@@ -198,7 +198,7 @@ namespace Db4objects.Db4o.Foundation
 		public object Get(object element)
 		{
 			List4 holder = Find(element);
-			return holder == null ? null : holder._element;
+			return holder == null ? null : ((object)holder._element);
 		}
 
 		public virtual object DeepClone(object newParent)
@@ -232,7 +232,7 @@ namespace Db4objects.Db4o.Foundation
 				Add(element);
 				return element;
 			}
-			return list._element;
+			return ((object)list._element);
 		}
 
 		/// <summary>
@@ -266,7 +266,7 @@ namespace Db4objects.Db4o.Foundation
 			{
 				throw new ArgumentException();
 			}
-			return cur._element;
+			return ((object)cur._element);
 		}
 
 		/// <summary>
@@ -388,21 +388,26 @@ namespace Db4objects.Db4o.Foundation
 		/// the JDK behaviour, the passed array has to be initialized to the right
 		/// length.
 		/// </remarks>
-		public object[] ToArray(object[] a_array)
+		public object[] ToArray(object[] array)
 		{
 			int j = 0;
 			IEnumerator i = InternalIterator();
 			while (i.MoveNext())
 			{
-				a_array[j++] = i.Current;
+				array[j++] = i.Current;
 			}
-			return a_array;
+			return array;
 		}
 
 		public object[] ToArray()
 		{
-			object[] array = new object[_size];
-			ToArray(array);
+			int j = 0;
+			object[] array = new object[Size()];
+			IEnumerator i = InternalIterator();
+			while (i.MoveNext())
+			{
+				array[j++] = i.Current;
+			}
 			return array;
 		}
 

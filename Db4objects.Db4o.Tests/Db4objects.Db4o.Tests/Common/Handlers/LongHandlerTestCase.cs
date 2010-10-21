@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		public virtual void TestReadWrite()
 		{
 			MockWriteContext writeContext = new MockWriteContext(Db());
-			long expected = unchecked((int)(0x1020304050607080l));
+			long expected = unchecked((long)(0x1020304050607080l));
 			LongHandler().Write(writeContext, expected);
 			MockReadContext readContext = new MockReadContext(writeContext);
 			long longValue = (long)LongHandler().Read(readContext);
@@ -29,8 +29,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		public virtual void TestStoreObject()
 		{
-			LongHandlerTestCase.Item storedItem = new LongHandlerTestCase.Item(unchecked((int
-				)(0x1020304050607080l)), unchecked((int)(0x1122334455667788l)));
+			LongHandlerTestCase.Item storedItem = new LongHandlerTestCase.Item(unchecked((long
+				)(0x1020304050607080l)), unchecked((long)(0x1122334455667788l)));
 			DoTestStoreObject(storedItem);
 		}
 

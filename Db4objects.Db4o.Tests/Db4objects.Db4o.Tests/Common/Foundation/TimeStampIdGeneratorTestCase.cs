@@ -34,18 +34,6 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			return ids;
 		}
 
-		public virtual void TestConversion()
-		{
-			long[] ids = GenerateIds();
-			for (int i = 1; i < ids.Length; i++)
-			{
-				long converted = TimeStampIdGenerator.Convert64BitIdTo48BitId(ids[i]);
-				Assert.IsSmallerOrEqual(48, Binary.NumberOfBits(converted));
-				long roundTrip = TimeStampIdGenerator.Convert48BitIdTo64BitId(converted);
-				Assert.AreEqual(ids[i], roundTrip);
-			}
-		}
-
 		public virtual void TestContinousIncrement()
 		{
 			TimeStampIdGenerator generator = new TimeStampIdGenerator();
@@ -65,13 +53,13 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 		public virtual void TestTimeStaysTheSame()
 		{
-			TimeStampIdGenerator generatorWithSameTime = new _TimeStampIdGenerator_61();
+			TimeStampIdGenerator generatorWithSameTime = new _TimeStampIdGenerator_51();
 			AssertContinousIncrement(generatorWithSameTime);
 		}
 
-		private sealed class _TimeStampIdGenerator_61 : TimeStampIdGenerator
+		private sealed class _TimeStampIdGenerator_51 : TimeStampIdGenerator
 		{
-			public _TimeStampIdGenerator_61()
+			public _TimeStampIdGenerator_51()
 			{
 			}
 

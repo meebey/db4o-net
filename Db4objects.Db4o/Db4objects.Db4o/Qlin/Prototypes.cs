@@ -48,15 +48,15 @@ namespace Db4objects.Db4o.Qlin
 
 		private readonly int _recursionDepth;
 
-		public Prototypes() : this(null, 0, false)
-		{
-		}
-
 		public Prototypes(IReflector reflector, int recursionDepth, bool ignoreTransient)
 		{
 			_reflector = reflector;
 			_recursionDepth = recursionDepth;
 			_ignoreTransient = ignoreTransient;
+		}
+
+		public Prototypes() : this(DefaultReflector(), 5, false)
+		{
 		}
 
 		/// <summary>returns a prototype object for a specific class.</summary>
@@ -157,13 +157,13 @@ namespace Db4objects.Db4o.Qlin
 				{
 					return;
 				}
-				ReflectorUtils.ForEachField(claxx, new _IProcedure4_129(this, parentPath, claxx, 
+				ReflectorUtils.ForEachField(claxx, new _IProcedure4_130(this, parentPath, claxx, 
 					@object, depth));
 			}
 
-			private sealed class _IProcedure4_129 : IProcedure4
+			private sealed class _IProcedure4_130 : IProcedure4
 			{
-				public _IProcedure4_129(Prototype _enclosing, List4 parentPath, IReflectClass claxx
+				public _IProcedure4_130(Prototype _enclosing, List4 parentPath, IReflectClass claxx
 					, object @object, int depth)
 				{
 					this._enclosing = _enclosing;
@@ -268,13 +268,13 @@ namespace Db4objects.Db4o.Qlin
 
 			private IEnumerator AsIterator(List4 lastElement)
 			{
-				return Iterators.Revert(Iterators.Map(Iterators.Iterate(lastElement), new _IFunction4_197
+				return Iterators.Revert(Iterators.Map(Iterators.Iterate(lastElement), new _IFunction4_198
 					()));
 			}
 
-			private sealed class _IFunction4_197 : IFunction4
+			private sealed class _IFunction4_198 : IFunction4
 			{
-				public _IFunction4_197()
+				public _IFunction4_198()
 				{
 				}
 
@@ -294,9 +294,9 @@ namespace Db4objects.Db4o.Qlin
 			{
 				_integerConverters = new Hashtable4();
 				Prototypes.IntegerConverter[] converters = new Prototypes.IntegerConverter[] { new 
-					_IntegerConverter_210(), new _IntegerConverter_214(), new _IntegerConverter_218(
-					), new _IntegerConverter_222(), new _IntegerConverter_226(), new _IntegerConverter_230
-					(), new _IntegerConverter_234(), new _IntegerConverter_238() };
+					_IntegerConverter_211(), new _IntegerConverter_215(), new _IntegerConverter_219(
+					), new _IntegerConverter_223(), new _IntegerConverter_227(), new _IntegerConverter_231
+					(), new _IntegerConverter_235(), new _IntegerConverter_239() };
 				for (int converterIndex = 0; converterIndex < converters.Length; ++converterIndex)
 				{
 					Prototypes.IntegerConverter converter = converters[converterIndex];
@@ -310,9 +310,9 @@ namespace Db4objects.Db4o.Qlin
 			return (Prototypes.IntegerConverter)_integerConverters.Get(className);
 		}
 
-		private sealed class _IntegerConverter_210 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_211 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_210()
+			public _IntegerConverter_211()
 			{
 			}
 
@@ -327,9 +327,9 @@ namespace Db4objects.Db4o.Qlin
 			}
 		}
 
-		private sealed class _IntegerConverter_214 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_215 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_214()
+			public _IntegerConverter_215()
 			{
 			}
 
@@ -344,9 +344,9 @@ namespace Db4objects.Db4o.Qlin
 			}
 		}
 
-		private sealed class _IntegerConverter_218 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_219 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_218()
+			public _IntegerConverter_219()
 			{
 			}
 
@@ -361,9 +361,9 @@ namespace Db4objects.Db4o.Qlin
 			}
 		}
 
-		private sealed class _IntegerConverter_222 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_223 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_222()
+			public _IntegerConverter_223()
 			{
 			}
 
@@ -378,9 +378,9 @@ namespace Db4objects.Db4o.Qlin
 			}
 		}
 
-		private sealed class _IntegerConverter_226 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_227 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_226()
+			public _IntegerConverter_227()
 			{
 			}
 
@@ -395,9 +395,9 @@ namespace Db4objects.Db4o.Qlin
 			}
 		}
 
-		private sealed class _IntegerConverter_230 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_231 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_230()
+			public _IntegerConverter_231()
 			{
 			}
 
@@ -412,9 +412,9 @@ namespace Db4objects.Db4o.Qlin
 			}
 		}
 
-		private sealed class _IntegerConverter_234 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_235 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_234()
+			public _IntegerConverter_235()
 			{
 			}
 
@@ -429,9 +429,9 @@ namespace Db4objects.Db4o.Qlin
 			}
 		}
 
-		private sealed class _IntegerConverter_238 : Prototypes.IntegerConverter
+		private sealed class _IntegerConverter_239 : Prototypes.IntegerConverter
 		{
-			public _IntegerConverter_238()
+			public _IntegerConverter_239()
 			{
 			}
 

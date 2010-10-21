@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System.Text;
+
 namespace Db4objects.Db4o.Ext
 {
 	/// <summary>a unique universal identify for an object.</summary>
@@ -94,12 +96,17 @@ namespace Db4objects.Db4o.Ext
 
 		public override string ToString()
 		{
-			string sig = string.Empty;
+			StringBuilder sb = new StringBuilder();
+			sb.Append(GetType().FullName);
+			sb.Append(" sig: ");
 			for (int i = 0; i < signaturePart.Length; i++)
 			{
-				sig += signaturePart[i] + " ";
+				char c = (char)signaturePart[i];
+				sb.Append(c);
 			}
-			return "long " + longPart + " ,  signature " + sig;
+			sb.Append(" long: ");
+			sb.Append(longPart);
+			return sb.ToString();
 		}
 	}
 }

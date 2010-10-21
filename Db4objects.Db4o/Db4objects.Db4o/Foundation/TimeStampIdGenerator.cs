@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using System;
 using Sharpen;
 
 namespace Db4objects.Db4o.Foundation
@@ -8,11 +7,9 @@ namespace Db4objects.Db4o.Foundation
 	/// <exclude></exclude>
 	public class TimeStampIdGenerator
 	{
-		private const int BitsReservedForCounter = 15;
+		public const int BitsReservedForCounter = 15;
 
-		private const int BitsReservedForCounterIn48bitId = 6;
-
-		private const int CounterLimit = 64;
+		public const int CounterLimit = 64;
 
 		private long _counter;
 
@@ -89,28 +86,6 @@ namespace Db4objects.Db4o.Foundation
 			long timePart = MillisecondsToId(_lastTime);
 			_counter = newNext - timePart;
 			UpdateTimeOnCounterLimitOverflow();
-		}
-
-		public static long Convert64BitIdTo48BitId(long id)
-		{
-			return Convert(id, BitsReservedForCounter, BitsReservedForCounterIn48bitId);
-		}
-
-		public static long Convert48BitIdTo64BitId(long id)
-		{
-			return Convert(id, BitsReservedForCounterIn48bitId, BitsReservedForCounter);
-		}
-
-		private static long Convert(long id, int shiftBitsFrom, int shiftBitsTo)
-		{
-			long creationTimeInMillis = id >> shiftBitsFrom;
-			long timeStampPart = creationTimeInMillis << shiftBitsFrom;
-			long counterPerMillisecond = id - timeStampPart;
-			if (counterPerMillisecond >= CounterLimit)
-			{
-				throw new InvalidOperationException("ID can't be converted");
-			}
-			return (creationTimeInMillis << shiftBitsTo) + counterPerMillisecond;
 		}
 	}
 }

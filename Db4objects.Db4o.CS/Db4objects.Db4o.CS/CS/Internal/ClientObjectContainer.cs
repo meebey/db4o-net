@@ -1112,12 +1112,15 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			try
 			{
-				if (IsClosed())
+				lock (Lock())
 				{
-					return false;
+					if (IsClosed())
+					{
+						return false;
+					}
+					Write(Msg.IsAlive);
+					return ExpectedResponse(Msg.IsAlive) != null;
 				}
-				Write(Msg.IsAlive);
-				return ExpectedResponse(Msg.IsAlive) != null;
 			}
 			catch (Db4oException)
 			{
@@ -1193,13 +1196,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_940(this, trans, result));
+			WithEnvironment(new _IRunnable_943(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_940 : IRunnable
+		private sealed class _IRunnable_943 : IRunnable
 		{
-			public _IRunnable_940(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_943(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;

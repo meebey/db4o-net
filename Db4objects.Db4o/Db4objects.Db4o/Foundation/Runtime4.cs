@@ -25,6 +25,20 @@ namespace Db4objects.Db4o.Foundation
 			}
 		}
 
+		/// <summary>sleeps with implicit exception</summary>
+		/// <exception cref="Db4objects.Db4o.Foundation.RuntimeInterruptedException"></exception>
+		public static void SleepThrowsOnInterrupt(long millis)
+		{
+			try
+			{
+				Thread.Sleep(millis);
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeInterruptedException(e.ToString());
+			}
+		}
+
 		/// <summary>
 		/// Keeps executing a block of code until it either returns true or millisecondsTimeout
 		/// elapses.

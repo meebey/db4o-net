@@ -63,18 +63,67 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly IPausableBlockingQueue4 queue;
 		}
 
-		public static void ExecuteAfter(string threadName, long timeInMillis, IRunnable runnable
-			)
+		/// <exception cref="System.Exception"></exception>
+		public virtual void TestDrainTo()
 		{
-			Thread t = new _Thread_58(timeInMillis, runnable);
+			IPausableBlockingQueue4 queue = new PausableBlockingQueue();
+			queue.Add(new object());
+			queue.Add(new object());
+			queue.Pause();
+			Collection4 list = new Collection4();
+			Thread t = ExecuteAfter("Pausable queue drainer", 0, new _IRunnable_66(queue, list
+				));
+			Runtime4.SleepThrowsOnInterrupt(200);
+			lock (list)
+			{
+				Assert.AreEqual(0, list.Size());
+			}
+			Assert.IsTrue(queue.HasNext());
+			queue.Resume();
+			t.Join();
+			lock (list)
+			{
+				Assert.AreEqual(2, list.Size());
+			}
+			Assert.IsFalse(queue.HasNext());
+		}
+
+		private sealed class _IRunnable_66 : IRunnable
+		{
+			public _IRunnable_66(IPausableBlockingQueue4 queue, Collection4 list)
+			{
+				this.queue = queue;
+				this.list = list;
+			}
+
+			public void Run()
+			{
+				Collection4 l = new Collection4();
+				queue.DrainTo(l);
+				lock (list)
+				{
+					list.AddAll(l);
+				}
+			}
+
+			private readonly IPausableBlockingQueue4 queue;
+
+			private readonly Collection4 list;
+		}
+
+		public static Thread ExecuteAfter(string threadName, long timeInMillis, IRunnable
+			 runnable)
+		{
+			Thread t = new _Thread_96(timeInMillis, runnable);
 			t.SetName(threadName);
 			t.SetDaemon(true);
 			t.Start();
+			return t;
 		}
 
-		private sealed class _Thread_58 : Thread
+		private sealed class _Thread_96 : Thread
 		{
-			public _Thread_58(long timeInMillis, IRunnable runnable)
+			public _Thread_96(long timeInMillis, IRunnable runnable)
 			{
 				this.timeInMillis = timeInMillis;
 				this.runnable = runnable;
@@ -82,13 +131,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 
 			public override void Run()
 			{
-				try
+				if (timeInMillis > 0)
 				{
-					Thread.Sleep(timeInMillis);
-				}
-				catch (Exception)
-				{
-					return;
+					try
+					{
+						Thread.Sleep(timeInMillis);
+					}
+					catch (Exception)
+					{
+						return;
+					}
 				}
 				runnable.Run();
 			}

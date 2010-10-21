@@ -38,16 +38,16 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		public virtual void TestTimeoutNext()
 		{
 			BlockingQueue queue = new BlockingQueue();
-			Assert.IsNull(AssertTakeAtLeast(200, new _IClosure4_32(queue)));
+			Assert.IsNull(AssertTakeAtLeast(200, new _IClosure4_35(queue)));
 			object obj = new object();
 			queue.Add(obj);
-			Assert.AreSame(obj, AssertTakeLessThan(50, new _IClosure4_43(queue)));
-			Assert.IsNull(AssertTakeAtLeast(200, new _IClosure4_50(queue)));
+			Assert.AreSame(obj, AssertTakeLessThan(50, new _IClosure4_46(queue)));
+			Assert.IsNull(AssertTakeAtLeast(200, new _IClosure4_53(queue)));
 		}
 
-		private sealed class _IClosure4_32 : IClosure4
+		private sealed class _IClosure4_35 : IClosure4
 		{
-			public _IClosure4_32(BlockingQueue queue)
+			public _IClosure4_35(BlockingQueue queue)
 			{
 				this.queue = queue;
 			}
@@ -60,9 +60,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly BlockingQueue queue;
 		}
 
-		private sealed class _IClosure4_43 : IClosure4
+		private sealed class _IClosure4_46 : IClosure4
 		{
-			public _IClosure4_43(BlockingQueue queue)
+			public _IClosure4_46(BlockingQueue queue)
 			{
 				this.queue = queue;
 			}
@@ -75,9 +75,9 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			private readonly BlockingQueue queue;
 		}
 
-		private sealed class _IClosure4_50 : IClosure4
+		private sealed class _IClosure4_53 : IClosure4
 		{
-			public _IClosure4_50(BlockingQueue queue)
+			public _IClosure4_53(BlockingQueue queue)
 			{
 				this.queue = queue;
 			}
@@ -88,6 +88,17 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			}
 
 			private readonly BlockingQueue queue;
+		}
+
+		public virtual void TestDrainTo()
+		{
+			BlockingQueue queue = new BlockingQueue();
+			queue.Add(new object());
+			queue.Add(new object());
+			Collection4 list = new Collection4();
+			Assert.AreEqual(2, queue.DrainTo(list));
+			Assert.AreEqual(2, list.Size());
+			Assert.IsFalse(queue.HasNext());
 		}
 
 		private object AssertTakeLessThan(long time, IClosure4 runnable)
@@ -130,12 +141,12 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			BlockingQueueTestCase.StopThread notifyThread = new BlockingQueueTestCase.StopThread
 				(queue);
 			notifyThread.Start();
-			Assert.Expect(typeof(BlockingQueueStoppedException), new _ICodeBlock_96(queue));
+			Assert.Expect(typeof(BlockingQueueStoppedException), new _ICodeBlock_110(queue));
 		}
 
-		private sealed class _ICodeBlock_96 : ICodeBlock
+		private sealed class _ICodeBlock_110 : ICodeBlock
 		{
-			public _ICodeBlock_96(BlockingQueue queue)
+			public _ICodeBlock_110(BlockingQueue queue)
 			{
 				this.queue = queue;
 			}

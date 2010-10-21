@@ -49,5 +49,10 @@ namespace Db4objects.Db4o.Foundation
 		{
 			queue.Stop();
 		}
+
+		public virtual int DrainTo(Collection4 list)
+		{
+			return queue.DrainTo(list);
+		}
 	}
 }

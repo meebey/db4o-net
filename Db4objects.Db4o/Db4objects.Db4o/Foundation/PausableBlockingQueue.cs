@@ -1,6 +1,5 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using System;
 using Db4objects.Db4o.Foundation;
 
 namespace Db4objects.Db4o.Foundation
@@ -9,82 +8,40 @@ namespace Db4objects.Db4o.Foundation
 	{
 		private volatile bool _paused = false;
 
-		public virtual void Pause()
+		public virtual bool Pause()
 		{
+			if (_paused)
+			{
+				return false;
+			}
 			_paused = true;
+			return true;
 		}
 
-		public virtual void Resume()
+		public virtual bool Resume()
 		{
-			lock (this)
+			return (((bool)_lock.Run(new _IClosure4_17(this))));
+		}
+
+		private sealed class _IClosure4_17 : IClosure4
+		{
+			public _IClosure4_17(PausableBlockingQueue _enclosing)
 			{
-				_paused = false;
-				Sharpen.Runtime.Notify(this);
+				this._enclosing = _enclosing;
 			}
-		}
 
-		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-		public override object Next()
-		{
-			WaitForNext();
-			if (_paused)
+			public object Run()
 			{
-				lock (this)
+				if (!this._enclosing._paused)
 				{
-					if (_paused)
-					{
-						try
-						{
-							Sharpen.Runtime.Wait(this);
-						}
-						catch (Exception)
-						{
-						}
-					}
+					return false;
 				}
+				this._enclosing._paused = false;
+				this._enclosing._lock.Awake();
+				return true;
 			}
-			return base.Next();
-		}
 
-		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-		public override object Next(long timeout)
-		{
-			if (!WaitForNext(timeout))
-			{
-				return null;
-			}
-			if (_paused)
-			{
-				lock (this)
-				{
-					if (_paused)
-					{
-						try
-						{
-							Sharpen.Runtime.Wait(this);
-						}
-						catch (Exception)
-						{
-						}
-					}
-				}
-			}
-			return base.Next(timeout);
-		}
-
-		public override void Stop()
-		{
-			if (_paused)
-			{
-				lock (this)
-				{
-					if (_paused)
-					{
-						Sharpen.Runtime.NotifyAll(this);
-					}
-				}
-			}
-			base.Stop();
+			private readonly PausableBlockingQueue _enclosing;
 		}
 
 		public virtual bool IsPaused()
@@ -92,14 +49,29 @@ namespace Db4objects.Db4o.Foundation
 			return _paused;
 		}
 
-		public virtual object TryNext()
+		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+		protected override bool UnsafeWaitForNext(long timeout)
 		{
-			return _lock.Run(new _IClosure4_65(this));
+			bool hasNext = base.UnsafeWaitForNext(timeout);
+			while (_paused && !_stopped)
+			{
+				_lock.Snooze(timeout);
+			}
+			if (_stopped)
+			{
+				throw new BlockingQueueStoppedException();
+			}
+			return hasNext;
 		}
 
-		private sealed class _IClosure4_65 : IClosure4
+		public virtual object TryNext()
 		{
-			public _IClosure4_65(PausableBlockingQueue _enclosing)
+			return _lock.Run(new _IClosure4_46(this));
+		}
+
+		private sealed class _IClosure4_46 : IClosure4
+		{
+			public _IClosure4_46(PausableBlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

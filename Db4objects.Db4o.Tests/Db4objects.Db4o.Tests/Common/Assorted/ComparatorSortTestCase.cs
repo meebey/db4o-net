@@ -53,8 +53,8 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		{
 			public virtual int Compare(object first, object second)
 			{
-				return ((ComparatorSortTestCase.Item)first)._name.CompareTo(((ComparatorSortTestCase.Item
-					)second)._name);
+				return Sharpen.Runtime.CompareOrdinal(((ComparatorSortTestCase.Item)first)._name, 
+					((ComparatorSortTestCase.Item)second)._name);
 			}
 		}
 

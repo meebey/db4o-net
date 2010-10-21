@@ -10,13 +10,13 @@ namespace Db4objects.Db4o.Foundation
 	{
 		private readonly IRunnable _runnable;
 
-		private readonly int _interval;
+		private readonly long _interval;
 
 		private Lock4 _lock;
 
 		public volatile bool stopped = false;
 
-		public SimpleTimer(IRunnable runnable, int interval)
+		public SimpleTimer(IRunnable runnable, long interval)
 		{
 			_runnable = runnable;
 			_interval = interval;

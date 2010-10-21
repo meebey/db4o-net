@@ -22,12 +22,12 @@ namespace Db4objects.Db4o.Foundation
 			{
 				throw new ArgumentException();
 			}
-			_lock.Run(new _IClosure4_19(this, obj));
+			_lock.Run(new _IClosure4_20(this, obj));
 		}
 
-		private sealed class _IClosure4_19 : IClosure4
+		private sealed class _IClosure4_20 : IClosure4
 		{
-			public _IClosure4_19(BlockingQueue _enclosing, object obj)
+			public _IClosure4_20(BlockingQueue _enclosing, object obj)
 			{
 				this._enclosing = _enclosing;
 				this.obj = obj;
@@ -47,12 +47,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual bool HasNext()
 		{
-			return (((bool)_lock.Run(new _IClosure4_29(this))));
+			return (((bool)_lock.Run(new _IClosure4_30(this))));
 		}
 
-		private sealed class _IClosure4_29 : IClosure4
+		private sealed class _IClosure4_30 : IClosure4
 		{
-			public _IClosure4_29(BlockingQueue _enclosing)
+			public _IClosure4_30(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -67,12 +67,12 @@ namespace Db4objects.Db4o.Foundation
 
 		public virtual IEnumerator Iterator()
 		{
-			return ((IEnumerator)_lock.Run(new _IClosure4_37(this)));
+			return ((IEnumerator)_lock.Run(new _IClosure4_38(this)));
 		}
 
-		private sealed class _IClosure4_37 : IClosure4
+		private sealed class _IClosure4_38 : IClosure4
 		{
-			public _IClosure4_37(BlockingQueue _enclosing)
+			public _IClosure4_38(BlockingQueue _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -88,12 +88,12 @@ namespace Db4objects.Db4o.Foundation
 		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
 		public virtual object Next(long timeout)
 		{
-			return (object)_lock.Run(new _IClosure4_45(this, timeout));
+			return (object)_lock.Run(new _IClosure4_46(this, timeout));
 		}
 
-		private sealed class _IClosure4_45 : IClosure4
+		private sealed class _IClosure4_46 : IClosure4
 		{
-			public _IClosure4_45(BlockingQueue _enclosing, long timeout)
+			public _IClosure4_46(BlockingQueue _enclosing, long timeout)
 			{
 				this._enclosing = _enclosing;
 				this.timeout = timeout;
@@ -101,8 +101,8 @@ namespace Db4objects.Db4o.Foundation
 
 			public object Run()
 			{
-				this._enclosing.WaitForNext(timeout);
-				return this._enclosing._queue.HasNext() ? this._enclosing._queue.Next() : null;
+				return this._enclosing.UnsafeWaitForNext(timeout) ? this._enclosing.UnsafeNext() : 
+					null;
 			}
 
 			private readonly BlockingQueue _enclosing;
@@ -110,15 +110,45 @@ namespace Db4objects.Db4o.Foundation
 			private readonly long timeout;
 		}
 
-		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
-		public virtual bool WaitForNext(long timeout)
+		public virtual int DrainTo(Collection4 target)
 		{
-			return (((bool)_lock.Run(new _IClosure4_54(this, timeout))));
+			return (((int)_lock.Run(new _IClosure4_54(this, target))));
 		}
 
 		private sealed class _IClosure4_54 : IClosure4
 		{
-			public _IClosure4_54(BlockingQueue _enclosing, long timeout)
+			public _IClosure4_54(BlockingQueue _enclosing, Collection4 target)
+			{
+				this._enclosing = _enclosing;
+				this.target = target;
+			}
+
+			public object Run()
+			{
+				this._enclosing.UnsafeWaitForNext();
+				int i = 0;
+				while (this._enclosing.HasNext())
+				{
+					i++;
+					target.Add(this._enclosing.UnsafeNext());
+				}
+				return i;
+			}
+
+			private readonly BlockingQueue _enclosing;
+
+			private readonly Collection4 target;
+		}
+
+		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+		public virtual bool WaitForNext(long timeout)
+		{
+			return (((bool)_lock.Run(new _IClosure4_68(this, timeout))));
+		}
+
+		private sealed class _IClosure4_68 : IClosure4
+		{
+			public _IClosure4_68(BlockingQueue _enclosing, long timeout)
 			{
 				this._enclosing = _enclosing;
 				this.timeout = timeout;
@@ -126,24 +156,7 @@ namespace Db4objects.Db4o.Foundation
 
 			public object Run()
 			{
-				long timeLeft = timeout;
-				long now = Runtime.CurrentTimeMillis();
-				while (timeLeft > 0)
-				{
-					if (this._enclosing._queue.HasNext())
-					{
-						return true;
-					}
-					if (this._enclosing._stopped)
-					{
-						throw new BlockingQueueStoppedException();
-					}
-					this._enclosing._lock.Snooze(timeLeft);
-					long l = now;
-					now = Runtime.CurrentTimeMillis();
-					timeLeft -= now - l;
-				}
-				return false;
+				return this._enclosing.UnsafeWaitForNext(timeout);
 			}
 
 			private readonly BlockingQueue _enclosing;
@@ -166,8 +179,8 @@ namespace Db4objects.Db4o.Foundation
 
 			public object Run()
 			{
-				this._enclosing.WaitForNext();
-				return this._enclosing._queue.Next();
+				this._enclosing.UnsafeWaitForNext();
+				return this._enclosing.UnsafeNext();
 			}
 
 			private readonly BlockingQueue _enclosing;
@@ -233,21 +246,45 @@ namespace Db4objects.Db4o.Foundation
 
 			public object Run()
 			{
-				while (true)
-				{
-					if (this._enclosing._queue.HasNext())
-					{
-						return null;
-					}
-					if (this._enclosing._stopped)
-					{
-						throw new BlockingQueueStoppedException();
-					}
-					this._enclosing._lock.Snooze(int.MaxValue);
-				}
+				this._enclosing.UnsafeWaitForNext();
+				return null;
 			}
 
 			private readonly BlockingQueue _enclosing;
+		}
+
+		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+		protected virtual void UnsafeWaitForNext()
+		{
+			UnsafeWaitForNext(long.MaxValue);
+		}
+
+		/// <exception cref="Db4objects.Db4o.Foundation.BlockingQueueStoppedException"></exception>
+		protected virtual bool UnsafeWaitForNext(long timeout)
+		{
+			long timeLeft = timeout;
+			long now = Runtime.CurrentTimeMillis();
+			while (timeLeft > 0)
+			{
+				if (_queue.HasNext())
+				{
+					return true;
+				}
+				if (_stopped)
+				{
+					throw new BlockingQueueStoppedException();
+				}
+				_lock.Snooze(timeLeft);
+				long l = now;
+				now = Runtime.CurrentTimeMillis();
+				timeLeft -= now - l;
+			}
+			return false;
+		}
+
+		private object UnsafeNext()
+		{
+			return _queue.Next();
 		}
 	}
 }

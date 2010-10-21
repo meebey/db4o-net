@@ -22,8 +22,8 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				ClientDisconnectTestCase), typeof(ClientTimeOutTestCase), typeof(ClientTransactionHandleTestCase
 				), typeof(ClientTransactionPoolTestCase), typeof(CloseServerBeforeClientTestCase
 				), typeof(CsCascadedDeleteReaddChildReferenceTestCase), typeof(CsDeleteReaddTestCase
-				), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase), typeof(
-				ObjectServerTestCase), typeof(PrefetchConfigurationTestCase), typeof(PrefetchIDCountTestCase
+				), typeof(IsAliveConcurrencyTestCase), typeof(IsAliveTestCase), typeof(NoTestConstructorsQEStringCmpTestCase
+				), typeof(ObjectServerTestCase), typeof(PrefetchConfigurationTestCase), typeof(PrefetchIDCountTestCase
 				), typeof(PrefetchObjectCountZeroTestCase), typeof(PrimitiveMessageTestCase), typeof(
 				QueryConsistencyTestCase), typeof(ReferenceSystemIsolationTestCase), typeof(SendMessageToClientTestCase
 				), typeof(ServerClosedTestCase), typeof(ServerObjectContainerIsolationTestCase), 
