@@ -15,15 +15,10 @@ namespace Db4odoc.Tutorial.F1.Chapter7
 		public static void Main(string[] args)
 		{ 
 			File.Delete(YapFileName);
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-			try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
 			{
 				StoreCars(db);
 				QueryWithEvaluation(db);
-			}
-			finally
-			{
-				db.Close();
 			}
 		}
 

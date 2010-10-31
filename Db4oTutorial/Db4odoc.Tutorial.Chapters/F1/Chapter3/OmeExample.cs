@@ -22,8 +22,7 @@ namespace Db4odoc.Tutorial.F1.Chapter3
 
         public static void StorePilots()
         {
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-            try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
             {
                 Pilot pilot1 = new Pilot("Michael Schumacher", 100);
                 db.Store(pilot1);
@@ -31,10 +30,6 @@ namespace Db4odoc.Tutorial.F1.Chapter3
                 Pilot pilot2 = new Pilot("Rubens Barrichello", 99);
                 db.Store(pilot2);
                 Console.WriteLine("Stored {0}", pilot2);
-            }
-            finally
-            {
-                db.Close();
             }
         }
 

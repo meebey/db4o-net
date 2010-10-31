@@ -15,8 +15,7 @@ namespace Db4odoc.Tutorial.F1.Chapter1
                                "formula1.yap");  
         public static void Main(string[] args)
         {
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-            try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
             {
                 StoreFirstPilot(db);
                 StoreSecondPilot(db);
@@ -30,10 +29,6 @@ namespace Db4odoc.Tutorial.F1.Chapter1
                 RetrieveByDefaultFieldValue(db);
                 RetrieveSorted(db); 
                 ClearDatabase(db);
-            }
-            finally
-            {
-                db.Close();
             }
         }
     

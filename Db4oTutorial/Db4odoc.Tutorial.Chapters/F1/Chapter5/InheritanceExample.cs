@@ -15,8 +15,7 @@ namespace Db4odoc.Tutorial.F1.Chapter5
         public static void Main(string[] args)
         {
             File.Delete(YapFileName);
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-            try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
             {
                 StoreFirstCar(db);
                 StoreSecondCar(db);
@@ -25,10 +24,6 @@ namespace Db4odoc.Tutorial.F1.Chapter5
                 RetrieveAllSensorReadoutsQBEAlternative(db);
                 RetrieveAllSensorReadoutsQuery(db);
                 RetrieveAllObjects(db);
-            }
-            finally
-            {
-                db.Close();
             }
         }
         

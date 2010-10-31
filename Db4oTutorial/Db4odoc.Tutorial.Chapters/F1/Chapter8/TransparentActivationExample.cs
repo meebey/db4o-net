@@ -16,17 +16,19 @@ namespace Db4odoc.Tutorial.F1.Chapter8
         public static void Main(String[] args)
         {
             File.Delete(YapFileName);
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
+            {
                 StoreCarAndSnapshots(db);
-                db.Close();
+            }
 
-                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
+            {
                 RetrieveSnapshotsSequentially(db);
-                db.Close();
+            }
 
-                RetrieveSnapshotsSequentiallyTA();
+            RetrieveSnapshotsSequentiallyTA();
 
-                DemonstrateTransparentActivation();
+            DemonstrateTransparentActivation();
         }
 
 
@@ -58,36 +60,38 @@ namespace Db4odoc.Tutorial.F1.Chapter8
         {
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.Add(new TransparentActivationSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-            IObjectSet result = db.QueryByExample(typeof(Car));
-            Car car = (Car)result.Next();
-            SensorReadout readout = car.History;
-            while (readout != null)
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
             {
-                Console.WriteLine(readout);
-                readout = readout.Next;
+                IObjectSet result = db.QueryByExample(typeof(Car));
+                Car car = (Car)result.Next();
+                SensorReadout readout = car.History;
+                while (readout != null)
+                {
+                    Console.WriteLine(readout);
+                    readout = readout.Next;
+                }
             }
-            db.Close();
         }
 
         public static void DemonstrateTransparentActivation()
         {
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.Add(new TransparentActivationSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-            IObjectSet result = db.QueryByExample(typeof (Car));
-            Car car = (Car) result.Next();
+            
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName)){
+                IObjectSet result = db.QueryByExample(typeof (Car));
+                Car car = (Car) result.Next();
 
-            Console.WriteLine("#PilotWithoutActivation before the car is activated");
-            Console.WriteLine(car.PilotWithoutActivation);
+                Console.WriteLine("#PilotWithoutActivation before the car is activated");
+                Console.WriteLine(car.PilotWithoutActivation);
 
-            Console.WriteLine("accessing 'Pilot' property activates the car object");
-            Console.WriteLine(car.Pilot);
+                Console.WriteLine("accessing 'Pilot' property activates the car object");
+                Console.WriteLine(car.Pilot);
 
-            Console.WriteLine("Accessing PilotWithoutActivation property after the car is activated");
-            Console.WriteLine(car.PilotWithoutActivation);
+                Console.WriteLine("Accessing PilotWithoutActivation property after the car is activated");
+                Console.WriteLine(car.PilotWithoutActivation);
 
-            db.Close();
+            }
         }
     }
 }

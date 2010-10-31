@@ -26,50 +26,53 @@ namespace Db4odoc.Tutorial.F1.Chapter9
         {
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.Add(new TransparentPersistenceSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-            Car car = new Car("Ferrari");
-            for (int i = 0; i < 3; i++)
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
             {
-                car.snapshot();
+                Car car = new Car("Ferrari");
+                for (int i = 0; i < 3; i++)
+                {
+                    car.snapshot();
+                }
+                db.Store(car);
             }
-            db.Store(car);
-            db.Close();
         }
 
         public static void ModifySnapshotHistory()
         {
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.Add(new TransparentPersistenceSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-            System.Console.WriteLine("Read all sensors and modify the description:");
-            IObjectSet result = db.QueryByExample(typeof(Car));
-            Car car = (Car)result.Next();
-            SensorReadout readout = car.History;
-            while (readout != null)
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
             {
-                System.Console.WriteLine(readout);
-                readout.Description = "Modified: " + readout.Description;
-                readout = readout.Next;
+                System.Console.WriteLine("Read all sensors and modify the description:");
+                IObjectSet result = db.QueryByExample(typeof(Car));
+                Car car = (Car)result.Next();
+                SensorReadout readout = car.History;
+                while (readout != null)
+                {
+                    System.Console.WriteLine(readout);
+                    readout.Description = "Modified: " + readout.Description;
+                    readout = readout.Next;
+                }
+                db.Commit();
             }
-            db.Commit();
-            db.Close();
         }
 
         public static void ReadSnapshotHistory()
         {
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.Add(new TransparentPersistenceSupport());
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-            System.Console.WriteLine("Read all modified sensors:");
-            IObjectSet result = db.QueryByExample(typeof(Car));
-            Car car = (Car)result.Next();
-            SensorReadout readout = car.History;
-            while (readout != null)
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
             {
-                System.Console.WriteLine(readout);
-                readout = readout.Next;
+                System.Console.WriteLine("Read all modified sensors:");
+                IObjectSet result = db.QueryByExample(typeof(Car));
+                Car car = (Car)result.Next();
+                SensorReadout readout = car.History;
+                while (readout != null)
+                {
+                    System.Console.WriteLine(readout);
+                    readout = readout.Next;
+                }
             }
-            db.Close();
         }
     }
 }

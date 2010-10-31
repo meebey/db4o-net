@@ -17,7 +17,8 @@ namespace Db4odoc.Tutorial.F1.Chapter4
 		public static void Main(string[] args)
 		{
 			File.Delete(YapFileName);
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
+            {
 				StoreFirstCar(db);
 				StoreSecondCar(db);
 				RetrieveAllSensorReadout(db);
@@ -27,12 +28,16 @@ namespace Db4odoc.Tutorial.F1.Chapter4
 				RetrieveArrays(db);
 				RetrieveSensorReadoutQuery(db);
 				RetrieveCarQuery(db);
-				db.Close();
-				UpdateCar();
-				UpdateCollection();
-				DeleteAll();
-				RetrieveAllSensorReadout(db);
-			
+            };
+			UpdateCar();
+			UpdateCollection();
+			DeleteAll();
+
+            using (IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
+            {
+                RetrieveAllSensorReadout(db);
+            }
+
 		}
         
 		public static void StoreFirstCar(IObjectContainer db)
@@ -153,55 +158,58 @@ namespace Db4odoc.Tutorial.F1.Chapter4
 		{
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-			IObjectSet result = db.QueryByExample(new Car("BMW", null));
-			Car car = (Car)result.Next();
-			car.Snapshot();
-			db.Store(car);
-			RetrieveAllSensorReadout(db);
-            db.Close();
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
+            {
+                IObjectSet result = db.QueryByExample(new Car("BMW", null));
+                Car car = (Car)result.Next();
+                car.Snapshot();
+                db.Store(car);
+                RetrieveAllSensorReadout(db);
+            }
 		}
         
 		public static void UpdateCollection()
 		{
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-			IQuery query = db.Query();
-			query.Constrain(typeof(Car));
-			IObjectSet result = query.Descend("_history").Execute();
-			IList history = (IList)result.Next();
-			history.RemoveAt(0);
-			db.Store(history);
-			Car proto = new Car(null, null);
-			result = db.QueryByExample(proto);
-			foreach (Car car in result)
-			{	
-				foreach (object readout in car.History)
-				{
-					Console.WriteLine(readout);
-				}
-			}
-            db.Close();
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
+            {
+                IQuery query = db.Query();
+                query.Constrain(typeof (Car));
+                IObjectSet result = query.Descend("_history").Execute();
+                IList history = (IList) result.Next();
+                history.RemoveAt(0);
+                db.Store(history);
+                Car proto = new Car(null, null);
+                result = db.QueryByExample(proto);
+                foreach (Car car in result)
+                {
+                    foreach (object readout in car.History)
+                    {
+                        Console.WriteLine(readout);
+                    }
+                }
+            }
 		}
         
 		public static void DeleteAll()
 		{
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.ObjectClass(typeof(Car)).CascadeOnDelete(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
+            {
+                IObjectSet result = db.QueryByExample(new Car(null, null));
+                foreach (object car in result)
+                {
+                    db.Delete(car);
+                }
+                IObjectSet readouts = db.QueryByExample(new SensorReadout(null, DateTime.MinValue, null));
+                foreach (object readout in readouts)
+                {
+                    db.Delete(readout);
+                }
+            }
 
-			IObjectSet result = db.QueryByExample(new Car(null, null));
-			foreach (object car in result)
-			{
-				db.Delete(car);
-			}
-			IObjectSet readouts = db.QueryByExample(new SensorReadout(null, DateTime.MinValue, null));
-			foreach (object readout in readouts)
-			{
-				db.Delete(readout);
-			}
-            db.Close();
 		}
 	}
 }

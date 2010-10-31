@@ -16,18 +16,13 @@ namespace Db4odoc.Tutorial.F1.Chapter1
 		
 		public static void Main(string[] args)
 		{
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-			try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
 			{
 				StorePilots(db);
 				RetrieveComplexSODA(db);
 				RetrieveComplexNQ(db);
 				RetrieveArbitraryCodeNQ(db);
 				ClearDatabase(db);
-			}
-			finally
-			{
-				db.Close();
 			}
 		}
     

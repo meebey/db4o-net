@@ -14,19 +14,21 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         public static void Main(string[] args)
         {
             File.Delete(YapFileName);
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(),
-                    YapFileName);
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
+            {
                 StoreCar(db);
-                db.Close();
-                TakeManySnapshots();
-                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(),YapFileName);
+            }
+            TakeManySnapshots();
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
+            {
                 RetrieveAllSnapshots(db);
-                db.Close();
-                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
+            }
+            using(IObjectContainer db =  Db4oEmbedded.OpenFile(YapFileName))
+            {
                 RetrieveSnapshotsSequentially(db);
                 RetrieveSnapshotsSequentiallyImproved(db);
-                db.Close();
-                RetrieveSnapshotsSequentiallyCascade();
+            }
+            RetrieveSnapshotsSequentiallyCascade();
         }
         
         public static void StoreCar(IObjectContainer db)
@@ -41,15 +43,16 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         {
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.ObjectClass(typeof(Car)).CascadeOnUpdate(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-            IObjectSet result = db.QueryByExample(typeof(Car));
-            Car car = (Car)result.Next();
-            for (int i=0; i<5; i++)
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
             {
-                car.Snapshot();
+                IObjectSet result = db.QueryByExample(typeof(Car));
+                Car car = (Car)result.Next();
+                for (int i = 0; i < 5; i++)
+                {
+                    car.Snapshot();
+                }
+                db.Store(car);
             }
-            db.Store(car);
-            db.Close();
         }
         
         public static void RetrieveAllSnapshots(IObjectContainer db)
@@ -79,17 +82,17 @@ namespace Db4odoc.Tutorial.F1.Chapter6
             IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
             config.Common.ObjectClass(typeof(TemperatureSensorReadout))
                 .CascadeOnActivate(true);
-            IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName);
-        
-            IObjectSet result = db.QueryByExample(typeof(Car));
-            Car car = (Car)result.Next();
-            SensorReadout readout = car.GetHistory();
-            while (readout != null)
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(config, YapFileName))
             {
-                Console.WriteLine(readout);
-                readout = readout.Next;
+                IObjectSet result = db.QueryByExample(typeof(Car));
+                Car car = (Car)result.Next();
+                SensorReadout readout = car.GetHistory();
+                while (readout != null)
+                {
+                    Console.WriteLine(readout);
+                    readout = readout.Next;
+                }
             }
-            db.Close();
         }
         
         public static void RetrieveSnapshotsSequentiallyImproved(IObjectContainer db)

@@ -12,23 +12,20 @@ namespace Db4odoc.Tutorial.F1.Chapter6
         public static void Main(string[] args)
         {
             File.Delete(YapFileName);
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-            try
+            using (IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
             {
                 StoreCarCommit(db);
-                db.Close();
-                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
+            }
+            using (IObjectContainer db = Db4oEmbedded.OpenFile( YapFileName))
+            {
                 ListAllCars(db);
                 StoreCarRollback(db);
-                db.Close();
-                db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
+            }
+            using (IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
+            {
                 ListAllCars(db);
                 CarSnapshotRollback(db);
                 CarSnapshotRollbackRefresh(db);
-            }
-            finally
-            {
-                db.Close();
             }
         }
         

@@ -19,18 +19,13 @@ namespace Db4odoc.Tutorial.F1.Chapter10
 
 		public static void Main(string[] args)
 		{
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-			try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName))
 			{
 				StoreObjects(db);
                 RetrievePilot(db);
                 RetrievePilotByCars(db);
                 RetrievePilotUnoptimized(db);
 				ClearDatabase(db);
-			}
-			finally
-			{
-				db.Close();
 			}
 		}
     

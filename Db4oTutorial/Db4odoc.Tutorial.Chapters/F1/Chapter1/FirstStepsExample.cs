@@ -17,8 +17,7 @@ namespace Db4odoc.Tutorial.F1.Chapter1
             File.Delete(YapFileName);
             AccessDb4o();
             File.Delete(YapFileName);
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-            try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
             {
                 StoreFirstPilot(db);
                 StoreSecondPilot(db);
@@ -29,22 +28,13 @@ namespace Db4odoc.Tutorial.F1.Chapter1
                 DeleteFirstPilotByName(db);
                 DeleteSecondPilotByName(db);
             }
-            finally
-            {
-                db.Close();
-            }
         }
 
         public static void AccessDb4o()
         {
-            IObjectContainer db = Db4oEmbedded.OpenFile(Db4oEmbedded.NewConfiguration(), YapFileName);
-            try
+            using(IObjectContainer db = Db4oEmbedded.OpenFile(YapFileName))
             {
                 // do something with db4o
-            }
-            finally
-            {
-                db.Close();
             }
         }
 
