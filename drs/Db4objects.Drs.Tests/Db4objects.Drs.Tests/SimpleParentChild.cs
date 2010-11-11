@@ -1,7 +1,8 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -17,7 +18,7 @@ namespace Db4objects.Drs.Tests
 			ReplicateParentClassStep3();
 		}
 
-		private void EnsureNames(IDrsFixture fixture, string parentName, string childName
+		private void EnsureNames(IDrsProviderFixture fixture, string parentName, string childName
 			)
 		{
 			EnsureOneInstanceOfParentAndChild(fixture);
@@ -27,11 +28,11 @@ namespace Db4objects.Drs.Tests
 				Sharpen.Runtime.Out.WriteLine("expected = " + parentName);
 				Sharpen.Runtime.Out.WriteLine("actual = " + parent.GetName());
 			}
-			Assert.AreEqual(parent.GetName(), parentName);
-			Assert.AreEqual(parent.GetChild().GetName(), childName);
+			Assert.AreEqual(parentName, parent.GetName());
+			Assert.AreEqual(childName, parent.GetChild().GetName());
 		}
 
-		private void EnsureOneInstanceOfParentAndChild(IDrsFixture fixture)
+		private void EnsureOneInstanceOfParentAndChild(IDrsProviderFixture fixture)
 		{
 			EnsureOneInstance(fixture, typeof(SPCParent));
 			EnsureOneInstance(fixture, typeof(SPCChild));

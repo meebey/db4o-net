@@ -1,11 +1,11 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
-using Db4objects.Drs.Tests.Regression;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests.Regression
 {

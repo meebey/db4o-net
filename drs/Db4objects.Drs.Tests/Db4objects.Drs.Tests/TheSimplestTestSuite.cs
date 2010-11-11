@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -7,6 +7,7 @@ using Db4oUnit.Fixtures;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -71,14 +72,14 @@ namespace Db4objects.Drs.Tests
 				EnsureNames(B(), "c2");
 			}
 
-			private void EnsureNames(IDrsFixture fixture, string childName)
+			private void EnsureNames(IDrsProviderFixture fixture, string childName)
 			{
 				EnsureOneInstance(fixture, typeof(SPCChild));
 				SPCChild child = GetTheObject(fixture);
 				Assert.AreEqual(childName, child.GetName());
 			}
 
-			private SPCChild GetTheObject(IDrsFixture fixture)
+			private SPCChild GetTheObject(IDrsProviderFixture fixture)
 			{
 				return (SPCChild)GetOneInstance(fixture, typeof(SPCChild));
 			}
@@ -87,7 +88,8 @@ namespace Db4objects.Drs.Tests
 				, ITestableReplicationProviderInside providerB, Type clazz)
 			{
 				//System.out.println("ReplicationTestcase.replicateClass");
-				IReplicationSession replication = Replication.Begin(providerA, providerB);
+				IReplicationSession replication = Replication.Begin(providerA, providerB, null, _fixtures
+					.reflector);
 				IEnumerator allObjects = providerA.ObjectsChangedSinceLastReplication(clazz).GetEnumerator
 					();
 				while (allObjects.MoveNext())

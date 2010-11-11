@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -8,6 +8,7 @@ using Db4objects.Db4o.Config;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 using Sharpen.Lang;
 
 namespace Db4objects.Drs.Tests
@@ -16,19 +17,18 @@ namespace Db4objects.Drs.Tests
 	{
 		public static readonly Type[] mappings;
 
-		public static readonly Type[] extraMappingsForCleaning = new Type[] { typeof(IDictionary
-			), typeof(IList) };
+		public static readonly Type[] extraMappingsForCleaning = new Type[] { typeof(IList
+			), typeof(IDictionary) };
 
 		static DrsTestCase()
 		{
-			mappings = new Type[] { typeof(Replicated), typeof(SPCParent), typeof(SPCChild), 
-				typeof(ListHolder), typeof(ListContent), typeof(SimpleListHolder), typeof(SimpleItem
-				), typeof(CollectionHolder), typeof(MapContent), typeof(SimpleArrayContent), typeof(
-				SimpleArrayHolder), typeof(R0), typeof(Pilot), typeof(Car), typeof(Student), typeof(
-				Person) };
+			mappings = new Type[] { typeof(Car), typeof(CollectionHolder), typeof(ListContent
+				), typeof(ListHolder), typeof(MapContent), typeof(Pilot), typeof(R0), typeof(Replicated
+				), typeof(SimpleArrayContent), typeof(SimpleArrayHolder), typeof(SimpleItem), typeof(
+				SimpleListHolder), typeof(SPCChild), typeof(SPCParent) };
 		}
 
-		private readonly DrsFixturePair _fixtures = DrsFixtureVariable.Value();
+		protected readonly DrsFixture _fixtures = DrsFixtureVariable.Value();
 
 		private Db4objects.Drs.Inside.ReplicationReflector _reflector;
 
@@ -74,7 +74,7 @@ namespace Db4objects.Drs.Tests
 			ConfigureInitial(_fixtures.b);
 		}
 
-		private void ConfigureInitial(IDrsFixture fixture)
+		private void ConfigureInitial(IDrsProviderFixture fixture)
 		{
 			IConfiguration config = Db4oConfiguration(fixture);
 			if (config == null)
@@ -86,7 +86,7 @@ namespace Db4objects.Drs.Tests
 			Configure(config);
 		}
 
-		private IConfiguration Db4oConfiguration(IDrsFixture fixture)
+		private IConfiguration Db4oConfiguration(IDrsProviderFixture fixture)
 		{
 			if (!(fixture is Db4oDrsFixture))
 			{
@@ -112,7 +112,7 @@ namespace Db4objects.Drs.Tests
 			A().Open();
 			B().Open();
 			_reflector = new Db4objects.Drs.Inside.ReplicationReflector(A().Provider(), B().Provider
-				());
+				(), _fixtures.reflector);
 			A().Provider().ReplicationReflector(_reflector);
 			B().Provider().ReplicationReflector(_reflector);
 		}
@@ -131,29 +131,29 @@ namespace Db4objects.Drs.Tests
 			B().Close();
 		}
 
-		public virtual IDrsFixture A()
+		public virtual IDrsProviderFixture A()
 		{
 			return _fixtures.a;
 		}
 
-		public virtual IDrsFixture B()
+		public virtual IDrsProviderFixture B()
 		{
 			return _fixtures.b;
 		}
 
-		protected virtual void EnsureOneInstance(IDrsFixture fixture, Type clazz)
+		protected virtual void EnsureOneInstance(IDrsProviderFixture fixture, Type clazz)
 		{
 			EnsureInstanceCount(fixture, clazz, 1);
 		}
 
-		protected virtual void EnsureInstanceCount(IDrsFixture fixture, Type clazz, int count
-			)
+		protected virtual void EnsureInstanceCount(IDrsProviderFixture fixture, Type clazz
+			, int count)
 		{
 			IObjectSet objectSet = fixture.Provider().GetStoredObjects(clazz);
 			Assert.AreEqual(count, objectSet.Count);
 		}
 
-		protected virtual object GetOneInstance(IDrsFixture fixture, Type clazz)
+		protected virtual object GetOneInstance(IDrsProviderFixture fixture, Type clazz)
 		{
 			IEnumerator objectSet = fixture.Provider().GetStoredObjects(clazz).GetEnumerator(
 				);
@@ -173,8 +173,8 @@ namespace Db4objects.Drs.Tests
 		protected virtual void ReplicateAll(ITestableReplicationProviderInside providerFrom
 			, ITestableReplicationProviderInside providerTo)
 		{
-			//System.out.println("from = " + providerFrom + ", to = " + providerTo);
-			IReplicationSession replication = Replication.Begin(providerFrom, providerTo);
+			IReplicationSession replication = Replication.Begin(providerFrom, providerTo, _fixtures
+				.reflector);
 			IObjectSet changedSet = providerFrom.ObjectsChangedSinceLastReplication();
 			if (changedSet.Count == 0)
 			{
@@ -198,7 +198,8 @@ namespace Db4objects.Drs.Tests
 		protected virtual void ReplicateAll(ITestableReplicationProviderInside from, ITestableReplicationProviderInside
 			 to, IReplicationEventListener listener)
 		{
-			IReplicationSession replication = Replication.Begin(from, to, listener);
+			IReplicationSession replication = Replication.Begin(from, to, listener, _fixtures
+				.reflector);
 			ReplicateAll(replication, from.ObjectsChangedSinceLastReplication().GetEnumerator
 				());
 		}
@@ -217,8 +218,8 @@ namespace Db4objects.Drs.Tests
 		protected virtual void ReplicateClass(ITestableReplicationProviderInside providerA
 			, ITestableReplicationProviderInside providerB, Type clazz)
 		{
-			//System.out.println("ReplicationTestcase.replicateClass");
-			IReplicationSession replication = Replication.Begin(providerA, providerB);
+			IReplicationSession replication = Replication.Begin(providerA, providerB, null, _fixtures
+				.reflector);
 			IEnumerator allObjects = providerA.ObjectsChangedSinceLastReplication(clazz).GetEnumerator
 				();
 			ReplicateAll(replication, allObjects);

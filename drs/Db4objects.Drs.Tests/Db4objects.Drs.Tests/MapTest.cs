@@ -1,8 +1,9 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -89,8 +90,8 @@ namespace Db4objects.Drs.Tests
 				, new string[] { "co1", "co2", "co3" });
 		}
 
-		private void EnsureContent(IDrsFixture fixture, string[] holderNames, string[] keyNames
-			, string[] valueNames)
+		private void EnsureContent(IDrsProviderFixture fixture, string[] holderNames, string
+			[] keyNames, string[] valueNames)
 		{
 			int holderCount = holderNames.Length;
 			EnsureInstanceCount(fixture, typeof(MapHolder), holderCount);

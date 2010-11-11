@@ -1,7 +1,7 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Drs.Inside;
-using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -28,45 +28,45 @@ namespace Db4objects.Drs.Tests
 
 		internal virtual void SetNames(string name)
 		{
-			r0.name = "0" + name;
-			r1.name = "1" + name;
-			r2.name = "2" + name;
-			r3.name = "3" + name;
-			r4.name = "4" + name;
+			r0.SetName("0" + name);
+			r1.SetName("1" + name);
+			r2.SetName("2" + name);
+			r3.SetName("3" + name);
+			r4.SetName("4" + name);
 		}
 
 		internal virtual void LinkCircles()
 		{
 			LinkList();
-			r1.circle1 = r0;
-			r2.circle2 = r0;
-			r3.circle3 = r0;
-			r4.circle4 = r0;
+			r1.SetCircle1(r0);
+			r2.SetCircle2(r0);
+			r3.SetCircle3(r0);
+			r4.SetCircle4(r0);
 		}
 
 		internal virtual void LinkList()
 		{
-			r0.r1 = r1;
-			r1.r2 = r2;
-			r2.r3 = r3;
-			r3.r4 = r4;
+			r0.SetR1(r1);
+			r1.SetR2(r2);
+			r2.SetR3(r3);
+			r3.SetR4(r4);
 		}
 
 		internal virtual void LinkThis()
 		{
-			r0.r0 = r0;
-			r1.r1 = r1;
-			r2.r2 = r2;
-			r3.r3 = r3;
-			r4.r4 = r4;
+			r0.SetR0(r0);
+			r1.SetR1(r1);
+			r2.SetR2(r2);
+			r3.SetR3(r3);
+			r4.SetR4(r4);
 		}
 
 		internal virtual void LinkBack()
 		{
-			r1.r0 = r0;
-			r2.r1 = r1;
-			r3.r2 = r2;
-			r4.r3 = r3;
+			r1.SetR0(r0);
+			r2.SetR1(r1);
+			r3.SetR2(r2);
+			r4.SetR3(r3);
 		}
 
 		public virtual void Store(ITestableReplicationProviderInside provider)

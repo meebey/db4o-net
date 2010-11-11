@@ -1,7 +1,8 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -80,16 +81,16 @@ namespace Db4objects.Drs.Tests
 			EnsureNames(B(), modInA);
 		}
 
-		private void EnsureNames(IDrsFixture fixture, byte[] bs)
+		private void EnsureNames(IDrsProviderFixture fixture, byte[] bs)
 		{
-			EnsureOneInstance(fixture, typeof(IIByteArrayHolder));
+			EnsureOneInstance(fixture, typeof(ByteArrayHolder));
 			IIByteArrayHolder c = GetTheObject(fixture);
 			ArrayAssert.AreEqual(c.GetBytes(), bs);
 		}
 
-		private IIByteArrayHolder GetTheObject(IDrsFixture fixture)
+		private IIByteArrayHolder GetTheObject(IDrsProviderFixture fixture)
 		{
-			return (IIByteArrayHolder)GetOneInstance(fixture, typeof(IIByteArrayHolder));
+			return (ByteArrayHolder)GetOneInstance(fixture, typeof(ByteArrayHolder));
 		}
 
 		internal static byte[] CreateByteArray()

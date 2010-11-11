@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -7,6 +7,7 @@ using Db4objects.Db4o.Reflect;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -37,13 +38,22 @@ namespace Db4objects.Drs.Tests
 				SetFieldsToNull(o, claxx);
 				toDelete.Add(o);
 			}
+			object commitObject = null;
 			for (IEnumerator iterator = toDelete.GetEnumerator(); iterator.MoveNext(); )
 			{
 				object o = iterator.Current;
 				//System.out.println("o = " + o);
 				provider.Delete(o);
+				commitObject = o;
 			}
-			provider.Commit();
+			if (commitObject != null)
+			{
+				provider.Commit();
+			}
+			else
+			{
+				provider.Commit();
+			}
 		}
 
 		private void CompareR4(ITestableReplicationProviderInside a, ITestableReplicationProviderInside
@@ -52,12 +62,12 @@ namespace Db4objects.Drs.Tests
 			IEnumerator it = a.GetStoredObjects(typeof(R4)).GetEnumerator();
 			while (it.MoveNext())
 			{
-				string name = ((R4)it.Current).name;
+				string name = ((R4)it.Current).GetName();
 				IEnumerator it2 = b.GetStoredObjects(typeof(R4)).GetEnumerator();
 				bool found = false;
 				while (it2.MoveNext())
 				{
-					string name2 = ((R4)it2.Current).name;
+					string name2 = ((R4)it2.Current).GetName();
 					if (name.Equals(name2))
 					{
 						found = true;
@@ -67,10 +77,10 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
-		private void CopyAllToB(ITestableReplicationProviderInside peerA, ITestableReplicationProviderInside
+		private void ReplicateAllToB(ITestableReplicationProviderInside peerA, ITestableReplicationProviderInside
 			 peerB)
 		{
-			Assert.IsTrue(ReplicateAll(peerA, peerB, false) == Linkers * 5);
+			Assert.AreEqual(Linkers * 5, ReplicateAll(peerA, peerB, false));
 		}
 
 		private void EnsureCount(ITestableReplicationProviderInside provider, int linkers
@@ -93,7 +103,7 @@ namespace Db4objects.Drs.Tests
 				object o = instances.Current;
 				i--;
 			}
-			Assert.IsTrue(i == 0);
+			Assert.AreEqual(0, i);
 		}
 
 		private void EnsureR4Different(ITestableReplicationProviderInside peerA, ITestableReplicationProviderInside
@@ -132,12 +142,14 @@ namespace Db4objects.Drs.Tests
 
 		private void ModifyR4(ITestableReplicationProviderInside provider)
 		{
+			object commitObject = null;
 			IEnumerator it = provider.GetStoredObjects(typeof(R4)).GetEnumerator();
 			while (it.MoveNext())
 			{
 				R4 r4 = (R4)it.Current;
-				r4.name = r4.name + "_";
+				r4.SetName(r4.GetName() + "_");
 				provider.Update(r4);
+				commitObject = r4;
 			}
 			provider.Commit();
 		}
@@ -151,7 +163,8 @@ namespace Db4objects.Drs.Tests
 		private int ReplicateAll(ITestableReplicationProviderInside peerA, ITestableReplicationProviderInside
 			 peerB, bool modifiedOnly)
 		{
-			IReplicationSession replication = Replication.Begin(peerA, peerB);
+			IReplicationSession replication = Replication.Begin(peerA, peerB, null, _fixtures
+				.reflector);
 			IEnumerator it = modifiedOnly ? peerA.ObjectsChangedSinceLastReplication(typeof(R0
 				)).GetEnumerator() : peerA.GetStoredObjects(typeof(R0)).GetEnumerator();
 			int replicated = 0;
@@ -177,7 +190,7 @@ namespace Db4objects.Drs.Tests
 			 peerB)
 		{
 			int replicatedObjectsCount = ReplicateAll(peerA, peerB, true);
-			Assert.IsTrue(replicatedObjectsCount == Linkers);
+			Assert.AreEqual(Linkers, replicatedObjectsCount);
 		}
 
 		private void SetFieldsToNull(object @object, IReflectClass claxx)
@@ -207,14 +220,9 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void Test()
 		{
-			ActualTest();
-		}
-
-		protected virtual void ActualTest()
-		{
 			Init(A().Provider());
 			EnsureCount(A().Provider(), Linkers);
-			CopyAllToB(A().Provider(), B().Provider());
+			ReplicateAllToB(A().Provider(), B().Provider());
 			ReplicateNoneModified(A().Provider(), B().Provider());
 			ModifyR4(A().Provider());
 			EnsureR4Different(A().Provider(), B().Provider());

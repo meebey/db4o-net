@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit;
@@ -11,14 +11,16 @@ namespace Db4objects.Drs.Tests
 {
 	public partial class Db4oTests : DrsTestSuite, IDb4oTestCase
 	{
-		public static int Main(string[] args)
+		public static void Main(string[] args)
 		{
-			//if (true) return new Db4oTests().runDb4oDb4o();
+			new Db4oTests().Run();
+		}
+
+		public override int Run()
+		{
 			int failureCount = new Db4oTests().RunDb4oDb4o();
 			failureCount += new Db4oTests().Rundb4oCS();
-			//new Db4oTests().runCSdb4o();
 			failureCount += new Db4oTests().RunCSCS();
-			//new Db4oTests().runDb4oDb4o();
 			return failureCount;
 		}
 

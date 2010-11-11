@@ -1,17 +1,17 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
+using Db4objects.Drs.Foundation;
 using Db4objects.Drs.Inside;
 
 namespace Db4objects.Drs.Inside
 {
-	public sealed class ReplicationReferenceImpl : IReplicationReference
+	public class ReplicationReferenceImpl : IReplicationReference
 	{
 		private bool _objectIsNew;
 
 		private readonly object _obj;
 
-		private readonly Db4oUUID _uuid;
+		private readonly IDrsUUID _uuid;
 
 		private readonly long _version;
 
@@ -21,7 +21,7 @@ namespace Db4objects.Drs.Inside
 
 		private bool _markedForDeleting;
 
-		public ReplicationReferenceImpl(object obj, Db4oUUID uuid, long version)
+		public ReplicationReferenceImpl(object obj, IDrsUUID uuid, long version)
 		{
 			this._obj = obj;
 			this._uuid = uuid;
@@ -39,27 +39,21 @@ namespace Db4objects.Drs.Inside
 			{
 				return true;
 			}
-			if (o == null || o.GetType().BaseType != o.GetType().BaseType)
+			if (o == null || o.GetType() != GetType())
 			{
 				return false;
 			}
-			IReplicationReference that = (Db4objects.Drs.Inside.ReplicationReferenceImpl)o;
-			if (_version != that.Version())
-			{
-				return false;
-			}
-			return _uuid.Equals(that.Uuid());
+			Db4objects.Drs.Inside.ReplicationReferenceImpl other = (Db4objects.Drs.Inside.ReplicationReferenceImpl
+				)o;
+			return _version == other._version && _uuid.Equals(other._uuid);
 		}
 
 		public sealed override int GetHashCode()
 		{
-			int result;
-			result = _uuid.GetHashCode();
-			result = 29 * result + (int)(_version ^ ((_version) >> (32 & 0x1f)));
-			return result;
+			return 29 * _uuid.GetHashCode() + (int)(_version ^ ((_version) >> (32 & 0x1f)));
 		}
 
-		public bool IsCounterpartNew()
+		public virtual bool IsCounterpartNew()
 		{
 			return _objectIsNew;
 		}
@@ -74,7 +68,7 @@ namespace Db4objects.Drs.Inside
 			return _markedForReplicating;
 		}
 
-		public void MarkCounterpartAsNew()
+		public virtual void MarkCounterpartAsNew()
 		{
 			_objectIsNew = true;
 		}
@@ -84,9 +78,9 @@ namespace Db4objects.Drs.Inside
 			_markedForDeleting = true;
 		}
 
-		public void MarkForReplicating()
+		public void MarkForReplicating(bool flag)
 		{
-			_markedForReplicating = true;
+			_markedForReplicating = flag;
 		}
 
 		public object Object()
@@ -107,7 +101,7 @@ namespace Db4objects.Drs.Inside
 				+ _markedForDeleting + '}';
 		}
 
-		public Db4oUUID Uuid()
+		public IDrsUUID Uuid()
 		{
 			return _uuid;
 		}

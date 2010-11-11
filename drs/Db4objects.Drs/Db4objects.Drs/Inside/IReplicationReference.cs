@@ -1,25 +1,25 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o.Ext;
+using Db4objects.Drs.Foundation;
 
 namespace Db4objects.Drs.Inside
 {
 	public interface IReplicationReference
 	{
-		Db4oUUID Uuid();
+		IDrsUUID Uuid();
 
 		/// <summary>
-		/// IMPORTANT
-		/// <p/>
-		/// Must return the latests version of the object AND OF ALL COLLECTIONS IT REFERENCES IN ITS
-		/// FIELDS because collections are treated as 2nd class objects (just like arrays) for Hibernate replication
+		/// Must return the latests version of the object AND OF
+		/// ALL COLLECTIONS IT REFERENCES IN ITS FIELDS because
+		/// collections are treated as 2nd class objects
+		/// (just like arrays) for Hibernate replication
 		/// compatibility purposes.
 		/// </summary>
 		/// <remarks>
-		/// IMPORTANT
-		/// <p/>
-		/// Must return the latests version of the object AND OF ALL COLLECTIONS IT REFERENCES IN ITS
-		/// FIELDS because collections are treated as 2nd class objects (just like arrays) for Hibernate replication
+		/// Must return the latests version of the object AND OF
+		/// ALL COLLECTIONS IT REFERENCES IN ITS FIELDS because
+		/// collections are treated as 2nd class objects
+		/// (just like arrays) for Hibernate replication
 		/// compatibility purposes.
 		/// </remarks>
 		long Version();
@@ -30,7 +30,7 @@ namespace Db4objects.Drs.Inside
 
 		void SetCounterpart(object obj);
 
-		void MarkForReplicating();
+		void MarkForReplicating(bool flag);
 
 		bool IsMarkedForReplicating();
 

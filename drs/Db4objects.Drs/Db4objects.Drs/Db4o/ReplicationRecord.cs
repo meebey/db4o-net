@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
@@ -46,7 +46,8 @@ namespace Db4objects.Drs.Db4o
 			try
 			{
 				Transaction trans = container.CheckTransaction();
-				container.StoreAfterReplication(trans, this, 1, false);
+				container.StoreAfterReplication(trans, this, container.UpdateDepthProvider().ForDepth
+					(1), false);
 				container.Commit(trans);
 			}
 			finally

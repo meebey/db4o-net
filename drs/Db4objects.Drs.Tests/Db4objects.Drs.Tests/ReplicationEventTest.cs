@@ -1,10 +1,11 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -16,37 +17,7 @@ namespace Db4objects.Drs.Tests
 
 		private static readonly string ModifiedInB = "modified in B";
 
-		public virtual void Test()
-		{
-			TstNoAction();
-			Clean();
-			TstNewObject();
-			Clean();
-			TstOverrideWhenNoConflicts();
-			Clean();
-			TstOverrideWhenConflicts();
-			Clean();
-			TstStopTraversal();
-		}
-
-		//		tstDeletionDefaultPrevail();
-		//		clean();
-		//
-		//		tstDeletionOverrideToPrevail();
-		//		clean();
-		//
-		//		tstDeletionNotPrevail();
-		//		clean();
-		private void DeleteInProviderA()
-		{
-			A().Provider().DeleteAllInstances(typeof(SPCParent));
-			A().Provider().DeleteAllInstances(typeof(SPCChild));
-			A().Provider().Commit();
-			EnsureNotExist(A().Provider(), typeof(SPCChild));
-			EnsureNotExist(A().Provider(), typeof(SPCParent));
-		}
-
-		private void EnsureNames(IDrsFixture fixture, string parentName, string childName
+		private void EnsureNames(IDrsProviderFixture fixture, string parentName, string childName
 			)
 		{
 			EnsureOneInstanceOfParentAndChild(fixture);
@@ -66,7 +37,7 @@ namespace Db4objects.Drs.Tests
 			Assert.IsTrue(!provider.GetStoredObjects(type).GetEnumerator().MoveNext());
 		}
 
-		private void EnsureOneInstanceOfParentAndChild(IDrsFixture fixture)
+		private void EnsureOneInstanceOfParentAndChild(IDrsProviderFixture fixture)
 		{
 			EnsureOneInstance(fixture, typeof(SPCParent));
 			EnsureOneInstance(fixture, typeof(SPCChild));
@@ -112,12 +83,12 @@ namespace Db4objects.Drs.Tests
 			EnsureNames(A(), InA, InA);
 		}
 
-		private void TstNewObject()
+		public virtual void TestNewObject()
 		{
 			StoreParentAndChildToProviderA();
 			ReplicationEventTest.BooleanClosure invoked = new ReplicationEventTest.BooleanClosure
 				(false);
-			IReplicationEventListener listener = new _IReplicationEventListener_239(invoked);
+			IReplicationEventListener listener = new _IReplicationEventListener_203(invoked);
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			Assert.IsTrue(invoked.GetValue());
 			EnsureNames(A(), InA, InA);
@@ -125,9 +96,9 @@ namespace Db4objects.Drs.Tests
 			EnsureNotExist(B().Provider(), typeof(SPCChild));
 		}
 
-		private sealed class _IReplicationEventListener_239 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_203 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_239(ReplicationEventTest.BooleanClosure invoked
+			public _IReplicationEventListener_203(ReplicationEventTest.BooleanClosure invoked
 				)
 			{
 				this.invoked = invoked;
@@ -148,21 +119,21 @@ namespace Db4objects.Drs.Tests
 			private readonly ReplicationEventTest.BooleanClosure invoked;
 		}
 
-		private void TstNoAction()
+		public virtual void TestNoAction()
 		{
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_270();
+			IReplicationEventListener listener = new _IReplicationEventListener_234();
 			//do nothing
 			ReplicateAll(B().Provider(), A().Provider(), listener);
 			EnsureNames(A(), ModifiedInB, ModifiedInB);
 			EnsureNames(B(), ModifiedInB, ModifiedInB);
 		}
 
-		private sealed class _IReplicationEventListener_270 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_234 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_270()
+			public _IReplicationEventListener_234()
 			{
 			}
 
@@ -171,22 +142,22 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
-		private void TstOverrideWhenConflicts()
+		public virtual void TestOverrideWhenConflicts()
 		{
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			//introduce conflicts
 			ModifyInProviderA();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_290();
+			IReplicationEventListener listener = new _IReplicationEventListener_254();
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			EnsureNames(A(), ModifiedInB, ModifiedInB);
 			EnsureNames(B(), ModifiedInB, ModifiedInB);
 		}
 
-		private sealed class _IReplicationEventListener_290 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_254 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_290()
+			public _IReplicationEventListener_254()
 			{
 			}
 
@@ -200,20 +171,20 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
-		private void TstOverrideWhenNoConflicts()
+		public virtual void TestOverrideWhenNoConflicts()
 		{
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_310();
+			IReplicationEventListener listener = new _IReplicationEventListener_274();
 			ReplicateAll(B().Provider(), A().Provider(), listener);
 			EnsureNames(A(), InA, InA);
 			EnsureNames(B(), InA, InA);
 		}
 
-		private sealed class _IReplicationEventListener_310 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_274 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_310()
+			public _IReplicationEventListener_274()
 			{
 			}
 
@@ -224,22 +195,22 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
-		private void TstStopTraversal()
+		public virtual void TestStopTraversal()
 		{
 			StoreParentAndChildToProviderA();
 			ReplicateAllToProviderBFirstTime();
 			//introduce conflicts
 			ModifyInProviderA();
 			ModifyInProviderB();
-			IReplicationEventListener listener = new _IReplicationEventListener_331();
+			IReplicationEventListener listener = new _IReplicationEventListener_295();
 			ReplicateAll(A().Provider(), B().Provider(), listener);
 			EnsureNames(A(), ModifiedInA, ModifiedInA);
 			EnsureNames(B(), ModifiedInB, ModifiedInB);
 		}
 
-		private sealed class _IReplicationEventListener_331 : IReplicationEventListener
+		private sealed class _IReplicationEventListener_295 : IReplicationEventListener
 		{
-			public _IReplicationEventListener_331()
+			public _IReplicationEventListener_295()
 			{
 			}
 

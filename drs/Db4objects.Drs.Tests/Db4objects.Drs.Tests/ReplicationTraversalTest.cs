@@ -1,9 +1,10 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -18,7 +19,7 @@ namespace Db4objects.Drs.Tests
 		{
 			_peerA = new TransientReplicationProvider(new byte[] { 0 }, "A");
 			_peerB = new TransientReplicationProvider(new byte[] { 1 }, "B");
-			ReplicationReflector reflector = new ReplicationReflector(_peerA, _peerB);
+			ReplicationReflector reflector = new ReplicationReflector(_peerA, _peerB, null);
 			_peerA.ReplicationReflector(reflector);
 			_peerB.ReplicationReflector(reflector);
 		}

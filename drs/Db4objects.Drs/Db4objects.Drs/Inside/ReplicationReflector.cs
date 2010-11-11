@@ -1,9 +1,10 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Reflect;
+using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Drs;
 using Db4objects.Drs.Db4o;
 
@@ -13,19 +14,27 @@ namespace Db4objects.Drs.Inside
 	{
 		private IInternalObjectContainer _container;
 
+		private IReflector _reflector;
+
 		public ReplicationReflector(IReplicationProvider providerA, IReplicationProvider 
-			providerB)
+			providerB, IReflector reflector)
 		{
-			_container = ContainerFrom(providerA);
-			if (_container == null)
+			if (reflector == null)
 			{
-				_container = ContainerFrom(providerB);
+				if ((_container = ContainerFrom(providerA)) != null)
+				{
+					return;
+				}
+				if ((_container = ContainerFrom(providerB)) != null)
+				{
+					return;
+				}
 			}
-			if (_container == null)
-			{
-				_container = (IInternalObjectContainer)ExtDb4oFactory.OpenMemoryFile(new MemoryFile
-					()).Ext();
-			}
+			GenericReflector genericReflector = new GenericReflector(null, reflector == null ? 
+				Platform4.ReflectorForType(typeof(Db4objects.Drs.Inside.ReplicationReflector)) : 
+				reflector);
+			Platform4.RegisterCollections(genericReflector);
+			_reflector = genericReflector;
 		}
 
 		public virtual object[] ArrayContents(object array)
@@ -49,12 +58,12 @@ namespace Db4objects.Drs.Inside
 
 		public virtual IReflectClass ForObject(object obj)
 		{
-			return _container.Reflector().ForObject(obj);
+			return Reflector().ForObject(obj);
 		}
 
 		public virtual IReflectClass ForClass(Type clazz)
 		{
-			return _container.Reflector().ForClass(clazz);
+			return Reflector().ForClass(clazz);
 		}
 
 		internal virtual IReflectClass GetComponentType(IReflectClass claxx)
@@ -82,6 +91,10 @@ namespace Db4objects.Drs.Inside
 
 		public virtual bool IsValueType(IReflectClass clazz)
 		{
+			if (_container == null)
+			{
+				return clazz.IsImmutable();
+			}
 			ClassMetadata classMetadata = _container.ClassMetadataForReflectClass(clazz);
 			if (classMetadata == null)
 			{
@@ -107,7 +120,27 @@ namespace Db4objects.Drs.Inside
 
 		private IReflectArray ArrayReflector()
 		{
-			return _container.Reflector().Array();
+			return Reflector().Array();
+		}
+
+		//		return _container.reflector().array();
+		private IReflector Reflector()
+		{
+			return _container == null ? _reflector : _container.Reflector();
+		}
+
+		public virtual void CopyState(object to, object from)
+		{
+			IReflectClass fromClass = Reflector().ForObject(from);
+			// FIXME: We need to get the classes parents fields copied too.
+			foreach (IReflectField f in fromClass.GetDeclaredFields())
+			{
+				if (f.IsStatic())
+				{
+					continue;
+				}
+				f.Set(to, f.Get(from));
+			}
 		}
 	}
 }

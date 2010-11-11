@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -100,11 +100,6 @@ namespace Db4objects.Drs.Tests
 			return _lastReplicationVersion;
 		}
 
-		public virtual object GetMonitor()
-		{
-			return this;
-		}
-
 		public virtual string GetName()
 		{
 			return _name;
@@ -130,7 +125,7 @@ namespace Db4objects.Drs.Tests
 			return CreateReferenceFor(obj);
 		}
 
-		public virtual IReplicationReference ProduceReferenceByUUID(Db4oUUID uuid, Type hintIgnored
+		public virtual IReplicationReference ProduceReferenceByUUID(IDrsUUID uuid, Type hintIgnored
 			)
 		{
 			if (uuid == null)
@@ -149,7 +144,7 @@ namespace Db4objects.Drs.Tests
 			 counterpartReference, IReplicationReference unused, string unused2)
 		{
 			//System.out.println("referenceNewObject: " + obj + "  UUID: " + counterpartReference.uuid());
-			Db4oUUID uuid = counterpartReference.Uuid();
+			IDrsUUID uuid = counterpartReference.Uuid();
 			long version = counterpartReference.Version();
 			if (GetObject(uuid) != null)
 			{
@@ -223,7 +218,7 @@ namespace Db4objects.Drs.Tests
 		// do nothing
 		public virtual void Delete(object obj)
 		{
-			Db4oUUID uuid = ProduceReference(obj, null, null).Uuid();
+			IDrsUUID uuid = ProduceReference(obj, null, null).Uuid();
 			_uuidsDeletedSinceLastReplication.Add(uuid);
 			Sharpen.Collections.Remove(_storedObjects, obj);
 		}
@@ -259,12 +254,12 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void StoreNew(object o)
 		{
-			_traverser.TraverseGraph(o, new _IVisitor_220(this));
+			_traverser.TraverseGraph(o, new _IVisitor_217(this));
 		}
 
-		private sealed class _IVisitor_220 : IVisitor
+		private sealed class _IVisitor_217 : IVisitor
 		{
-			public _IVisitor_220(TransientReplicationProvider _enclosing)
+			public _IVisitor_217(TransientReplicationProvider _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -288,11 +283,6 @@ namespace Db4objects.Drs.Tests
 		}
 
 		// --------------------- Interface TestableReplicationProviderInside ---------------------
-		public virtual bool SupportsCascadeDelete()
-		{
-			return false;
-		}
-
 		public virtual bool SupportsHybridCollection()
 		{
 			return true;
@@ -331,7 +321,7 @@ namespace Db4objects.Drs.Tests
 			return (TransientReplicationProvider.ObjectInfo)_storedObjects[candidate];
 		}
 
-		public virtual object GetObject(Db4oUUID uuid)
+		public virtual object GetObject(IDrsUUID uuid)
 		{
 			IEnumerator iter = StoredObjectsCollection(typeof(object)).GetEnumerator();
 			while (iter.MoveNext())
@@ -360,7 +350,7 @@ namespace Db4objects.Drs.Tests
 			Sharpen.Collections.Remove(_storedObjects, reference.Object());
 		}
 
-		private void Store(object obj, Db4oUUID uuid, long version)
+		private void Store(object obj, IDrsUUID uuid, long version)
 		{
 			if (obj == null)
 			{
@@ -377,8 +367,8 @@ namespace Db4objects.Drs.Tests
 			TransientReplicationProvider.ObjectInfo info = GetInfo(obj);
 			if (info == null)
 			{
-				Store(obj, new Db4oUUID(_timeStampIdGenerator.Generate(), _signature.GetSignature
-					()), vvv);
+				Store(obj, new DrsUUIDImpl(new Db4oUUID(_timeStampIdGenerator.Generate(), _signature
+					.GetSignature())), vvv);
 			}
 			else
 			{
@@ -396,7 +386,7 @@ namespace Db4objects.Drs.Tests
 			return GetInfo(candidate)._version > _lastReplicationVersion;
 		}
 
-		public virtual bool WasDeletedSinceLastReplication(Db4oUUID uuid)
+		public virtual bool WasDeletedSinceLastReplication(IDrsUUID uuid)
 		{
 			return _uuidsDeletedSinceLastReplication.Contains(uuid);
 		}
@@ -468,7 +458,7 @@ namespace Db4objects.Drs.Tests
 				return this._enclosing.GetInfo(this._object)._version;
 			}
 
-			public virtual Db4oUUID Uuid()
+			public virtual IDrsUUID Uuid()
 			{
 				return this._enclosing.GetInfo(this._object)._uuid;
 			}
@@ -478,9 +468,9 @@ namespace Db4objects.Drs.Tests
 				this._counterpart = obj;
 			}
 
-			public virtual void MarkForReplicating()
+			public virtual void MarkForReplicating(bool flag)
 			{
-				this._isMarkedForReplicating = true;
+				this._isMarkedForReplicating = flag;
 			}
 
 			public virtual bool IsMarkedForReplicating()
@@ -515,11 +505,11 @@ namespace Db4objects.Drs.Tests
 
 		private class ObjectInfo
 		{
-			public readonly Db4oUUID _uuid;
+			public readonly IDrsUUID _uuid;
 
 			public long _version;
 
-			public ObjectInfo(Db4oUUID uuid, long version)
+			public ObjectInfo(IDrsUUID uuid, long version)
 			{
 				_uuid = uuid;
 				_version = version;
@@ -550,7 +540,7 @@ namespace Db4objects.Drs.Tests
 			private readonly TransientReplicationProvider _enclosing;
 		}
 
-		public virtual void ReplicateDeletion(Db4oUUID uuid)
+		public virtual void ReplicateDeletion(IDrsUUID uuid)
 		{
 			Sharpen.Collections.Remove(_storedObjects, GetObject(uuid));
 		}
@@ -567,6 +557,19 @@ namespace Db4objects.Drs.Tests
 				(replicationReflector);
 			_traverser = new TransientReplicationProvider.MyTraverser(this, replicationReflector
 				, _collectionHandler);
+		}
+
+		public virtual IReplicationReference ProduceReference(object obj)
+		{
+			return ProduceReference(obj, null, null);
+		}
+
+		public virtual void RunIsolated(IBlock4 block)
+		{
+			lock (this)
+			{
+				block.Run();
+			}
 		}
 	}
 }

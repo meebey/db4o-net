@@ -1,24 +1,17 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Drs;
+using Db4objects.Drs.Foundation;
 using Db4objects.Drs.Inside;
 
 namespace Db4objects.Drs.Inside
 {
 	public interface IReplicationProviderInside : IReplicationProvider, ICollectionSource
+		, ISimpleObjectContainer
 	{
-		void Activate(object @object);
-
-		/// <summary>Activates the fields, e.g.</summary>
-		/// <remarks>
-		/// Activates the fields, e.g. Collections, arrays, of an object
-		/// <p/>
-		/// /** Clear the  ReplicationReference cache
-		/// </remarks>
+		/// <summary>Clear the  ReplicationReference cache</summary>
 		void ClearAllReferences();
 
 		void CommitReplicationTransaction(long raisedDatabaseVersion);
@@ -27,8 +20,6 @@ namespace Db4objects.Drs.Inside
 		/// <remarks>Destroys this provider and frees up resources.</remarks>
 		void Destroy();
 
-		IObjectSet GetStoredObjects(Type type);
-
 		/// <summary>Returns the current transaction serial number.</summary>
 		/// <remarks>Returns the current transaction serial number.</remarks>
 		/// <returns>the current transaction serial number</returns>
@@ -36,19 +27,27 @@ namespace Db4objects.Drs.Inside
 
 		long GetLastReplicationVersion();
 
-		object GetMonitor();
+		void RunIsolated(IBlock4 block);
 
 		string GetName();
 
 		IReadonlyReplicationProviderSignature GetSignature();
 
-		/// <summary>Returns the ReplicationReference of an object</summary>
-		/// <param name="obj">object queried</param>
-		/// <param name="referencingObj"></param>
-		/// <param name="fieldName"></param>
-		/// <returns>null if the object is not owned by this ReplicationProvider.</returns>
-		IReplicationReference ProduceReference(object obj, object referencingObj, string 
-			fieldName);
+		IReplicationReference ProduceReference(object obj);
+
+		/// <summary>
+		/// Collection version of getting a ReplicationReference:
+		/// If the object is not a first class object, we need the
+		/// parent object.
+		/// </summary>
+		/// <remarks>
+		/// Collection version of getting a ReplicationReference:
+		/// If the object is not a first class object, we need the
+		/// parent object.
+		/// </remarks>
+		/// <returns>null, if there is no reference for this object.</returns>
+		IReplicationReference ProduceReference(object obj, object parentObject, string fieldNameOnParent
+			);
 
 		/// <summary>Returns the ReplicationReference of an object by specifying the uuid of the object.
 		/// 	</summary>
@@ -57,7 +56,7 @@ namespace Db4objects.Drs.Inside
 		/// <param name="uuid">the uuid of the object</param>
 		/// <param name="hint">the type of the object</param>
 		/// <returns>the ReplicationReference or null if the reference cannot be found</returns>
-		IReplicationReference ProduceReferenceByUUID(Db4oUUID uuid, Type hint);
+		IReplicationReference ProduceReferenceByUUID(IDrsUUID uuid, Type hint);
 
 		IReplicationReference ReferenceNewObject(object obj, IReplicationReference counterpartReference
 			, IReplicationReference referencingObjRef, string fieldName);
@@ -94,6 +93,6 @@ namespace Db4objects.Drs.Inside
 
 		bool WasModifiedSinceLastReplication(IReplicationReference reference);
 
-		void ReplicateDeletion(Db4oUUID uuid);
+		void ReplicateDeletion(IDrsUUID uuid);
 	}
 }

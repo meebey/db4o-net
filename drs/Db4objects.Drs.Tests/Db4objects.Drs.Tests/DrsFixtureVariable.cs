@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using Db4oUnit.Fixtures;
 using Db4objects.Db4o.Foundation;
@@ -10,12 +10,12 @@ namespace Db4objects.Drs.Tests
 	{
 		private static readonly FixtureVariable _variable = new FixtureVariable("drs");
 
-		public static DrsFixturePair Value()
+		public static DrsFixture Value()
 		{
-			return (DrsFixturePair)_variable.Value;
+			return (DrsFixture)_variable.Value;
 		}
 
-		public static object With(DrsFixturePair pair, IClosure4 closure)
+		public static object With(DrsFixture pair, IClosure4 closure)
 		{
 			return _variable.With(pair, closure);
 		}

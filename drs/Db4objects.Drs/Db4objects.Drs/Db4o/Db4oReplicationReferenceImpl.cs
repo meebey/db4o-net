@@ -1,10 +1,11 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Replication;
+using Db4objects.Drs.Foundation;
 using Db4objects.Drs.Inside;
 
 namespace Db4objects.Drs.Db4o
@@ -68,14 +69,14 @@ namespace Db4objects.Drs.Db4o
 			Hc_traverse(visitor);
 		}
 
-		public virtual Db4oUUID Uuid()
+		public virtual IDrsUUID Uuid()
 		{
 			Db4oDatabase db = SignaturePart();
 			if (db == null)
 			{
 				return null;
 			}
-			return new Db4oUUID(LongPart(), db.GetSignature());
+			return new DrsUUIDImpl(new Db4oUUID(LongPart(), db.GetSignature()));
 		}
 
 		public virtual long Version()
@@ -98,9 +99,9 @@ namespace Db4objects.Drs.Db4o
 			_counterPart = obj;
 		}
 
-		public virtual void MarkForReplicating()
+		public virtual void MarkForReplicating(bool flag)
 		{
-			_markedForReplicating = true;
+			_markedForReplicating = flag;
 		}
 
 		public virtual bool IsMarkedForReplicating()
@@ -149,24 +150,19 @@ namespace Db4objects.Drs.Db4o
 			{
 				return true;
 			}
-			if (o == null || o.GetType().BaseType != o.GetType().BaseType)
+			if (o == null || o.GetType() != GetType())
 			{
 				return false;
 			}
-			IReplicationReference that = (IReplicationReference)o;
-			if (Version() != that.Version())
-			{
-				return false;
-			}
-			return Uuid().Equals(that.Uuid());
+			Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl other = (Db4objects.Drs.Db4o.Db4oReplicationReferenceImpl
+				)o;
+			return Version() == other.Version() && Uuid().Equals(other.Uuid());
 		}
 
 		public sealed override int GetHashCode()
 		{
-			int result;
-			result = Uuid().GetHashCode();
-			result = 29 * result + (int)(Version() ^ ((Version()) >> (32 & 0x1f)));
-			return result;
+			return 29 * Uuid().GetHashCode() + (int)(Version() ^ ((Version()) >> (32 & 0x1f))
+				);
 		}
 	}
 }

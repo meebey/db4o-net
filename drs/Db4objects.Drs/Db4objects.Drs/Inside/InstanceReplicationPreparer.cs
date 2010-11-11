@@ -1,10 +1,10 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
-using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Drs;
+using Db4objects.Drs.Foundation;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Inside.Traversal;
 
@@ -24,7 +24,7 @@ namespace Db4objects.Drs.Inside
 
 		private readonly long _lastReplicationVersion;
 
-		private readonly Hashtable4 _uuidsProcessedInSession;
+		private readonly HashSet4 _uuidsProcessedInSession;
 
 		private readonly ITraverser _traverser;
 
@@ -40,14 +40,13 @@ namespace Db4objects.Drs.Inside
 		/// Purpose: handle circular references
 		/// TODO Big Refactoring: Evolve this to handle ALL reference logic (!) and remove it from the providers.
 		/// </remarks>
-		private readonly IdentitySet4 _objectsPreparedToReplicate = new IdentitySet4(1000
-			);
+		private readonly IdentitySet4 _objectsPreparedToReplicate = new IdentitySet4(100);
 
 		/// <summary>
 		/// key = object originated from one provider
 		/// value = the counterpart ReplicationReference of the original object
 		/// </summary>
-		private Hashtable4 _counterpartRefsByOriginal = new Hashtable4(10000);
+		private IMap4 _counterpartRefsByOriginal = new IdentityHashtable4(100);
 
 		private readonly ReplicationEventImpl _event;
 
@@ -63,7 +62,7 @@ namespace Db4objects.Drs.Inside
 
 		internal InstanceReplicationPreparer(IReplicationProviderInside providerA, IReplicationProviderInside
 			 providerB, IReplicationProvider directionTo, IReplicationEventListener listener
-			, bool isReplicatingOnlyDeletions, long lastReplicationVersion, Hashtable4 uuidsProcessedInSession
+			, bool isReplicatingOnlyDeletions, long lastReplicationVersion, HashSet4 uuidsProcessedInSession
 			, ITraverser traverser, ReplicationReflector reflector, Db4objects.Drs.Inside.ICollectionHandler
 			 collectionHandler)
 		{
@@ -105,6 +104,7 @@ namespace Db4objects.Drs.Inside
 			 fieldName)
 		{
 			//TODO Optimization: keep track of the peer we are traversing to avoid having to look in both.
+			Logger4Support.LogIdentity(obj);
 			_obj = obj;
 			_referencingObject = referencingObject;
 			_fieldName = fieldName;
@@ -127,7 +127,7 @@ namespace Db4objects.Drs.Inside
 			IReplicationProviderInside owner = refA == null ? _providerB : _providerA;
 			IReplicationReference ownerRef = refA == null ? refB : refA;
 			IReplicationProviderInside other = Other(owner);
-			Db4oUUID uuid = ownerRef.Uuid();
+			IDrsUUID uuid = ownerRef.Uuid();
 			IReplicationReference otherRef = other.ProduceReferenceByUUID(uuid, _obj.GetType(
 				));
 			if (refA == null)
@@ -145,6 +145,12 @@ namespace Db4objects.Drs.Inside
 				//Object is only present in one ReplicationProvider. Missing in the other. Could have been deleted or never replicated.
 				if (WasProcessed(uuid))
 				{
+					IReplicationReference otherProcessedRef = other.ProduceReferenceByUUID(uuid, _obj
+						.GetType());
+					if (otherProcessedRef != null)
+					{
+						ownerRef.SetCounterpart(otherProcessedRef.Object());
+					}
 					return false;
 				}
 				MarkAsProcessed(uuid);
@@ -171,6 +177,7 @@ namespace Db4objects.Drs.Inside
 				return false;
 			}
 			ownerRef.SetCounterpart(otherRef.Object());
+			otherRef.SetCounterpart(ownerRef.Object());
 			if (WasProcessed(uuid))
 			{
 				return false;
@@ -273,36 +280,35 @@ namespace Db4objects.Drs.Inside
 			if (prevailing != _obj)
 			{
 				otherRef.SetCounterpart(_obj);
-				otherRef.MarkForReplicating();
+				otherRef.MarkForReplicating(true);
 				MarkAsNotProcessed(uuid);
 				_traverser.ExtendTraversalTo(prevailing);
 			}
 			else
 			{
 				//Now we start traversing objects on the other peer! Is that cool or what? ;)
-				ownerRef.MarkForReplicating();
+				ownerRef.MarkForReplicating(true);
 			}
 			return !_event._actionShouldStopTraversal;
 		}
 
-		private void MarkAsNotProcessed(Db4oUUID uuid)
+		private void MarkAsNotProcessed(IDrsUUID uuid)
 		{
 			_uuidsProcessedInSession.Remove(uuid);
 		}
 
-		private void MarkAsProcessed(Db4oUUID uuid)
+		private void MarkAsProcessed(IDrsUUID uuid)
 		{
-			if (_uuidsProcessedInSession.Get(uuid) != null)
+			if (_uuidsProcessedInSession.Contains(uuid))
 			{
 				throw new Exception("illegal state");
 			}
-			_uuidsProcessedInSession.Put(uuid, uuid);
+			_uuidsProcessedInSession.Add(uuid);
 		}
 
-		//Using this Hashtable4 as a Set.
-		private bool WasProcessed(Db4oUUID uuid)
+		private bool WasProcessed(IDrsUUID uuid)
 		{
-			return _uuidsProcessedInSession.Get(uuid) != null;
+			return _uuidsProcessedInSession.Contains(uuid);
 		}
 
 		private IReplicationProviderInside Other(IReplicationProviderInside peer)
@@ -410,24 +416,28 @@ namespace Db4objects.Drs.Inside
 					_stateInA.SetAll(null, false, false, -1);
 					_stateInB.SetAll(obj, true, false, -1);
 				}
-				_listener.OnReplicate(_event);
-				if (_event._actionWasChosen)
+				if (_listener != null)
 				{
-					if (_event._actionChosenState == null)
+					_listener.OnReplicate(_event);
+					if (_event._actionWasChosen)
 					{
-						return false;
-					}
-					if (_event._actionChosenState.GetObject() != obj)
-					{
-						return false;
+						if (_event._actionChosenState == null)
+						{
+							return false;
+						}
+						if (_event._actionChosenState.GetObject() != obj)
+						{
+							return false;
+						}
 					}
 				}
 			}
 			object counterpart = EmptyClone(owner, obj);
 			ownerRef.SetCounterpart(counterpart);
-			ownerRef.MarkForReplicating();
+			ownerRef.MarkForReplicating(true);
 			IReplicationReference otherRef = other.ReferenceNewObject(counterpart, ownerRef, 
 				GetCounterpartRef(referencingObject), fieldName);
+			otherRef.SetCounterpart(obj);
 			PutCounterpartRef(obj, otherRef);
 			if (_event._actionShouldStopTraversal)
 			{

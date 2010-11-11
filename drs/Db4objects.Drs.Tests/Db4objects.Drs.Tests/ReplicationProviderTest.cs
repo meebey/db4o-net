@@ -1,11 +1,13 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Ext;
+using Db4objects.Drs.Foundation;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -17,7 +19,6 @@ namespace Db4objects.Drs.Tests
 
 		private IReadonlyReplicationProviderSignature ASignature;
 
-		//import com.db4o.test.Test;
 		public virtual void Test()
 		{
 			BSignatureBytes = B().Provider().GetSignature().GetSignature();
@@ -35,22 +36,23 @@ namespace Db4objects.Drs.Tests
 		protected virtual void TstDeletion()
 		{
 			A().Provider().StoreNew(new Pilot("Pilot1", 42));
-			A().Provider().StoreNew(new Pilot("Pilot2", 43));
+			Pilot o = new Pilot("Pilot2", 43);
+			A().Provider().StoreNew(o);
 			A().Provider().Commit();
 			A().Provider().StoreNew(new Pilot("Pilot3", 44));
 			A().Provider().Delete(FindPilot("Pilot1"));
 			Car car = new Car("Car1");
-			car._pilot = FindPilot("Pilot2");
+			car.SetPilot(FindPilot("Pilot2"));
 			A().Provider().StoreNew(car);
 			A().Provider().Commit();
 			StartReplication();
-			Db4oUUID uuidCar1 = Uuid(FindCar("Car1"));
+			IDrsUUID uuidCar1 = Uuid(FindCar("Car1"));
 			Assert.IsNotNull(uuidCar1);
 			A().Provider().ReplicateDeletion(uuidCar1);
 			CommitReplication();
 			Assert.IsNull(FindCar("Car1"));
 			StartReplication();
-			Db4oUUID uuidPilot2 = Uuid(FindPilot("Pilot2"));
+			IDrsUUID uuidPilot2 = Uuid(FindPilot("Pilot2"));
 			Assert.IsNotNull(uuidPilot2);
 			A().Provider().ReplicateDeletion(uuidPilot2);
 			CommitReplication();
@@ -89,7 +91,7 @@ namespace Db4objects.Drs.Tests
 			while (pilots.MoveNext())
 			{
 				Pilot candidate = (Pilot)pilots.Current;
-				if (candidate._name.Equals(name))
+				if (candidate.Name().Equals(name))
 				{
 					return candidate;
 				}
@@ -99,7 +101,12 @@ namespace Db4objects.Drs.Tests
 
 		private SPCChild GetOneChildFromA()
 		{
-			IObjectSet storedObjects = A().Provider().GetStoredObjects(typeof(SPCChild));
+			return GetOneChild(A());
+		}
+
+		private SPCChild GetOneChild(IDrsProviderFixture fixture)
+		{
+			IObjectSet storedObjects = fixture.Provider().GetStoredObjects(typeof(SPCChild));
 			Assert.AreEqual(1, storedObjects.Count);
 			IEnumerator iterator = storedObjects.GetEnumerator();
 			Assert.IsTrue(iterator.MoveNext());
@@ -131,7 +138,7 @@ namespace Db4objects.Drs.Tests
 			SPCChild reloaded3 = GetOneChildFromA();
 			long newVer = A().Provider().ProduceReference(reloaded3, null, null).Version();
 			CommitReplication();
-			Assert.IsTrue(newVer > oldVer);
+			Assert.IsGreater(oldVer, newVer);
 		}
 
 		private void TstObjectsChangedSinceLastReplication()
@@ -144,16 +151,16 @@ namespace Db4objects.Drs.Tests
 			A().Provider().StoreNew(object3);
 			A().Provider().Commit();
 			StartReplication();
-			int i = A().Provider().ObjectsChangedSinceLastReplication().Count;
-			Assert.AreEqual(i, 3);
+			IObjectSet changed = A().Provider().ObjectsChangedSinceLastReplication();
+			Assert.AreEqual(3, changed.Count);
 			IObjectSet os = A().Provider().ObjectsChangedSinceLastReplication(typeof(Pilot));
-			Assert.AreEqual(os.Count, 2);
+			Assert.AreEqual(2, os.Count);
 			IEnumerator pilots = os.GetEnumerator();
 			//		Assert.isTrue(pilots.contains(findPilot("John Cleese")));
 			//	Assert.isTrue(pilots.contains(findPilot("Terry Gilliam")));
 			IEnumerator cars = A().Provider().ObjectsChangedSinceLastReplication(typeof(Car))
 				.GetEnumerator();
-			Assert.AreEqual(((Car)Next(cars)).GetModel(), "Volvo");
+			Assert.AreEqual("Volvo", ((Car)Next(cars)).GetModel());
 			Assert.IsFalse(cars.MoveNext());
 			CommitReplication();
 			StartReplication();
@@ -162,21 +169,21 @@ namespace Db4objects.Drs.Tests
 			CommitReplication();
 			Pilot pilot = (Pilot)Next(A().Provider().GetStoredObjects(typeof(Pilot)).GetEnumerator
 				());
-			pilot._name = "Terry Jones";
+			pilot.SetName("Terry Jones");
 			Car car = (Car)Next(A().Provider().GetStoredObjects(typeof(Car)).GetEnumerator());
 			car.SetModel("McLaren");
 			A().Provider().Update(pilot);
 			A().Provider().Update(car);
 			A().Provider().Commit();
 			StartReplication();
-			Assert.AreEqual(A().Provider().ObjectsChangedSinceLastReplication().Count, 2);
+			Assert.AreEqual(2, A().Provider().ObjectsChangedSinceLastReplication().Count);
 			pilots = A().Provider().ObjectsChangedSinceLastReplication(typeof(Pilot)).GetEnumerator
 				();
-			Assert.AreEqual(((Pilot)Next(pilots))._name, "Terry Jones");
+			Assert.AreEqual("Terry Jones", ((Pilot)Next(pilots)).Name());
 			Assert.IsFalse(pilots.MoveNext());
 			cars = A().Provider().ObjectsChangedSinceLastReplication(typeof(Car)).GetEnumerator
 				();
-			Assert.AreEqual(((Car)Next(cars)).GetModel(), "McLaren");
+			Assert.AreEqual("McLaren", ((Car)Next(cars)).GetModel());
 			Assert.IsFalse(cars.MoveNext());
 			CommitReplication();
 			A().Provider().DeleteAllInstances(typeof(Pilot));
@@ -192,21 +199,22 @@ namespace Db4objects.Drs.Tests
 
 		private void TstReferences()
 		{
-			A().Provider().StoreNew(new Pilot("tst References", 42));
+			Pilot pilot = new Pilot("tst References", 42);
+			A().Provider().StoreNew(pilot);
 			A().Provider().Commit();
 			StartReplication();
 			Pilot object1 = (Pilot)Next(A().Provider().GetStoredObjects(typeof(Pilot)).GetEnumerator
 				());
 			IReplicationReference reference = A().Provider().ProduceReference(object1, null, 
 				null);
-			Assert.AreEqual(reference.Object(), object1);
-			Db4oUUID uuid = reference.Uuid();
+			Assert.AreEqual(object1, reference.Object());
+			IDrsUUID uuid = reference.Uuid();
 			IReplicationReference ref2 = A().Provider().ProduceReferenceByUUID(uuid, typeof(Pilot
 				));
-			Assert.AreEqual(ref2, reference);
+			Assert.AreEqual(reference, ref2);
 			A().Provider().ClearAllReferences();
-			Db4oUUID db4oUUID = A().Provider().ProduceReference(object1, null, null).Uuid();
-			Assert.IsTrue(db4oUUID.Equals(uuid));
+			IDrsUUID db4oUUID = A().Provider().ProduceReference(object1, null, null).Uuid();
+			Assert.AreEqual(uuid, db4oUUID);
 			CommitReplication();
 			A().Provider().DeleteAllInstances(typeof(Pilot));
 			A().Provider().Commit();
@@ -224,7 +232,7 @@ namespace Db4objects.Drs.Tests
 			}
 			StartReplication();
 			Pilot object1 = new Pilot("Albert Kwan", 25);
-			Db4oUUID uuid = new Db4oUUID(5678, BSignatureBytes);
+			IDrsUUID uuid = new DrsUUIDImpl(new Db4oUUID(5678, BSignatureBytes));
 			IReplicationReference @ref = new ReplicationReferenceImpl(object1, uuid, 1);
 			A().Provider().ReferenceNewObject(object1, @ref, null, null);
 			A().Provider().StoreReplica(object1);
@@ -248,15 +256,15 @@ namespace Db4objects.Drs.Tests
 		{
 			StartReplication();
 			Pilot object1 = new Pilot("John Cleese", 42);
-			Db4oUUID uuid = new Db4oUUID(1234, BSignatureBytes);
+			IDrsUUID uuid = new DrsUUIDImpl(new Db4oUUID(15, BSignatureBytes));
 			IReplicationReference @ref = new ReplicationReferenceImpl("ignoredSinceInOtherProvider"
 				, uuid, 1);
 			A().Provider().ReferenceNewObject(object1, @ref, null, null);
 			A().Provider().StoreReplica(object1);
 			IReplicationReference reference = A().Provider().ProduceReferenceByUUID(uuid, object1
 				.GetType());
-			Assert.AreEqual(A().Provider().ProduceReference(object1, null, null), reference);
-			Assert.AreEqual(reference.Object(), object1);
+			Assert.AreEqual(reference, A().Provider().ProduceReference(object1, null, null));
+			Assert.AreEqual(object1, reference.Object());
 			CommitReplication();
 			StartReplication();
 			IEnumerator storedObjects = A().Provider().GetStoredObjects(typeof(Pilot)).GetEnumerator
@@ -264,20 +272,20 @@ namespace Db4objects.Drs.Tests
 			Pilot reloaded = (Pilot)Next(storedObjects);
 			Assert.IsFalse(storedObjects.MoveNext());
 			reference = A().Provider().ProduceReferenceByUUID(uuid, object1.GetType());
-			Assert.AreEqual(A().Provider().ProduceReference(reloaded, null, null), reference);
-			reloaded._name = "i am updated";
+			Assert.AreEqual(reference, A().Provider().ProduceReference(reloaded, null, null));
+			reloaded.SetName("i am updated");
 			A().Provider().StoreReplica(reloaded);
 			A().Provider().ClearAllReferences();
 			CommitReplication();
 			StartReplication();
 			reference = A().Provider().ProduceReferenceByUUID(uuid, reloaded.GetType());
-			Assert.AreEqual(((Pilot)reference.Object())._name, "i am updated");
+			Assert.AreEqual("i am updated", ((Pilot)reference.Object()).Name());
 			CommitReplication();
 			A().Provider().DeleteAllInstances(typeof(Pilot));
 			A().Provider().Commit();
 		}
 
-		private Db4oUUID Uuid(object obj)
+		private IDrsUUID Uuid(object obj)
 		{
 			return A().Provider().ProduceReference(obj, null, null).Uuid();
 		}

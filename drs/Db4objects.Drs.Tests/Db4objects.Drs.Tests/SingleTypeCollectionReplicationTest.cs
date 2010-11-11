@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -10,46 +10,117 @@ using Db4objects.Db4o.TA;
 using Db4objects.Drs.Db4o;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 using Sharpen.Util;
 
 namespace Db4objects.Drs.Tests
 {
 	public class SingleTypeCollectionReplicationTest : FixtureBasedTestSuite
 	{
-		private static readonly FixtureVariable TransparentActivationFixture = new FixtureVariable
-			("TransparentActivation");
+		private static readonly FixtureVariable TransparentActivationFixture = FixtureVariable
+			.NewInstance("Transparent Activation");
 
 		public override IFixtureProvider[] FixtureProviders()
 		{
-			return new IFixtureProvider[] { new SubjectFixtureProvider(new object[] { Collection1
-				(), Collection2(), Collection3() }), new SimpleFixtureProvider(TransparentActivationFixture
-				, new object[] { true, false }) };
+			return new IFixtureProvider[] { new SubjectFixtureProvider(new SingleTypeCollectionReplicationTest.CollectionHolderFactory
+				[] { Collection1(), Collection2(), Collection3() }), new SimpleFixtureProvider(TransparentActivationFixture
+				, (object[])LabeledObject.ForObjects(new object[] { false, true })) };
 		}
 
-		private object Collection1()
+		public abstract class CollectionHolderFactory : ILabeled
 		{
-			return Initialize(new CollectionHolder(new Hashtable(), new HashSet(), new ArrayList
-				()));
+			public abstract CollectionHolder NewCollectionHolder();
+
+			public abstract string Label();
 		}
 
-		private object Collection2()
+		private SingleTypeCollectionReplicationTest.CollectionHolderFactory Collection1()
 		{
-			return Initialize(new CollectionHolder(new Dictionary<string, string>(), new HashSet
-				(), new List<string>()));
+			return new _CollectionHolderFactory_56(this);
 		}
 
-		private object Collection3()
+		private sealed class _CollectionHolderFactory_56 : SingleTypeCollectionReplicationTest.CollectionHolderFactory
 		{
-			return Initialize(new CollectionHolder(new SortedList<string, string>(), new HashSet
-				(), new ArrayList()));
+			public _CollectionHolderFactory_56(SingleTypeCollectionReplicationTest _enclosing
+				)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public override CollectionHolder NewCollectionHolder()
+			{
+				return this._enclosing.Initialize(new CollectionHolder("Hashtable", new Hashtable
+					(), new HashSet(), new ArrayList()));
+			}
+
+			public override string Label()
+			{
+				return "Hashtable";
+			}
+
+			private readonly SingleTypeCollectionReplicationTest _enclosing;
+		}
+
+		private SingleTypeCollectionReplicationTest.CollectionHolderFactory Collection2()
+		{
+			return new _CollectionHolderFactory_74(this);
+		}
+
+		private sealed class _CollectionHolderFactory_74 : SingleTypeCollectionReplicationTest.CollectionHolderFactory
+		{
+			public _CollectionHolderFactory_74(SingleTypeCollectionReplicationTest _enclosing
+				)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public override CollectionHolder NewCollectionHolder()
+			{
+				return this._enclosing.Initialize(new CollectionHolder("HashMap", new Dictionary<
+					string, string>(), new HashSet(), new List<string>()));
+			}
+
+			public override string Label()
+			{
+				return "HashMap";
+			}
+
+			private readonly SingleTypeCollectionReplicationTest _enclosing;
+		}
+
+		private SingleTypeCollectionReplicationTest.CollectionHolderFactory Collection3()
+		{
+			return new _CollectionHolderFactory_92(this);
+		}
+
+		private sealed class _CollectionHolderFactory_92 : SingleTypeCollectionReplicationTest.CollectionHolderFactory
+		{
+			public _CollectionHolderFactory_92(SingleTypeCollectionReplicationTest _enclosing
+				)
+			{
+				this._enclosing = _enclosing;
+			}
+
+			public override CollectionHolder NewCollectionHolder()
+			{
+				return this._enclosing.Initialize(new CollectionHolder("TreeMap", new SortedList<
+					string, string>(), new HashSet(), new ArrayList()));
+			}
+
+			public override string Label()
+			{
+				return "TreeMap";
+			}
+
+			private readonly SingleTypeCollectionReplicationTest _enclosing;
 		}
 
 		private CollectionHolder Initialize(CollectionHolder h1)
 		{
-			h1.map["1"] = "one";
-			h1.map["2"] = "two";
-			h1.set.Add("two");
-			h1.list.Add("three");
+			h1.Map()["1"] = "one";
+			h1.Map()["2"] = "two";
+			h1.Set().Add("two");
+			h1.List().Add("three");
 			return h1;
 		}
 
@@ -62,7 +133,9 @@ namespace Db4objects.Drs.Tests
 		{
 			protected override void Configure(IConfiguration config)
 			{
-				if ((bool)TransparentActivationFixture.Value)
+				LabeledObject transparentActivation = (LabeledObject)TransparentActivationFixture
+					.Value;
+				if ((bool)transparentActivation.Value())
 				{
 					config.Add(new TransparentActivationSupport());
 				}
@@ -77,24 +150,28 @@ namespace Db4objects.Drs.Tests
 					();
 				Assert.IsTrue(it.MoveNext());
 				CollectionHolder replica = (CollectionHolder)it.Current;
-				AssertSameClassIfDb4o(h1.map, replica.map);
-				foreach (object key in h1.map.Keys)
+				B().Provider().Activate(replica);
+				AssertSameClassIfDb4o(h1.Map(), replica.Map());
+				foreach (object key in h1.Map().Keys)
 				{
-					Assert.AreEqual(h1.map[key], replica.map[key]);
+					B().Provider().Activate(replica.Map());
+					Assert.AreEqual(h1.Map()[key], replica.Map()[key]);
 				}
-				AssertSameClassIfDb4o(h1.set, replica.set);
-				foreach (object element in h1.set)
+				AssertSameClassIfDb4o(h1.Set(), replica.Set());
+				foreach (object element in h1.Set())
 				{
-					Assert.IsTrue(replica.set.Contains(element));
+					Assert.IsTrue(replica.Set().Contains(element));
 				}
-				AssertSameClassIfDb4o(h1.list, replica.list);
-				Assert.AreEqual(h1.list.Count, replica.list.Count);
-				CollectionAssert.AreEqual(h1.list, replica.list);
+				AssertSameClassIfDb4o(h1.List(), replica.List());
+				Assert.AreEqual(h1.List().Count, replica.List().Count);
+				CollectionAssert.AreEqual(h1.List(), replica.List());
 			}
 
 			private CollectionHolder Subject()
 			{
-				return (CollectionHolder)SubjectFixtureProvider.Value();
+				SingleTypeCollectionReplicationTest.CollectionHolderFactory factory = (SingleTypeCollectionReplicationTest.CollectionHolderFactory
+					)SubjectFixtureProvider.Value();
+				return factory.NewCollectionHolder();
 			}
 
 			private void AssertSameClassIfDb4o(object expectedInstance, object actualInstance
@@ -111,7 +188,7 @@ namespace Db4objects.Drs.Tests
 				Assert.AreSame(expectedInstance.GetType(), actualInstance.GetType());
 			}
 
-			private bool IsDb4oProvider(IDrsFixture fixture)
+			private bool IsDb4oProvider(IDrsProviderFixture fixture)
 			{
 				return fixture.Provider() is IDb4oReplicationProvider;
 			}

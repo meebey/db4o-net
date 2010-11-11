@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using System.Collections;
@@ -31,7 +31,7 @@ namespace Db4objects.Drs.Inside
 
 		private long _lastReplicationVersion;
 
-		private Hashtable4 _processedUuids;
+		private HashSet4 _processedUuids = new HashSet4(Size);
 
 		private bool _isReplicatingOnlyDeletions;
 
@@ -41,30 +41,50 @@ namespace Db4objects.Drs.Inside
 		}
 
 		public GenericReplicationSession(IReplicationProvider providerA, IReplicationProvider
-			 providerB, IReplicationEventListener listener)
+			 providerB, IReplicationEventListener listener) : this(providerA, providerB, listener
+			, null)
+		{
+		}
+
+		public GenericReplicationSession(IReplicationProvider providerA, IReplicationProvider
+			 providerB, IReplicationEventListener listener, IReflector reflector)
 		{
 			//null means bidirectional replication.
-			_reflector = new ReplicationReflector(providerA, providerB);
+			_reflector = new ReplicationReflector(providerA, providerB, reflector);
 			_collectionHandler = new CollectionHandlerImpl(_reflector);
 			_traverser = new GenericTraverser(_reflector, _collectionHandler);
 			_providerA = (IReplicationProviderInside)providerA;
 			_providerB = (IReplicationProviderInside)providerB;
 			_listener = listener;
-			lock (_providerA.GetMonitor())
+			RunIsolated(new _IBlock4_73(this));
+		}
+
+		private sealed class _IBlock4_73 : IBlock4
+		{
+			public _IBlock4_73(GenericReplicationSession _enclosing)
 			{
-				lock (_providerB.GetMonitor())
-				{
-					_providerA.StartReplicationTransaction(_providerB.GetSignature());
-					_providerB.StartReplicationTransaction(_providerA.GetSignature());
-					if (_providerA.GetLastReplicationVersion() != _providerB.GetLastReplicationVersion
-						())
-					{
-						throw new Exception("Version numbers must be the same");
-					}
-					_lastReplicationVersion = _providerA.GetLastReplicationVersion();
-				}
+				this._enclosing = _enclosing;
 			}
-			ResetProcessedUuids();
+
+			public void Run()
+			{
+				this._enclosing._providerA.StartReplicationTransaction(this._enclosing._providerB
+					.GetSignature());
+				this._enclosing._providerB.StartReplicationTransaction(this._enclosing._providerA
+					.GetSignature());
+				if (this._enclosing._providerA.GetLastReplicationVersion() != this._enclosing._providerB
+					.GetLastReplicationVersion())
+				{
+					throw new Exception("Version numbers must be the same but (" + this._enclosing._providerA
+						.GetName() + ":" + this._enclosing._providerA.GetLastReplicationVersion() + ")  ("
+						 + this._enclosing._providerB.GetName() + ":" + this._enclosing._providerB.GetLastReplicationVersion
+						() + ")");
+				}
+				this._enclosing._lastReplicationVersion = this._enclosing._providerA.GetLastReplicationVersion
+					();
+			}
+
+			private readonly GenericReplicationSession _enclosing;
 		}
 
 		public void CheckConflict(object root)
@@ -89,21 +109,68 @@ namespace Db4objects.Drs.Inside
 			_processedUuids = null;
 		}
 
+		private void RunIsolated(IBlock4 block)
+		{
+			_providerA.RunIsolated(new _IBlock4_108(this, block));
+		}
+
+		private sealed class _IBlock4_108 : IBlock4
+		{
+			public _IBlock4_108(GenericReplicationSession _enclosing, IBlock4 block)
+			{
+				this._enclosing = _enclosing;
+				this.block = block;
+			}
+
+			public void Run()
+			{
+				this._enclosing._providerB.RunIsolated(new _IBlock4_110(block));
+			}
+
+			private sealed class _IBlock4_110 : IBlock4
+			{
+				public _IBlock4_110(IBlock4 block)
+				{
+					this.block = block;
+				}
+
+				public void Run()
+				{
+					block.Run();
+				}
+
+				private readonly IBlock4 block;
+			}
+
+			private readonly GenericReplicationSession _enclosing;
+
+			private readonly IBlock4 block;
+		}
+
 		public void Commit()
 		{
-			lock (_providerA.GetMonitor())
+			RunIsolated(new _IBlock4_120(this));
+		}
+
+		private sealed class _IBlock4_120 : IBlock4
+		{
+			public _IBlock4_120(GenericReplicationSession _enclosing)
 			{
-				lock (_providerB.GetMonitor())
-				{
-					long maxVersion = _providerA.GetCurrentVersion() > _providerB.GetCurrentVersion()
-						 ? _providerA.GetCurrentVersion() : _providerB.GetCurrentVersion();
-					_providerA.SyncVersionWithPeer(maxVersion);
-					_providerB.SyncVersionWithPeer(maxVersion);
-					maxVersion++;
-					_providerA.CommitReplicationTransaction(maxVersion);
-					_providerB.CommitReplicationTransaction(maxVersion);
-				}
+				this._enclosing = _enclosing;
 			}
+
+			public void Run()
+			{
+				long maxVersion = Math.Max(this._enclosing._providerA.GetCurrentVersion(), this._enclosing
+					._providerB.GetCurrentVersion());
+				this._enclosing._providerA.SyncVersionWithPeer(maxVersion);
+				this._enclosing._providerB.SyncVersionWithPeer(maxVersion);
+				maxVersion++;
+				this._enclosing._providerA.CommitReplicationTransaction(maxVersion);
+				this._enclosing._providerB.CommitReplicationTransaction(maxVersion);
+			}
+
+			private readonly GenericReplicationSession _enclosing;
 		}
 
 		public IReplicationProvider ProviderA()
@@ -121,8 +188,8 @@ namespace Db4objects.Drs.Inside
 			try
 			{
 				PrepareGraphToBeReplicated(root);
-				CopyStateAcross(_providerA);
-				CopyStateAcross(_providerB);
+				CopyStateAcross(_providerA, _providerB);
+				CopyStateAcross(_providerB, _providerA);
 				StoreChangedObjectsIn(_providerA);
 				StoreChangedObjectsIn(_providerB);
 			}
@@ -158,6 +225,7 @@ namespace Db4objects.Drs.Inside
 
 		public void Rollback()
 		{
+			// TODO: Write tests for rollback.
 			_providerA.RollbackReplication();
 			_providerB.RollbackReplication();
 		}
@@ -183,7 +251,7 @@ namespace Db4objects.Drs.Inside
 		}
 
 		private object ArrayClone(object original, IReflectClass claxx, IReplicationProviderInside
-			 sourceProvider)
+			 sourceProvider, IReplicationProviderInside targetProvider)
 		{
 			IReflectClass componentType = _reflector.GetComponentType(claxx);
 			int[] dimensions = _reflector.ArrayDimensions(original);
@@ -192,73 +260,81 @@ namespace Db4objects.Drs.Inside
 			//TODO Optimize: Copy the structure without flattening. Do this in ReflectArray.
 			if (!(_reflector.IsValueType(claxx) || _reflector.IsValueType(componentType)))
 			{
-				ReplaceWithCounterparts(flatContents, sourceProvider);
+				ReplaceWithCounterparts(flatContents, sourceProvider, targetProvider);
 			}
 			_reflector.ArrayShape(flatContents, 0, result, dimensions, 0);
 			return result;
 		}
 
 		private void CopyFieldValuesAcross(object src, object dest, IReflectClass claxx, 
-			IReplicationProviderInside sourceProvider)
+			IReplicationProviderInside sourceProvider, IReplicationProviderInside targetProvider
+			)
 		{
 			IEnumerator fields = FieldIterators.PersistentFields(claxx);
 			while (fields.MoveNext())
 			{
 				IReflectField field = (IReflectField)fields.Current;
 				object value = field.Get(src);
-				field.Set(dest, FindCounterpart(value, sourceProvider));
+				field.Set(dest, FindCounterpart(value, sourceProvider, targetProvider));
 			}
 			IReflectClass superclass = claxx.GetSuperclass();
 			if (superclass == null)
 			{
 				return;
 			}
-			CopyFieldValuesAcross(src, dest, superclass, sourceProvider);
+			CopyFieldValuesAcross(src, dest, superclass, sourceProvider, targetProvider);
 		}
 
-		private void CopyStateAcross(IReplicationProviderInside sourceProvider)
+		private void CopyStateAcross(IReplicationProviderInside sourceProvider, IReplicationProviderInside
+			 targetProvider)
 		{
 			if (_directionTo == sourceProvider)
 			{
 				return;
 			}
-			sourceProvider.VisitCachedReferences(new _IVisitor4_202(this, sourceProvider));
+			sourceProvider.VisitCachedReferences(new _IVisitor4_218(this, sourceProvider, targetProvider
+				));
 		}
 
-		private sealed class _IVisitor4_202 : IVisitor4
+		private sealed class _IVisitor4_218 : IVisitor4
 		{
-			public _IVisitor4_202(GenericReplicationSession _enclosing, IReplicationProviderInside
-				 sourceProvider)
+			public _IVisitor4_218(GenericReplicationSession _enclosing, IReplicationProviderInside
+				 sourceProvider, IReplicationProviderInside targetProvider)
 			{
 				this._enclosing = _enclosing;
 				this.sourceProvider = sourceProvider;
+				this.targetProvider = targetProvider;
 			}
 
 			public void Visit(object obj)
 			{
-				this._enclosing.CopyStateAcross((IReplicationReference)obj, sourceProvider);
+				this._enclosing.CopyStateAcross((IReplicationReference)obj, sourceProvider, targetProvider
+					);
 			}
 
 			private readonly GenericReplicationSession _enclosing;
 
 			private readonly IReplicationProviderInside sourceProvider;
+
+			private readonly IReplicationProviderInside targetProvider;
 		}
 
 		private void CopyStateAcross(IReplicationReference sourceRef, IReplicationProviderInside
-			 sourceProvider)
+			 sourceProvider, IReplicationProviderInside targetProvider)
 		{
 			if (!sourceRef.IsMarkedForReplicating())
 			{
 				return;
 			}
-			CopyStateAcross(sourceRef.Object(), sourceRef.Counterpart(), sourceProvider);
+			CopyStateAcross(sourceRef.Object(), sourceRef.Counterpart(), sourceProvider, targetProvider
+				);
 		}
 
 		private void CopyStateAcross(object source, object dest, IReplicationProviderInside
-			 sourceProvider)
+			 sourceProvider, IReplicationProviderInside targetProvider)
 		{
 			IReflectClass claxx = _reflector.ForObject(source);
-			CopyFieldValuesAcross(source, dest, claxx, sourceProvider);
+			CopyFieldValuesAcross(source, dest, claxx, sourceProvider, targetProvider);
 		}
 
 		private void DeleteInDestination(IReplicationReference reference, IReplicationProviderInside
@@ -272,7 +348,7 @@ namespace Db4objects.Drs.Inside
 		}
 
 		private object FindCounterpart(object value, IReplicationProviderInside sourceProvider
-			)
+			, IReplicationProviderInside targetProvider)
 		{
 			if (value == null)
 			{
@@ -287,7 +363,7 @@ namespace Db4objects.Drs.Inside
 			IReflectClass claxx = _reflector.ForObject(value);
 			if (claxx.IsArray())
 			{
-				return ArrayClone(value, claxx, sourceProvider);
+				return ArrayClone(value, claxx, sourceProvider, targetProvider);
 			}
 			if (Platform4.IsTransient(claxx))
 			{
@@ -300,48 +376,57 @@ namespace Db4objects.Drs.Inside
 			}
 			if (_collectionHandler.CanHandle(value))
 			{
-				return CollectionClone(value, claxx, sourceProvider);
+				return CollectionClone(value, claxx, sourceProvider, targetProvider);
 			}
 			//if value is a Collection, result should be found by passing in just the value
 			IReplicationReference @ref = sourceProvider.ProduceReference(value, null, null);
 			if (@ref == null)
 			{
-				throw new ArgumentNullException("unable to find the ref of " + value + " of class "
+				throw new InvalidOperationException("unable to find the ref of " + value + " of class "
 					 + value.GetType());
 			}
 			object result = @ref.Counterpart();
-			if (result == null)
+			if (result != null)
 			{
-				throw new ArgumentNullException("unable to find the counterpart of " + value + " of class "
-					 + value.GetType());
+				return result;
 			}
-			return result;
+			IReplicationReference targetRef = targetProvider.ProduceReferenceByUUID(@ref.Uuid
+				(), value.GetType());
+			if (targetRef == null)
+			{
+				throw new InvalidOperationException("unable to find the counterpart of " + value 
+					+ " of class " + value.GetType());
+			}
+			return targetRef.Object();
 		}
 
 		private object CollectionClone(object original, IReflectClass claxx, IReplicationProviderInside
-			 sourceProvider)
+			 sourceProvider, IReplicationProviderInside targetProvider)
 		{
 			return _collectionHandler.CloneWithCounterparts(sourceProvider, original, claxx, 
-				new _ICounterpartFinder_253(this, sourceProvider));
+				new _ICounterpartFinder_274(this, sourceProvider, targetProvider));
 		}
 
-		private sealed class _ICounterpartFinder_253 : ICounterpartFinder
+		private sealed class _ICounterpartFinder_274 : ICounterpartFinder
 		{
-			public _ICounterpartFinder_253(GenericReplicationSession _enclosing, IReplicationProviderInside
-				 sourceProvider)
+			public _ICounterpartFinder_274(GenericReplicationSession _enclosing, IReplicationProviderInside
+				 sourceProvider, IReplicationProviderInside targetProvider)
 			{
 				this._enclosing = _enclosing;
 				this.sourceProvider = sourceProvider;
+				this.targetProvider = targetProvider;
 			}
 
 			public object FindCounterpart(object original)
 			{
-				return this._enclosing.FindCounterpart(original, sourceProvider);
+				return this._enclosing.FindCounterpart(original, sourceProvider, targetProvider);
 			}
 
 			private readonly GenericReplicationSession _enclosing;
 
 			private readonly IReplicationProviderInside sourceProvider;
+
+			private readonly IReplicationProviderInside targetProvider;
 		}
 
 		private IReplicationProviderInside Other(IReplicationProviderInside peer)
@@ -350,7 +435,7 @@ namespace Db4objects.Drs.Inside
 		}
 
 		private void ReplaceWithCounterparts(object[] objects, IReplicationProviderInside
-			 sourceProvider)
+			 sourceProvider, IReplicationProviderInside targetProvider)
 		{
 			for (int i = 0; i < objects.Length; i++)
 			{
@@ -359,13 +444,8 @@ namespace Db4objects.Drs.Inside
 				{
 					continue;
 				}
-				objects[i] = FindCounterpart(@object, sourceProvider);
+				objects[i] = FindCounterpart(@object, sourceProvider, targetProvider);
 			}
-		}
-
-		private void ResetProcessedUuids()
-		{
-			_processedUuids = new Hashtable4(Size);
 		}
 
 		private void StoreChangedCounterpartInDestination(IReplicationReference reference
@@ -388,13 +468,13 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			destination.VisitCachedReferences(new _IVisitor4_289(this, destination));
-			source.VisitCachedReferences(new _IVisitor4_295(this, destination));
+			destination.VisitCachedReferences(new _IVisitor4_306(this, destination));
+			source.VisitCachedReferences(new _IVisitor4_312(this, destination));
 		}
 
-		private sealed class _IVisitor4_289 : IVisitor4
+		private sealed class _IVisitor4_306 : IVisitor4
 		{
-			public _IVisitor4_289(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_306(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;
@@ -411,9 +491,9 @@ namespace Db4objects.Drs.Inside
 			private readonly IReplicationProviderInside destination;
 		}
 
-		private sealed class _IVisitor4_295 : IVisitor4
+		private sealed class _IVisitor4_312 : IVisitor4
 		{
-			public _IVisitor4_295(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_312(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;

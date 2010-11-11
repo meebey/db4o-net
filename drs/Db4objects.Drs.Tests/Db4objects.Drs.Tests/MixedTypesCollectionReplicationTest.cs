@@ -1,10 +1,11 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -22,21 +23,21 @@ namespace Db4objects.Drs.Tests
 			}
 			CollectionHolder h1 = new CollectionHolder("h1");
 			CollectionHolder h2 = new CollectionHolder("h2");
-			h1.map["key"] = "value";
-			h1.map["key2"] = h1;
-			h1.map[h1] = "value2";
-			h2.map["key"] = h1;
-			h2.map[h2] = h1;
-			h1.list.Add("one");
-			h1.list.Add(h1);
-			h2.list.Add("two");
-			h2.list.Add(h1);
-			h2.list.Add(h2);
-			h1.set.Add("one");
-			h1.set.Add(h1);
-			h2.set.Add("two");
-			h2.set.Add(h1);
-			h2.set.Add(h2);
+			h1.Map()["key"] = "value";
+			h1.Map()["key2"] = h1;
+			h1.Map()[h1] = "value2";
+			h2.Map()["key"] = h1;
+			h2.Map()[h2] = h1;
+			h1.List().Add("one");
+			h1.List().Add(h1);
+			h2.List().Add("two");
+			h2.List().Add(h1);
+			h2.List().Add(h2);
+			h1.Set().Add("one");
+			h1.Set().Add(h1);
+			h2.Set().Add("two");
+			h2.Set().Add(h1);
+			h2.Set().Add(h2);
 			B().Provider().StoreNew(h2);
 			B().Provider().StoreNew(h1);
 			IReplicationSession replication = new GenericReplicationSession(A().Provider(), B
@@ -61,7 +62,7 @@ namespace Db4objects.Drs.Tests
 		{
 			Assert.IsTrue(holder != original1);
 			Assert.IsTrue(holder != original2);
-			if (holder.name.Equals("h1"))
+			if (holder.Name().Equals("h1"))
 			{
 				CheckH1(holder);
 			}
@@ -73,26 +74,26 @@ namespace Db4objects.Drs.Tests
 
 		private void CheckH1(CollectionHolder holder)
 		{
-			Assert.AreEqual("value", holder.map["key"]);
-			Assert.AreEqual(holder, holder.map["key2"]);
-			Assert.AreEqual("value2", holder.map[holder]);
-			Assert.AreEqual("one", holder.list[0]);
-			Assert.AreEqual(holder, holder.list[1]);
-			Assert.IsTrue(holder.set.Contains("one"));
-			Assert.IsTrue(holder.set.Contains(holder));
+			Assert.AreEqual("value", holder.Map()["key"]);
+			Assert.AreEqual(holder, holder.Map()["key2"]);
+			Assert.AreEqual("value2", holder.Map()[holder]);
+			Assert.AreEqual("one", holder.List()[0]);
+			Assert.AreEqual(holder, holder.List()[1]);
+			Assert.IsTrue(holder.Set().Contains("one"));
+			Assert.IsTrue(holder.Set().Contains(holder));
 		}
 
 		private void CheckH2(CollectionHolder holder)
 		{
-			Assert.AreEqual("h1", ((CollectionHolder)holder.map["key"]).name);
-			Assert.AreEqual("h1", ((CollectionHolder)holder.map[holder]).name);
-			Assert.AreEqual("two", holder.list[0]);
-			Assert.AreEqual("h1", ((CollectionHolder)holder.list[1]).name);
-			Assert.AreEqual(holder, holder.list[2]);
-			Assert.IsTrue(holder.set.Remove("two"));
-			Assert.IsTrue(holder.set.Remove(holder));
-			CollectionHolder remaining = NextCollectionHolder(holder.set.GetEnumerator());
-			Assert.AreEqual("h1", remaining.name);
+			Assert.AreEqual("h1", ((CollectionHolder)holder.Map()["key"]).Name());
+			Assert.AreEqual("h1", ((CollectionHolder)holder.Map()[holder]).Name());
+			Assert.AreEqual("two", holder.List()[0]);
+			Assert.AreEqual("h1", ((CollectionHolder)holder.List()[1]).Name());
+			Assert.AreEqual(holder, holder.List()[2]);
+			Assert.IsTrue(holder.Set().Remove("two"));
+			Assert.IsTrue(holder.Set().Remove(holder));
+			CollectionHolder remaining = NextCollectionHolder(holder.Set().GetEnumerator());
+			Assert.AreEqual("h1", remaining.Name());
 		}
 
 		public virtual void Test()

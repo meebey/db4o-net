@@ -1,10 +1,11 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Drs;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -30,8 +31,9 @@ namespace Db4objects.Drs.Tests
 			//TODO Fix ReflectArray.shape() and test with innermost arrays of varying sizes:  {{h1}, {null, h2}, {null}}
 			B().Provider().StoreNew(h2);
 			B().Provider().StoreNew(h1);
+			B().Provider().Commit();
 			IReplicationSession replication = new GenericReplicationSession(A().Provider(), B
-				().Provider());
+				().Provider(), null, _fixtures.reflector);
 			replication.Replicate(h2);
 			//Traverses to h1.
 			replication.Commit();
@@ -50,7 +52,7 @@ namespace Db4objects.Drs.Tests
 
 		private void Check(ArrayHolder holder)
 		{
-			if (holder._name.Equals("h1"))
+			if (holder.GetName().Equals("h1"))
 			{
 				CheckH1(holder);
 			}
@@ -62,19 +64,19 @@ namespace Db4objects.Drs.Tests
 
 		protected virtual void CheckH1(ArrayHolder holder)
 		{
-			Assert.AreEqual(holder._array[0], holder);
-			Assert.AreEqual(holder._arrayN[0][0], holder);
+			Assert.AreEqual(holder.Array()[0], holder);
+			Assert.AreEqual(holder.ArrayN()[0][0], holder);
 		}
 
 		protected virtual void CheckH2(ArrayHolder holder)
 		{
-			Assert.AreEqual(holder._array[0]._name, "h1");
-			Assert.AreEqual(holder._array[1], holder);
-			Assert.AreEqual(holder._array[2], null);
-			Assert.AreEqual(holder._arrayN[0][0]._name, "h1");
-			Assert.AreEqual(holder._arrayN[1][0], null);
-			Assert.AreEqual(holder._arrayN[1][1], holder);
-			Assert.AreEqual(holder._arrayN[2][0], null);
+			Assert.AreEqual(holder.Array()[0].GetName(), "h1");
+			Assert.AreEqual(holder.Array()[1], holder);
+			Assert.AreEqual(holder.Array()[2], null);
+			Assert.AreEqual(holder.ArrayN()[0][0].GetName(), "h1");
+			Assert.AreEqual(holder.ArrayN()[1][0], null);
+			Assert.AreEqual(holder.ArrayN()[1][1], holder);
+			Assert.AreEqual(holder.ArrayN()[2][0], null);
 		}
 	}
 }

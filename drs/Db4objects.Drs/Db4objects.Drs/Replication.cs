@@ -1,17 +1,14 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using Db4objects.Db4o;
+using Db4objects.Db4o.Reflect;
 using Db4objects.Drs;
-using Db4objects.Drs.Db4o;
 using Db4objects.Drs.Inside;
 
 namespace Db4objects.Drs
 {
 	/// <summary>Factory to create ReplicationSessions.</summary>
 	/// <remarks>Factory to create ReplicationSessions.</remarks>
-	/// <author>Albert Kwan</author>
-	/// <author>Klaus Wuestefeld</author>
-	/// <version>1.2</version>
+	/// <version>1.3</version>
 	/// <seealso cref="com.db4o.drs.hibernate.HibernateReplication">com.db4o.drs.hibernate.HibernateReplication
 	/// 	</seealso>
 	/// <seealso cref="IReplicationProvider">IReplicationProvider</seealso>
@@ -19,52 +16,77 @@ namespace Db4objects.Drs
 	/// <since>dRS 1.0</since>
 	public class Replication
 	{
-		/// <summary>Begins a replication session between two ReplicationProviders without ReplicationEventListener.
-		/// 	</summary>
-		/// <remarks>Begins a replication session between two ReplicationProviders without ReplicationEventListener.
-		/// 	</remarks>
+		/// <summary>
+		/// Begins a replication session between two ReplicationProviders without a
+		/// ReplicationEventListener and with no Reflector provided.
+		/// </summary>
+		/// <remarks>
+		/// Begins a replication session between two ReplicationProviders without a
+		/// ReplicationEventListener and with no Reflector provided.
+		/// </remarks>
 		/// <exception cref="ReplicationConflictException">when conflicts occur</exception>
 		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
 		public static IReplicationSession Begin(IReplicationProvider providerA, IReplicationProvider
 			 providerB)
 		{
-			return Begin(providerA, providerB, null);
+			return Begin(providerA, providerB, null, null);
 		}
 
-		/// <summary>Begins a replication session between db4o and db4o without ReplicationEventListener.
-		/// 	</summary>
-		/// <remarks>Begins a replication session between db4o and db4o without ReplicationEventListener.
-		/// 	</remarks>
+		/// <summary>
+		/// Begins a replication session between two ReplicationProviders using a
+		/// ReplicationEventListener and with no Reflector provided.
+		/// </summary>
+		/// <remarks>
+		/// Begins a replication session between two ReplicationProviders using a
+		/// ReplicationEventListener and with no Reflector provided.
+		/// </remarks>
 		/// <exception cref="ReplicationConflictException">when conflicts occur</exception>
 		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
-		public static IReplicationSession Begin(IObjectContainer oc1, IObjectContainer oc2
-			)
-		{
-			return Begin(oc1, oc2, null);
-		}
-
-		/// <summary>Begins a replication session between two ReplicatoinProviders.</summary>
-		/// <remarks>Begins a replication session between two ReplicatoinProviders.</remarks>
 		public static IReplicationSession Begin(IReplicationProvider providerA, IReplicationProvider
 			 providerB, IReplicationEventListener listener)
+		{
+			return Begin(providerA, providerB, listener, null);
+		}
+
+		/// <summary>
+		/// Begins a replication session between two ReplicationProviders without a
+		/// ReplicationEventListener and with a Reflector provided.
+		/// </summary>
+		/// <remarks>
+		/// Begins a replication session between two ReplicationProviders without a
+		/// ReplicationEventListener and with a Reflector provided.
+		/// </remarks>
+		/// <exception cref="ReplicationConflictException">when conflicts occur</exception>
+		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
+		public static IReplicationSession Begin(IReplicationProvider providerFrom, IReplicationProvider
+			 providerTo, IReflector reflector)
+		{
+			return Begin(providerFrom, providerTo, null, reflector);
+		}
+
+		/// <summary>
+		/// Begins a replication session between two ReplicationProviders using a
+		/// ReplicationEventListener and with a Reflector provided.
+		/// </summary>
+		/// <remarks>
+		/// Begins a replication session between two ReplicationProviders using a
+		/// ReplicationEventListener and with a Reflector provided.
+		/// </remarks>
+		/// <exception cref="ReplicationConflictException">when conflicts occur</exception>
+		/// <seealso cref="IReplicationEventListener">IReplicationEventListener</seealso>
+		public static IReplicationSession Begin(IReplicationProvider providerFrom, IReplicationProvider
+			 providerTo, IReplicationEventListener listener, IReflector reflector)
 		{
 			if (listener == null)
 			{
 				listener = new DefaultReplicationEventListener();
 			}
-			ReplicationReflector reflector = new ReplicationReflector(providerA, providerB);
-			providerA.ReplicationReflector(reflector);
-			providerB.ReplicationReflector(reflector);
-			return new GenericReplicationSession(providerA, providerB, listener);
-		}
-
-		/// <summary>Begins a replication session between db4o and db4o.</summary>
-		/// <remarks>Begins a replication session between db4o and db4o.</remarks>
-		public static IReplicationSession Begin(IObjectContainer oc1, IObjectContainer oc2
-			, IReplicationEventListener listener)
-		{
-			return Begin(Db4oProviderFactory.NewInstance(oc1), Db4oProviderFactory.NewInstance
-				(oc2), listener);
+			ReplicationReflector rr = new ReplicationReflector(providerFrom, providerTo, reflector
+				);
+			providerFrom.ReplicationReflector(rr);
+			providerTo.ReplicationReflector(rr);
+			return new GenericReplicationSession(providerFrom, providerTo, listener, reflector
+				);
 		}
 	}
 }

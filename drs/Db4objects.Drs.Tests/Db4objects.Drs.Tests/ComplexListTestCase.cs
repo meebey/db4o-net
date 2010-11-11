@@ -1,9 +1,10 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System.Collections;
 using Db4oUnit;
 using Db4objects.Drs.Inside;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
@@ -19,6 +20,7 @@ namespace Db4objects.Drs.Tests
 		private void RoundTripTest()
 		{
 			ChangeInProviderB();
+			B().Provider().Commit();
 			ReplicateAndTest(B(), A());
 		}
 
@@ -32,27 +34,30 @@ namespace Db4objects.Drs.Tests
 			SimpleItem foo = GetItem(simpleListHolder, "foo");
 			foo.SetChild(fooBaby);
 			B().Provider().Update(foo);
+			B().Provider().Update(simpleListHolder.GetList());
 			B().Provider().Update(simpleListHolder);
 		}
 
-		private void ReplicateAndTest(IDrsFixture source, IDrsFixture target)
+		private void ReplicateAndTest(IDrsProviderFixture source, IDrsProviderFixture target
+			)
 		{
 			ReplicateAll(source.Provider(), target.Provider());
 			EnsureContents(target, (SimpleListHolder)GetOneInstance(source, typeof(SimpleListHolder
 				)));
 		}
 
-		private void Store(IDrsFixture fixture, SimpleListHolder list)
+		private void Store(IDrsProviderFixture fixture, SimpleListHolder listHolder)
 		{
 			ITestableReplicationProviderInside provider = fixture.Provider();
-			provider.StoreNew(list);
-			provider.StoreNew(GetItem(list, "foo"));
-			provider.StoreNew(GetItem(list, "foobar"));
+			provider.StoreNew(listHolder);
+			provider.StoreNew(GetItem(listHolder, "foo"));
+			provider.StoreNew(GetItem(listHolder, "foobar"));
 			provider.Commit();
-			EnsureContents(fixture, list);
+			EnsureContents(fixture, listHolder);
 		}
 
-		private void EnsureContents(IDrsFixture actualFixture, SimpleListHolder expected)
+		private void EnsureContents(IDrsProviderFixture actualFixture, SimpleListHolder expected
+			)
 		{
 			SimpleListHolder actual = (SimpleListHolder)GetOneInstance(actualFixture, typeof(
 				SimpleListHolder));
@@ -118,13 +123,13 @@ namespace Db4objects.Drs.Tests
 			//                  ^
 			//                  |
 			// foobar ----------+
-			SimpleListHolder listHolder = new SimpleListHolder();
+			SimpleListHolder listHolder = new SimpleListHolder("root");
 			SimpleItem foo = new SimpleItem(listHolder, "foo");
-			SimpleItem bar = new SimpleItem(listHolder, "bar", foo);
+			SimpleItem bar = new SimpleItem(listHolder, foo, "bar");
 			listHolder.Add(foo);
 			listHolder.Add(bar);
-			listHolder.Add(new SimpleItem(listHolder, "baz", bar));
-			listHolder.Add(new SimpleItem(listHolder, "foobar", foo));
+			listHolder.Add(new SimpleItem(listHolder, bar, "baz"));
+			listHolder.Add(new SimpleItem(listHolder, foo, "foobar"));
 			return listHolder;
 		}
 	}

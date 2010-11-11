@@ -1,4 +1,4 @@
-/* Copyright (C) 2004 - 2008  Versant Inc.  http://www.db4o.com */
+/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
 using System;
 using Db4oUnit;
@@ -10,13 +10,13 @@ namespace Db4objects.Drs.Tests.Foundation
 	{
 		public static void Main(string[] args)
 		{
-			new AllTests().Run();
+			new Db4objects.Drs.Tests.Foundation.AllTests().Run();
 		}
 
 		protected override Type[] TestCases()
 		{
 			return new Type[] { typeof(ObjectSetCollection4FacadeTestCase), typeof(Set4Testcase
-				) };
+				), typeof(SignatureTestCase) };
 		}
 	}
 }
