@@ -33,15 +33,6 @@ namespace Db4objects.Db4o.Reflect.Generic
 			return IsAssignableFrom(((GenericArray)candidate)._clazz);
 		}
 
-		public override bool Equals(object obj)
-		{
-			if (!(obj is Db4objects.Db4o.Reflect.Generic.GenericArrayClass))
-			{
-				return false;
-			}
-			return base.Equals(obj);
-		}
-
 		public override string ToString(object obj)
 		{
 			if (_converter == null)

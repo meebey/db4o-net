@@ -152,25 +152,9 @@ namespace Db4objects.Db4o.Qlin
 
 		private static void CheckForNull(object expression)
 		{
-			WarnOnce();
 			if (expression == null)
 			{
 				throw new QLinException("expression can not be null");
-			}
-		}
-
-		private static volatile bool warned = false;
-
-		private static void WarnOnce()
-		{
-			if (!warned)
-			{
-				Sharpen.Runtime.Err.WriteLine("\nWarning: QLin is only a very limited implementation"
-					);
-				Sharpen.Runtime.Err.WriteLine("for the db4o replication system (dRS). ");
-				Sharpen.Runtime.Err.WriteLine("It may be removed from the db4o 8.0 final release\n"
-					);
-				warned = true;
 			}
 		}
 

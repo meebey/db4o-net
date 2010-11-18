@@ -675,10 +675,6 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
-		/// <summary>
-		/// dirty hack for com.db4o.types some of them need to be set automatically
-		/// TODO: Derive from YapField for Db4oTypes
-		/// </summary>
 		public virtual object GetOrCreate(Transaction trans, object onObject)
 		{
 			if (!Alive())
@@ -1066,13 +1062,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_870(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_866(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_870 : IVisitor4
+		private sealed class _IVisitor4_866 : IVisitor4
 		{
-			public _IVisitor4_870(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_866(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1294,12 +1290,12 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 correctTypeHandlerVersion = HandlerRegistry.CorrectHandlerVersion(context
 				, GetHandler(), _fieldType);
 			context.SlotFormat().DoWithSlotIndirection(context, correctTypeHandlerVersion, new 
-				_IClosure4_1033(context, correctTypeHandlerVersion));
+				_IClosure4_1029(context, correctTypeHandlerVersion));
 		}
 
-		private sealed class _IClosure4_1033 : IClosure4
+		private sealed class _IClosure4_1029 : IClosure4
 		{
-			public _IClosure4_1033(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
+			public _IClosure4_1029(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
 				)
 			{
 				this.context = context;

@@ -7,7 +7,7 @@ namespace Db4objects.Db4o.Foundation
 {
 	public class HashSet4 : ISet4
 	{
-		private IMap4 _map;
+		private Hashtable4 _map;
 
 		public HashSet4() : this(1)
 		{
@@ -56,6 +56,11 @@ namespace Db4objects.Db4o.Foundation
 		public virtual int Size()
 		{
 			return _map.Size();
+		}
+
+		public override string ToString()
+		{
+			return Iterators.Join(_map.Keys(), "{", "}", ", ");
 		}
 	}
 }
