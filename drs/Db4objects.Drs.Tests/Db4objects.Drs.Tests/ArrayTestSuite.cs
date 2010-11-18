@@ -1,5 +1,18 @@
-/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
+/* This file is part of the db4o object database http://www.db4o.com
 
+Copyright (C) 2004 - 2009  Versant Corporation http://www.versant.com
+
+db4o is free software; you can redistribute it and/or modify it under
+the terms of version 3 of the GNU General Public License as published
+by the Free Software Foundation.
+
+db4o is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/. */
 using System;
 using System.Collections;
 using Db4oUnit;
@@ -8,32 +21,23 @@ using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Handlers.Array;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
 	public class ArrayTestSuite : FixtureBasedTestSuite
 	{
-		public class Item
-		{
-			public object array;
-
-			public Item(object array_)
-			{
-				array = array_;
-			}
-		}
-
 		public class TestUnit : DrsTestCase
 		{
 			public virtual void Test()
 			{
-				ArrayTestSuite.Item item = new ArrayTestSuite.Item(Subject());
+				ItemWithUntypedField item = new ItemWithUntypedField(Subject());
 				StoreToProviderA(item);
 				ReplicatedAllToB();
-				ArrayTestSuite.Item replicated = ReplicatedItem();
-				Assert.IsNotNull(replicated.array);
-				Iterator4Assert.AreEqual(ArrayIterator(item.array), ArrayIterator(replicated.array
-					));
+				ItemWithUntypedField replicated = ReplicatedItem();
+				Assert.IsNotNull(replicated.Array());
+				Iterator4Assert.AreEqual(ArrayIterator(item.Array()), ArrayIterator(replicated.Array
+					()));
 			}
 
 			private IEnumerator ArrayIterator(object array)
@@ -57,19 +61,19 @@ namespace Db4objects.Drs.Tests
 				ReplicateAll(A().Provider(), B().Provider());
 			}
 
-			private void StoreToProviderA(ArrayTestSuite.Item item)
+			private void StoreToProviderA(ItemWithUntypedField item)
 			{
 				A().Provider().StoreNew(item);
 				A().Provider().Commit();
 			}
 
-			private ArrayTestSuite.Item ReplicatedItem()
+			private ItemWithUntypedField ReplicatedItem()
 			{
-				IEnumerator iterator = B().Provider().GetStoredObjects(typeof(ArrayTestSuite.Item
+				IEnumerator iterator = B().Provider().GetStoredObjects(typeof(ItemWithUntypedField
 					)).GetEnumerator();
 				if (iterator.MoveNext())
 				{
-					return (ArrayTestSuite.Item)iterator.Current;
+					return (ItemWithUntypedField)iterator.Current;
 				}
 				return null;
 			}

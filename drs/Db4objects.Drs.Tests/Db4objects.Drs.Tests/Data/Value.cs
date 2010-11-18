@@ -13,22 +13,25 @@ for more details.
 
 You should have received a copy of the GNU General Public License along
 with this program.  If not, see http://www.gnu.org/licenses/. */
-using System;
-using Db4objects.Drs.Tests.Dotnet;
-
-namespace Db4objects.Drs.Tests
+namespace Db4objects.Drs.Tests.Data
 {
-	partial class Db4oTests
+	public struct Value
 	{
-		private Type[] PlatformSpecificTestCases()
+		public int value;
+
+		public Value(int value)
 		{
-			return new Type[]
-			{	
-				typeof(Regression.DelegateTestCase),
-				typeof(Regression.GenericListTestSuite),
-                typeof(Regression.GenericDictionaryTestCase),
-				typeof(GenericEqualityComparerTestCase),
-			};
+			this.value = value;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (!(obj is Db4objects.Drs.Tests.Data.Value))
+			{
+				return false;
+			}
+			Db4objects.Drs.Tests.Data.Value other = (Db4objects.Drs.Tests.Data.Value)obj;
+			return other.value == value;
 		}
 	}
 }

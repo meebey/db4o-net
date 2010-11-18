@@ -1,5 +1,18 @@
-/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
+/* This file is part of the db4o object database http://www.db4o.com
 
+Copyright (C) 2004 - 2009  Versant Corporation http://www.versant.com
+
+db4o is free software; you can redistribute it and/or modify it under
+the terms of version 3 of the GNU General Public License as published
+by the Free Software Foundation.
+
+db4o is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/. */
 using System;
 using System.Collections;
 using Db4objects.Db4o.Foundation;
@@ -354,6 +367,7 @@ namespace Db4objects.Drs.Inside
 			{
 				return null;
 			}
+			value = sourceProvider.ReplaceIfSpecific(value);
 			// TODO: need to clone and findCounterpart of each reference object in the
 			// struct
 			if (ReplicationPlatform.IsValueType(value))
@@ -404,12 +418,12 @@ namespace Db4objects.Drs.Inside
 			 sourceProvider, IReplicationProviderInside targetProvider)
 		{
 			return _collectionHandler.CloneWithCounterparts(sourceProvider, original, claxx, 
-				new _ICounterpartFinder_274(this, sourceProvider, targetProvider));
+				new _ICounterpartFinder_276(this, sourceProvider, targetProvider));
 		}
 
-		private sealed class _ICounterpartFinder_274 : ICounterpartFinder
+		private sealed class _ICounterpartFinder_276 : ICounterpartFinder
 		{
-			public _ICounterpartFinder_274(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _ICounterpartFinder_276(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 sourceProvider, IReplicationProviderInside targetProvider)
 			{
 				this._enclosing = _enclosing;
@@ -468,13 +482,13 @@ namespace Db4objects.Drs.Inside
 			{
 				return;
 			}
-			destination.VisitCachedReferences(new _IVisitor4_306(this, destination));
-			source.VisitCachedReferences(new _IVisitor4_312(this, destination));
+			destination.VisitCachedReferences(new _IVisitor4_308(this, destination));
+			source.VisitCachedReferences(new _IVisitor4_314(this, destination));
 		}
 
-		private sealed class _IVisitor4_306 : IVisitor4
+		private sealed class _IVisitor4_308 : IVisitor4
 		{
-			public _IVisitor4_306(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_308(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;
@@ -491,9 +505,9 @@ namespace Db4objects.Drs.Inside
 			private readonly IReplicationProviderInside destination;
 		}
 
-		private sealed class _IVisitor4_312 : IVisitor4
+		private sealed class _IVisitor4_314 : IVisitor4
 		{
-			public _IVisitor4_312(GenericReplicationSession _enclosing, IReplicationProviderInside
+			public _IVisitor4_314(GenericReplicationSession _enclosing, IReplicationProviderInside
 				 destination)
 			{
 				this._enclosing = _enclosing;

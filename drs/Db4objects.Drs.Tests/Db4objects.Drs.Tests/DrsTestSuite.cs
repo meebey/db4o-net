@@ -1,5 +1,18 @@
-/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
+/* This file is part of the db4o object database http://www.db4o.com
 
+Copyright (C) 2004 - 2009  Versant Corporation http://www.versant.com
+
+db4o is free software; you can redistribute it and/or modify it under
+the terms of version 3 of the GNU General Public License as published
+by the Free Software Foundation.
+
+db4o is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/. */
 using System;
 using Db4oUnit;
 using Db4objects.Db4o.Foundation;
@@ -15,31 +28,17 @@ namespace Db4objects.Drs.Tests
 		{
 			if (false)
 			{
-				return SpecificTestCases();
+				return new Type[] { typeof(ListTest) };
 			}
-			if (false)
-			{
-				return new Type[] { typeof(ReplicatingTwiceTestCase) };
-			}
-			if (false)
-			{
-				return new Type[] { typeof(TheSimplest) };
-			}
-			return Concat(Shared(), SpecificTestCases());
-		}
-
-		protected abstract Type[] SpecificTestCases();
-
-		private Type[] Shared()
-		{
-			return new Type[] { typeof(Db4objects.Drs.Tests.Foundation.AllTests), typeof(TheSimplest
-				), typeof(ReplicationEventTest), typeof(ReplicationProviderTest), typeof(ReplicationAfterDeletionTest
-				), typeof(SimpleArrayTest), typeof(SimpleParentChild), typeof(ByteArrayTest), typeof(
-				ComplexListTestCase), typeof(ListTest), typeof(R0to4Runner), typeof(ReplicationFeaturesMain
-				), typeof(CollectionHandlerImplTest), typeof(ReplicationTraversalTest), typeof(MapTest
-				), typeof(ArrayReplicationTest), typeof(SingleTypeCollectionReplicationTest), typeof(
-				MixedTypesCollectionReplicationTest), typeof(TransparentActivationTestCase), typeof(
-				DRS42Test), typeof(SameHashCodeTestCase) };
+			return new Type[] { typeof(DateReplicationTestCase), typeof(Db4objects.Drs.Tests.Foundation.AllTests
+				), typeof(TheSimplest), typeof(ReplicationEventTest), typeof(ReplicationProviderTest
+				), typeof(ReplicationAfterDeletionTest), typeof(SimpleArrayTest), typeof(SimpleParentChild
+				), typeof(ByteArrayTest), typeof(ComplexListTestCase), typeof(ListTest), typeof(
+				R0to4Runner), typeof(ReplicationFeaturesMain), typeof(CollectionHandlerImplTest)
+				, typeof(ReplicationTraversalTest), typeof(MapTest), typeof(ArrayReplicationTest
+				), typeof(SingleTypeCollectionReplicationTest), typeof(MixedTypesCollectionReplicationTest
+				), typeof(TransparentActivationTestCase), typeof(DRS42Test), typeof(SameHashCodeTestCase
+				) };
 		}
 
 		// Simple

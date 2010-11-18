@@ -1,50 +1,28 @@
-/* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
+/* This file is part of the db4o object database http://www.db4o.com
 
+Copyright (C) 2004 - 2009  Versant Corporation http://www.versant.com
+
+db4o is free software; you can redistribute it and/or modify it under
+the terms of version 3 of the GNU General Public License as published
+by the Free Software Foundation.
+
+db4o is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/. */
 using System;
 using Db4oUnit;
 using Db4objects.Db4o;
 using Db4objects.Drs.Tests;
+using Db4objects.Drs.Tests.Data;
 
 namespace Db4objects.Drs.Tests
 {
 	public class UntypedFieldTestCase : DrsTestCase
 	{
-		public sealed class Item
-		{
-			public object untyped;
-
-			public Item(object value)
-			{
-				untyped = value;
-			}
-		}
-
-		public sealed class ItemWithCloneable
-		{
-			public ICloneable value;
-
-			public ItemWithCloneable(ICloneable c)
-			{
-				value = c;
-			}
-		}
-
-		public sealed class Data
-		{
-			public int id;
-
-			public Data(int value)
-			{
-				id = value;
-			}
-
-			public override bool Equals(object obj)
-			{
-				UntypedFieldTestCase.Data other = (UntypedFieldTestCase.Data)obj;
-				return id == other.id;
-			}
-		}
-
 		public virtual void TestUntypedString()
 		{
 			AssertUntypedReplication("42");
@@ -62,7 +40,7 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void TestUntypedReferenceTypeJaggedArray()
 		{
-			AssertJaggedArray(new UntypedFieldTestCase.Data(42));
+			AssertJaggedArray(new UntypedFieldData(42));
 		}
 
 		public virtual void TestUntypedDate()
@@ -77,29 +55,28 @@ namespace Db4objects.Drs.Tests
 
 		public virtual void TestUntypedMixedArray()
 		{
-			AssertUntypedReplication(new object[] { "42", new UntypedFieldTestCase.Data(42) }
-				);
-			Assert.AreEqual(42, ((UntypedFieldTestCase.Data)SingleReplicatedInstance(typeof(UntypedFieldTestCase.Data
-				))).id);
+			AssertUntypedReplication(new object[] { "42", new UntypedFieldData(42) });
+			Assert.AreEqual(42, ((UntypedFieldData)SingleReplicatedInstance(typeof(UntypedFieldData
+				))).GetId());
 		}
 
 		public virtual void TestArrayAsCloneable()
 		{
-			object[] array = new object[] { "42", new UntypedFieldTestCase.Data(42) };
-			UntypedFieldTestCase.ItemWithCloneable replicated = (UntypedFieldTestCase.ItemWithCloneable
-				)Replicate(new UntypedFieldTestCase.ItemWithCloneable(array));
+			object[] array = new object[] { "42", new UntypedFieldData(42) };
+			ItemWithCloneable replicated = (ItemWithCloneable)Replicate(new ItemWithCloneable
+				(array));
 			AssertEquals(array, replicated.value);
 		}
 
 		private void AssertUntypedReplication(object data)
 		{
-			AssertEquals(data, ReplicateItem(data).untyped);
+			AssertEquals(data, ReplicateItem(data).GetUntyped());
 		}
 
 		private void AssertJaggedArray(object data)
 		{
 			object[] expected = new object[] { new object[] { data } };
-			object[] actual = (object[])ReplicateItem(expected).untyped;
+			object[] actual = (object[])ReplicateItem(expected).GetUntyped();
 			Assert.AreEqual(expected.Length, actual.Length);
 			object[] nested = (object[])actual[0];
 			object actualValue = nested[0];
@@ -154,9 +131,9 @@ namespace Db4objects.Drs.Tests
 			}
 		}
 
-		private UntypedFieldTestCase.Item ReplicateItem(object data)
+		private UntypedFieldItem ReplicateItem(object data)
 		{
-			return (UntypedFieldTestCase.Item)Replicate(new UntypedFieldTestCase.Item(data));
+			return (UntypedFieldItem)Replicate(new UntypedFieldItem(data));
 		}
 
 		private object Replicate(object item)
@@ -171,7 +148,7 @@ namespace Db4objects.Drs.Tests
 		{
 			IObjectSet found = B().Provider().GetStoredObjects(klass);
 			Assert.AreEqual(1, found.Count);
-			return found[0];
+			return found.GetEnumerator().Current;
 		}
 	}
 }
