@@ -60,8 +60,6 @@ namespace Db4objects.Db4o.Tests.CLI1
 					typeof(Monitoring.AllTests),
 #endif
 					typeof(NonSerializedAttributeTestCase),
-					typeof(ObjectInfoMigration52TestCase),
-                    typeof(ObjectInfoMigration57TestCase),
 					typeof(ObjectSetAsListTestCase),
 					typeof(ProtectedBaseConstructorTestCase),
 				};
