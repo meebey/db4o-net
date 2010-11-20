@@ -20,10 +20,5 @@ namespace Db4objects.Db4o.Internal
 			string db4oAssemblySimpleName = db4oAssembly.GetName().Name;
 			return db4oAssembly.FullName.Replace(db4oAssemblySimpleName, "Db4objects.Db4o.CS");
 		}
-
-		private static Type[] IgnoredClasses()
-		{
-			return new Type[] { typeof(P1Object), typeof(StaticClass), typeof(StaticField) };
-		}
 	}
 }
