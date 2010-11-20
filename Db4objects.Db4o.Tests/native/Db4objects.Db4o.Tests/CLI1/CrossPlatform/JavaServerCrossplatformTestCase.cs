@@ -12,7 +12,6 @@ using Db4objects.Db4o.Tests.Util;
 using Db4oUnit;
 using Db4objects.Db4o.Query;
 using Sharpen.Lang;
-using Thread = Sharpen.Lang.Thread;
 
 //TODO: Move TransportObjectContainer to CS project
 namespace Db4objects.Db4o.Tests.CLI1.CrossPlatform
