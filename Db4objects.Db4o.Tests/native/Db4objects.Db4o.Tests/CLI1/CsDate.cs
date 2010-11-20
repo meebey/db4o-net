@@ -49,12 +49,12 @@ namespace Db4objects.Db4o.Tests.CLI1
             GetOne(template);
 
             template.dateTime = new DateTime(100);
-            Assert.AreEqual(0, Db().Get(template).Count);
+            Assert.AreEqual(0, Db().QueryByExample(template).Count);
         }
 
         private void GetOne(object template)
         {
-            Assert.AreEqual(1, Db().Get(template).Count);
+			Assert.AreEqual(1, Db().QueryByExample(template).Count);
         }
 
         public void TestDeactivation()

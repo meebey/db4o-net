@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.CLI1.Aliases
     {
         protected void AssertAliasedData(IObjectContainer container)
         {
-            AssertAliasedData(container.Get(GetAliasedDataType()));
+            AssertAliasedData(container.QueryByExample(GetAliasedDataType()));
 
             AssertAliasedData(QueryAliasedData(container));
         }

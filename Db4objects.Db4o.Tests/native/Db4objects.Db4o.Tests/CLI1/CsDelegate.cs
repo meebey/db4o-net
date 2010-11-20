@@ -77,7 +77,7 @@ namespace Db4objects.Db4o.Tests.CLI1
             Fixture().Reopen(this);
 
             OnActivateEventStrategy.Prepare();
-            OnActivateEventStrategy obj = (OnActivateEventStrategy)Db().Get(typeof(OnActivateEventStrategy)).Next();
+			OnActivateEventStrategy obj = (OnActivateEventStrategy)Db().QueryByExample(typeof(OnActivateEventStrategy)).Next();
             obj.RaiseCrash();
             OnActivateEventStrategy.Check();
         }

@@ -102,7 +102,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 	    private IObjectSet GetObjectSet()
 		{
-			return Db().Get(typeof(Item));
+			return Db().QueryByExample(typeof(Item));
 		}
 	}
 }

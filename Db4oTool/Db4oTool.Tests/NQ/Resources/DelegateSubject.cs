@@ -42,8 +42,8 @@ public class DelegateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 
 	override public void SetUp()
 	{	
-		_container.Set(new Item("foo", 1));
-		_container.Set(new Item("bar", 2));
+		_container.Store(new Item("foo", 1));
+		_container.Store(new Item("bar", 2));
 	}
 
 	public void TestInlineStaticDelegate()

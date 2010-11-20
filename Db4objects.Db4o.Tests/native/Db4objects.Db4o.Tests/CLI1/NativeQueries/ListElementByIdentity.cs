@@ -20,7 +20,7 @@ namespace Db4objects.Db4o.Tests.CLI1.NativeQueries
 
 		public void Test()
 		{
-			LebiElement elem = (LebiElement)Db().Get(new LebiElement("23"))[0];
+			LebiElement elem = (LebiElement)Db().QueryByExample(new LebiElement("23"))[0];
 
 
             IList<ListElementByIdentity> res = Db().Query((System.Predicate<ListElementByIdentity>)delegate(ListElementByIdentity lebi)

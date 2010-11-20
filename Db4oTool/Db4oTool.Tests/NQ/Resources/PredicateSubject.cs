@@ -232,12 +232,12 @@ public class PredicateSubject : Db4oTool.Tests.Core.InstrumentedTestCase
 {
 	override public void SetUp()
 	{
-		_container.Set(new Person(23, "jbe", Conditioning.Normal));
-		_container.Set(new Person(23, "Ronaldinho", Conditioning.Fat));
+		_container.Store(new Person(23, "jbe", Conditioning.Normal));
+		_container.Store(new Person(23, "Ronaldinho", Conditioning.Fat));
 		
 		Person rbo = new Person(30, "rbo", Conditioning.Overweight);
 		rbo.Spouse = new Person(29, "ma", Conditioning.Normal);
-		_container.Set(rbo);
+		_container.Store(rbo);
 	}
 
 	public void _TestByConstEnum()

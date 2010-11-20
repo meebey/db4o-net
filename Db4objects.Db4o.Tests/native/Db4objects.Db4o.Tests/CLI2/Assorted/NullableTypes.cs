@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		public void TestDateQuery()
 		{
-			IObjectSet os = Db().Get(new NullableContainer(TheDate));
+			IObjectSet os = Db().QueryByExample(new NullableContainer(TheDate));
 			CheckDateValueQueryResult(os);
 		}
 
@@ -82,7 +82,7 @@ namespace Db4objects.Db4o.Tests.CLI2.Assorted
 
 		public void TestIntQuery()
 		{
-			IObjectSet os = Db().Get(new NullableContainer(42));
+			IObjectSet os = Db().QueryByExample(new NullableContainer(42));
 			CheckIntValueQueryResult(os);
 		}
 

@@ -136,10 +136,10 @@ public class Tester
 	{
 		using (IObjectContainer container = Db4oFactory.OpenFile(fname))
 		{
-			IObjectSet os = container.Get(typeof(SimpleGenericType<int>));
+			IObjectSet os = container.QueryByExample(typeof(SimpleGenericType<int>));
 			AssertEquals(2, os.Count);
 			
-			os = container.Get(typeof(SimpleGenericType<SimpleGenericType<int>>));
+			os = container.QueryByExample(typeof(SimpleGenericType<SimpleGenericType<int>>));
 			AssertEquals(1, os.Count);
 		}
 	}

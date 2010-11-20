@@ -97,7 +97,7 @@ public class ClientCrossPlatform {
 	}
 
 	private static void insertPerson(ObjectContainer db, String name, int year, Date localReleaseDate) {
-		db.set(new Person(name, year, localReleaseDate));
+		db.store(new Person(name, year, localReleaseDate));
 	}
 
 	private static ClientConfiguration config() {

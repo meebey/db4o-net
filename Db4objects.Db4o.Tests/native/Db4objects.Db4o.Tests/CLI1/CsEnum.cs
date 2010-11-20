@@ -81,7 +81,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
 		private void TstQBE(int expectedCount, CsEnumState value)
 		{
-			IObjectSet os = Db().Get(new CsEnum(value));
+			IObjectSet os = Db().QueryByExample(new CsEnum(value));
 			Assert.AreEqual(expectedCount, os.Count);
 		}
 

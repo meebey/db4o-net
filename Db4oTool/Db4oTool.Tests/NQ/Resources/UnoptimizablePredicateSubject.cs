@@ -39,8 +39,8 @@ public class UnoptimizablePredicateSubject : Db4oTool.Tests.Core.InstrumentedTes
 {
 	override public void SetUp()
 	{
-		_container.Set(new Item("foo"));
-		_container.Set(new Item("bar"));
+		_container.Store(new Item("foo"));
+		_container.Store(new Item("bar"));
 	}
 	
 	public void TestByUpperName()

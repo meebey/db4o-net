@@ -5,7 +5,6 @@ using System.IO;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Tests.Util;
-using Db4oUnit.Extensions;
 using Db4oUnit.Extensions.Fixtures;
 using Db4oUnit.Extensions.Util;
 
@@ -147,8 +146,8 @@ public class Program {
 	public static void main(String[] args) {
 		String fname = args[0];
 		ObjectContainer container = Db4o.openFile(fname);
-		container.set(new Person2(""Homer Simpson""));
-		container.set(new Person2(""John Cleese""));
+		container.store(new Person2(""Homer Simpson""));
+		container.store(new Person2(""John Cleese""));
 		container.close();
 		System.out.println(""success"");
 	}

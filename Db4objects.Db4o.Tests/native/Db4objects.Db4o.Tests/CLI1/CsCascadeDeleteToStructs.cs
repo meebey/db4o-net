@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.CLI1
 
         private void EnsureOccurrences(int expected, object template)
         {
-            Assert.AreEqual(expected, Db().Get(template).Count);
+			Assert.AreEqual(expected, Db().QueryByExample(template).Count);
         }
     }
 
