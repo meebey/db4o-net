@@ -122,13 +122,6 @@ namespace Db4oUnit.Extensions.Dbmock
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		public virtual void Set(object obj)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public virtual void Store(object obj)
 		{
 			throw new NotImplementedException();

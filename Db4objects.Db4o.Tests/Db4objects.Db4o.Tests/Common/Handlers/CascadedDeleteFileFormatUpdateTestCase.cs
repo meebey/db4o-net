@@ -79,7 +79,8 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			Assert.IsNotNull(parentItem._children[1]);
 			objectContainer.Delete(parentItem);
 			Assert.IsFalse(_failed);
-			Store(objectContainer);
+			objectContainer.Store(CascadedDeleteFileFormatUpdateTestCase.ParentItem.NewTestInstance
+				());
 		}
 
 		private object RetrieveInstance(IExtObjectContainer objectContainer, Type clazz)
@@ -92,9 +93,9 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return "migrate_cascadedelete_";
 		}
 
-		protected override void Store(IExtObjectContainer objectContainer)
+		protected override void Store(IObjectContainerAdapter objectContainer)
 		{
-			StoreObject(objectContainer, CascadedDeleteFileFormatUpdateTestCase.ParentItem.NewTestInstance
+			objectContainer.Store(CascadedDeleteFileFormatUpdateTestCase.ParentItem.NewTestInstance
 				());
 		}
 	}

@@ -16,14 +16,14 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			config.Freespace().UseIndexSystem();
 		}
 
-		protected override void Store(IExtObjectContainer objectContainer)
+		protected override void Store(IObjectContainerAdapter objectContainer)
 		{
 			IxFreespaceMigrationTestCase.Item nextItem = null;
 			for (int i = 9; i >= 0; i--)
 			{
 				IxFreespaceMigrationTestCase.Item storedItem = new IxFreespaceMigrationTestCase.Item
 					("item" + i, nextItem);
-				StoreObject(objectContainer, storedItem);
+				objectContainer.Store(storedItem);
 				nextItem = storedItem;
 			}
 			objectContainer.Commit();
@@ -36,10 +36,14 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			objectContainer.Commit();
 		}
 
-		private IxFreespaceMigrationTestCase.Item QueryForItem(IExtObjectContainer objectContainer
+		private IxFreespaceMigrationTestCase.Item QueryForItem(IObjectContainerAdapter objectContainer
 			, int n)
 		{
-			IQuery q = objectContainer.Query();
+			return QueryForItem(objectContainer.Query(), n);
+		}
+
+		private IxFreespaceMigrationTestCase.Item QueryForItem(IQuery q, int n)
+		{
 			q.Constrain(typeof(IxFreespaceMigrationTestCase.Item));
 			q.Descend("_name").Constrain("item" + n);
 			return (IxFreespaceMigrationTestCase.Item)q.Execute().Next();
@@ -49,7 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			)
 		{
 			AssertItemCount(objectContainer, 5);
-			IxFreespaceMigrationTestCase.Item item = QueryForItem(objectContainer, 5);
+			IxFreespaceMigrationTestCase.Item item = QueryForItem(objectContainer.Query(), 5);
 			for (int i = 5; i < 10; i++)
 			{
 				Assert.AreEqual("item" + i, item._name);

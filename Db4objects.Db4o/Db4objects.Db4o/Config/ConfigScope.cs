@@ -90,24 +90,6 @@ namespace Db4objects.Db4o.Config
 			}
 		}
 
-		[System.ObsoleteAttribute]
-		public static Db4objects.Db4o.Config.ConfigScope ForID(int id)
-		{
-			switch (id)
-			{
-				case DisabledId:
-				{
-					return Disabled;
-				}
-
-				case IndividuallyId:
-				{
-					return Individually;
-				}
-			}
-			return Globally;
-		}
-
 		public override bool Equals(object obj)
 		{
 			if (this == obj)

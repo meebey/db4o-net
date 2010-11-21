@@ -10,7 +10,6 @@ using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
-using Db4objects.Db4o.Replication;
 
 namespace Db4oUnit.Extensions.Dbmock
 {
@@ -166,18 +165,6 @@ namespace Db4oUnit.Extensions.Dbmock
 			throw new NotImplementedException();
 		}
 
-		[System.ObsoleteAttribute]
-		public virtual IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
-			 conflictHandler)
-		{
-			throw new NotImplementedException();
-		}
-
-		public virtual void Set(object obj, int depth)
-		{
-			throw new NotImplementedException();
-		}
-
 		public virtual bool SetSemaphore(string name, int waitForAvailability)
 		{
 			throw new NotImplementedException();
@@ -300,13 +287,6 @@ namespace Db4oUnit.Extensions.Dbmock
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public virtual void Rollback()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		public virtual void Set(object obj)
 		{
 			throw new NotImplementedException();
 		}

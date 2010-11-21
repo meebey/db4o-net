@@ -234,7 +234,7 @@ namespace Db4objects.Db4o.Config
 		/// <br /><br />Default setting: 0
 		/// <br />Possible settings: 1, 2 or 3
 		/// <br /><br /> The potential number of cached BTree nodes can be
-		/// calculated with the following forumula:<br />
+		/// calculated with the following formula:<br />
 		/// maxCachedNodes = bTreeNodeSize ^ bTreeCacheHeight<br /><br />
 		/// This setting should be used on both client and server in
 		/// client-server environment.
@@ -372,30 +372,6 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		void DisableCommitRecovery();
 
-		/// <summary>
-		/// tuning feature: configures the minimum size of free space slots in the database file
-		/// that are to be reused.
-		/// </summary>
-		/// <remarks>
-		/// tuning feature: configures the minimum size of free space slots in the database file
-		/// that are to be reused.
-		/// <br /><br />When objects are updated or deleted, the space previously occupied in the
-		/// database file is marked as "free", so it can be reused. db4o maintains two lists
-		/// in RAM, sorted by address and by size. Adjacent entries are merged. After a large
-		/// number of updates or deletes have been executed, the lists can become large, causing
-		/// RAM consumption and performance loss for maintenance. With this method you can
-		/// specify an upper bound for the byte slot size to discard.
-		/// <br /><br />Pass <code>Integer.MAX_VALUE</code> to this method to discard all free slots for
-		/// the best possible startup time.<br /><br />
-		/// The downside of setting this value: Database files will necessarily grow faster.
-		/// <br /><br />Default value:<br />
-		/// <code>0</code> all space is reused
-		/// </remarks>
-		/// <param name="byteCount">Slots with this size or smaller will be lost.</param>
-		[System.ObsoleteAttribute(@"please call Db4o.configure().freespace().discardSmallerThan()"
-			)]
-		void DiscardFreeSpace(int byteCount);
-
 		/// <summary>configures the use of encryption.</summary>
 		/// <remarks>
 		/// configures the use of encryption.
@@ -442,36 +418,9 @@ namespace Db4objects.Db4o.Config
 		/// 	</param>
 		void ExceptionsOnNotStorable(bool flag);
 
-		/// <summary>configuration setting to turn file buffer flushing off.</summary>
-		/// <remarks>
-		/// configuration setting to turn file buffer flushing off.
-		/// <br /><br />
-		/// This configuration setting is no longer in use.
-		/// To tune db4o performance at the cost of a higher risc of database
-		/// file corruption in case of abnormal session terminations, please
-		/// use a
-		/// <see cref="Db4objects.Db4o.IO.NonFlushingStorage">Db4objects.Db4o.IO.NonFlushingStorage
-		/// 	</see>
-		/// .
-		/// </remarks>
-		[System.ObsoleteAttribute(@"Please use a  instead.")]
-		void FlushFileBuffers(bool flag);
-
 		/// <summary>returns the freespace configuration interface.</summary>
 		/// <remarks>returns the freespace configuration interface.</remarks>
 		IFreespaceConfiguration Freespace();
-
-		/// <summary>configures db4o to generate UUIDs for stored objects.</summary>
-		/// <remarks>configures db4o to generate UUIDs for stored objects.</remarks>
-		/// <param name="setting">
-		/// one of the following values:<br />
-		/// -1 - off<br />
-		/// 1 - configure classes individually<br />
-		/// Integer.MAX_Value - on for all classes<br /><br />
-		/// This setting should be used when the database is first created.
-		/// </param>
-		[System.ObsoleteAttribute(@"Use GenerateUUIDs(ConfigScope) instead.")]
-		void GenerateUUIDs(int setting);
 
 		/// <summary>configures db4o to generate UUIDs for stored objects.</summary>
 		/// <remarks>
@@ -481,18 +430,6 @@ namespace Db4objects.Db4o.Config
 		/// <param name="setting">the scope for UUID generation: disabled, generate for all classes, or configure individually
 		/// 	</param>
 		void GenerateUUIDs(ConfigScope setting);
-
-		/// <summary>configures db4o to generate version numbers for stored objects.</summary>
-		/// <remarks>configures db4o to generate version numbers for stored objects.</remarks>
-		/// <param name="setting">
-		/// one of the following values:<br />
-		/// -1 - off<br />
-		/// 1 - configure classes individually<br />
-		/// Integer.MAX_Value - on for all classes<br /><br />
-		/// This setting should be used when the database is first created.
-		/// </param>
-		[System.ObsoleteAttribute(@"Use GenerateVersionNumbers(ConfigScope) instead.")]
-		void GenerateVersionNumbers(int setting);
 
 		/// <summary>configures db4o to generate version numbers for stored objects.</summary>
 		/// <remarks>
@@ -737,11 +674,6 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		void ReflectWith(IReflector reflector);
 
-		/// <summary>This method is no longer supported and will be removed.</summary>
-		/// <remarks>This method is no longer supported and will be removed.</remarks>
-		[System.ObsoleteAttribute(@"")]
-		void RefreshClasses();
-
 		/// <summary>tuning feature only: reserves a number of bytes in database files.</summary>
 		/// <remarks>
 		/// tuning feature only: reserves a number of bytes in database files.
@@ -785,16 +717,6 @@ namespace Db4objects.Db4o.Config
 		/// <param name="path">the path to be used</param>
 		/// <exception cref="System.IO.IOException"></exception>
 		void SetBlobPath(string path);
-
-		/// <summary>configures db4o to use a custom ClassLoader.</summary>
-		/// <remarks>
-		/// configures db4o to use a custom ClassLoader.
-		/// <br /><br />
-		/// </remarks>
-		/// <param name="classLoader">the ClassLoader to be used</param>
-		[System.ObsoleteAttribute(@"use reflectWith(new JdkReflector(classLoader)) instead"
-			)]
-		void SetClassLoader(object classLoader);
 
 		/// <summary>
 		/// Assigns a
@@ -858,40 +780,15 @@ namespace Db4objects.Db4o.Config
 		/// <param name="flag">the desired setting</param>
 		void TestConstructors(bool flag);
 
-		/// <summary>configures the storage format of Strings.</summary>
-		/// <remarks>
-		/// configures the storage format of Strings.
-		/// <br /><br />This method needs to be called <b>before</b> a database file
-		/// is created with the first
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenFile(string)">Db4objects.Db4o.Db4oFactory.OpenFile(string)
-		/// 	</see>
-		/// or
-		/// <see cref="Db4objects.Db4o.Db4oFactory.OpenServer(string, int)">Db4objects.Db4o.Db4oFactory.OpenServer(string, int)
-		/// 	</see>
-		/// .
-		/// db4o database files keep their string format after creation.<br /><br />
-		/// Turning Unicode support off reduces the file storage space for strings
-		/// by factor 2 and improves performance.<br /><br />
-		/// Default setting: <b>true</b><br /><br />
-		/// </remarks>
-		/// <param name="flag">
-		/// <code>true</code> for turning Unicode support on, <code>false</code> for turning
-		/// Unicode support off.
-		/// </param>
-		[System.ObsoleteAttribute(@"use StringEncoding(Db4objects.Db4o.Config.Encoding.IStringEncoding)"
-			)]
-		void Unicode(bool flag);
-
 		/// <summary>specifies the global updateDepth.</summary>
 		/// <remarks>
 		/// specifies the global updateDepth.
 		/// <br /><br />see the documentation of
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set(object)"></see>
+		/// <see cref="com.db4o.ObjectContainer#set"></see>
 		/// for further details.<br /><br />
 		/// The value be may be overridden for individual classes.<br /><br />
 		/// The default setting is 1: Only the object passed to
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set(object)">Db4objects.Db4o.IObjectContainer.Set(object)
-		/// 	</see>
+		/// <see cref="com.db4o.ObjectContainer#set">com.db4o.ObjectContainer#set</see>
 		/// will be updated.<br /><br />
 		/// In client-server environment this setting should be used on both client and
 		/// server sides.<br /><br />

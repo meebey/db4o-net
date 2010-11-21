@@ -6,7 +6,7 @@ using Db4objects.Db4o.Foundation.IO;
 
 namespace Db4objects.Db4o.Tests.Common.CS
 {
-	public sealed class SwitchingFilesFromClientUtil
+	internal sealed class ClientTransactionTestUtil
 	{
 		internal static readonly string FilenameA = Path.GetTempFileName();
 
@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 
 		public static readonly string MainfileName = Path.GetTempFileName();
 
-		private SwitchingFilesFromClientUtil()
+		private ClientTransactionTestUtil()
 		{
 		}
 

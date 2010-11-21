@@ -126,8 +126,7 @@ namespace Db4objects.Db4o.Config
 		/// <param name="flag">whether updates are to be cascaded to member objects.</param>
 		/// <seealso cref="IObjectField.CascadeOnUpdate(bool)">IObjectField.CascadeOnUpdate(bool)
 		/// 	</seealso>
-		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Set(object)">Db4objects.Db4o.IObjectContainer.Set(object)
-		/// 	</seealso>
+		/// <seealso cref="com.db4o.ObjectContainer#set">com.db4o.ObjectContainer#set</seealso>
 		/// <seealso cref="Db4objects.Db4o.Ext.IObjectCallbacks">Using callbacks</seealso>
 		void CascadeOnUpdate(bool flag);
 
@@ -273,25 +272,6 @@ namespace Db4objects.Db4o.Config
 		/// This setting can NOT be applied to an open object container. <br/><br/>
 		/// </remarks>
 		void PersistStaticFieldValues();
-
-		/// <summary>creates a temporary mapping of a persistent class to a different class.</summary>
-		/// <remarks>
-		/// creates a temporary mapping of a persistent class to a different class.
-		/// <br /><br />If meta information for this ObjectClass has been stored to
-		/// the database file, it will be read from the database file as if it
-		/// was representing the class specified by the clazz parameter passed to
-		/// this method.
-		/// The clazz parameter can be any of the following:<br />
-		/// - a fully qualified class name as a String.<br />
-		/// - a Class object.<br />
-		/// - any other object to be used as a template.<br /><br />
-		/// This method will be ignored if the database file already contains meta
-		/// information for clazz.
-		/// </remarks>
-		/// <param name="clazz">class name, Class object, or example object.<br /><br /></param>
-		[System.ObsoleteAttribute(@"use IConfiguration.AddAlias(IAlias) instead. It provides richer functionality in a way that is easier to use."
-			)]
-		void ReadAs(object clazz);
 
 		/// <summary>renames a stored class.</summary>
 		/// <remarks>

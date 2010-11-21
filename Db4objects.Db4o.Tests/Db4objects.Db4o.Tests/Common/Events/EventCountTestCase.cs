@@ -79,7 +79,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 		private void AssertCount(EventCountTestCase.SafeCounter actual, int expected, string
 			 name)
 		{
-			Assert.IsTrue(actual.IsEqual(expected, MaxChecks));
+			actual.AssertEquals(expected, MaxChecks);
 		}
 
 		/// <exception cref="System.Exception"></exception>
@@ -230,20 +230,20 @@ namespace Db4objects.Db4o.Tests.Common.Events
 				private readonly SafeCounter _enclosing;
 			}
 
-			public virtual bool IsEqual(int expected, int maxChecks)
+			public virtual void AssertEquals(int expected, int maxChecks)
 			{
-				BooleanByRef ret = new BooleanByRef();
-				for (int checkCount = 0; checkCount < MaxChecks && ret.value == false; checkCount
+				IntByRef ret = new IntByRef();
+				for (int checkCount = 0; checkCount < MaxChecks && ret.value != expected; checkCount
 					++)
 				{
 					_lock.Run(new _IClosure4_140(this, expected, ret));
 				}
-				return ret.value;
+				Assert.AreEqual(expected, ret.value);
 			}
 
 			private sealed class _IClosure4_140 : IClosure4
 			{
-				public _IClosure4_140(SafeCounter _enclosing, int expected, BooleanByRef ret)
+				public _IClosure4_140(SafeCounter _enclosing, int expected, IntByRef ret)
 				{
 					this._enclosing = _enclosing;
 					this.expected = expected;
@@ -252,12 +252,11 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 				public object Run()
 				{
-					if (this._enclosing._value == expected)
+					if (this._enclosing._value != expected)
 					{
-						ret.value = true;
-						return null;
+						this._enclosing._lock.Snooze(EventCountTestCase.WaitTime);
 					}
-					this._enclosing._lock.Snooze(EventCountTestCase.WaitTime);
+					ret.value = this._enclosing._value;
 					return null;
 				}
 
@@ -265,7 +264,7 @@ namespace Db4objects.Db4o.Tests.Common.Events
 
 				private readonly int expected;
 
-				private readonly BooleanByRef ret;
+				private readonly IntByRef ret;
 			}
 		}
 	}

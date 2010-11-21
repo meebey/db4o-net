@@ -5,9 +5,12 @@ using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
+using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect.Generic;
 using Db4objects.Db4o.Tests.Common.Api;
+using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Common.Migration;
 
 namespace Db4objects.Db4o.Tests.Common.Migration
@@ -34,31 +37,33 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		{
 			public virtual void CreateDatabase(string filename)
 			{
-				WithContainer(filename, new _IFunction4_33());
+				WithContainer(filename, new _IFunction4_36());
 			}
 
-			private sealed class _IFunction4_33 : IFunction4
+			private sealed class _IFunction4_36 : IFunction4
 			{
-				public _IFunction4_33()
+				public _IFunction4_36()
 				{
 				}
 
 				public object Apply(object container)
 				{
-					((IObjectContainer)container).Set(new MigrationHopsTestCase.Item(Sharpen.Runtime.Substring
-						(Db4oFactory.Version(), 5)));
+					IObjectContainerAdapter adapter = ObjectContainerAdapterFactory.ForVersion(1, 1);
+					adapter.ForContainer((IExtObjectContainer)((IObjectContainer)container));
+					adapter.Store(new MigrationHopsTestCase.Item(Sharpen.Runtime.Substring(Db4oFactory
+						.Version(), 5)));
 					return null;
 				}
 			}
 
 			public virtual string CurrentVersion(string filename)
 			{
-				return ((string)WithContainer(filename, new _IFunction4_40(this)));
+				return ((string)WithContainer(filename, new _IFunction4_46(this)));
 			}
 
-			private sealed class _IFunction4_40 : IFunction4
+			private sealed class _IFunction4_46 : IFunction4
 			{
-				public _IFunction4_40(Tester _enclosing)
+				public _IFunction4_46(Tester _enclosing)
 				{
 					this._enclosing = _enclosing;
 				}
@@ -73,8 +78,8 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 
 			public virtual string CurrentVersion(IObjectContainer container)
 			{
-				return ((MigrationHopsTestCase.Item)container.Get(typeof(MigrationHopsTestCase.Item
-					)).Next()).version;
+				return ((MigrationHopsTestCase.Item)((MigrationHopsTestCase.Item)container.Query(
+					typeof(MigrationHopsTestCase.Item)).Next())).version;
 			}
 
 			private static object WithContainer(string filename, IFunction4 block)
@@ -94,10 +99,10 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 		/// <exception cref="System.Exception"></exception>
 		public virtual void Test()
 		{
-			Db4oLibraryEnvironment originalEnv = EnvironmentForVersion("5.7");
+			Db4oLibraryEnvironment originalEnv = EnvironmentForVersion("6.0");
 			originalEnv.InvokeInstanceMethod(typeof(MigrationHopsTestCase.Tester), "createDatabase"
 				, new object[] { TempFile() });
-			string[] hopArray = new string[] { "6.4", "7.4", "7.7" };
+			string[] hopArray = new string[] { "6.4", "7.4", CurrentVersion() };
 			for (int hopIndex = 0; hopIndex < hopArray.Length; ++hopIndex)
 			{
 				string hop = hopArray[hopIndex];
@@ -111,13 +116,20 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 			IEmbeddedObjectContainer container = Db4oEmbedded.OpenFile(config, TempFile());
 			try
 			{
-				Assert.AreEqual(originalEnv.Version(), ((GenericObject)container.Get(typeof(MigrationHopsTestCase.Item
-					)).Next()).Get(0));
+				IQuery query = container.Query();
+				query.Constrain(typeof(MigrationHopsTestCase.Item));
+				object item = query.Execute()[0];
+				Assert.AreEqual(originalEnv.Version(), ((GenericObject)item).Get(0));
 			}
 			finally
 			{
 				container.Close();
 			}
+		}
+
+		private string CurrentVersion()
+		{
+			return Db4oVersion.Major + "." + Db4oVersion.Minor;
 		}
 
 		/// <exception cref="System.Exception"></exception>

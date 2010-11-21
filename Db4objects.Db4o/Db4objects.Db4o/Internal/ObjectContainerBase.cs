@@ -28,7 +28,6 @@ using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Core;
 using Db4objects.Db4o.Reflect.Generic;
-using Db4objects.Db4o.Replication;
 using Db4objects.Db4o.Typehandlers;
 using Db4objects.Db4o.Types;
 using Sharpen;
@@ -2801,8 +2800,6 @@ namespace Db4objects.Db4o.Internal
 
 		public abstract IExtObjectContainer Ext();
 
-		public abstract IObjectSet Get(object arg1);
-
 		public abstract IQuery Query();
 
 		public abstract IObjectSet Query(Type arg1);
@@ -2814,8 +2811,6 @@ namespace Db4objects.Db4o.Internal
 		public abstract IObjectSet QueryByExample(object arg1);
 
 		public abstract void Rollback();
-
-		public abstract void Set(object arg1);
 
 		public abstract void Store(object arg1);
 
@@ -2852,11 +2847,6 @@ namespace Db4objects.Db4o.Internal
 		public abstract void Purge(object arg1);
 
 		public abstract void Refresh(object arg1, int arg2);
-
-		public abstract IReplicationProcess ReplicationBegin(IObjectContainer arg1, IReplicationConflictHandler
-			 arg2);
-
-		public abstract void Set(object arg1, int arg2);
 
 		public abstract void Store(object arg1, int arg2);
 

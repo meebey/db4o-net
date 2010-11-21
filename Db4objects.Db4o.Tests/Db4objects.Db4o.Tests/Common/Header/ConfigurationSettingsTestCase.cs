@@ -14,12 +14,12 @@ namespace Db4objects.Db4o.Tests.Common.Header
 		[System.ObsoleteAttribute]
 		public virtual void TestChangingUuidSettings()
 		{
-			Fixture().Config().GenerateUUIDs(0);
+			Fixture().Config().GenerateUUIDs(ConfigScope.Globally);
 			Reopen();
 			Assert.AreEqual(ConfigScope.Globally, GenerateUUIDs());
-			Db().Configure().GenerateUUIDs(-1);
+			Db().Configure().GenerateUUIDs(ConfigScope.Disabled);
 			Assert.AreEqual(ConfigScope.Disabled, GenerateUUIDs());
-			Fixture().Config().GenerateUUIDs(0);
+			Fixture().Config().GenerateUUIDs(ConfigScope.Globally);
 			Reopen();
 			Assert.AreEqual(ConfigScope.Globally, GenerateUUIDs());
 		}

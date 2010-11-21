@@ -121,7 +121,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 			return "freespace";
 		}
 
-		protected override void Store(IExtObjectContainer objectContainer)
+		protected override void Store(IObjectContainerAdapter objectContainer)
 		{
 			for (int i = 0; i < 10; i++)
 			{
@@ -132,7 +132,7 @@ namespace Db4objects.Db4o.Tests.Common.Freespace
 				v.Add(StringArrayData);
 				cls.SetId(i);
 				cls.SetVect(v);
-				objectContainer.Set(cls);
+				objectContainer.Store(cls);
 			}
 		}
 	}

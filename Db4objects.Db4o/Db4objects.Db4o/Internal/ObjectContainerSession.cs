@@ -17,7 +17,6 @@ using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
-using Db4objects.Db4o.Replication;
 using Db4objects.Db4o.Types;
 
 namespace Db4objects.Db4o.Internal
@@ -260,21 +259,6 @@ namespace Db4objects.Db4o.Internal
 			_server.ReleaseSemaphore(_transaction, name);
 		}
 
-		/// <param name="peerB"></param>
-		/// <param name="conflictHandler"></param>
-		[System.ObsoleteAttribute]
-		public virtual IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
-			 conflictHandler)
-		{
-			throw new NotSupportedException();
-		}
-
-		[System.ObsoleteAttribute(@"Use Store(object, int) instead")]
-		public virtual void Set(object obj, int depth)
-		{
-			Store(obj, depth);
-		}
-
 		public virtual void Store(object obj, int depth)
 		{
 			lock (Lock())
@@ -428,14 +412,6 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		[System.ObsoleteAttribute(@"Use QueryByExample(object) instead")]
-		public virtual IObjectSet Get(object template)
-		{
-			return QueryByExample(template);
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		public virtual IObjectSet QueryByExample(object template)
 		{
 			lock (Lock())
@@ -498,14 +474,6 @@ namespace Db4objects.Db4o.Internal
 				CheckClosed();
 				_server.Rollback(_transaction);
 			}
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use Store(object) instead")]
-		public virtual void Set(object obj)
-		{
-			Store(obj);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>

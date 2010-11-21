@@ -152,16 +152,16 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return "deletion-tests";
 		}
 
-		protected override void Store(IExtObjectContainer objectContainer)
+		protected override void Store(IObjectContainerAdapter objectContainer)
 		{
 			DeletionUponFormatMigrationTestCase.Item item1 = new DeletionUponFormatMigrationTestCase.Item
 				(IdToBeDeleted, new DeletionUponFormatMigrationTestCase.ChildItem(ChildToBeDelete
 				), ItemsToKeep());
-			objectContainer.Set(item1, 10);
+			objectContainer.Store(item1, 10);
 			DeletionUponFormatMigrationTestCase.Item item2 = new DeletionUponFormatMigrationTestCase.Item
 				(IdToBeKept, new DeletionUponFormatMigrationTestCase.ChildItem(ChildToBeKept), new 
 				DeletionUponFormatMigrationTestCase.Item[] { item1 });
-			objectContainer.Set(item2, 10);
+			objectContainer.Store(item2, 10);
 		}
 
 		private DeletionUponFormatMigrationTestCase.Item[] ItemsToKeep()

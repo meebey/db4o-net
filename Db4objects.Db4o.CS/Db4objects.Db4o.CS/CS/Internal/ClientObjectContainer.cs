@@ -942,8 +942,6 @@ namespace Db4objects.Db4o.CS.Internal
 			ReadThis();
 		}
 
-		// FIXME: remove this comments after the build is green
-		//		classCollection().refreshClasses();
 		public sealed override void Rollback1(Transaction trans)
 		{
 			if (_config.BatchMessages())
@@ -991,39 +989,6 @@ namespace Db4objects.Db4o.CS.Internal
 		public override bool SetSemaphore(string name, int timeout)
 		{
 			return SetSemaphore(_transaction, name, timeout);
-		}
-
-		[System.ObsoleteAttribute]
-		public virtual void SwitchToFile(string fileName)
-		{
-			lock (_lock)
-			{
-				if (!_config.IsReadOnly())
-				{
-					Commit();
-				}
-				MsgD msg = Msg.SwitchToFile.GetWriterForString(_transaction, fileName);
-				Write(msg);
-				ExpectedResponse(Msg.Ok);
-				ReReadAll((IConfiguration)_config.DeepClone(_config));
-				switchedToFile = fileName;
-			}
-		}
-
-		[System.ObsoleteAttribute]
-		public virtual void SwitchToMainFile()
-		{
-			lock (_lock)
-			{
-				if (!_config.IsReadOnly())
-				{
-					Commit();
-				}
-				Write(Msg.SwitchToMainFile);
-				ExpectedResponse(Msg.Ok);
-				ReReadAll((IConfiguration)_config.DeepClone(_config));
-				switchedToFile = null;
-			}
 		}
 
 		protected override string DefaultToString()
@@ -1196,13 +1161,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_943(this, trans, result));
+			WithEnvironment(new _IRunnable_910(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_943 : IRunnable
+		private sealed class _IRunnable_910 : IRunnable
 		{
-			public _IRunnable_943(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_910(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;

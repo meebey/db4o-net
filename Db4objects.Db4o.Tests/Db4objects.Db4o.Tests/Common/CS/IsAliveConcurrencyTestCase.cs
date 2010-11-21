@@ -78,18 +78,12 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			for (int i = 0; i < 10; ++i)
 			{
-				Store(new IsAliveConcurrencyTestCase.Item(this));
+				Store(new IsAliveConcurrencyTestCase.Item());
 			}
 		}
 
-		internal class Item
+		public class Item
 		{
-			internal Item(IsAliveConcurrencyTestCase _enclosing)
-			{
-				this._enclosing = _enclosing;
-			}
-
-			private readonly IsAliveConcurrencyTestCase _enclosing;
 		}
 
 		private static ClientObjectContainer client;

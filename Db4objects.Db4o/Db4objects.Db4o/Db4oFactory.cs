@@ -5,7 +5,6 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Config;
-using Db4objects.Db4o.Reflect;
 
 namespace Db4objects.Db4o
 {
@@ -539,11 +538,6 @@ namespace Db4objects.Db4o
 		{
 			return ((Config4Impl)config).ClientServerFactory().OpenServer(config, databaseFileName
 				, port);
-		}
-
-		internal static IReflector Reflector()
-		{
-			return i_config.Reflector();
 		}
 
 		/// <summary>returns the version name of the used db4o version.</summary>

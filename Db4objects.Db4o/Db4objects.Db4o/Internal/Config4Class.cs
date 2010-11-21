@@ -266,19 +266,6 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(PersistStaticFieldValuesKey, true);
 		}
 
-		[System.ObsoleteAttribute]
-		public virtual void ReadAs(object clazz)
-		{
-			Config4Impl configRef = Config();
-			IReflectClass claxx = configRef.ReflectorFor(clazz);
-			if (claxx == null)
-			{
-				return;
-			}
-			_config.Put(WriteAsKey, GetName());
-			configRef.ReadAs().Put(GetName(), claxx.GetName());
-		}
-
 		public virtual void Rename(string newName)
 		{
 			Config().Rename(Renames.ForClass(GetName(), newName));

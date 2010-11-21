@@ -13,8 +13,8 @@ namespace Db4objects.Db4o.Tests.Common.Internal
 		/// <exception cref="System.Exception"></exception>
 		protected override void Store()
 		{
-			Db().Set(new DeactivateTestCase.Item("foo", new DeactivateTestCase.Item("bar", null
-				)));
+			Db().Store(new DeactivateTestCase.Item("foo", new DeactivateTestCase.Item("bar", 
+				null)));
 		}
 
 		public virtual void Test()

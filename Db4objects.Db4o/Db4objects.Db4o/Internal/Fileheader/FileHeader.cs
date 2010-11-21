@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public const int TransactionPointerLength = Const4.IntLength * 2;
 
 		private static readonly FileHeader[] AvailableFileHeaders = new FileHeader[] { new 
-			FileHeader0(null), new FileHeader1(), new FileHeader2() };
+			FileHeader1(), new FileHeader2() };
 
 		public static NewFileHeaderBase NewCurrentFileHeader()
 		{

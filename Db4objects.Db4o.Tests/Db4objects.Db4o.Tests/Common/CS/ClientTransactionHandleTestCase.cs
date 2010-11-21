@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.Storage = new MemoryStorage();
-			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, SwitchingFilesFromClientUtil
+			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, ClientTransactionTestUtil
 				.MainfileName);
 			ClientTransactionPool pool = new ClientTransactionPool(db);
 			try
@@ -29,11 +29,11 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				Assert.AreEqual(db, handleB.Transaction().Container());
 				Assert.AreEqual(2, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
-				handleA.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FilenameA);
+				handleA.AcquireTransactionForFile(ClientTransactionTestUtil.FilenameA);
 				Assert.AreEqual(3, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				Assert.AreNotEqual(db, handleA.Transaction().Container());
-				handleB.AcquireTransactionForFile(SwitchingFilesFromClientUtil.FilenameA);
+				handleB.AcquireTransactionForFile(ClientTransactionTestUtil.FilenameA);
 				Assert.AreEqual(4, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
 				Assert.AreNotEqual(handleA.Transaction(), handleB.Transaction());
@@ -62,13 +62,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
-			SwitchingFilesFromClientUtil.DeleteFiles();
+			ClientTransactionTestUtil.DeleteFiles();
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
-			SwitchingFilesFromClientUtil.DeleteFiles();
+			ClientTransactionTestUtil.DeleteFiles();
 		}
 	}
 }

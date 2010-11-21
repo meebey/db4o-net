@@ -81,12 +81,11 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				common.Queries.EvaluationMode(QueryEvaluationMode.Lazy);
 				Assert.AreEqual(QueryEvaluationMode.Lazy, legacy.EvaluationMode());
 				// TODO: test reflectWith()
-				// TODO: test refreshClasses()
 				// TODO: this probably won't sharpen :/
 				TextWriter outStream = Sharpen.Runtime.Out;
 				common.OutStream = outStream;
 				Assert.AreEqual(outStream, legacy.OutStream());
-				IStringEncoding stringEncoding = new _IStringEncoding_115();
+				IStringEncoding stringEncoding = new _IStringEncoding_113();
 				common.StringEncoding = stringEncoding;
 				Assert.AreEqual(stringEncoding, legacy.StringEncoding());
 				common.TestConstructors = false;
@@ -116,9 +115,9 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				}
 			}
 
-			private sealed class _IStringEncoding_115 : IStringEncoding
+			private sealed class _IStringEncoding_113 : IStringEncoding
 			{
-				public _IStringEncoding_115()
+				public _IStringEncoding_113()
 				{
 				}
 
@@ -136,12 +135,12 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			// TODO: test registerTypeHandler()
 			private DiagnosticBase DummyDiagnostic()
 			{
-				return new _DiagnosticBase_145();
+				return new _DiagnosticBase_143();
 			}
 
-			private sealed class _DiagnosticBase_145 : DiagnosticBase
+			private sealed class _DiagnosticBase_143 : DiagnosticBase
 			{
-				public _DiagnosticBase_145()
+				public _DiagnosticBase_143()
 				{
 				}
 
@@ -216,12 +215,12 @@ namespace Db4objects.Db4o.Tests.Common.Api
 			public virtual void TestUnspecifiedUpdateDepthIsIllegal()
 			{
 				ICommonConfigurationProvider common = ((ICommonConfigurationProvider)Subject());
-				Assert.Expect(typeof(ArgumentException), new _ICodeBlock_220(common));
+				Assert.Expect(typeof(ArgumentException), new _ICodeBlock_218(common));
 			}
 
-			private sealed class _ICodeBlock_220 : ICodeBlock
+			private sealed class _ICodeBlock_218 : ICodeBlock
 			{
-				public _ICodeBlock_220(ICommonConfigurationProvider common)
+				public _ICodeBlock_218(ICommonConfigurationProvider common)
 				{
 					this.common = common;
 				}

@@ -12,9 +12,9 @@ using System.Reflection;
 [assembly: AssemblyKeyName("")]
 
 // attributes are automatically set by the build
-[assembly: AssemblyVersion("8.0.170.14430")]
+[assembly: AssemblyVersion("8.0.174.14430")]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyConfiguration(".NET")]
-[assembly: AssemblyDescription("Db4objects.Db4o.Tests 8.0.170.14430 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Db4o.Tests 8.0.174.14430 (.NET)")]
 
 [assembly: CLSCompliant(true)]

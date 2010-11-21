@@ -19,8 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		}
 
 		public static readonly Type[] InternalClasses = new Type[] { typeof(Db4oDatabase)
-			, typeof(PBootRecord), typeof(StaticClass), typeof(MetaClass), typeof(MetaField)
-			 };
+			, typeof(StaticClass) };
 
 		public class Item
 		{

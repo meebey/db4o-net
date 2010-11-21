@@ -25,12 +25,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 			return "migrate_" + TypeName() + "_";
 		}
 
-		protected override void Store(IExtObjectContainer objectContainer)
+		protected override void Store(IObjectContainerAdapter objectContainer)
 		{
 			HandlerUpdateTestCaseBase.Holder holder = new HandlerUpdateTestCaseBase.Holder();
 			holder._values = CreateValues();
 			holder._arrays = CreateArrays();
-			StoreObject(objectContainer, holder);
+			objectContainer.Store(holder);
 		}
 
 		protected override void AssertObjectsAreReadable(IExtObjectContainer objectContainer

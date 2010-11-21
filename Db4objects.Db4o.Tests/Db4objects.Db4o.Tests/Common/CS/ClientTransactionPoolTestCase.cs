@@ -17,22 +17,22 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		{
 			IConfiguration config = Db4oFactory.NewConfiguration();
 			config.Storage = new MemoryStorage();
-			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, SwitchingFilesFromClientUtil
+			LocalObjectContainer db = (LocalObjectContainer)Db4oFactory.OpenFile(config, ClientTransactionTestUtil
 				.MainfileName);
 			ClientTransactionPool pool = new ClientTransactionPool(db);
 			try
 			{
 				Assert.AreEqual(0, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
-				Transaction trans1 = pool.Acquire(SwitchingFilesFromClientUtil.MainfileName);
+				Transaction trans1 = pool.Acquire(ClientTransactionTestUtil.MainfileName);
 				Assert.AreEqual(db, trans1.Container());
 				Assert.AreEqual(1, pool.OpenTransactionCount());
 				Assert.AreEqual(1, pool.OpenFileCount());
-				Transaction trans2 = pool.Acquire(SwitchingFilesFromClientUtil.FilenameA);
+				Transaction trans2 = pool.Acquire(ClientTransactionTestUtil.FilenameA);
 				Assert.AreNotEqual(db, trans2.Container());
 				Assert.AreEqual(2, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
-				Transaction trans3 = pool.Acquire(SwitchingFilesFromClientUtil.FilenameA);
+				Transaction trans3 = pool.Acquire(ClientTransactionTestUtil.FilenameA);
 				Assert.AreEqual(trans2.Container(), trans3.Container());
 				Assert.AreEqual(3, pool.OpenTransactionCount());
 				Assert.AreEqual(2, pool.OpenFileCount());
@@ -57,13 +57,13 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		/// <exception cref="System.Exception"></exception>
 		public virtual void SetUp()
 		{
-			SwitchingFilesFromClientUtil.DeleteFiles();
+			ClientTransactionTestUtil.DeleteFiles();
 		}
 
 		/// <exception cref="System.Exception"></exception>
 		public virtual void TearDown()
 		{
-			SwitchingFilesFromClientUtil.DeleteFiles();
+			ClientTransactionTestUtil.DeleteFiles();
 		}
 	}
 }

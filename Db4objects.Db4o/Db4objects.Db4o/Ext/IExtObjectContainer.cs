@@ -6,7 +6,6 @@ using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Generic;
-using Db4objects.Db4o.Replication;
 
 namespace Db4objects.Db4o.Ext
 {
@@ -128,7 +127,7 @@ namespace Db4objects.Db4o.Ext
 		/// reference with the object parameter. The method may be used to replace
 		/// objects or to reassociate an object with it's stored instance
 		/// after closing and opening a database file. A subsequent call to
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set(object)">set(Object)</see>
+		/// <see cref="com.db4o.ObjectContainer#set">set(Object)</see>
 		/// is
 		/// necessary to update the stored object.<br /><br />
 		/// <b>Requirements:</b><br />- The ID needs to be a valid internal object ID,
@@ -444,65 +443,17 @@ namespace Db4objects.Db4o.Ext
 		/// <param name="name">the name of the semaphore to be released.</param>
 		void ReleaseSemaphore(string name);
 
-		/// <param name="peerB">
-		/// the
-		/// <see cref="Db4objects.Db4o.IObjectContainer">Db4objects.Db4o.IObjectContainer</see>
-		/// to replicate with.
-		/// </param>
-		/// <param name="conflictHandler">
-		/// the conflict handler for this ReplicationProcess.
-		/// Conflicts occur
-		/// whenever
-		/// <see cref="Db4objects.Db4o.Replication.IReplicationProcess.Replicate(object)">Db4objects.Db4o.Replication.IReplicationProcess.Replicate(object)
-		/// 	</see>
-		/// is called with an
-		/// object that was modified in both ObjectContainers since the last
-		/// replication run between the two. Upon a conflict the
-		/// <see cref="Db4objects.Db4o.Replication.IReplicationConflictHandler.ResolveConflict(Db4objects.Db4o.Replication.IReplicationProcess, object, object)
-		/// 	">Db4objects.Db4o.Replication.IReplicationConflictHandler.ResolveConflict(Db4objects.Db4o.Replication.IReplicationProcess, object, object)
-		/// 	</see>
-		/// method will be called in the conflict handler.
-		/// </param>
-		/// <returns>
-		/// the
-		/// <see cref="Db4objects.Db4o.Replication.IReplicationProcess">Db4objects.Db4o.Replication.IReplicationProcess
-		/// 	</see>
-		/// interface for this replication process.
-		/// </returns>
-		[System.ObsoleteAttribute(@"Since db4o-5.2. Use db4o Replication System (dRS) instead.<br><br> prepares for replication with another . <br><br>An  can only be involved in a replication process with one other  at the same time.<br><br> The returned  interface provides methods to commit and to cancel the replication process. <br><br>This ObjectContainer will be ""peerA"" for the returned ReplicationProcess. The other ObjectContainer will be ""peerB""."
-			)]
-		IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
-			 conflictHandler);
-
 		/// <summary>deep update interface to store or update objects.</summary>
 		/// <remarks>
 		/// deep update interface to store or update objects.
 		/// <br /><br />In addition to the normal storage interface,
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set(object)">ObjectContainer#set(Object)
-		/// 	</see>
+		/// <see cref="com.db4o.ObjectContainer#set">ObjectContainer#set(Object)</see>
 		/// ,
 		/// this method allows a manual specification of the depth, the passed object is to be updated.<br /><br />
 		/// </remarks>
 		/// <param name="obj">the object to be stored or updated.</param>
 		/// <param name="depth">the depth to which the object is to be updated</param>
-		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Set(object)">Db4objects.Db4o.IObjectContainer.Set(object)
-		/// 	</seealso>
-		[System.ObsoleteAttribute(@"Use Store(object, int) instead")]
-		void Set(object obj, int depth);
-
-		/// <summary>deep update interface to store or update objects.</summary>
-		/// <remarks>
-		/// deep update interface to store or update objects.
-		/// <br /><br />In addition to the normal storage interface,
-		/// <see cref="Db4objects.Db4o.IObjectContainer.Set(object)">ObjectContainer#set(Object)
-		/// 	</see>
-		/// ,
-		/// this method allows a manual specification of the depth, the passed object is to be updated.<br /><br />
-		/// </remarks>
-		/// <param name="obj">the object to be stored or updated.</param>
-		/// <param name="depth">the depth to which the object is to be updated</param>
-		/// <seealso cref="Db4objects.Db4o.IObjectContainer.Set(object)">Db4objects.Db4o.IObjectContainer.Set(object)
-		/// 	</seealso>
+		/// <seealso cref="com.db4o.ObjectContainer#set">com.db4o.ObjectContainer#set</seealso>
 		void Store(object obj, int depth);
 
 		/// <summary>attempts to set a semaphore.</summary>

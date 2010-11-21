@@ -14,6 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 		{
 			string tempFileName = Path.GetTempFileName();
 			Assert.IsTrue(System.IO.File.Exists(tempFileName));
+			File4.Delete(tempFileName);
 		}
 		#endif // !SILVERLIGHT
 	}

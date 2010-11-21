@@ -20,10 +20,8 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 		{
 			base.Configure(config);
 			config.BTreeNodeSize(4);
-			config.FlushFileBuffers(false);
 		}
 
-		// this just make the test faster
 		public virtual void TestStressSet()
 		{
 			IExtObjectContainer container = Db();

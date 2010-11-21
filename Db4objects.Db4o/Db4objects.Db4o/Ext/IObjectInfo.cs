@@ -35,7 +35,8 @@ namespace Db4objects.Db4o.Ext
 		/// returns a UUID representation of the referenced object.
 		/// UUID generation has to be turned on, in order to be able
 		/// to use this feature:
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(int)">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(int)
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope)
+		/// 	">Db4objects.Db4o.Config.IConfiguration.GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope)
 		/// 	</see>
 		/// </remarks>
 		/// <returns>the UUID of the referenced object.</returns>
@@ -50,7 +51,8 @@ namespace Db4objects.Db4o.Ext
 		/// referenced object was stored with last.
 		/// Version number generation has to be turned on, in order to
 		/// be able to use this feature:
-		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(int)">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(int)
+		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope)
+		/// 	">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope)
 		/// 	</see>
 		/// </remarks>
 		/// <returns>the version number.</returns>

@@ -10,6 +10,7 @@ using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Foundation.IO;
+using Db4objects.Db4o.Tests.Common.Handlers;
 using Db4objects.Db4o.Tests.Util;
 
 namespace Db4objects.Db4o.Tests.Common.Handlers
@@ -17,8 +18,6 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 	public abstract partial class FormatMigrationTestCaseBase : ITestLifeCycle, IOptOutNoFileSystemData
 		, IOptOutMultiSession, IOptOutWorkspaceIssue
 	{
-		private static readonly string Host = "127.0.0.1";
-
 		private static readonly string Username = "db4o";
 
 		private static readonly string Password = Username;
@@ -153,13 +152,13 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 		/// <exception cref="System.IO.IOException"></exception>
 		private void RunDeletionTests(string testFileName)
 		{
-			WithDatabase(testFileName, new _IFunction4_156(this));
+			WithDatabase(testFileName, new _IFunction4_152(this));
 			CheckDatabaseFile(testFileName);
 		}
 
-		private sealed class _IFunction4_156 : IFunction4
+		private sealed class _IFunction4_152 : IFunction4
 		{
-			public _IFunction4_156(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_152(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -188,12 +187,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_178(this));
+			WithDatabase(testFile, new _IFunction4_174(this));
 		}
 
-		private sealed class _IFunction4_178 : IFunction4
+		private sealed class _IFunction4_174 : IFunction4
 		{
-			public _IFunction4_178(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_174(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -209,12 +208,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void CheckUpdatedDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_187(this));
+			WithDatabase(testFile, new _IFunction4_183(this));
 		}
 
-		private sealed class _IFunction4_187 : IFunction4
+		private sealed class _IFunction4_183 : IFunction4
 		{
-			public _IFunction4_187(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_183(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -240,9 +239,11 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				File4.Delete(file);
 			}
 			IExtObjectContainer objectContainer = Db4oFactory.OpenFile(file).Ext();
+			IObjectContainerAdapter adapter = ObjectContainerAdapterFactory.ForVersion(Db4oMajorVersion
+				(), Db4oMinorVersion()).ForContainer(objectContainer);
 			try
 			{
-				Store(objectContainer);
+				Store(adapter);
 			}
 			finally
 			{
@@ -296,12 +297,12 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 
 		private void UpdateDatabaseFile(string testFile)
 		{
-			WithDatabase(testFile, new _IFunction4_248(this));
+			WithDatabase(testFile, new _IFunction4_247(this));
 		}
 
-		private sealed class _IFunction4_248 : IFunction4
+		private sealed class _IFunction4_247 : IFunction4
 		{
-			public _IFunction4_248(FormatMigrationTestCaseBase _enclosing)
+			public _IFunction4_247(FormatMigrationTestCaseBase _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -422,16 +423,7 @@ namespace Db4objects.Db4o.Tests.Common.Handlers
 				));
 		}
 
-		protected abstract void Store(IExtObjectContainer objectContainer);
-
-		protected virtual void StoreObject(IExtObjectContainer objectContainer, object obj
-			)
-		{
-			// code MUST use the deprecated ObjectContainer#set() API here
-			// instead of ObjectContainer#store()
-			// because it will be run against old db4o versions
-			objectContainer.Set(obj);
-		}
+		protected abstract void Store(IObjectContainerAdapter objectContainer);
 
 		protected virtual void Update(IExtObjectContainer objectContainer)
 		{

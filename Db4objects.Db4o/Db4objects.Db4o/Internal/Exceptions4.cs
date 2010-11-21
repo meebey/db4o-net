@@ -41,13 +41,6 @@ namespace Db4objects.Db4o.Internal
 			throw new Db4oException(Db4objects.Db4o.Internal.Messages.Get(code, msg));
 		}
 
-		[System.ObsoleteAttribute(@"Use com.db4o.foundation.NotSupportedException instead"
-			)]
-		public static void NotSupported()
-		{
-			ThrowRuntimeException(53);
-		}
-
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oException"></exception>
 		public static void CatchAllExceptDb4oException(Exception exc)
 		{

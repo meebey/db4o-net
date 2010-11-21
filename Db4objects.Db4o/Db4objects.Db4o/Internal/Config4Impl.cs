@@ -421,6 +421,11 @@ namespace Db4objects.Db4o.Internal
 			return false;
 		}
 
+		private Type[] IgnoredClasses()
+		{
+			return new Type[] { typeof(StaticClass), typeof(StaticField) };
+		}
+
 		public object DeepClone(object param)
 		{
 			Config4Impl ret = new Config4Impl();
@@ -463,19 +468,13 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(DisableCommitRecoveryKey, true);
 		}
 
-		[System.ObsoleteAttribute]
-		public void DiscardFreeSpace(int bytes)
+		public void DiscardSmallerThan(int byteCount)
 		{
-			if (bytes < 0)
+			if (byteCount < 0)
 			{
 				throw new ArgumentException();
 			}
-			_config.Put(DiscardFreespaceKey, bytes);
-		}
-
-		public void DiscardSmallerThan(int byteCount)
-		{
-			DiscardFreeSpace(byteCount);
+			_config.Put(DiscardFreespaceKey, byteCount);
 		}
 
 		[System.ObsoleteAttribute]
@@ -518,12 +517,6 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(ExceptionsOnNotStorableKey, flag);
 		}
 
-		[System.ObsoleteAttribute(@"Please use a  instead.")]
-		public void FlushFileBuffers(bool flag)
-		{
-		}
-
-		// ignore
 		public IFreespaceConfiguration Freespace()
 		{
 			return this;
@@ -539,23 +532,9 @@ namespace Db4objects.Db4o.Internal
 			return (IFreespaceFiller)_config.Get(FreespaceFillerKey);
 		}
 
-		[System.ObsoleteAttribute(@"Use GenerateUUIDs(Db4objects.Db4o.Config.ConfigScope) instead."
-			)]
-		public void GenerateUUIDs(int setting)
-		{
-			GenerateUUIDs(ConfigScope.ForID(setting));
-		}
-
 		public void GenerateUUIDs(ConfigScope scope)
 		{
 			_config.Put(GenerateUuidsKey, scope);
-		}
-
-		[System.ObsoleteAttribute(@"Use GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope) instead."
-			)]
-		public void GenerateVersionNumbers(int setting)
-		{
-			GenerateVersionNumbers(ConfigScope.ForID(setting));
 		}
 
 		public void GenerateVersionNumbers(ConfigScope scope)
@@ -754,12 +733,6 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(BlobPathKey, path);
 		}
 
-		[System.ObsoleteAttribute]
-		public void SetClassLoader(object classLoader)
-		{
-			ReflectWith(Platform4.CreateReflector(classLoader));
-		}
-
 		public void SetMessageRecipient(IMessageRecipient messageRecipient)
 		{
 			_config.Put(MessageRecipientKey, messageRecipient);
@@ -810,12 +783,6 @@ namespace Db4objects.Db4o.Internal
 			_config.Put(TimeoutServerSocketKey, milliseconds);
 		}
 
-		[System.ObsoleteAttribute]
-		public void Unicode(bool unicodeOn)
-		{
-		}
-
-		// do nothing
 		public void UpdateDepth(int depth)
 		{
 			if (depth < 0)

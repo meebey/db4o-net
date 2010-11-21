@@ -8,7 +8,6 @@ using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Activation;
 using Db4objects.Db4o.Query;
-using Db4objects.Db4o.Replication;
 
 namespace Db4objects.Db4o.Internal
 {
@@ -69,13 +68,6 @@ namespace Db4objects.Db4o.Internal
 		public override IExtObjectContainer Ext()
 		{
 			return this;
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		[System.ObsoleteAttribute(@"Use QueryByExample(object) instead")]
-		public sealed override IObjectSet Get(object template)
-		{
-			return QueryByExample(template);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -167,25 +159,9 @@ namespace Db4objects.Db4o.Internal
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use Store(object) instead")]
-		public sealed override void Set(object obj)
-		{
-			Store(obj);
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
 		public sealed override void Store(object obj)
 		{
 			Store(obj, Const4.Unspecified);
-		}
-
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
-		/// <exception cref="Db4objects.Db4o.Ext.DatabaseReadOnlyException"></exception>
-		[System.ObsoleteAttribute(@"Use Store(object, int) instead")]
-		public sealed override void Set(object obj, int depth)
-		{
-			Store(obj, depth);
 		}
 
 		/// <exception cref="Db4objects.Db4o.Ext.DatabaseClosedException"></exception>
@@ -213,14 +189,5 @@ namespace Db4objects.Db4o.Internal
 		public abstract override void Backup(IStorage targetStorage, string path);
 
 		public abstract override Db4oDatabase Identity();
-
-		/// <param name="peerB"></param>
-		/// <param name="conflictHandler"></param>
-		[System.ObsoleteAttribute]
-		public override IReplicationProcess ReplicationBegin(IObjectContainer peerB, IReplicationConflictHandler
-			 conflictHandler)
-		{
-			throw new NotSupportedException();
-		}
 	}
 }

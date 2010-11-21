@@ -29,9 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 				), typeof(ServerClosedTestCase), typeof(ServerObjectContainerIsolationTestCase), 
 				typeof(ServerPortUsedTestCase), typeof(ServerQueryEventsTestCase), typeof(ServerRevokeAccessTestCase
 				), typeof(ServerTimeoutTestCase), typeof(ServerToClientTestCase), typeof(ServerTransactionCountTestCase
-				), typeof(SetSemaphoreTestCase), typeof(SwitchingFilesFromClientTestCase), typeof(
-				SwitchingFilesFromMultipleClientsTestCase), typeof(SwitchingToFileWithDifferentClassesTestCase
-				) };
+				), typeof(SetSemaphoreTestCase) };
 		}
 	}
 }

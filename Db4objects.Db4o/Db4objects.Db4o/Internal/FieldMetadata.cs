@@ -139,13 +139,6 @@ namespace Db4objects.Db4o.Internal
 				return;
 			}
 			BTree index = GetIndex(trans);
-			// Although we checked hasIndex() already, we have to check
-			// again here since index creation in YapFieldUUID can be
-			// unsuccessful if it's called too early for PBootRecord.
-			if (index == null)
-			{
-				return;
-			}
 			index.Add(trans, CreateFieldIndexKey(parentID, indexEntry));
 		}
 
@@ -534,7 +527,7 @@ namespace Db4objects.Db4o.Internal
 				StatefulBuffer buffer = (StatefulBuffer)context.Buffer();
 				DeleteContextImpl childContext = new DeleteContextImpl(context, GetStoredType(), 
 					_config);
-				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_452
+				context.SlotFormat().DoWithSlotIndirection(buffer, GetHandler(), new _IClosure4_445
 					(this, childContext));
 			}
 			catch (CorruptionException exc)
@@ -543,9 +536,9 @@ namespace Db4objects.Db4o.Internal
 			}
 		}
 
-		private sealed class _IClosure4_452 : IClosure4
+		private sealed class _IClosure4_445 : IClosure4
 		{
-			public _IClosure4_452(FieldMetadata _enclosing, DeleteContextImpl childContext)
+			public _IClosure4_445(FieldMetadata _enclosing, DeleteContextImpl childContext)
 			{
 				this._enclosing = _enclosing;
 				this.childContext = childContext;
@@ -675,6 +668,10 @@ namespace Db4objects.Db4o.Internal
 			return null;
 		}
 
+		/// <summary>
+		/// dirty hack for com.db4o.types some of them (BlobImpl) need to be set automatically
+		/// TODO: Derive from FieldMetadata for Db4oTypes
+		/// </summary>
 		public virtual object GetOrCreate(Transaction trans, object onObject)
 		{
 			if (!Alive())
@@ -1062,13 +1059,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_866(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_862(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_866 : IVisitor4
+		private sealed class _IVisitor4_862 : IVisitor4
 		{
-			public _IVisitor4_866(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_862(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1290,12 +1287,12 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 correctTypeHandlerVersion = HandlerRegistry.CorrectHandlerVersion(context
 				, GetHandler(), _fieldType);
 			context.SlotFormat().DoWithSlotIndirection(context, correctTypeHandlerVersion, new 
-				_IClosure4_1029(context, correctTypeHandlerVersion));
+				_IClosure4_1025(context, correctTypeHandlerVersion));
 		}
 
-		private sealed class _IClosure4_1029 : IClosure4
+		private sealed class _IClosure4_1025 : IClosure4
 		{
-			public _IClosure4_1029(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
+			public _IClosure4_1025(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
 				)
 			{
 				this.context = context;
