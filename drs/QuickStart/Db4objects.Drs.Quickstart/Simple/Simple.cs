@@ -1,6 +1,6 @@
 /* This file is part of the db4o object database http://www.db4o.com
 
-Copyright (C) 2004 - 2009  Versant Corporation http://www.versant.com
+Copyright (C) 2004 - 2010  Versant Corporation http://www.versant.com
 
 db4o is free software; you can redistribute it and/or modify it under
 the terms of version 3 of the GNU General Public License as published
@@ -14,6 +14,7 @@ for more details.
 You should have received a copy of the GNU General Public License along
 with this program.  If not, see http://www.gnu.org/licenses/. */
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Drs.Db4o;
 
 namespace Db4objects.Drs.Quickstart.Simple
@@ -29,10 +30,9 @@ namespace Db4objects.Drs.Quickstart.Simple
 
 		public virtual void DoSelectiveReplication()
 		{
-			ConfigureDb4oForReplication();
-			Db4objects.Db4o.IObjectContainer handheld = OpenDb("handheld.yap");
+			Db4objects.Db4o.IObjectContainer handheld = OpenDb(ConfigureDb4oForReplication(), "handheld.yap");
 			StoreSomePilots(handheld);
-			Db4objects.Db4o.IObjectContainer desktop = OpenDb("desktop.yap");
+			Db4objects.Db4o.IObjectContainer desktop = OpenDb(ConfigureDb4oForReplication(), "desktop.yap");
 			DisplayContents("Selective Replication", "Before", handheld, desktop);
 		    Db4objects.Drs.IReplicationSession replication = 
                 Db4objects.Drs.Replication.Begin(ProviderFor(handheld), ProviderFor(desktop));
@@ -60,10 +60,9 @@ namespace Db4objects.Drs.Quickstart.Simple
 
 	    private void DoBiDirectionalReplication()
 		{
-			ConfigureDb4oForReplication();
-			Db4objects.Db4o.IObjectContainer handheld = OpenDb("handheld.yap");
+			Db4objects.Db4o.IObjectContainer handheld = OpenDb(ConfigureDb4oForReplication(), "handheld.yap");
 			StoreSomePilots(handheld);
-			Db4objects.Db4o.IObjectContainer desktop = OpenDb("desktop.yap");
+			Db4objects.Db4o.IObjectContainer desktop = OpenDb(ConfigureDb4oForReplication(), "desktop.yap");
 			StoreSomeMorePilots(desktop);
 			DisplayContents("Bi-Directional", "Before", handheld, desktop);
 			Db4objects.Drs.IReplicationSession replication = 
@@ -101,8 +100,8 @@ namespace Db4objects.Drs.Quickstart.Simple
 
 		private void StoreSomeMorePilots(Db4objects.Db4o.IObjectContainer db)
 		{
-			db.Set(new Db4objects.Drs.Quickstart.Simple.Pilot("Peter van der Merwe", 37));
-			db.Set(new Db4objects.Drs.Quickstart.Simple.Pilot("Albert Kwan", 30));
+			db.Store(new Db4objects.Drs.Quickstart.Simple.Pilot("Peter van der Merwe", 37));
+			db.Store(new Db4objects.Drs.Quickstart.Simple.Pilot("Albert Kwan", 30));
 		}
 
 		private void DisplayContentsOf(string heading, Db4objects.Db4o.IObjectContainer db
@@ -110,8 +109,7 @@ namespace Db4objects.Drs.Quickstart.Simple
 		{
 			Sharpen.Runtime.Out.WriteLine(heading);
 			Sharpen.Runtime.Out.WriteLine();
-			Db4objects.Db4o.IObjectSet result = db.Get(new Db4objects.Drs.Quickstart.Simple.Pilot
-				());
+			Db4objects.Db4o.IObjectSet result = db.QueryByExample(new Db4objects.Drs.Quickstart.Simple.Pilot());
 			ListResult(result);
 		}
 
@@ -120,26 +118,26 @@ namespace Db4objects.Drs.Quickstart.Simple
 			db.Close();
 		}
 
-		private Db4objects.Db4o.IObjectContainer OpenDb(string dbname)
+		private Db4objects.Db4o.IObjectContainer OpenDb(IEmbeddedConfiguration config, string dbname)
 		{
 			new Sharpen.IO.File(dbname).Delete();
-			Db4objects.Db4o.IObjectContainer db = Db4objects.Db4o.Db4oFactory.OpenFile(dbname
-				);
-			return db;
+			return Db4oEmbedded.OpenFile(config, dbname);
 		}
 
-		private void ConfigureDb4oForReplication()
+		private IEmbeddedConfiguration ConfigureDb4oForReplication()
 		{
-			Db4objects.Db4o.Db4oFactory.Configure().GenerateUUIDs(int.MaxValue);
-			Db4objects.Db4o.Db4oFactory.Configure().GenerateVersionNumbers(int.MaxValue);
+		    IEmbeddedConfiguration configuration = Db4oEmbedded.NewConfiguration();
+		    configuration.File.GenerateUUIDs = ConfigScope.Globally;
+            configuration.File.GenerateVersionNumbers = ConfigScope.Globally;
+
+		    return configuration;
 		}
 
 		private void DoOneWayReplcation()
 		{
-			ConfigureDb4oForReplication();
-			Db4objects.Db4o.IObjectContainer handheld = OpenDb("handheld.yap");
+			Db4objects.Db4o.IObjectContainer handheld = OpenDb(ConfigureDb4oForReplication(), "handheld.yap");
 			StoreSomePilots(handheld);
-			Db4objects.Db4o.IObjectContainer desktop = OpenDb("desktop.yap");
+			Db4objects.Db4o.IObjectContainer desktop = OpenDb(ConfigureDb4oForReplication(), "desktop.yap");
 			DisplayContents("One-way Replication", "Before", handheld, desktop);
 			Db4objects.Drs.IReplicationSession replication = Db4objects.Drs.Replication.Begin
 				(ProviderFor(handheld), ProviderFor(desktop));
@@ -157,8 +155,8 @@ namespace Db4objects.Drs.Quickstart.Simple
 
 		private void StoreSomePilots(Db4objects.Db4o.IObjectContainer db)
 		{
-			db.Set(new Db4objects.Drs.Quickstart.Simple.Pilot("Scott Felton", 52));
-			db.Set(new Db4objects.Drs.Quickstart.Simple.Pilot("Frank Green", 45));
+			db.Store(new Db4objects.Drs.Quickstart.Simple.Pilot("Scott Felton", 52));
+			db.Store(new Db4objects.Drs.Quickstart.Simple.Pilot("Frank Green", 45));
 		}
 
 		public virtual void ListResult(Db4objects.Db4o.IObjectSet result)
