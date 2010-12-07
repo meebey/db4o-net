@@ -1,9 +1,9 @@
+/* Copyright (C) 2004 - 2010 Versant Inc.   http://www.db4o.com */
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Db4oTool;
 
 namespace Db4oTool.MSBuild
 {
@@ -36,55 +36,74 @@ namespace Db4oTool.MSBuild
 
         public override bool Execute()
         {
-            List<string> list = new List<string>();
-            list.Add("-v");
+			List<string> list = new List<string>();
+			list.Add("-v");
 			list.Add("-ta");
-            if (commandLine != null)
-            {
-                list.Add(commandLine);
-            }
-            foreach (ITaskItem assembly in assemblies)
-            {
-                string assemblyFile = projectDir + assembly.ItemSpec;
-                Log.LogWarning(string.Format("Enhancing assembly: {0}", assemblyFile));
-                list.Add(assemblyFile);
+			if (commandLine != null)
+			{
+				list.AddRange(commandLine.Split(' '));
+			}
 
-                int ret = Enhance(list.ToArray());
-                if (ret != 0)
-                {
-                	Log.LogError(string.Format("Fail to enhance assembly: {0} with return value {1}", assemblyFile, ret));
-                    return false;
-                }
-                string message = string.Format("Assembly {0} is enhanced successfully.", assemblyFile);
-                Log.LogWarning(message);
+			foreach (ITaskItem assembly in assemblies)
+			{
+				string assemblyFile = projectDir + assembly.ItemSpec;
+				Log.LogWarning(string.Format("Enhancing assembly: {0}", assemblyFile));
+				list.Add(assemblyFile);
+                               
+				int ret = Enhance(list.ToArray());
+				if (ret != 0)
+				{
+					Log.LogError(string.Format("Fail to enhance assembly: {0} with return value {1}", assemblyFile, ret));
+					return false;
+				}
+				string message = string.Format("Assembly {0} enhanced successfully .", assemblyFile);
+				Log.LogWarning(message);
 
-                list.Remove(assemblyFile);
-            }
-            return true;
+				list.Remove(assemblyFile);
+			}
+			return true;
         }
 
-        private int Enhance(string[] options)
-        {
-        	int ret;
+		private int Enhance(string[] options)
+		{
+			int ret;
 			StringWriter consoleOut = new StringWriter();
+			StringWriter consoleErr = new StringWriter();
 			try
 			{
 				Console.SetOut(consoleOut);
+				Console.SetError(consoleErr);
 
 				ret = Program.Main(options);
-				if (ret != 0)
-				{
-					Log.LogError(consoleOut.ToString());
-				}
+
+				WriteOutput(consoleOut);
+				WriteOutput(consoleErr);
 			}
 			finally
 			{
-				StreamWriter originalOut = new StreamWriter(Console.OpenStandardOutput());
-				originalOut.AutoFlush = true;
-				Console.SetOut(originalOut);
+				using (var originalOut = new StreamWriter(Console.OpenStandardOutput()))
+				{
+					originalOut.AutoFlush = true;
+					Console.SetOut(originalOut);
+				}
+
+				using (var originalErr = new StreamWriter(Console.OpenStandardError()))
+				{
+					originalErr.AutoFlush = true;
+					Console.SetError(originalErr);
+				}
 			}
 
-        	return ret;
-        }
-    }
+			return ret;
+		}
+
+		private void WriteOutput(StringWriter output)
+		{
+			string contents = output.ToString();
+			if (contents.Length > 0)
+			{
+				Log.LogWarning(contents);
+			}
+		}
+	}
 }
