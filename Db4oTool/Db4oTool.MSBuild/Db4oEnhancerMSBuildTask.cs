@@ -81,13 +81,13 @@ namespace Db4oTool.MSBuild
 			}
 			finally
 			{
-				using (var originalOut = new StreamWriter(Console.OpenStandardOutput()))
+				using (StreamWriter originalOut = new StreamWriter(Console.OpenStandardOutput()))
 				{
 					originalOut.AutoFlush = true;
 					Console.SetOut(originalOut);
 				}
 
-				using (var originalErr = new StreamWriter(Console.OpenStandardError()))
+				using (StreamWriter originalErr = new StreamWriter(Console.OpenStandardError()))
 				{
 					originalErr.AutoFlush = true;
 					Console.SetError(originalErr);
