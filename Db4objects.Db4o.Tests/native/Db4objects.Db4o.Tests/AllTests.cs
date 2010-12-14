@@ -43,12 +43,7 @@ namespace Db4objects.Db4o.Tests
                     typeof(CLI1.AllTests),
                     typeof(CLI2.AllTests),
                     typeof(SharpenLang.AllTests),
-#if SILVERLIGHT
-                    typeof(Silverlight.AllTests),
-#endif
                     typeof(AllTestsConcurrency),
-
-
 				};
 		}
 	}
