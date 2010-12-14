@@ -31,6 +31,7 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 				                   	};
 
 
+				InitializeVersion();
 				new TestRunner(SilverlightSuite(testCases)).Run(new SilverlightTestListener(Dispatcher));
 				Complete();
 			}
@@ -40,6 +41,11 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			}
 		}
 
+		private void InitializeVersion()
+		{
+			var version = Environment.Version.ToString();
+			Dispatcher.BeginInvoke(() => HtmlPage.Window.Eval(string.Format("initialize('{0}');", version)));
+		}
 
 		private void Complete()
 		{

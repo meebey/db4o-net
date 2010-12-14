@@ -67,7 +67,8 @@
 </head>
 
 <body>
-	<div style="border-style: groove; border-width: medium; background-color: #FFFFCC; position: fixed; top: 40px; right: 40px; font-family: Verdana; width: 100px; height: 80px;"> 
+	<div style="border-style: groove; border-width: medium; background-color: #FFFFCC; position: fixed; top: 40px; right: 140px; font-family: Verdana; width: 200px; height: 120px;">
+		Runtime: <div id="RuntimeVersion">0</div>
 		Total: <div id="Total">0</div>
 		Errors: <div id="Errors">0</div>
 	</div>	
@@ -185,10 +186,16 @@
 		function completed() {
 			var completedElement = document.createElement("div");
 			completedElement.setAttribute("id", "completed");
+
 			document.appendChild(completedElement);
 		}
-		function increaseDiskQuota_onclick() {
 
+		function initialize(version) {
+			var runtimeVersion = document.getElementById("RuntimeVersion");
+			runtimeVersion.innerHTML = version;
+		}
+		
+		function increaseDiskQuota_onclick() {
 		}
 
 	</script>
