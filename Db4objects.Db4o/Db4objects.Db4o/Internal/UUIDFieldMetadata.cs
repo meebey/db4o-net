@@ -141,7 +141,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				return;
 			}
-			AddIndexEntry(container.GetLocalSystemTransaction(), objectId, data.uuid);
+			AddIndexEntry(container.LocalSystemTransaction(), objectId, data.uuid);
 		}
 
 		private void EnsureIndex(Transaction transaction)

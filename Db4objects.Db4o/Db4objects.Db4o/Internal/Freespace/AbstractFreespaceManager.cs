@@ -24,7 +24,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		private const int IntsInSlot = 12;
 
-		private const int RemainderSizeLimit = 20;
+		public const int RemainderSizeLimit = 20;
 
 		public static byte CheckType(byte systemType)
 		{

@@ -13,13 +13,21 @@ namespace Db4objects.Db4o.IO
 
 		private readonly bool _readOnly;
 
+		private readonly int _blockSize;
+
 		public BinConfiguration(string uri, bool lockFile, long initialLength, bool readOnly
-			)
+			) : this(uri, lockFile, initialLength, readOnly, 1)
+		{
+		}
+
+		public BinConfiguration(string uri, bool lockFile, long initialLength, bool readOnly
+			, int blockSize)
 		{
 			_uri = uri;
 			_lockFile = lockFile;
 			_initialLength = initialLength;
 			_readOnly = readOnly;
+			_blockSize = blockSize;
 		}
 
 		public virtual string Uri()
@@ -42,10 +50,15 @@ namespace Db4objects.Db4o.IO
 			return _readOnly;
 		}
 
+		public virtual int BlockSize()
+		{
+			return _blockSize;
+		}
+
 		public override string ToString()
 		{
 			return "BinConfiguration(Uri: " + _uri + ", Locked: " + _lockFile + ", ReadOnly: "
-				 + _readOnly + ")";
+				 + _readOnly + ", BlockSize: " + _blockSize + ")";
 		}
 	}
 }

@@ -47,6 +47,7 @@ namespace Db4objects.Db4o.Defragment
 				// seen object ids don't come by here anymore - any other candidates?
 				context.MapIDs(objectID, context.TargetNewId(), isClassID);
 			}
+			context.Mapping().Commit();
 			_ids = null;
 		}
 	}

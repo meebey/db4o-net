@@ -88,6 +88,7 @@ namespace Db4objects.Db4o.Defragment
 					if (this._enclosing._objectCount == this._enclosing._objectCommitFrequency)
 					{
 						services.TargetCommit();
+						services.Mapping().Commit();
 						this._enclosing._objectCount = 0;
 					}
 				}
@@ -103,12 +104,12 @@ namespace Db4objects.Db4o.Defragment
 		public void ProcessClassCollection(DefragmentServicesImpl services)
 		{
 			DefragmentContextImpl.ProcessCopy(services, services.SourceClassCollectionID(), new 
-				_ISlotCopyHandler_58(services));
+				_ISlotCopyHandler_59(services));
 		}
 
-		private sealed class _ISlotCopyHandler_58 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_59 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_58(DefragmentServicesImpl services)
+			public _ISlotCopyHandler_59(DefragmentServicesImpl services)
 			{
 				this.services = services;
 			}

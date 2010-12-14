@@ -99,7 +99,7 @@ namespace Db4objects.Db4o.Internal.Freespace
 
 		public virtual int TotalFreespace()
 		{
-			return _delegate.TotalFreespace();
+			return _blockConverter.BlocksToBytes(_delegate.TotalFreespace());
 		}
 
 		public virtual void Traverse(IVisitor4 visitor)

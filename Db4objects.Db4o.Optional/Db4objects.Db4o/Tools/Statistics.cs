@@ -6,7 +6,6 @@ using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Ext;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
-using Db4objects.Db4o.Internal.Handlers;
 using Db4objects.Db4o.Tools;
 
 namespace Db4objects.Db4o.Tools
@@ -75,8 +74,8 @@ namespace Db4objects.Db4o.Tools
 
 		private void PrintStats(IObjectContainer con, string filename)
 		{
-			Tree unavailable = new Statistics.TreeString(Remove);
-			Tree noConstructor = new Statistics.TreeString(Remove);
+			Tree unavailable = new TreeString(Remove);
+			Tree noConstructor = new TreeString(Remove);
 			// one element too many, substract one in the end
 			IStoredClass[] internalClasses = con.Ext().StoredClasses();
 			for (int i = 0; i < internalClasses.Length; i++)
@@ -85,41 +84,40 @@ namespace Db4objects.Db4o.Tools
 				Type clazz = ReflectPlatform.ForName(internalClassName);
 				if (clazz == null)
 				{
-					unavailable = unavailable.Add(new Statistics.TreeString(internalClassName));
+					unavailable = unavailable.Add(new TreeString(internalClassName));
 				}
 				else
 				{
 					if (!CanCallConstructor(internalClassName))
 					{
-						noConstructor = noConstructor.Add(new Statistics.TreeString(internalClassName));
+						noConstructor = noConstructor.Add(new TreeString(internalClassName));
 					}
 				}
 			}
-			unavailable = unavailable.RemoveLike(new Statistics.TreeString(Remove));
-			noConstructor = noConstructor.RemoveLike(new Statistics.TreeString(Remove));
+			unavailable = unavailable.RemoveLike(new TreeString(Remove));
+			noConstructor = noConstructor.RemoveLike(new TreeString(Remove));
 			if (unavailable != null)
 			{
 				PrintHeader("UNAVAILABLE");
-				unavailable.Traverse(new _IVisitor4_81());
+				unavailable.Traverse(new _IVisitor4_80());
 			}
 			if (noConstructor != null)
 			{
 				PrintHeader("NO PUBLIC CONSTRUCTOR");
-				noConstructor.Traverse(new _IVisitor4_89());
+				noConstructor.Traverse(new _IVisitor4_88());
 			}
 			PrintHeader("CLASSES");
 			Sharpen.Runtime.Out.WriteLine("Number of objects per class:");
 			ByRef ids = ByRef.NewInstance(new TreeInt(0));
 			if (internalClasses.Length > 0)
 			{
-				Tree all = new Statistics.TreeStringObject(internalClasses[0].GetName(), internalClasses
-					[0]);
+				Tree all = new TreeStringObject(internalClasses[0].GetName(), internalClasses[0]);
 				for (int i = 1; i < internalClasses.Length; i++)
 				{
-					all = all.Add(new Statistics.TreeStringObject(internalClasses[i].GetName(), internalClasses
-						[i]));
+					all = all.Add(new TreeStringObject(internalClasses[i].GetName(), internalClasses[
+						i]));
 				}
-				all.Traverse(new _IVisitor4_108(ids));
+				all.Traverse(new _IVisitor4_107(ids));
 			}
 			PrintHeader("SUMMARY");
 			Sharpen.Runtime.Out.WriteLine("File: " + filename);
@@ -137,41 +135,41 @@ namespace Db4objects.Db4o.Tools
 				() - 1));
 		}
 
-		private sealed class _IVisitor4_81 : IVisitor4
+		private sealed class _IVisitor4_80 : IVisitor4
 		{
-			public _IVisitor4_81()
+			public _IVisitor4_80()
 			{
 			}
 
 			public void Visit(object obj)
 			{
-				Sharpen.Runtime.Out.WriteLine(((Statistics.TreeString)obj)._key);
+				Sharpen.Runtime.Out.WriteLine(((TreeString)obj)._key);
 			}
 		}
 
-		private sealed class _IVisitor4_89 : IVisitor4
+		private sealed class _IVisitor4_88 : IVisitor4
 		{
-			public _IVisitor4_89()
+			public _IVisitor4_88()
 			{
 			}
 
 			public void Visit(object obj)
 			{
-				Sharpen.Runtime.Out.WriteLine(((Statistics.TreeString)obj)._key);
+				Sharpen.Runtime.Out.WriteLine(((TreeString)obj)._key);
 			}
 		}
 
-		private sealed class _IVisitor4_108 : IVisitor4
+		private sealed class _IVisitor4_107 : IVisitor4
 		{
-			public _IVisitor4_108(ByRef ids)
+			public _IVisitor4_107(ByRef ids)
 			{
 				this.ids = ids;
 			}
 
 			public void Visit(object obj)
 			{
-				Statistics.TreeStringObject node = (Statistics.TreeStringObject)obj;
-				long[] newIDs = ((IStoredClass)node._object).GetIDs();
+				TreeStringObject node = (TreeStringObject)obj;
+				long[] newIDs = ((IStoredClass)node._value).GetIDs();
 				for (int j = 0; j < newIDs.Length; j++)
 				{
 					if (((Tree)ids.value).Find(new TreeInt((int)newIDs[j])) == null)
@@ -202,54 +200,5 @@ namespace Db4objects.Db4o.Tools
 		}
 
 		private static readonly string Remove = "XXxxREMOVExxXX";
-
-		private class TreeString : Tree
-		{
-			public string _key;
-
-			public TreeString(string a_key)
-			{
-				this._key = a_key;
-			}
-
-			protected override Tree ShallowCloneInternal(Tree tree)
-			{
-				Statistics.TreeString ts = (Statistics.TreeString)base.ShallowCloneInternal(tree);
-				ts._key = _key;
-				return ts;
-			}
-
-			public override object ShallowClone()
-			{
-				return ShallowCloneInternal(new Statistics.TreeString(_key));
-			}
-
-			public override int Compare(Tree a_to)
-			{
-				return StringHandler.Compare(Const4.stringIO.Write(_key), Const4.stringIO.Write((
-					(Statistics.TreeString)a_to)._key));
-			}
-
-			public override object Key()
-			{
-				return _key;
-			}
-		}
-
-		private class TreeStringObject : Statistics.TreeString
-		{
-			public readonly object _object;
-
-			public TreeStringObject(string a_key, object a_object) : base(a_key)
-			{
-				this._object = a_object;
-			}
-
-			public override object ShallowClone()
-			{
-				Statistics.TreeStringObject tso = new Statistics.TreeStringObject(_key, _object);
-				return ShallowCloneInternal(tso);
-			}
-		}
 	}
 }

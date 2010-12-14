@@ -44,6 +44,8 @@ namespace Db4objects.Db4o.Defragment
 
 		public abstract void Close();
 
+		public abstract void Commit();
+
 		public abstract void MapId(int arg1, Slot arg2);
 
 		public abstract int MappedId(int arg1);

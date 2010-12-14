@@ -2,6 +2,7 @@
 
 using System;
 using Db4oUnit.Extensions;
+using Db4objects.Db4o.Tests.Optional;
 
 namespace Db4objects.Db4o.Tests.Optional
 {
@@ -9,7 +10,8 @@ namespace Db4objects.Db4o.Tests.Optional
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(Db4objects.Db4o.Tests.Optional.Handlers.AllTests) };
+			return new Type[] { typeof(Db4objects.Db4o.Tests.Optional.Handlers.AllTests), typeof(
+				ConsistencyCheckerTestCase), typeof(FileUsageStatsTestCase) };
 		}
 	}
 }

@@ -46,18 +46,12 @@ namespace Db4objects.Db4o
 			}
 		}
 
-		//        	addRange(19);
+		// addRange(15);
+		// breakOnEvent(540);
 		//        	
 		//        	addRangeWithEnd(448, 460);
-		// addRange(13061);
-		// addRangeWithEnd(390, 402);
-		// addRangeWithLength(3840, 1);
-		// addRangeWithLength(180, 1);
-		// addRange(4874);
-		// addRangeWithEnd(3835808, 3836267);
-		// breakOnEvent(226);
-		// addRangeWithLength(1068, 1);
-		// addRangeWithLength(1722, 1);
+		//        	addRangeWithLength(770,53);
+		// breakOnEvent(125);
 		//            trackEventsWithoutRange();
 		//            turnAllOffExceptFor(new DTrace[] {WRITE_BYTES});
 		//            turnAllOffExceptFor(new DTrace[] {
@@ -68,7 +62,7 @@ namespace Db4objects.Db4o
 		//                FILE_FREE,
 		//                TRANS_COMMIT,
 		//                });
-		// turnAllOffExceptFor(new DTrace[] {FREESPACEMANAGER_BTREE_FREE, FREESPACEMANAGER_RAM_FREE });
+		// turnAllOffExceptFor(new DTrace[] {WRITE_BYTES});
 		//            turnAllOffExceptFor(new DTrace[] {BTREE_NODE_REMOVE, BTREE_NODE_COMMIT_OR_ROLLBACK YAPMETA_SET_ID});
 		private static void Init()
 		{
@@ -110,6 +104,8 @@ namespace Db4objects.Db4o
 				FatalException = new Db4objects.Db4o.DTrace(true, true, "fatal exception", true);
 				Free = new Db4objects.Db4o.DTrace(true, true, "free", true);
 				FileFree = new Db4objects.Db4o.DTrace(true, true, "fileFree", true);
+				FileRead = new Db4objects.Db4o.DTrace(true, true, "fileRead", true);
+				FileWrite = new Db4objects.Db4o.DTrace(true, true, "fileWrite", true);
 				FreespacemanagerGetSlot = new Db4objects.Db4o.DTrace(true, true, "FreespaceManager getSlot"
 					, true);
 				FreespacemanagerRamFree = new Db4objects.Db4o.DTrace(true, true, "InMemoryfreespaceManager free"
@@ -275,6 +271,10 @@ namespace Db4objects.Db4o
 		public static Db4objects.Db4o.DTrace FatalException;
 
 		public static Db4objects.Db4o.DTrace FileFree;
+
+		public static Db4objects.Db4o.DTrace FileRead;
+
+		public static Db4objects.Db4o.DTrace FileWrite;
 
 		public static Db4objects.Db4o.DTrace Free;
 

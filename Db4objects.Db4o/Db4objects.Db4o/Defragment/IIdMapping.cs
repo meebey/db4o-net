@@ -47,5 +47,7 @@ namespace Db4objects.Db4o.Defragment
 
 		/// <summary>returns the slot address for an ID</summary>
 		int AddressForId(int id);
+
+		void Commit();
 	}
 }

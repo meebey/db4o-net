@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -14,7 +14,17 @@
     <FileAlignment>512</FileAlignment>
     
     
-  <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
+  
+
+
+
+
+
+
+
+<SignAssembly>true</SignAssembly>
+<AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
+</PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>

@@ -1024,7 +1024,7 @@ namespace Db4objects.Db4o.Internal
 			return queryResult;
 		}
 
-		public virtual LocalTransaction GetLocalSystemTransaction()
+		public virtual LocalTransaction LocalSystemTransaction()
 		{
 			return (LocalTransaction)SystemTransaction();
 		}

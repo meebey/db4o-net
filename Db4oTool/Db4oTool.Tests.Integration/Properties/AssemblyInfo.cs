@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Db4oTool.Test.Integration")]
-[assembly: AssemblyDescription("Db4oTool.Tests.Integration 8.0.174.14430 (.NET)")]
+[assembly: AssemblyDescription("Db4oTool.Tests.Integration 8.0.177.14430 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -17,6 +17,6 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("8.0.174.14430")]
+[assembly: AssemblyVersion("8.0.177.14430")]
 
 [assembly: CLSCompliant(true)]

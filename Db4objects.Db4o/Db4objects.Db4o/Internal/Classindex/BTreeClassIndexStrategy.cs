@@ -55,7 +55,6 @@ namespace Db4objects.Db4o.Internal.Classindex
 
 		public override void TraverseAll(Transaction ta, IVisitor4 command)
 		{
-			// better alternatives for this null check? (has been moved as is from YapFile)
 			if (_btreeIndex != null)
 			{
 				_btreeIndex.TraverseKeys(ta, command);
@@ -69,12 +68,12 @@ namespace Db4objects.Db4o.Internal.Classindex
 				return;
 			}
 			_btreeIndex = ((LocalObjectContainer)stream).CreateBTreeClassIndex(btreeID);
-			_btreeIndex.SetRemoveListener(new _IVisitor4_62(this));
+			_btreeIndex.SetRemoveListener(new _IVisitor4_61(this));
 		}
 
-		private sealed class _IVisitor4_62 : IVisitor4
+		private sealed class _IVisitor4_61 : IVisitor4
 		{
-			public _IVisitor4_62(BTreeClassIndexStrategy _enclosing)
+			public _IVisitor4_61(BTreeClassIndexStrategy _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

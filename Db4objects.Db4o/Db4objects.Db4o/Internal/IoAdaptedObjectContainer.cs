@@ -53,13 +53,15 @@ namespace Db4objects.Db4o.Internal
 			bool lockFile = Debug4.lockFile && configImpl.LockFile() && (!readOnly);
 			if (NeedsLockFileThread())
 			{
-				IBin fileBin = storage.Open(new BinConfiguration(FileName(), false, 0, false));
+				IBin fileBin = storage.Open(new BinConfiguration(FileName(), false, 0, false, configImpl
+					.BlockSize()));
 				IBin synchronizedBin = new SynchronizedBin(fileBin);
 				_file = new BlockAwareBin(synchronizedBin);
 			}
 			else
 			{
-				IBin bin = storage.Open(new BinConfiguration(FileName(), lockFile, 0, readOnly));
+				IBin bin = storage.Open(new BinConfiguration(FileName(), lockFile, 0, readOnly, configImpl
+					.BlockSize()));
 				if (configImpl.AsynchronousSync())
 				{
 					bin = new ThreadedSyncBin(bin);
@@ -109,7 +111,8 @@ namespace Db4objects.Db4o.Internal
 						throw new BackupInProgressException();
 					}
 					this._enclosing._backupFile = new BlockAwareBin(targetStorage.Open(new BinConfiguration
-						(path, true, this._enclosing._file.Length(), false)));
+						(path, true, this._enclosing._file.Length(), false, this._enclosing._blockConverter
+						.BlocksToBytes(1))));
 				}
 				long pos = 0;
 				byte[] buffer = new byte[8192];

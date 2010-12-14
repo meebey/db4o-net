@@ -33,7 +33,7 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly PendingClassInits _classInits;
 
-		internal ClassMetadataRepository(Transaction systemTransaction)
+		public ClassMetadataRepository(Transaction systemTransaction)
 		{
 			_systemTransaction = systemTransaction;
 			_initClassMetadataOnUp = new NonblockingQueue();
@@ -401,7 +401,7 @@ namespace Db4objects.Db4o.Internal
 			return Container().ConfigImpl.ResolveAliasRuntimeName(name);
 		}
 
-		internal void InitOnUp(Transaction systemTrans)
+		public void InitOnUp(Transaction systemTrans)
 		{
 			_classMetadataCreationDepth++;
 			systemTrans.Container().ShowInternalClasses(true);

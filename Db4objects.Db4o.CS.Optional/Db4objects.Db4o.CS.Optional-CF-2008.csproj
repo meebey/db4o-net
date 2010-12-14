@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -26,7 +26,19 @@
     </UpgradeBackupLocation>
     
     
-  <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile></PropertyGroup>
+  
+
+
+
+
+
+
+
+
+
+<SignAssembly>true</SignAssembly>
+<AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
+</PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -65,7 +77,24 @@
     </Reference>
     <Reference Include="System.Xml"/>
   </ItemGroup>
-  <ItemGroup><Compile Include="Properties\AssemblyInfo.cs"/><Compile Include="native\Db4objects.Db4o.CS\Config\ClientSslSupport.cs"/><Compile Include="native\Db4objects.Db4o.CS\Config\ServerSslSupport.cs"/><Compile Include="native\Db4objects.Db4o.CS\Foundation\ServerSslSocket.cs"/><Compile Include="native\Db4objects.Db4o.CS\Foundation\Socket4Stream.cs"/><Compile Include="native\Db4objects.Db4o.CS\Foundation\SslSocket.cs"/><Compile Include="native\Db4objects.Db4o.CS\Foundation\SslSocketFactory.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\ClientConnectionsMonitoringSupport.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\Db4oClientServerPerformanceCounters.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredClientSocket4.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredServerSideClientSocket4.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredServerSocket4.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredSocket4Base.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredSocket4Factory.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\NetworkingCounters.cs"/><Compile Include="native\Db4objects.Db4o.CS\Monitoring\NetworkingMonitoringSupport.cs"/></ItemGroup>
+  <ItemGroup>
+<Compile Include="Properties\AssemblyInfo.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Config\ClientSslSupport.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Config\ServerSslSupport.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Foundation\ServerSslSocket.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Foundation\Socket4Stream.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Foundation\SslSocket.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Foundation\SslSocketFactory.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\ClientConnectionsMonitoringSupport.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\Db4oClientServerPerformanceCounters.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredClientSocket4.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredServerSideClientSocket4.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredServerSocket4.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredSocket4Base.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\MonitoredSocket4Factory.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\NetworkingCounters.cs"/>
+<Compile Include="native\Db4objects.Db4o.CS\Monitoring\NetworkingMonitoringSupport.cs"/>
+</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o.CS\Db4objects.Db4o.CS-CF-2008.csproj">
       <Project>{89BB3D10-B9D5-4172-A0D9-3BB856AC5B85}</Project>

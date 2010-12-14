@@ -162,22 +162,16 @@ namespace Db4objects.Db4o.Defragment
 			{
 				UpgradeFile(config);
 			}
-			DefragmentServicesImpl context = new DefragmentServicesImpl(config, listener);
-			int newClassCollectionID = 0;
-			int targetIdentityID = 0;
-			int targetUuidIndexID = 0;
+			DefragmentServicesImpl services = new DefragmentServicesImpl(config, listener);
 			try
 			{
-				FirstPass(context, config);
-				SecondPass(context, config);
-				DefragUnindexed(context);
-				context.CommitIds();
-				newClassCollectionID = context.StrictMappedID(context.SourceClassCollectionID());
-				context.TargetClassCollectionID(newClassCollectionID);
-				int sourceIdentityID = context.DatabaseIdentityID(DefragmentServicesImpl.Sourcedb
-					);
-				targetIdentityID = context.MappedID(sourceIdentityID, 0);
-				targetUuidIndexID = context.MappedID(context.SourceUuidIndexID(), 0);
+				FirstPass(services, config);
+				services.CommitIds();
+				SecondPass(services, config);
+				services.CommitIds();
+				DefragUnindexed(services);
+				services.CommitIds();
+				services.ReplaceClassMetadataRepository();
 			}
 			catch (CorruptionException exc)
 			{
@@ -185,16 +179,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 			finally
 			{
-				context.Close();
-			}
-			if (targetIdentityID > 0)
-			{
-				SetIdentity(config, targetIdentityID, targetUuidIndexID);
-			}
-			else
-			{
-				listener.NotifyDefragmentInfo(new DefragmentInfo("No database identity found in original file."
-					));
+				services.Close();
 			}
 		}
 
@@ -284,41 +269,19 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.HasMoreIds())
 			{
 				int origID = unindexedIDs.NextId();
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_221());
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_207());
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_221 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_207 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_221()
+			public _ISlotCopyHandler_207()
 			{
 			}
 
 			public void ProcessCopy(DefragmentContextImpl context)
 			{
 				ClassMetadata.DefragObject(context);
-			}
-		}
-
-		private static void SetIdentity(DefragmentConfig config, int targetIdentityID, int
-			 targetUuidIndexID)
-		{
-			IConfiguration db4oConfig = config.ClonedDb4oConfig();
-			// required because reading of old identity fails
-			// and we don't want to see an invalid ID exception
-			db4oConfig.RecoveryMode(true);
-			LocalObjectContainer targetDB = (LocalObjectContainer)Db4oFactory.OpenFile(db4oConfig
-				, config.OrigPath());
-			try
-			{
-				Db4oDatabase identity = (Db4oDatabase)targetDB.GetByID(targetDB.SystemTransaction
-					(), targetIdentityID);
-				targetDB.SystemData().UuidIndexId(targetUuidIndexID);
-				targetDB.SetIdentity(identity);
-			}
-			finally
-			{
-				targetDB.Close();
 			}
 		}
 
@@ -407,12 +370,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_314(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_283(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_314 : IVisitor4
+		private sealed class _IVisitor4_283 : IVisitor4
 		{
-			public _IVisitor4_314(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_283(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

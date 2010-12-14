@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Db4objects.Db4o.Foundation
 {
-	public interface ISet4
+	public interface ISet4 : IEnumerable
 	{
 		bool Add(object obj);
 
@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Foundation
 
 		bool IsEmpty();
 
-		IEnumerator Iterator();
+		IEnumerator GetEnumerator();
 
 		bool Remove(object obj);
 

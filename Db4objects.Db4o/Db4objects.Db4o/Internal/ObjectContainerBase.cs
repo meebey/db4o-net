@@ -2788,6 +2788,12 @@ namespace Db4objects.Db4o.Internal
 			return ConfigImpl.UpdateDepthProvider();
 		}
 
+		public virtual void ReplaceClassMetadataRepository(ClassMetadataRepository repository
+			)
+		{
+			_classCollection = repository;
+		}
+
 		public abstract IQLin From(Type arg1);
 
 		public abstract void Activate(object arg1, int arg2);

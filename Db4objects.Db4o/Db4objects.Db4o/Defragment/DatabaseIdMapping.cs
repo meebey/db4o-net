@@ -1,8 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
-using System;
 using System.Collections;
-using Db4objects.Db4o;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -10,7 +8,6 @@ using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Ids;
 using Db4objects.Db4o.Internal.Mapping;
 using Db4objects.Db4o.Internal.Slots;
-using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Defragment
 {
@@ -31,13 +28,17 @@ namespace Db4objects.Db4o.Defragment
 
 		private BTree _idTree;
 
+		private BTree _slotTree;
+
 		private MappedIDPair _cache = new MappedIDPair(0, 0);
 
 		private DatabaseIdMapping.BTreeSpec _treeSpec = null;
 
 		private int _commitFrequency = 0;
 
-		private int _insertCount = 0;
+		private int _idInsertCount = 0;
+
+		private int _slotInsertCount = 0;
 
 		/// <summary>Will maintain the ID mapping as a BTree in the file with the given path.
 		/// 	</summary>
@@ -104,11 +105,11 @@ namespace Db4objects.Db4o.Defragment
 			_idTree.Add(Trans(), _cache);
 			if (_commitFrequency > 0)
 			{
-				_insertCount++;
-				if (_commitFrequency == _insertCount)
+				_idInsertCount++;
+				if (_commitFrequency == _idInsertCount)
 				{
 					_idTree.Commit(Trans());
-					_insertCount = 0;
+					_idInsertCount = 0;
 				}
 			}
 		}
@@ -117,9 +118,11 @@ namespace Db4objects.Db4o.Defragment
 		public override void Open()
 		{
 			_mappingDb = DefragmentServicesImpl.FreshTempFile(_fileName, 1);
-			IIndexable4 handler = new MappedIDPairHandler();
-			_idTree = (_treeSpec == null ? new BTree(Trans(), 0, handler) : new BTree(Trans()
-				, 0, handler, _treeSpec.NodeSize()));
+			_idTree = (_treeSpec == null ? new BTree(Trans(), 0, new MappedIDPairHandler()) : 
+				new BTree(Trans(), 0, new MappedIDPairHandler(), _treeSpec.NodeSize()));
+			_slotTree = (_treeSpec == null ? new BTree(Trans(), 0, new BTreeIdSystem.IdSlotMappingHandler
+				()) : new BTree(Trans(), 0, new BTreeIdSystem.IdSlotMappingHandler(), _treeSpec.
+				NodeSize()));
 		}
 
 		public override void Close()
@@ -149,32 +152,51 @@ namespace Db4objects.Db4o.Defragment
 
 		public override void MapId(int id, Slot slot)
 		{
-			_mappingDb.Store(new IdSlotMapping(id, slot.Address(), slot.Length()));
+			_slotTree.Add(Trans(), new IdSlotMapping(id, slot.Address(), slot.Length()));
+			if (_commitFrequency > 0)
+			{
+				_slotInsertCount++;
+				if (_commitFrequency == _slotInsertCount)
+				{
+					_slotTree.Commit(Trans());
+					_slotInsertCount = 0;
+				}
+			}
 		}
 
 		public override IVisitable SlotChanges()
 		{
-			return new _IVisitable_130(this);
+			return new _IVisitable_137(this);
 		}
 
-		private sealed class _IVisitable_130 : IVisitable
+		private sealed class _IVisitable_137 : IVisitable
 		{
-			public _IVisitable_130(DatabaseIdMapping _enclosing)
+			public _IVisitable_137(DatabaseIdMapping _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
 
 			public void Accept(IVisitor4 outSideVisitor)
 			{
-				IObjectSet objectSet = this._enclosing._mappingDb.Query(typeof(IdSlotMapping));
-				for (IEnumerator idSlotMappingIter = objectSet.GetEnumerator(); idSlotMappingIter
-					.MoveNext(); )
+				this._enclosing._slotTree.TraverseKeys(this._enclosing.Trans(), new _IVisitor4_139
+					(outSideVisitor));
+			}
+
+			private sealed class _IVisitor4_139 : IVisitor4
+			{
+				public _IVisitor4_139(IVisitor4 outSideVisitor)
 				{
-					IdSlotMapping idSlotMapping = ((IdSlotMapping)idSlotMappingIter.Current);
-					SlotChange slotChange = new SlotChange(idSlotMapping._id);
-					slotChange.NotifySlotCreated(idSlotMapping.Slot());
+					this.outSideVisitor = outSideVisitor;
+				}
+
+				public void Visit(object idSlotMapping)
+				{
+					SlotChange slotChange = new SlotChange(((IdSlotMapping)idSlotMapping)._id);
+					slotChange.NotifySlotCreated(((IdSlotMapping)idSlotMapping).Slot());
 					outSideVisitor.Visit(slotChange);
 				}
+
+				private readonly IVisitor4 outSideVisitor;
 			}
 
 			private readonly DatabaseIdMapping _enclosing;
@@ -182,16 +204,19 @@ namespace Db4objects.Db4o.Defragment
 
 		public override int AddressForId(int id)
 		{
-			IQuery query = _mappingDb.Query();
-			query.Constrain(typeof(IdSlotMapping));
-			query.Descend("_id").Constrain(id);
-			IObjectSet objectSet = query.Execute();
-			if (objectSet.Count != 1)
+			IBTreeRange range = _slotTree.SearchRange(Trans(), new IdSlotMapping(id, 0, 0));
+			IEnumerator pointers = range.Pointers();
+			if (pointers.MoveNext())
 			{
-				throw new InvalidOperationException();
+				BTreePointer pointer = (BTreePointer)pointers.Current;
+				return ((IdSlotMapping)pointer.Key())._address;
 			}
-			IdSlotMapping mapping = ((IdSlotMapping)objectSet.Next());
-			return mapping.Slot().Address();
+			return 0;
+		}
+
+		public override void Commit()
+		{
+			_mappingDb.Commit();
 		}
 	}
 }

@@ -139,7 +139,10 @@ namespace Db4objects.Db4o.Internal
 				{
 					FieldInfo field = Sharpen.Runtime.GetDeclaredField(curclazz, name);
 					Platform4.SetAccessible(field);
-					return field;
+					if (field != null)
+					{
+						return field;
+					}
 				}
 				catch (Exception)
 				{

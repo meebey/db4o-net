@@ -43,7 +43,7 @@ namespace Db4objects.Db4o.Foundation
 			return _map.Size() == 0;
 		}
 
-		public virtual IEnumerator Iterator()
+		public virtual IEnumerator GetEnumerator()
 		{
 			return _map.Values().GetEnumerator();
 		}

@@ -107,5 +107,9 @@ namespace Db4objects.Db4o.Defragment
 
 			private readonly InMemoryIdMapping _enclosing;
 		}
+
+		public override void Commit()
+		{
+		}
 	}
 }

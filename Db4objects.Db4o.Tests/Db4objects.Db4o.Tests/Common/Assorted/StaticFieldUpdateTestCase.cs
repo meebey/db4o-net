@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using System;
 using Db4oUnit;
 using Db4oUnit.Extensions;
 using Db4objects.Db4o;
@@ -98,6 +99,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 			if (!consistencyReport.Consistent())
 			{
 				Sharpen.Runtime.Err.WriteLine(consistencyReport);
+				throw new InvalidOperationException("Inconsistency found");
 			}
 			IQuery query = NewQuery(typeof(StaticFieldUpdateTestCase.Item));
 			query.Descend("_value").Constrain(value);

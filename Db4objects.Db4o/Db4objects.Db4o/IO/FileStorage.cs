@@ -40,14 +40,14 @@ namespace Db4objects.Db4o.IO
 			return file.Exists() && file.Length() > 0;
 		}
 
-		internal class FileBin : IBin
+		public class FileBin : IBin
 		{
 			private readonly string _path;
 
 			private RandomAccessFile _file;
 
 			/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
-			internal FileBin(BinConfiguration config)
+			public FileBin(BinConfiguration config)
 			{
 				bool ok = false;
 				try
@@ -119,6 +119,10 @@ namespace Db4objects.Db4o.IO
 				try
 				{
 					Seek(pos);
+					if (DTrace.enabled)
+					{
+						DTrace.FileRead.LogLength(pos, length);
+					}
 					return _file.Read(bytes, 0, length);
 				}
 				catch (IOException e)
@@ -162,6 +166,10 @@ namespace Db4objects.Db4o.IO
 				try
 				{
 					Seek(pos);
+					if (DTrace.enabled)
+					{
+						DTrace.FileWrite.LogLength(pos, length);
+					}
 					_file.Write(buffer, 0, length);
 				}
 				catch (IOException e)

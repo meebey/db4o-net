@@ -67,17 +67,15 @@ namespace Db4objects.Db4o.Defragment
 		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_44
 			();
 
-		public readonly LocalObjectContainer _sourceDb;
+		private readonly LocalObjectContainer _sourceDb;
 
-		internal readonly LocalObjectContainer _targetDb;
+		private readonly LocalObjectContainer _targetDb;
 
 		private readonly IIdMapping _mapping;
 
 		private IDefragmentListener _listener;
 
 		private IQueue4 _unindexed = new NonblockingQueue();
-
-		private readonly Hashtable4 _hasFieldIndexCache = new Hashtable4();
 
 		private DefragmentConfig _defragConfig;
 
@@ -87,15 +85,13 @@ namespace Db4objects.Db4o.Defragment
 		{
 			_listener = listener;
 			Config4Impl originalConfig = (Config4Impl)defragConfig.Db4oConfig();
-			Config4Impl sourceConfig = (Config4Impl)originalConfig.DeepClone(null);
-			sourceConfig.WeakReferences(false);
 			IStorage storage = defragConfig.BackupStorage();
 			if (defragConfig.ReadOnly())
 			{
 				storage = new NonFlushingStorage(storage);
 			}
-			sourceConfig.Storage = storage;
-			sourceConfig.ReadOnly(defragConfig.ReadOnly());
+			Config4Impl sourceConfig = PrepareConfig(originalConfig, storage, defragConfig.ReadOnly
+				());
 			_sourceDb = (LocalObjectContainer)Db4oFactory.OpenFile(sourceConfig, defragConfig
 				.TempPath()).Ext();
 			_sourceDb.ShowInternalClasses(true);
@@ -104,6 +100,16 @@ namespace Db4objects.Db4o.Defragment
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
 			_defragConfig = defragConfig;
+		}
+
+		private Config4Impl PrepareConfig(Config4Impl originalConfig, IStorage storage, bool
+			 readOnly)
+		{
+			Config4Impl sourceConfig = (Config4Impl)originalConfig.DeepClone(null);
+			sourceConfig.WeakReferences(false);
+			sourceConfig.Storage = storage;
+			sourceConfig.ReadOnly(readOnly);
+			return sourceConfig;
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -123,7 +129,7 @@ namespace Db4objects.Db4o.Defragment
 		{
 			config.Db4oConfig().Storage.Delete(config.OrigPath());
 			return (LocalObjectContainer)Db4oFactory.OpenFile(config.ClonedDb4oConfig(), config
-				.OrigPath()).Ext();
+				.OrigPath());
 		}
 
 		public virtual int MappedID(int oldID, int defaultID)
@@ -166,11 +172,12 @@ namespace Db4objects.Db4o.Defragment
 			{
 				return 0;
 			}
-			if (_sourceDb.Handlers.IsSystemHandler(oldID))
+			int mappedId = _mapping.MappedId(oldID);
+			if (mappedId == 0 && _sourceDb.Handlers.IsSystemHandler(oldID))
 			{
 				return oldID;
 			}
-			return _mapping.MappedId(oldID);
+			return mappedId;
 		}
 
 		public virtual void MapIDs(int oldID, int newID, bool isClassID)
@@ -311,12 +318,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_231(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_240(this, collector));
 		}
 
-		private sealed class _IVisitor4_231 : IVisitor4
+		private sealed class _IVisitor4_240 : IVisitor4
 		{
-			public _IVisitor4_231(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_240(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -368,9 +375,48 @@ namespace Db4objects.Db4o.Defragment
 			_targetDb.SetIdentity(_sourceDb.Identity());
 		}
 
-		public virtual void TargetClassCollectionID(int newClassCollectionID)
+		public virtual void ReplaceClassMetadataRepository()
 		{
-			_targetDb.SystemData().ClassCollectionID(newClassCollectionID);
+			Db4objects.Db4o.Internal.Transaction systemTransaction = _targetDb.SystemTransaction
+				();
+			// Can't use strictMappedID because the repository ID can
+			// be lower than HandlerRegisrtry _highestBuiltinTypeID and
+			// the ClassRepository ID would be treated as a system handler
+			// and the unmapped ID would be returned.
+			int newRepositoryId = _mapping.MappedId(SourceClassCollectionID());
+			int sourceIdentityID = DatabaseIdentityID(DefragmentServicesImpl.Sourcedb);
+			int targetIdentityID = _mapping.MappedId(sourceIdentityID);
+			int targetUuidIndexID = _mapping.MappedId(SourceUuidIndexID());
+			int oldIdentityId = _targetDb.SystemData().Identity().GetID(systemTransaction);
+			int oldRepositoryId = _targetDb.ClassCollection().GetID();
+			ClassMetadataRepository oldRepository = _targetDb.ClassCollection();
+			ClassMetadataRepository newRepository = new ClassMetadataRepository(systemTransaction
+				);
+			newRepository.SetID(newRepositoryId);
+			newRepository.Read(systemTransaction);
+			newRepository.InitOnUp(systemTransaction);
+			_targetDb.SystemData().ClassCollectionID(newRepositoryId);
+			_targetDb.ReplaceClassMetadataRepository(newRepository);
+			_targetDb.SystemData().UuidIndexId(targetUuidIndexID);
+			Db4oDatabase identity = (Db4oDatabase)_targetDb.GetByID(systemTransaction, targetIdentityID
+				);
+			_targetDb.SetIdentity(identity);
+			ClassMetadataIterator iterator = oldRepository.Iterator();
+			while (iterator.MoveNext())
+			{
+				ClassMetadata classMetadata = iterator.CurrentClass();
+				BTreeClassIndexStrategy index = (BTreeClassIndexStrategy)classMetadata.Index();
+				index.Btree().Free(_targetDb.LocalSystemTransaction());
+				FreeById(classMetadata.GetID());
+			}
+			FreeById(oldIdentityId);
+			FreeById(oldRepositoryId);
+		}
+
+		private void FreeById(int id)
+		{
+			_targetDb.SystemTransaction().IdSystem().NotifySlotDeleted(id, SlotChangeFactory.
+				SystemObjects);
 		}
 
 		public virtual ByteArrayBuffer SourceBufferByID(int sourceID)
@@ -449,8 +495,11 @@ namespace Db4objects.Db4o.Defragment
 
 		public virtual void CommitIds()
 		{
-			_targetDb.IdSystem().Commit(Mapping().SlotChanges(), FreespaceCommitter.DoNothing
-				);
+			FreespaceCommitter freespaceCommitter = new FreespaceCommitter(_targetDb.FreespaceManager
+				());
+			freespaceCommitter.TransactionalIdSystem(SystemTrans().IdSystem());
+			_targetDb.IdSystem().Commit(Mapping().SlotChanges(), freespaceCommitter);
+			freespaceCommitter.Commit();
 		}
 	}
 }

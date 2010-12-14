@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Assert.AreEqual(1, _set.Size());
 			Assert.IsTrue(_set.Contains(obj));
 			Assert.IsFalse(_set.Contains(new object()));
-			IEnumerator iter = _set.Iterator();
+			IEnumerator iter = _set.GetEnumerator();
 			Assert.IsTrue(iter.MoveNext());
 			Assert.AreEqual(obj, iter.Current);
 		}
@@ -52,7 +52,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 				Assert.IsTrue(_set.Contains(obj));
 			}
 			Assert.IsFalse(_set.Contains(new object()));
-			Iterator4Assert.SameContent(objs, _set.Iterator());
+			Iterator4Assert.SameContent(objs, _set.GetEnumerator());
 		}
 
 		public virtual void TestClear()
@@ -73,7 +73,7 @@ namespace Db4objects.Db4o.Tests.Common.Foundation
 			Assert.AreEqual(0, _set.Size());
 			Assert.IsFalse(_set.Contains(new object()));
 			Assert.IsFalse(_set.Remove(new object()));
-			Assert.IsFalse(_set.Iterator().MoveNext());
+			Assert.IsFalse(_set.GetEnumerator().MoveNext());
 		}
 
 		/// <exception cref="System.Exception"></exception>
