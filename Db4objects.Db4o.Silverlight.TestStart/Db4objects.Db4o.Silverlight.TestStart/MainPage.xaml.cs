@@ -23,14 +23,15 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 			{
 				Type[] testCases = new[]
 				                   	{
-				                   		typeof(Linq.Tests.AllTests),
-				                   		typeof(Tests.Common.AllTests), 
+										typeof(Tests.Silverlight.AllTests),
+										typeof(Linq.Tests.AllTests),
+										typeof(Tests.Common.AllTests), 
 										typeof(Tests.CLI1.AllTests),
 										typeof(Tests.CLI2.AllTests),
 				                   	};
 
-				new TestRunner(SilverlightSuite(testCases)).Run(new SilverlightTestListener(Dispatcher));
 
+				new TestRunner(SilverlightSuite(testCases)).Run(new SilverlightTestListener(Dispatcher));
 				Complete();
 			}
 			catch(Exception ex)
@@ -38,6 +39,7 @@ namespace Db4objects.Db4o.Silverlight.TestStart
 				AppendException(ex);
 			}
 		}
+
 
 		private void Complete()
 		{

@@ -3,6 +3,7 @@
 
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
+using Db4objects.Db4o.Internal.Config;
 using Db4objects.Db4o.IO;
 
 namespace Db4oUnit.Extensions.Fixtures
@@ -29,13 +30,15 @@ namespace Db4oUnit.Extensions.Fixtures
 
 		protected override IObjectContainer CreateDatabase(IConfiguration config)
 		{
+			_storage = config.Storage;
 			return Db4oFactory.OpenFile(config, DatabaseFileName);
 		}
 
 		protected override IConfiguration NewConfiguration()
 		{
-			IConfiguration config = base.NewConfiguration();
-			config.Storage = _storage;
+			var config = base.NewConfiguration();
+			var embeddedConfig = new EmbeddedConfigurationImpl(config);
+			embeddedConfig.AddConfigurationItem(new SilverlightSupport());
 
 			return config;
 		}
@@ -47,7 +50,7 @@ namespace Db4oUnit.Extensions.Fixtures
 		}
 
 		private const string DatabaseFileName = "SilverlightDatabase.db4o";
-		private readonly IsolatedStorageStorage _storage = new IsolatedStorageStorage();
+		private IStorage _storage;
 	}
 }
 

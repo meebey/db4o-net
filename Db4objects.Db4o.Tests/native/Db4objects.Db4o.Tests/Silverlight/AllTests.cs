@@ -13,6 +13,7 @@ namespace Db4objects.Db4o.Tests.Silverlight
 		{
 			return new Type[]
 			       	{
+			       		typeof(Config.AllTests),
 			       		typeof(IO.AllTests),
 			       	};
 		}
