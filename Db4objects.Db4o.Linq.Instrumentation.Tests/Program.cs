@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* Copyright (C) 2011 Versant Inc.  http://www.db4o.com */
+using System;
 using System.IO;
 using System.Reflection;
 
@@ -35,7 +36,7 @@ namespace Db4objects.Db4o.Linq.Instrumentation.Tests
 		{
 			var options = new ProgramOptions()
 			{
-				Assembly = testAssemblyFile,
+				Target = testAssemblyFile,
 				TransparentPersistence = true,
 			};
 

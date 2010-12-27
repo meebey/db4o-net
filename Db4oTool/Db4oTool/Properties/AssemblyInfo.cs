@@ -23,7 +23,7 @@ using System.Security;
 [assembly: Mono.Author("Patrick Roemer")]
 
 [assembly: Mono.About("")]
-[assembly: Mono.UsageComplement("<assembly>")]
+[assembly: Mono.UsageComplement("<target>")]
 
 #if !CF_2_0
 [assembly: AllowPartiallyTrustedCallers]

@@ -1,6 +1,8 @@
 /* Copyright (C) 2004 - 2006  Versant Inc.   http://www.db4o.com */
 using System;
 using System.Diagnostics;
+using Db4objects.Db4o.Consistency;
+using Db4objects.Db4o.Filestats;
 using Db4objects.Db4o.Monitoring;
 using Db4objects.Db4o.Tools;
 using Db4oTool.Core;
@@ -47,7 +49,18 @@ namespace Db4oTool
 				Db4oPerformanceCounters.ReInstall();
 			}
 
-            if (options.Assembly == null)
+            if (options.CheckDatabase)
+            {
+                Console.Write("\r\nChecking '{0}' : ", options.Target);
+                ConsistencyChecker.Main(new string[] { options.Target});
+            }
+
+            if (options.ShowFileUsageStats)
+            {
+                FileUsageStatsCollector.Main(new string[] { options.Target, "true" });
+            }
+
+            if (NoInstrumentationStep(options))
             {
                 return;
             }
@@ -58,7 +71,12 @@ namespace Db4oTool
 			}
 		}
 
-		private static void RunPipeline(ProgramOptions options)
+	    private static bool NoInstrumentationStep(ProgramOptions options)
+	    {
+	        return !options.NQ && !options.TransparentPersistence && options.CustomInstrumentations.Count == 0;
+	    }
+
+	    private static void RunPipeline(ProgramOptions options)
 		{
 			InstrumentationPipeline pipeline = new InstrumentationPipeline(GetConfiguration(options));
 			if (options.NQ)
@@ -66,14 +84,17 @@ namespace Db4oTool
 				pipeline.Add(new DelegateOptimizer());
 				pipeline.Add(new PredicateOptimizer());
 			}
-			if (options.TransparentPersistence)
+			
+            if (options.TransparentPersistence)
 			{
 				pipeline.Add(new TAInstrumentation(options.Collections));
 			}
-			foreach (IAssemblyInstrumentation instr in Factory.Instantiate<IAssemblyInstrumentation>(options.CustomInstrumentations))
+			
+            foreach (IAssemblyInstrumentation instr in Factory.Instantiate<IAssemblyInstrumentation>(options.CustomInstrumentations))
 			{
 				pipeline.Add(instr);
 			}
+
 			if (!options.Fake)
 			{
 				pipeline.Add(new SaveAssemblyInstrumentation());
@@ -99,7 +120,7 @@ namespace Db4oTool
 
 		private static Configuration GetConfiguration(ProgramOptions options)
 		{
-			Configuration configuration = new Configuration(options.Assembly);
+			Configuration configuration = new Configuration(options.Target);
 			configuration.CaseSensitive = options.CaseSensitive;
 			configuration.PreserveDebugInfo = options.Debug;
 			if (options.Verbose)

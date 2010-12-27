@@ -23,8 +23,8 @@ namespace Db4oTool
 
 		[Option("Case sensitive queries", "case-sensitive")]
 		public bool CaseSensitive;
-
-		[Option("Verbose operation mode", 'v', "verbose")]
+        
+        [Option("Verbose operation mode", 'v', "verbose")]
 		public bool Verbose;
 
 		[Option("Optimize all native queries", "nq")]
@@ -50,6 +50,12 @@ namespace Db4oTool
             return WhatToDoNext.GoAhead;
         }
 
+	    [Option("Run consistency checks on target database.", "check")] 
+        public bool CheckDatabase;
+
+        [Option("Displays file usage statistics for target database.", "fileusage")]
+        public bool ShowFileUsageStats;
+
 		[Option("Installs the db4o performance counter category", "install-performance-counters")]
 		public bool InstallPerformanceCounters;
 
@@ -64,7 +70,7 @@ namespace Db4oTool
 
 		public readonly List<TypeFilterFactory> Filters = new List<TypeFilterFactory>();
 
-		[Option("Filter types to be instrumented by attribute", "by-attribute", MaxOccurs = -1)]
+	    [Option("Filter types to be instrumented by attribute", "by-attribute", MaxOccurs = -1)]
 		public WhatToDoNext ByAttribute(string attribute)
 		{
 			Filters.Add(delegate { return new ByAttributeFilter(attribute); });
@@ -103,7 +109,7 @@ namespace Db4oTool
 			return WhatToDoNext.GoAhead;
 		}
 
-		public string Assembly
+		public string Target
 		{
 			get
 			{
@@ -122,11 +128,17 @@ namespace Db4oTool
 		{
 			get
 			{
+			    bool databaseTarget = CheckDatabase || ShowFileUsageStats;
+			    bool enhancementTarget = NQ || TransparentPersistence || CustomInstrumentations.Count > 0;
+
+                if (databaseTarget && enhancementTarget)
+                {
+                    return false;
+                }
+
 				return StatisticsFileNames.Count > 0 || InstallPerformanceCounters ||
-                    (Assembly != null
-					   && (NQ
-						   || TransparentPersistence
-						   || CustomInstrumentations.Count > 0));
+                    (Target != null
+					   && (databaseTarget || enhancementTarget));
 			}
 		}
 
