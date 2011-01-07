@@ -6,8 +6,7 @@
     <ProjectGuid>{5A2D7BEE-8E16-4E97-99EB-D2815F653131}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Resources\db4o.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Db4oTutorial</AssemblyName>
@@ -136,8 +135,6 @@
     <Compile Include="WebBrowserViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Content Include="db4o.ico" />
-    <None Include="Resources\Icon1.ico" />
     <EmbeddedResource Include="Db4objects.Db4o.Tutorial.MainForm.resources" />
     <EmbeddedResource Include="Db4objects.Db4o.Tutorial.OutputViewControl.resources" />
     <EmbeddedResource Include="Db4objects.Db4o.Tutorial.TutorialOutlineViewControl.resources" />
@@ -158,6 +155,11 @@
       <DependentUpon>WebBrowserViewControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\back.PNG" />
+    <Content Include="Resources\db4o.ico" />
+    <Content Include="Resources\forward.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -142,7 +142,7 @@ namespace Db4objects.Db4o.Tutorial
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.IsMdiContainer = true;
 			this.Name = "MainForm";
-			this.StartPosition = FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "db4o tutorial";
 			this.ResumeLayout(false);
 
