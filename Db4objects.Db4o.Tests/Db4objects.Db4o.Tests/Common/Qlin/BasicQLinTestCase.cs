@@ -3,7 +3,6 @@
 #if !SILVERLIGHT
 using System.Collections;
 using Db4oUnit;
-using Db4oUnit.Extensions;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Tests.Common.Qlin;
@@ -14,8 +13,23 @@ namespace Db4objects.Db4o.Tests.Common.Qlin
 	/// Syntax and implementation of QLin were inspired by:
 	/// http://www.h2database.com/html/jaqu.html
 	/// </summary>
-	public class BasicQLinTestCase : AbstractDb4oTestCase, ITestLifeCycle
+	public class BasicQLinTestCase
 	{
+		private IQLinable Db()
+		{
+			// disabled for now, we removed QLinable from the 8.0 ObjectContainer interface
+			return null;
+		}
+
+		private void StoreAll(IList expected)
+		{
+			for (IEnumerator objIter = expected.GetEnumerator(); objIter.MoveNext(); )
+			{
+				object obj = objIter.Current;
+			}
+		}
+
+		// store(obj);
 		public virtual void TestFromSelect()
 		{
 			StoreAll(OccamAndZora());
@@ -177,15 +191,6 @@ namespace Db4objects.Db4o.Tests.Common.Qlin
 		{
 			IteratorAssert.SameContent(expected, Db().From(pet.GetType()).Where(pet.Name()).Equal
 				(name).Select());
-		}
-
-		private void StoreAll(IList expected)
-		{
-			for (IEnumerator objIter = expected.GetEnumerator(); objIter.MoveNext(); )
-			{
-				object obj = objIter.Current;
-				Store(obj);
-			}
 		}
 
 		private IList OccamAndZora()

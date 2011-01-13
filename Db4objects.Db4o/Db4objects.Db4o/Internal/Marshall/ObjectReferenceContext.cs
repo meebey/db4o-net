@@ -7,7 +7,7 @@ using Db4objects.Db4o.Marshall;
 
 namespace Db4objects.Db4o.Internal.Marshall
 {
-	public class ObjectReferenceContext : ObjectHeaderContext
+	public class ObjectReferenceContext : ObjectHeaderContext, IObjectIdContext
 	{
 		protected readonly Db4objects.Db4o.Internal.ObjectReference _reference;
 
@@ -18,7 +18,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_reference = reference;
 		}
 
-		public virtual int ObjectID()
+		public virtual int ObjectId()
 		{
 			return _reference.GetID();
 		}

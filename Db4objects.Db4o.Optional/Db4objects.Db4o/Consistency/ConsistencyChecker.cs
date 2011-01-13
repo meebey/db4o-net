@@ -250,7 +250,7 @@ namespace Db4objects.Db4o.Consistency
 
 				public void Visit(object fieldIndexKey)
 				{
-					int parentID = ((FieldIndexKey)fieldIndexKey).ParentID();
+					int parentID = ((IFieldIndexKey)fieldIndexKey).ParentID();
 					if (!this._enclosing._enclosing.IdIsValid(parentID))
 					{
 						invalidIds.Add(new Pair(clazz.GetName() + "#" + ((FieldMetadata)field).GetName(), 

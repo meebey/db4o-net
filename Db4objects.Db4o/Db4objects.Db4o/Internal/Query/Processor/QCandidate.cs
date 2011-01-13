@@ -128,7 +128,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 				if (handler != null)
 				{
 					QueryingReadContext queryingReadContext = new QueryingReadContext(Transaction(), 
-						MarshallerFamily().HandlerVersion(), _bytes);
+						MarshallerFamily().HandlerVersion(), _bytes, _key);
 					ITypeHandler4 arrayElementHandler = Handlers4.ArrayElementHandler(handler, queryingReadContext
 						);
 					if (arrayElementHandler != null)
@@ -646,7 +646,7 @@ namespace Db4objects.Db4o.Internal.Query.Processor
 
 		private QueryingReadContext NewQueryingReadContext()
 		{
-			return new QueryingReadContext(Transaction(), _handlerVersion, _bytes);
+			return new QueryingReadContext(Transaction(), _handlerVersion, _bytes, _key);
 		}
 
 		private void ReadThis(bool a_activate)

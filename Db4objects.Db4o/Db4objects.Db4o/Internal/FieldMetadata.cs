@@ -119,7 +119,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			try
 			{
-				AddIndexEntry(context.Transaction(), context.Id(), ReadIndexEntry(context));
+				AddIndexEntry(context.Transaction(), context.ObjectId(), ReadIndexEntry(context));
 			}
 			catch (CorruptionException exc)
 			{
@@ -132,7 +132,8 @@ namespace Db4objects.Db4o.Internal
 			AddIndexEntry(a_bytes.Transaction(), a_bytes.GetID(), indexEntry);
 		}
 
-		public void AddIndexEntry(Transaction trans, int parentID, object indexEntry)
+		public virtual void AddIndexEntry(Transaction trans, int parentID, object indexEntry
+			)
 		{
 			if (!HasIndex())
 			{
@@ -142,10 +143,11 @@ namespace Db4objects.Db4o.Internal
 			index.Add(trans, CreateFieldIndexKey(parentID, indexEntry));
 		}
 
-		private FieldIndexKey CreateFieldIndexKey(int parentID, object indexEntry)
+		protected virtual IFieldIndexKey CreateFieldIndexKey(int parentID, object indexEntry
+			)
 		{
 			object convertedIndexEntry = IndexEntryFor(indexEntry);
-			return new FieldIndexKey(parentID, convertedIndexEntry);
+			return new FieldIndexKeyImpl(parentID, convertedIndexEntry);
 		}
 
 		protected virtual object IndexEntryFor(object indexEntry)
@@ -565,7 +567,7 @@ namespace Db4objects.Db4o.Internal
 			}
 			int offset = context.Offset();
 			object obj = ReadIndexEntry(context);
-			RemoveIndexEntry(context.Transaction(), context.Id(), obj);
+			RemoveIndexEntry(context.Transaction(), context.ObjectId(), obj);
 			context.Seek(offset);
 		}
 
@@ -766,8 +768,13 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Activate(UnmarshallingContext context)
 		{
-			if (!CheckAlive(context) || !ShouldStoreField())
+			if (!CheckAlive(context))
 			{
+				return;
+			}
+			if (!ShouldStoreField())
+			{
+				IncrementOffset(context);
 				return;
 			}
 			object toSet = Read(context);
@@ -963,7 +970,7 @@ namespace Db4objects.Db4o.Internal
 				classMetadataID, _handle);
 		}
 
-		public virtual object Read(IInternalReadContext context)
+		public virtual object Read(IObjectIdContext context)
 		{
 			if (!CanReadFromSlot((IAspectVersionContext)context))
 			{
@@ -1059,13 +1066,13 @@ namespace Db4objects.Db4o.Internal
 			lock (stream.Lock())
 			{
 				IContext context = transaction.Context();
-				_index.TraverseKeys(transaction, new _IVisitor4_862(this, userVisitor, context));
+				_index.TraverseKeys(transaction, new _IVisitor4_866(this, userVisitor, context));
 			}
 		}
 
-		private sealed class _IVisitor4_862 : IVisitor4
+		private sealed class _IVisitor4_866 : IVisitor4
 		{
-			public _IVisitor4_862(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
+			public _IVisitor4_866(FieldMetadata _enclosing, IVisitor4 userVisitor, IContext context
 				)
 			{
 				this._enclosing = _enclosing;
@@ -1075,7 +1082,7 @@ namespace Db4objects.Db4o.Internal
 
 			public void Visit(object obj)
 			{
-				FieldIndexKey key = (FieldIndexKey)obj;
+				IFieldIndexKey key = (IFieldIndexKey)obj;
 				userVisitor.Visit(((IIndexableTypeHandler)this._enclosing.GetHandler()).IndexEntryToObject
 					(context, key.Value()));
 			}
@@ -1279,7 +1286,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override void DefragAspect(IDefragmentContext context)
 		{
-			if (!Alive() && !Updating())
+			if (!CanDefragment())
 			{
 				throw new InvalidOperationException("Field '" + ToString() + "' cannot be defragmented at this time."
 					);
@@ -1287,12 +1294,12 @@ namespace Db4objects.Db4o.Internal
 			ITypeHandler4 correctTypeHandlerVersion = HandlerRegistry.CorrectHandlerVersion(context
 				, GetHandler(), _fieldType);
 			context.SlotFormat().DoWithSlotIndirection(context, correctTypeHandlerVersion, new 
-				_IClosure4_1025(context, correctTypeHandlerVersion));
+				_IClosure4_1029(context, correctTypeHandlerVersion));
 		}
 
-		private sealed class _IClosure4_1025 : IClosure4
+		private sealed class _IClosure4_1029 : IClosure4
 		{
-			public _IClosure4_1025(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
+			public _IClosure4_1029(IDefragmentContext context, ITypeHandler4 correctTypeHandlerVersion
 				)
 			{
 				this.context = context;
@@ -1308,6 +1315,19 @@ namespace Db4objects.Db4o.Internal
 			private readonly IDefragmentContext context;
 
 			private readonly ITypeHandler4 correctTypeHandlerVersion;
+		}
+
+		private bool CanDefragment()
+		{
+			if (Alive() || Updating())
+			{
+				return true;
+			}
+			if (_fieldType == null || GetHandler() == null)
+			{
+				return false;
+			}
+			return !_fieldType.StateDead();
 		}
 
 		public virtual void CreateIndex()

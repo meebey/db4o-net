@@ -17,7 +17,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			_id = id;
 		}
 
-		public virtual int Id()
+		public virtual int ObjectId()
 		{
 			return _id;
 		}

@@ -14,7 +14,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 	{
 		public static void Main(string[] arguments)
 		{
-			new QueryingVersionFieldTestCase().RunSolo();
+			new QueryingVersionFieldTestCase().RunAll();
 		}
 
 		public class Item
@@ -30,8 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 		/// <exception cref="System.Exception"></exception>
 		protected override void Configure(IConfiguration config)
 		{
-			config.ObjectClass(typeof(QueryingVersionFieldTestCase.Item)).GenerateVersionNumbers
-				(true);
+			config.GenerateCommitTimestamps(true);
 		}
 
 		public virtual void Test()
@@ -44,12 +43,12 @@ namespace Db4objects.Db4o.Tests.Common.Querying
 			long updatedTransactionVersionNumber = Db().Version();
 			IQuery q = Db().Query();
 			q.Constrain(typeof(QueryingVersionFieldTestCase.Item));
-			q.Descend(VirtualField.Version).Constrain(initialTransactionVersionNumber).Greater
-				();
+			q.Descend(VirtualField.CommitTimestamp).Constrain(initialTransactionVersionNumber
+				).Greater();
 			// This part really isn't needed for this test case, but it shows, how changes
 			// between two specific transaction commits can be queried.
-			q.Descend(VirtualField.Version).Constrain(updatedTransactionVersionNumber).Smaller
-				().Equal();
+			q.Descend(VirtualField.CommitTimestamp).Constrain(updatedTransactionVersionNumber
+				).Smaller().Equal();
 			IObjectSet objectSet = q.Execute();
 			Assert.AreEqual(1, objectSet.Count);
 			QueryingVersionFieldTestCase.Item item = (QueryingVersionFieldTestCase.Item)objectSet

@@ -24,9 +24,6 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec GenerateUuidsKey = new KeySpec(TernaryBool.Unspecified
 			);
 
-		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(TernaryBool
-			.Unspecified);
-
 		/// <summary>
 		/// We are running into cyclic dependancies on reading the PBootRecord
 		/// object, if we maintain MetaClass information there
@@ -135,8 +132,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void EnableReplication(bool setting)
 		{
-			GenerateUUIDs(setting);
-			GenerateVersionNumbers(setting);
+			throw new NotSupportedException("See documentation");
 		}
 
 		public virtual void GenerateUUIDs(bool setting)
@@ -146,7 +142,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual void GenerateVersionNumbers(bool setting)
 		{
-			_config.Put(GenerateVersionNumbersKey, TernaryBool.ForBoolean(setting));
+			throw new NotSupportedException("See documentation");
 		}
 
 		public virtual IObjectTranslator GetTranslator()
@@ -312,7 +308,7 @@ namespace Db4objects.Db4o.Internal
 
 		internal virtual TernaryBool GenerateVersionNumbers()
 		{
-			return (TernaryBool)_config.Get(GenerateVersionNumbersKey);
+			return TernaryBool.No;
 		}
 
 		internal virtual void MaintainMetaClass(bool flag)

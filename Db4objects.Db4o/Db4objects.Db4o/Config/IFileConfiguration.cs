@@ -106,7 +106,43 @@ namespace Db4objects.Db4o.Config
 		/// </remarks>
 		/// <value>the scope for version number generation: disabled, generate for all classes, or configure individually
 		/// 	</value>
+		[System.ObsoleteAttribute(@"As of version 8.0 please use GenerateCommitTimestamps(bool) instead."
+			)]
 		ConfigScope GenerateVersionNumbers
+		{
+			set;
+		}
+
+		/// <summary>
+		/// Configures db4o to generate commit timestamps for all stored objects.<br />
+		/// <br />
+		/// All the objects commited within a transaction will share the same commit timestamp.
+		/// </summary>
+		/// <remarks>
+		/// Configures db4o to generate commit timestamps for all stored objects.<br />
+		/// <br />
+		/// All the objects commited within a transaction will share the same commit timestamp.
+		/// <br />
+		/// This setting should be used when the database is first created.<br />
+		/// <br />
+		/// Afterwards you can access the object's commit timestamp like this:<br />
+		/// <br />
+		/// <pre>
+		/// ObjectContainer container = ...;
+		/// ObjectInfo objectInfo = container.ext().getObjectInfo(obj);
+		/// long commitTimestamp = objectInfo.getVersion();
+		/// </pre>
+		/// </remarks>
+		/// <value>
+		/// if true, commit timetamps will be generated for all stored
+		/// objects. If you already have commit timestamps for stored
+		/// objects and later set this flag to false, although you wont be
+		/// able to access them, the commit timestamps will still be taking
+		/// space in your file container. The only way to free that space
+		/// is defragmenting the container.
+		/// </value>
+		/// <since>8.0</since>
+		bool GenerateCommitTimestamps
 		{
 			set;
 		}

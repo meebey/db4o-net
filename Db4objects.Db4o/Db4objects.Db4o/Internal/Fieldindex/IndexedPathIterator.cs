@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 		protected override IEnumerator NextIterator(object current)
 		{
-			FieldIndexKey key = (FieldIndexKey)current;
+			IFieldIndexKey key = (IFieldIndexKey)current;
 			return _path.Search(key.ParentID()).Keys();
 		}
 	}

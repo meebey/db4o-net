@@ -214,8 +214,8 @@ namespace Db4oUnit
 		private static string FailureMessage(long expected, long actual, string cmpOper, 
 			string customMessage)
 		{
-			return string.Format("%sExpected %s0x%016x but was 0x%016x", new object[] { customMessage
-				 == null ? string.Empty : customMessage + ": ", cmpOper, expected, actual });
+			return (customMessage == null ? string.Empty : customMessage + ": ") + "Expected "
+				 + cmpOper + "'" + expected + "' but was '" + actual + "'";
 		}
 
 		public static void IsFalse(bool condition)

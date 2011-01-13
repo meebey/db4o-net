@@ -23,7 +23,6 @@ using Db4objects.Db4o.Internal.Replication;
 using Db4objects.Db4o.Internal.Slots;
 using Db4objects.Db4o.Internal.Threading;
 using Db4objects.Db4o.Internal.Weakref;
-using Db4objects.Db4o.Qlin;
 using Db4objects.Db4o.Query;
 using Db4objects.Db4o.Reflect;
 using Db4objects.Db4o.Reflect.Core;
@@ -80,7 +79,7 @@ namespace Db4objects.Db4o.Internal
 
 		private ICallbacks _callbacks = new NullCallbacks();
 
-		protected readonly PersistentTimeStampIdGenerator _timeStampIdGenerator = new PersistentTimeStampIdGenerator
+		protected readonly TimeStampIdGenerator _timeStampIdGenerator = new TimeStampIdGenerator
 			();
 
 		private int _topLevelCallId = 1;
@@ -1630,7 +1629,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual long GenerateTimeStampId()
 		{
-			return _timeStampIdGenerator.Next();
+			return _timeStampIdGenerator.Generate();
 		}
 
 		public abstract int IdForNewUserObject(Transaction trans);
@@ -2632,6 +2631,11 @@ namespace Db4objects.Db4o.Internal
 			return _handlers.Indexes()._version;
 		}
 
+		public virtual CommitTimestampFieldMetadata CommitTimestampIndex()
+		{
+			return _handlers.Indexes()._commitTimestamp;
+		}
+
 		public virtual ClassMetadataRepository ClassCollection()
 		{
 			return _classCollection;
@@ -2793,8 +2797,6 @@ namespace Db4objects.Db4o.Internal
 		{
 			_classCollection = repository;
 		}
-
-		public abstract IQLin From(Type arg1);
 
 		public abstract void Activate(object arg1, int arg2);
 

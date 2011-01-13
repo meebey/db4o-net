@@ -50,7 +50,7 @@ namespace Db4objects.Db4o.Tests.Common.Migration
 				), typeof(ObjectArrayUpdateTestCase), typeof(PlainObjectUpdateTestCase), typeof(
 				QueryingMigrationTestCase), typeof(ShortHandlerUpdateTestCase), typeof(StringHandlerUpdateTestCase
 				), typeof(IxFreespaceMigrationTestCase), typeof(FreespaceManagerMigrationTestCase
-				) };
+				), typeof(CommitTimestampMigrationTestCase) };
 			// EncryptedFileMigrationTestCase.class,  fails the 8.0 build, turned off temporarily
 			// Order to run freespace/Encrypted tests last is
 			// deliberate. Global configuration Db4o.configure()

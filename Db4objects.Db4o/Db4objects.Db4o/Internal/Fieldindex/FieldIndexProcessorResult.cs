@@ -68,7 +68,7 @@ namespace Db4objects.Db4o.Internal.Fieldindex
 
 			protected override object Map(object current)
 			{
-				FieldIndexKey composite = (FieldIndexKey)current;
+				IFieldIndexKey composite = (IFieldIndexKey)current;
 				return composite.ParentID();
 			}
 		}

@@ -87,6 +87,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 			return new IntHandler.PreparedIntComparison(this, i);
 		}
 
+		public static int Compare(int first, int second)
+		{
+			if (first == second)
+			{
+				return 0;
+			}
+			return first > second ? 1 : -1;
+		}
+
 		public sealed class PreparedIntComparison : IPreparedComparison
 		{
 			private readonly int _sourceInt;
@@ -104,7 +113,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 					return 1;
 				}
 				int targetInt = ((int)target);
-				return this._sourceInt == targetInt ? 0 : (this._sourceInt < targetInt ? -1 : 1);
+				return IntHandler.Compare(this._sourceInt, targetInt);
 			}
 
 			private readonly IntHandler _enclosing;

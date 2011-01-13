@@ -1495,7 +1495,7 @@ namespace Db4objects.Db4o.CS.Internal
 			return new ClientEventRegistryImpl(this);
 		}
 
-		public override IQLin From(Type clazz)
+		public virtual IQLin From(Type clazz)
 		{
 			return new QLinRoot(Query(), clazz);
 		}

@@ -38,7 +38,7 @@ namespace Db4oUnit.Extensions
 
 			public void Visit(object key)
 			{
-				Assert.AreEqual(id, ((FieldIndexKey)key).ParentID());
+				Assert.AreEqual(id, ((IFieldIndexKey)key).ParentID());
 				Assert.IsFalse(called.value);
 				called.value = true;
 			}

@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Internal.Delete
 			return CascadeDeleteDepth();
 		}
 
-		public virtual int Id()
+		public virtual int ObjectId()
 		{
 			return StatefulBuffer().GetID();
 		}

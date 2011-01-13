@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Tests.Common.Assorted
 		private void Configure(IEmbeddedConfiguration config)
 		{
 			config.Common.Diagnostic.AddListener(this);
-			config.File.GenerateVersionNumbers = ConfigScope.Globally;
+			config.File.GenerateCommitTimestamps = true;
 			config.File.GenerateUUIDs = ConfigScope.Globally;
 			config.Common.ObjectClass(typeof(InvalidOffsetInDeleteTestCase.Item)).ObjectField
 				("_itemName").Indexed(true);

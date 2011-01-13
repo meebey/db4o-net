@@ -392,5 +392,7 @@ namespace Db4objects.Db4o.Internal
 		}
 
 		public abstract ITransactionalIdSystem IdSystem();
+
+		public abstract long VersionForId(int id);
 	}
 }

@@ -22,6 +22,8 @@ namespace Db4objects.Db4o.Internal.Convert.Conversions
 				());
 			converter.Register(DropDateTimeOffsetClassIndexes_7_12.Version, new DropDateTimeOffsetClassIndexes_7_12
 				());
+			converter.Register(VersionNumberToCommitTimestamp_8_0.Version, new VersionNumberToCommitTimestamp_8_0
+				());
 		}
 	}
 }

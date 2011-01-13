@@ -11,7 +11,7 @@ namespace Db4objects.Db4o.Tests.Common.Constraints
 		protected override void Configure(IConfiguration config)
 		{
 			base.Configure(config);
-			config.GenerateVersionNumbers(ConfigScope.Globally);
+			config.GenerateCommitTimestamps(true);
 		}
 	}
 }

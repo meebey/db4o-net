@@ -26,18 +26,21 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly ITransactionalIdSystem _idSystem;
 
+		private Db4objects.Db4o.Internal.CommitTimestampSupport _commitTimestampSupport = 
+			null;
+
 		public LocalTransaction(ObjectContainerBase container, Transaction parentTransaction
 			, ITransactionalIdSystem idSystem, IReferenceSystem referenceSystem) : base(container
 			, parentTransaction, referenceSystem)
 		{
 			_file = (LocalObjectContainer)container;
-			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_31(this);
+			_committedCallbackDispatcher = new _ICommittedCallbackDispatcher_33(this);
 			_idSystem = idSystem;
 		}
 
-		private sealed class _ICommittedCallbackDispatcher_31 : ICommittedCallbackDispatcher
+		private sealed class _ICommittedCallbackDispatcher_33 : ICommittedCallbackDispatcher
 		{
-			public _ICommittedCallbackDispatcher_31(LocalTransaction _enclosing)
+			public _ICommittedCallbackDispatcher_33(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -68,6 +71,10 @@ namespace Db4objects.Db4o.Internal
 
 		public override void Commit()
 		{
+			if (IsSystemTransaction())
+			{
+				CommitTimestampSupport().EnsureInitialized();
+			}
 			Commit(_committedCallbackDispatcher);
 		}
 
@@ -253,7 +260,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				Tree delete = _delete;
 				_delete = null;
-				delete.Traverse(new _IVisitor4_217(this));
+				delete.Traverse(new _IVisitor4_223(this));
 			}
 			// if the object has been deleted
 			// We need to hold a hard reference here, otherwise we can get 
@@ -264,9 +271,9 @@ namespace Db4objects.Db4o.Internal
 			_writtenUpdateAdjustedIndexes = null;
 		}
 
-		private sealed class _IVisitor4_217 : IVisitor4
+		private sealed class _IVisitor4_223 : IVisitor4
 		{
-			public _IVisitor4_217(LocalTransaction _enclosing)
+			public _IVisitor4_223(LocalTransaction _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -316,13 +323,13 @@ namespace Db4objects.Db4o.Internal
 		private Collection4 CollectCommittedCallbackDeletedInfo()
 		{
 			Collection4 deleted = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_267(this, deleted));
+			CollectCallBackInfo(new _ICallbackInfoCollector_273(this, deleted));
 			return deleted;
 		}
 
-		private sealed class _ICallbackInfoCollector_267 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_273 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_267(LocalTransaction _enclosing, Collection4 deleted
+			public _ICallbackInfoCollector_273(LocalTransaction _enclosing, Collection4 deleted
 				)
 			{
 				this._enclosing = _enclosing;
@@ -360,13 +367,13 @@ namespace Db4objects.Db4o.Internal
 			}
 			Collection4 added = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_290(this, added, updated));
+			CollectCallBackInfo(new _ICallbackInfoCollector_296(this, added, updated));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ICallbackInfoCollector_290 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_296 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_290(LocalTransaction _enclosing, Collection4 added
+			public _ICallbackInfoCollector_296(LocalTransaction _enclosing, Collection4 added
 				, Collection4 updated)
 			{
 				this._enclosing = _enclosing;
@@ -404,14 +411,14 @@ namespace Db4objects.Db4o.Internal
 			Collection4 added = new Collection4();
 			Collection4 deleted = new Collection4();
 			Collection4 updated = new Collection4();
-			CollectCallBackInfo(new _ICallbackInfoCollector_313(this, added, updated, deleted
+			CollectCallBackInfo(new _ICallbackInfoCollector_319(this, added, updated, deleted
 				));
 			return NewCallbackObjectInfoCollections(added, updated, deleted);
 		}
 
-		private sealed class _ICallbackInfoCollector_313 : ICallbackInfoCollector
+		private sealed class _ICallbackInfoCollector_319 : ICallbackInfoCollector
 		{
-			public _ICallbackInfoCollector_313(LocalTransaction _enclosing, Collection4 added
+			public _ICallbackInfoCollector_319(LocalTransaction _enclosing, Collection4 added
 				, Collection4 updated, Collection4 deleted)
 			{
 				this._enclosing = _enclosing;
@@ -484,6 +491,26 @@ namespace Db4objects.Db4o.Internal
 		public virtual LazyObjectReference LazyReferenceFor(int id)
 		{
 			return new LazyObjectReference(this, id);
+		}
+
+		public override long VersionForId(int id)
+		{
+			return CommitTimestampSupport().VersionForId(id);
+		}
+
+		public virtual Db4objects.Db4o.Internal.CommitTimestampSupport CommitTimestampSupport
+			()
+		{
+			if (!IsSystemTransaction())
+			{
+				throw new InvalidOperationException();
+			}
+			if (_commitTimestampSupport == null)
+			{
+				_commitTimestampSupport = new Db4objects.Db4o.Internal.CommitTimestampSupport(LocalContainer
+					());
+			}
+			return _commitTimestampSupport;
 		}
 	}
 }

@@ -37,9 +37,9 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		private sealed class _DbSelector_38 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_39 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_38()
+			public _DbSelector_39()
 			{
 			}
 
@@ -49,12 +49,12 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_38
+		public static readonly DefragmentServicesImpl.DbSelector Sourcedb = new _DbSelector_39
 			();
 
-		private sealed class _DbSelector_44 : DefragmentServicesImpl.DbSelector
+		private sealed class _DbSelector_45 : DefragmentServicesImpl.DbSelector
 		{
-			public _DbSelector_44()
+			public _DbSelector_45()
 			{
 			}
 
@@ -64,7 +64,7 @@ namespace Db4objects.Db4o.Defragment
 			}
 		}
 
-		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_44
+		public static readonly DefragmentServicesImpl.DbSelector Targetdb = new _DbSelector_45
 			();
 
 		private readonly LocalObjectContainer _sourceDb;
@@ -96,6 +96,11 @@ namespace Db4objects.Db4o.Defragment
 				.TempPath()).Ext();
 			_sourceDb.ShowInternalClasses(true);
 			defragConfig.Db4oConfig().BlockSize(_sourceDb.BlockSize());
+			if (!originalConfig.GenerateCommitTimestamps().DefiniteNo())
+			{
+				defragConfig.Db4oConfig().GenerateCommitTimestamps(_sourceDb.Config().GenerateCommitTimestamps
+					().DefiniteYes());
+			}
 			_targetDb = FreshTargetFile(defragConfig);
 			_mapping = defragConfig.Mapping();
 			_mapping.Open();
@@ -318,12 +323,12 @@ namespace Db4objects.Db4o.Defragment
 		public virtual void RegisterBTreeIDs(BTree btree, IDMappingCollector collector)
 		{
 			collector.CreateIDMapping(this, btree.GetID(), false);
-			TraverseAllIndexSlots(btree, new _IVisitor4_240(this, collector));
+			TraverseAllIndexSlots(btree, new _IVisitor4_244(this, collector));
 		}
 
-		private sealed class _IVisitor4_240 : IVisitor4
+		private sealed class _IVisitor4_244 : IVisitor4
 		{
-			public _IVisitor4_240(DefragmentServicesImpl _enclosing, IDMappingCollector collector
+			public _IVisitor4_244(DefragmentServicesImpl _enclosing, IDMappingCollector collector
 				)
 			{
 				this._enclosing = _enclosing;
@@ -413,6 +418,51 @@ namespace Db4objects.Db4o.Defragment
 			FreeById(oldRepositoryId);
 		}
 
+		public virtual void DefragIdToTimestampBtree()
+		{
+			if (_sourceDb.SystemData().IdToTimestampIndexId() == 0)
+			{
+				return;
+			}
+			LocalTransaction targetTransaction = (LocalTransaction)_targetDb.SystemTransaction
+				();
+			LocalTransaction sourceTransaction = (LocalTransaction)_sourceDb.SystemTransaction
+				();
+			CommitTimestampSupport target = targetTransaction.CommitTimestampSupport();
+			CommitTimestampSupport source = sourceTransaction.CommitTimestampSupport();
+			if (source.IdToTimestamp() == null)
+			{
+				return;
+			}
+			source.IdToTimestamp().TraverseKeys(sourceTransaction, new _IVisitor4_336(this, target
+				, targetTransaction));
+		}
+
+		private sealed class _IVisitor4_336 : IVisitor4
+		{
+			public _IVisitor4_336(DefragmentServicesImpl _enclosing, CommitTimestampSupport target
+				, LocalTransaction targetTransaction)
+			{
+				this._enclosing = _enclosing;
+				this.target = target;
+				this.targetTransaction = targetTransaction;
+			}
+
+			public void Visit(object te)
+			{
+				int mappedID = this._enclosing.MappedID(((CommitTimestampSupport.TimestampEntry)te
+					).ParentID());
+				target.Put(targetTransaction, mappedID, ((CommitTimestampSupport.TimestampEntry)te
+					).GetCommitTimestamp());
+			}
+
+			private readonly DefragmentServicesImpl _enclosing;
+
+			private readonly CommitTimestampSupport target;
+
+			private readonly LocalTransaction targetTransaction;
+		}
+
 		private void FreeById(int id)
 		{
 			_targetDb.SystemTransaction().IdSystem().NotifySlotDeleted(id, SlotChangeFactory.
@@ -441,6 +491,11 @@ namespace Db4objects.Db4o.Defragment
 		public virtual int SourceUuidIndexID()
 		{
 			return _sourceDb.SystemData().UuidIndexId();
+		}
+
+		public virtual int SourceIdToTimestampIndexID()
+		{
+			return _sourceDb.SystemData().IdToTimestampIndexId();
 		}
 
 		public virtual ClassMetadata ClassMetadataForId(int id)

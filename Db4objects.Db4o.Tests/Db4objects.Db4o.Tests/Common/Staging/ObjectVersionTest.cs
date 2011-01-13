@@ -13,7 +13,7 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 		protected override void Configure(IConfiguration config)
 		{
 			config.GenerateUUIDs(ConfigScope.Globally);
-			config.GenerateVersionNumbers(ConfigScope.Globally);
+			config.GenerateCommitTimestamps(true);
 		}
 
 		public virtual void Test()
@@ -22,12 +22,12 @@ namespace Db4objects.Db4o.Tests.Common.Staging
 			ObjectVersionTest.Item @object = new ObjectVersionTest.Item("c1");
 			oc.Store(@object);
 			IObjectInfo objectInfo1 = oc.GetObjectInfo(@object);
-			long oldVer = objectInfo1.GetVersion();
+			long oldVer = objectInfo1.GetCommitTimestamp();
 			//Update
 			@object.SetName("c3");
 			oc.Store(@object);
 			IObjectInfo objectInfo2 = oc.GetObjectInfo(@object);
-			long newVer = objectInfo2.GetVersion();
+			long newVer = objectInfo2.GetCommitTimestamp();
 			Assert.IsNotNull(objectInfo1.GetUUID());
 			Assert.IsNotNull(objectInfo2.GetUUID());
 			Assert.IsTrue(oldVer > 0);

@@ -10,7 +10,7 @@ namespace Db4objects.Db4o.Internal.Convert
 	/// <exclude></exclude>
 	public class Converter
 	{
-		public const int Version = DropDateTimeOffsetClassIndexes_7_12.Version;
+		public const int Version = VersionNumberToCommitTimestamp_8_0.Version;
 
 		public static bool Convert(ConversionStage stage)
 		{

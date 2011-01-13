@@ -29,7 +29,7 @@ namespace Db4objects.Db4o.Tests.Common.CS
 		protected override void Configure(IConfiguration config)
 		{
 			config.GenerateUUIDs(ConfigScope.Globally);
-			config.GenerateVersionNumbers(ConfigScope.Globally);
+			config.GenerateCommitTimestamps(true);
 			config.ObjectClass(typeof(CsDeleteReaddTestCase.Item)).ObjectField("name").Indexed
 				(true);
 		}

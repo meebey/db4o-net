@@ -183,8 +183,8 @@ namespace Db4objects.Db4o.Tests.Common.Api
 				Assert.AreEqual(8, legacyConfig.DiscardFreeSpace());
 				fileConfig.GenerateUUIDs = ConfigScope.Globally;
 				Assert.AreEqual(ConfigScope.Globally, legacyConfig.GenerateUUIDs());
-				fileConfig.GenerateVersionNumbers = ConfigScope.Globally;
-				Assert.AreEqual(ConfigScope.Globally, legacyConfig.GenerateVersionNumbers());
+				fileConfig.GenerateCommitTimestamps = true;
+				Assert.IsTrue(legacyConfig.GenerateCommitTimestamps().DefiniteYes());
 				IStorage storageFactory = new FileStorage();
 				fileConfig.Storage = storageFactory;
 				Assert.AreSame(storageFactory, legacyConfig.Storage);

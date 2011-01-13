@@ -30,13 +30,13 @@ namespace Db4objects.Db4o.Internal
 			LocalTransaction transaction = (LocalTransaction)context.Transaction();
 			LocalObjectContainer localContainer = (LocalObjectContainer)transaction.Container
 				();
-			Slot oldSlot = transaction.IdSystem().CommittedSlot(context.Id());
+			Slot oldSlot = transaction.IdSystem().CommittedSlot(context.ObjectId());
 			int savedOffset = context.Offset();
 			int db4oDatabaseIdentityID = context.ReadInt();
 			long uuid = context.ReadLong();
 			context.Seek(savedOffset);
 			bool isnew = (oldSlot.IsNull());
-			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && context.Id() > 0 && !isnew)
+			if ((uuid == 0 || db4oDatabaseIdentityID == 0) && context.ObjectId() > 0 && !isnew)
 			{
 				UUIDFieldMetadata.DatabaseIdentityIDAndUUID identityAndUUID = ReadDatabaseIdentityIDAndUUID
 					(localContainer, context.ClassMetadata(), oldSlot, false);
@@ -114,7 +114,7 @@ namespace Db4objects.Db4o.Internal
 			{
 				if (context.Container().MaintainsIndices())
 				{
-					RemoveIndexEntry(context.Transaction(), context.Id(), longPart);
+					RemoveIndexEntry(context.Transaction(), context.ObjectId(), longPart);
 				}
 			}
 		}
@@ -265,7 +265,7 @@ namespace Db4objects.Db4o.Internal
 			IEnumerator keys = range.Keys();
 			while (keys.MoveNext())
 			{
-				FieldIndexKey current = (FieldIndexKey)keys.Current;
+				IFieldIndexKey current = (IFieldIndexKey)keys.Current;
 				HardObjectReference hardRef = GetHardObjectReferenceById(transaction, current.ParentID
 					(), signature);
 				if (null != hardRef)

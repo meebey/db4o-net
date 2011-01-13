@@ -154,6 +154,8 @@ namespace Db4objects.Db4o.Config
 		/// for objects of this class, which is required for using replication.
 		/// </remarks>
 		/// <param name="setting"></param>
+		[System.ObsoleteAttribute(@"As of version 8.0 please use GenerateUUIDs(bool) and IFileConfiguration.GenerateCommitTimestamps(bool) instead"
+			)]
 		void EnableReplication(bool setting);
 
 		/// <summary>generate UUIDs for stored objects of this class.</summary>
@@ -170,6 +172,8 @@ namespace Db4objects.Db4o.Config
 		/// This setting should be used before the database is first created.<br /><br />
 		/// </remarks>
 		/// <param name="setting"></param>
+		[System.ObsoleteAttribute(@"As of version 8.0 please use IFileConfiguration.GenerateCommitTimestamps(bool) instead"
+			)]
 		void GenerateVersionNumbers(bool setting);
 
 		/// <summary>turns the class index on or off.</summary>

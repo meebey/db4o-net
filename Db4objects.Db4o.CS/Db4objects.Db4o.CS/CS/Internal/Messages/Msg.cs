@@ -147,6 +147,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		public static readonly MTaIsDeleted TaIsDeleted = new MTaIsDeleted();
 
+		public static readonly MVersionForId VersionForId = new MVersionForId();
+
 		public static readonly MUserMessage UserMessage = new MUserMessage();
 
 		public static readonly MUseTransaction UseTransaction = new MUseTransaction();

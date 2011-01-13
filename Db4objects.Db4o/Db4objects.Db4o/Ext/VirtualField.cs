@@ -21,5 +21,7 @@ namespace Db4objects.Db4o.Ext
 		/// for querying.
 		/// </remarks>
 		public static readonly string Version = Const4.VirtualFieldPrefix + "version";
+
+		public static readonly string CommitTimestamp = Const4.VirtualFieldPrefix + "commitTimestamp";
 	}
 }

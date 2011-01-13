@@ -23,7 +23,7 @@ namespace Db4objects.Db4o.Internal
 {
 	/// <exclude></exclude>
 	public partial class ObjectContainerSession : IInternalObjectContainer, ITransientClass
-		, IObjectContainerSpec, IQLinable
+		, IObjectContainerSpec
 	{
 		protected readonly ObjectContainerBase _server;
 

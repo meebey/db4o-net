@@ -43,19 +43,45 @@ namespace Db4objects.Db4o.Ext
 		Db4oUUID GetUUID();
 
 		/// <summary>
-		/// returns the transaction serial number ("version") the
-		/// referenced object was stored with last.
+		/// returns the transaction serial number ("version") the referenced object
+		/// was stored with last.
 		/// </summary>
 		/// <remarks>
-		/// returns the transaction serial number ("version") the
-		/// referenced object was stored with last.
-		/// Version number generation has to be turned on, in order to
-		/// be able to use this feature:
+		/// returns the transaction serial number ("version") the referenced object
+		/// was stored with last. Version number generation has to be turned on, in
+		/// order to be able to use this feature:
 		/// <see cref="Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope)
 		/// 	">Db4objects.Db4o.Config.IConfiguration.GenerateVersionNumbers(Db4objects.Db4o.Config.ConfigScope)
 		/// 	</see>
+		/// <br />
+		/// This feature was replaced by
+		/// <see cref="GetCommitTimestamp()">GetCommitTimestamp()</see>
+		/// . The main
+		/// difference is that the old version mechamism used to assign a serial
+		/// timestamp to the object upon storing time, and the new commiTimestamp
+		/// approach, assigns it upon commit time.<br />
 		/// </remarks>
 		/// <returns>the version number.</returns>
+		[System.ObsoleteAttribute(@"As of version 8.0 please use GetCommitTimestamp() instead."
+			)]
 		long GetVersion();
+
+		/// <summary>
+		/// The serial timestamp the object is assigned to when it is commited.<br />
+		/// <br />
+		/// You need to enable this feature before using it in
+		/// <see cref="Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)
+		/// 	">Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)</see>
+		/// .<br />
+		/// <br />
+		/// All the objects commited within the same transaction will receive the same commitTimestamp.<br />
+		/// <br />
+		/// db4o replication system (dRS) relies on this feature.<br />
+		/// </summary>
+		/// <returns>the serial timestamp that was given to the object upon commit.</returns>
+		/// <seealso cref="Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)
+		/// 	">Db4objects.Db4o.Config.IFileConfiguration.GenerateCommitTimestamps(bool)</seealso>
+		/// <since>8.0</since>
+		long GetCommitTimestamp();
 	}
 }

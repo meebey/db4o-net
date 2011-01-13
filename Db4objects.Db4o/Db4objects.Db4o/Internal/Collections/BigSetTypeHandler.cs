@@ -40,7 +40,7 @@ namespace Db4objects.Db4o.Internal.Collections
 		private void InvalidBigSet(IDeleteContext context)
 		{
 			IBigSetPersistence bigSet = (IBigSetPersistence)context.Transaction().ObjectForIdFromCache
-				(context.Id());
+				(context.ObjectId());
 			if (bigSet != null)
 			{
 				bigSet.Invalidate();

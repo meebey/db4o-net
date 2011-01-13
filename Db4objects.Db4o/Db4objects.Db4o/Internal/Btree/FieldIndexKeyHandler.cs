@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Internal.Btree
 				objPart = null;
 				parentID = -parentID;
 			}
-			return new FieldIndexKey(parentID, objPart);
+			return new FieldIndexKeyImpl(parentID, objPart);
 		}
 
 		private int ReadParentID(IContext context, ByteArrayBuffer a_reader)
@@ -46,7 +46,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual void WriteIndexEntry(IContext context, ByteArrayBuffer writer, object
 			 obj)
 		{
-			FieldIndexKey composite = (FieldIndexKey)obj;
+			IFieldIndexKey composite = (IFieldIndexKey)obj;
 			int parentID = composite.ParentID();
 			object value = composite.Value();
 			if (value == null)
@@ -71,7 +71,7 @@ namespace Db4objects.Db4o.Internal.Btree
 		public virtual IPreparedComparison PrepareComparison(IContext context, object fieldIndexKey
 			)
 		{
-			FieldIndexKey source = (FieldIndexKey)fieldIndexKey;
+			IFieldIndexKey source = (IFieldIndexKey)fieldIndexKey;
 			IPreparedComparison preparedValueComparison = _valueHandler.PrepareComparison(context
 				, source.Value());
 			IPreparedComparison preparedParentIdComparison = _parentIdHandler.NewPrepareCompare
@@ -91,7 +91,7 @@ namespace Db4objects.Db4o.Internal.Btree
 
 			public int CompareTo(object obj)
 			{
-				FieldIndexKey target = (FieldIndexKey)obj;
+				IFieldIndexKey target = (IFieldIndexKey)obj;
 				try
 				{
 					int delegateResult = preparedValueComparison.CompareTo(target.Value());

@@ -13,17 +13,17 @@ namespace Db4objects.Db4o.Internal
 
 		private readonly long _id;
 
-		private readonly long _version;
+		private readonly long _commitTimestamp;
 
 		private readonly object _object;
 
 		public FrozenObjectInfo(object @object, long id, Db4oDatabase sourceDatabase, long
-			 uuidLongPart, long version)
+			 uuidLongPart, long commitTimestamp)
 		{
 			_sourceDatabase = sourceDatabase;
 			_uuidLongPart = uuidLongPart;
 			_id = id;
-			_version = version;
+			_commitTimestamp = commitTimestamp;
 			_object = @object;
 		}
 
@@ -67,7 +67,12 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual long GetVersion()
 		{
-			return _version;
+			return GetCommitTimestamp();
+		}
+
+		public virtual long GetCommitTimestamp()
+		{
+			return _commitTimestamp;
 		}
 
 		public virtual long SourceDatabaseId(Transaction trans)

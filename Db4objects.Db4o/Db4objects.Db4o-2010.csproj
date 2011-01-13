@@ -44,6 +44,12 @@
 
 
 
+
+
+
+
+
+
 <SignAssembly>true</SignAssembly>
 <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
@@ -299,7 +305,6 @@
 <Compile Include="Db4objects.Db4o\Foundation\ObjectByRef.cs"/>
 <Compile Include="Db4objects.Db4o\Foundation\Pair.cs"/>
 <Compile Include="Db4objects.Db4o\Foundation\PausableBlockingQueue.cs"/>
-<Compile Include="Db4objects.Db4o\Foundation\PersistentTimeStampIdGenerator.cs"/>
 <Compile Include="Db4objects.Db4o\Foundation\PrimitiveCodec.cs"/>
 <Compile Include="Db4objects.Db4o\Foundation\Runnable4.cs"/>
 <Compile Include="Db4objects.Db4o\Foundation\Runtime4.cs"/>
@@ -414,11 +419,12 @@
 <Compile Include="Db4objects.Db4o\Internal\Btree\BTreeRangeUnion.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\BTreeRemove.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\BTreeUpdate.cs"/>
-<Compile Include="Db4objects.Db4o\Internal\Btree\FieldIndexKey.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\FieldIndexKeyHandler.cs"/>
+<Compile Include="Db4objects.Db4o\Internal\Btree\FieldIndexKeyImpl.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\IBTreeRange.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\IBTreeRangeVisitor.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\IBTreeStructureListener.cs"/>
+<Compile Include="Db4objects.Db4o\Internal\Btree\IFieldIndexKey.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\SearchTarget.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Btree\Searcher.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\ByteArrayBuffer.cs"/>
@@ -448,6 +454,8 @@
 <Compile Include="Db4objects.Db4o\Internal\Collections\BigSetBTreeManager.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Collections\BigSetTypeHandler.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Collections\IBigSetPersistence.cs"/>
+<Compile Include="Db4objects.Db4o\Internal\CommitTimestampFieldMetadata.cs"/>
+<Compile Include="Db4objects.Db4o\Internal\CommitTimestampSupport.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Config4Abstract.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Config4Class.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Config4Field.cs"/>
@@ -470,6 +478,7 @@
 <Compile Include="Db4objects.Db4o\Internal\Convert\Conversions\DropGuidClassIndexes_7_12.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Convert\Conversions\FieldIndexesToBTrees_5_7.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Convert\Conversions\ReindexNetDateTime_7_8.cs"/>
+<Compile Include="Db4objects.Db4o\Internal\Convert\Conversions\VersionNumberToCommitTimestamp_8_0.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Convert\Converter.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\DefragmentContextImpl.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\DeleteInfo.cs"/>
@@ -506,9 +515,11 @@
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeader.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeader1.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeader2.cs"/>
+<Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeader3.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeaderVariablePart.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeaderVariablePart1.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeaderVariablePart2.cs"/>
+<Compile Include="Db4objects.Db4o\Internal\Fileheader\FileHeaderVariablePart3.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\NewFileHeaderBase.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\TimerFileLock.cs"/>
 <Compile Include="Db4objects.Db4o\Internal\Fileheader\TimerFileLockDisabled.cs"/>

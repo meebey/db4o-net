@@ -652,7 +652,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 					FieldMetadata field = (FieldMetadata)aspect;
 					if (isNull)
 					{
-						field.AddIndexEntry(context.Transaction(), context.Id(), null);
+						field.AddIndexEntry(context.Transaction(), context.ObjectId(), null);
 					}
 					else
 					{
@@ -665,19 +665,24 @@ namespace Db4objects.Db4o.Internal.Handlers
 				}
 			}
 
+			public override bool Accept(ClassAspect aspect)
+			{
+				return aspect.IsEnabledOn(context);
+			}
+
 			private readonly ObjectIdContextImpl context;
 		}
 
 		public virtual void DeleteMembers(DeleteContextImpl context, bool isUpdate)
 		{
-			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_433(context
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_438(context
 				, isUpdate, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 		}
 
-		private sealed class _MarshallingInfoTraverseAspectCommand_433 : MarshallingInfoTraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_438 : MarshallingInfoTraverseAspectCommand
 		{
-			public _MarshallingInfoTraverseAspectCommand_433(DeleteContextImpl context, bool 
+			public _MarshallingInfoTraverseAspectCommand_438(DeleteContextImpl context, bool 
 				isUpdate, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.context = context;
@@ -692,7 +697,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 					if (aspect is FieldMetadata)
 					{
 						FieldMetadata field = (FieldMetadata)aspect;
-						field.RemoveIndexEntry(context.Transaction(), context.Id(), null);
+						field.RemoveIndexEntry(context.Transaction(), context.ObjectId(), null);
 					}
 					return;
 				}
@@ -707,15 +712,15 @@ namespace Db4objects.Db4o.Internal.Handlers
 		public virtual bool SeekToField(ObjectHeaderContext context, ClassAspect aspect)
 		{
 			BooleanByRef found = new BooleanByRef(false);
-			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_451(aspect
+			ITraverseAspectCommand command = new _MarshallingInfoTraverseAspectCommand_456(aspect
 				, found, EnsureFieldList(context));
 			TraverseAllAspects(context, command);
 			return found.value;
 		}
 
-		private sealed class _MarshallingInfoTraverseAspectCommand_451 : MarshallingInfoTraverseAspectCommand
+		private sealed class _MarshallingInfoTraverseAspectCommand_456 : MarshallingInfoTraverseAspectCommand
 		{
-			public _MarshallingInfoTraverseAspectCommand_451(ClassAspect aspect, BooleanByRef
+			public _MarshallingInfoTraverseAspectCommand_456(ClassAspect aspect, BooleanByRef
 				 found, IMarshallingInfo baseArg1) : base(baseArg1)
 			{
 				this.aspect = aspect;

@@ -64,6 +64,15 @@ namespace Db4objects.Db4o.Internal.Config
 			}
 		}
 
+		public virtual bool GenerateCommitTimestamps
+		{
+			set
+			{
+				bool setting = value;
+				_config.GenerateCommitTimestamps(setting);
+			}
+		}
+
 		/// <exception cref="Db4objects.Db4o.Config.GlobalOnlyConfigException"></exception>
 		public virtual IStorage Storage
 		{

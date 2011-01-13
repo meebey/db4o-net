@@ -125,5 +125,12 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			return null;
 		}
+
+		public override long VersionForId(int id)
+		{
+			MsgD msg = Msg.VersionForId.GetWriterForInt(SystemTransaction(), id);
+			_client.Write(msg);
+			return _client.ExpectedByteResponse(Msg.VersionForId).ReadLong();
+		}
 	}
 }

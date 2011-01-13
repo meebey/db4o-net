@@ -44,6 +44,12 @@
 
 
 
+
+
+
+
+
+
 <SignAssembly>true</SignAssembly>
 <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
@@ -134,6 +140,7 @@
 <Compile Include="Db4oUnit.Extensions\Fixtures\IMultiSessionFixture.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutAllButNetworkingCS.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutBTreeFreespaceManager.cs"/>
+<Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutCustomContainerInstantiation.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutDefragSolo.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutFromTestFixture.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutIdSystem.cs"/>
@@ -141,6 +148,7 @@
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutMultiSession.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNetworkingCS.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNoFileSystemData.cs"/>
+<Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNoInheritedClassPath.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutNonStandardBlockSize.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutSilverlight.cs"/>
 <Compile Include="Db4oUnit.Extensions\Fixtures\IOptOutSolo.cs"/>

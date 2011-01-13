@@ -180,7 +180,7 @@ namespace Db4objects.Db4o.Internal
 
 		public override long CurrentVersion()
 		{
-			return _timeStampIdGenerator.LastTimeStampId();
+			return _timeStampIdGenerator.Last();
 		}
 
 		internal virtual void InitNewClassCollection()
@@ -432,7 +432,7 @@ namespace Db4objects.Db4o.Internal
 				// The dirty TimeStampIdGenerator triggers writing of
 				// the variable part of the systemdata. We need to
 				// make it dirty here, so the new identity is persisted:
-				_timeStampIdGenerator.Next();
+				_timeStampIdGenerator.Generate();
 				_fileHeader.WriteVariablePart(this);
 			}
 		}
@@ -560,6 +560,10 @@ namespace Db4objects.Db4o.Internal
 				);
 			BlockSizeReadFromFile(1);
 			_fileHeader = FileHeader.Read(this);
+			if (Config().GenerateCommitTimestamps().IsUnspecified())
+			{
+				Config().GenerateCommitTimestamps(_systemData.IdToTimestampIndexId() != 0);
+			}
 			CreateStringIO(_systemData.StringEncoding());
 			CreateIdSystem();
 			InitializeClassMetadataRepository();
@@ -651,12 +655,12 @@ namespace Db4objects.Db4o.Internal
 					return;
 				}
 			}
-			_semaphoresLock.Run(new _IClosure4_570(this, trans, name));
+			_semaphoresLock.Run(new _IClosure4_574(this, trans, name));
 		}
 
-		private sealed class _IClosure4_570 : IClosure4
+		private sealed class _IClosure4_574 : IClosure4
 		{
-			public _IClosure4_570(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_574(LocalObjectContainer _enclosing, Transaction trans, string 
 				name)
 			{
 				this._enclosing = _enclosing;
@@ -688,13 +692,13 @@ namespace Db4objects.Db4o.Internal
 			if (_semaphores != null)
 			{
 				Hashtable4 semaphores = _semaphores;
-				_semaphoresLock.Run(new _IClosure4_584(this, semaphores, trans));
+				_semaphoresLock.Run(new _IClosure4_588(this, semaphores, trans));
 			}
 		}
 
-		private sealed class _IClosure4_584 : IClosure4
+		private sealed class _IClosure4_588 : IClosure4
 		{
-			public _IClosure4_584(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
+			public _IClosure4_588(LocalObjectContainer _enclosing, Hashtable4 semaphores, Transaction
 				 trans)
 			{
 				this._enclosing = _enclosing;
@@ -704,14 +708,14 @@ namespace Db4objects.Db4o.Internal
 
 			public object Run()
 			{
-				semaphores.ForEachKeyForIdentity(new _IVisitor4_585(semaphores), trans);
+				semaphores.ForEachKeyForIdentity(new _IVisitor4_589(semaphores), trans);
 				this._enclosing._semaphoresLock.Awake();
 				return null;
 			}
 
-			private sealed class _IVisitor4_585 : IVisitor4
+			private sealed class _IVisitor4_589 : IVisitor4
 			{
-				public _IVisitor4_585(Hashtable4 semaphores)
+				public _IVisitor4_589(Hashtable4 semaphores)
 				{
 					this.semaphores = semaphores;
 				}
@@ -762,13 +766,13 @@ namespace Db4objects.Db4o.Internal
 				}
 			}
 			BooleanByRef acquired = new BooleanByRef();
-			_semaphoresLock.Run(new _IClosure4_621(this, trans, name, acquired, timeout));
+			_semaphoresLock.Run(new _IClosure4_625(this, trans, name, acquired, timeout));
 			return acquired.value;
 		}
 
-		private sealed class _IClosure4_621 : IClosure4
+		private sealed class _IClosure4_625 : IClosure4
 		{
-			public _IClosure4_621(LocalObjectContainer _enclosing, Transaction trans, string 
+			public _IClosure4_625(LocalObjectContainer _enclosing, Transaction trans, string 
 				name, BooleanByRef acquired, int timeout)
 			{
 				this._enclosing = _enclosing;
@@ -960,7 +964,6 @@ namespace Db4objects.Db4o.Internal
 		public virtual void SetNextTimeStampId(long val)
 		{
 			_timeStampIdGenerator.SetMinimumNext(val);
-			_timeStampIdGenerator.SetClean();
 		}
 
 		public override ISystemInfo SystemInfo()
@@ -986,13 +989,13 @@ namespace Db4objects.Db4o.Internal
 		public override long[] GetIDsForClass(Transaction trans, ClassMetadata clazz)
 		{
 			IntArrayList ids = new IntArrayList();
-			clazz.Index().TraverseAll(trans, new _IVisitor4_789(ids));
+			clazz.Index().TraverseAll(trans, new _IVisitor4_792(ids));
 			return ids.AsLong();
 		}
 
-		private sealed class _IVisitor4_789 : IVisitor4
+		private sealed class _IVisitor4_792 : IVisitor4
 		{
-			public _IVisitor4_789(IntArrayList ids)
+			public _IVisitor4_792(IntArrayList ids)
 			{
 				this.ids = ids;
 			}
@@ -1116,8 +1119,7 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual IRunnable CommitHook()
 		{
-			_systemData.LastTimeStampID(_timeStampIdGenerator.LastTimeStampId());
-			_timeStampIdGenerator.SetClean();
+			_systemData.LastTimeStampID(_timeStampIdGenerator.Last());
 			return _fileHeader.Commit(false);
 		}
 
@@ -1136,7 +1138,7 @@ namespace Db4objects.Db4o.Internal
 			return new EventRegistryImpl();
 		}
 
-		public override IQLin From(Type clazz)
+		public virtual IQLin From(Type clazz)
 		{
 			return new QLinRoot(Query(), clazz);
 		}

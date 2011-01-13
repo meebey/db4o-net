@@ -116,6 +116,12 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				(length)));
 			bool versionsAreConsistent = VersionsAreConsistentAndSeek(buffer);
 			// TODO: Diagnostic message if versions aren't consistent.
+			ReadBuffer(buffer, versionsAreConsistent);
+		}
+
+		protected virtual void ReadBuffer(ByteArrayBuffer buffer, bool versionsAreConsistent
+			)
+		{
 			buffer.IncrementOffset(ChecksumLength);
 			SystemData systemData = SystemData();
 			systemData.IdSystemSlot(ReadSlot(buffer, false));
@@ -143,6 +149,18 @@ namespace Db4objects.Db4o.Internal.Fileheader
 			int checkSumOffset = buffer.Offset();
 			buffer.IncrementOffset(ChecksumLength);
 			int checkSumBeginOffset = buffer.Offset();
+			WriteBuffer(buffer, shuttingDown);
+			int checkSumEndOffSet = buffer.Offset();
+			byte[] bytes = buffer._buffer;
+			int length = checkSumEndOffSet - checkSumBeginOffset;
+			long checkSum = CRC32.CheckSum(bytes, checkSumBeginOffset, length);
+			buffer.Seek(checkSumOffset);
+			buffer.WriteLong(checkSum);
+			buffer.Seek(checkSumEndOffSet);
+		}
+
+		protected virtual void WriteBuffer(ByteArrayBuffer buffer, bool shuttingDown)
+		{
 			SystemData systemData = SystemData();
 			WriteSlot(buffer, systemData.IdSystemSlot(), false);
 			WriteSlot(buffer, systemData.InMemoryFreespaceSlot(), !shuttingDown);
@@ -154,13 +172,6 @@ namespace Db4objects.Db4o.Internal.Fileheader
 				()));
 			buffer.WriteLong(systemData.LastTimeStampID());
 			buffer.WriteByte(systemData.FreespaceSystem());
-			int checkSumEndOffSet = buffer.Offset();
-			byte[] bytes = buffer._buffer;
-			int length = checkSumEndOffSet - checkSumBeginOffset;
-			long checkSum = CRC32.CheckSum(bytes, checkSumBeginOffset, length);
-			buffer.Seek(checkSumOffset);
-			buffer.WriteLong(checkSum);
-			buffer.Seek(checkSumEndOffSet);
 		}
 
 		private void WriteSlot(ByteArrayBuffer buffer, Slot slot, bool writeZero)

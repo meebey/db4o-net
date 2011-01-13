@@ -7,8 +7,11 @@ namespace Db4objects.Db4o.Internal
 	/// <exclude></exclude>
 	public class SharedIndexedFields
 	{
-		internal readonly VersionFieldMetadata _version = new VersionFieldMetadata();
+		public readonly VersionFieldMetadata _version = new VersionFieldMetadata();
 
-		internal readonly UUIDFieldMetadata _uUID = new UUIDFieldMetadata();
+		public readonly UUIDFieldMetadata _uUID = new UUIDFieldMetadata();
+
+		public readonly CommitTimestampFieldMetadata _commitTimestamp = new CommitTimestampFieldMetadata
+			();
 	}
 }

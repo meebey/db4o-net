@@ -60,28 +60,60 @@ namespace Db4objects.Db4o.IO
 			}
 			BinConfiguration oldConfiguration = binRecord._binConfiguration;
 			SaveAsStorage.SaveAsBin saveAsBin = binRecord._bin;
-			saveAsBin.Sync();
-			saveAsBin.Close();
-			try
+			IRunnable closure = new _IRunnable_49(this, saveAsBin, oldUri, newUri, oldConfiguration
+				);
+			saveAsBin.ExchangeUnderlyingBin(closure);
+		}
+
+		private sealed class _IRunnable_49 : IRunnable
+		{
+			public _IRunnable_49(SaveAsStorage _enclosing, SaveAsStorage.SaveAsBin saveAsBin, 
+				string oldUri, string newUri, BinConfiguration oldConfiguration)
 			{
-				File4.Copy(oldUri, newUri);
+				this._enclosing = _enclosing;
+				this.saveAsBin = saveAsBin;
+				this.oldUri = oldUri;
+				this.newUri = newUri;
+				this.oldConfiguration = oldConfiguration;
 			}
-			catch (Exception e)
+
+			public void Run()
 			{
-				ReopenOldConfiguration(saveAsBin, oldConfiguration, newUri, e);
+				saveAsBin.Sync();
+				saveAsBin.Close();
+				try
+				{
+					File4.Copy(oldUri, newUri);
+				}
+				catch (Exception e)
+				{
+					this._enclosing.ReopenOldConfiguration(saveAsBin, oldConfiguration, newUri, e);
+				}
+				BinConfiguration newConfiguration = this._enclosing.PointToNewUri(oldConfiguration
+					, newUri);
+				try
+				{
+					IBin newBin = this._enclosing._storage.Open(newConfiguration);
+					saveAsBin.DelegateTo(newBin);
+					this._enclosing._binRecords.Remove(oldUri);
+					this._enclosing._binRecords.Put(newUri, new SaveAsStorage.BinRecord(newConfiguration
+						, saveAsBin));
+				}
+				catch (Exception e)
+				{
+					this._enclosing.ReopenOldConfiguration(saveAsBin, oldConfiguration, newUri, e);
+				}
 			}
-			BinConfiguration newConfiguration = PointToNewUri(oldConfiguration, newUri);
-			try
-			{
-				IBin newBin = _storage.Open(newConfiguration);
-				saveAsBin.DelegateTo(newBin);
-				_binRecords.Remove(oldUri);
-				_binRecords.Put(newUri, new SaveAsStorage.BinRecord(newConfiguration, saveAsBin));
-			}
-			catch (Exception e)
-			{
-				ReopenOldConfiguration(saveAsBin, oldConfiguration, newUri, e);
-			}
+
+			private readonly SaveAsStorage _enclosing;
+
+			private readonly SaveAsStorage.SaveAsBin saveAsBin;
+
+			private readonly string oldUri;
+
+			private readonly string newUri;
+
+			private readonly BinConfiguration oldConfiguration;
 		}
 
 		private BinConfiguration PointToNewUri(BinConfiguration oldConfig, string newUri)
@@ -140,41 +172,70 @@ namespace Db4objects.Db4o.IO
 				_bin = delegate_;
 			}
 
+			public virtual void ExchangeUnderlyingBin(IRunnable closure)
+			{
+				lock (this)
+				{
+					closure.Run();
+				}
+			}
+
 			public virtual void Close()
 			{
-				_bin.Close();
+				lock (this)
+				{
+					_bin.Close();
+				}
 			}
 
 			public virtual long Length()
 			{
-				return _bin.Length();
+				lock (this)
+				{
+					return _bin.Length();
+				}
 			}
 
 			public virtual int Read(long position, byte[] bytes, int bytesToRead)
 			{
-				return _bin.Read(position, bytes, bytesToRead);
+				lock (this)
+				{
+					return _bin.Read(position, bytes, bytesToRead);
+				}
 			}
 
 			public virtual void Sync()
 			{
-				_bin.Sync();
+				lock (this)
+				{
+					_bin.Sync();
+				}
 			}
 
 			public virtual void Sync(IRunnable runnable)
 			{
-				Sync();
-				runnable.Run();
-				Sync();
+				lock (this)
+				{
+					Sync();
+					runnable.Run();
+					Sync();
+				}
 			}
 
 			public virtual int SyncRead(long position, byte[] bytes, int bytesToRead)
 			{
-				return _bin.SyncRead(position, bytes, bytesToRead);
+				lock (this)
+				{
+					return _bin.SyncRead(position, bytes, bytesToRead);
+				}
 			}
 
 			public virtual void Write(long position, byte[] bytes, int bytesToWrite)
 			{
-				_bin.Write(position, bytes, bytesToWrite);
+				lock (this)
+				{
+					_bin.Write(position, bytes, bytesToWrite);
+				}
 			}
 
 			public virtual void DelegateTo(IBin bin)

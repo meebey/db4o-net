@@ -145,8 +145,8 @@ namespace Db4objects.Db4o.Internal
 		private static readonly KeySpec GenerateUuidsKey = new KeySpec(ConfigScope.Individually
 			);
 
-		private static readonly KeySpec GenerateVersionNumbersKey = new KeySpec(ConfigScope
-			.Individually);
+		private static readonly KeySpec GenerateCommitTimestampsKey = new KeySpec(TernaryBool
+			.Unspecified);
 
 		private static readonly KeySpec IdSystemKey = new KeySpec(StandardIdSystemFactory
 			.Default);
@@ -539,7 +539,16 @@ namespace Db4objects.Db4o.Internal
 
 		public void GenerateVersionNumbers(ConfigScope scope)
 		{
-			_config.Put(GenerateVersionNumbersKey, scope);
+			if (scope == ConfigScope.Individually)
+			{
+				throw new NotSupportedException();
+			}
+			GenerateCommitTimestamps(scope == ConfigScope.Globally);
+		}
+
+		public void GenerateCommitTimestamps(bool flag)
+		{
+			_config.Put(GenerateCommitTimestampsKey, TernaryBool.ForBoolean(flag));
 		}
 
 		public IMessageSender GetMessageSender()
@@ -1004,9 +1013,9 @@ namespace Db4objects.Db4o.Internal
 			return (ConfigScope)_config.Get(GenerateUuidsKey);
 		}
 
-		public ConfigScope GenerateVersionNumbers()
+		public TernaryBool GenerateCommitTimestamps()
 		{
-			return (ConfigScope)_config.Get(GenerateVersionNumbersKey);
+			return (TernaryBool)_config.Get(GenerateCommitTimestampsKey);
 		}
 
 		public bool InternStrings()

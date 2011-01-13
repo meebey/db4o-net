@@ -35,7 +35,7 @@ namespace Db4objects.Db4o.Tests.Common.Header
 			IObjectClass objectClass = config.ObjectClass(typeof(SimpleTimeStampIdTestCase.STSItem
 				));
 			objectClass.GenerateUUIDs(true);
-			objectClass.GenerateVersionNumbers(true);
+			config.GenerateCommitTimestamps(true);
 		}
 
 		protected override void Store()
@@ -48,14 +48,15 @@ namespace Db4objects.Db4o.Tests.Common.Header
 		{
 			SimpleTimeStampIdTestCase.STSItem item = (SimpleTimeStampIdTestCase.STSItem)Db().
 				QueryByExample(typeof(SimpleTimeStampIdTestCase.STSItem)).Next();
-			long version = Db().GetObjectInfo(item).GetVersion();
+			long version = Db().GetObjectInfo(item).GetCommitTimestamp();
 			Assert.IsGreater(0, version);
 			Assert.IsGreaterOrEqual(version, CurrentVersion());
 			Reopen();
 			SimpleTimeStampIdTestCase.STSItem item2 = new SimpleTimeStampIdTestCase.STSItem("two"
 				);
 			Db().Store(item2);
-			long secondVersion = Db().GetObjectInfo(item2).GetVersion();
+			Db().Commit();
+			long secondVersion = Db().GetObjectInfo(item2).GetCommitTimestamp();
 			Assert.IsGreater(version, secondVersion);
 			Assert.IsGreaterOrEqual(secondVersion, CurrentVersion());
 		}

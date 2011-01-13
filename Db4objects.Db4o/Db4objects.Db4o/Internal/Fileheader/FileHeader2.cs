@@ -121,10 +121,5 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		{
 			return new FileHeaderVariablePart2(file);
 		}
-
-		public override FileHeader Convert(LocalObjectContainer file)
-		{
-			return this;
-		}
 	}
 }

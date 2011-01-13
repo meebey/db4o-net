@@ -13,6 +13,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 {
 	/// <exclude></exclude>
 	public class QueryingReadContext : AbstractReadContext, IHandlerVersionContext, IAspectVersionContext
+		, IObjectIdContext
 	{
 		private readonly QCandidates _candidates;
 
@@ -23,6 +24,8 @@ namespace Db4objects.Db4o.Internal.Marshall
 		private IdObjectCollector _collector;
 
 		private int _declaredAspectCount;
+
+		private int _id;
 
 		private QueryingReadContext(Transaction transaction, QCandidates candidates, int 
 			handlerVersion, IReadBuffer buffer, int collectionID, IdObjectCollector collector
@@ -42,8 +45,9 @@ namespace Db4objects.Db4o.Internal.Marshall
 		}
 
 		public QueryingReadContext(Transaction transaction, int handlerVersion, IReadBuffer
-			 buffer) : this(transaction, null, handlerVersion, buffer, 0)
+			 buffer, int id) : this(transaction, null, handlerVersion, buffer, 0)
 		{
+			_id = id;
 		}
 
 		public QueryingReadContext(Transaction transaction, int handlerVersion, IReadBuffer
@@ -169,6 +173,11 @@ namespace Db4objects.Db4o.Internal.Marshall
 		public virtual IdObjectCollector Collector()
 		{
 			return _collector;
+		}
+
+		public virtual int ObjectId()
+		{
+			return _id;
 		}
 	}
 }

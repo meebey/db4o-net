@@ -141,6 +141,7 @@
 <Compile Include="Db4objects.Db4o.Tests\Common\Assorted\CascadedDeleteReadTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Assorted\ChangeIdentity.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Assorted\CloseUnlocksFileTestCase.cs"/>
+<Compile Include="Db4objects.Db4o.Tests\Common\Assorted\CommitTimestampTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Assorted\ComparatorSortTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Assorted\ConcurrentRenameTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Assorted\DatabaseGrowthSizeTestCase.cs"/>
@@ -336,6 +337,7 @@
 <Compile Include="Db4objects.Db4o.Tests\Common\Defragment\AbstractDb4oDefragTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Defragment\AllTests.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Defragment\BlockSizeDefragTestCase.cs"/>
+<Compile Include="Db4objects.Db4o.Tests\Common\Defragment\CommitTimestampDefragmentTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Defragment\DefragEncryptedFileTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Defragment\DefragInMemoryTestSuite.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Defragment\DefragInheritedFieldIndexTestCase.cs"/>
@@ -514,6 +516,7 @@
 <Compile Include="Db4objects.Db4o.Tests\Common\Handlers\CharHandlerTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Handlers\CharHandlerUpdateTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Handlers\ClassHandlerTestCase.cs"/>
+<Compile Include="Db4objects.Db4o.Tests\Common\Handlers\CommitTimestampMigrationTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Handlers\CustomTypeHandlerTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Handlers\DateHandlerUpdateTestCase.cs"/>
 <Compile Include="Db4objects.Db4o.Tests\Common\Handlers\DeleteStringInUntypedFieldTestCase.cs"/>

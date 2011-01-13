@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.Internal
 		private int _highestBuiltinTypeID = Handlers4.AnyArrayNId + 1;
 
 		private readonly VirtualFieldMetadata[] _virtualFields = new VirtualFieldMetadata
-			[2];
+			[3];
 
 		private readonly Hashtable4 _mapReflectorToTypeHandler = NewHashtable();
 
@@ -109,6 +109,7 @@ namespace Db4objects.Db4o.Internal
 			_indexes = new SharedIndexedFields();
 			_virtualFields[0] = _indexes._version;
 			_virtualFields[1] = _indexes._uUID;
+			_virtualFields[2] = _indexes._commitTimestamp;
 			RegisterBuiltinHandlers();
 			RegisterPlatformTypes();
 			InitArrayHandlers();

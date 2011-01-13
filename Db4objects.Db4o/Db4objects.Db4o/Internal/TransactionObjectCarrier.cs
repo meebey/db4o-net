@@ -27,5 +27,16 @@ namespace Db4objects.Db4o.Internal
 		{
 			return false;
 		}
+
+		public override long VersionForId(int id)
+		{
+			return 0;
+		}
+
+		public override Db4objects.Db4o.Internal.CommitTimestampSupport CommitTimestampSupport
+			()
+		{
+			return null;
+		}
 	}
 }

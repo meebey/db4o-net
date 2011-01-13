@@ -37,6 +37,10 @@ namespace Db4objects.Db4o.Internal
 
 		private Slot _idSystemSlot;
 
+		private int _idToTimestampIndexId;
+
+		private int _timestampToIdIndexId;
+
 		public virtual Slot IdSystemSlot()
 		{
 			return _idSystemSlot;
@@ -188,6 +192,26 @@ namespace Db4objects.Db4o.Internal
 		public virtual ITransactionalIdSystem FreespaceIdSystem()
 		{
 			return _freespaceIdSystem;
+		}
+
+		public virtual void IdToTimestampIndexId(int idToTimestampIndexId)
+		{
+			_idToTimestampIndexId = idToTimestampIndexId;
+		}
+
+		public virtual int IdToTimestampIndexId()
+		{
+			return _idToTimestampIndexId;
+		}
+
+		public virtual void TimestampToIdIndexId(int timestampToIdIndexId)
+		{
+			_timestampToIdIndexId = timestampToIdIndexId;
+		}
+
+		public virtual int TimestampToIdIndexId()
+		{
+			return _timestampToIdIndexId;
 		}
 	}
 }

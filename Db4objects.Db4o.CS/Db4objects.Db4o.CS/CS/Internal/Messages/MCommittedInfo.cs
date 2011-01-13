@@ -47,7 +47,7 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 					.Transaction());
 				PrimitiveCodec.WriteLong(os, sourceDatabaseId);
 				PrimitiveCodec.WriteLong(os, ((FrozenObjectInfo)info).UuidLongPart());
-				PrimitiveCodec.WriteLong(os, info.GetVersion());
+				PrimitiveCodec.WriteLong(os, info.GetCommitTimestamp());
 			}
 
 			public IObjectInfo Decode(ByteArrayInputStream @is)

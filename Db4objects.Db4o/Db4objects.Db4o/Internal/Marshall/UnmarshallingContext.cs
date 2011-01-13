@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return _object;
 			}
-			ReadBuffer(ObjectID());
+			ReadBuffer(ObjectId());
 			if (Buffer() == null)
 			{
 				EndProcessing();
@@ -59,7 +59,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			AdjustActivationDepth();
 			if (_checkIDTree)
 			{
-				object objectInCacheFromClassCreation = Transaction().ObjectForIdFromCache(ObjectID
+				object objectInCacheFromClassCreation = Transaction().ObjectForIdFromCache(ObjectId
 					());
 				if (objectInCacheFromClassCreation != null)
 				{
@@ -86,7 +86,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 			{
 				return;
 			}
-			throw new InvalidSlotException("id: " + ObjectID());
+			throw new InvalidSlotException("id: " + ObjectId());
 		}
 
 		private void AdjustActivationDepth()
@@ -117,7 +117,7 @@ namespace Db4objects.Db4o.Internal.Marshall
 
 		public virtual object ReadFieldValue(FieldMetadata field)
 		{
-			ReadBuffer(ObjectID());
+			ReadBuffer(ObjectId());
 			if (Buffer() == null)
 			{
 				return null;
@@ -128,6 +128,15 @@ namespace Db4objects.Db4o.Internal.Marshall
 				return null;
 			}
 			return ReadFieldValue(classMetadata, field);
+		}
+
+		private object ReadFieldValue(ClassMetadata classMetadata, FieldMetadata field)
+		{
+			if (!classMetadata.SeekToField(this, field))
+			{
+				return null;
+			}
+			return field.Read(this);
 		}
 
 		private ClassMetadata ReadObjectHeader()

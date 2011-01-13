@@ -228,7 +228,7 @@ namespace Db4objects.Db4o.Internal.Query
 				return null;
 			}
 			QueryingReadContext context = new QueryingReadContext(_transaction, handlerVersion
-				._number, buffer);
+				._number, buffer, id);
 			return field.Read(context);
 		}
 

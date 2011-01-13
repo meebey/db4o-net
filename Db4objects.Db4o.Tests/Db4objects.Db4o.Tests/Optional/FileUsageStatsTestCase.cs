@@ -13,7 +13,7 @@ using Db4objects.Db4o.Tests.Optional;
 
 namespace Db4objects.Db4o.Tests.Optional
 {
-	public class FileUsageStatsTestCase : TestWithTempFile
+	public class FileUsageStatsTestCase : Db4oTestWithTempFile
 	{
 		public class Child
 		{
@@ -49,8 +49,9 @@ namespace Db4objects.Db4o.Tests.Optional
 
 		private void AssertFileStats()
 		{
-			FileUsageStats stats = FileUsageStatsCollector.RunStats(TempFile(), true);
-			Assert.AreEqual(stats.FileSize(), stats.TotalUsage());
+			FileUsageStats stats = FileUsageStatsCollector.RunStats(TempFile(), true, NewConfiguration
+				());
+			Assert.AreEqual(stats.FileSize(), stats.TotalUsage(), stats.ToString());
 		}
 
 		/// <exception cref="System.IO.IOException"></exception>
@@ -66,11 +67,7 @@ namespace Db4objects.Db4o.Tests.Optional
 		private void CreateDatabase(IList gaps)
 		{
 			File4.Delete(TempFile());
-			IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
-			config.Common.ObjectClass(typeof(FileUsageStatsTestCase.Item)).ObjectField("_id")
-				.Indexed(true);
-			config.Common.ObjectClass(typeof(FileUsageStatsTestCase.Item)).ObjectField("_name"
-				).Indexed(true);
+			IEmbeddedConfiguration config = NewConfiguration();
 			IEmbeddedObjectContainer db = Db4oEmbedded.OpenFile(config, TempFile());
 			IList list = new ArrayList();
 			list.Add(new FileUsageStatsTestCase.Child());
@@ -78,6 +75,18 @@ namespace Db4objects.Db4o.Tests.Optional
 			db.Store(item);
 			db.Commit();
 			db.Close();
+		}
+
+		protected override IEmbeddedConfiguration NewConfiguration()
+		{
+			IEmbeddedConfiguration config = base.NewConfiguration();
+			config.Common.ObjectClass(typeof(FileUsageStatsTestCase.Item)).ObjectField("_id")
+				.Indexed(true);
+			config.Common.ObjectClass(typeof(FileUsageStatsTestCase.Item)).ObjectField("_name"
+				).Indexed(true);
+			config.File.GenerateUUIDs = ConfigScope.Globally;
+			config.File.GenerateCommitTimestamps = true;
+			return config;
 		}
 	}
 }

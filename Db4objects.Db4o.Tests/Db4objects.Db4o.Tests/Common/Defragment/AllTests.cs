@@ -15,10 +15,11 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(BlockSizeDefragTestCase), typeof(DefragEncryptedFileTestCase
-				), typeof(DefragInheritedFieldIndexTestCase), typeof(DefragInMemoryTestSuite), typeof(
-				DefragmentUntypedPrimitiveArrayTestCase), typeof(IdMappingTestSuite), typeof(SlotDefragmentTestCase
-				), typeof(StoredClassFilterTestCase), typeof(TranslatedDefragTestCase) };
+			return new Type[] { typeof(BlockSizeDefragTestCase), typeof(CommitTimestampDefragmentTestCase
+				), typeof(DefragEncryptedFileTestCase), typeof(DefragInheritedFieldIndexTestCase
+				), typeof(DefragInMemoryTestSuite), typeof(DefragmentUntypedPrimitiveArrayTestCase
+				), typeof(IdMappingTestSuite), typeof(SlotDefragmentTestCase), typeof(StoredClassFilterTestCase
+				), typeof(TranslatedDefragTestCase) };
 		}
 	}
 }

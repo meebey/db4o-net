@@ -88,18 +88,16 @@ namespace Db4objects.Db4o.Tests.Common.Fieldindex
 
 			public void Visit(object obj)
 			{
-				Db4objects.Db4o.Internal.Btree.FieldIndexKey fik = (Db4objects.Db4o.Internal.Btree.FieldIndexKey
-					)obj;
+				IFieldIndexKey fik = (IFieldIndexKey)obj;
 				expectingVisitor.Visit(fik.Value());
 			}
 
 			private readonly ExpectingVisitor expectingVisitor;
 		}
 
-		private Db4objects.Db4o.Internal.Btree.FieldIndexKey FieldIndexKey(int integerPart
-			, object composite)
+		private IFieldIndexKey FieldIndexKey(int integerPart, object composite)
 		{
-			return new Db4objects.Db4o.Internal.Btree.FieldIndexKey(integerPart, composite);
+			return new FieldIndexKeyImpl(integerPart, composite);
 		}
 
 		private IBTreeRange FieldIndexKeySearch(Transaction trans, BTree btree, object key

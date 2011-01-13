@@ -28,13 +28,10 @@ namespace Db4objects.Db4o.Tests.Common.Config
 			protected override void Configure(IConfiguration config)
 			{
 				config.GenerateUUIDs(((ConfigScope)GlobalConfig.Value));
-				config.GenerateVersionNumbers(((ConfigScope)GlobalConfig.Value));
 				if (!((TernaryBool)ClassConfig.Value).IsUnspecified())
 				{
 					config.ObjectClass(typeof(ClassConfigOverridesGlobalConfigTestSuite.ClassConfigOverridesGlobalConfigTestUnit.Item
 						)).GenerateUUIDs(((TernaryBool)ClassConfig.Value).BooleanValue(true));
-					config.ObjectClass(typeof(ClassConfigOverridesGlobalConfigTestSuite.ClassConfigOverridesGlobalConfigTestUnit.Item
-						)).GenerateVersionNumbers(((TernaryBool)ClassConfig.Value).BooleanValue(true));
 				}
 			}
 
@@ -73,7 +70,7 @@ namespace Db4objects.Db4o.Tests.Common.Config
 				else
 				{
 					Assert.IsNull(objectInfo.GetUUID());
-					Assert.AreEqual(0L, objectInfo.GetVersion());
+					Assert.AreEqual(0L, objectInfo.GetCommitTimestamp());
 				}
 			}
 		}

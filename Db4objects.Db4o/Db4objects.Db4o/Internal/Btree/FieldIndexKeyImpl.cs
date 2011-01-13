@@ -1,5 +1,7 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+using Db4objects.Db4o.Internal.Btree;
+
 namespace Db4objects.Db4o.Internal.Btree
 {
 	/// <summary>
@@ -13,13 +15,13 @@ namespace Db4objects.Db4o.Internal.Btree
 	/// reference to the containing object).
 	/// </remarks>
 	/// <exclude></exclude>
-	public class FieldIndexKey
+	public class FieldIndexKeyImpl : IFieldIndexKey
 	{
 		private readonly object _value;
 
 		private readonly int _parentID;
 
-		public FieldIndexKey(int parentID, object value)
+		public FieldIndexKeyImpl(int parentID, object value)
 		{
 			_parentID = parentID;
 			_value = value;

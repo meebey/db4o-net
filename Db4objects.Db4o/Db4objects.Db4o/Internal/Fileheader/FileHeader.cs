@@ -13,11 +13,11 @@ namespace Db4objects.Db4o.Internal.Fileheader
 		public const int TransactionPointerLength = Const4.IntLength * 2;
 
 		private static readonly FileHeader[] AvailableFileHeaders = new FileHeader[] { new 
-			FileHeader1(), new FileHeader2() };
+			FileHeader1(), new FileHeader2(), new FileHeader3() };
 
 		public static NewFileHeaderBase NewCurrentFileHeader()
 		{
-			return new FileHeader2();
+			return new FileHeader3();
 		}
 
 		private static int ReaderLength()
@@ -49,7 +49,7 @@ namespace Db4objects.Db4o.Internal.Fileheader
 
 		public virtual FileHeader Convert(LocalObjectContainer file)
 		{
-			FileHeader2 fileHeader = new FileHeader2();
+			FileHeader3 fileHeader = new FileHeader3();
 			fileHeader.InitNew(file);
 			return fileHeader;
 		}

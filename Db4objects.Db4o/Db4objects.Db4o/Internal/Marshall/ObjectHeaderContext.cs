@@ -49,16 +49,6 @@ namespace Db4objects.Db4o.Internal.Marshall
 			Seek(state._offset);
 		}
 
-		public virtual object ReadFieldValue(Db4objects.Db4o.Internal.ClassMetadata classMetadata
-			, FieldMetadata field)
-		{
-			if (!classMetadata.SeekToField(this, field))
-			{
-				return null;
-			}
-			return field.Read(this);
-		}
-
 		public virtual Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()
 		{
 			return _objectHeader.ClassMetadata();

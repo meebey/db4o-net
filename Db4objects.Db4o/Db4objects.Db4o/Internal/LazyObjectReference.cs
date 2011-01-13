@@ -41,9 +41,14 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual long GetVersion()
 		{
+			return GetCommitTimestamp();
+		}
+
+		public virtual long GetCommitTimestamp()
+		{
 			lock (ContainerLock())
 			{
-				return Reference().GetVersion();
+				return Reference().GetCommitTimestamp();
 			}
 		}
 

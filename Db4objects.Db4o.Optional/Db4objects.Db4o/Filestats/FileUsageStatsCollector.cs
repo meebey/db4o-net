@@ -47,7 +47,12 @@ namespace Db4objects.Db4o.Filestats
 
 		public static FileUsageStats RunStats(string dbPath, bool collectSlots)
 		{
-			IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+			return RunStats(dbPath, collectSlots, Db4oEmbedded.NewConfiguration());
+		}
+
+		public static FileUsageStats RunStats(string dbPath, bool collectSlots, IEmbeddedConfiguration
+			 config)
+		{
 			config.File.Storage = new FileStorage();
 			IEmbeddedObjectContainer db = Db4oEmbedded.OpenFile(config, dbPath);
 			try
@@ -84,7 +89,8 @@ namespace Db4objects.Db4o.Filestats
 		public virtual FileUsageStats CollectStats()
 		{
 			_stats = new FileUsageStats(_db.FileLength(), FileHeaderUsage(), IdSystemUsage(), 
-				Freespace(), ClassMetadataUsage(), FreespaceUsage(), _slots);
+				Freespace(), ClassMetadataUsage(), FreespaceUsage(), UuidUsage(), _slots, CommitTimestampUsage
+				());
 			Sharpen.Util.ISet classRoots = ClassNode.BuildHierarchy(_db.ClassCollection());
 			for (IEnumerator classRootIter = classRoots.GetEnumerator(); classRootIter.MoveNext
 				(); )
@@ -124,13 +130,13 @@ namespace Db4objects.Db4o.Filestats
 		private long FieldIndexUsage(ClassMetadata classMetadata)
 		{
 			LongByRef usage = new LongByRef();
-			classMetadata.TraverseDeclaredFields(new _IProcedure4_113(this, usage));
+			classMetadata.TraverseDeclaredFields(new _IProcedure4_127(this, usage));
 			return usage.value;
 		}
 
-		private sealed class _IProcedure4_113 : IProcedure4
+		private sealed class _IProcedure4_127 : IProcedure4
 		{
-			public _IProcedure4_113(FileUsageStatsCollector _enclosing, LongByRef usage)
+			public _IProcedure4_127(FileUsageStatsCollector _enclosing, LongByRef usage)
 			{
 				this._enclosing = _enclosing;
 				this.usage = usage;
@@ -138,7 +144,7 @@ namespace Db4objects.Db4o.Filestats
 
 			public void Apply(object field)
 			{
-				if (!((FieldMetadata)field).HasIndex())
+				if (((FieldMetadata)field).IsVirtual() || !((FieldMetadata)field).HasIndex())
 				{
 					return;
 				}
@@ -190,15 +196,15 @@ namespace Db4objects.Db4o.Filestats
 			LongByRef slotUsage = new LongByRef();
 			LongByRef miscUsage = new LongByRef();
 			BTreeClassIndexStrategy index = (BTreeClassIndexStrategy)clazz.Index();
-			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_154(this, slotUsage, miscCollector
+			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_168(this, slotUsage, miscCollector
 				, miscUsage));
 			return new FileUsageStatsCollector.InstanceUsage(slotUsage.value, miscUsage.value
 				);
 		}
 
-		private sealed class _IVisitor4_154 : IVisitor4
+		private sealed class _IVisitor4_168 : IVisitor4
 		{
-			public _IVisitor4_154(FileUsageStatsCollector _enclosing, LongByRef slotUsage, IMiscCollector
+			public _IVisitor4_168(FileUsageStatsCollector _enclosing, LongByRef slotUsage, IMiscCollector
 				 miscCollector, LongByRef miscUsage)
 			{
 				this._enclosing = _enclosing;
@@ -233,12 +239,12 @@ namespace Db4objects.Db4o.Filestats
 				return;
 			}
 			BTreeClassIndexStrategy index = (BTreeClassIndexStrategy)clazz.Index();
-			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_170(this));
+			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_184(this));
 		}
 
-		private sealed class _IVisitor4_170 : IVisitor4
+		private sealed class _IVisitor4_184 : IVisitor4
 		{
-			public _IVisitor4_170(FileUsageStatsCollector _enclosing)
+			public _IVisitor4_184(FileUsageStatsCollector _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -253,13 +259,13 @@ namespace Db4objects.Db4o.Filestats
 
 		private long Freespace()
 		{
-			_db.FreespaceManager().Traverse(new _IVisitor4_178(this));
+			_db.FreespaceManager().Traverse(new _IVisitor4_192(this));
 			return _db.FreespaceManager().TotalFreespace();
 		}
 
-		private sealed class _IVisitor4_178 : IVisitor4
+		private sealed class _IVisitor4_192 : IVisitor4
 		{
-			public _IVisitor4_178(FileUsageStatsCollector _enclosing)
+			public _IVisitor4_192(FileUsageStatsCollector _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -351,6 +357,33 @@ namespace Db4objects.Db4o.Filestats
 			_slots.Add(new Db4objects.Db4o.Internal.Slots.Slot(variablePart.Address(), variablePart
 				.MarshalledLength()));
 			return usage;
+		}
+
+		private long UuidUsage()
+		{
+			if (_db.SystemData().UuidIndexId() <= 0)
+			{
+				return 0;
+			}
+			BTree index = _db.UUIDIndex().GetIndex(_db.SystemTransaction());
+			return index == null ? 0 : BTreeUsage(index);
+		}
+
+		private long CommitTimestampUsage()
+		{
+			LocalTransaction st = (LocalTransaction)_db.SystemTransaction();
+			CommitTimestampSupport commitTimestampSupport = st.CommitTimestampSupport();
+			if (commitTimestampSupport == null)
+			{
+				return 0;
+			}
+			BTree idToTimestampBtree = commitTimestampSupport.IdToTimestamp();
+			long idToTimestampBTreeSize = idToTimestampBtree == null ? 0 : BTreeUsage(idToTimestampBtree
+				);
+			BTree timestampToIdBtree = commitTimestampSupport.TimestampToId();
+			long timestampToIdBTreeSize = timestampToIdBtree == null ? 0 : BTreeUsage(timestampToIdBtree
+				);
+			return idToTimestampBTreeSize + timestampToIdBTreeSize;
 		}
 
 		private int SlotSizeForId(int id)

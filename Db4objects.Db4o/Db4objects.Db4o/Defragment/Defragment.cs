@@ -171,6 +171,7 @@ namespace Db4objects.Db4o.Defragment
 				services.CommitIds();
 				DefragUnindexed(services);
 				services.CommitIds();
+				services.DefragIdToTimestampBtree();
 				services.ReplaceClassMetadataRepository();
 			}
 			catch (CorruptionException exc)
@@ -269,13 +270,13 @@ namespace Db4objects.Db4o.Defragment
 			while (unindexedIDs.HasMoreIds())
 			{
 				int origID = unindexedIDs.NextId();
-				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_207());
+				DefragmentContextImpl.ProcessCopy(services, origID, new _ISlotCopyHandler_208());
 			}
 		}
 
-		private sealed class _ISlotCopyHandler_207 : ISlotCopyHandler
+		private sealed class _ISlotCopyHandler_208 : ISlotCopyHandler
 		{
-			public _ISlotCopyHandler_207()
+			public _ISlotCopyHandler_208()
 			{
 			}
 
@@ -370,12 +371,12 @@ namespace Db4objects.Db4o.Defragment
 		private static void ProcessObjectsForClass(DefragmentServicesImpl context, ClassMetadata
 			 curClass, IPassCommand command)
 		{
-			context.TraverseAll(curClass, new _IVisitor4_283(command, context, curClass));
+			context.TraverseAll(curClass, new _IVisitor4_284(command, context, curClass));
 		}
 
-		private sealed class _IVisitor4_283 : IVisitor4
+		private sealed class _IVisitor4_284 : IVisitor4
 		{
-			public _IVisitor4_283(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
+			public _IVisitor4_284(IPassCommand command, DefragmentServicesImpl context, ClassMetadata
 				 curClass)
 			{
 				this.command = command;

@@ -24,6 +24,6 @@ namespace Db4objects.Db4o.Internal.Delete
 
 		Slot ReadSlot();
 
-		int Id();
+		int ObjectId();
 	}
 }

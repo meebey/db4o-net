@@ -16,8 +16,9 @@ namespace Db4objects.Db4o.Tests.Common.Qlin
 
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(BasicQLinTestCase), typeof(PrototypesTestCase) };
+			return new Type[] { typeof(PrototypesTestCase) };
 		}
+		// BasicQLinTestCase.class,
 	}
 }
 #endif // !SILVERLIGHT

@@ -98,15 +98,24 @@ namespace Db4objects.Db4o.Internal.Handlers
 			context.WriteLong(((long)obj));
 		}
 
+		public static int Compare(long first, long second)
+		{
+			if (first == second)
+			{
+				return 0;
+			}
+			return first > second ? 1 : -1;
+		}
+
 		public override IPreparedComparison InternalPrepareComparison(object source)
 		{
 			long sourceLong = ((long)source);
-			return new _IPreparedComparison_97(sourceLong);
+			return new _IPreparedComparison_102(sourceLong);
 		}
 
-		private sealed class _IPreparedComparison_97 : IPreparedComparison
+		private sealed class _IPreparedComparison_102 : IPreparedComparison
 		{
-			public _IPreparedComparison_97(long sourceLong)
+			public _IPreparedComparison_102(long sourceLong)
 			{
 				this.sourceLong = sourceLong;
 			}
@@ -118,7 +127,7 @@ namespace Db4objects.Db4o.Internal.Handlers
 					return 1;
 				}
 				long targetLong = ((long)target);
-				return sourceLong == targetLong ? 0 : (sourceLong < targetLong ? -1 : 1);
+				return LongHandler.Compare(sourceLong, targetLong);
 			}
 
 			private readonly long sourceLong;

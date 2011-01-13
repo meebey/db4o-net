@@ -298,12 +298,15 @@ namespace Db4objects.Db4o.Internal
 
 		public virtual long GetVersion()
 		{
-			Db4objects.Db4o.Internal.VirtualAttributes va = VirtualAttributes(Transaction());
-			if (va == null)
+			return GetCommitTimestamp();
+		}
+
+		public virtual long GetCommitTimestamp()
+		{
+			lock (Container().Lock())
 			{
-				return 0;
+				return Container().SystemTransaction().VersionForId(GetID());
 			}
-			return va.i_version;
 		}
 
 		public Db4objects.Db4o.Internal.ClassMetadata ClassMetadata()

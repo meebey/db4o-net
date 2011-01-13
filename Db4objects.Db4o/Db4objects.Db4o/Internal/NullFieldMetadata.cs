@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Internal
 			return Null.Instance;
 		}
 
-		public sealed override object Read(IInternalReadContext context)
+		public sealed override object Read(IObjectIdContext context)
 		{
 			return null;
 		}
