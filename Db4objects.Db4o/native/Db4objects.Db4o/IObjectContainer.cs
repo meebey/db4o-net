@@ -31,7 +31,7 @@ namespace Db4objects.Db4o
 	/// </remarks>
 	/// <seealso cref="Db4objects.Db4o.Ext.IExtObjectContainer">IExtObjectContainer for extended functionality.
 	/// 	</seealso>
-	public interface IObjectContainer : System.IDisposable, ISodaQueryFactory, IQLinable
+	public interface IObjectContainer : System.IDisposable, ISodaQueryFactory
 	{
 		/// <summary>activates all members on a stored object to the specified depth.</summary>
 		/// <remarks>
