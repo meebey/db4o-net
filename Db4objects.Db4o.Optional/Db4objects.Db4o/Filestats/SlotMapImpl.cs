@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System.Collections;
 using System.Text;
 using Db4objects.Db4o.Filestats;
@@ -125,3 +126,4 @@ namespace Db4objects.Db4o.Filestats
 		}
 	}
 }
+#endif // !SILVERLIGHT

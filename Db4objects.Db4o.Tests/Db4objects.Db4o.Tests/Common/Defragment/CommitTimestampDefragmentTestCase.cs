@@ -19,7 +19,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void TestKeepingBtrees()
 		{
-			IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+			IEmbeddedConfiguration config = NewConfiguration();
 			config.File.GenerateCommitTimestamps = true;
 			long version = StoreItemAndGetCommitTimestamp(config);
 			Assert.IsGreater(0, version);
@@ -30,7 +30,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void TestRemovingBtrees()
 		{
-			IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+			IEmbeddedConfiguration config = NewConfiguration();
 			config.File.GenerateCommitTimestamps = true;
 			long version = StoreItemAndGetCommitTimestamp(config);
 			Assert.IsGreater(0, version);
@@ -42,7 +42,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		/// <exception cref="System.IO.IOException"></exception>
 		public virtual void TestTurningOnGenerateCommitTimestampInDefrag()
 		{
-			IEmbeddedConfiguration config = Db4oEmbedded.NewConfiguration();
+			IEmbeddedConfiguration config = NewConfiguration();
 			long version = StoreItemAndGetCommitTimestamp(config);
 			Assert.AreEqual(0, version);
 			Defrag(TernaryBool.Yes);
@@ -53,8 +53,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		private void AssertVersionAfterDefrag(long version, IEmbeddedConfiguration afterDefragConfig
 			)
 		{
-			IEmbeddedObjectContainer db;
-			db = OpenContainer(afterDefragConfig);
+			IEmbeddedObjectContainer db = OpenContainer(afterDefragConfig);
 			CommitTimestampDefragmentTestCase.Item retrievedItem = ((CommitTimestampDefragmentTestCase.Item
 				)db.Query(typeof(CommitTimestampDefragmentTestCase.Item)).Next());
 			long retrievedVersion = db.Ext().GetObjectInfo(retrievedItem).GetCommitTimestamp(
@@ -79,6 +78,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		private void Defrag(TernaryBool generateCommitTimestamp)
 		{
 			DefragmentConfig config = new DefragmentConfig(SourceFile(), BackupFile());
+			config.Db4oConfig(NewConfiguration());
 			config.ForceBackupDelete(true);
 			if (!generateCommitTimestamp.IsUnspecified())
 			{
@@ -92,7 +92,7 @@ namespace Db4objects.Db4o.Tests.Common.Defragment
 		{
 			if (config == null)
 			{
-				config = Db4oEmbedded.NewConfiguration();
+				config = NewConfiguration();
 			}
 			config.Common.ReflectWith(Platform4.ReflectorForType(typeof(CommitTimestampDefragmentTestCase.Item
 				)));

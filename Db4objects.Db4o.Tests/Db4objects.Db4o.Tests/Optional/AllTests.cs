@@ -6,12 +6,19 @@ using Db4objects.Db4o.Tests.Optional;
 
 namespace Db4objects.Db4o.Tests.Optional
 {
-	public class AllTests : Db4oTestSuite
+	public class AllTests : ComposibleTestSuite
 	{
 		protected override Type[] TestCases()
 		{
-			return new Type[] { typeof(Db4objects.Db4o.Tests.Optional.Handlers.AllTests), typeof(
-				ConsistencyCheckerTestCase), typeof(FileUsageStatsTestCase) };
+			return ComposeTests(new Type[] { typeof(Db4objects.Db4o.Tests.Optional.Handlers.AllTests
+				), typeof(ConsistencyCheckerTestCase) });
 		}
+
+		#if !SILVERLIGHT
+		protected override Type[] ComposeWith()
+		{
+			return new Type[] { typeof(FileUsageStatsTestCase) };
+		}
+		#endif // !SILVERLIGHT
 	}
 }

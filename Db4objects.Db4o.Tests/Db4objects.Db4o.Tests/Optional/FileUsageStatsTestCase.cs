@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System.Collections;
 using System.IO;
 using Db4oUnit;
@@ -7,7 +8,6 @@ using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Defragment;
 using Db4objects.Db4o.Filestats;
-using Db4objects.Db4o.Foundation.IO;
 using Db4objects.Db4o.Tests.Common.Api;
 using Db4objects.Db4o.Tests.Optional;
 
@@ -61,12 +61,13 @@ namespace Db4objects.Db4o.Tests.Optional
 			DefragmentConfig config = new DefragmentConfig(TempFile(), backupPath);
 			config.ForceBackupDelete(true);
 			Db4objects.Db4o.Defragment.Defragment.Defrag(config);
-			File4.Delete(backupPath);
+			Delete(backupPath);
 		}
 
+		/// <exception cref="System.IO.IOException"></exception>
 		private void CreateDatabase(IList gaps)
 		{
-			File4.Delete(TempFile());
+			Delete(TempFile());
 			IEmbeddedConfiguration config = NewConfiguration();
 			IEmbeddedObjectContainer db = Db4oEmbedded.OpenFile(config, TempFile());
 			IList list = new ArrayList();
@@ -75,6 +76,13 @@ namespace Db4objects.Db4o.Tests.Optional
 			db.Store(item);
 			db.Commit();
 			db.Close();
+		}
+
+		/// <exception cref="System.IO.IOException"></exception>
+		private void Delete(string file)
+		{
+			IEmbeddedConfiguration config = NewConfiguration();
+			config.File.Storage.Delete(file);
 		}
 
 		protected override IEmbeddedConfiguration NewConfiguration()
@@ -90,3 +98,4 @@ namespace Db4objects.Db4o.Tests.Optional
 		}
 	}
 }
+#endif // !SILVERLIGHT

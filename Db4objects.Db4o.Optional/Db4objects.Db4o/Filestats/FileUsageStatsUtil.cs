@@ -1,5 +1,6 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 namespace Db4objects.Db4o.Filestats
 {
 	/// <exclude></exclude>
@@ -22,3 +23,4 @@ namespace Db4objects.Db4o.Filestats
 		}
 	}
 }
+#endif // !SILVERLIGHT

@@ -1,12 +1,12 @@
 /* Copyright (C) 2004 - 2009  Versant Inc.  http://www.db4o.com */
 
+#if !SILVERLIGHT
 using System;
 using System.Collections;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Filestats;
 using Db4objects.Db4o.Foundation;
-using Db4objects.Db4o.IO;
 using Db4objects.Db4o.Internal;
 using Db4objects.Db4o.Internal.Btree;
 using Db4objects.Db4o.Internal.Classindex;
@@ -53,7 +53,6 @@ namespace Db4objects.Db4o.Filestats
 		public static FileUsageStats RunStats(string dbPath, bool collectSlots, IEmbeddedConfiguration
 			 config)
 		{
-			config.File.Storage = new FileStorage();
 			IEmbeddedObjectContainer db = Db4oEmbedded.OpenFile(config, dbPath);
 			try
 			{
@@ -130,13 +129,13 @@ namespace Db4objects.Db4o.Filestats
 		private long FieldIndexUsage(ClassMetadata classMetadata)
 		{
 			LongByRef usage = new LongByRef();
-			classMetadata.TraverseDeclaredFields(new _IProcedure4_127(this, usage));
+			classMetadata.TraverseDeclaredFields(new _IProcedure4_125(this, usage));
 			return usage.value;
 		}
 
-		private sealed class _IProcedure4_127 : IProcedure4
+		private sealed class _IProcedure4_125 : IProcedure4
 		{
-			public _IProcedure4_127(FileUsageStatsCollector _enclosing, LongByRef usage)
+			public _IProcedure4_125(FileUsageStatsCollector _enclosing, LongByRef usage)
 			{
 				this._enclosing = _enclosing;
 				this.usage = usage;
@@ -196,15 +195,15 @@ namespace Db4objects.Db4o.Filestats
 			LongByRef slotUsage = new LongByRef();
 			LongByRef miscUsage = new LongByRef();
 			BTreeClassIndexStrategy index = (BTreeClassIndexStrategy)clazz.Index();
-			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_168(this, slotUsage, miscCollector
+			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_166(this, slotUsage, miscCollector
 				, miscUsage));
 			return new FileUsageStatsCollector.InstanceUsage(slotUsage.value, miscUsage.value
 				);
 		}
 
-		private sealed class _IVisitor4_168 : IVisitor4
+		private sealed class _IVisitor4_166 : IVisitor4
 		{
-			public _IVisitor4_168(FileUsageStatsCollector _enclosing, LongByRef slotUsage, IMiscCollector
+			public _IVisitor4_166(FileUsageStatsCollector _enclosing, LongByRef slotUsage, IMiscCollector
 				 miscCollector, LongByRef miscUsage)
 			{
 				this._enclosing = _enclosing;
@@ -239,12 +238,12 @@ namespace Db4objects.Db4o.Filestats
 				return;
 			}
 			BTreeClassIndexStrategy index = (BTreeClassIndexStrategy)clazz.Index();
-			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_184(this));
+			index.TraverseAll(_db.SystemTransaction(), new _IVisitor4_182(this));
 		}
 
-		private sealed class _IVisitor4_184 : IVisitor4
+		private sealed class _IVisitor4_182 : IVisitor4
 		{
-			public _IVisitor4_184(FileUsageStatsCollector _enclosing)
+			public _IVisitor4_182(FileUsageStatsCollector _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -259,13 +258,13 @@ namespace Db4objects.Db4o.Filestats
 
 		private long Freespace()
 		{
-			_db.FreespaceManager().Traverse(new _IVisitor4_192(this));
+			_db.FreespaceManager().Traverse(new _IVisitor4_190(this));
 			return _db.FreespaceManager().TotalFreespace();
 		}
 
-		private sealed class _IVisitor4_192 : IVisitor4
+		private sealed class _IVisitor4_190 : IVisitor4
 		{
-			public _IVisitor4_192(FileUsageStatsCollector _enclosing)
+			public _IVisitor4_190(FileUsageStatsCollector _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}
@@ -415,3 +414,4 @@ namespace Db4objects.Db4o.Filestats
 		}
 	}
 }
+#endif // !SILVERLIGHT

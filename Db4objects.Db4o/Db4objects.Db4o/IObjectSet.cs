@@ -5,10 +5,12 @@ using Db4objects.Db4o.Ext;
 
 namespace Db4objects.Db4o
 {
-	/// <summary>query resultset.</summary>
+	/// <summary>
+	/// An ObjectSet is a representation for a set of objects returned
+	/// by a query.
+	/// </summary>
 	/// <remarks>
-	/// query resultset.
-	/// <br /><br />An ObjectSet is a representation for a set of objects returned
+	/// An ObjectSet is a representation for a set of objects returned
 	/// by a query.
 	/// <br /><br />ObjectSet extends the system collection interfaces
 	/// java.util.List/System.Collections.IList where they are available. It is

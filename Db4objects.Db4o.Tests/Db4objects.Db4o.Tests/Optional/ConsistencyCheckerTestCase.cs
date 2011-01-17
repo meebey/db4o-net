@@ -2,6 +2,7 @@
 
 using Db4oUnit;
 using Db4objects.Db4o;
+using Db4objects.Db4o.Config;
 using Db4objects.Db4o.Consistency;
 using Db4objects.Db4o.Foundation;
 using Db4objects.Db4o.Internal;
@@ -11,7 +12,7 @@ using Db4objects.Db4o.Tests.Optional;
 
 namespace Db4objects.Db4o.Tests.Optional
 {
-	public class ConsistencyCheckerTestCase : TestWithTempFile
+	public class ConsistencyCheckerTestCase : Db4oTestWithTempFile
 	{
 		public class Item
 		{
@@ -19,12 +20,12 @@ namespace Db4objects.Db4o.Tests.Optional
 
 		public virtual void TestFreeUsedSlot()
 		{
-			AssertInconsistencyDetected(new _IProcedure4_19());
+			AssertInconsistencyDetected(new _IProcedure4_20());
 		}
 
-		private sealed class _IProcedure4_19 : IProcedure4
+		private sealed class _IProcedure4_20 : IProcedure4
 		{
-			public _IProcedure4_19()
+			public _IProcedure4_20()
 			{
 			}
 
@@ -41,12 +42,12 @@ namespace Db4objects.Db4o.Tests.Optional
 
 		public virtual void TestFreeShiftedUsedSlot()
 		{
-			AssertInconsistencyDetected(new _IProcedure4_31());
+			AssertInconsistencyDetected(new _IProcedure4_32());
 		}
 
-		private sealed class _IProcedure4_31 : IProcedure4
+		private sealed class _IProcedure4_32 : IProcedure4
 		{
-			public _IProcedure4_31()
+			public _IProcedure4_32()
 			{
 			}
 
@@ -63,7 +64,9 @@ namespace Db4objects.Db4o.Tests.Optional
 
 		private void AssertInconsistencyDetected(IProcedure4 proc)
 		{
-			LocalObjectContainer db = (LocalObjectContainer)Db4oEmbedded.OpenFile(TempFile());
+			IEmbeddedConfiguration config = NewConfiguration();
+			LocalObjectContainer db = (LocalObjectContainer)Db4oEmbedded.OpenFile(config, TempFile
+				());
 			try
 			{
 				ConsistencyCheckerTestCase.Item item = new ConsistencyCheckerTestCase.Item();
