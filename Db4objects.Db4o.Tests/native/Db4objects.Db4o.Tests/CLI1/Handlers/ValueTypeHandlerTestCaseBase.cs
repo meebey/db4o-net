@@ -343,8 +343,5 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
 		{
 			return string.Format(format, typeof(T).Name);
 		}
-
-        // for .NET 2.0 compatibility
-        public delegate R Func<T, R>(T value);
     }
 }

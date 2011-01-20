@@ -14,10 +14,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 {
 	public class ServerNetworkingPerformanceCounterTestCase : PerformanceCounterTestCaseBase, IOptOutAllButNetworkingCS
 	{
-#if !NET_3_5
-		private delegate TResult Func<T,TResult>(T arg);
-        private delegate TResult Func<TResult>();
-#endif
 		private const int ClientCount = 10;
 
 		private delegate void SocketOperation(ISocket4 socket, int byteCount);

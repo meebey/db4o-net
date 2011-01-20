@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -36,7 +36,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_3_5</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
@@ -57,7 +57,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;NET_2_0;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;NET_3_5</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
@@ -1257,7 +1257,7 @@
 <Compile Include="native\Db4objects.Db4o.Tests\Util\JavaServices.cs"/>
 <Compile Include="native\Db4objects.Db4o.Tests\Util\WorkspaceServices.cs"/>
 <Compile Include="native\Silverlight\Db4objects.Db4o.Tests\Common\Api\Db4oTestWithTempFile.cs"/>
-<Compile Include="native\compact-2005\Console.cs"/>
+<Compile Include="native\compact\Console.cs"/>
 <Compile Include="native\compact\SerializableAttribute.cs"/>
 </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>

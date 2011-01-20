@@ -44,7 +44,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;POLL_SOCKET;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;POLL_SOCKET;NET_3_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Db4objects.Db4o.Optional.xml</DocumentationFile>
@@ -54,7 +54,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NET_2_0;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;NET_3_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Db4objects.Db4o.Optional.xml</DocumentationFile>

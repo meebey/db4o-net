@@ -326,8 +326,5 @@ namespace Db4objects.Db4o.Tests.CLI1.Handlers
             }
             return default(T);
         }
-
-        // for .NET 2.0 compatibility
-        public delegate R Func<T, R>(T value);
     }
 }

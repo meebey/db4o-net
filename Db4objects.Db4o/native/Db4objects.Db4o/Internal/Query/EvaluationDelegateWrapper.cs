@@ -40,25 +40,19 @@ namespace Db4objects.Db4o.Internal.Query
         private void Marshal()
         {
             _delegateType = _content.GetType();
-#if !CF_2_0
             _target = _content.Target;
             _method = _content.Method.Name;
             _type = _content.Method.DeclaringType;
-#endif
         }
 
         private Delegate Unmarshal()
         {
-#if CF_2_0
-            throw new NotSupportedException();
-#else
 			if (null == _target)
 			{
-				return System.Delegate.CreateDelegate(_delegateType, null, _type.GetMethod(_method,  BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public));
+				return Delegate.CreateDelegate(_delegateType, null, _type.GetMethod(_method,  BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public));
 			}
 				
-			return System.Delegate.CreateDelegate(_delegateType, _target, _target.GetType().GetMethod(_method, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public));
-#endif
+			return Delegate.CreateDelegate(_delegateType, _target, _target.GetType().GetMethod(_method, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public));
         }
     }
 

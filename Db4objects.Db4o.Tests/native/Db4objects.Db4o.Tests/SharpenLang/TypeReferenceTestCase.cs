@@ -61,7 +61,6 @@ namespace Db4objects.Db4o.Tests.SharpenLang
         {
         }
 
-#if !CF_2_0
 		public void TestRoundTripOnOpenType()
 		{
 			AssertGenericType(
@@ -81,7 +80,6 @@ namespace Db4objects.Db4o.Tests.SharpenLang
 				typeof (Generic<int>.InnerGeneric<NestedType>.Inner2),
 				typeof (Generic<int>.InnerGeneric<NestedType>.Generic<int>));
 		}
-#endif
 
     	private static void AssertGenericType(params Type[] types)
     	{

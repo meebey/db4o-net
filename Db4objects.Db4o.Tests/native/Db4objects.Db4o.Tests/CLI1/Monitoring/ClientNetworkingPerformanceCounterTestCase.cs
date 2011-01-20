@@ -17,11 +17,6 @@ namespace Db4objects.Db4o.Tests.CLI1.Monitoring
 {
 	public class ClientNetworkingPerformanceCounterTestCase : PerformanceCounterTestCaseBase, IOptOutMultiSession
 	{
-#if !NET_3_5
-        private delegate TResult Func<T, TResult>(T arg);
-        private delegate TResult Func<TResult>();
-#endif
-
         private const int ByteCount = 100;
 
 		protected override void Configure(IConfiguration config)

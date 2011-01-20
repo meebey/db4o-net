@@ -9,8 +9,6 @@ namespace Db4oTool.Core
 {
 	public class DebugInformation
 	{
-	    private delegate R Func<T, R>(T arg);
-
 		public static string InstructionInformationFor(Instruction instruction, Collection<Instruction> containingInstructions)
 		{
 			SequencePoint sp = FindSequencePointRelatedTo(instruction, containingInstructions);

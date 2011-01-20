@@ -13,12 +13,10 @@ class TAMixOfPersistentAndNoPersistentFields
 
 	public IntPtr _nonPersistentPointer;
 
-#if NET_3_5
 	private void ForceClassNameWithCurlyBraces()
 	{
 		int []value = {1, 2, 3};
 	}
-#endif
 }
 
 public class TAFilteredOut

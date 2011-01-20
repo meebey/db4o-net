@@ -43,7 +43,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_3_5</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <FileAlignment>4096</FileAlignment>
@@ -63,7 +63,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DebugSymbols>false</DebugSymbols>
-    <DefineConstants>TRACE;NET_2_0;NET_3_5</DefineConstants>
+    <DefineConstants>TRACE;NET_3_5</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <FileAlignment>4096</FileAlignment>

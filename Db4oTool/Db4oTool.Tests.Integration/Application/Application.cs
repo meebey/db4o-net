@@ -15,10 +15,6 @@ namespace Db4oTool.Tests.Integration
 {
 	class Application
 	{
-#if NET_2_0
-        private delegate R Func<T, R>(T arg);
-#endif
-
         const string ItemName = "Item";
 		private const string DatabasePath = "pilots.db4o";
 

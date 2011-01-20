@@ -5,8 +5,6 @@ using Db4oUnit.Fixtures;
 
 namespace Db4objects.Db4o.Tests.CLI1.Soda
 {
-	internal delegate R Func<T, R>(T arg);
-
 	interface IValueTypeFixture
 	{
 		object New(int index);
