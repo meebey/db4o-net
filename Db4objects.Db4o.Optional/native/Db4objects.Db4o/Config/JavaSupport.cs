@@ -7,6 +7,7 @@ using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Config
 {
+	[Obsolete]
 	public class JavaSupport : IConfigurationItem
 	{
 		public void Prepare(IConfiguration config)
