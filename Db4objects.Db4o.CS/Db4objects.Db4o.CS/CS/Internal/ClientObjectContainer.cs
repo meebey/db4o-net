@@ -325,7 +325,7 @@ namespace Db4objects.Db4o.CS.Internal
 		internal virtual Socket4Adapter CreateParallelSocket()
 		{
 			Write(Msg.GetThreadId);
-			int serverThreadID = ExpectedByteResponse(Msg.IdList).ReadInt();
+			int serverThreadID = ExpectedBufferResponse(Msg.IdList).ReadInt();
 			Socket4Adapter sock = _socket.OpenParalellSocket();
 			LoginToServer(sock);
 			if (switchedToFile != null)
@@ -432,7 +432,7 @@ namespace Db4objects.Db4o.CS.Internal
 			return _doFinalize;
 		}
 
-		internal ByteArrayBuffer ExpectedByteResponse(Msg expectedMessage)
+		internal ByteArrayBuffer ExpectedBufferResponse(Msg expectedMessage)
 		{
 			Msg msg = ExpectedResponse(expectedMessage);
 			if (msg == null)
@@ -618,7 +618,7 @@ namespace Db4objects.Db4o.CS.Internal
 			if (i_db == null)
 			{
 				Write(Msg.Identity);
-				ByteArrayBuffer reader = ExpectedByteResponse(Msg.IdList);
+				ByteArrayBuffer reader = ExpectedBufferResponse(Msg.IdList);
 				ShowInternalClasses(true);
 				try
 				{
@@ -692,7 +692,7 @@ namespace Db4objects.Db4o.CS.Internal
 			{
 				MsgD msg = Msg.PrefetchIds.GetWriterForInt(_transaction, prefetchIDCount);
 				Write(msg);
-				reader = ExpectedByteResponse(Msg.IdList);
+				reader = ExpectedBufferResponse(Msg.IdList);
 				for (int i = prefetchIDCount - 1; i >= 0; i--)
 				{
 					_prefetchedIDs[i] = reader.ReadInt();
@@ -720,11 +720,11 @@ namespace Db4objects.Db4o.CS.Internal
 			}
 		}
 
-		public override void RaiseVersion(long a_minimumVersion)
+		public override void RaiseCommitTimestamp(long a_minimumVersion)
 		{
 			lock (Lock())
 			{
-				Write(Msg.RaiseVersion.GetWriterForLong(_transaction, a_minimumVersion));
+				Write(Msg.RaiseCommitTimestamp.GetWriterForLong(_transaction, a_minimumVersion));
 			}
 		}
 
@@ -739,7 +739,7 @@ namespace Db4objects.Db4o.CS.Internal
 			MsgD msg = Msg.ReadSlot.GetWriterForInts(_transaction, new int[] { a_address, a_length
 				 });
 			Write(msg);
-			ByteArrayBuffer reader = ExpectedByteResponse(Msg.ReadSlot);
+			ByteArrayBuffer reader = ExpectedBufferResponse(Msg.ReadSlot);
 			System.Array.Copy(reader._buffer, 0, a_bytes, 0, a_length);
 		}
 
@@ -860,7 +860,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 			public void Run()
 			{
-				ByteArrayBuffer reader = this._enclosing.ExpectedByteResponse(Msg.QueryResult);
+				ByteArrayBuffer reader = this._enclosing.ExpectedBufferResponse(Msg.QueryResult);
 				int queryResultID = reader.ReadInt();
 				AbstractQueryResult queryResult = this._enclosing.QueryResultFor(trans, queryResultID
 					);
@@ -901,7 +901,7 @@ namespace Db4objects.Db4o.CS.Internal
 		internal virtual void ReadThis()
 		{
 			Write(Msg.GetClasses.GetWriter(SystemTransaction()));
-			ByteArrayBuffer bytes = ExpectedByteResponse(Msg.GetClasses);
+			ByteArrayBuffer bytes = ExpectedBufferResponse(Msg.GetClasses);
 			ClassCollection().SetID(bytes.ReadInt());
 			byte stringEncoding = bytes.ReadByte();
 			CreateStringIO(stringEncoding);
@@ -932,16 +932,6 @@ namespace Db4objects.Db4o.CS.Internal
 		}
 
 		// do nothing
-		private void ReReadAll(IConfiguration config)
-		{
-			remainingIDs = 0;
-			Initialize1(config);
-			InitializeTransactions();
-			InitializeClassMetadataRepository();
-			InitalizeWeakReferenceSupport();
-			ReadThis();
-		}
-
 		public sealed override void Rollback1(Transaction trans)
 		{
 			if (_config.BatchMessages())
@@ -1017,7 +1007,7 @@ namespace Db4objects.Db4o.CS.Internal
 			WriteMsg(msg, false);
 		}
 
-		private void WriteMsg(Msg msg, bool flush)
+		public void WriteMsg(Msg msg, bool flush)
 		{
 			if (_config.BatchMessages())
 			{
@@ -1161,13 +1151,13 @@ namespace Db4objects.Db4o.CS.Internal
 				PrefetchDepth(), PrefetchCount(), triggerQueryEvents ? 1 : 0 });
 			Write(msg);
 			ByRef result = ByRef.NewInstance();
-			WithEnvironment(new _IRunnable_910(this, trans, result));
+			WithEnvironment(new _IRunnable_901(this, trans, result));
 			return ((long[])result.value);
 		}
 
-		private sealed class _IRunnable_910 : IRunnable
+		private sealed class _IRunnable_901 : IRunnable
 		{
-			public _IRunnable_910(ClientObjectContainer _enclosing, Transaction trans, ByRef 
+			public _IRunnable_901(ClientObjectContainer _enclosing, Transaction trans, ByRef 
 				result)
 			{
 				this._enclosing = _enclosing;
@@ -1177,7 +1167,7 @@ namespace Db4objects.Db4o.CS.Internal
 
 			public void Run()
 			{
-				ByteArrayBuffer reader = this._enclosing.ExpectedByteResponse(Msg.IdList);
+				ByteArrayBuffer reader = this._enclosing.ExpectedBufferResponse(Msg.IdList);
 				IFixedSizeIntIterator4 idIterator = this._enclosing.IdIteratorFor(trans, reader);
 				result.value = this._enclosing.ToLongArray(idIterator);
 			}
@@ -1462,7 +1452,7 @@ namespace Db4objects.Db4o.CS.Internal
 			// We need a better strategy for C/S concurrency behaviour.
 			MsgD msg = Msg.TaIsDeleted.GetWriterForInt(trans, id);
 			Write(msg);
-			int res = ExpectedByteResponse(Msg.TaIsDeleted).ReadInt();
+			int res = ExpectedBufferResponse(Msg.TaIsDeleted).ReadInt();
 			return res == 1;
 		}
 

@@ -14,7 +14,7 @@ using System.Security;
 
 [assembly: ComVisible (false)]
 
-[assembly: AssemblyVersion("8.0.182.14430")]
+[assembly: AssemblyVersion("8.0.183.14430")]
 
 #if !CF && !SILVERLIGHT
 [assembly: AllowPartiallyTrustedCallers]

@@ -1789,7 +1789,7 @@ namespace Db4objects.Db4o.Internal
 			return new QQuery(CheckTransaction(ta), null, null);
 		}
 
-		public abstract void RaiseVersion(long a_minimumVersion);
+		public abstract void RaiseCommitTimestamp(long minimumTimestamp);
 
 		/// <exception cref="Db4objects.Db4o.Ext.Db4oIOException"></exception>
 		public abstract void ReadBytes(byte[] a_bytes, int a_address, int a_length);
@@ -2796,6 +2796,22 @@ namespace Db4objects.Db4o.Internal
 			)
 		{
 			_classCollection = repository;
+		}
+
+		public long GenerateTransactionTimestamp(long forcedTimestamp)
+		{
+			lock (Lock())
+			{
+				return CheckTransaction().GenerateTransactionTimestamp(forcedTimestamp);
+			}
+		}
+
+		public void UseDefaultTransactionTimestamp()
+		{
+			lock (Lock())
+			{
+				CheckTransaction().UseDefaultTransactionTimestamp();
+			}
 		}
 
 		public abstract void Activate(object arg1, int arg2);

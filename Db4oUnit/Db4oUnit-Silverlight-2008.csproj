@@ -35,6 +35,8 @@
 
 
 
+
+
 <SignAssembly>true</SignAssembly>
 <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
@@ -161,7 +163,6 @@
 <Compile Include="native\Db4oUnit\TestPlatform.cs"/>
 <Compile Include="native\Db4oUnit\Util\PlatformInformation.cs"/>
 <Compile Include="native\Db4oUnit\Util\StopWatch.cs"/>
-<Compile Include="native\Db4oUnit\compact\SerializableAttribute.cs"/>
 </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Db4objects.Db4o\Db4objects.Db4o-Silverlight-2008.csproj">

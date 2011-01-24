@@ -52,6 +52,8 @@
 
 
 
+
+
 <SignAssembly>true</SignAssembly>
 <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
@@ -199,7 +201,6 @@
 <Compile Include="native\Db4oUnit\TestPlatform.cs"/>
 <Compile Include="native\Db4oUnit\Util\PlatformInformation.cs"/>
 <Compile Include="native\Db4oUnit\Util\StopWatch.cs"/>
-<Compile Include="native\Db4oUnit\compact\SerializableAttribute.cs"/>
 </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

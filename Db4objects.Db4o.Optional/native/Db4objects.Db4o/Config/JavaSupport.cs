@@ -7,7 +7,7 @@ using Db4objects.Db4o.Query;
 
 namespace Db4objects.Db4o.Config
 {
-	[Obsolete]
+	[Obsolete("Since 8.0")]
 	public class JavaSupport : IConfigurationItem
 	{
 		public void Prepare(IConfiguration config)

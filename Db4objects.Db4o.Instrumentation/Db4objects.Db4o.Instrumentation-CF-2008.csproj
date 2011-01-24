@@ -44,6 +44,8 @@
 
 
 
+
+
 <SignAssembly>true</SignAssembly>
 <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
@@ -107,7 +109,6 @@
 <Compile Include="Db4objects.Db4o.Instrumentation\Api\InstrumentationException.cs"/>
 <Compile Include="Db4objects.Db4o.Instrumentation\Core\DefaultNativeClassFactory.cs"/>
 <Compile Include="Properties\AssemblyInfo.cs"/>
-<Compile Include="native\CompactFramework.cs"/>
 <Compile Include="native\Db4objects.Db4o.Instrumentation\Cecil\CecilFieldRef.cs"/>
 <Compile Include="native\Db4objects.Db4o.Instrumentation\Cecil\CecilMethodBuilder.cs"/>
 <Compile Include="native\Db4objects.Db4o.Instrumentation\Cecil\CecilMethodRef.cs"/>

@@ -447,7 +447,7 @@ namespace Db4objects.Db4o.Internal
 			return trans.IdSystem().NewId(SlotChangeFactory.UserObjects);
 		}
 
-		public override void RaiseVersion(long minimumVersion)
+		public override void RaiseCommitTimestamp(long minimumVersion)
 		{
 			lock (Lock())
 			{

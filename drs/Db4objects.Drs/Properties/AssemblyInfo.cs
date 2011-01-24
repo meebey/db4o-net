@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("dRS")]
-[assembly: AssemblyDescription("Db4objects.Drs 8.0.182.14430 (.NET)")]
+[assembly: AssemblyDescription("Db4objects.Drs 8.0.183.14430 (.NET)")]
 [assembly: AssemblyConfiguration(".NET")]
 [assembly: AssemblyCompany("Versant Corp., Redwood City, CA, USA")]
 [assembly: AssemblyProduct("db4o - database for objects")]
@@ -28,6 +28,6 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyVersion("8.0.182.14430")]
+[assembly: AssemblyVersion("8.0.183.14430")]
 
 [assembly: CLSCompliant(true)]

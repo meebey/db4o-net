@@ -83,8 +83,10 @@ namespace Db4objects.Db4o.Internal
 
 			public void OnEvent(object sender, Db4objects.Db4o.Events.CommitEventArgs args)
 			{
-				long commitTimestamp = this._enclosing._container.GenerateTimeStampId();
-				Transaction trans = (Transaction)((CommitEventArgs)args).Transaction();
+				LocalTransaction trans = (LocalTransaction)((CommitEventArgs)args).Transaction();
+				long transactionTimestamp = trans.Timestamp();
+				long commitTimestamp = (transactionTimestamp > 0) ? transactionTimestamp : this._enclosing
+					._container.GenerateTimeStampId();
 				Transaction sysTrans = trans.SystemTransaction();
 				this.AddTimestamp(sysTrans, ((CommitEventArgs)args).Added.GetEnumerator(), commitTimestamp
 					);
@@ -164,12 +166,12 @@ namespace Db4objects.Db4o.Internal
 			public virtual IPreparedComparison PrepareComparison(IContext context, object first
 				)
 			{
-				return new _IPreparedComparison_136(first);
+				return new _IPreparedComparison_139(first);
 			}
 
-			private sealed class _IPreparedComparison_136 : IPreparedComparison
+			private sealed class _IPreparedComparison_139 : IPreparedComparison
 			{
-				public _IPreparedComparison_136(object first)
+				public _IPreparedComparison_139(object first)
 				{
 					this.first = first;
 				}
@@ -215,12 +217,12 @@ namespace Db4objects.Db4o.Internal
 			public override IPreparedComparison PrepareComparison(IContext context, object first
 				)
 			{
-				return new _IPreparedComparison_165(first);
+				return new _IPreparedComparison_168(first);
 			}
 
-			private sealed class _IPreparedComparison_165 : IPreparedComparison
+			private sealed class _IPreparedComparison_168 : IPreparedComparison
 			{
-				public _IPreparedComparison_165(object first)
+				public _IPreparedComparison_168(object first)
 				{
 					this.first = first;
 				}

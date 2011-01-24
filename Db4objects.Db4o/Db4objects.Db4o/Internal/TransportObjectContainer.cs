@@ -182,7 +182,7 @@ namespace Db4objects.Db4o.Internal
 			return _parent.ProduceClassMetadata(claxx);
 		}
 
-		public override void RaiseVersion(long a_minimumVersion)
+		public override void RaiseCommitTimestamp(long a_minimumVersion)
 		{
 		}
 

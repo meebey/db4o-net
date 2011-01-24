@@ -4,12 +4,11 @@ using Db4objects.Db4o.CS.Internal.Messages;
 
 namespace Db4objects.Db4o.CS.Internal.Messages
 {
-	/// <exclude></exclude>
-	public class MRaiseVersion : MsgD, IServerSideMessage
+	public class MUseDefaultTransactionTimestamp : Msg, IServerSideMessage
 	{
 		public virtual void ProcessAtServer()
 		{
-			Container().RaiseVersion(ReadLong());
+			Transaction().UseDefaultTransactionTimestamp();
 		}
 	}
 }

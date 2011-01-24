@@ -52,6 +52,8 @@
 
 
 
+
+
 <SignAssembly>true</SignAssembly>
 <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
@@ -1047,7 +1049,6 @@
 <Compile Include="native\Silverlight\System\Collections\Hashtable.cs"/>
 <Compile Include="native\Silverlight\System\NonSerialized.cs"/>
 <Compile Include="native\Silverlight\System\Serializable.cs"/>
-<Compile Include="native\compact\Compat.cs"/>
 <Compile Include="native\compact\Lock4.cs"/>
 <Compile Include="native\net\Compat.cs"/>
 <Compile Include="native\net\Lock4.cs"/>

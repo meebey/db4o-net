@@ -44,6 +44,8 @@
 
 
 
+
+
 <SignAssembly>true</SignAssembly>
 <AssemblyOriginatorKeyFile>../db4objects.snk</AssemblyOriginatorKeyFile>
 </PropertyGroup>
@@ -171,7 +173,6 @@
 <Compile Include="native\Db4oUnit\TestPlatform.cs"/>
 <Compile Include="native\Db4oUnit\Util\PlatformInformation.cs"/>
 <Compile Include="native\Db4oUnit\Util\StopWatch.cs"/>
-<Compile Include="native\Db4oUnit\compact\SerializableAttribute.cs"/>
 </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac, processorArchitecture=MSIL">

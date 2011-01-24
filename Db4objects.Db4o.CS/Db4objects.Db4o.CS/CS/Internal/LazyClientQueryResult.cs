@@ -95,7 +95,7 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			_client.Write(Msg.ObjectsetFetch.GetWriterForInts(_transaction, new int[] { _queryResultID
 				, batchSize, _client.PrefetchDepth() }));
-			ByteArrayBuffer reader = _client.ExpectedByteResponse(Msg.IdList);
+			ByteArrayBuffer reader = _client.ExpectedBufferResponse(Msg.IdList);
 			LoadFromIdReader(_client.IdIteratorFor(_transaction, reader));
 		}
 	}

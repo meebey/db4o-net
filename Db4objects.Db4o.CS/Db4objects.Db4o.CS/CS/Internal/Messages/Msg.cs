@@ -60,6 +60,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		public static readonly MFailed Failed = new MFailed();
 
+		public static readonly MGenerateTransactionTimestamp GenerateTransactionTimestamp
+			 = new MGenerateTransactionTimestamp();
+
 		public static readonly MGetAll GetAll = new MGetAll();
 
 		public static readonly MGetClasses GetClasses = new MGetClasses();
@@ -114,7 +117,8 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 
 		public static readonly MQueryResult QueryResult = new MQueryResult();
 
-		public static readonly MRaiseVersion RaiseVersion = new MRaiseVersion();
+		public static readonly MRaiseCommitTimestamp RaiseCommitTimestamp = new MRaiseCommitTimestamp
+			();
 
 		public static readonly MReadBlob ReadBlob = new MReadBlob();
 
@@ -148,6 +152,9 @@ namespace Db4objects.Db4o.CS.Internal.Messages
 		public static readonly MTaIsDeleted TaIsDeleted = new MTaIsDeleted();
 
 		public static readonly MVersionForId VersionForId = new MVersionForId();
+
+		public static readonly MUseDefaultTransactionTimestamp UseDefaultTransactionTimestamp
+			 = new MUseDefaultTransactionTimestamp();
 
 		public static readonly MUserMessage UserMessage = new MUserMessage();
 

@@ -130,7 +130,20 @@ namespace Db4objects.Db4o.CS.Internal
 		{
 			MsgD msg = Msg.VersionForId.GetWriterForInt(SystemTransaction(), id);
 			_client.Write(msg);
-			return _client.ExpectedByteResponse(Msg.VersionForId).ReadLong();
+			return _client.ExpectedBufferResponse(Msg.VersionForId).ReadLong();
+		}
+
+		public override long GenerateTransactionTimestamp(long forcedTimeStamp)
+		{
+			_client.WriteMsg(Msg.GenerateTransactionTimestamp.GetWriterForLong(this, forcedTimeStamp
+				), true);
+			return _client.ExpectedBufferResponse(Msg.GenerateTransactionTimestamp).ReadLong(
+				);
+		}
+
+		public override void UseDefaultTransactionTimestamp()
+		{
+			_client.WriteMsg(Msg.UseDefaultTransactionTimestamp, true);
 		}
 	}
 }
